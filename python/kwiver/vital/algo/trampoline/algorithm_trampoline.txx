@@ -27,16 +27,6 @@ class algorithm_trampoline : public algorithm_base
 public:
   using algorithm_base::algorithm_base;
 
-  std::string
-  type_name() const override
-  {
-    PYBIND11_OVERLOAD_PURE(
-      std::string,
-      algorithm_base,
-      type_name,
-    );
-  }
-
   kwiver::vital::config_block_sptr
   get_configuration() const override
   {
