@@ -2,58 +2,28 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-/**
- * \file image_io_trampoline.txx
- *
- * \brief trampoline for overriding virtual functions of
- *        algorithm_def<image_io> and image_io
- */
-
+// Generated using: ./scripts/cpp_to_pybind11.py -i ./vital/algo/image_io.h -o
+// image_io -I . ../build/ ../../fletch/build/install/include/eigen3
+// ../../fletch/build/install/include -d kwiver::vital::algo::image_io -n
+// ImageIO -v -t
 #ifndef IMAGE_IO_TRAMPOLINE_TXX
 #define IMAGE_IO_TRAMPOLINE_TXX
 
 #include <pybind11/pybind11.h>
 #include <python/kwiver/vital/algo/trampoline/algorithm_trampoline.txx>
 #include <vital/algo/image_io.h>
-#include <vital/types/detected_object_set.h>
-#include <vital/types/image_container.h>
 
-namespace kwiver {
-
-namespace vital {
-
-namespace python {
-
-template < class algorithm_def_iio_base =
-    kwiver::vital::algorithm_def<
-      kwiver::vital::algo::image_io > >
-class algorithm_def_iio_trampoline
-  : public algorithm_trampoline< algorithm_def_iio_base >
-{
-public:
-  using algorithm_trampoline< algorithm_def_iio_base >::algorithm_trampoline;
-
-  std::string
-  type_name() const override
-  {
-    PYBIND11_OVERLOAD(
-      std::string,
-      kwiver::vital::algorithm_def< kwiver::vital::algo::image_io >,
-      type_name,
-    );
-  }
-};
+namespace kwiver::vital::python {
 
 template < class image_io_base = kwiver::vital::algo::image_io >
 class image_io_trampoline
-  : public algorithm_def_iio_trampoline< image_io_base >
+  : public algorithm_trampoline< image_io_base >
 {
 public:
-  using algorithm_def_iio_trampoline< image_io_base >::
-  algorithm_def_iio_trampoline;
+  using algorithm_trampoline< image_io_base >::algorithm_trampoline;
 
   kwiver::vital::image_container_sptr
-  load_( std::string const& filename ) const override
+  load_( ::std::string const& filename ) const override
   {
     PYBIND11_OVERLOAD_PURE(
       kwiver::vital::image_container_sptr,
@@ -63,8 +33,21 @@ public:
     );
   }
 
+  void
+  save_(
+    ::std::string const& filename,
+    ::kwiver::vital::image_container_sptr data ) const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      void,
+      kwiver::vital::algo::image_io,
+      save_,
+      filename, data
+    );
+  }
+
   kwiver::vital::metadata_sptr
-  load_metadata_( std::string const& filename ) const override
+  load_metadata_( ::std::string const& filename ) const override
   {
     PYBIND11_OVERLOAD_PURE(
       kwiver::vital::metadata_sptr,
@@ -73,26 +56,8 @@ public:
       filename
     );
   }
+}; // class
 
-  void
-  save_(
-    std::string const& filename,
-    kwiver::vital::image_container_sptr data ) const override
-  {
-    PYBIND11_OVERLOAD_PURE(
-      void,
-      kwiver::vital::algo::image_io,
-      save_,
-      filename,
-      data
-    );
-  }
-};
-
-} // namespace python
-
-} // namespace vital
-
-} // namespace kwiver
+} // namespace
 
 #endif
