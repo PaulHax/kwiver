@@ -356,7 +356,9 @@ public:
   /// transcoding.
   ///
   /// \return Pointer to uninterpreted data.
+#ifndef KWIVER_PYBIND11_WRAPPING
   virtual video_uninterpreted_data_sptr uninterpreted_frame_data();
+#endif
 
   /// \brief Get metadata map for video.
   ///
@@ -389,7 +391,9 @@ public:
   /// settings of the input video.
   ///
   /// \return Implementation video settings, or \c nullptr if none are needed.
+#ifndef KWIVER_PYBIND11_WRAPPING
   virtual video_settings_uptr implementation_settings() const;
+#endif
 
   /// \brief Return capabilities of concrete implementation.
   ///
