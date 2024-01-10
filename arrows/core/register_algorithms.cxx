@@ -7,8 +7,6 @@
 
 #include <arrows/core/kwiver_algo_core_plugin_export.h>
 
-#include <vital/algo/algorithm_factory.h>
-
 #include <arrows/core/kwiver_algo_core_export.h>
 #include <vital/plugin_management/plugin_manager.h>
 
@@ -36,7 +34,7 @@ register_factories( kwiver::vital::plugin_loader& vpl )
     vpl.add_factory< vital::algo::video_input , video_input_filter >( "filter" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 
-    vpl.add_factory< vital::algo::metadata_map_io , metadata_map_io_csv >( "csv" );
+  fact = vpl.add_factory< vital::algo::metadata_map_io , metadata_map_io_csv >( "csv" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 

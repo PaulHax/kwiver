@@ -22,14 +22,6 @@
 #include <vital/math_constants.h>
 #include <vital/vital_config.h>
 
-#include <vital/algo/bundle_adjust.h>
-#include <vital/algo/estimate_canonical_transform.h>
-#include <vital/algo/estimate_essential_matrix.h>
-#include <vital/algo/estimate_pnp.h>
-#include <vital/algo/estimate_similarity_transform.h>
-#include <vital/algo/optimize_cameras.h>
-#include <vital/algo/triangulate_landmarks.h>
-
 #include <arrows/mvg/algo/triangulate_landmarks.h>
 #include <arrows/mvg/epipolar_geometry.h>
 #include <arrows/mvg/metrics.h>
@@ -144,11 +136,14 @@ operator >> (std::istream& s, rel_pose & rp)
 class initialize_cameras_landmarks::priv
 {
 public:
-  /// Constructor
-  priv();
+  priv(initialize_cameras_landmarks& parent)
+    :parent(parent)
+  { 
+  }
+  initialize_cameras_landmarks& parent;
 
   /// Destructor
-  ~priv();
+  ~priv() {};
 
   /// Pass through this callback to another callback but cache the return value
   bool pass_through_callback(callback_t cb,
@@ -355,27 +350,39 @@ public:
     simple_camera_perspective_map_sptr const &cams,
     feature_track_set_sptr &tracks);
 
-  bool verbose = false;
+  // Configuration values
+  // bool c_verbose() const { return parent.c_verbose; };
+  double c_interim_reproj_thresh() const { return parent.c_interim_reproj_thresh; };
+  double c_final_reproj_thresh() const { return parent.c_final_reproj_thresh; };
+  // double c_zoom_scale_thresh() const { return parent.c_zoom_scale_thresh; };
+
+  double c_feature_angle_threshold() const { return parent.c_feature_angle_threshold; };
+
+  int c_max_cams_in_keyframe_init() const { return parent.c_max_cams_in_keyframe_init; };
+  unsigned int c_min_frame_to_frame_matches() const { return parent.c_min_frame_to_frame_matches; };
+  double c_frac_frames_for_init() const { return parent.c_frac_frames_for_init; };
+  double c_metadata_init_permissive_triang_thresh() const { return parent.c_metadata_init_permissive_triang_thresh; };
+  bool c_do_final_sfm_cleaning() const { return parent.c_do_final_sfm_cleaning; };
+  bool c_force_common_intrinsics() const { return parent.c_force_common_intrinsics; };
+
+  // processing classes
+  vital::algo::estimate_essential_matrix_sptr d_e_estimator() const { return parent.c_e_estimator; };
+  // vital::algo::optimize_cameras_sptr d_camera_optimizer() const { return parent.c_camera_optimizer; };
+  vital::algo::triangulate_landmarks_sptr d_lm_triangulator() const { return parent.c_lm_triangulator; };
+  vital::algo::bundle_adjust_sptr d_bundle_adjuster() const { return parent.c_bundle_adjuster; };
+  vital::algo::bundle_adjust_sptr d_global_bundle_adjuster() const { return parent.c_global_bundle_adjuster; };
+  vital::algo::estimate_canonical_transform_sptr d_canonical_estimator() const { return parent.c_canonical_estimator; };
+  vital::algo::estimate_similarity_transform_sptr d_similarity_estimator() const { return parent.c_similarity_estimator; };
+  vital::algo::estimate_pnp_sptr d_estimate_pnp() const { return parent.c_estimate_pnp; };
+
   bool continue_processing = true;
-  double interim_reproj_thresh = 10.0;
-  double final_reproj_thresh = 2.0;
   double image_coverage_threshold = 0.05;
-  double zoom_scale_thresh = 0.1;
 
   vital::simple_camera_perspective m_base_camera;
-  vital::algo::estimate_essential_matrix_sptr e_estimator;
-  vital::algo::optimize_cameras_sptr camera_optimizer;
-  vital::algo::triangulate_landmarks_sptr lm_triangulator;
-  vital::algo::bundle_adjust_sptr bundle_adjuster;
-  vital::algo::bundle_adjust_sptr global_bundle_adjuster;
-  vital::algo::estimate_canonical_transform_sptr m_canonical_estimator;
-  vital::algo::estimate_similarity_transform_sptr m_similarity_estimator;
   /// Logger handle
   vital::logger_handle_t m_logger =
     vital::get_logger("arrows.mvg.initialize_cameras_landmarks");
 
-  double m_thresh_triang_cos_ang = std::cos(deg_to_rad * 2.0);
-  vital::algo::estimate_pnp_sptr m_pnp;
   std::set<rel_pose> m_rel_poses;
   std::set<frame_id_t> m_keyframes;
   Eigen::SparseMatrix<unsigned int> m_kf_match_matrix;
@@ -387,28 +394,10 @@ public:
 
   double m_reverse_ba_error_ratio = 0.0;
   bool m_solution_was_fit_to_constraints = false;
-  int m_max_cams_in_keyframe_init = 20;
-  unsigned m_min_frame_to_frame_matches = 100;
-  double m_frac_frames_for_init = -1.0;
-  double m_metadata_init_permissive_triang_thresh = 10000;
   bool m_init_intrinsics_from_metadata = true;
   bool m_config_defines_base_intrinsics = false;
-  bool m_do_final_sfm_cleaning = false;
-  bool m_force_common_intrinsics = true;
   std::set<landmark_id_t> m_already_merged_landmarks;
 };
-
-initialize_cameras_landmarks::priv
-::priv()
-  // use the core triangulation as the default, users can change it
-  : lm_triangulator(new mvg::triangulate_landmarks())
-{
-}
-
-initialize_cameras_landmarks::priv
-::~priv()
-{
-}
 
 map_landmark_t
 initialize_cameras_landmarks::priv
@@ -519,11 +508,11 @@ initialize_cameras_landmarks::priv
   {
     VITAL_THROW( invalid_value, "required feature tracks are NULL.");
   }
-  if (!e_estimator)
+  if (!d_e_estimator())
   {
     VITAL_THROW( invalid_value, "Essential matrix estimator not initialized.");
   }
-  if (!lm_triangulator)
+  if (!d_lm_triangulator())
   {
     VITAL_THROW( invalid_value, "Landmark triangulator not initialized.");
   }
@@ -569,24 +558,24 @@ initialize_cameras_landmarks::priv
     }
   }
 
-  auto triang_config = lm_triangulator->get_configuration();
+  auto triang_config = d_lm_triangulator()->get_configuration();
   double triang_thresh_orig = triang_config->get_value<double>("inlier_threshold_pixels", 2.0);
   if (inlier_threshold > 0.0)
   {
     triang_config->set_value<double>("inlier_threshold_pixels",
                                      inlier_threshold);
-    lm_triangulator->set_configuration(triang_config);
+    d_lm_triangulator()->set_configuration(triang_config);
   }
 
   landmark_map_sptr lm_map = std::make_shared<simple_landmark_map>(init_lms);
   auto tracks = std::make_shared<feature_track_set>(trks);
-  this->lm_triangulator->triangulate(cams, tracks, lm_map);
+  this->d_lm_triangulator()->triangulate(cams, tracks, lm_map);
 
   if (inlier_threshold > 0.0)
   {
     triang_config->set_value<double>("inlier_threshold_pixels",
                                      triang_thresh_orig);
-    lm_triangulator->set_configuration(triang_config);
+    d_lm_triangulator()->set_configuration(triang_config);
   }
 
   inlier_lm_ids.clear();
@@ -876,9 +865,9 @@ initialize_cameras_landmarks::priv
   }
 
   std::vector<bool> inliers;
-  essential_matrix_sptr E_sptr = e_estimator->estimate(pts_right, pts_left,
+  essential_matrix_sptr E_sptr = d_e_estimator()->estimate(pts_right, pts_left,
     cal_right, cal_left,
-    inliers, interim_reproj_thresh);
+    inliers, c_interim_reproj_thresh());
   const essential_matrix_d E(*E_sptr);
 
   unsigned num_inliers = static_cast<unsigned>(std::count(inliers.begin(),
@@ -906,7 +895,7 @@ initialize_cameras_landmarks::priv
   simple_camera_perspective_map::frame_to_T_sptr_map cams;
   cams[frame_1] = std::make_shared<simple_camera_perspective>(cam);
   cams[frame_0] = std::make_shared<simple_camera_perspective>();
-  if (m_force_common_intrinsics)
+  if (c_force_common_intrinsics())
   {
     cams[frame_0]->set_intrinsics(cams[frame_1]->get_intrinsics());
   }
@@ -931,7 +920,7 @@ initialize_cameras_landmarks::priv
     {
       std::set<frame_id_t> empty_fixed_cams;
       std::set<landmark_id_t> empty_fixed_lms;
-      global_bundle_adjuster->optimize(*cam_map, lms, trk_set,
+      d_global_bundle_adjuster()->optimize(*cam_map, lms, trk_set,
                                        empty_fixed_cams, empty_fixed_lms);
     }
     inlier_lm_ids.clear();
@@ -1038,7 +1027,7 @@ initialize_cameras_landmarks::priv
       for (Eigen::SparseMatrix<unsigned int>::InnerIterator
              it(m_kf_match_matrix, k); it; ++it)
       {
-        if (it.row() > k && it.value() > m_min_frame_to_frame_matches)
+        if (it.row() > k && it.value() > c_min_frame_to_frame_matches())
         {
           auto fid_0 = kf_mm_frames[it.row()];
           auto fid_1 = kf_mm_frames[k];
@@ -1079,7 +1068,7 @@ initialize_cameras_landmarks::priv
       rel_pose rp = calc_rel_pose(fid_0, fid_1, tks_01);
 #pragma omp critical
       {
-        if (rp.well_conditioned_landmark_count > m_min_frame_to_frame_matches)
+        if (rp.well_conditioned_landmark_count > c_min_frame_to_frame_matches())
         {
           m_rel_poses.insert(rp);
         }
@@ -1393,7 +1382,7 @@ initialize_cameras_landmarks::priv
       closest_cam->second);
     model_intrinsics = cam_p->intrinsics();
   }
-  if (!m_force_common_intrinsics)
+  if (!c_force_common_intrinsics())
   {
     model_intrinsics = model_intrinsics->clone();
   }
@@ -1402,7 +1391,7 @@ initialize_cameras_landmarks::priv
 
   // do 3PT algorithm here
   three_point_pose(fid_to_resection, nc, tracks, lms,
-                   static_cast<float>(image_coverage_threshold), m_pnp);
+                   static_cast<float>(image_coverage_threshold), d_estimate_pnp());
 
   if (!nc)
   {
@@ -1430,7 +1419,7 @@ initialize_cameras_landmarks::priv
   bool estimated_sim = false;
   num_constraints_used = 0;
   if (constraints && !constraints->get_camera_position_priors().empty() &&
-    m_similarity_estimator)
+    d_similarity_estimator())
   {
     // Estimate a similarity transform to align the cameras
     // with the constraints
@@ -1489,7 +1478,7 @@ initialize_cameras_landmarks::priv
       auto sing_vals = svd.singularValues();
       if (sing_vals(0) < 100 * sing_vals(1))
       {
-        sim = m_similarity_estimator->estimate_transform(cam_positions,
+        sim = d_similarity_estimator()->estimate_transform(cam_positions,
                                                          sensor_positions);
         estimated_sim = true;
         num_constraints_used = static_cast<int>(sensor_positions.size());
@@ -1501,14 +1490,14 @@ initialize_cameras_landmarks::priv
   {
     // If no constraints then estimate the similarity transform to
     // bring the solution into canonical pose
-    if (!m_canonical_estimator)
+    if (!d_canonical_estimator())
     {
       LOG_DEBUG(m_logger, "No canonial transform estimator defined. "
         "Skipping fit to constraints.");
       return false;
     }
     auto landmarks = std::make_shared<simple_landmark_map>(lms);
-    sim = m_canonical_estimator->estimate_transform(cams, landmarks);
+    sim = d_canonical_estimator()->estimate_transform(cams, landmarks);
   }
 
   // Transform all the points and cameras
@@ -1568,7 +1557,7 @@ initialize_cameras_landmarks::priv
 
     std::set<frame_id_t> fixed_cams_empty;
     std::set<landmark_id_t> fixed_lms_empty;
-    bundle_adjuster->optimize(*cams, lms, tracks,
+    d_bundle_adjuster()->optimize(*cams, lms, tracks,
                               fixed_cams_empty, fixed_lms_empty);
   }
 
@@ -1608,7 +1597,7 @@ initialize_cameras_landmarks::priv
     auto cam_0 = std::make_shared<vital::simple_camera_perspective>();
     auto cam_1 = std::make_shared<vital::simple_camera_perspective>();
     LOG_DEBUG(m_logger, "Base focal length: " << m_base_camera.intrinsics()->focal_length());
-    if (m_force_common_intrinsics)
+    if (c_force_common_intrinsics())
     {
       cam_0->set_intrinsics(m_base_camera.intrinsics()->clone());
       cam_1->set_intrinsics(cam_0->intrinsics());
@@ -1636,7 +1625,7 @@ initialize_cameras_landmarks::priv
     auto rev_cam_0 = std::make_shared<simple_camera_perspective>(*cam_0);
     rev_cam_0->set_intrinsics(cam_0->intrinsics()->clone());
     auto rev_cam_1 = std::make_shared<simple_camera_perspective>(*cam_1);
-    if (m_force_common_intrinsics)
+    if (c_force_common_intrinsics())
     {
       rev_cam_1->set_intrinsics(rev_cam_0->intrinsics());
     }
@@ -1657,7 +1646,7 @@ initialize_cameras_landmarks::priv
     rev_cams->insert(rp_init.f1, rev_cam_1);
     auto rev_lms = map_landmark_t(lms);
 
-    if (bundle_adjuster)
+    if (d_bundle_adjuster())
     {
       LOG_INFO(m_logger, "Running Global Bundle Adjustment on "
         << cams->size() << " cameras and "
@@ -1667,7 +1656,7 @@ initialize_cameras_landmarks::priv
                                                            lms, trks);
       LOG_DEBUG(m_logger, "initial reprojection RMSE: " << init_rmse);
 
-      bundle_adjuster->optimize(*cams, lms, tracks,
+      d_bundle_adjuster()->optimize(*cams, lms, tracks,
                                 fixed_cams_empty, fixed_lms_empty);
       double optimized_rmse = reprojection_rmse(cams->cameras(), lms, trks);
 
@@ -1677,7 +1666,7 @@ initialize_cameras_landmarks::priv
       double rev_optimized_rmse = std::numeric_limits<double>::infinity();
       if (inlier_lm_ids.size() > 5)
       {
-        bundle_adjuster->optimize(*rev_cams, rev_lms, tracks,
+        d_bundle_adjuster()->optimize(*rev_cams, rev_lms, tracks,
                                   fixed_cams_empty, fixed_lms_empty);
 
         inlier_lm_ids.clear();
@@ -1685,7 +1674,7 @@ initialize_cameras_landmarks::priv
         LOG_DEBUG(m_logger, "reversed inlier count " << inlier_lm_ids.size());
         if (inlier_lm_ids.size() > 5)
         {
-          bundle_adjuster->optimize(*rev_cams, rev_lms, tracks,
+          d_bundle_adjuster()->optimize(*rev_cams, rev_lms, tracks,
                                     fixed_cams_empty, fixed_lms_empty);
           rev_optimized_rmse = reprojection_rmse(rev_cams->cameras(),
                                                  rev_lms, trks);
@@ -1717,10 +1706,11 @@ initialize_cameras_landmarks::priv
       std::set<frame_id_t> variable_cams;
       std::set<landmark_id_t> variable_lms;
 
-      clean_cameras_and_landmarks(*cams, lms, tracks, m_thresh_triang_cos_ang,
+      double thresh_triang_cos_ang = std::cos(deg_to_rad * c_feature_angle_threshold());
+      clean_cameras_and_landmarks(*cams, lms, tracks, thresh_triang_cos_ang,
                                   removed_cams, variable_cams, variable_lms,
                                   image_coverage_threshold,
-                                  interim_reproj_thresh);
+                                  c_interim_reproj_thresh());
 
       if (cams->size() < 2)
       {
@@ -1942,10 +1932,10 @@ initialize_cameras_landmarks::priv
   auto ff_tracks = tracks->active_tracks(first_fid);
   auto all_frames = tracks->all_frame_ids();
 
-  if (m_frac_frames_for_init > 0)
+  if (c_frac_frames_for_init() > 0)
   {
     size_t num_init_keyframes = static_cast<size_t>(keyframes.size() *
-                                                    m_frac_frames_for_init);
+                                                    c_frac_frames_for_init());
     for (auto kfid : keyframes)
     {
       beginning_keyframes.insert(kfid);
@@ -2080,7 +2070,7 @@ initialize_cameras_landmarks::priv
     LOG_INFO(m_logger, "Running Global Bundle Adjustment on "
                        << cams->size() << " cameras and "
                        << lms.size() << " landmarks");
-    bundle_adjuster->optimize(*cams, lms, tracks, fixed_cams_empty, fixed_lms_empty);
+    d_bundle_adjuster()->optimize(*cams, lms, tracks, fixed_cams_empty, fixed_lms_empty);
   }
 
   if (callback)
@@ -2122,10 +2112,11 @@ initialize_cameras_landmarks::priv
 
   int frames_resectioned_since_last_ba = 0;
   std::deque<frame_id_t> added_frame_queue;
+  double thresh_triang_cos_ang = std::cos(deg_to_rad * c_feature_angle_threshold());
   while (this->continue_processing &&
     !frames_to_resection.empty() &&
-    (m_max_cams_in_keyframe_init < 0 ||
-     cams->size() < static_cast<size_t>(m_max_cams_in_keyframe_init)))
+    (c_max_cams_in_keyframe_init() < 0 ||
+     cams->size() < static_cast<size_t>(c_max_cams_in_keyframe_init())))
   {
     frame_id_t next_frame_id = select_next_camera(frames_to_resection,
                                                   cams, lms, tracks);
@@ -2182,15 +2173,15 @@ initialize_cameras_landmarks::priv
       LOG_DEBUG(m_logger, "Optimizing frame " << next_frame_id
                           << cams->size()-1 << " fixed cameras and "
                           << lms.size() << " landmarks");
-      auto ba_config = bundle_adjuster->get_configuration();
+      auto ba_config = d_bundle_adjuster()->get_configuration();
       bool opt_focal_was_set = ba_config->get_value<bool>("optimize_focal_length");
       ba_config->set_value<bool>("optimize_focal_length", false);
-      bundle_adjuster->set_configuration(ba_config);
-      bundle_adjuster->optimize(*cams, lms, tracks,
+      d_bundle_adjuster()->set_configuration(ba_config);
+      d_bundle_adjuster()->optimize(*cams, lms, tracks,
                                 fixed_cameras, fixed_landmarks,
                                 ba_constraints);
       ba_config->set_value<bool>("optimize_focal_length", opt_focal_was_set);
-      bundle_adjuster->set_configuration(ba_config);
+      d_bundle_adjuster()->set_configuration(ba_config);
 
       double after_new_cam_rmse =
         reprojection_rmse(cams->cameras(), lms, trks);
@@ -2223,10 +2214,10 @@ initialize_cameras_landmarks::priv
       std::vector<frame_id_t> removed_cams;
       std::set<frame_id_t> variable_cams;
       std::set<landmark_id_t> variable_lms;
-      clean_cameras_and_landmarks(*cams, lms, tracks, m_thresh_triang_cos_ang,
+      clean_cameras_and_landmarks(*cams, lms, tracks, thresh_triang_cos_ang,
                                   removed_cams, variable_cams, variable_lms,
                                   image_coverage_threshold,
-                                  interim_reproj_thresh);
+                                  c_interim_reproj_thresh());
 
       for (auto rem_fid : removed_cams)
       {
@@ -2243,7 +2234,7 @@ initialize_cameras_landmarks::priv
     {
       frames_resectioned_since_last_ba = 0;
       // bundle adjust result because number of inliers has changed significantly
-      if (bundle_adjuster)
+      if (d_bundle_adjuster())
       {
         double before_clean_rmse =
           reprojection_rmse(cams->cameras(), lms, trks);
@@ -2254,10 +2245,10 @@ initialize_cameras_landmarks::priv
         std::set<frame_id_t> variable_cams;
         std::set<landmark_id_t> variable_lms;
         clean_cameras_and_landmarks(*cams, lms, tracks,
-                                    m_thresh_triang_cos_ang, removed_cams,
+                                    thresh_triang_cos_ang, removed_cams,
                                     variable_cams, variable_lms,
                                     image_coverage_threshold,
-                                    interim_reproj_thresh);
+                                    c_interim_reproj_thresh());
         for (auto rem_fid : removed_cams)
         {
           m_frames_removed_from_sfm_solution.insert(rem_fid);
@@ -2278,7 +2269,7 @@ initialize_cameras_landmarks::priv
         LOG_INFO(m_logger, "Running optimization on "
                            << cams->size() << " cameras with "
                            << lms.size() << " fixed landmarks");
-        bundle_adjuster->optimize(*cams, lms, tracks,
+        d_bundle_adjuster()->optimize(*cams, lms, tracks,
                                   fixed_cameras, fixed_landmarks,
                                   ba_constraints);
 
@@ -2294,15 +2285,15 @@ initialize_cameras_landmarks::priv
                            << cams->size() << " cameras and "
                            << lms.size() << " landmarks");
         fixed_landmarks.clear();
-        bundle_adjuster->optimize(*cams, lms, tracks,
+        d_bundle_adjuster()->optimize(*cams, lms, tracks,
                                   fixed_cameras, fixed_landmarks,
                                   ba_constraints);
 
         clean_cameras_and_landmarks(*cams, lms, tracks,
-                                    m_thresh_triang_cos_ang, removed_cams,
+                                    thresh_triang_cos_ang, removed_cams,
                                     variable_cams, variable_lms,
                                     image_coverage_threshold,
-                                    interim_reproj_thresh);
+                                    c_interim_reproj_thresh());
         for (auto rem_fid : removed_cams)
         {
           m_frames_removed_from_sfm_solution.insert(rem_fid);
@@ -2347,7 +2338,7 @@ initialize_cameras_landmarks::priv
             LOG_DEBUG(m_logger, "Necker reversed before final reprojection RMSE: "
                                 << before_final_ba_rmse2);
 
-            global_bundle_adjuster->optimize(*nr_cams_perspec, nr_landmarks, tracks,
+            d_global_bundle_adjuster()->optimize(*nr_cams_perspec, nr_landmarks, tracks,
                                              fixed_cameras, fixed_landmarks,
                                              ba_constraints);
 
@@ -2396,7 +2387,7 @@ initialize_cameras_landmarks::priv
                        << lms.size() << " landmarks");
     std::set<frame_id_t> fixed_cameras;
     std::set<landmark_id_t> fixed_landmarks;
-    bundle_adjuster->optimize(*cams, lms, tracks,
+    d_bundle_adjuster()->optimize(*cams, lms, tracks,
                               fixed_cameras, fixed_landmarks,
                               ba_constraints);
 
@@ -2404,10 +2395,10 @@ initialize_cameras_landmarks::priv
     std::set<frame_id_t> empty_cam_set;
     std::set<landmark_id_t> empty_lm_set;
     clean_cameras_and_landmarks(*cams, lms, tracks,
-                                m_thresh_triang_cos_ang, removed_cams,
+                                thresh_triang_cos_ang, removed_cams,
                                 empty_cam_set, empty_lm_set,
                                 image_coverage_threshold,
-                                interim_reproj_thresh);
+                                c_interim_reproj_thresh());
   }
 
   landmarks = landmark_map_sptr(new simple_landmark_map(lms));
@@ -2444,7 +2435,7 @@ initialize_cameras_landmarks::priv
 
         cam->set_center(pos_loc);
         cam->set_rotation(R_loc);
-        if (m_force_common_intrinsics)
+        if (c_force_common_intrinsics())
         {
           cam->set_intrinsics(intrinsics);
         }
@@ -2484,7 +2475,7 @@ initialize_cameras_landmarks::priv
   int iterations = 0;
   int num_permissive_triangulation_iterations = 3;
   int min_non_permissive_triangulation_iterations = 2;
-  auto ba_config = global_bundle_adjuster->get_configuration();
+  auto ba_config = d_global_bundle_adjuster()->get_configuration();
   bool opt_focal_was_set = ba_config->get_value<bool>("optimize_focal_length");
   do {
     prev_inlier_lm_count = cur_inlier_lm_count;
@@ -2492,7 +2483,7 @@ initialize_cameras_landmarks::priv
     if (iterations < num_permissive_triangulation_iterations)
     {
       retriangulate(lms, cams, trks, inlier_lm_ids, 3,
-                    m_metadata_init_permissive_triang_thresh);
+                    c_metadata_init_permissive_triang_thresh());
     }
     else
     {
@@ -2530,14 +2521,14 @@ initialize_cameras_landmarks::priv
     {
       ba_config->set_value<bool>("optimize_focal_length", opt_focal_was_set);
     }
-    global_bundle_adjuster->set_configuration(ba_config);
+    d_global_bundle_adjuster()->set_configuration(ba_config);
 
     double init_rmse = reprojection_rmse(cams->cameras(), lms, trks);
     LOG_DEBUG(m_logger, "initial reprojection RMSE: " << init_rmse);
 
     std::set<frame_id_t> fixed_cameras;
     std::set<landmark_id_t> fixed_landmarks;
-    global_bundle_adjuster->optimize(*cams, lms, tracks,
+    d_global_bundle_adjuster()->optimize(*cams, lms, tracks,
                                      fixed_cameras, fixed_landmarks,
                                      constraints);
 
@@ -2554,14 +2545,15 @@ initialize_cameras_landmarks::priv
     double non_permissive_threshold =
       ((40.0 / pow(1.25,
         iterations - num_permissive_triangulation_iterations + 1)) + 10.0) *
-          interim_reproj_thresh;
+          c_interim_reproj_thresh();
 
     double reproj_thresh =
       iterations < num_permissive_triangulation_iterations ?
-        50.0 * interim_reproj_thresh :
+        50.0 * c_interim_reproj_thresh() :
         non_permissive_threshold;
+    double thresh_triang_cos_ang = std::cos(deg_to_rad * c_feature_angle_threshold());
     clean_cameras_and_landmarks(*cams, lms, tracks,
-                                m_thresh_triang_cos_ang, removed_cams,
+                                thresh_triang_cos_ang, removed_cams,
                                 empty_cam_set, empty_lm_set,
                                 coverage_thresh, reproj_thresh, 3);
 
@@ -2782,7 +2774,7 @@ initialize_cameras_landmarks::priv
         // remove current frame from fixed cameras so it will be optimized
         fixed_cams.erase(fid);
         cams->insert(fid, reversed_cam);
-        bundle_adjuster->optimize(*cams, lms, tracks,
+        d_bundle_adjuster()->optimize(*cams, lms, tracks,
                                   fixed_cams, fixed_landmarks,
                                   constraints);
         // now add it back to the fixed frames so it is fixed next time
@@ -2840,7 +2832,7 @@ initialize_cameras_landmarks::priv
   }
 
   fixed_cams.clear();
-  bundle_adjuster->optimize(*cams, lms, tracks,
+  d_bundle_adjuster()->optimize(*cams, lms, tracks,
                             fixed_cams, fixed_landmarks,
                             constraints);
 }
@@ -2986,10 +2978,10 @@ initialize_cameras_landmarks::priv
     }
   }
 
-  auto ba_config = bundle_adjuster->get_configuration();
+  auto ba_config = d_bundle_adjuster()->get_configuration();
   bool opt_focal_was_set = ba_config->get_value<bool>("optimize_focal_length");
   ba_config->set_value<bool>("optimize_focal_length", false);
-  bundle_adjuster->set_configuration(ba_config);
+  d_bundle_adjuster()->set_configuration(ba_config);
 
   for(int lp = 0; lp < 2; ++lp)
   {
@@ -3002,7 +2994,7 @@ initialize_cameras_landmarks::priv
     // use the pose of the closest camera as starting point
     bundled_cam =
       std::static_pointer_cast<simple_camera_perspective>(closest_cam->clone());
-    if (!m_force_common_intrinsics)
+    if (!c_force_common_intrinsics())
     {
       // make sure this camera has it's own intrinsics object
       bundled_cam->set_intrinsics(closest_cam->intrinsics()->clone());
@@ -3021,7 +3013,7 @@ initialize_cameras_landmarks::priv
     while (bundled_inlier_count > prev_bundled_inlier_count)
     {
       // DOES THIS LOOP HELP?
-      bundle_adjuster->optimize(*cams, cur_landmarks_rand_sub, tracks,
+      d_bundle_adjuster()->optimize(*cams, cur_landmarks_rand_sub, tracks,
                                 already_registred_cams, cur_frame_landmarks,
                                 constraints);
 
@@ -3053,7 +3045,7 @@ initialize_cameras_landmarks::priv
         int loop_count = 0;
         while (resection_inlier_count > prev_resection_inlier_count)
         {
-          bundle_adjuster->optimize(*cams, cur_landmarks, tracks,
+          d_bundle_adjuster()->optimize(*cams, cur_landmarks, tracks,
                                     already_registred_cams,
                                     cur_frame_landmarks,
                                     constraints);
@@ -3073,9 +3065,9 @@ initialize_cameras_landmarks::priv
     }
   }
 
-  ba_config = bundle_adjuster->get_configuration();
+  ba_config = d_bundle_adjuster()->get_configuration();
   ba_config->set_value<bool>("optimize_focal_length", opt_focal_was_set);
-  bundle_adjuster->set_configuration(ba_config);
+  d_bundle_adjuster()->set_configuration(ba_config);
 
   int inlier_count = std::max(resection_inlier_count, bundled_inlier_count);
   if (inlier_count < min_inliers)
@@ -3130,12 +3122,13 @@ initialize_cameras_landmarks::priv
     find_visible_landmarks_in_frames(lmks, tracks,
                                      frames_since_last_local_ba);
   std::vector<frame_id_t> removed_cams;
+  double thresh_triang_cos_ang = std::cos(deg_to_rad * c_feature_angle_threshold());
   clean_cameras_and_landmarks(*cams, lmks, tracks,
-                              m_thresh_triang_cos_ang, removed_cams,
+                              thresh_triang_cos_ang, removed_cams,
                               frames_since_last_local_ba,
                               variable_landmark_ids,
                               image_coverage_threshold,
-                              interim_reproj_thresh);
+                              c_interim_reproj_thresh());
 
   for (auto rem_fid : removed_cams)
   {
@@ -3149,16 +3142,16 @@ initialize_cameras_landmarks::priv
   LOG_DEBUG(m_logger, "Bundle adjusting " << cams->size() << " cameras ("
                       << frames_to_fix.size() << " fixed) and "
                       << variable_landmarks.size() << " landmarks");
-  bundle_adjuster->optimize(*cams, variable_landmarks, tracks,
+  d_bundle_adjuster()->optimize(*cams, variable_landmarks, tracks,
                             frames_to_fix, empty_landmark_id_set,
                             constraints);
 
   clean_cameras_and_landmarks(*cams, lmks, tracks,
-                              m_thresh_triang_cos_ang, removed_cams,
+                              thresh_triang_cos_ang, removed_cams,
                               frames_since_last_local_ba,
                               variable_landmark_ids,
                               image_coverage_threshold,
-                              interim_reproj_thresh, 3);
+                              c_interim_reproj_thresh(), 3);
 
   for (auto rem_fid : removed_cams)
   {
@@ -3352,7 +3345,7 @@ initialize_cameras_landmarks::priv
         }
 
         double rpj_err = reprojection_error(*cam, lm_merged, *fts->feature);
-        if (rpj_err > interim_reproj_thresh)
+        if (rpj_err > c_interim_reproj_thresh())
         {
           merge_successful = false;
           break;
@@ -3380,7 +3373,7 @@ initialize_cameras_landmarks::priv
         }
 
         double rpj_err = reprojection_error(*cam, lm_merged, *fts->feature);
-        if (rpj_err > interim_reproj_thresh)
+        if (rpj_err > c_interim_reproj_thresh())
         {
           merge_successful = false;
           break;
@@ -3628,7 +3621,7 @@ initialize_cameras_landmarks::priv
     auto reporj_by_cam = reprojection_rmse_by_cam(cams->cameras(),
                                                   lmks, tracks->tracks());
 
-    double rebundle_thresh = final_reproj_thresh * 4.0;
+    double rebundle_thresh = c_final_reproj_thresh() * 4.0;
     bool bundle_because_of_reproj = false;
     int num_cams_over_thresh = 0;
     for (auto& cd : reporj_by_cam)
@@ -3698,16 +3691,17 @@ initialize_cameras_landmarks::priv
     }
   }
 
-  if (m_do_final_sfm_cleaning)
+  if (c_do_final_sfm_cleaning())
   {
     std::set<frame_id_t> empty_frames;
     std::set<landmark_id_t> empty_landmarks;
     std::vector<frame_id_t> removed_cams;
+    double thresh_triang_cos_ang = std::cos(deg_to_rad * c_feature_angle_threshold());
     clean_cameras_and_landmarks(*cams, lmks, tracks,
-                                m_thresh_triang_cos_ang, removed_cams,
+                                thresh_triang_cos_ang, removed_cams,
                                 empty_frames, empty_landmarks,
                                 image_coverage_threshold,
-                                interim_reproj_thresh, 3);
+                                c_interim_reproj_thresh(), 3);
 
     for (auto rem_fid : removed_cams)
     {
@@ -3771,10 +3765,12 @@ initialize_cameras_landmarks::priv
 // start: initialize_cameras_landmarks_keyframe
 
 /// Constructor
-initialize_cameras_landmarks
-::initialize_cameras_landmarks()
-: m_priv(new priv)
+void initialize_cameras_landmarks
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR(priv,m_priv);
+  // use the MVG triangulation as the default, users can change it
+  c_lm_triangulator = std::make_shared<mvg::triangulate_landmarks>();
 }
 
 /// Destructor
@@ -3783,209 +3779,19 @@ initialize_cameras_landmarks
 {
 }
 
-/// Get this algorithm's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-initialize_cameras_landmarks
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config =
-      vital::algo::initialize_cameras_landmarks::get_configuration();
-
-  const camera_intrinsics_sptr K = m_priv->m_base_camera.get_intrinsics();
-
-  config->set_value("verbose", m_priv->verbose,
-                    "If true, write status messages to the terminal showing "
-                    "debugging information");
-
-  config->set_value("force_common_intrinsics", m_priv->m_force_common_intrinsics,
-                    "If true, then all cameras will share a single set of camera "
-                    "intrinsic parameters");
-
-  config->set_value("frac_frames_for_init", m_priv->m_frac_frames_for_init,
-                    "fraction of keyframes used in relative pose initialization");
-
-  config->set_value("min_frame_to_frame_matches",
-                    m_priv->m_min_frame_to_frame_matches,
-                    "Minimum number of frame-to-frame feature matches "
-                    "required to attempt reconstruction");
-
-  config->set_value("interim_reproj_thresh", m_priv->interim_reproj_thresh,
-                    "Threshold for rejecting landmarks based on reprojection "
-                    "error (in pixels) during intermediate processing steps.");
-
-  config->set_value("final_reproj_thresh", m_priv->final_reproj_thresh,
-                    "Relative threshold for rejecting landmarks based on "
-                    "reprojection error relative to the median error after "
-                    "the final bundle adjustment.  For example, a value of 2 "
-                    "mean twice the median error");
-
-  config->set_value("zoom_scale_thresh", m_priv->zoom_scale_thresh,
-                    "Threshold on image scale change used to detect a camera "
-                    "zoom. If the resolution on target changes by more than "
-                    "this fraction create a new camera intrinsics model.");
-
-  config->set_value("base_camera:focal_length", K->focal_length(),
-                    "focal length of the base camera model");
-
-  config->set_value("base_camera:principal_point", K->principal_point().transpose(),
-                    "The principal point of the base camera model \"x y\".\n"
-                    "It is usually safe to assume this is the center of the "
-                    "image.");
-
-  config->set_value("base_camera:aspect_ratio", K->aspect_ratio(),
-                    "the pixel aspect ratio of the base camera model");
-
-  config->set_value("base_camera:skew", K->skew(),
-                    "The skew factor of the base camera model.\n"
-                    "This is almost always zero in any real camera.");
-
-  config->set_value("max_cams_in_keyframe_init", m_priv->m_max_cams_in_keyframe_init,
-                    "the maximum number of cameras to reconstruct in "
-                    "initialization step before switching to resectioning "
-                    "remaining cameras.");
-
-  config->set_value("metadata_init_permissive_triang_thresh",
-                    m_priv->m_metadata_init_permissive_triang_thresh,
-                    "threshold to apply to triangulation in the first "
-                    "permissive rounds of metadata based reconstruction "
-                    "initialization");
-
-  double ang_thresh_cur = acos(m_priv->m_thresh_triang_cos_ang) * rad_to_deg;
-  config->set_value("feature_angle_threshold", ang_thresh_cur,
-                    "feature must have this triangulation angle to keep");
-
-  config->set_value("do_final_sfm_cleaning",
-                    m_priv->m_do_final_sfm_cleaning,
-                    "run a final sfm solution cleanup when solution is complete");
-
-  double r1 = 0;
-  double r2 = 0;
-  double r3 = 0;
-  auto dc = K->dist_coeffs();
-  if (dc.size() == 5)
-  {
-    r1 = dc[0];
-    r2 = dc[1];
-    r3 = dc[4];
-  }
-  config->set_value("base_camera:r1", r1, "r^2 radial distortion term");
-  config->set_value("base_camera:r2", r2, "r^4 radial distortion term");
-  config->set_value("base_camera:r3", r3, "r^6 radial distortion term");
-
-  config->set_value("init_intrinsics_from_metadata",
-                    m_priv->m_init_intrinsics_from_metadata,
-                    "initialize camera's focal length from metadata");
-
-  // nested algorithm configurations
-  vital::algo::estimate_essential_matrix
-      ::get_nested_algo_configuration("essential_mat_estimator",
-                                      config, m_priv->e_estimator);
-  vital::algo::optimize_cameras
-      ::get_nested_algo_configuration("camera_optimizer",
-                                      config, m_priv->camera_optimizer);
-  vital::algo::triangulate_landmarks
-      ::get_nested_algo_configuration("lm_triangulator",
-                                      config, m_priv->lm_triangulator);
-  vital::algo::bundle_adjust
-      ::get_nested_algo_configuration("bundle_adjuster",
-                                      config, m_priv->bundle_adjuster);
-  vital::algo::bundle_adjust
-      ::get_nested_algo_configuration("global_bundle_adjuster",
-                                      config, m_priv->global_bundle_adjuster);
-  vital::algo::estimate_pnp
-    ::get_nested_algo_configuration("estimate_pnp", config, m_priv->m_pnp);
-
-  vital::algo::estimate_canonical_transform
-    ::get_nested_algo_configuration("canonical_estimator", config,
-                                    m_priv->m_canonical_estimator);
-
-  vital::algo::estimate_similarity_transform
-    ::get_nested_algo_configuration("similarity_estimator", config,
-                                    m_priv->m_similarity_estimator);
-
-  return config;
-}
 
 /// Set this algorithm's properties via a config block
 void
 initialize_cameras_landmarks
-::set_configuration(vital::config_block_sptr config)
+::set_configuration_internal(vital::config_block_sptr config)
 {
   const camera_intrinsics_sptr K = m_priv->m_base_camera.get_intrinsics();
 
-  // Set nested algorithm configurations
-  vital::algo::estimate_essential_matrix
-      ::set_nested_algo_configuration("essential_mat_estimator",
-                                      config, m_priv->e_estimator);
-  vital::algo::optimize_cameras
-      ::set_nested_algo_configuration("camera_optimizer",
-                                      config, m_priv->camera_optimizer);
-  vital::algo::triangulate_landmarks
-      ::set_nested_algo_configuration("lm_triangulator",
-                                      config, m_priv->lm_triangulator);
-  vital::algo::bundle_adjust
-      ::set_nested_algo_configuration("bundle_adjuster",
-                                      config, m_priv->bundle_adjuster);
-  vital::algo::bundle_adjust
-      ::set_nested_algo_configuration("global_bundle_adjuster",
-                                      config, m_priv->global_bundle_adjuster);
 
   // make sure the callback is applied to any new instances of
   // nested algorithms
   this->set_callback(this->m_callback);
 
-  vital::algo::estimate_canonical_transform
-    ::set_nested_algo_configuration("canonical_estimator",
-                                    config, m_priv->m_canonical_estimator);
-
-  vital::algo::estimate_similarity_transform
-    ::set_nested_algo_configuration("similarity_estimator",
-                                    config, m_priv->m_similarity_estimator);
-
-  m_priv->m_frac_frames_for_init =
-    config->get_value<double>("frac_frames_for_init",
-                              m_priv->m_frac_frames_for_init);
-
-  m_priv->verbose = config->get_value<bool>("verbose",
-                                        m_priv->verbose);
-
-  m_priv->m_force_common_intrinsics =
-    config->get_value<bool>("force_common_intrinsics",
-                            m_priv->m_force_common_intrinsics);
-
-  m_priv->interim_reproj_thresh =
-      config->get_value<double>("interim_reproj_thresh",
-                                m_priv->interim_reproj_thresh);
-
-  m_priv->final_reproj_thresh =
-      config->get_value<double>("final_reproj_thresh",
-                                m_priv->final_reproj_thresh);
-
-  m_priv->m_max_cams_in_keyframe_init =
-    config->get_value<int>("max_cams_in_keyframe_init",
-      m_priv->m_max_cams_in_keyframe_init);
-
-  m_priv->m_min_frame_to_frame_matches =
-    config->get_value<unsigned>(
-      "min_frame_to_frame_matches",
-      m_priv->m_min_frame_to_frame_matches);
-
-  m_priv->m_metadata_init_permissive_triang_thresh =
-    config->get_value<double>("metadata_init_permissive_triang_thresh",
-      m_priv->m_metadata_init_permissive_triang_thresh);
-
-  m_priv->zoom_scale_thresh =
-      config->get_value<double>("zoom_scale_thresh",
-                                m_priv->zoom_scale_thresh);
-
-  m_priv->m_init_intrinsics_from_metadata =
-    config->get_value<bool>("init_intrinsics_from_metadata",
-                            m_priv->m_init_intrinsics_from_metadata);
-
-  m_priv->m_do_final_sfm_cleaning =
-    config->get_value<bool>("do_final_sfm_cleaning",
-                            m_priv->m_do_final_sfm_cleaning);
 
   vital::config_block_sptr bc = config->subblock("base_camera");
 
@@ -4017,14 +3823,6 @@ initialize_cameras_landmarks
 
   m_priv->m_base_camera.set_intrinsics(K2.clone());
 
-  double ang_thresh_cur = acos(m_priv->m_thresh_triang_cos_ang) * rad_to_deg;
-  double ang_thresh_config = config->get_value("feature_angle_threshold",
-                                               ang_thresh_cur);
-
-  m_priv->m_thresh_triang_cos_ang = cos(deg_to_rad * ang_thresh_config);
-
-  vital::algo::estimate_pnp::set_nested_algo_configuration(
-    "estimate_pnp", config, m_priv->m_pnp);
 }
 
 /// Check that the algorithm's currently configuration is valid
@@ -4033,32 +3831,25 @@ initialize_cameras_landmarks
 ::check_configuration(vital::config_block_sptr config) const
 {
   if (config->get_value<std::string>("camera_optimizer", "") != ""
-      && !vital::algo::optimize_cameras
-              ::check_nested_algo_configuration("camera_optimizer", config))
+      && !vital::check_nested_algo_configuration<vital::algo::optimize_cameras>("camera_optimizer", config))
   {
     return false;
   }
   if (config->get_value<std::string>("bundle_adjuster", "") != ""
-      && !vital::algo::bundle_adjust
-              ::check_nested_algo_configuration("bundle_adjuster", config))
+      && !vital::check_nested_algo_configuration<vital::algo::bundle_adjust>("bundle_adjuster", config))
   {
     return false;
   }
   if (config->get_value<std::string>("global_bundle_adjuster", "") != ""
-      && !vital::algo::bundle_adjust
-         ::check_nested_algo_configuration("global_bundle_adjuster", config))
+      && !vital::check_nested_algo_configuration<vital::algo::bundle_adjust>("global_bundle_adjuster", config))
   {
     return false;
   }
-  return
-    vital::algo::estimate_essential_matrix
-      ::check_nested_algo_configuration("essential_mat_estimator",config) &&
-    vital::algo::triangulate_landmarks
-      ::check_nested_algo_configuration("lm_triangulator", config) &&
-    vital::algo::estimate_canonical_transform
-      ::check_nested_algo_configuration("canonical_estimator", config) &&
-    vital::algo::estimate_similarity_transform
-      ::check_nested_algo_configuration("similarity_estimator", config);
+  return vital::check_nested_algo_configuration<vital::algo::estimate_essential_matrix>("essential_mat_estimator",
+                                               config)
+      && vital::check_nested_algo_configuration<vital::algo::triangulate_landmarks>("lm_triangulator", config)
+      && vital::check_nested_algo_configuration<vital::algo::estimate_canonical_transform>("canonical_estimator", config)
+      && vital::check_nested_algo_configuration<vital::algo::estimate_similarity_transform>("similarity_estimator", config);
 }
 
 /// Initialize the camera and landmark parameters given a set of tracks
@@ -4079,7 +3870,7 @@ initialize_cameras_landmarks
 
   // Compute keyframes to use for SFM
   auto all_frames = tracks->all_frame_ids();
-  auto const max_keyframes = m_priv->m_max_cams_in_keyframe_init;
+  auto const max_keyframes = m_priv->c_max_cams_in_keyframe_init();
   if (max_keyframes < 0 ||
       all_frames.size() <= static_cast<size_t>(max_keyframes))
   {
@@ -4127,7 +3918,7 @@ initialize_cameras_landmarks
 {
   vital::algo::initialize_cameras_landmarks::set_callback(cb);
   // pass callback on to bundle adjusters if available
-  if ((m_priv->bundle_adjuster || m_priv->global_bundle_adjuster) &&
+  if ((m_priv->d_bundle_adjuster() || m_priv->d_global_bundle_adjuster()) &&
       this->m_callback)
   {
     using std::placeholders::_1;
@@ -4137,13 +3928,13 @@ initialize_cameras_landmarks
       std::bind(&initialize_cameras_landmarks::priv
         ::pass_through_callback,
         m_priv.get(), this->m_callback, _1, _2, _3);
-    if (m_priv->bundle_adjuster)
+    if (m_priv->d_bundle_adjuster())
     {
-      m_priv->bundle_adjuster->set_callback(pcb);
+      m_priv->d_bundle_adjuster()->set_callback(pcb);
     }
-    if (m_priv->global_bundle_adjuster)
+    if (m_priv->d_global_bundle_adjuster())
     {
-      m_priv->global_bundle_adjuster->set_callback(pcb);
+      m_priv->d_global_bundle_adjuster()->set_callback(pcb);
     }
   }
 }

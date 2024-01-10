@@ -5,7 +5,6 @@
 /// \file
 /// \brief track_feature algorithm instantiation
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/track_features.h>
 
 namespace kwiver {
@@ -25,7 +24,3 @@ track_features
 } // namespace vital
 
 } // namespace kwiver
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::track_features );
-/// \endcond

@@ -6,12 +6,7 @@
 /// \brief Implementation of wrapper functions in similarity transform
 ///        estimation algorithm definition.
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/estimate_similarity_transform.h>
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::estimate_similarity_transform );
-/// \endcond
 
 namespace kwiver {
 

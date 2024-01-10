@@ -28,11 +28,11 @@ namespace algo {
 /// and point projection pairs.
 
 class VITAL_ALGO_EXPORT estimate_pnp
-  : public kwiver::vital::algorithm_def< estimate_pnp >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "estimate_pnp"; }
+  estimate_pnp();
+  PLUGGABLE_INTERFACE( estimate_pnp );
 
   /// Estimate the camera's pose from the 3D points and their corresponding
   /// projections
@@ -49,9 +49,6 @@ public:
             const std::vector< vector_3d >& pts3d,
             const kwiver::vital::camera_intrinsics_sptr cal,
             std::vector< bool >& inliers ) const = 0;
-
-protected:
-  estimate_pnp();
 };
 
 /// Shared pointer type of base estimate_homography algorithm definition class

@@ -31,12 +31,12 @@ set( public_headers
   # draw_detected_object_set.h
   # draw_tracks.h
   # dynamic_configuration.h
-  # estimate_canonical_transform.h
-  # estimate_essential_matrix.h
+  estimate_canonical_transform.h
+  estimate_essential_matrix.h
   # estimate_fundamental_matrix.h
   # estimate_homography.h
-  # estimate_pnp.h
-  # estimate_similarity_transform.h
+  estimate_pnp.h
+  estimate_similarity_transform.h
   # extract_descriptors.h
   # feature_descriptor_io.h
   # filter_features.h
@@ -45,9 +45,9 @@ set( public_headers
   # image_filter.h
   image_io.h
   # image_object_detector.h
-  # initialize_cameras_landmarks.h
+  initialize_cameras_landmarks.h
   # initialize_object_tracks.h
-  # integrate_depth_maps.h
+  integrate_depth_maps.h
   # interpolate_track.h
   # nearest_neighbors.h
   # keyframe_selection.h
@@ -56,7 +56,7 @@ set( public_headers
   # match_descriptor_sets.h
   # match_features.h
   # merge_images.h
-  # optimize_cameras.h
+  optimize_cameras.h
   # pointcloud_io.h
   # read_object_track_set.h
   # read_track_descriptor_set.h
@@ -66,7 +66,7 @@ set( public_headers
   # track_features.h
   # train_detector.h
   # transform_2d_io.h
-  # triangulate_landmarks.h
+  triangulate_landmarks.h
   # uuid_factory.h
   # uv_unwrap_mesh.h
   video_input.h
@@ -99,12 +99,12 @@ set( sources
   # draw_detected_object_set.cxx
   # draw_tracks.cxx
   # dynamic_configuration.cxx
-  # estimate_canonical_transform.cxx
-  # estimate_essential_matrix.cxx
+  estimate_canonical_transform.cxx
+  estimate_essential_matrix.cxx
   # estimate_fundamental_matrix.cxx
   # estimate_homography.cxx
-  # estimate_pnp.cxx
-  # estimate_similarity_transform.cxx
+  estimate_pnp.cxx
+  estimate_similarity_transform.cxx
   # extract_descriptors.cxx
   # feature_descriptor_io.cxx
   # filter_features.cxx
@@ -114,8 +114,8 @@ set( sources
   image_io.cxx
   # image_object_detector.cxx
   # initialize_object_tracks.cxx
-  # initialize_cameras_landmarks.cxx
-  # integrate_depth_maps.cxx
+  initialize_cameras_landmarks.cxx
+  integrate_depth_maps.cxx
   # interpolate_track.cxx
   # nearest_neighbors.cxx
   # keyframe_selection.cxx
@@ -124,7 +124,7 @@ set( sources
   # match_descriptor_sets.cxx
   # match_features.cxx
   # merge_images.cxx
-  # optimize_cameras.cxx
+  optimize_cameras.cxx
   # pointcloud_io.cxx
   # read_object_track_set.cxx
   # read_track_descriptor_set.cxx
@@ -134,7 +134,7 @@ set( sources
   # track_features.cxx
   # train_detector.cxx
   # transform_2d_io.cxx
-  # triangulate_landmarks.cxx
+  triangulate_landmarks.cxx
   # uuid_factory.cxx
   # uv_unwrap_mesh.cxx
   video_input.cxx

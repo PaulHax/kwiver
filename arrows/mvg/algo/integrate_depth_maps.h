@@ -12,6 +12,8 @@
 
 #include <arrows/mvg/kwiver_algo_mvg_export.h>
 
+#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/integrate_depth_maps.h>
 #include <vital/vital_config.h>
 #include <vital/types/vector.h>
@@ -24,19 +26,36 @@ class KWIVER_ALGO_MVG_EXPORT integrate_depth_maps
   : public vital::algo::integrate_depth_maps
 {
 public:
-  PLUGIN_INFO( "mvg",
-               "CPU depth map fusion" )
+using array3 = std::array<double, 3>;
+  PLUGGABLE_IMPL( integrate_depth_maps,
+               "CPU depth map fusion",
+  PARAM_DEFAULT(ray_potential_thickness, double,
+                    "Distance that the TSDF covers sloping from Rho to zero. "
+                    "Units are in voxels.", 20.0),
+  PARAM_DEFAULT(ray_potential_rho, double,
+                    "Maximum magnitude of the TDSF", 1.0),
+  PARAM_DEFAULT(ray_potential_eta, double,
+                    "Fraction of rho to use for free space constraint. "
+                    "Requires 0 <= Eta <= 1.", 1.0),
+  PARAM_DEFAULT(ray_potential_epsilon, double,
+                    "Fraction of rho to use in occluded space. "
+                    "Requires 0 <= Epsilon <= 1.", 0.01),
+  PARAM_DEFAULT(ray_potential_delta, double,
+                    "Distance from the surface before the TSDF is truncate. "
+                    "Units are in voxels", 10.0),
+  PARAM_DEFAULT(voxel_spacing_factor, double,
+                    "Multiplier on voxel spacing.  Set to 1.0 for voxel "
+                    "sizes that project to 1 pixel on average.", 1.0),
+  PARAM_DEFAULT(grid_spacing, array3,
+                    "Relative spacing for each dimension of the grid", array3({1., 1., 1.}))
+  )
 
-  /// Constructor
-  integrate_depth_maps();
 
   /// Destructor
   virtual ~integrate_depth_maps();
 
-  /// Get this algorithm's \link vital::config_block configuration block \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration(vital::config_block_sptr config);
+  void initialize() override;
+
   /// Check that the algorithm's currently configuration is valid
   virtual bool check_configuration(vital::config_block_sptr config) const;
 
@@ -68,7 +87,7 @@ public:
 private:
   /// private implementation class
   class priv;
-  const std::unique_ptr<priv> d_;
+  KWIVER_UNIQUE_PTR(priv,d_);
 };
 
 }  // end namespace mvg

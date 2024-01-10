@@ -12,6 +12,8 @@
 
 #include <arrows/mvg/kwiver_algo_mvg_export.h>
 
+#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/triangulate_landmarks.h>
 
 namespace kwiver {
@@ -23,23 +25,38 @@ class KWIVER_ALGO_MVG_EXPORT triangulate_landmarks
 : public vital::algo::triangulate_landmarks
 {
 public:
-  PLUGIN_INFO( "mvg",
+  PLUGGABLE_IMPL( triangulate_landmarks,
                "Triangulate landmarks from tracks and cameras"
-               " using a simple least squares solver." )
+               " using a simple least squares solver.",
+    PARAM_DEFAULT(homogeneous, bool,
+                    "Use the homogeneous method for triangulating points. "
+                    "The homogeneous method can triangulate points at or near "
+                    "infinity and discard them.", false),
 
-  /// Constructor
-  triangulate_landmarks();
+    PARAM_DEFAULT(ransac, bool,
+                    "Use RANSAC in triangulating the points", true),
+
+    PARAM_DEFAULT(min_angle_deg, float,
+                    "minimum angle required to triangulate a point.", 1.0f),
+
+    PARAM_DEFAULT(inlier_threshold_pixels, float,
+                   "reprojection error threshold in pixels.", 2.0f),
+
+    PARAM_DEFAULT(frac_track_inliers_to_keep_triangulated_point, float,
+                    "fraction of measurements in track that must be inliers to "
+                    "keep the triangulated point", 0.5f),
+
+    PARAM_DEFAULT(max_ransac_samples, int,
+                    "maximum number of samples to take in RANSAC triangulation", 20),
+
+    PARAM_DEFAULT(conf_thresh, double,
+                    "RANSAC sampling terminates when this confidences in the "
+                    "solution is reached.", 0.99)
+                )
 
   /// Destructor
   virtual ~triangulate_landmarks();
 
-  /// Copy Constructor
-  triangulate_landmarks(const triangulate_landmarks& other);
-
-  /// Get this alg's \link vital::config_block configuration block \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algo's properties via a config block
-  virtual void set_configuration(vital::config_block_sptr config);
   /// Check that the algorithm's currently configuration is valid
   virtual bool check_configuration(vital::config_block_sptr config) const;
 
@@ -77,10 +94,13 @@ public:
               vital::track_map_t tracks,
               vital::landmark_map_sptr& landmarks) const;
 
+protected:
+  void initialize() override;
+
 private:
   /// private implementation class
   class priv;
-  const std::unique_ptr<priv> d_;
+  KWIVER_UNIQUE_PTR(priv,d_);
 };
 
 typedef std::shared_ptr<triangulate_landmarks> triangulate_landmarks_sptr;

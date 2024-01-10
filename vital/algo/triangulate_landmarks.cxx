@@ -8,7 +8,6 @@
 ///        kwiver::vital::algo::triangulate_landmarks triangulate_landmarks
 ///        \endlink
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/triangulate_landmarks.h>
 
 namespace kwiver {
@@ -45,7 +44,3 @@ triangulate_landmarks
 } // namespace vital
 
 } // namespace kwiver
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::triangulate_landmarks );
-/// \endcond

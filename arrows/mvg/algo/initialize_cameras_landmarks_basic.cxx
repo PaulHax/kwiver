@@ -19,6 +19,7 @@
 #include <vital/algo/triangulate_landmarks.h>
 #include <vital/algo/bundle_adjust.h>
 #include <vital/algo/optimize_cameras.h>
+#include <vital/types/vector.h>
 
 #include <arrows/mvg/algo/triangulate_landmarks.h>
 #include <arrows/mvg/epipolar_geometry.h>
@@ -92,25 +93,11 @@ class initialize_cameras_landmarks_basic::priv
 {
 public:
   // Constructor
-  priv()
-  : verbose(false),
-    continue_processing(true),
-    init_from_last(false),
-    retriangulate_all(false),
-    reverse_ba_error_ratio(2.0),
-    next_frame_max_distance(0),
-    global_ba_rate(1.5),
-    interim_reproj_thresh(5.0),
-    final_reproj_thresh(2.0),
-    zoom_scale_thresh(0.1),
-    base_camera(),
-    e_estimator(),
-    camera_optimizer(),
-    // use the MVG triangulation as the default, users can change it
-    lm_triangulator(new mvg::triangulate_landmarks()),
-    bundle_adjuster()
-  {
+  priv(initialize_cameras_landmarks_basic& parent)
+    :parent(parent)
+  { 
   }
+  initialize_cameras_landmarks_basic& parent;
 
   // Destructor
   ~priv()
@@ -140,21 +127,26 @@ public:
                              landmark_map_sptr lms,
                              feature_track_set_changes_sptr track_changes);
 
-  bool verbose;
+  // Configuration values
+  bool c_verbose() const { return parent.c_verbose; };
+  bool c_init_from_last() const { return parent.c_init_from_last; };
+  bool c_retriangulate_all() const { return parent.c_retriangulate_all; };
+  double c_reverse_ba_error_ratio() const { return parent.c_reverse_ba_error_ratio; };
+  unsigned int c_next_frame_max_distance() const { return parent.c_next_frame_max_distance; };
+  double c_global_ba_rate() const { return parent.c_global_ba_rate; };
+  double c_interim_reproj_thresh() const { return parent.c_interim_reproj_thresh; };
+  double c_final_reproj_thresh() const { return parent.c_final_reproj_thresh; };
+  double c_zoom_scale_thresh() const { return parent.c_zoom_scale_thresh; };
+
+  // processing classes
+  vital::algo::estimate_essential_matrix_sptr d_e_estimator() const { return parent.c_e_estimator; };
+  vital::algo::optimize_cameras_sptr d_camera_optimizer() const { return parent.c_camera_optimizer; };
+  vital::algo::triangulate_landmarks_sptr d_lm_triangulator() const { return parent.c_lm_triangulator; };
+  vital::algo::bundle_adjust_sptr d_bundle_adjuster() const { return parent.c_bundle_adjuster; };
+  vital::camera_intrinsics_sptr d_base_camera() const { return parent.c_base_camera; };
+
   bool continue_processing;
-  bool init_from_last;
-  bool retriangulate_all;
-  double reverse_ba_error_ratio;
-  unsigned int next_frame_max_distance;
-  double global_ba_rate;
-  double interim_reproj_thresh;
-  double final_reproj_thresh;
-  double zoom_scale_thresh;
-  vital::simple_camera_perspective base_camera;
-  vital::algo::estimate_essential_matrix_sptr e_estimator;
-  vital::algo::optimize_cameras_sptr camera_optimizer;
-  vital::algo::triangulate_landmarks_sptr lm_triangulator;
-  vital::algo::bundle_adjust_sptr bundle_adjuster;
+  vital::simple_camera_perspective m_base_camera;
   // Logger handle
   vital::logger_handle_t m_logger;
 };
@@ -169,7 +161,7 @@ initialize_cameras_landmarks_basic::priv
               const landmark_map::map_landmark_t& lms) const
 {
   typedef landmark_map::map_landmark_t lm_map_t;
-  // extract coresponding image points and landmarks
+  // extract corresponding image points and landmarks
   std::vector<vector_2d> pts_right, pts_left;
   std::vector<landmark_sptr> pts_lm;
   for(unsigned int i=0; i<trks.size(); ++i)
@@ -203,16 +195,16 @@ initialize_cameras_landmarks_basic::priv
   }
   auto prev_cam = std::dynamic_pointer_cast<camera_perspective>(ci->second);
   camera_intrinsics_sptr cal_right = prev_cam->intrinsics();
-  const camera_intrinsics_sptr cal_left = base_camera.get_intrinsics();
+  const camera_intrinsics_sptr cal_left = m_base_camera.get_intrinsics();
   std::vector<bool> inliers;
-  essential_matrix_sptr E_sptr = e_estimator->estimate(pts_right, pts_left,
+  essential_matrix_sptr E_sptr = d_e_estimator()->estimate(pts_right, pts_left,
                                                        cal_right, cal_left,
                                                        inliers, 2.0);
   const essential_matrix_d E(*E_sptr);
 
   unsigned num_inliers = static_cast<unsigned>(std::count(inliers.begin(),
                                                           inliers.end(), true));
-  if( this->verbose )
+  if( this->c_verbose() )
   {
     LOG_INFO(m_logger, "E matrix num inliers = " << num_inliers
                        << "/" << inliers.size());
@@ -257,7 +249,7 @@ initialize_cameras_landmarks_basic::priv
     std::nth_element(scales.begin(), scales.begin()+n, scales.end());
     median_scale = scales[n];
   }
-  if( this->verbose )
+  if( this->c_verbose() )
   {
     LOG_DEBUG(m_logger, "median scale = "<< median_scale);
     if( !scales.empty() )
@@ -291,7 +283,7 @@ initialize_cameras_landmarks_basic::priv
   for(const track_sptr& t : trks)
   {
     const track_id_t& tid = t->id();
-    if( !this->retriangulate_all &&
+    if( !this->c_retriangulate_all() &&
         new_lm_ids.find(tid) == new_lm_ids.end() )
     {
       continue;
@@ -311,12 +303,12 @@ initialize_cameras_landmarks_basic::priv
   landmark_map_sptr lm_map = std::make_shared<simple_landmark_map>(init_lms);
   camera_map_sptr cam_map = std::make_shared<simple_camera_map>(cams);
   auto tracks = std::make_shared<feature_track_set>(trks);
-  this->lm_triangulator->triangulate(cam_map, tracks, lm_map);
+  this->d_lm_triangulator()->triangulate(cam_map, tracks, lm_map);
 
   // detect and remove landmarks with large triangulation error
   std::set<track_id_t> to_remove = detect_bad_tracks(cams,
                                                      lm_map->landmarks(),
-                                                     trks, interim_reproj_thresh);
+                                                     trks, c_interim_reproj_thresh());
   for(const lm_map_t::value_type& p : lm_map->landmarks())
   {
     lms[p.first] = p.second;
@@ -324,7 +316,7 @@ initialize_cameras_landmarks_basic::priv
   LOG_INFO(m_logger, "removing "<<to_remove.size()
                      << "/" << lm_map->size()
                      << " landmarks with RMSE > "
-                     << interim_reproj_thresh);
+                     << c_interim_reproj_thresh());
   remove_landmarks(to_remove, lms);
 }
 
@@ -359,12 +351,14 @@ initialize_cameras_landmarks_basic::priv
 }
 
 // Constructor
-initialize_cameras_landmarks_basic
-::initialize_cameras_landmarks_basic()
-: d_(new priv)
+void initialize_cameras_landmarks_basic
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR(priv,d_);
   attach_logger( "arrows.mvg.initialize_cameras_landmarks_basic" );
   d_->m_logger = logger();
+  // use the MVG triangulation as the default, users can change it
+  c_lm_triangulator = std::make_shared<mvg::triangulate_landmarks>();
 }
 
 // Destructor
@@ -374,114 +368,14 @@ initialize_cameras_landmarks_basic
 }
 
 // ----------------------------------------------------------------------------
-// Get this algorithm's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-initialize_cameras_landmarks_basic
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config =
-      vital::algo::initialize_cameras_landmarks::get_configuration();
-
-  const camera_intrinsics_sptr K = d_->base_camera.get_intrinsics();
-
-  config->set_value("verbose", d_->verbose,
-                    "If true, write status messages to the terminal showing "
-                    "debugging information");
-
-  config->set_value("init_from_last", d_->init_from_last,
-                    "If true, and a camera optimizer is specified, initialize "
-                    "the camera using the closest exiting camera and optimize");
-
-  config->set_value("retriangulate_all", d_->retriangulate_all,
-                    "If true, re-triangulate all landmarks observed by a newly "
-                    "initialized camera.  Otherwise, only triangulate or "
-                    "re-triangulate landmarks that are marked for initialization.");
-  config->set_value("reverse_ba_error_ratio", d_->reverse_ba_error_ratio,
-                    "After final bundle adjustment, if the Necker reversal of "
-                    "the solution increases the RMSE by less than this factor, "
-                    "then run a bundle adjustment on the reversed data and "
-                    "choose the final solution with the lowest error.  Set to "
-                    "zero to disable.");
-
-  config->set_value("next_frame_max_distance", d_->next_frame_max_distance,
-                    "Limit the selection of the next frame to initialize to "
-                    "within this many frames of an already initialized frame. "
-                    "If no valid frames are found, double the search range "
-                    "until a valid frame is found. "
-                    "A value of zero disables this limit");
-  config->set_value("global_ba_rate", d_->global_ba_rate,
-                    "Run a global bundle adjustment every time the number of "
-                    "cameras in the system grows by this multiple.");
-
-  config->set_value("interim_reproj_thresh", d_->interim_reproj_thresh,
-                    "Threshold for rejecting landmarks based on reprojection "
-                    "error (in pixels) during intermediate processing steps.");
-
-  config->set_value("final_reproj_thresh", d_->final_reproj_thresh,
-                    "Relative threshold for rejecting landmarks based on "
-                    "reprojection error relative to the median error after "
-                    "the final bundle adjustment.  For example, a value of 2 "
-                    "mean twice the median error");
-
-  config->set_value("zoom_scale_thresh", d_->zoom_scale_thresh,
-                    "Threshold on image scale change used to detect a camera "
-                    "zoom. If the resolution on target changes by more than "
-                    "this fraction create a new camera intrinsics model.");
-
-  config->set_value("base_camera:focal_length", K->focal_length(),
-                    "focal length of the base camera model");
-
-  config->set_value("base_camera:principal_point", K->principal_point().transpose(),
-                    "The principal point of the base camera model \"x y\".\n"
-                    "It is usually safe to assume this is the center of the "
-                    "image.");
-
-  config->set_value("base_camera:aspect_ratio", K->aspect_ratio(),
-                    "the pixel aspect ratio of the base camera model");
-
-  config->set_value("base_camera:skew", K->skew(),
-                    "The skew factor of the base camera model.\n"
-                    "This is almost always zero in any real camera.");
-
-  // nested algorithm configurations
-  vital::algo::estimate_essential_matrix
-      ::get_nested_algo_configuration("essential_mat_estimator",
-                                      config, d_->e_estimator);
-  vital::algo::optimize_cameras
-      ::get_nested_algo_configuration("camera_optimizer",
-                                      config, d_->camera_optimizer);
-  vital::algo::triangulate_landmarks
-      ::get_nested_algo_configuration("lm_triangulator",
-                                      config, d_->lm_triangulator);
-  vital::algo::bundle_adjust
-      ::get_nested_algo_configuration("bundle_adjuster",
-                                      config, d_->bundle_adjuster);
-  return config;
-}
-
-// ----------------------------------------------------------------------------
 // Set this algorithm's properties via a config block
 void
 initialize_cameras_landmarks_basic
-::set_configuration(vital::config_block_sptr config)
+::set_configuration_internal(vital::config_block_sptr config)
 {
-  const camera_intrinsics_sptr K = d_->base_camera.get_intrinsics();
+  const camera_intrinsics_sptr K = d_->m_base_camera.get_intrinsics();
 
-  // Set nested algorithm configurations
-  vital::algo::estimate_essential_matrix
-      ::set_nested_algo_configuration("essential_mat_estimator",
-                                      config, d_->e_estimator);
-  vital::algo::optimize_cameras
-      ::set_nested_algo_configuration("camera_optimizer",
-                                      config, d_->camera_optimizer);
-  vital::algo::triangulate_landmarks
-      ::set_nested_algo_configuration("lm_triangulator",
-                                      config, d_->lm_triangulator);
-  vital::algo::bundle_adjust
-      ::set_nested_algo_configuration("bundle_adjuster",
-                                      config, d_->bundle_adjuster);
-  if(d_->bundle_adjuster && this->m_callback)
+  if(c_bundle_adjuster && this->m_callback)
   {
     using std::placeholders::_1;
     using std::placeholders::_2;
@@ -489,40 +383,8 @@ initialize_cameras_landmarks_basic
     callback_t pcb =
       std::bind(&initialize_cameras_landmarks_basic::priv::pass_through_callback,
                 d_.get(), this->m_callback, _1, _2, _3);
-    d_->bundle_adjuster->set_callback(pcb);
+    c_bundle_adjuster->set_callback(pcb);
   }
-
-  d_->verbose = config->get_value<bool>("verbose",
-                                        d_->verbose);
-
-  d_->init_from_last = config->get_value<bool>("init_from_last",
-                                               d_->init_from_last);
-
-  d_->retriangulate_all = config->get_value<bool>("retriangulate_all",
-                                                  d_->retriangulate_all);
-
-  d_->reverse_ba_error_ratio =
-      config->get_value<double>("reverse_ba_error_ratio",
-                                d_->reverse_ba_error_ratio);
-
-  d_->next_frame_max_distance =
-      config->get_value<unsigned int>("next_frame_max_distance",
-                                      d_->next_frame_max_distance);
-
-  d_->global_ba_rate = config->get_value<double>("global_ba_rate",
-                                                 d_->global_ba_rate);
-
-  d_->interim_reproj_thresh =
-      config->get_value<double>("interim_reproj_thresh",
-                                d_->interim_reproj_thresh);
-
-  d_->final_reproj_thresh =
-      config->get_value<double>("final_reproj_thresh",
-                                d_->final_reproj_thresh);
-
-  d_->zoom_scale_thresh =
-      config->get_value<double>("zoom_scale_thresh",
-                                d_->zoom_scale_thresh);
 
   vital::config_block_sptr bc = config->subblock("base_camera");
   simple_camera_intrinsics K2(bc->get_value<double>("focal_length",
@@ -533,7 +395,7 @@ initialize_cameras_landmarks_basic
                                                     K->aspect_ratio()),
                               bc->get_value<double>("skew",
                                                     K->skew()));
-  d_->base_camera.set_intrinsics(K2.clone());
+  d_->m_base_camera.set_intrinsics(K2.clone());
 }
 
 // ----------------------------------------------------------------------------
@@ -543,22 +405,18 @@ initialize_cameras_landmarks_basic
 ::check_configuration(vital::config_block_sptr config) const
 {
   if (config->get_value<std::string>("camera_optimizer", "") != ""
-      && !vital::algo::optimize_cameras
-              ::check_nested_algo_configuration("camera_optimizer", config))
+      && !vital::check_nested_algo_configuration<vital::algo::optimize_cameras>("camera_optimizer", config))
   {
     return false;
   }
   if (config->get_value<std::string>("bundle_adjuster", "") != ""
-      && !vital::algo::bundle_adjust
-              ::check_nested_algo_configuration("bundle_adjuster", config))
+      && !vital::check_nested_algo_configuration<vital::algo::bundle_adjust>("bundle_adjuster", config))
   {
     return false;
   }
-  return vital::algo::estimate_essential_matrix
-             ::check_nested_algo_configuration("essential_mat_estimator",
+  return vital::check_nested_algo_configuration<vital::algo::estimate_essential_matrix>("essential_mat_estimator",
                                                config)
-      && vital::algo::triangulate_landmarks
-             ::check_nested_algo_configuration("lm_triangulator", config);
+      && vital::check_nested_algo_configuration<vital::algo::triangulate_landmarks>("lm_triangulator", config);
 }
 
 namespace {
@@ -861,11 +719,11 @@ initialize_cameras_landmarks_basic
   {
     VITAL_THROW( invalid_value,"Some required input data is NULL.");
   }
-  if( !d_->e_estimator )
+  if( !c_e_estimator )
   {
     VITAL_THROW( invalid_value,"Essential matrix estimator not initialized.");
   }
-  if( !d_->lm_triangulator )
+  if( !c_lm_triangulator )
   {
     VITAL_THROW( invalid_value,"Landmark triangulator not initialized.");
   }
@@ -904,7 +762,7 @@ initialize_cameras_landmarks_basic
 
     landmark_map_sptr lm_map(new simple_landmark_map(init_lms));
     camera_map_sptr cam_map(new simple_camera_map(cams));
-    d_->lm_triangulator->triangulate(cam_map, tracks, lm_map);
+    c_lm_triangulator->triangulate(cam_map, tracks, lm_map);
 
     for(const map_landmark_t::value_type& p : lm_map->landmarks())
     {
@@ -924,16 +782,16 @@ initialize_cameras_landmarks_basic
     // first frame, initialize to base camera
     frame_id_t f = mm_frames[init_i];
     new_frame_ids.erase(f);
-    cams[f] = d_->base_camera.clone();
+    cams[f] = d_->m_base_camera.clone();
   }
 
   // keep track of the number of cameras needed for the next bundle adjustment
   size_t num_cams_for_next_ba = 2;
-  if( d_->global_ba_rate > 1.0 )
+  if( c_global_ba_rate > 1.0 )
   {
     while( num_cams_for_next_ba < cams.size() )
     {
-      num_cams_for_next_ba = static_cast<size_t>(std::ceil(d_->global_ba_rate * num_cams_for_next_ba));
+      num_cams_for_next_ba = static_cast<size_t>(std::ceil(c_global_ba_rate * num_cams_for_next_ba));
     }
   }
 
@@ -949,7 +807,7 @@ initialize_cameras_landmarks_basic
     }
     else
     {
-      unsigned int search_range = d_->next_frame_max_distance;
+      unsigned int search_range = c_next_frame_max_distance;
       if( search_range < 1 )
       {
         f = next_best_frame(tracks, lms, new_frame_ids, d_->m_logger);
@@ -970,7 +828,7 @@ initialize_cameras_landmarks_basic
 
     // get the closest frame number with an existing camera
     frame_id_t other_frame = find_closest_camera(f, cams);
-    if(d_->verbose)
+    if(c_verbose)
     {
       LOG_DEBUG(logger(), "frame "<< f <<" uses reference "<< other_frame);
     }
@@ -1002,14 +860,14 @@ initialize_cameras_landmarks_basic
                                << gsd_next << " ratio "
                               << scale_change);
       // small scale changes are less likely to be zoom, so share intrinsics
-      if (scale_change < 1.0 + d_->zoom_scale_thresh &&
-          1.0/scale_change < 1.0 + d_->zoom_scale_thresh)
+      if (scale_change < 1.0 + c_zoom_scale_thresh &&
+          1.0/scale_change < 1.0 + c_zoom_scale_thresh)
       {
         scale_change = 1.0;
       }
     }
 
-    if( d_->init_from_last && d_->camera_optimizer && flms.size() > 3)
+    if( c_init_from_last && c_camera_optimizer && flms.size() > 3)
     {
       auto cam_ptr = std::dynamic_pointer_cast<camera_perspective>(cams[other_frame]);
       cams[f] = cam_ptr->clone();
@@ -1035,21 +893,21 @@ initialize_cameras_landmarks_basic
     }
 
     // optionally optimize the new camera
-    if( d_->camera_optimizer && flms.size() > 3)
+    if( c_camera_optimizer && flms.size() > 3)
     {
       camera_map::map_camera_t opt_cam_map;
       opt_cam_map[f] = cams[f];
       camera_map_sptr opt_cams = std::make_shared<simple_camera_map>(opt_cam_map);
       landmark_map_sptr landmarks_map = std::make_shared<simple_landmark_map>(flms);
       auto f_tracks = std::make_shared<feature_track_set>(trks);
-      d_->camera_optimizer->optimize(opt_cams, f_tracks, landmarks_map, constraints);
+      c_camera_optimizer->optimize(opt_cams, f_tracks, landmarks_map, constraints);
       cams[f] = opt_cams->cameras()[f];
     }
 
     // triangulate (or re-triangulate) points seen by the new camera
     d_->retriangulate(lms, cams, trks, new_lm_ids);
 
-    if(d_->verbose)
+    if(c_verbose)
     {
       camera_map::map_camera_t new_cam_map;
       new_cam_map[f] = cams[f];
@@ -1066,18 +924,18 @@ initialize_cameras_landmarks_basic
       }
     }
 
-    if( d_->bundle_adjuster && cams.size() >= num_cams_for_next_ba )
+    if( c_bundle_adjuster && cams.size() >= num_cams_for_next_ba )
     {
       LOG_INFO(logger(), "Running Global Bundle Adjustment on "
                               << cams.size() << " cameras and "
                               << lms.size() << " landmarks");
-      num_cams_for_next_ba = static_cast<size_t>(std::ceil(d_->global_ba_rate * num_cams_for_next_ba));
+      num_cams_for_next_ba = static_cast<size_t>(std::ceil(c_global_ba_rate * num_cams_for_next_ba));
       camera_map_sptr ba_cams(new simple_camera_map(cams));
       landmark_map_sptr ba_lms(new simple_landmark_map(lms));
       double init_rmse = reprojection_rmse(cams, lms, trks);
       LOG_INFO(logger(), "initial reprojection RMSE: " << init_rmse);
 
-      d_->bundle_adjuster->optimize(ba_cams, ba_lms, tracks, constraints);
+      c_bundle_adjuster->optimize(ba_cams, ba_lms, tracks, constraints);
       cams = ba_cams->cameras();
       lms = ba_lms->landmarks();
       if (!d_->continue_processing)
@@ -1086,11 +944,11 @@ initialize_cameras_landmarks_basic
       }
       // detect tracks/landmarks with large error and remove them
       std::set<track_id_t> to_remove = detect_bad_tracks(cams, lms, trks,
-                                                         d_->interim_reproj_thresh);
+                                                         c_interim_reproj_thresh);
       LOG_INFO(logger(), "removing "<<to_remove.size()
                          << "/" << lms.size()
                          << " landmarks with RMSE > "
-                         << d_->interim_reproj_thresh);
+                         << c_interim_reproj_thresh);
       remove_landmarks(to_remove, lms);
       std::vector<track_sptr> all_trks = tracks->tracks();
       remove_tracks(to_remove, all_trks);
@@ -1102,23 +960,23 @@ initialize_cameras_landmarks_basic
       LOG_DEBUG(logger(), "updated focal length "
                               << cam_ptr->intrinsics()->focal_length());
 
-      if( !tried_necker_reverse && d_->reverse_ba_error_ratio > 0 )
+      if( !tried_necker_reverse && c_reverse_ba_error_ratio > 0 )
       {
         // reverse cameras and optimize again
         camera_map_sptr ba_cams2(new simple_camera_map(cams));
         landmark_map_sptr ba_lms2(new simple_landmark_map(lms));
         necker_reverse(ba_cams2, ba_lms2);
-        d_->lm_triangulator->triangulate(ba_cams2, tracks, ba_lms2);
+        c_lm_triangulator->triangulate(ba_cams2, tracks, ba_lms2);
         init_rmse = reprojection_rmse(ba_cams2->cameras(), ba_lms2->landmarks(), trks);
         LOG_DEBUG(logger(), "Necker reversed initial reprojection RMSE: " << init_rmse);
-        if( init_rmse < final_rmse * d_->reverse_ba_error_ratio )
+        if( init_rmse < final_rmse * c_reverse_ba_error_ratio )
         {
           // Only try a Necker reversal once when we have enough data to
           // support it. We will either decide to reverse or not.
           // Either way we should not have to try this again.
           tried_necker_reverse = true;
           LOG_INFO(logger(), "Running Necker reversed bundle adjustment for comparison");
-          d_->bundle_adjuster->optimize(ba_cams2, ba_lms2, tracks, constraints);
+          c_bundle_adjuster->optimize(ba_cams2, ba_lms2, tracks, constraints);
           map_cam_t cams2 = ba_cams2->cameras();
           map_landmark_t lms2 = ba_lms2->landmarks();
           double final_rmse2 = reprojection_rmse(cams2, lms2, trks);
@@ -1134,7 +992,7 @@ initialize_cameras_landmarks_basic
       }
     }
 
-    if( d_->verbose )
+    if( c_verbose )
     {
       camera_map_sptr ba_cams(new simple_camera_map(cams));
       landmark_map_sptr ba_lms(new simple_landmark_map(lms));
@@ -1152,7 +1010,7 @@ initialize_cameras_landmarks_basic
   }
 
   // Run a final bundle adjustment
-  if( d_->bundle_adjuster && d_->continue_processing )
+  if( c_bundle_adjuster && d_->continue_processing )
   {
     LOG_INFO(logger(), "Running final bundle adjustment");
     camera_map_sptr ba_cams(new simple_camera_map(cams));
@@ -1160,7 +1018,7 @@ initialize_cameras_landmarks_basic
     double init_rmse = reprojection_rmse(cams, lms, trks);
     LOG_DEBUG(logger(), "initial reprojection RMSE: " << init_rmse);
 
-    d_->bundle_adjuster->optimize(ba_cams, ba_lms, tracks, constraints);
+    c_bundle_adjuster->optimize(ba_cams, ba_lms, tracks, constraints);
     map_cam_t cams1 = ba_cams->cameras();
     map_landmark_t lms1 = ba_lms->landmarks();
     double final_rmse1 = reprojection_rmse(cams1, lms1, trks);
@@ -1172,7 +1030,7 @@ initialize_cameras_landmarks_basic
 
     // if using bundle adjustment, remove landmarks with large error
     // after optimization
-    const double outlier_thresh = final_med_err * d_->final_reproj_thresh;
+    const double outlier_thresh = final_med_err * c_final_reproj_thresh;
     std::set<track_id_t> to_remove = detect_bad_tracks(cams, lms, trks,
                                                        outlier_thresh);
     LOG_INFO(logger(), "removing " << to_remove.size()
@@ -1193,7 +1051,7 @@ initialize_cameras_landmarks_basic
 {
   vital::algo::initialize_cameras_landmarks::set_callback(cb);
   // pass callback on to bundle adjuster if available
-  if(d_->bundle_adjuster)
+  if(c_bundle_adjuster)
   {
     using std::placeholders::_1;
     using std::placeholders::_2;
@@ -1201,7 +1059,7 @@ initialize_cameras_landmarks_basic
     callback_t pcb =
       std::bind(&initialize_cameras_landmarks_basic::priv::pass_through_callback,
                 d_.get(), cb, _1, _2, _3);
-    d_->bundle_adjuster->set_callback(pcb);
+    c_bundle_adjuster->set_callback(pcb);
   }
 }
 

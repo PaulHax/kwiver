@@ -7,7 +7,7 @@
 
 #include <arrows/mvg/kwiver_algo_mvg_plugin_export.h>
 
-#include <vital/algo/algorithm_factory.h>
+#include <vital/plugin_management/plugin_factory.h>
 
 #include <arrows/mvg/algo/hierarchical_bundle_adjust.h>
 #include <arrows/mvg/algo/integrate_depth_maps.h>
@@ -41,22 +41,22 @@ namespace mvg {
 extern "C"
 KWIVER_ALGO_MVG_PLUGIN_EXPORT
 void
-register_factories( kwiver::vital::plugin_loader& vpm )
+register_factories( kwiver::vital::plugin_loader& vpl )
 {
-  kwiver::vital::algorithm_registrar reg( vpm, "arrows.mvg" );
+  using kvpf = ::kwiver::vital::plugin_factory;
 
-  if (reg.is_module_loaded())
-  {
-    return;
-  }
+  auto fact = vpl.add_factory< vital::algo::bundle_adjust , hierarchical_bundle_adjust >( "mvg" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.mvg" );
 
-  reg.register_algorithm< hierarchical_bundle_adjust >();
-  reg.register_algorithm< integrate_depth_maps >();
-  reg.register_algorithm< initialize_cameras_landmarks >();
-  reg.register_algorithm< initialize_cameras_landmarks_basic >();
-  reg.register_algorithm< triangulate_landmarks >();
-
-  reg.mark_module_as_loaded();
+  fact = vpl.add_factory< vital::algo::integrate_depth_maps , integrate_depth_maps >( "mvg" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.mvg" );
+  fact = vpl.add_factory< vital::algo::initialize_cameras_landmarks , initialize_cameras_landmarks >( "mvg" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.mvg" );
+  // plugin name must be different since it's using the same interface as initialize_cameras_landmarks
+  fact = vpl.add_factory< vital::algo::initialize_cameras_landmarks , initialize_cameras_landmarks_basic >( "mvg-basic" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.mvg" );
+  fact = vpl.add_factory< vital::algo::triangulate_landmarks , triangulate_landmarks >( "mvg" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.mvg" );
 }
 
 } // end namespace mvg

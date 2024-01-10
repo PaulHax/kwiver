@@ -28,29 +28,11 @@ class triangulate_landmarks::priv
 {
 public:
   // Constructor
-  priv()
-    : m_homogeneous(false),
-      m_ransac(true),
-      m_min_angle_deg(1.0f),
-      m_inlier_threshold_pixels(2.0),
-      m_inlier_threshold_pixels_sq(m_inlier_threshold_pixels*m_inlier_threshold_pixels),
-      m_frac_track_inliers_to_keep_triangulated_point(0.5f),
-      m_max_ransac_samples(20),
-      m_conf_thresh(0.99)
+  priv(triangulate_landmarks& parent)
+    :parent(parent)
   {
   }
-
-  priv(const priv& other)
-    : m_homogeneous(other.m_homogeneous),
-      m_ransac(other.m_ransac),
-      m_min_angle_deg(other.m_min_angle_deg),
-      m_inlier_threshold_pixels(other.m_inlier_threshold_pixels),
-      m_inlier_threshold_pixels_sq(other.m_inlier_threshold_pixels_sq),
-      m_frac_track_inliers_to_keep_triangulated_point(
-        other.m_frac_track_inliers_to_keep_triangulated_point),
-      m_max_ransac_samples(other.m_max_ransac_samples)
-  {
-  }
+  triangulate_landmarks& parent;
 
   vital::vector_3d
   ransac_triangulation(const std::vector<vital::simple_camera_perspective> &lm_cams,
@@ -63,110 +45,26 @@ public:
               const std::vector<vital::vector_2d> &lm_image_pts,
               vital::vector_3d &pt3d) const;
 
-  // use the homogeneous method for triangulation
-  bool m_homogeneous;
-  bool m_ransac;
-  float m_min_angle_deg;
-  float m_inlier_threshold_pixels;
-  float m_inlier_threshold_pixels_sq;
-  float m_frac_track_inliers_to_keep_triangulated_point;
-  int m_max_ransac_samples;
-  double m_conf_thresh;
+  // Configuration values
+  bool c_homogeneous() const { return parent.c_homogeneous; };
+  bool c_ransac() const { return parent.c_ransac; };
+  float c_min_angle_deg() const { return parent.c_min_angle_deg; };
+  float c_inlier_threshold_pixels() const { return parent.c_inlier_threshold_pixels; };
+  float c_frac_track_inliers_to_keep_triangulated_point() const { return parent.c_frac_track_inliers_to_keep_triangulated_point; };
+  int c_max_ransac_samples() const { return parent.c_max_ransac_samples; };
+  double c_conf_thresh() const { return parent.c_conf_thresh; };
 };
 
-// Constructor
-triangulate_landmarks
-::triangulate_landmarks()
-: d_(new priv)
+void triangulate_landmarks::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR(priv,d_);
   attach_logger( "arrows.mvg.triangulate_landmarks" );
-}
-
-// Copy Constructor
-triangulate_landmarks
-::triangulate_landmarks(const triangulate_landmarks& other)
-: d_(new priv(*other.d_))
-{
 }
 
 // Destructor
 triangulate_landmarks
 ::~triangulate_landmarks()
 {
-}
-
-// Get this alg's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-triangulate_landmarks
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config
-    = vital::algo::triangulate_landmarks::get_configuration();
-
-  // Bad frame detection parameters
-  config->set_value("homogeneous", d_->m_homogeneous,
-                    "Use the homogeneous method for triangulating points. "
-                    "The homogeneous method can triangulate points at or near "
-                    "infinity and discard them.");
-
-  config->set_value("ransac", d_->m_ransac,"Use RANSAC in triangulating the points");
-
-  config->set_value("min_angle_deg", d_->m_min_angle_deg,
-                    "minimum angle required to triangulate a point.");
-
-  config->set_value("inlier_threshold_pixels", d_->m_inlier_threshold_pixels,
-                   "reprojection error threshold in pixels.");
-
-  config->set_value("frac_track_inliers_to_keep_triangulated_point",
-                    d_->m_frac_track_inliers_to_keep_triangulated_point,
-                    "fraction of measurements in track that must be inliers to "
-                    "keep the triangulated point");
-
-  config->set_value("max_ransac_samples",
-                    d_->m_max_ransac_samples,
-                    "maximum number of samples to take in RANSAC triangulation");
-
-  config->set_value("ransac_confidence_threshold",
-                    d_->m_conf_thresh,
-                    "RANSAC sampling terminates when this confidences in the "
-                    "solution is reached.");
-
-  return config;
-}
-
-// Set this algorithm's properties via a config block
-void
-triangulate_landmarks
-::set_configuration(vital::config_block_sptr in_config)
-{
-  // Starting with our generated config_block to ensure that assumed values are present
-  // An alternative is to check for key presence before performing a get_value() call.
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config(in_config);
-
-  // Settings for bad frame detection
-  d_->m_homogeneous = config->get_value<bool>("homogeneous", d_->m_homogeneous);
-
-  d_->m_ransac = config->get_value<bool>("ransac", d_->m_ransac);
-
-  d_->m_min_angle_deg = config->get_value<float>("min_angle_deg", d_->m_min_angle_deg);
-
-  d_->m_inlier_threshold_pixels =
-    config->get_value<float>("inlier_threshold_pixels",
-                             d_->m_inlier_threshold_pixels);
-
-  d_->m_inlier_threshold_pixels_sq = d_->m_inlier_threshold_pixels * d_->m_inlier_threshold_pixels;
-
-  d_->m_frac_track_inliers_to_keep_triangulated_point =
-    config->get_value<float>("frac_track_inliers_to_keep_triangulated_point",
-                             d_->m_frac_track_inliers_to_keep_triangulated_point);
-
-  d_->m_max_ransac_samples =
-    config->get_value<int>("max_ransac_samples", d_->m_max_ransac_samples);
-
-  d_->m_conf_thresh =
-    config->get_value<double>("ransac_confidence_threshold", d_->m_conf_thresh);
 }
 
 // Check that the algorithm's currently configuration is valid
@@ -183,7 +81,7 @@ triangulate_landmarks::priv
               const std::vector<vital::vector_2d> &lm_image_pts,
               vital::vector_3d &pt3d) const
 {
-  if (m_homogeneous)
+  if (c_homogeneous())
   {
     vital::vector_4d pt4d = triangulate_homog(lm_cams, lm_image_pts);
     if (std::abs(pt4d[3]) < 1e-6)
@@ -235,7 +133,7 @@ triangulate_landmarks::priv
   vital::feature_d f;
 
   for (int num_samples = 1;
-       num_samples <= m_max_ransac_samples && conf < m_conf_thresh;
+       num_samples <= c_max_ransac_samples() && conf < c_conf_thresh();
        ++num_samples)
   {
     //pick two random points
@@ -276,7 +174,7 @@ triangulate_landmarks::priv
       }
       f.set_loc(lm_image_pts[idx]);
       double reproj_err_sq = reprojection_error_sqr(lm_cams[idx], lm, f);
-      if (reproj_err_sq < m_inlier_threshold_pixels_sq)
+      if (reproj_err_sq < c_inlier_threshold_pixels() * c_inlier_threshold_pixels())
       {
         ++inlier_count;
       }
@@ -340,7 +238,7 @@ triangulate_landmarks
   std::set<vital::landmark_id_t> failed_outlier, failed_angle;
 
   //minimum triangulation angle
-  double thresh_triang_cos_ang = cos(vital::deg_to_rad * d_->m_min_angle_deg);
+  double thresh_triang_cos_ang = cos(vital::deg_to_rad * c_min_angle_deg);
 
   std::vector<vital::simple_camera_perspective> lm_cams;
   std::vector<vital::simple_camera_rpc> lm_cams_rpc;
@@ -406,7 +304,7 @@ triangulate_landmarks
     {
       int inlier_count = 0;
       vital::vector_3d pt3d;
-      if (d_->m_ransac)
+      if (c_ransac)
       {
         vital::vector_3d lm_cur_pt3d = p.second->loc();
         auto triang_guess = &lm_cur_pt3d;
@@ -416,7 +314,7 @@ triangulate_landmarks
         }
 
         pt3d = d_->ransac_triangulation(lm_cams, lm_image_pts, inlier_count, triang_guess);
-        if (inlier_count < lm_image_pts.size() * d_->m_frac_track_inliers_to_keep_triangulated_point)
+        if (inlier_count < lm_image_pts.size() * c_frac_track_inliers_to_keep_triangulated_point)
         {
           failed_landmarks.insert(p.first);
           failed_outlier.insert(p.first);
@@ -458,7 +356,7 @@ triangulate_landmarks
         vital::landmark_d lm;
         lm.set_loc(pt3d);
         double reproj_err_sq = reprojection_error_sqr(lm_cams[idx], lm, *lm_features[idx]->feature);
-        if (reproj_err_sq < d_->m_inlier_threshold_pixels_sq)
+        if (reproj_err_sq < c_inlier_threshold_pixels * c_inlier_threshold_pixels)
         {
           lm_features[idx]->inlier = true;
         }

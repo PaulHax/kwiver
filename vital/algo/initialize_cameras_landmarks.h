@@ -28,16 +28,11 @@ namespace algo {
 
 /// An abstract base class for initialization of cameras and landmarks
 class VITAL_ALGO_EXPORT initialize_cameras_landmarks
-  : public kwiver::vital::algorithm_def< initialize_cameras_landmarks >
+  : public kwiver::vital::algorithm
 {
 public:
-
-  /// Return the name of this algorithm
-  static std::string
-  static_type_name()
-  {
-    return "initialize_cameras_landmarks";
-  }
+  initialize_cameras_landmarks();
+  PLUGGABLE_INTERFACE( initialize_cameras_landmarks );
 
   /// Initialize the camera and landmark parameters given a set of feature
   /// tracks
@@ -77,7 +72,6 @@ public:
   virtual void set_callback( callback_t cb );
 
 protected:
-  initialize_cameras_landmarks();
 
   /// The callback function
   callback_t m_callback;

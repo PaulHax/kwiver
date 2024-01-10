@@ -35,12 +35,11 @@ namespace algo {
 ///  signed distance function (TSDF) along a ray for each pixel of each
 ///  depth map.  However, this API is not restricted to TSDF.
 class VITAL_ALGO_EXPORT integrate_depth_maps
-  : public kwiver::vital::algorithm_def< integrate_depth_maps >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "integrate_depth_maps"; }
-
+  integrate_depth_maps();
+  PLUGGABLE_INTERFACE(integrate_depth_maps);
   /// Integrate multiple depth maps into a common volume
   ///
   /// \param [in]     minpt_bound the min point of the bounding region
@@ -78,9 +77,6 @@ public:
              std::vector< kwiver::vital::camera_perspective_sptr > const& cameras,
              kwiver::vital::image_container_sptr& volume,
              kwiver::vital::vector_3d& spacing ) const = 0;
-
-protected:
-  integrate_depth_maps();
 };
 
 /// type definition for shared pointer to a bundle adjust algorithm

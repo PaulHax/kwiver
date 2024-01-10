@@ -85,7 +85,7 @@ video_input_filter
        config->has_value("stop_after_frame") )
   {
     if ( config->get_value<vital::frame_id_t>("stop_after_frame") > 0 &&
-         config->get_value<vital::frame_id_t>("stop_after_frame") > 0 &&
+         config->get_value<vital::frame_id_t>("start_at_frame") > 0 &&
          config->get_value<vital::frame_id_t>("stop_after_frame") <
          config->get_value<vital::frame_id_t>("start_at_frame") )
     {

@@ -34,13 +34,8 @@ class VITAL_ALGO_EXPORT estimate_similarity_transform
   : public kwiver::vital::algorithm
 {
 public:
-
-  /// Name of this algo definition
-  static std::string
-  static_type_name()
-  {
-    return "estimate_similarity_transform";
-  }
+  estimate_similarity_transform();
+  PLUGGABLE_INTERFACE( estimate_similarity_transform );
 
   /// Estimate the similarity transform between two corresponding point sets
   ///
@@ -119,9 +114,6 @@ public:
   virtual kwiver::vital::similarity_d
   estimate_transform( kwiver::vital::landmark_map_sptr const from,
                       kwiver::vital::landmark_map_sptr const to ) const;
-
-protected:
-  estimate_similarity_transform();
 };
 
 /// Shared pointer for similarity transformation algorithms

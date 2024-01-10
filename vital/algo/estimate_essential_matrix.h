@@ -28,11 +28,11 @@ namespace algo {
 /// An abstract base class for estimating an essential matrix from matching 2D
 /// points
 class VITAL_ALGO_EXPORT estimate_essential_matrix
-  : public kwiver::vital::algorithm_def< estimate_essential_matrix >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "estimate_essential_matrix"; }
+  estimate_essential_matrix();
+  PLUGGABLE_INTERFACE( estimate_essential_matrix );
 
   /// Estimate an essential matrix from corresponding features
   ///
@@ -112,8 +112,6 @@ public:
             std::vector< bool >& inliers,
             double inlier_scale = 1.0 ) const = 0;
 
-protected:
-  estimate_essential_matrix();
 };
 
 /// Shared pointer type of base estimate_homography algorithm definition class

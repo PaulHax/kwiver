@@ -8,7 +8,6 @@
 ///        \link kwiver::vital::algo::initialize_cameras_landmarks
 ///        initialize_cameras_landmarks \endlink
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/initialize_cameras_landmarks.h>
 
 namespace kwiver {
@@ -36,7 +35,3 @@ initialize_cameras_landmarks
 } // namespace vital
 
 } // namespace kwiver
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::initialize_cameras_landmarks );
-/// \endcond

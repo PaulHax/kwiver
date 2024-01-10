@@ -22,7 +22,7 @@ TEST(triangulate_landmarks, create)
 
   plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE(nullptr, algo::triangulate_landmarks::create("mvg"));
+  EXPECT_NE( nullptr, kwiver::vital::create_algorithm<kwiver::vital::algo::triangulate_landmarks>("mvg") );
 }
 
 // ----------------------------------------------------------------------------
@@ -296,7 +296,7 @@ TEST(triangulate_landmarks, subset_tracks_ransac)
   kwiver::arrows::mvg::triangulate_landmarks tri_lm;
   kwiver::vital::config_block_sptr cfg = tri_lm.get_configuration();
   cfg->set_value("homogeneous", "false");
-  cfg->set_value("ransac", "ransac");
+  cfg->set_value("ransac", "true");
   tri_lm.set_configuration(cfg);
   kwiver::testing::test_subset_tracks(tri_lm);
 }

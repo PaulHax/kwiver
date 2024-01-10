@@ -85,30 +85,28 @@ int_interp(frame_id_t a, frame_id_t b, double p)
 class hierarchical_bundle_adjust::priv
 {
 public:
-  priv()
-    : initial_sub_sample(1)
-    , interpolation_rate(0)
-    , rmse_reporting_enabled(false)
-  {
-  }
+  priv(hierarchical_bundle_adjust& parent)
+    :parent(parent)
+  { }
 
-  ~priv() { }
+  hierarchical_bundle_adjust& parent;
+  // Configuration values
+  unsigned int c_initial_sub_sample() { return parent.c_initial_sub_sample; };
+  unsigned int c_interpolation_rate() { return parent.c_interpolation_rate; };
+  bool c_rmse_reporting_enabled() { return parent.c_rmse_reporting_enabled; };
 
-  unsigned int initial_sub_sample;
-  unsigned int interpolation_rate;
-  bool rmse_reporting_enabled;
-
-  vital::algo::bundle_adjust_sptr sba;
-  vital::algo::optimize_cameras_sptr camera_optimizer;
-  vital::algo::triangulate_landmarks_sptr lm_triangulator;
+  // processing classes
+  vital::algo::bundle_adjust_sptr d_sba_impl() { return parent.c_sba_impl; };
+  vital::algo::optimize_cameras_sptr d_camera_optimizer() { return parent.c_camera_optimizer; };
+  vital::algo::triangulate_landmarks_sptr d_lm_triangulator() { return parent.c_lm_triangulator; };
 };
 
 // ----------------------------------------------------------------------------
 // Constructor
-hierarchical_bundle_adjust
-::hierarchical_bundle_adjust()
-  : d_(new priv)
+void hierarchical_bundle_adjust
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR(priv, d_);
   attach_logger( "arrows.mvg.hierarchical_bundle_adjust" );
 }
 
@@ -116,62 +114,6 @@ hierarchical_bundle_adjust
 hierarchical_bundle_adjust
 ::~hierarchical_bundle_adjust() noexcept
 {
-}
-
-// ----------------------------------------------------------------------------
-// Get this algorithm's \link kwiver::vital::config_block configuration block \endlink
-  vital::config_block_sptr
-hierarchical_bundle_adjust
-::get_configuration() const
-{
-  vital::config_block_sptr config = vital::algo::bundle_adjust::get_configuration();
-
-  config->set_value("initial_sub_sample", d_->initial_sub_sample,
-                    "Sub-sample the given cameras by this factor. Gaps will "
-                    "then be filled in by iterations of interpolation.");
-
-  config->set_value("interpolation_rate", d_->interpolation_rate,
-                    "Number of cameras to fill in each iteration. When this "
-                    "is set to 0, we will interpolate all missing cameras "
-                    "at the first moment possible.");
-
-  config->set_value("enable_rmse_reporting", d_->rmse_reporting_enabled,
-                    "Enable the reporting of RMSE statistics at various "
-                    "stages of this algorithm. Constant calculating of RMSE "
-                    "may effect run time of the algorithm.");
-
-  vital::algo::bundle_adjust::get_nested_algo_configuration(
-      "sba_impl", config, d_->sba
-      );
-  vital::algo::optimize_cameras::get_nested_algo_configuration(
-      "camera_optimizer", config, d_->camera_optimizer
-      );
-  vital::algo::triangulate_landmarks::get_nested_algo_configuration(
-      "lm_triangulator", config, d_->lm_triangulator
-      );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-// Set this algorithm's properties via a config block
-void
-hierarchical_bundle_adjust
-::set_configuration(vital::config_block_sptr config)
-{
-  d_->initial_sub_sample = config->get_value<unsigned int>("initial_sub_sample", d_->initial_sub_sample);
-  d_->interpolation_rate = config->get_value<unsigned int>("interpolation_rate", d_->interpolation_rate);
-  d_->rmse_reporting_enabled = config->get_value<bool>("enable_rmse_reporting", d_->rmse_reporting_enabled);
-
-  vital::algo::bundle_adjust::set_nested_algo_configuration(
-      "sba_impl", config, d_->sba
-      );
-  vital::algo::optimize_cameras::set_nested_algo_configuration(
-      "camera_optimizer", config, d_->camera_optimizer
-      );
-  vital::algo::triangulate_landmarks::set_nested_algo_configuration(
-      "lm_triangulator", config, d_->lm_triangulator
-      );
 }
 
 // ----------------------------------------------------------------------------
@@ -201,7 +143,7 @@ hierarchical_bundle_adjust
                           << config->get_value<long>("interpolation_rate"));
   }
 
-  if (!vital::algo::bundle_adjust::check_nested_algo_configuration("sba_impl", config))
+  if (!vital::check_nested_algo_configuration<vital::algo::bundle_adjust>("sba_impl", config))
   {
     HSBA_CHECK_FAIL("sba_impl configuration invalid.");
   }
@@ -210,7 +152,7 @@ hierarchical_bundle_adjust
   {
     LOG_DEBUG(logger(), "HSBA per-iteration camera optimization disabled");
   }
-  else if (!vital::algo::optimize_cameras::check_nested_algo_configuration("camera_optimizer", config))
+  else if (!vital::check_nested_algo_configuration<vital::algo::optimize_cameras>("camera_optimizer", config))
   {
     HSBA_CHECK_FAIL("camera_optimizer configuration invalid.");
   }
@@ -219,7 +161,7 @@ hierarchical_bundle_adjust
   {
     LOG_DEBUG(logger(), "HSBA per-iteration LM Triangulation disabled");
   }
-  else if (!vital::algo::triangulate_landmarks::check_nested_algo_configuration("lm_triangulator", config))
+  else if (!vital::check_nested_algo_configuration<vital::algo::triangulate_landmarks>("lm_triangulator", config))
   {
     LOG_DEBUG(logger(), "lm_triangulator type: \""
                             << config->get_value<std::string>("lm_triangulator:type") << "\"");
@@ -259,7 +201,7 @@ hierarchical_bundle_adjust
   // If interpolation rate is 0, then that means that all intermediate frames
   // should be interpolated on the first step. Due to how the algorithm
   // functions, set var to unsigned int max.
-  frame_id_t ir = d_->interpolation_rate;
+  frame_id_t ir = d_->c_interpolation_rate();
   if (ir == 0)
   {
     ir = std::numeric_limits<frame_id_t>::max();
@@ -270,7 +212,7 @@ hierarchical_bundle_adjust
   // Always adding the last camera (if not already in there) to the sub-
   // sampling in order to remove the complexity of interpolating into empty
   // space (constant operation).
-  unsigned int ssr = d_->initial_sub_sample;
+  unsigned int ssr = d_->c_initial_sub_sample();
   camera_map::map_camera_t input_cams = cameras->cameras(),
                            acm;
   acm = subsample_cameras(input_cams, ssr);
@@ -291,7 +233,7 @@ hierarchical_bundle_adjust
     // updated active_cam_map and landmarks
     { // scope block
       kwiver::vital::scoped_cpu_timer t( "inner-SBA iteration" );
-      d_->sba->optimize(active_cam_map, landmarks, tracks, constraints);
+      d_->d_sba_impl()->optimize(active_cam_map, landmarks, tracks, constraints);
     }
 
     double rmse = reprojection_rmse(active_cam_map->cameras(),
@@ -374,11 +316,11 @@ hierarchical_bundle_adjust
       camera_map_sptr interped_cams_p(new simple_camera_map(interped_cams));
 
       // Optimize new camers
-      if (d_->camera_optimizer)
+      if (d_->d_camera_optimizer())
       {
         LOG_INFO(logger(), "Optimizing new interpolated cameras ("
                             << interped_cams.size() << " cams)");
-        if (d_->rmse_reporting_enabled)
+        if (d_->c_rmse_reporting_enabled())
         {
           LOG_DEBUG(logger(), "pre-optimization RMSE : "
                               << reprojection_rmse(interped_cams_p->cameras(),
@@ -388,10 +330,10 @@ hierarchical_bundle_adjust
 
         { // scope block
           kwiver::vital::scoped_cpu_timer t( "\t- cameras optimization" );
-          d_->camera_optimizer->optimize(interped_cams_p, tracks, landmarks, constraints);
+          d_->d_camera_optimizer()->optimize(interped_cams_p, tracks, landmarks, constraints);
         }
 
-        if (d_->rmse_reporting_enabled)
+        if (d_->c_rmse_reporting_enabled())
         {
           LOG_DEBUG(logger(), "post-optimization RMSE : "
                               << reprojection_rmse(interped_cams_p->cameras(),
@@ -406,7 +348,7 @@ hierarchical_bundle_adjust
       }
       // Create new sptr of modified ac_map
       active_cam_map = camera_map_sptr(new simple_camera_map(ac_map));
-      if (d_->rmse_reporting_enabled)
+      if (d_->c_rmse_reporting_enabled())
       {
         LOG_DEBUG(logger(), "combined map RMSE : "
                             << reprojection_rmse(active_cam_map->cameras(),
@@ -415,10 +357,10 @@ hierarchical_bundle_adjust
       }
 
       // LM triangulation
-      if (d_->lm_triangulator)
+      if (d_->d_lm_triangulator())
       {
         LOG_INFO(logger(), "Triangulating landmarks after interpolating cameras");
-        if (d_->rmse_reporting_enabled)
+        if (d_->c_rmse_reporting_enabled())
         {
           LOG_DEBUG(logger(), "pre-triangulation RMSE : "
                               << reprojection_rmse(active_cam_map->cameras(),
@@ -428,10 +370,10 @@ hierarchical_bundle_adjust
 
         { // scoped block
           kwiver::vital::scoped_cpu_timer t( "\t- lm triangulation" );
-          d_->lm_triangulator->triangulate(active_cam_map, tracks, landmarks);
+          d_->d_lm_triangulator()->triangulate(active_cam_map, tracks, landmarks);
         }
 
-        if (d_->rmse_reporting_enabled)
+        if (d_->c_rmse_reporting_enabled())
         {
           LOG_DEBUG(logger(), "post-triangulation RMSE : "
                               << reprojection_rmse(active_cam_map->cameras(),

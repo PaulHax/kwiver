@@ -16,7 +16,7 @@ set( plugin_core_headers
   # convert_image_bypass.h
   # create_detection_grid.h
   csv_io.h
-  # depth_utils.h
+  depth_utils.h
   # derive_metadata.h
   # detect_features_filtered.h
   # detected_object_set_input_kw18.h
@@ -40,17 +40,17 @@ set( plugin_core_headers
   # match_tracks.h
   # merge_metadata_streams.h
   # mesh_intersect.h
-  # mesh_operations.h
+  mesh_operations.h
   metadata_map_io_csv.h
   metadata_stream_from_video.h
   # read_object_track_set_kw18.h
   # read_track_descriptor_set_csv.h
-  # render_mesh_depth_map.h
+  render_mesh_depth_map.h
   # track_features_augment_keyframes.h
   # track_features_core.h
   # transfer_bbox_with_depth_map.h
   # transform_detected_object_set.h
-  # triangle_scan_iterator.h
+  triangle_scan_iterator.h
   # uv_unwrap_mesh.h
   # video_input_buffered_metadata_filter.h
   video_input_filter.h
@@ -93,7 +93,7 @@ set( plugin_core_sources
   # convert_image_bypass.cxx
   # create_detection_grid.cxx
   csv_io.cxx
-  # depth_utils.cxx
+  depth_utils.cxx
   # derive_metadata.cxx
   # detect_features_filtered.cxx
   # detected_object_set_input_kw18.cxx
@@ -117,17 +117,17 @@ set( plugin_core_sources
   # match_tracks.cxx
   # merge_metadata_streams.cxx
   # mesh_intersect.cxx
-  # mesh_operations.cxx
+  mesh_operations.cxx
   metadata_map_io_csv.cxx
   metadata_stream_from_video.cxx
   # read_object_track_set_kw18.cxx
   # read_track_descriptor_set_csv.cxx
-  # render_mesh_depth_map.cxx
+  render_mesh_depth_map.cxx
   # track_features_augment_keyframes.cxx
   # track_features_core.cxx
   # transfer_bbox_with_depth_map.cxx
   # transform_detected_object_set.cxx
-  # triangle_scan_iterator.cxx
+  triangle_scan_iterator.cxx
   # uv_unwrap_mesh.cxx
   video_input_filter.cxx
   # video_input_image_list.cxx
@@ -141,7 +141,7 @@ set( plugin_core_sources
 
   # interpolate_track_spline.cxx
   # match_features_homography.cxx
-  # match_matrix.cxx
+  match_matrix.cxx
   # track_features_core.cxx
   # track_set_impl.cxx
   )
