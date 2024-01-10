@@ -14,7 +14,7 @@ set( public_headers
   # analyze_tracks.h
   # associate_detections_to_tracks.h
   buffered_metadata_filter.h
-  # bundle_adjust.h
+  bundle_adjust.h
   # close_loops.h
   # compute_association_matrix.h
   # compute_depth.h
@@ -82,7 +82,7 @@ set( sources
   # analyze_tracks.cxx
   # associate_detections_to_tracks.cxx
   buffered_metadata_filter.cxx
-  # bundle_adjust.cxx
+  bundle_adjust.cxx
   # close_loops.cxx
   # compute_association_matrix.cxx
   # compute_depth.cxx

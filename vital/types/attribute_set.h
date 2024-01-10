@@ -5,8 +5,8 @@
 /// \file
 /// \brief Interface of attribute_set class
 
-#ifndef KWIVER_VITAL_TTRIBUTE_SET_H
-#define KWIVER_VITAL_TTRIBUTE_SET_H
+#ifndef KWIVER_VITAL_ATTRIBUTE_SET_H
+#define KWIVER_VITAL_ATTRIBUTE_SET_H
 
 #include <vital/vital_export.h>
 #include <vital/vital_config.h>
@@ -21,7 +21,7 @@
 
 namespace kwiver {
 namespace vital {
-
+namespace types {
 // ----------------------------------------------------------------------------
 class VITAL_EXPORT attribute_set_exception
   : public vital_exception
@@ -203,8 +203,6 @@ private:
   attribute_map_t m_attr_map;
 }; // end class attribute_set
 
-typedef std::shared_ptr< attribute_set > attribute_set_sptr;
+} } } // end namespace
 
-} } // end namespace
-
-#endif // KWIVER_VITAL_TTRIBUTE_SET_H
+#endif // KWIVER_VITAL_ATTRIBUTE_SET_H
