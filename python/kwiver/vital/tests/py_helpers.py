@@ -58,7 +58,7 @@ from kwiver.vital.types import (
     TrackState,
 )
 
-from kwiver.vital.config import config
+from kwiver.vital.config import Config
 
 
 def random_point_3d(stddev):
