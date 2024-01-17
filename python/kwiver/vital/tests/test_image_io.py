@@ -30,7 +30,6 @@ from unittest import TestCase
 from kwiver.vital.algo import ImageIO
 import nose.tools
 import tempfile
-from kwiver.vital.modules import modules
 import os
 from kwiver.vital.types import ImageContainer
 import numpy as np
@@ -38,7 +37,6 @@ import numpy as np
 
 class TestVitalImageIO(TestCase):
     def setUp(self):
-        modules.load_known_modules()
         self.instance = ImageIO.create("SimpleImageIO")
 
     @nose.tools.raises(RuntimeError)
