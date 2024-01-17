@@ -18,8 +18,17 @@ namespace python {
 void
 algorithm( py::module& m )
 {
+  // import the module containing the binding of the pluggable class so we can
+  // use it as a parent here.
+  // Having kwiver::vital::pluggable in the hierarcy is improtant because the
+  // plugin discovery process
+  // registers only class that are a subclass of Pluggable (i.e.
+  // kwiver::vital::pluggable).
+  py::object const mod_pluggable = py::module::import( "kwiver.vital.plugins" );
+
   py::class_< kwiver::vital::algorithm,
     std::shared_ptr< kwiver::vital::algorithm >,
+    kwiver::vital::pluggable,
     algorithm_trampoline<> >( m, "_algorithm" )
     .def_property(
     "impl_name", &kwiver::vital::algorithm::impl_name,
