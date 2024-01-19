@@ -54,7 +54,6 @@ set(__test_algorithms
   )
 
 set(test_algorithms
-    __init__
     ${__test_algorithms}
    )
 
@@ -63,3 +62,7 @@ foreach (modname IN LISTS test_algorithms)
     vital/tests/alg
     ${modname})
 endforeach()
+
+# Generate an __init__.py that imports all test_algorithms so we can simplify
+# the plugin path to just "kwiver.vital.tests.alg"
+kwiver_create_python_init(vital/tests/alg ${__test_algorithms})
