@@ -64,6 +64,10 @@ setup(
     # tests_require=[],
     # Entry-Points #############################################################
     entry_points={
+        'kwiver.python_plugins': [
+          'say=kwiver.vital.test_interface.python_say',
+          'they_say=kwiver.vital.test_interface.python_they_say',
+        ]
         # 'kwiver.python_plugin_registration': [
         #     'pythread_process=kwiver.sprokit.schedulers.pythread_per_process',
         #     'apply_descriptor=kwiver.sprokit.processes.apply_descriptor',
