@@ -21,12 +21,11 @@ class KWIVER_ALGO_OCV_EXPORT image_io
   : public vital::algo::image_io
 {
 public:
-  PLUGIN_INFO( "ocv",
+  PLUGGABLE_IMPL(image_io,
                "Read and write image using OpenCV." )
 
   // No configuration for this class yet
   /// \cond DoxygenSuppress
-  virtual void set_configuration(vital::config_block_sptr /*config*/) { }
   virtual bool check_configuration(vital::config_block_sptr /*config*/) const { return true; }
   /// \endcond
 
