@@ -4,4 +4,5 @@ from ._config import (
     Config,
     ConfigBlockFormatter,
     ConfigDifference,
+    read_config_file,
 )

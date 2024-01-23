@@ -8,6 +8,7 @@
 
 #include <vital/config/config_block.h>
 #include <vital/config/config_block_formatter.h>
+#include <vital/config/config_block_io.h>
 #include <vital/config/config_difference.h>
 #include <vital/types/geo_polygon.h>
 
@@ -227,6 +228,157 @@ PYBIND11_MODULE( _config, m )
       "Return list of config keys that are in reference config but not in the other config" )
   ;
 
+  // -------------------------------------------------------------------------
+  m.def(
+    "read_config_file",
+    ( kv::config_block_sptr ( * )(
+      kv::config_path_t const&,
+      kv::config_path_list_t const&, bool ) ) & kv::read_config_file,
+    py::arg( "file_path" ),
+    py::arg( "search_paths" ) = kv::config_path_list_t(),
+    py::arg( "use_system_paths" ) = true,
+    // doc-string copied from C++ class
+    R"pbdoc(
+This method reads the specified config file and returns the
+resulting config block. Any files included by config files that are not in
+absolute form are resolved using search paths supplied in the environment
+variable \c KWIVER_CONFIG_PATH first, and then by using paths supplied in
+\c search_paths. If \c no_system_paths is set to \c true, then the contents
+of the \c KWIVER_CONFIG_PATH variable is not used, i.e. only the paths given
+in \c search_paths are used.
+
+\throws config_file_not_found_exception
+   Thrown when the file could not be found on the file system.
+\throws config_file_not_read_exception
+   Thrown when the file could not be read or parsed for whatever reason.
+
+\param file_path
+  The path to the file to read in.
+\param search_path
+  An optional list of directories to use in locating included files.
+\param use_system_paths
+  If false, we do not use paths in the KWIVER_CONFIG_PATH environment
+  variable or current working directory for searching, otherwise those paths
+are
+  searched first.
+
+\return A \c config_block object representing the contents of the read-in
+  file.
+)pbdoc"
+  );
+
+  m.def(
+    "read_config_file",
+    ( kv::config_block_sptr ( * )(
+      std::string const&, std::string const&,
+      std::string const&, kv::config_path_t const&,
+      bool ) ) & kv::read_config_file,
+    py::arg( "file_name" ),
+    py::arg( "application_name" ),
+    py::arg( "application_version" ),
+    py::arg( "install_prefix" ) = kv::config_path_t(),
+    py::arg( "merge" ) = true,
+    // doc-string copied from C++ class
+    R"pbdoc(
+/**
+ * \brief Read in (a) configuration file(s), producing a \c config_block object
+ *
+ * This function reads one or more configuration files from a search
+ * path. The search path is based on environment variables, system
+ * defaults, and application defaults. More on this later.
+ *
+ * The config reader tries to locate the specified config file using
+ * the search path. If the file is not found, an exception is
+ * thrown. If the file is located and the \c merge parameter is \b
+ * true (default value), then the remaining directories in the search
+ * path are checked to see if additional versions of the file can be
+ * found. If so, then the contents are merged, with values in files earlier in
+ * the search order taking precedence, into the resulting config block. If the
+ * \c merge parameter is \b false. then reading process stops after the first
+ * file is found.
+ *
+ * A platform specific search path is constructed as follows:
+ *
+ * ## Windows Platform
+ * - .  (the current working directory
+ * - ${KWIVER_CONFIG_PATH}          (if set)
+ * - $<CSIDL_LOCAL_APPDATA>/<app-name>[/<app-version>]/config
+ * - $<CSIDL_APPDATA>/<app-name>[/<app-version>]/config
+ * - $<CSIDL_COMMON_APPDATA>/<app-name>[/<app-version>]/config
+ * - <install-dir>/share/<app-name>[/<app-version>]/config
+ * - <install-dir>/share/config
+ * - <install-dir>/config
+ *
+ * ## OS/X Apple Platform
+ * - .  (the current working directory)
+ * - ${KWIVER_CONFIG_PATH}                                    (if set)
+ * - ${XDG_CONFIG_HOME}/<app-name>[/<app-version>]/config     (if
+ * $XDG_CONFIG_HOME set)
+ * - ${HOME}/.config/<app-name>[/<app-version>]/config        (if $HOME set)
+ * - /etc/xdg/<app-name>[/<app-version>]/config
+ * - /etc/<app-name>[/<app-version>]/config
+ * - ${HOME}/Library/Application Support/<app-name>[/<app-version>]/config (if
+ * $HOME set)
+ * - /Library/Application Support/<app-name>[/<app-version>]/config
+ * - /usr/local/share/<app-name>[/<app-version>]/config
+ * - /usr/share/<app-name>[/<app-version>]/config
+ *
+ * If <install-dir> is not `/usr` or `/usr/local`:
+ *
+ * - <install-dir>/share/<app-name>[/<app-version>]/config
+ * - <install-dir>/share/config
+ * - <install-dir>/config
+ * - <install-dir>/Resources/config
+ *
+ * ## Other Posix Platforms (e.g. Linux)
+ * - .  (the current working directory
+ * - ${KWIVER_CONFIG_PATH}                                    (if set)
+ * - ${XDG_CONFIG_HOME}/<app-name>[/<app-version>]/config     (if
+ * $XDG_CONFIG_HOME set)
+ * - ${HOME}/.config/<app-name>[/<app-version>]/config        (if $HOME set)
+ * - /etc/xdg/<app-name>[/<app-version>]/config
+ * - /etc/<app-name>[/<app-version>]/config
+ * - /usr/local/share/<app-name>[/<app-version>]/config
+ * - /usr/share/<app-name>[/<app-version>]/config
+ *
+ * If <install-dir> is not `/usr` or `/usr/local`:
+ *
+ * - <install-dir>/share/<app-name>[/<app-version>]/config
+ * - <install-dir>/share/config
+ * - <install-dir>/config
+ *
+ * The environment variable \c KWIVER_CONFIG_PATH can be set with a
+ * list of one or more directories, in the same manner as the native
+ * execution \c PATH variable, to be searched for config files.
+ *
+ * \throws config_file_not_found_exception
+ *    Thrown when the no matching file could be found in the searched paths.
+ * \throws config_file_not_read_exception
+ *    Thrown when a file could not be read or parsed for whatever reason.
+ *
+ * \param file_name
+ *   The name to the file(s) to read in.
+ * \param application_name
+ *   The application name, used to build the list of standard locations to be
+ *   searched.
+ * \param application_version
+ *   The application version number, used to build the list of standard
+ *   locations to be searched.
+ * \param install_prefix
+ *   The prefix to which the application is installed (should be one directory
+ *   higher than the location of the executing binary).  If not specified
+ *   (empty), an attempt to guess the prefix based on the path of the running
+ *   executable will be made.
+ * \param merge
+ *   If \c true, search all locations for matching config files, merging their
+ *   contents, with files earlier in the search order taking precedence. If
+ *   \c false, read only the first matching file. If this parameter is omitted
+ *   the configs are merged.
+ *
+ * \return
+ *   A \c config_block object representing the contents of the read-in file.
+ */
+)pbdoc" );
   // -------------------------------------------------------------------------
   py::class_< kv::config_block_formatter >( m, "ConfigBlockFormatter" )
     .def( py::init< kv::config_block_sptr >() )
