@@ -19,6 +19,12 @@ uv_unwrap_mesh
   attach_logger( "algo.uv_unwrap_mesh" );
 }
 
+// Destructor
+uv_unwrap_mesh
+::~uv_unwrap_mesh()
+{
+}
+
 } // namespace algo
 
 } // namespace vital

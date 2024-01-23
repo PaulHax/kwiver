@@ -51,7 +51,7 @@ set( plugin_core_headers
   # transfer_bbox_with_depth_map.h
   # transform_detected_object_set.h
   triangle_scan_iterator.h
-  # uv_unwrap_mesh.h
+  uv_unwrap_mesh.h
   # video_input_buffered_metadata_filter.h
   video_input_filter.h
   # video_input_image_list.h
@@ -128,7 +128,7 @@ set( plugin_core_sources
   # transfer_bbox_with_depth_map.cxx
   # transform_detected_object_set.cxx
   triangle_scan_iterator.cxx
-  # uv_unwrap_mesh.cxx
+  uv_unwrap_mesh.cxx
   video_input_filter.cxx
   # video_input_image_list.cxx
   # video_input_buffered_metadata_filter.cxx

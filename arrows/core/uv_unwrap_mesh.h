@@ -3,7 +3,7 @@
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
 /// \file
-/// \brief Header for mesh uv unwrapping
+/// \brief Interface for mesh uv unwrapping
 
 #ifndef KWIVER_ARROWS_CORE_UV_UNWRAP_MESH_H
 #define KWIVER_ARROWS_CORE_UV_UNWRAP_MESH_H
@@ -14,6 +14,10 @@
 #include <vital/types/mesh.h>
 #include <vital/vital_config.h>
 
+#include <vital/algo/algorithm.txx>
+
+#include "vital/plugin_management/pluggable_macro_magic.h"
+
 namespace kwiver {
 namespace arrows {
 namespace core {
@@ -23,33 +27,36 @@ class KWIVER_ALGO_CORE_EXPORT uv_unwrap_mesh
     : public vital::algo::uv_unwrap_mesh
 {
 public:
-  PLUGIN_INFO( "core",
-               "Unwrap a mesh and generate texture coordinates" )
 
-  /// Get configuration
-  vital::config_block_sptr get_configuration() const override;
-
-  /// Set configuration
-  void set_configuration(vital::config_block_sptr in_config) override;
-
-  /// Check configuration
-  bool check_configuration(vital::config_block_sptr config) const override;
-
-  /// Constructor
-  uv_unwrap_mesh();
+  PLUGGABLE_IMPL(
+    uv_unwrap_mesh,
+    "A class for unwrapping a mesh and generating texture coordinates. ",
+    PARAM_DEFAULT(spacing, double,
+        "Spacing between triangles. It is a percentage of the texture size "
+        "and should be relatively small (default is 0.005).",
+        0.005)
+            )
 
   /// Destructor
   virtual ~uv_unwrap_mesh();
 
+  /// Check configuration
+  bool check_configuration(vital::config_block_sptr config) const override;
+
+  /// Copy Constructor
+  uv_unwrap_mesh(const uv_unwrap_mesh& other);
+
   /// Unwrap a mesh and generate texture coordinate
-  ///
-  /// \param mesh [in/out]
-  void unwrap(kwiver::vital::mesh_sptr mesh) const override;
+  /**
+   * \param mesh [in/out]
+   */
+  virtual void unwrap(kwiver::vital::mesh_sptr mesh) const;
 
 private:
+  void initialize() override;
   /// private implementation class
   class priv;
-  const std::unique_ptr<priv> d_;
+  KWIVER_UNIQUE_PTR(priv,d);
 };
 
 }
