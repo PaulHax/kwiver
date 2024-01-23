@@ -6,7 +6,7 @@ the ``PLUGIN_NAMESPACE`` attribute.
 
 # Building
 Python Requirements
-`pip install -r requirements/dev.txt`
+`pip install -r requirements_dev.txt`
 
 We assume CMake is available on the system.
 Otherwise, CMake is also installable via pip.
