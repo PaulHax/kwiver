@@ -2,14 +2,18 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
+#include <pybind11/iostream.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl_bind.h>
 
 #include <vital/config/config_block.h>
+#include <vital/config/config_block_formatter.h>
 #include <vital/config/config_difference.h>
 #include <vital/types/geo_polygon.h>
 
 #include "module_config_helpers.h"
+
+#include <fstream>
 
 namespace py = pybind11;
 namespace kv = kwiver::vital;
@@ -222,4 +226,28 @@ PYBIND11_MODULE( _config, m )
       "unspecified_keys", &kv::config_difference::unspecified_keys,
       "Return list of config keys that are in reference config but not in the other config" )
   ;
+
+  // -------------------------------------------------------------------------
+  py::class_< kv::config_block_formatter >( m, "ConfigBlockFormatter" )
+    .def( py::init< kv::config_block_sptr >() )
+    .def(
+      "print", [](kv::config_block_formatter& self, py::object fileHandle){
+        std::ofstream fout;
+        py::scoped_ostream_redirect stream( fout, fileHandle );
+        self.print( fout );
+      },
+      // doc-string
+      "Format config block in simple text format." )
+    .def(
+      "set_prefix", &kv::config_block_formatter::set_prefix,
+      // doc-string
+      "Set line prefix for printing." )
+    .def(
+      "generate_source_loc", &kv::config_block_formatter::generate_source_loc,
+      // doc-string
+      py::doc(
+        "Set option to generate source location.\n"
+        "TRUE will generate the source location, FALSE will not."
+      )
+    );
 }
