@@ -2,9 +2,6 @@
 # Build file for abstract algorithms
 #
 
-# ==================================================================
-###
-# These headers are installed
 #
 set( public_headers
   activity_detector.h
