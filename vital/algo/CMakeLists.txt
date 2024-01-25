@@ -173,15 +173,16 @@ target_link_libraries( vital_algo
                   vital_vpm
   )
 
-if (KWIVER_ENABLE_TOOLS)
-###
-#     plugins for plugin explorer
-kwiver_add_plugin( algo_explorer_plugin
-  SUBDIR   ${kwiver_plugin_plugin_explorer_subdir}
-  SOURCES  algo_explorer_plugin.cxx
-  PRIVATE  vital
-           vital_vpm
-           vital_config
-           vital_algo
-           explorer_plugin )
-endif()
+# Needs to be updated for new API
+#if (KWIVER_ENABLE_TOOLS)
+####
+##     plugins for plugin explorer
+#kwiver_add_plugin( algo_explorer_plugin
+#  SUBDIR   ${kwiver_plugin_plugin_explorer_subdir}
+#  SOURCES  algo_explorer_plugin.cxx
+#  PRIVATE  vital
+#           vital_vpm
+#           vital_config
+#           vital_algo
+#           explorer_plugin )
+#endif()
