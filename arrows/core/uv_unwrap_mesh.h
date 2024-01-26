@@ -3,7 +3,7 @@
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
 /// \file
-/// \brief Interface for mesh uv unwrapping
+/// \brief Header for mesh uv unwrapping
 
 #ifndef KWIVER_ARROWS_CORE_UV_UNWRAP_MESH_H
 #define KWIVER_ARROWS_CORE_UV_UNWRAP_MESH_H
@@ -43,14 +43,12 @@ public:
   /// Check configuration
   bool check_configuration(vital::config_block_sptr config) const override;
 
-  /// Copy Constructor
-  uv_unwrap_mesh(const uv_unwrap_mesh& other);
+
 
   /// Unwrap a mesh and generate texture coordinate
-  /**
-   * \param mesh [in/out]
-   */
-  virtual void unwrap(kwiver::vital::mesh_sptr mesh) const;
+  ///
+  /// \param mesh [in/out]
+  void unwrap(kwiver::vital::mesh_sptr mesh) const override;
 
 private:
   void initialize() override;

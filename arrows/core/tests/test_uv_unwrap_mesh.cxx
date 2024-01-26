@@ -2,6 +2,9 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
+/// \file
+/// Test CSV input/output utilities.
+
 #include <arrows/core/uv_unwrap_mesh.h>
 #include <vital/plugin_management/plugin_manager.h>
 #include <vital/types/mesh.h>
@@ -65,8 +68,10 @@ TEST(uv_unwrap_mesh, create)
 
   plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE(nullptr, algo::uv_unwrap_mesh::create("core"));
+  EXPECT_NE(nullptr, create_algorithm<algo::uv_unwrap_mesh>("core"));
+
 }
+
 
 // ----------------------------------------------------------------------------
 TEST_F(uv_unwrap_mesh_test, check_texture_coordinates)
