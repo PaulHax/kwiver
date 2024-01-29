@@ -22,16 +22,6 @@ namespace serialize {
 
 namespace json {
 
-// ----------------------------------------------------------------------------
-object_track_set
-::object_track_set()
-{}
-
-object_track_set::
-~object_track_set()
-{}
-
-// ----------------------------------------------------------------------------
 std::shared_ptr< std::string >
 object_track_set
 ::serialize( const vital::any& element )

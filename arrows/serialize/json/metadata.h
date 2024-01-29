@@ -31,12 +31,10 @@ class KWIVER_SERIALIZE_JSON_EXPORT metadata
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO(
-    "kwiver:metadata",
+  PLUGGABLE_IMPL(
+    metadata,
     "Serializes a metadata vector using json notation." );
 
-  metadata();
-  virtual ~metadata();
   std::shared_ptr< std::string > serialize_meta(
     vital::metadata_vector const& elements );
   std::shared_ptr< std::string > serialize_map(

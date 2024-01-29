@@ -19,16 +19,6 @@ namespace serialize {
 
 namespace json {
 
-// ----------------------------------------------------------------------------
-bounding_box
-::bounding_box()
-{}
-
-bounding_box::
-~bounding_box()
-{}
-
-// ----------------------------------------------------------------------------
 std::shared_ptr< std::string >
 bounding_box
 ::serialize( const vital::any& element )

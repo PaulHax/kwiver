@@ -27,13 +27,10 @@ class KWIVER_SERIALIZE_JSON_EXPORT object_track_set
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO(
-    "kwiver:object_track_set",
+  PLUGGABLE_IMPL(
+    object_track_set,
     "Serializes a object track set  using json notation. "
     "This implementation only handles a single data item." );
-
-  object_track_set();
-  virtual ~object_track_set();
 
   std::shared_ptr< std::string > serialize(
     const vital::any& element ) override;

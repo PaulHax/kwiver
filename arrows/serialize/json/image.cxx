@@ -22,16 +22,6 @@ namespace serialize {
 
 namespace json {
 
-// ----------------------------------------------------------------------------
-image
-::image()
-{}
-
-image::
-~image()
-{}
-
-// ----------------------------------------------------------------------------
 std::shared_ptr< std::string >
 image
 ::serialize( const vital::any& element )

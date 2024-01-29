@@ -27,13 +27,10 @@ class KWIVER_SERIALIZE_JSON_EXPORT string
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO(
-    "kwiver:string",
+  PLUGGABLE_IMPL(
+    string,
     "Serializes a string using json notation. "
     "This implementation only handles a single data item." );
-
-  string();
-  virtual ~string();
 
   std::shared_ptr< std::string > serialize(
     const vital::any& element ) override;

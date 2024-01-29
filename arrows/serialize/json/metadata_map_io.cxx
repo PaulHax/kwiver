@@ -31,16 +31,6 @@ public:
 };
 
 // ----------------------------------------------------------------------------
-metadata_map_io
-::metadata_map_io()
-{}
-
-// ----------------------------------------------------------------------------
-metadata_map_io
-::~metadata_map_io()
-{}
-
-// ----------------------------------------------------------------------------
 kwiver::vital::metadata_map_sptr
 metadata_map_io
 ::load_( std::istream& fin, std::string const& filename ) const

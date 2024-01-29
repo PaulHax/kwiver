@@ -20,17 +20,6 @@ namespace serialize {
 
 namespace json {
 
-// ----------------------------------------------------------------------------
-metadata
-::metadata()
-{}
-
-// ----------------------------------------------------------------------------
-metadata
-::~metadata()
-{}
-
-// ----------------------------------------------------------------------------
 std::shared_ptr< std::string >
 metadata
 ::serialize_meta( kwiver::vital::metadata_vector const& meta )

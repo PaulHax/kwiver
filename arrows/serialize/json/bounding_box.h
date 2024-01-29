@@ -27,12 +27,9 @@ class KWIVER_SERIALIZE_JSON_EXPORT bounding_box
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO(
-    "kwiver:bounding_box",
+  PLUGGABLE_IMPL(
+    bounding_box,
     "Serializes a bounding_box using json notation." );
-
-  bounding_box();
-  virtual ~bounding_box();
 
   std::shared_ptr< std::string > serialize(
     const vital::any& elements ) override;
