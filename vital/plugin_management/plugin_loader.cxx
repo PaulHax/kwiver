@@ -18,6 +18,10 @@
 #include <sstream>
 #include <utility>
 
+#if __linux__
+#include <dlfcn.h>
+#endif
+
 namespace kwiver {
 namespace vital {
 
@@ -412,7 +416,32 @@ plugin_loader_impl
 
   LOG_DEBUG( m_parent->m_logger, "Loading plugins from: " << path );
 
+  // DL::OpenLibrary does not specify either of the RTDL_GLOBAL/RTDL_LOCAL
+  // flags.  The default behavior on Linux is RTDL_LOCAL which causes problems
+  // in python plugins.  In particular, if we load a python plugin from C++, it
+  // will result in undefined symbols errors for symbols that should come from
+  // libpython.so.
+  //
+  // Here is the scenario in more general terms:
+  // 1. plugin A is loaded with RTLD_LOCAL;
+  // all symbols resolved during this time are "local" so if A introduces usage
+  // of library X, its symbols are local to this load.
+  // 2. If B is then loaded and also wants to use symbols from X, it gets told
+  // "no, those are private to A" and loading fails so it only works if all
+  // plugin loads use disjoint libraries (not already loaded) which we can
+  // neither guarantee nor require from the plugins.
+  //
+  // See also explanation in
+  // https://github.com/Kitware/sprokit/commit/4f33d9ff0660465552573e17d6174bb8d2934767
+  //
+  // Related pybind issue: https://github.com/pybind/pybind11/issues/3555
+  //
+  // TODO: check on  macos if this is required
+  #if __linux__
+  lib_handle = dlopen(path.c_str(),RTLD_LAZY | RTLD_GLOBAL);
+  #else
   lib_handle = DL::OpenLibrary( path );
+  #endif
   if ( ! lib_handle )
   {
     LOG_WARN( m_parent->m_logger, "plugin_loader::Unable to load shared library \""  << path << "\" : "
