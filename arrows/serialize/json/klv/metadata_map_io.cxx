@@ -41,22 +41,28 @@ auto const output_options = cereal::JSONOutputArchive::Options{
 class metadata_map_io_klv::priv
 {
 public:
-  priv();
+  priv( metadata_map_io_klv& parent );
 
-  bool compress;
+  metadata_map_io_klv& parent;
+  bool compress() { return parent.get_compress(); }
+
   vital::bytestream_compressor::compression_type_t compress_type;
 };
 
 // ----------------------------------------------------------------------------
 metadata_map_io_klv::priv
-::priv()
-  : compress{ false },
+::priv( metadata_map_io_klv& parent )
+  : parent( parent ),
     compress_type{ vital::bytestream_compressor::COMPRESSION_TYPE_DEFLATE }
 {}
 
 // ----------------------------------------------------------------------------
+void
 metadata_map_io_klv
-::metadata_map_io_klv() : d{ new priv } {}
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( metadata_map_io_klv::priv, d );
+}
 
 // ----------------------------------------------------------------------------
 metadata_map_io_klv
@@ -72,7 +78,7 @@ metadata_map_io_klv
   std::vector< klv::klv_timed_packet > packets;
   try
   {
-    if( d->compress )
+    if( d->compress() )
     {
       vital::bytestream_compressor decompressor(
         vital::bytestream_compressor::MODE_DECOMPRESS,
@@ -141,7 +147,7 @@ std::ios_base::openmode
 metadata_map_io_klv
 ::load_open_mode( VITAL_UNUSED std::string const& filename ) const
 {
-  return d->compress
+  return d->compress()
          ? ( std::ios_base::in | std::ios_base::binary )
          : ( std::ios_base::in );
 }
@@ -189,7 +195,7 @@ metadata_map_io_klv
   }
 
   // Save KLV to JSON
-  if( d->compress )
+  if( d->compress() )
   {
     vital::bytestream_compressor compressor(
       vital::bytestream_compressor::MODE_COMPRESS,
@@ -212,31 +218,9 @@ std::ios_base::openmode
 metadata_map_io_klv
 ::save_open_mode( VITAL_UNUSED std::string const& filename ) const
 {
-  return d->compress
+  return d->compress()
          ? ( std::ios_base::out | std::ios_base::binary )
          : ( std::ios_base::out );
-}
-
-// ----------------------------------------------------------------------------
-vital::config_block_sptr
-metadata_map_io_klv
-::get_configuration() const
-{
-  auto config = algorithm::get_configuration();
-
-  config->set_value(
-    "compress", d->compress,
-    "Set to true to read and write compressed JSON instead." );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-void
-metadata_map_io_klv
-::set_configuration( vital::config_block_sptr config )
-{
-  d->compress = config->get_value< bool >( "compress", false );
 }
 
 } // namespace json

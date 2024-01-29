@@ -6,7 +6,7 @@
 
 #include "metadata_map_io.h"
 
-#include <vital/algo/algorithm_factory.h>
+#include <vital/plugin_management/plugin_manager.h>
 
 namespace kwiver {
 
@@ -22,17 +22,12 @@ KWIVER_SERIALIZE_JSON_KLV_PLUGIN_EXPORT
 void
 register_factories( kwiver::vital::plugin_loader& vpm )
 {
-  auto const module_name = std::string{ "arrows.serialize.json.klv" };
-  vital::algorithm_registrar algo_registrar( vpm, module_name );
-
-  if( algo_registrar.is_module_loaded() )
-  {
-    return;
-  }
-
-  algo_registrar.register_algorithm< metadata_map_io_klv >();
-
-  algo_registrar.mark_module_as_loaded();
+  auto fact =
+    vpm.add_factory< vital::algo::metadata_map_io,
+      metadata_map_io_klv >( "klv-json" );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
+    "arrows.serialize.klv" );
 }
 
 } // namespace json
