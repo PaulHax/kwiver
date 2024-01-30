@@ -95,7 +95,7 @@ if ( KWIVER_ENABLE_GDAL )
 endif()
 
 # if PDAL is enabled
-if ( KWIVER_ENABLE_PDAL )
+if ( KWIVER_ENABLE_DEP_PDAL )
   add_subdirectory( pdal )
 endif()
 
