@@ -10,4 +10,14 @@ if (KWIVER_ENABLE_TESTS AND VENV_CREATED)
                                    "pip-install-upgrade")
     endif()
 endif()
+
+if(NOT SKBUILD)
+  # TODO depend on a global python target that includes all module files,so it does not run every time
+  # Create egg info for the packages mentioned in the entrypoints entry of setup.py
+  add_custom_target(install_egg_info ALL
+    COMMENT "Install python egg info in the build directory"
+    COMMAND ${PYTHON_EXECUTABLE} ${KWIVER_SOURCE_DIR}/setup.py egg_info --egg-base ${KWIVER_BINARY_DIR}/${python_site_packages}
+    )
+endif()
+
 add_subdirectory(kwiver)

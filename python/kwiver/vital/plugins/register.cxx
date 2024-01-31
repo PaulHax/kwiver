@@ -68,14 +68,6 @@ void register_factories( ::kv::plugin_loader & vpl )
   py::object const mod_discovery =
     py::module::import( "kwiver.vital.plugins.discovery" );
 
-  // DEBUG IMPORT FOR CONCRETE
-  // because its currently not in a separate package using entrypoints
-  py::object const mod_debug_impls =
-    py::module::import( "kwiver.vital.test_interface.python_say" );
-  py::object const mod_debug_they_impls =
-    py::module::import( "kwiver.vital.test_interface.python_they_say" );
-  // DEBUG IMPORT FOR CONCRETE
-
   py::list python_concrete_vec =
     mod_discovery.attr( "_get_concrete_pluggable_types" )();
   for( size_t i=0; i < python_concrete_vec.size(); ++i )
