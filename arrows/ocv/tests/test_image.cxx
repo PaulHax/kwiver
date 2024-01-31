@@ -13,6 +13,7 @@
 #include <arrows/ocv/image_io.h>
 
 #include <vital/plugin_management/plugin_manager.h>
+#include <vital/algo/algorithm.txx>
 
 #include <gtest/gtest.h>
 
@@ -32,7 +33,7 @@ TEST(image, create)
   plugin_manager::instance().load_all_plugins();
 
   std::shared_ptr<algo::image_io> img_io;
-  ASSERT_NE(nullptr, img_io = algo::image_io::create("ocv"));
+  ASSERT_NE(nullptr, img_io = kwiver::vital::create_algorithm<kwiver::vital::algo::image_io>("ocv"));
 
   algo::image_io* img_io_ptr = img_io.get();
   EXPECT_EQ(typeid(ocv::image_io), typeid(*img_io_ptr))
