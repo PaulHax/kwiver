@@ -1,0 +1,6 @@
+set(fletch_BUILD_WITH_PYTHON ON CACHE BOOL "")
+set(fletch_BUILD_WITH_CX11 ON CACHE BOOL "")
+set(fletch_ENABLE_Eigen ON CACHE BOOL "")
+set(fletch_ENABLE_pybind11 ON CACHE BOOL "")
+set(fletch_ENABLE_FFmpeg ON CACHE BOOL "")
+set(fletch_ENABLE_GTest ON CACHE BOOL "")

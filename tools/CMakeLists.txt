@@ -34,3 +34,14 @@ target_link_libraries( kwiver
                  #wiver_tools_applet
                  vital_applets
 )
+
+
+### Add demos as tests
+add_test(
+  NAME CXX::demo_python_impl_call
+  COMMAND ${KWIVER_BINARY_DIR}/bin/demo_python_impl_call
+)
+add_test(
+  NAME Python::demo_python_impl_call
+  COMMAND ${PYTHON_EXECUTABLE} ${KWIVER_BINARY_DIR}/bin/demo_python_impl_call.py
+)

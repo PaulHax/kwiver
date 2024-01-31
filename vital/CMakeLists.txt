@@ -316,7 +316,8 @@ add_subdirectory( algo )
 # -- Creates library "vital_util"
 add_subdirectory( util )
 add_subdirectory( range )
-add_subdirectory( bindings )
+# kwiver-v2: not used 
+#add_subdirectory( bindings )
 # -- Creates library "vital_config"
 # Requires: vital_logger, vital_util (vital_types)
 add_subdirectory( config )

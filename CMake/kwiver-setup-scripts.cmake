@@ -116,7 +116,7 @@ file( APPEND "${KWIVER_SETUP_POWERSHELL_FILE}" "$ENV:KWIVER_DEFAULT_LOG_LEVEL = 
 
 if (KWIVER_ENABLE_PYTHON)
   file( APPEND "${KWIVER_SETUP_SCRIPT_FILE}" "# Python environment\n")
-  file( APPEND "${KWIVER_SETUP_SCRIPT_FILE}" "export PYTHON_LIBRARY=\"${PYTHON_LIBRARY}\"\n" )
+  file( APPEND "${KWIVER_SETUP_SCRIPT_FILE}" "export PYTHON_LIBRARY=\"${PYTHON_LIBRARIES}\"\n" )
   file( APPEND "${KWIVER_SETUP_SCRIPT_FILE}" "export PYTHONPATH=$this_dir/${python_site_packages}:$PYTHONPATH\n" )
   file( APPEND "${KWIVER_SETUP_SCRIPT_FILE}" "\n# additional python mudules to load, separated by ':'\n" )
   file( APPEND "${KWIVER_SETUP_SCRIPT_FILE}" "export SPROKIT_PYTHON_MODULES=")
@@ -131,7 +131,7 @@ if (KWIVER_ENABLE_PYTHON)
 
 
   file( APPEND "${KWIVER_SETUP_BATCH_FILE}" ":: Python environment\n")
-  file( APPEND "${KWIVER_SETUP_BATCH_FILE}" "set PYTHON_LIBRARY=${PYTHON_LIBRARY}\n" )
+  file( APPEND "${KWIVER_SETUP_BATCH_FILE}" "set PYTHON_LIBRARY=${PYTHON_LIBRARIES}\n" )
   file( APPEND "${KWIVER_SETUP_BATCH_FILE}" "set PYTHONPATH=%~dp0/lib/%config%/python2.7/site-packages\n" )
   file( APPEND "${KWIVER_SETUP_BATCH_FILE}" "\n:: additional python mudules to load, separated by ':'\n" )
   file( APPEND "${KWIVER_SETUP_BATCH_FILE}" "set SPROKIT_PYTHON_MODULES=" )
@@ -146,7 +146,7 @@ if (KWIVER_ENABLE_PYTHON)
 
 
   file( APPEND "${KWIVER_SETUP_POWERSHELL_FILE}" "# Python environment\n")
-  file( APPEND "${KWIVER_SETUP_POWERSHELL_FILE}" "$ENV:PYTHON_LIBRARY = \"${PYTHON_LIBRARY}\"\n" )
+  file( APPEND "${KWIVER_SETUP_POWERSHELL_FILE}" "$ENV:PYTHON_LIBRARY = \"${PYTHON_LIBRARIES}\"\n" )
   file( APPEND "${KWIVER_SETUP_POWERSHELL_FILE}" "$ENV:PYTHONPATH = \"$this_dir/Lib/$config/python2.7/site-packages\"\n" )
   file( APPEND "${KWIVER_SETUP_POWERSHELL_FILE}" "\n# additional python mudules to load, separated by ':'\n" )
   file( APPEND "${KWIVER_SETUP_POWERSHELL_FILE}" "$ENV:SPROKIT_PYTHON_MODULES = \"" )
