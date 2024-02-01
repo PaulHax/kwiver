@@ -24,12 +24,12 @@ namespace algo {
 /// image modification, such as image enhancement. The resultant image
 /// must be the same size as the input image.
 class VITAL_ALGO_EXPORT image_filter
-  : public kwiver::vital::algorithm_def< image_filter >
+  : public kwiver::vital::algorithm
 {
 public:
   /// Return the name of this algorithm.
-  static std::string static_type_name() { return "image_filter"; }
-
+  image_filter();
+  PLUGGABLE_INTERFACE(image_filter);
   /// Filter a  input image and return resulting image
   ///
   /// This method implements the filtering operation. The method does
@@ -41,8 +41,6 @@ public:
   virtual kwiver::vital::image_container_sptr filter(
     kwiver::vital::image_container_sptr image_data ) = 0;
 
-protected:
-  image_filter();
 };
 
 /// type definition for shared pointer to a image_filter algorithm

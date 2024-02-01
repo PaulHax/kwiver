@@ -8,7 +8,6 @@
 ///        \endlink for \link kwiver::vital::algo::filter_features
 ///        filter_features \endlink
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/filter_features.h>
 
 namespace kwiver {
@@ -60,5 +59,3 @@ filter_features
 } // namespace vital
 
 } // namespace kwiver
-
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::filter_features );

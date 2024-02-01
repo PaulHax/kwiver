@@ -42,12 +42,11 @@ namespace algo {
 /// The main application for this algorithm is to serialize data
 /// objects for inter-process communications.
 class VITAL_ALGO_EXPORT data_serializer
-  : public kwiver::vital::algorithm_def< data_serializer >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "data_serializer"; }
-
+  data_serializer();
+  PLUGGABLE_INTERFACE(data_serializer);
   /// Serialize the item into a byte string.
   ///
   /// This method serializes the supplied data item(s) and returns a
@@ -106,8 +105,6 @@ public:
   virtual bool
   check_configuration( config_block_sptr config ) const { return true; }
 
-protected:
-  data_serializer();
 };
 
 /// Shared pointer for detect_features algorithm definition class

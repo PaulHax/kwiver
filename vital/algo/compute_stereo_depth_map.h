@@ -20,12 +20,11 @@ namespace algo {
 
 /// An abstract base class for detecting feature points
 class VITAL_ALGO_EXPORT compute_stereo_depth_map
-  : public kwiver::vital::algorithm_def< compute_stereo_depth_map >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "compute_stereo_depth_map"; }
-
+  compute_stereo_depth_map();
+  PLUGGABLE_INTERFACE(compute_stereo_depth_map);
   /// Compute a stereo depth map given two images
   ///
   /// \throws image_size_mismatch_exception
@@ -38,8 +37,6 @@ public:
   compute( kwiver::vital::image_container_sptr left_image,
            kwiver::vital::image_container_sptr right_image ) const = 0;
 
-protected:
-  compute_stereo_depth_map();
 };
 
 /// Shared pointer for compute_stereo_depth_map algorithm definition class

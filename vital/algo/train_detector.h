@@ -22,12 +22,11 @@ namespace algo {
 
 /// An abstract base class for training object detectors
 class VITAL_ALGO_EXPORT train_detector
-  : public kwiver::vital::algorithm_def< train_detector >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "train_detector"; }
-
+  train_detector();
+  PLUGGABLE_INTERFACE(train_detector);
   /// Train a detection model given a list of images and detections
   ///
   /// This varient is geared towards offline training.
@@ -66,8 +65,6 @@ public:
                      std::vector< kwiver::vital::detected_object_set_sptr > test_groundtruth
                      = std::vector< kwiver::vital::detected_object_set_sptr >( ) );
 
-protected:
-  train_detector();
 };
 
 /// Shared pointer for train_detector algorithm definition class

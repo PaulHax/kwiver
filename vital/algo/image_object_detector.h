@@ -25,12 +25,11 @@ namespace algo {
 /// @brief Image object detector base class/
 ///
 class VITAL_ALGO_EXPORT image_object_detector
-  : public algorithm_def< image_object_detector >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "image_object_detector"; }
-
+  image_object_detector();
+  PLUGGABLE_INTERFACE(image_object_detector);
   /// Find all objects on the provided image
   ///
   /// This method analyzes the supplied image and along with any saved
@@ -41,8 +40,6 @@ public:
   virtual detected_object_set_sptr
   detect( image_container_sptr image_data ) const = 0;
 
-protected:
-  image_object_detector();
 };
 
 /// Shared pointer for generic image_object_detector definition type.

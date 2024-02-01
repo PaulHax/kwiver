@@ -5,7 +5,6 @@
 /// \file
 /// \brief data_serializer algorithm definition instantiation
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/data_serializer.h>
 #include <vital/util/string.h>
 
@@ -31,7 +30,3 @@ data_serializer
 } // namespace vital
 
 } // namespace kwiver
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::data_serializer );
-/// \endcond

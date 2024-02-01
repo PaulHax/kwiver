@@ -6,7 +6,6 @@
 /// \brief activity_detector algorithm instantiation
 
 #include <vital/algo/activity_detector.h>
-#include <vital/algo/algorithm.txx>
 
 namespace kwiver {
 
@@ -25,5 +24,3 @@ activity_detector
 } // namespace vital
 
 } // namespace kwiver
-
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::activity_detector );

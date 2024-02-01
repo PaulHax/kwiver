@@ -32,7 +32,7 @@ class VITAL_ALGO_EXPORT estimate_essential_matrix
 {
 public:
   estimate_essential_matrix();
-  PLUGGABLE_INTERFACE( estimate_essential_matrix );
+  PLUGGABLE_INTERFACE(estimate_essential_matrix);
 
   /// Estimate an essential matrix from corresponding features
   ///

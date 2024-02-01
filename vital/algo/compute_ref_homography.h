@@ -31,12 +31,11 @@ namespace algo {
 /// feature tracks, which can transform each image back to the same coordinate
 /// space derived from some initial refrerence image.
 class VITAL_ALGO_EXPORT compute_ref_homography
-  : public kwiver::vital::algorithm_def< compute_ref_homography >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "compute_ref_homography"; }
-
+  compute_ref_homography();
+  PLUGGABLE_INTERFACE(compute_ref_homography);
   /// Estimate the transformation which maps some frame to a reference frame
   ///
   /// Similarly to track_features, this class was designed to be called in
@@ -57,8 +56,6 @@ public:
   estimate( kwiver::vital::frame_id_t frame_number,
             kwiver::vital::feature_track_set_sptr tracks ) const = 0;
 
-protected:
-  compute_ref_homography();
 };
 
 /// Shared pointer type of base compute_ref_homography algorithm definition

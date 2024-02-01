@@ -5,7 +5,6 @@
 /// \file
 /// \brief image_object_detector algorithm instantiation
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/image_object_detector.h>
 
 namespace kwiver {
@@ -25,7 +24,3 @@ image_object_detector
 } // namespace vital
 
 } // namespace kwiver
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::image_object_detector );
-/// \endcond

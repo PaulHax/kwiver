@@ -5,7 +5,6 @@
 /// \file
 /// \brief detected_object_filter algorithm instantiation
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/detected_object_filter.h>
 
 namespace kwiver {
@@ -25,7 +24,3 @@ detected_object_filter
 } // namespace vital
 
 } // namespace kwiver
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::detected_object_filter );
-/// \endcond

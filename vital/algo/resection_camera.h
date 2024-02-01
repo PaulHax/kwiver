@@ -26,13 +26,11 @@ namespace algo {
 /// An abstract base class to resection a camera using 3D feature and point
 /// projection pairs.
 class VITAL_ALGO_EXPORT resection_camera
-  : public kwiver::vital::algorithm_def< resection_camera >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// \return name of this algorithm
-  static std::string
-  static_type_name() { return "resection_camera"; }
-
+  resection_camera();
+  PLUGGABLE_INTERFACE(resection_camera);
   /// Estimate camera parameters from 3D points and their corresponding
   /// projections.
   ///
@@ -100,8 +98,6 @@ public:
     kwiver::vital::camera_intrinsics_sptr initial_calibration,
     std::unordered_set< landmark_id_t >* inliers = nullptr ) const;
 
-protected:
-  resection_camera();
 };
 
 /// Shared pointer type of base resection_camera algorithm definition class.

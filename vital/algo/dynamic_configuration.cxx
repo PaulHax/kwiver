@@ -4,8 +4,6 @@
 
 #include <vital/algo/dynamic_configuration.h>
 
-#include <vital/algo/algorithm.txx>
-
 namespace kwiver {
 
 namespace vital {
@@ -23,7 +21,3 @@ dynamic_configuration
 } // namespace vital
 
 } // namespace kwiver
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::dynamic_configuration );
-/// \endcond

@@ -26,12 +26,11 @@ namespace algo {
 
 /// An abstract base class for estimating a homography from matching 2D points
 class VITAL_ALGO_EXPORT estimate_homography
-  : public kwiver::vital::algorithm_def< estimate_homography >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "estimate_homography"; }
-
+  estimate_homography();
+  PLUGGABLE_INTERFACE(estimate_homography);
   /// Estimate a homography matrix from corresponding features
   ///
   /// If estimation fails, a NULL-containing sptr is returned
@@ -68,8 +67,6 @@ public:
             std::vector< bool >& inliers,
             double inlier_scale = 1.0 ) const = 0;
 
-protected:
-  estimate_homography();
 };
 
 /// Shared pointer type of base estimate_homography algorithm definition class

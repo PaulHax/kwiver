@@ -32,14 +32,13 @@ namespace algo {
 /// with enough information to recreate a unique image identifier,
 /// usually the file name, and an associated set of track descriptors.
 class VITAL_ALGO_EXPORT read_track_descriptor_set
-  : public kwiver::vital::algorithm_def< read_track_descriptor_set >
+  : public kwiver::vital::algorithm
 {
 public:
   virtual ~read_track_descriptor_set();
 
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "read_track_descriptor_set"; }
-
+  read_track_descriptor_set();
+  PLUGGABLE_INTERFACE_NO_DESTR(read_track_descriptor_set);
   /// Open a file of track descriptor sets.
   ///
   /// This method opens a track descriptor set file for reading.
@@ -90,8 +89,6 @@ public:
   /// @return \b true if file is at end.
   bool at_eof() const;
 
-protected:
-  read_track_descriptor_set();
 
   std::istream& stream();
 

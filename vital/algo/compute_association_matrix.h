@@ -25,16 +25,12 @@ namespace algo {
 
 /// An abstract base class for computing association cost matrices for tracking
 class VITAL_ALGO_EXPORT compute_association_matrix
-  : public kwiver::vital::algorithm_def< compute_association_matrix >
+  : public kwiver::vital::algorithm
 {
 public:
 
-  /// Return the name of this algorithm
-  static std::string
-  static_type_name()
-  {
-    return "compute_association_matrix";
-  }
+  compute_association_matrix();
+  PLUGGABLE_INTERFACE(compute_association_matrix);
 
   /// Compute an association matrix given detections and tracks
   ///
@@ -53,8 +49,6 @@ public:
            kwiver::vital::matrix_d& matrix,
            kwiver::vital::detected_object_set_sptr& considered ) const = 0;
 
-protected:
-  compute_association_matrix();
 };
 
 /// Shared pointer for compute_association_matrix algorithm definition class

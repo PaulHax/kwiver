@@ -29,12 +29,12 @@ namespace algo {
 /// in attempt to make either short or long term closures. Similarly to
 /// track_features, this class is designed to be called in an online fashion.
 class VITAL_ALGO_EXPORT close_loops
-  : public kwiver::vital::algorithm_def< close_loops >
+  : public kwiver::vital::algorithm
 {
 public:
   /// Return the name of this algorithm.
-  static std::string static_type_name() { return "close_loops"; }
-
+  close_loops();
+  PLUGGABLE_INTERFACE(close_loops);
   /// Attempt to perform closure operation and stitch tracks together.
   ///
   /// \param frame_number the frame number of the current frame
@@ -50,8 +50,6 @@ public:
           kwiver::vital::image_container_sptr mask =
 	  kwiver::vital::image_container_sptr() ) const = 0;
 
-protected:
-  close_loops();
 };
 
 typedef std::shared_ptr< close_loops > close_loops_sptr;

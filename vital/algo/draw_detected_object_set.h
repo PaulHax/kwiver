@@ -23,12 +23,12 @@ namespace algo {
 /// An abstract base class for algorithms which draw tracks on top of
 /// images in various ways, for analyzing results.
 class VITAL_ALGO_EXPORT draw_detected_object_set
-  : public kwiver::vital::algorithm_def< draw_detected_object_set >
+  : public kwiver::vital::algorithm
 {
 public:
   /// Return the name of this algorithm.
-  static std::string static_type_name() { return "draw_detected_object_set"; }
-
+  draw_detected_object_set();
+  PLUGGABLE_INTERFACE(draw_detected_object_set);
   /// Draw detected object boxes on Image.
   ///
   /// This method draws the detections on a copy of the image. The
@@ -43,8 +43,6 @@ public:
   draw( kwiver::vital::detected_object_set_sptr detected_set,
         kwiver::vital::image_container_sptr image ) = 0;
 
-protected:
-  draw_detected_object_set();
 };
 
 /// A smart pointer to a draw_tracks instance.

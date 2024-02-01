@@ -38,7 +38,8 @@ public:
   /// afford significant optimization opportunities to users.
   static const algorithm_capabilities::capability_name_t CAN_USE_FRAME_IMAGE;
 
-  PLUGGABLE_INTERFACE( metadata_filter );
+  metadata_filter();
+  PLUGGABLE_INTERFACE(metadata_filter);
 
   /// Filter metadata and return resulting metadata.
   ///
@@ -61,8 +62,6 @@ public:
   algorithm_capabilities const& get_implementation_capabilities() const;
 
 protected:
-  metadata_filter();
-
   void set_capability(
     algorithm_capabilities::capability_name_t const& name, bool value );
 

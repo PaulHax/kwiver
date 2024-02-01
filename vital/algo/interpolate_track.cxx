@@ -4,12 +4,6 @@
 
 #include "interpolate_track.h"
 
-#include <vital/algo/algorithm.txx>
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::interpolate_track );
-/// \endcond
-
 namespace kwiver {
 
 namespace vital {

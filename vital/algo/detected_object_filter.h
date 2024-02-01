@@ -28,12 +28,11 @@ namespace algo {
 /// input set. It all depends on the actual implementation. In any
 /// case, the input detection set shall be unmodified.
 class VITAL_ALGO_EXPORT detected_object_filter
-  : public algorithm_def< detected_object_filter >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "detected_object_filter"; }
-
+  detected_object_filter();
+  PLUGGABLE_INTERFACE(detected_object_filter);
   /// Filter set of detected objects.
   ///
   /// This method applies a filter to the input set to create an output
@@ -44,8 +43,6 @@ public:
   virtual detected_object_set_sptr
   filter( const detected_object_set_sptr input_set ) const = 0;
 
-protected:
-  detected_object_filter();
 };
 
 /// Shared pointer for generic detected_object_filter definition type.

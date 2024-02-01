@@ -44,11 +44,8 @@ public:
   // -- basic capabilities --
   static const algorithm_capabilities::capability_name_t HAS_TIME;
 
-  virtual ~image_io() = default;
-
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "image_io"; }
-
+  image_io();
+  PLUGGABLE_INTERFACE(image_io);
   /// Load image from the file
   ///
   /// \throws kwiver::vital::path_not_exists Thrown when the given path does not
@@ -99,8 +96,6 @@ public:
   algorithm_capabilities const& get_implementation_capabilities() const;
 
 protected:
-  image_io();
-
   void set_capability( algorithm_capabilities::capability_name_t const& name,
                        bool val );
 

@@ -255,6 +255,13 @@ public:                             \
   virtual ~name() = default;
 
 /**
+ * Variant for classes that define their own destructor.
+ */
+#define PLUGGABLE_INTERFACE_NO_DESTR( name ) \
+public:                             \
+  static std::string interface_name() { return #name; }
+
+/**
  * Basic implementation class helper macro for when you want to author your
  * own from_config and get_default_config static methods.
  */

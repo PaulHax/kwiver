@@ -2,7 +2,6 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/draw_detected_object_set.h>
 
 namespace kwiver {
@@ -22,5 +21,3 @@ draw_detected_object_set
 } // namespace vital
 
 } // namespace kwiver
-
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::draw_detected_object_set );

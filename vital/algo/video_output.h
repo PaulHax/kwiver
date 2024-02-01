@@ -69,7 +69,8 @@ public:
   static const algorithm_capabilities::capability_name_t
   SUPPORTS_UNINTERPRETED_DATA;
 
-  PLUGGABLE_INTERFACE( video_output );
+  video_output();
+  PLUGGABLE_INTERFACE(video_output);
 
   /// Open a video stream.
   ///
@@ -163,8 +164,6 @@ public:
   algorithm_capabilities const& get_implementation_capabilities() const;
 
 protected:
-  video_output();
-
   void set_capability(
     algorithm_capabilities::capability_name_t const& name, bool value );
 

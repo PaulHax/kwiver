@@ -27,12 +27,12 @@ namespace algo {
 /// An abstract base class for algorithms which draw tracks on top of
 /// images in various ways, for analyzing results.
 class VITAL_ALGO_EXPORT draw_tracks
-  : public kwiver::vital::algorithm_def< draw_tracks >
+  : public kwiver::vital::algorithm
 {
 public:
   /// Return the name of this algorithm.
-  static std::string static_type_name() { return "draw_tracks"; }
-
+  draw_tracks();
+  PLUGGABLE_INTERFACE(draw_tracks);
   /// Draw features tracks on top of the input images.
   ///
   /// This process can either be called in an offline fashion, where all
@@ -52,8 +52,6 @@ public:
         kwiver::vital::track_set_sptr comparison_set =
 	kwiver::vital::track_set_sptr() ) = 0;
 
-protected:
-  draw_tracks();
 };
 
 /// A smart pointer to a draw_tracks instance.

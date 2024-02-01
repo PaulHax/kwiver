@@ -6,7 +6,6 @@
 /// \brief nearest_neighbors algorithm definition instantiation
 
 #include "nearest_neighbors.h"
-#include <vital/algo/algorithm.txx>
 
 namespace kwiver {
 
@@ -25,7 +24,3 @@ nearest_neighbors
 } // namespace vital
 
 } // namespace kwiver
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::nearest_neighbors );
-/// \endcond

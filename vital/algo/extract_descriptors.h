@@ -23,12 +23,11 @@ namespace algo {
 
 /// An abstract base class for extracting feature descriptors
 class VITAL_ALGO_EXPORT extract_descriptors
-  : public kwiver::vital::algorithm_def< extract_descriptors >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "extract_descriptors"; }
-
+  extract_descriptors();
+  PLUGGABLE_INTERFACE(extract_descriptors);
   /// Extract from the image a descriptor corresoponding to each feature
   ///
   /// \param [in]     image_data contains the image data to process
@@ -50,8 +49,6 @@ public:
            kwiver::vital::image_container_sptr image_mask =
 	   kwiver::vital::image_container_sptr() ) const = 0;
 
-protected:
-  extract_descriptors();
 };
 
 /// Shared pointer for base extract_descriptors algorithm definition class

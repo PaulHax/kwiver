@@ -21,16 +21,13 @@ namespace algo {
 /// Abstract base class for creating uuid's
 ///
 class VITAL_ALGO_EXPORT uuid_factory
-  : public kwiver::vital::algorithm_def< uuid_factory >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "uuid_factory"; }
-
+  uuid_factory();
+  PLUGGABLE_INTERFACE(uuid_factory);
   virtual uid create_uuid() = 0;
 
-protected:
-  uuid_factory();
 };
 
 typedef std::shared_ptr< uuid_factory > uuid_factory_sptr;

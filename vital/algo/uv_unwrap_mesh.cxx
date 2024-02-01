@@ -6,7 +6,6 @@
 /// \brief uv_unwrap_mesh algorithm instantiation
 
 #include "uv_unwrap_mesh.h"
-#include <vital/algo/algorithm.txx>
 
 namespace kwiver {
 
@@ -25,5 +24,3 @@ uv_unwrap_mesh
 } // namespace vital
 
 } // namespace kwiver
-
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::uv_unwrap_mesh );

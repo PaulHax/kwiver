@@ -5,7 +5,6 @@
 /// \file
 /// \brief compute_track_descriptors algorithm instantiation
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/compute_track_descriptors.h>
 
 namespace kwiver {
@@ -25,7 +24,3 @@ compute_track_descriptors
 } // namespace vital
 
 } // namespace kwiver
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::compute_track_descriptors );
-/// \endcond

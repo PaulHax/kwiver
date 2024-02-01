@@ -32,7 +32,7 @@ class VITAL_ALGO_EXPORT estimate_pnp
 {
 public:
   estimate_pnp();
-  PLUGGABLE_INTERFACE( estimate_pnp );
+  PLUGGABLE_INTERFACE(estimate_pnp);
 
   /// Estimate the camera's pose from the 3D points and their corresponding
   /// projections

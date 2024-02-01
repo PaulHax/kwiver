@@ -8,7 +8,6 @@
 ///        \link kwiver::vital::algo::filter_tracks filter_tracks
 ///        \endlink
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/filter_tracks.h>
 
 namespace kwiver {
@@ -28,5 +27,3 @@ filter_tracks
 } // namespace vital
 
 } // namespace kwiver
-
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::filter_tracks );

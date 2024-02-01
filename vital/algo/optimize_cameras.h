@@ -31,7 +31,7 @@ class VITAL_ALGO_EXPORT optimize_cameras
 {
 public:
   optimize_cameras();
-  PLUGGABLE_INTERFACE( optimize_cameras );
+  PLUGGABLE_INTERFACE(optimize_cameras);
   /// Optimize camera parameters given sets of landmarks and feature tracks
   ///
   /// We only optimize cameras that have associating tracks and landmarks in

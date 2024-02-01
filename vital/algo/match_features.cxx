@@ -5,7 +5,6 @@
 /// \file
 /// \brief match_features algorithm instantiation
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/match_features.h>
 
 namespace kwiver {
@@ -25,7 +24,3 @@ match_features
 } // namespace vital
 
 } // namespace kwiver
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::match_features );
-/// \endcond

@@ -21,12 +21,12 @@ namespace algo {
 /// This class represents the abstract interface for algorithms that
 /// interpolate track states.
 class VITAL_ALGO_EXPORT interpolate_track
-  : public kwiver::vital::algorithm_def< interpolate_track >
+  : public kwiver::vital::algorithm
 {
 public:
   /// Return the name of this algorithm.
-  static std::string static_type_name() { return "interpolate_track"; }
-
+  interpolate_track();
+  PLUGGABLE_INTERFACE(interpolate_track);
   /// Supply video input algorithm
   ///
   /// This method supplies the video input algorithm to use for getting
@@ -60,8 +60,6 @@ public:
   void set_progress_callback( progress_callback_t cb );
 
 protected:
-  interpolate_track();
-
   /// Call the supplied progress callback function if there is one
   /// currently active.
   ///

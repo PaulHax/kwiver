@@ -7,7 +7,6 @@
 
 #include "metadata_map_io.h"
 
-#include <vital/algo/algorithm.txx>
 #include <vital/exceptions/io.h>
 #include <vital/vital_config.h>
 #include <vital/vital_types.h>

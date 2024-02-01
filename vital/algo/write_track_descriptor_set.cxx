@@ -9,15 +9,10 @@
 
 #include <memory>
 
-#include <vital/algo/algorithm.txx>
 #include <vital/exceptions/io.h>
 #include <vital/vital_types.h>
 
 #include <kwiversys/SystemTools.hxx>
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::write_track_descriptor_set );
-/// \endcond
 
 namespace kwiver {
 
@@ -31,11 +26,6 @@ write_track_descriptor_set
     m_stream_owned( false )
 {
   attach_logger( "algo.write_track_descriptor_set" );
-}
-
-write_track_descriptor_set
-::~write_track_descriptor_set()
-{
 }
 
 // ----------------------------------------------------------------------------

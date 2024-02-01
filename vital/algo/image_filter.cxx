@@ -5,7 +5,6 @@
 /// \file
 /// \brief image_filter algorithm instantiation
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/image_filter.h>
 
 namespace kwiver {
@@ -25,7 +24,3 @@ image_filter
 } // namespace vital
 
 } // namespace kwiver
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::image_filter );
-/// \endcond
