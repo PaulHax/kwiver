@@ -8,7 +8,6 @@
 ///        kwiver::vital::algo::optimize_cameras optimize_cameras
 ///        \endlink
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/optimize_cameras.h>
 
 namespace kwiver {
@@ -102,7 +101,3 @@ optimize_cameras
 } // namespace vital
 
 } // namespace kwiver
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::optimize_cameras );
-/// \endcond

@@ -5,12 +5,7 @@
 /// \file
 /// \brief estimate_pnp instantiation
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/estimate_pnp.h>
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::estimate_pnp );
-/// \endcond
 
 namespace kwiver {
 

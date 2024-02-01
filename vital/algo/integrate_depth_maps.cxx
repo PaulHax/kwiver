@@ -8,7 +8,6 @@
 ///        \link kwiver::vital::algo::integrate_depth_maps
 ///        integrate_depth_maps \endlink
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/integrate_depth_maps.h>
 
 namespace kwiver {
@@ -50,7 +49,3 @@ integrate_depth_maps
 } // namespace vital
 
 } // namespace kwiver
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::integrate_depth_maps );
-/// \endcond

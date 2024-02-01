@@ -16,7 +16,10 @@
 #include "config_block_types.h"
 #include "config_block_exception.h"
 
+#include <algorithm>
+#include <array>
 #include <cstddef>
+#include <iterator>
 #include <map>
 #include <set>
 #include <string>
@@ -563,6 +566,14 @@ template < >
 VITAL_CONFIG_EXPORT
 std::string config_block_get_value_cast( config_block_value_t const& value );
 
+// ------------------------------------------------------------------
+/// Specialization for std::array
+// template<typename Tp, size_t Nm>
+template<>
+VITAL_CONFIG_EXPORT
+std::array<double, 3> config_block_get_value_cast( config_block_value_t const& value );
+
+
 // ----------------------------------------------------------------------------
 // Internally cast the value.
 template < typename T >
@@ -814,6 +825,21 @@ config_block
 {
   this->i_set_value( key, value, descr );
 }
+
+/// Type-specific handling for std::array
+// template<typename Tp, size_t Nm>
+template<>
+inline
+config_block_value_t
+config_block_set_value_cast( std::array<double, 3> const& value )
+{
+  std::stringstream str;
+
+  std::copy_n(value.begin(), 3, std::ostream_iterator<double>(str, " "));
+
+  return str.str();
+}
+
 //@}
 
 } }

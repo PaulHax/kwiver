@@ -13,7 +13,10 @@
 #include <arrows/mvg/kwiver_algo_mvg_export.h>
 
 #include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/bundle_adjust.h>
+#include <vital/algo/optimize_cameras.h>
+#include <vital/algo/triangulate_landmarks.h>
 #include <vital/config/config_block.h>
 
 namespace kwiver {
@@ -24,19 +27,33 @@ class KWIVER_ALGO_MVG_EXPORT hierarchical_bundle_adjust
   : public vital::algo::bundle_adjust
 {
 public:
-  PLUGIN_INFO( "hierarchical",
-               "Run a bundle adjustment algorithm in a temporally hierarchical fashion"
-               " (useful for video)" )
+  PLUGGABLE_IMPL( 
+    hierarchical_bundle_adjust,
+    "Run a bundle adjustment algorithm in a temporally hierarchical fashion"
+    " (useful for video)",
+    PARAM_DEFAULT(initial_sub_sample, unsigned int,
+                      "Sub-sample the given cameras by this factor. Gaps will "
+                      "then be filled in by iterations of interpolation.", 1),
 
-  /// Constructor
-  hierarchical_bundle_adjust();
+    PARAM_DEFAULT(interpolation_rate, unsigned int,
+                      "Number of cameras to fill in each iteration. When this "
+                      "is set to 0, we will interpolate all missing cameras "
+                      "at the first moment possible.", 0),
+
+    PARAM_DEFAULT(rmse_reporting_enabled, bool,
+                      "Enable the reporting of RMSE statistics at various "
+                      "stages of this algorithm. Constant calculating of RMSE "
+                      "may effect run time of the algorithm.", false),
+    PARAM(sba_impl,vital::algo::bundle_adjust_sptr, 
+        "pointer to the nested algorithm"),
+    PARAM(camera_optimizer,vital::algo::optimize_cameras_sptr, 
+        "pointer to the nested algorithm"),
+    PARAM(lm_triangulator,vital::algo::triangulate_landmarks_sptr, 
+        "pointer to the nested algorithm")
+  )
   /// Destructor
   virtual ~hierarchical_bundle_adjust() noexcept;
 
-  /// Get this algorithm's \link kwiver::vital::config_block configuration block \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration(vital::config_block_sptr config);
   /// Check that the algorithm's configuration vital::config_block is valid
   virtual bool check_configuration(vital::config_block_sptr config) const;
 
@@ -47,11 +64,13 @@ public:
                         vital::sfm_constraints_sptr constraints = nullptr) const;
 
   using vital::algo::bundle_adjust::optimize;
+protected:
+  void initialize() override;
 
 private:
   // private implementation class
   class priv;
-  std::unique_ptr<priv> d_;
+  KWIVER_UNIQUE_PTR(priv,d_);
 };
 
 /// Type definition for shared pointer for hierarchical_bundle_adjust algorithm

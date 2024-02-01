@@ -33,7 +33,7 @@ TEST(integrate_depth_maps, create)
 
   plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE(nullptr, algo::integrate_depth_maps::create("mvg"));
+  EXPECT_NE( nullptr, kwiver::vital::create_algorithm<kwiver::vital::algo::integrate_depth_maps>("mvg") );
 }
 
 void make_test_data(std::vector< image_container_sptr >& depth_maps,

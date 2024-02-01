@@ -27,12 +27,11 @@ namespace algo {
 
 /// An abstract base class for triangulating landmarks
 class VITAL_ALGO_EXPORT triangulate_landmarks
-  : public kwiver::vital::algorithm_def< triangulate_landmarks >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "triangulate_landmarks"; }
-
+  triangulate_landmarks();
+  PLUGGABLE_INTERFACE( triangulate_landmarks );
   /// Triangulate the landmark locations given sets of cameras and feature
   /// tracks
   ///
@@ -61,9 +60,6 @@ public:
   triangulate( vital::camera_map_sptr cameras,
                vital::track_map_t tracks,
                vital::landmark_map_sptr& landmarks ) const;
-
-protected:
-  triangulate_landmarks();
 };
 
 /// type definition for shared pointer to a triangulate landmarks algorithm

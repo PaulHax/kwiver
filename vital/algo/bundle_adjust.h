@@ -28,12 +28,12 @@ namespace algo {
 
 /// An abstract base class for bundle adjustment using feature tracks
 class VITAL_ALGO_EXPORT bundle_adjust
-  : public kwiver::vital::algorithm_def< bundle_adjust >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "bundle_adjust"; }
-
+  bundle_adjust();
+  PLUGGABLE_INTERFACE(bundle_adjust);
+  
   /// Optimize the camera and landmark parameters given a set of feature tracks
   ///
   /// Implementations of this function should not modify the underlying objects
@@ -77,8 +77,6 @@ public:
   virtual void set_callback( callback_t cb );
 
 protected:
-  bundle_adjust();
-
   /// The callback function
   callback_t m_callback;
 };

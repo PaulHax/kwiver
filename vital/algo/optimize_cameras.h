@@ -27,12 +27,11 @@ namespace algo {
 
 /// Abstract algorithm definition base for optimizing cameras
 class VITAL_ALGO_EXPORT optimize_cameras
-  : public kwiver::vital::algorithm_def< optimize_cameras >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm definition
-  static std::string static_type_name() { return "optimize_cameras"; }
-
+  optimize_cameras();
+  PLUGGABLE_INTERFACE( optimize_cameras );
   /// Optimize camera parameters given sets of landmarks and feature tracks
   ///
   /// We only optimize cameras that have associating tracks and landmarks in
@@ -71,9 +70,6 @@ public:
             const std::vector< kwiver::vital::feature_sptr >& features,
             const std::vector< kwiver::vital::landmark_sptr >& landmarks,
             kwiver::vital::sfm_constraints_sptr constraints = nullptr ) const = 0;
-
-protected:
-  optimize_cameras();
 };
 
 /// Type definition for shared pointer to an optimize cameras algorithm

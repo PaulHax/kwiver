@@ -25,17 +25,20 @@ class integrate_depth_maps::priv
 {
 public:
   // Constructor
-  priv()
-    : ray_potential_rho(1.0),
-      ray_potential_thickness(20.0),
-      ray_potential_eta(1.0),
-      ray_potential_epsilon(0.01),
-      ray_potential_delta(10.0),
-      grid_spacing {1.0, 1.0, 1.0},
-      voxel_spacing_factor(1.0),
+  priv(integrate_depth_maps& parent)
+    :parent(parent),
       m_logger(vital::get_logger("arrows.mvg.integrate_depth_maps"))
   {
   }
+  integrate_depth_maps& parent;
+  // Configuration values
+  double c_ray_potential_rho() const { return parent.c_ray_potential_rho; };
+  double c_ray_potential_thickness() const { return parent.c_ray_potential_thickness; };
+  double c_ray_potential_eta() const { return parent.c_ray_potential_eta; };
+  double c_ray_potential_epsilon() const { return parent.c_ray_potential_epsilon; };
+  double c_ray_potential_delta() const { return parent.c_ray_potential_delta; };
+  double c_voxel_spacing_factor() const { return parent.c_voxel_spacing_factor; };
+  std::array<double, 3> c_grid_spacing() const { return parent.c_grid_spacing; };
 
   // integrate a depth image into the integration volume
   void integrate_depth_map(image_of<double>& volume,
@@ -68,21 +71,10 @@ public:
                                  image_of<double> const& depth,
                                  image_of<double> const& weight) const;
 
-  double ray_potential_rho;
-  double ray_potential_thickness;
-  double ray_potential_eta;
-  double ray_potential_epsilon;
-  double ray_potential_delta;
-
-  int grid_dims[3];
-
   // Actual spacing is computed as
   //   voxel_scale_factor * pixel_to_world_scale * grid_spacing
   // relative spacings per dimension
-  double grid_spacing[3];
-
-  // multiplier on all dimensions of grid spacing
-  double voxel_spacing_factor;
+  int grid_dims[3];
 
   double const_thickness;
   double const_delta;
@@ -263,7 +255,7 @@ integrate_depth_maps::priv
   }
   else if (abs_diff > const_thickness)
   {
-    return std::copysign(ray_potential_rho, diff);
+    return std::copysign(c_ray_potential_rho(), diff);
   }
 
   return const_slope * diff;
@@ -272,9 +264,9 @@ integrate_depth_maps::priv
 // ----------------------------------------------------------------------------
 
 /// Constructor
-integrate_depth_maps::integrate_depth_maps()
-  : d_(new priv)
+void integrate_depth_maps::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR(priv,d_);
 }
 
 // ----------------------------------------------------------------------------
@@ -282,79 +274,6 @@ integrate_depth_maps::integrate_depth_maps()
 /// Destructor
 integrate_depth_maps::~integrate_depth_maps()
 {
-}
-
-// ----------------------------------------------------------------------------
-
-/// Get this algorithm's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-integrate_depth_maps::get_configuration() const
-{
-  // get base config from base class
-  auto config = vital::algo::integrate_depth_maps::get_configuration();
-
-  config->set_value("ray_potential_thickness", d_->ray_potential_thickness,
-                    "Distance that the TSDF covers sloping from Rho to zero. "
-                    "Units are in voxels.");
-  config->set_value("ray_potential_rho", d_->ray_potential_rho,
-                    "Maximum magnitude of the TDSF");
-  config->set_value("ray_potential_eta", d_->ray_potential_eta,
-                    "Fraction of rho to use for free space constraint. "
-                    "Requires 0 <= Eta <= 1.");
-  config->set_value("ray_potential_epsilon", d_->ray_potential_epsilon,
-                    "Fraction of rho to use in occluded space. "
-                    "Requires 0 <= Epsilon <= 1.");
-  config->set_value("ray_potential_delta", d_->ray_potential_delta,
-                    "Distance from the surface before the TSDF is truncate. "
-                    "Units are in voxels");
-  config->set_value("voxel_spacing_factor", d_->voxel_spacing_factor,
-                    "Multiplier on voxel spacing.  Set to 1.0 for voxel "
-                    "sizes that project to 1 pixel on average.");
-
-  std::ostringstream stream;
-  stream << d_->grid_spacing[0] << " "
-         << d_->grid_spacing[1] << " "
-         << d_->grid_spacing[2];
-  config->set_value("grid_spacing", stream.str(),
-                    "Relative spacing for each dimension of the grid");
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-
-/// Set this algorithm's properties via a config block
-void
-integrate_depth_maps::set_configuration(vital::config_block_sptr in_config)
-{
-  // Starting with our generated vital::config_block to ensure that
-  // assumed values are present. An alternative is to check for key
-  // presence before performing a get_value() call.
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config(in_config);
-
-  d_->ray_potential_rho =
-    config->get_value<double>("ray_potential_rho", d_->ray_potential_rho);
-  d_->ray_potential_thickness =
-    config->get_value<double>("ray_potential_thickness",
-                              d_->ray_potential_thickness);
-  d_->ray_potential_eta =
-    config->get_value<double>("ray_potential_eta", d_->ray_potential_eta);
-  d_->ray_potential_epsilon =
-    config->get_value<double>("ray_potential_epsilon", d_->ray_potential_epsilon);
-  d_->ray_potential_delta =
-    config->get_value<double>("ray_potential_delta", d_->ray_potential_delta);
-  d_->voxel_spacing_factor =
-    config->get_value<double>("voxel_spacing_factor", d_->voxel_spacing_factor);
-
-  std::ostringstream ostream;
-  ostream << d_->grid_spacing[0] << " "
-          << d_->grid_spacing[1] << " "
-          << d_->grid_spacing[2];
-  std::string spacing =
-    config->get_value<std::string>("grid_spacing", ostream.str());
-  std::istringstream istream(spacing);
-  istream >> d_->grid_spacing[0] >> d_->grid_spacing[1] >> d_->grid_spacing[2];
 }
 
 // ----------------------------------------------------------------------------
@@ -386,16 +305,16 @@ integrate_depth_maps::integrate(
   vector_3d diff = maxpt_bound - minpt_bound;
   vector_3d orig = minpt_bound;
 
-  spacing = vector_3d(d_->grid_spacing);
-  spacing *= pixel_to_world_scale * d_->voxel_spacing_factor;
+  spacing = vector_3d(d_->c_grid_spacing()[0], d_->c_grid_spacing()[1], d_->c_grid_spacing()[2]);
+  spacing *= pixel_to_world_scale * d_->c_voxel_spacing_factor();
   double max_spacing = spacing.maxCoeff();
 
   // precompute constants to make ray potential computation more efficient
-  d_->const_delta = d_->ray_potential_delta * max_spacing;
-  d_->const_thickness = d_->ray_potential_thickness * max_spacing;
-  d_->const_slope = d_->ray_potential_rho / d_->const_thickness;
-  d_->const_freespace_val = -d_->ray_potential_eta * d_->ray_potential_rho;
-  d_->const_occluded_val = d_->ray_potential_epsilon * d_->ray_potential_rho;
+  d_->const_delta = d_->c_ray_potential_delta() * max_spacing;
+  d_->const_thickness = d_->c_ray_potential_thickness() * max_spacing;
+  d_->const_slope = d_->c_ray_potential_rho() / d_->const_thickness;
+  d_->const_freespace_val = -d_->c_ray_potential_eta() * d_->c_ray_potential_rho();
+  d_->const_occluded_val = d_->c_ray_potential_epsilon() * d_->c_ray_potential_rho();
 
   for (int i = 0; i < 3; i++)
   {

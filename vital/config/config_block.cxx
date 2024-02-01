@@ -503,6 +503,28 @@ config_block_get_value_cast( config_block_value_t const& value )
   return value;
 }
 
+template<>
+std::array<double, 3>
+config_block_get_value_cast( config_block_value_t const& value )
+{
+  try 
+  {
+    std::stringstream str(value);
+
+    // space delimited strings into vector of numbers.
+    std::vector<double> numbers((std::istream_iterator<double>(str)), {});
+    std::array<double, 3> result;
+    std::copy_n(numbers.begin(), 3, result.begin());
+    return result;
+  }
+  catch ( std::exception& e )
+  {
+    VITAL_THROW( bad_config_block_cast,
+                "failed to convert from string representation \""
+                + value + "\" to std::array<double, 3>" );
+  }
+}
+
 // ----------------------------------------------------------------------------
 // private helper method for determining key path prefixes
 /// \param key   The key string to check.
