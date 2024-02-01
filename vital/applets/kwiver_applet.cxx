@@ -18,9 +18,6 @@ namespace kv = ::kwiver::vital;
 kwiver_applet::
 kwiver_applet() = default;
 
-kwiver_applet::
-~kwiver_applet() = default;
-
 // ----------------------------------------------------------------------------
 kv::config_block_sptr
 kwiver_applet::

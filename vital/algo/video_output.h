@@ -69,8 +69,6 @@ public:
   static const algorithm_capabilities::capability_name_t
   SUPPORTS_UNINTERPRETED_DATA;
 
-  virtual ~video_output();
-
   PLUGGABLE_INTERFACE( video_output );
 
   /// Open a video stream.

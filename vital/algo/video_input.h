@@ -127,8 +127,6 @@ public:
   static const algorithm_capabilities::capability_name_t HAS_UNINTERPRETED_DATA;
 
   video_input();
-  virtual ~video_input();
-
   PLUGGABLE_INTERFACE( video_input );
 
   /// \brief Open a video stream.

@@ -37,12 +37,6 @@ video_output
 }
 
 // ----------------------------------------------------------------------------
-video_output
-::~video_output()
-{
-}
-
-// ----------------------------------------------------------------------------
 void
 video_output
 ::add_image( [[maybe_unused]] video_raw_image const& image )

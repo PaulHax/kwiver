@@ -251,7 +251,8 @@ public:                                     \
  */
 #define PLUGGABLE_INTERFACE( name ) \
 public:                             \
-  static std::string interface_name() { return #name; }
+  static std::string interface_name() { return #name; } \
+  virtual ~name() = default;
 
 /**
  * Basic implementation class helper macro for when you want to author your

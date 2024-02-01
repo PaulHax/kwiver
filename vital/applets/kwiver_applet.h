@@ -31,8 +31,6 @@ class VITAL_APPLETS_EXPORT kwiver_applet : public vital::pluggable
 {
 public:
   kwiver_applet();
-  virtual ~kwiver_applet();
-
   PLUGGABLE_INTERFACE( kwiver_applet );
 
   void initialize( kwiver::tools::applet_context* ctxt );
