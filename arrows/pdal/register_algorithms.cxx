@@ -6,7 +6,7 @@
 /// \brief PDAL algorithm registration implementation
 
 #include <arrows/pdal/kwiver_algo_pdal_plugin_export.h>
-#include <vital/algo/algorithm_factory.h>
+// #include <vital/algo/algorithm_factory.h>
 
 #include <arrows/pdal/algo/pointcloud_io.h>
 
@@ -21,16 +21,11 @@ KWIVER_ALGO_PDAL_PLUGIN_EXPORT
 void
 register_factories( kwiver::vital::plugin_loader& vpm )
 {
-  kwiver::vital::algorithm_registrar reg( vpm, "arrows.pdal" );
+  using kvp = ::kwiver::vital::plugin_factory;
 
-  if( reg.is_module_loaded() )
-  {
-    return;
-  }
-
-  reg.register_algorithm< pointcloud_io >();
-
-  reg.mark_module_as_loaded();
+  auto fact =
+    vpm.add_factory< vital::algo::pointcloud_io, pointcloud_io >( "pdal" );
+  fact->add_attribute( kvp::PLUGIN_MODULE_NAME, "arrows_pdal" );
 }
 
 } // end namespace pdal

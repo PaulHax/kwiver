@@ -10,6 +10,9 @@
 
 #include <arrows/pdal/kwiver_algo_pdal_export.h>
 
+#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
+
 #include <vital/algo/pointcloud_io.h>
 #include <vital/types/landmark_map.h>
 #include <vital/types/local_geo_cs.h>
@@ -24,19 +27,17 @@ class KWIVER_ALGO_PDAL_EXPORT pointcloud_io
   : public vital::algo::pointcloud_io
 {
 public:
-  PLUGIN_INFO(
-    "pdal",
-    "Use PDAL to write and read point clouds." );
+  PLUGGABLE_IMPL(
+    pointcloud_io,
+    "Use PDAL to write and read point clouds."
+  )
 
-  /// \cond DoxygenSuppress
-  virtual void
-  set_configuration( vital::config_block_sptr /*config*/ ) {}
-
-  virtual bool
-  check_configuration( vital::config_block_sptr /*config*/ )
-  const { return true; }
+  bool
+  check_configuration( vital::config_block_sptr config )
+  const override { return true; }
   /// \endcond
 
+  // is this something that needs to get updated?
   void
   set_local_geo_cs( vital::local_geo_cs const& lgcs ) { m_lgcs = lgcs; }
 
