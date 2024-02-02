@@ -214,7 +214,11 @@ get_record(istream& is, vector<string>& values)
   is.get(c);
   if (is.eof()) return is; // Handle end of file gracefully
 
+  // UNCRUST-OFF
   for (; is; is.get(c))
+  //  ^ `uncrustify` is not stable and will oscillate on whether this space
+  //  should exist or not.
+  // UNCRUST-ON
   {
     // Handle DOS and (old-style) Mac line endings
     if (c == '\r')

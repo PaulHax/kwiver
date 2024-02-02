@@ -81,6 +81,9 @@ protected:
 // ----------------------------------------------------------------------------
 // Static-method Existence Helpers
 
+// Reformatting this seems to take `uncrustify` into an infinite loop of some
+// kind (killed after 5 minutes).
+// UNCRUST-OFF
 #define CREATE_HAS_CHECK( funcname ) \
   template< typename T > \
   class has_##funcname final \
@@ -93,6 +96,7 @@ protected:
   public: \
     enum { value = sizeof(test<T>(nullptr)) == sizeof(r1) }; \
   }
+// UNCRUST-ON
 
 /**
  * Use SFINAE To check if the templated type has "interface_name" static method.

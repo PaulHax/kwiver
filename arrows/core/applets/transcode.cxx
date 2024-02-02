@@ -168,7 +168,11 @@ transcode_applet
   output->open( output_filename, video_settings.get() );
 
   // Transcode frames
+  // UNCRUST-OFF
   for( ; !input->end_of_video(); input->next_frame( timestamp ) )
+  //  ^ `uncrustify` is not stable and will oscillate on whether this space
+  //  should exist or not.
+  // UNCRUST-ON
   {
     // Transcode metadata
     if( cmd_args.count( "copy-metadata" ) )

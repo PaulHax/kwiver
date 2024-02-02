@@ -79,7 +79,11 @@ bool mgrs_pos::read_xml( const TiXmlElement* const_e, scorable_mgrs& m ) const
   }
 
   TiXmlElement* zone = e->FirstChild( "mgrs_zone" )->ToElement();
+  // UNCRUST-OFF
   for( ; zone; zone = zone->NextSiblingElement() )
+  //  ^ `uncrustify` is not stable and will oscillate on whether this space
+  //  should exist or not.
+  // UNCRUST-ON
   {
     TiXmlElement* zone_e = zone->FirstChild( "zone" )->ToElement();
     TiXmlElement* northing_e = zone->FirstChild( "northing" )->ToElement();

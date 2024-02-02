@@ -50,7 +50,9 @@ template< class... Args >
 inline void throw_error( Args... args )
 {
   std::stringstream ss;
+  // UNCRUST-OFF
   bool dummy[] = { ( ss << args ).good()... };
+  // UNCRUST-ON
   ( void )dummy;
   throw std::runtime_error( ss.str() );
 }
