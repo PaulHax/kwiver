@@ -31,7 +31,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Tests for json serialization of vital types
 """
 
-
 from __future__ import print_function, absolute_import
 
 import nose.tools
@@ -86,68 +85,79 @@ from kwiver.arrows.tests.serialize_json_utils import compare_object_track_state
 from kwiver.arrows.tests.serialize_json_utils import create_object_track_set
 from kwiver.arrows.tests.serialize_json_utils import compare_object_track_set
 
+
 def test_serialize_activity_type():
     at = create_activity_type()
     serialized_at = serialize_activity_type(at)
     deserialized_at = deserialize_activity_type(serialized_at)
-    nose.tools.assert_true(compare_activity_type( at, deserialized_at ) )
+    nose.tools.assert_true(compare_activity_type(at, deserialized_at))
+
 
 def test_serialize_bounding_box():
     bbox = create_bounding_box()
     serialized_bbox = serialize_bounding_box(bbox)
     deserialized_bbox = deserialize_bounding_box(serialized_bbox)
-    nose.tools.assert_true(compare_bounding_box( bbox, deserialized_bbox ) )
+    nose.tools.assert_true(compare_bounding_box(bbox, deserialized_bbox))
+
 
 def test_serialize_detected_object():
     do = create_detected_object()
     serialized_do = serialize_detected_object(do)
     deserialized_do = deserialize_detected_object(serialized_do)
-    nose.tools.assert_true(compare_detected_object( do, deserialized_do ) )
+    nose.tools.assert_true(compare_detected_object(do, deserialized_do))
+
 
 def test_serialize_detected_object_set():
     dos = create_detected_object_set()
     serialized_dos = serialize_detected_object_set(dos)
     deserialized_dos = deserialize_detected_object_set(serialized_dos)
-    nose.tools.assert_true(compare_detected_object_set( dos, deserialized_dos ) )
+    nose.tools.assert_true(compare_detected_object_set(dos, deserialized_dos))
+
 
 def test_serialize_detected_object_type():
     dot = create_detected_object_type()
     serialized_dot = serialize_detected_object_type(dot)
     deserialized_dot = deserialize_detected_object_type(serialized_dot)
-    nose.tools.assert_true(compare_detected_object_type( dot, deserialized_dot ) )
+    nose.tools.assert_true(compare_detected_object_type(dot, deserialized_dot))
+
 
 def test_serialize_image():
     img = create_image()
     serialized_img = serialize_image(img)
     deserialized_img = deserialize_image(serialized_img)
-    nose.tools.assert_true(compare_image( img, deserialized_img ) )
+    nose.tools.assert_true(compare_image(img, deserialized_img))
+
 
 def test_serialize_timestamp():
     ts = create_timestamp()
     serialized_ts = serialize_timestamp(ts)
     deserialized_ts = deserialize_timestamp(serialized_ts)
-    nose.tools.assert_true(compare_timestamp( ts, deserialized_ts ) )
+    nose.tools.assert_true(compare_timestamp(ts, deserialized_ts))
+
 
 def test_serialize_track_state():
     ts = create_track_state()
     serialized_ts = serialize_track_state(ts)
     deserialized_ts = deserialize_track_state(serialized_ts)
-    nose.tools.assert_true(compare_track_state( ts, deserialized_ts ) )
+    nose.tools.assert_true(compare_track_state(ts, deserialized_ts))
+
 
 def test_serialize_track():
     ts = create_track()
     serialized_ts = serialize_track(ts)
     deserialized_ts = deserialize_track(serialized_ts)
-    nose.tools.assert_true(compare_track( ts, deserialized_ts ) )
+    nose.tools.assert_true(compare_track(ts, deserialized_ts))
+
 
 def test_serialize_track_set():
     ts = create_track_set()
     serialized_ts = serialize_track_set(ts)
     deserialized_ts = deserialize_track_set(serialized_ts)
-    nose.tools.assert_true(compare_track_set( ts, deserialized_ts ) )
+    nose.tools.assert_true(compare_track_set(ts, deserialized_ts))
+
 
 def test_serialize_object_track_set():
     ts = create_object_track_state()
     serialized_ts = serialize_object_track_state(ts)
     deserialized_ts = deserialize_object_track_state(serialized_ts)
-    nose.tools.assert_true(compare_track_state( ts, deserialized_ts ) )
+    nose.tools.assert_true(compare_track_state(ts, deserialized_ts))

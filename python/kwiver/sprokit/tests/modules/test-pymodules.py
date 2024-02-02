@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#ckwg +28
+# ckwg +28
 # Copyright 2012-2020 by Kitware, Inc.
 # All rights reserved.
 #
@@ -30,6 +30,7 @@
 
 from kwiver.sprokit.util.test import find_tests, run_test, test_error
 
+
 def test_import():
     try:
         import kwiver.vital.modules.modules
@@ -46,7 +47,7 @@ def test_load():
 
     types = process_factory.types()
 
-    if 'test_python_process' not in types:
+    if "test_python_process" not in types:
         test_error("Failed to load Python processes")
 
 
@@ -59,7 +60,7 @@ def test_masking():
 
     types = process_factory.types()
 
-    if 'test_python_process' in types:
+    if "test_python_process" in types:
         test_error("Failed to mask out Python processes")
 
 
@@ -72,12 +73,11 @@ def test_extra_modules():
 
     types = process_factory.types()
 
-    if 'extra_test_python_process' not in types:
+    if "extra_test_python_process" not in types:
         test_error("Failed to load extra Python processes")
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
 
     if len(sys.argv) != 2:

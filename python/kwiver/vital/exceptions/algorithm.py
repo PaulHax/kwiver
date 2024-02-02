@@ -33,9 +33,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Algorithm related exceptions.
 
 """
+
 from .base import VitalBaseException
 
 
-class VitalAlgorithmException (VitalBaseException):
-    """ Base exception for algorithm exceptions """
+class VitalAlgorithmException(VitalBaseException):
+    """Base exception for algorithm exceptions"""
+
     pass

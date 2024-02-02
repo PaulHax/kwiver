@@ -1,4 +1,4 @@
-#ckwg +28
+# ckwg +28
 # Copyright 2012-2013 by Kitware, Inc.
 # All rights reserved.
 #
@@ -29,12 +29,12 @@
 
 
 def find_tests(scope):
-    prefix = 'test_'
+    prefix = "test_"
     tests = {}
 
     for name, obj in scope.items():
         if name.startswith(prefix) and callable(obj):
-            tests[name[len(prefix):]] = obj
+            tests[name[len(prefix) :]] = obj
 
     return tests
 
@@ -66,9 +66,11 @@ def expect_exception(action, kind, func, *args, **kwargs):
         t = sys.exc_info()[0]
         e = sys.exc_info()[1]
         bt = sys.exc_info()[2]
-        bt_str = ''.join(traceback.format_tb(bt))
+        bt_str = "".join(traceback.format_tb(bt))
 
-        test_error("Got unexpected exception: %s: %s:\n%s" % (str(t.__name__), str(e), bt_str))
+        test_error(
+            "Got unexpected exception: %s: %s:\n%s" % (str(t.__name__), str(e), bt_str)
+        )
 
         got_exception = True
     except:
@@ -96,6 +98,6 @@ def run_test(testname, tests, *args, **kwargs):
 
         e = sys.exc_info()[1]
         bt = sys.exc_info()[2]
-        bt_str = ''.join(traceback.format_tb(bt))
+        bt_str = "".join(traceback.format_tb(bt))
 
         test_error("Unexpected exception: %s:\n%s" % (str(e), bt_str))

@@ -39,6 +39,7 @@ from kwiver.vital.types import metadata_tags as mt
 import nose.tools as nt
 import unittest
 
+
 class TestVitalMetadataTags(unittest.TestCase):
     def setUp(self):
         # This gets us a list of every tag enum value,
@@ -164,7 +165,13 @@ class TestVitalMetadataTags(unittest.TestCase):
             )
 
             # Print out every 20th element, as well as the last element
-            if expected_val % 20 == 0 or expected_val == len(self.tags)-1:
-                print(str(t), "has value", int(t), "which matches expected value of", expected_val)
+            if expected_val % 20 == 0 or expected_val == len(self.tags) - 1:
+                print(
+                    str(t),
+                    "has value",
+                    int(t),
+                    "which matches expected value of",
+                    expected_val,
+                )
 
             expected_val += 1

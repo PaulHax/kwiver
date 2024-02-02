@@ -7,12 +7,12 @@ from kwiver.vital.algo import MetadataMapIO
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
 
 
-class SimpleMetadataMapIO(CommonConfigurationMixin,
-                            MetadataMapIO):
+class SimpleMetadataMapIO(CommonConfigurationMixin, MetadataMapIO):
     """
     Implementation of MetadataMapIO to test it
     Examples:
     """
+
     def __init__(self):
         MetadataMapIO.__init__(self)
 
@@ -21,12 +21,12 @@ def __vital_algorithm_register__():
     from kwiver.vital.algo import algorithm_factory
 
     # Register Algorithm
-    implementation_name  = "MetadataMapIO"
+    implementation_name = "MetadataMapIO"
     if algorithm_factory.has_algorithm_impl_name(
-                            SimpleMetadataMapIO.static_type_name(),
-                            implementation_name):
+        SimpleMetadataMapIO.static_type_name(), implementation_name
+    ):
         return
-    algorithm_factory.add_algorithm( implementation_name,
-                                "Test kwiver.vital.algo.MetadataMapIO",
-                                 SimpleMetadataMapIO )
-    algorithm_factory.mark_algorithm_as_loaded( implementation_name )
+    algorithm_factory.add_algorithm(
+        implementation_name, "Test kwiver.vital.algo.MetadataMapIO", SimpleMetadataMapIO
+    )
+    algorithm_factory.mark_algorithm_as_loaded(implementation_name)

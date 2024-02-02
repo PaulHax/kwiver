@@ -1,4 +1,4 @@
-#ckwg +28
+# ckwg +28
 # Copyright 2017 by Kitware, Inc.
 # All rights reserved.
 #
@@ -47,6 +47,7 @@ from .utils.grid import Grid
 from .utils.resnet_feature_extractor import ResnetFeatureExtractor
 from .utils.parse_gpu_list import gpu_list_desc, parse_gpu_list
 
+
 class ResnetDescriptors(KwiverProcess):
 
     # ----------------------------------------------
@@ -54,30 +55,46 @@ class ResnetDescriptors(KwiverProcess):
         KwiverProcess.__init__(self, conf)
 
         # GPU list
-        self.add_config_trait("gpu_list", "gpu_list", 'all',
-                              gpu_list_desc(use_for='Resnet descriptors'))
-        self.declare_config_using_trait('gpu_list')
+        self.add_config_trait(
+            "gpu_list", "gpu_list", "all", gpu_list_desc(use_for="Resnet descriptors")
+        )
+        self.declare_config_using_trait("gpu_list")
 
         # Resnet
-        #----------------------------------------------------------------------------------
-        self.add_config_trait("resnet_model_path", "resnet_model_path",
-                              'models/resnet50_default.pt',
-                              'Trained PyTorch model.')
-        self.declare_config_using_trait('resnet_model_path')
+        # ----------------------------------------------------------------------------------
+        self.add_config_trait(
+            "resnet_model_path",
+            "resnet_model_path",
+            "models/resnet50_default.pt",
+            "Trained PyTorch model.",
+        )
+        self.declare_config_using_trait("resnet_model_path")
 
-        self.add_config_trait("resnet_model_input_size", "resnet_model_input_size", '224',
-                              'Model input image size')
-        self.declare_config_using_trait('resnet_model_input_size')
+        self.add_config_trait(
+            "resnet_model_input_size",
+            "resnet_model_input_size",
+            "224",
+            "Model input image size",
+        )
+        self.declare_config_using_trait("resnet_model_input_size")
 
-        self.add_config_trait("resnet_batch_size", "resnet_batch_size", '128',
-                              'resnet model processing batch size')
-        self.declare_config_using_trait('resnet_batch_size')
-        #----------------------------------------------------------------------------------
+        self.add_config_trait(
+            "resnet_batch_size",
+            "resnet_batch_size",
+            "128",
+            "resnet model processing batch size",
+        )
+        self.declare_config_using_trait("resnet_batch_size")
+        # ----------------------------------------------------------------------------------
 
         # detection select threshold
-        self.add_config_trait("detection_select_threshold", "detection_select_threshold", '0.0',
-                              'detection select threshold')
-        self.declare_config_using_trait('detection_select_threshold')
+        self.add_config_trait(
+            "detection_select_threshold",
+            "detection_select_threshold",
+            "0.0",
+            "detection select threshold",
+        )
+        self.declare_config_using_trait("detection_select_threshold")
 
         # set up required flags
         optional = process.PortFlags()
@@ -86,26 +103,27 @@ class ResnetDescriptors(KwiverProcess):
 
         #  input port ( port-name,flags)
         # self.declare_input_port_using_trait('framestamp', optional)
-        self.declare_input_port_using_trait('image', required)
-        self.declare_input_port_using_trait('detected_object_set', required)
-        self.declare_input_port_using_trait('timestamp', required)
+        self.declare_input_port_using_trait("image", required)
+        self.declare_input_port_using_trait("detected_object_set", required)
+        self.declare_input_port_using_trait("timestamp", required)
 
         #  output port ( port-name,flags)
-        self.declare_output_port_using_trait('detected_object_set', optional)
+        self.declare_output_port_using_trait("detected_object_set", optional)
 
     # ----------------------------------------------
     def _configure(self):
-        self._select_threshold = float(self.config_value('detection_select_threshold'))
+        self._select_threshold = float(self.config_value("detection_select_threshold"))
 
         # gpu_list
-        self._gpu_list = parse_gpu_list(self.config_value('gpu_list'))
+        self._gpu_list = parse_gpu_list(self.config_value("gpu_list"))
 
         # Resnet model config
-        resnet_img_size = int(self.config_value('resnet_model_input_size'))
-        resnet_batch_size = int(self.config_value('resnet_batch_size'))
-        resnet_model_path = self.config_value('resnet_model_path')
-        self._app_feature_extractor = ResnetFeatureExtractor(resnet_model_path, 
-                            resnet_img_size, resnet_batch_size, self._gpu_list)
+        resnet_img_size = int(self.config_value("resnet_model_input_size"))
+        resnet_batch_size = int(self.config_value("resnet_batch_size"))
+        resnet_model_path = self.config_value("resnet_model_path")
+        self._app_feature_extractor = ResnetFeatureExtractor(
+            resnet_model_path, resnet_img_size, resnet_batch_size, self._gpu_list
+        )
 
         # Init variables
         self._grid = Grid()
@@ -116,10 +134,10 @@ class ResnetDescriptors(KwiverProcess):
     def _step(self):
         try:
             # Grab image container from port using traits
-            in_img_c = self.grab_input_using_trait('image')
-            timestamp = self.grab_input_using_trait('timestamp')
-            dos_ptr = self.grab_input_using_trait('detected_object_set')
-            print('timestamp = {!r}'.format(timestamp))
+            in_img_c = self.grab_input_using_trait("image")
+            timestamp = self.grab_input_using_trait("timestamp")
+            dos_ptr = self.grab_input_using_trait("detected_object_set")
+            print("timestamp = {!r}".format(timestamp))
 
             # Get current frame and give it to app feature extractor
             im = get_pil_image(in_img_c.image())
@@ -133,13 +151,15 @@ class ResnetDescriptors(KwiverProcess):
             det_obj_set = DetectedObjectSet()
 
             if bbox_num == 0:
-                print('!!! No bbox is provided on this frame and skip this frame !!!')
+                print("!!! No bbox is provided on this frame and skip this frame !!!")
             else:
                 # appearance features (format: pytorch tensor)
                 app_f_begin = timer()
                 pt_app_features = self._app_feature_extractor(dos, False)
                 app_f_end = timer()
-                print('%%%app feature eclapsed time: {}'.format(app_f_end - app_f_begin))
+                print(
+                    "%%%app feature eclapsed time: {}".format(app_f_end - app_f_begin)
+                )
 
                 # get new track state from new frame and detections
                 for idx, item in enumerate(dos):
@@ -156,29 +176,32 @@ class ResnetDescriptors(KwiverProcess):
                     det_obj_set.add(d_obj)
 
             # push track set to output port
-            self.push_to_port_using_trait('detected_object_set', det_obj_set)
+            self.push_to_port_using_trait("detected_object_set", det_obj_set)
             self._base_step()
 
         except BaseException as e:
-            print( repr( e ) )
+            print(repr(e))
             import traceback
-            print( traceback.format_exc() )
+
+            print(traceback.format_exc())
             sys.stdout.flush()
             raise
 
     def __del__(self):
-        print('!!!!Resnet tracking Deleting python process!!!!')
+        print("!!!!Resnet tracking Deleting python process!!!!")
+
 
 # ==================================================================
 def __sprokit_register__():
     from kwiver.sprokit.pipeline import process_factory
 
-    module_name = 'python:kwiver.pytorch.resnet_descriptors'
+    module_name = "python:kwiver.pytorch.resnet_descriptors"
 
     if process_factory.is_process_module_loaded(module_name):
         return
 
-    process_factory.add_process('resnet_descriptors', 'resnet feature extraction',
-                                ResnetDescriptors)
+    process_factory.add_process(
+        "resnet_descriptors", "resnet feature extraction", ResnetDescriptors
+    )
 
     process_factory.mark_process_module_as_loaded(module_name)

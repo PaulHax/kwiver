@@ -54,70 +54,74 @@ from kwiver.vital.types import (
 )
 
 modules.load_known_modules()
+
+
 class TestSFMConstraints(unittest.TestCase):
     @classmethod
     def setUp(self):
-      self.meta_ = SimpleMetadataMap()
-      self.geo_ = LocalGeoCS()
-      self.small_tag = [
+        self.meta_ = SimpleMetadataMap()
+        self.geo_ = LocalGeoCS()
+        self.small_tag = [
             mt.tags.VITAL_META_UNKNOWN,
             mt.tags.VITAL_META_UNIX_TIMESTAMP,
             mt.tags.VITAL_META_SLANT_RANGE,
             mt.tags.VITAL_META_MISSION_ID,
             mt.tags.VITAL_META_VIDEO_KEY_FRAME,
         ]
-      self.loc1 = np.array([-73.759291, 42.849631])
-      self.crs_ll = geodesy.SRID.lat_lon_WGS84
-      self.geo_pt1_ = GeoPoint(self.loc1, self.crs_ll)
-      self.geo_.geo_origin = self.geo_pt1_
+        self.loc1 = np.array([-73.759291, 42.849631])
+        self.crs_ll = geodesy.SRID.lat_lon_WGS84
+        self.geo_pt1_ = GeoPoint(self.loc1, self.crs_ll)
+        self.geo_.geo_origin = self.geo_pt1_
 
     def test_init(self):
-      s = SFMConstraints()
-      SFMConstraints(s)
-      SFMConstraints(self.meta_, self.geo_)
+        s = SFMConstraints()
+        SFMConstraints(s)
+        SFMConstraints(self.meta_, self.geo_)
 
     def test_properties(self):
-      # modules.load_known_modules()
-      # metadata property
-      s = SFMConstraints(self.meta_, self.geo_)
-      get_meta = s.metadata
-      nt.assert_equal(get_meta.size(), 0)
-      m = SimpleMetadataMap()
-      s.metadata = m
-      nt.assert_equal(s.metadata.size(), 0)
+        # modules.load_known_modules()
+        # metadata property
+        s = SFMConstraints(self.meta_, self.geo_)
+        get_meta = s.metadata
+        nt.assert_equal(get_meta.size(), 0)
+        m = SimpleMetadataMap()
+        s.metadata = m
+        nt.assert_equal(s.metadata.size(), 0)
 
-      # local_geo_property
-      ret_geo = s.local_geo_cs
-      np.testing.assert_array_almost_equal(ret_geo.geo_origin.location(self.crs_ll),
-                                                                        self.geo_pt1_.location())
-      s = SFMConstraints()
-      s.local_geo_cs = self.geo_
-      ret_geo = s.local_geo_cs
-      np.testing.assert_array_almost_equal(ret_geo.geo_origin.location(self.crs_ll),
-                                                                        self.geo_pt1_.location())
+        # local_geo_property
+        ret_geo = s.local_geo_cs
+        np.testing.assert_array_almost_equal(
+            ret_geo.geo_origin.location(self.crs_ll), self.geo_pt1_.location()
+        )
+        s = SFMConstraints()
+        s.local_geo_cs = self.geo_
+        ret_geo = s.local_geo_cs
+        np.testing.assert_array_almost_equal(
+            ret_geo.geo_origin.location(self.crs_ll), self.geo_pt1_.location()
+        )
 
     def test_get_camera_position_prior_local(self):
-      s = SFMConstraints(self.meta_, self.geo_)
-      nt.assert_false(s.get_camera_position_prior_local(0, np.array([0, 1, 3])))
-      nt.assert_false(s.get_camera_position_prior_local(0, RotationD([1, 2, 3, 4])))
+        s = SFMConstraints(self.meta_, self.geo_)
+        nt.assert_false(s.get_camera_position_prior_local(0, np.array([0, 1, 3])))
+        nt.assert_false(s.get_camera_position_prior_local(0, RotationD([1, 2, 3, 4])))
 
     def test_camera_position_priors(self):
-      s = SFMConstraints(self.meta_, self.geo_)
-      nt.assert_dict_equal(s.get_camera_position_priors(), {})
+        s = SFMConstraints(self.meta_, self.geo_)
+        nt.assert_dict_equal(s.get_camera_position_priors(), {})
 
     def test_image_properties(self):
-      s = SFMConstraints(self.meta_, self.geo_)
-      s.store_image_size(0, 1080, 720)
-      a,b = 0,0
-      founda, foundb = False, False
-      founda, a = s.get_image_width(0, a)
-      foundb, b = s.get_image_height(0, b)
-      nt.ok_(founda)
-      nt.ok_(foundb)
-      nt.assert_equal(a, 1080)
-      nt.assert_equal(b, 720)
-      found_focal = True
-      focal_len = 0.1
-      found_focal, focal_len = s.get_focal_length_prior(0, focal_len)
-      nt.assert_false(found_focal)
-      nt.assert_almost_equal(focal_len, 0.1)
+        s = SFMConstraints(self.meta_, self.geo_)
+        s.store_image_size(0, 1080, 720)
+        a, b = 0, 0
+        founda, foundb = False, False
+        founda, a = s.get_image_width(0, a)
+        foundb, b = s.get_image_height(0, b)
+        nt.ok_(founda)
+        nt.ok_(foundb)
+        nt.assert_equal(a, 1080)
+        nt.assert_equal(b, 720)
+        found_focal = True
+        focal_len = 0.1
+        found_focal, focal_len = s.get_focal_length_prior(0, focal_len)
+        nt.assert_false(found_focal)
+        nt.assert_almost_equal(focal_len, 0.1)

@@ -38,6 +38,7 @@ class SimpleImageObjectDetector(CommonConfigurationMixin, ImageObjectDetector):
         ImageObjectDetector.__init__(self)
         self.threshold = 0.0
 
+
 def __vital_algorithm_register__():
     from kwiver.vital.algo import algorithm_factory
 

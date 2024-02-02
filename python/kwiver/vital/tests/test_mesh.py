@@ -53,6 +53,7 @@ class TestMesh(unittest.TestCase):
 
     def test_object_properties(self):
         import os
+
         print(os.getcwd())
         m = Mesh.from_ply_file("tests/data/cube.ply")
         nt.ok_(m.is_init())

@@ -28,6 +28,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
+
 from kwiver.vital.algo import WriteTrackDescriptorSet
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
 
@@ -36,7 +37,6 @@ class SimpleWriteTrackDescriptorSet(CommonConfigurationMixin, WriteTrackDescript
 
     def __init__(self):
         WriteTrackDescriptorSet.__init__(self)
-
 
 
 def __vital_algorithm_register__():

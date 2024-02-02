@@ -32,25 +32,31 @@ from kwiver.vital.algo import ComputeAssociationMatrix
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
 
 
-class SimpleComputeAssociationMatrix(CommonConfigurationMixin,
-                                     ComputeAssociationMatrix):
+class SimpleComputeAssociationMatrix(
+    CommonConfigurationMixin, ComputeAssociationMatrix
+):
     """
     Implementation of ComputeAssociationMatrix to test it
 
     Examples:
     """
+
     def __init__(self):
         ComputeAssociationMatrix.__init__(self)
 
+
 def __vital_algorithm_register__():
     from kwiver.vital.algo import algorithm_factory
+
     # Register Algorithm
-    implementation_name  = "SimpleComputeAssociationMatrix"
+    implementation_name = "SimpleComputeAssociationMatrix"
     if algorithm_factory.has_algorithm_impl_name(
-                            SimpleComputeAssociationMatrix.static_type_name(),
-                            implementation_name):
+        SimpleComputeAssociationMatrix.static_type_name(), implementation_name
+    ):
         return
-    algorithm_factory.add_algorithm( implementation_name,
-                                "Test kwiver.vital.algo.ComputeAssociationMatrix",
-                                 SimpleComputeAssociationMatrix )
-    algorithm_factory.mark_algorithm_as_loaded( implementation_name )
+    algorithm_factory.add_algorithm(
+        implementation_name,
+        "Test kwiver.vital.algo.ComputeAssociationMatrix",
+        SimpleComputeAssociationMatrix,
+    )
+    algorithm_factory.mark_algorithm_as_loaded(implementation_name)

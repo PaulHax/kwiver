@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#ckwg +28
+# ckwg +28
 # Copyright 2011-2020 by Kitware, Inc.
 # All rights reserved.
 #
@@ -29,6 +29,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from kwiver.sprokit.util.test import find_tests, run_test, test_error
+
 
 def test_import(path_unused):
     try:
@@ -67,7 +68,7 @@ def test_api_calls(path_unused):
     o = load.ConfigValue()
     o.key
     o.value
-    o.value = ''
+    o.value = ""
 
     o = load.ConfigBlock()
     o.key
@@ -78,8 +79,8 @@ def test_api_calls(path_unused):
     o.name
     o.type
     o.config_values
-    o.name = ''
-    o.type = ''
+    o.name = ""
+    o.type = ""
     o.config_values = load.ConfigValues()
 
     o = load.ConnectBlock()
@@ -99,24 +100,24 @@ def test_api_calls(path_unused):
     o = load.ClusterConfig()
     o.description
     o.config_value
-    o.description = ''
+    o.description = ""
     o.config_value = load.ConfigValue()
 
     o = load.ClusterInput()
     o.description
     o.from_
     o.targets
-    o.description = ''
-    o.from_ = ''
+    o.description = ""
+    o.from_ = ""
     o.targets = process.PortAddrs()
 
     o = load.ClusterOutput()
     o.description
     o.from_
     o.to
-    o.description = ''
+    o.description = ""
     o.from_ = process.PortAddr().getAddr()
-    o.to = ''
+    o.to = ""
 
     o = load.ClusterSubblock()
     o.config = load.ClusterConfig()
@@ -145,8 +146,8 @@ def test_api_calls(path_unused):
     o.type
     o.description
     o.subblocks
-    o.type = ''
-    o.description = ''
+    o.type = ""
+    o.description = ""
     o.subblocks = load.ClusterSubblocks()
 
     o = load.ClusterDefineBlock()
@@ -192,7 +193,7 @@ def test_simple_pipeline(path):
     from kwiver.sprokit.pipeline_util import load
 
     blocks = load.load_pipe_file(path)
-    with open(path, 'r') as fin:
+    with open(path, "r") as fin:
         load.load_pipe(fin)
 
 
@@ -200,11 +201,11 @@ def test_cluster_multiplier(path):
     from kwiver.sprokit.pipeline_util import load
 
     blocks = load.load_cluster_file(path)
-    with open(path, 'r') as fin:
+    with open(path, "r") as fin:
         load.load_cluster(fin)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import os
     import sys
 
@@ -216,6 +217,6 @@ if __name__ == '__main__':
 
     pipeline_dir = sys.argv[2]
 
-    path = os.path.join(pipeline_dir, '{0}.pipe'.format(testname))
+    path = os.path.join(pipeline_dir, "{0}.pipe".format(testname))
 
     run_test(testname, find_tests(locals()), path)

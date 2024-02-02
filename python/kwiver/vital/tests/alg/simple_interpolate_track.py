@@ -45,6 +45,8 @@ def __vital_algorithm_register__():
         return
 
     algorithm_factory.add_algorithm(
-        implementation_name, "test simple interpolate track", SimpleInterpolateTrack,
+        implementation_name,
+        "test simple interpolate track",
+        SimpleInterpolateTrack,
     )
     algorithm_factory.mark_algorithm_as_loaded(implementation_name)

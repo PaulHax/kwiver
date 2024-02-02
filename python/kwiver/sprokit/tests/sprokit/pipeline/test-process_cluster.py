@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#ckwg +28
+# ckwg +28
 # Copyright 2012-2020 by Kitware, Inc.
 # All rights reserved.
 #
@@ -29,6 +29,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from kwiver.sprokit.util.test import find_tests, run_test, test_error
+
 
 def test_import():
     try:
@@ -71,7 +72,7 @@ def test_api_calls():
         test_error("A non-cluster process was detected as a cluster process")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
 
     if len(sys.argv) != 2:

@@ -10,7 +10,7 @@ from . import Say
 T = TypeVar("T", bound="PythonTheyImpl")
 
 
-class PythonTheyImpl (Say):
+class PythonTheyImpl(Say):
 
     def says(self) -> str:
         return "In Python they say " + self.speaker.says()
@@ -19,7 +19,8 @@ class PythonTheyImpl (Say):
     def from_config(cls: Type[T], c: Config) -> T:
         retVal = PythonTheyImpl()
         retVal.speaker = plugin_management.SayFactory().create(
-            c.get_value( "speaker", "PythonImpl" ), c )
+            c.get_value("speaker", "PythonImpl"), c
+        )
 
         return retVal
 

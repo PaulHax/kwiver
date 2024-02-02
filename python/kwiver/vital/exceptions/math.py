@@ -35,9 +35,10 @@ Math related exceptions
 """
 
 
-class PointMapsToInfinityException (Exception):
+class PointMapsToInfinityException(Exception):
     """
     For when a point transformation would yield a point with an infinite
     coordinate.
     """
+
     pass

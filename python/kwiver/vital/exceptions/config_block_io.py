@@ -33,31 +33,37 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 VitalConfigBlock IO related exceptions
 
 """
+
 # -*- coding: utf-8 -*-
 
 from .base import VitalBaseException
 
 
-class VitalConfigBlockIoException (VitalBaseException):
-    """ Base class for ConfigBlock IO related exceptions """
+class VitalConfigBlockIoException(VitalBaseException):
+    """Base class for ConfigBlock IO related exceptions"""
+
     pass
 
 
-class VitalConfigBlockIoFileNotFoundException (VitalConfigBlockIoException):
-    """ Wen a file could not be found """
+class VitalConfigBlockIoFileNotFoundException(VitalConfigBlockIoException):
+    """Wen a file could not be found"""
+
     pass
 
 
-class VitalConfigBlockIoFileNotReadException (VitalConfigBlockIoException):
-    """ When a file could not be read """
+class VitalConfigBlockIoFileNotReadException(VitalConfigBlockIoException):
+    """When a file could not be read"""
+
     pass
 
 
-class VitalConfigBlockIoFileNotParsed (VitalConfigBlockIoException):
-    """ When a read file could not be parsed """
+class VitalConfigBlockIoFileNotParsed(VitalConfigBlockIoException):
+    """When a read file could not be parsed"""
+
     pass
 
 
-class VitalConfigBlockIoFileWriteException (VitalConfigBlockIoException):
-    """ When a config block could not be written to file """
+class VitalConfigBlockIoFileWriteException(VitalConfigBlockIoException):
+    """When a config block could not be written to file"""
+
     pass

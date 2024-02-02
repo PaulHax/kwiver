@@ -27,8 +27,8 @@ vital.tests module
 This module should not be installed and is only run-able from the Source/Build
 trees due to the required test data (which is of course not installed).
 """
+
 import os
 
 # Absolute path to the tests data directory
-TEST_DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                             'data')
+TEST_DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")

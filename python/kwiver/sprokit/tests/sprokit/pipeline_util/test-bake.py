@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#ckwg +28
+# ckwg +28
 # Copyright 2011-2020 by Kitware, Inc.
 # All rights reserved.
 #
@@ -30,6 +30,7 @@
 
 from kwiver.sprokit.util.test import find_tests, run_test, test_error
 
+
 def test_import(path_unused):
     try:
         import kwiver.sprokit.pipeline_util.bake
@@ -49,7 +50,7 @@ def test_simple_pipeline(path):
     modules.load_known_modules()
 
     bake.bake_pipe_file(path)
-    with open(path, 'r') as fin:
+    with open(path, "r") as fin:
         bake.bake_pipe(fin)
     bake.bake_pipe_blocks(blocks)
     bake.extract_configuration(blocks)
@@ -67,7 +68,7 @@ def test_cluster_multiplier(path):
     modules.load_known_modules()
 
     bake.bake_cluster_file(path)
-    with open(path, 'r') as fin:
+    with open(path, "r") as fin:
         bake.bake_cluster(fin)
     info = bake.bake_cluster_blocks(blocks)
 
@@ -81,7 +82,7 @@ def test_cluster_multiplier(path):
     bake.register_cluster(info)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import os
     import sys
 
@@ -93,6 +94,6 @@ if __name__ == '__main__':
 
     pipeline_dir = sys.argv[2]
 
-    path = os.path.join(pipeline_dir, '%s.pipe' % testname)
+    path = os.path.join(pipeline_dir, "%s.pipe" % testname)
 
     run_test(testname, find_tests(locals()), path)

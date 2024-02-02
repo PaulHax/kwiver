@@ -36,23 +36,27 @@ import numpy as np
 from multimethod import multimethod
 from unittest.mock import Mock
 
+
 class SimpleBundleAdjust(CommonConfigurationMixin, BundleAdjust):
     """
     Implementation of BundleAdjust to test it
 
     """
+
     def __init__(self):
         BundleAdjust.__init__(self)
 
+
 def __vital_algorithm_register__():
     from kwiver.vital.algo import algorithm_factory
+
     # Register Algorithm
-    implementation_name  = "SimpleBundleAdjust"
+    implementation_name = "SimpleBundleAdjust"
     if algorithm_factory.has_algorithm_impl_name(
-                            SimpleBundleAdjust.static_type_name(),
-                            implementation_name):
+        SimpleBundleAdjust.static_type_name(), implementation_name
+    ):
         return
-    algorithm_factory.add_algorithm( implementation_name,
-                                "test simple bundle adjust",
-                                 SimpleBundleAdjust )
-    algorithm_factory.mark_algorithm_as_loaded( implementation_name )
+    algorithm_factory.add_algorithm(
+        implementation_name, "test simple bundle adjust", SimpleBundleAdjust
+    )
+    algorithm_factory.mark_algorithm_as_loaded(implementation_name)

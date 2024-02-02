@@ -44,10 +44,14 @@ from kwiver.vital.types import ObjectTrackSet, ObjectTrackState, Track
 
 logger = logging.getLogger(__name__)
 
-_Homography = namedtuple('_Homography', [
-    'matrix',  # A 3x3 numpy.ndarray transforming 2D homogeneous
-               # coordinates (coordinate order is x, y, z)
-])
+_Homography = namedtuple(
+    "_Homography",
+    [
+        "matrix",  # A 3x3 numpy.ndarray transforming 2D homogeneous
+        # coordinates (coordinate order is x, y, z)
+    ],
+)
+
 
 class Homography(_Homography):
     def transform(self, array):
@@ -60,7 +64,9 @@ class Homography(_Homography):
         # Remove z coordinate
         return result[..., :-1, :] / result[..., -1:, :]
 
-_BBox = namedtuple('_BBox', ['xmin', 'ymin', 'xmax', 'ymax'])
+
+_BBox = namedtuple("_BBox", ["xmin", "ymin", "xmax", "ymax"])
+
 
 class BBox(_BBox):
     @classmethod
@@ -74,25 +80,32 @@ class BBox(_BBox):
     @property
     def corners(self):
         """Return a 2x4 numpy.ndarray of the corner points (row order x, y)"""
-        return np.array([
-            [self.xmin, self.xmin, self.xmax, self.xmax],
-            [self.ymin, self.ymax, self.ymin, self.ymax],
-        ])
+        return np.array(
+            [
+                [self.xmin, self.xmin, self.xmax, self.xmax],
+                [self.ymin, self.ymax, self.ymin, self.ymax],
+            ]
+        )
 
     @property
     def matrix(self):
         """Return a 2x2 numpy.ndarray (column order min, max; row order x, y)"""
-        return np.array([
-            [self.xmin, self.xmax],
-            [self.ymin, self.ymax],
-        ])
+        return np.array(
+            [
+                [self.xmin, self.xmax],
+                [self.ymin, self.ymax],
+            ]
+        )
+
 
 class Transformer(object):
     """A Transformer is a stateful object that receives one tuple of
     values at a time and produces one value at a time in response.
 
     """
-    __slots__ = '_gen',
+
+    __slots__ = ("_gen",)
+
     def __init__(self, gen):
         """Create a Transformer from a generator"""
         gen.send(None)  # Initialize generator
@@ -109,15 +122,19 @@ class Transformer(object):
         tuple.
 
         """
+
         @functools.wraps(f)
         def wrapper(*args, **kwargs):
             return cls(f(*args, **kwargs))
+
         return wrapper
+
 
 def transform_box(homog, bbox):
     """Transform the bounding box with the given Homography,
     returning the smallest enclosing bounding box"""
     return BBox.from_points(homog.transform(bbox.corners))
+
 
 def ious(x, y):
     """Given two ...x2x2 numpy.ndarrays corresponding to bounding boxes
@@ -125,9 +142,13 @@ def ious(x, y):
     maxmin = np.maximum(x[..., 0], y[..., 0])
     minmax = np.minimum(x[..., 1], y[..., 1])
     i = (minmax - maxmin).prod(-1)
-    def area(x): return (x[..., 1] - x[..., 0]).prod(-1)
+
+    def area(x):
+        return (x[..., 1] - x[..., 0]).prod(-1)
+
     u = area(x) + area(y) - i
     return np.where((maxmin < minmax).all(-1), i / u, 0)
+
 
 def match_boxes_homog(homog, boxes, prev_boxes, min_iou):
     """Return a list of indices into prev_boxes, where each index
@@ -162,7 +183,9 @@ def match_boxes_homog(homog, boxes, prev_boxes, min_iou):
             result[bi] = pbi
     return result
 
+
 DEFAULT_MIN_IOU = 0.2
+
 
 @Transformer.decorate
 def core_track(min_iou=None):
@@ -176,9 +199,13 @@ def core_track(min_iou=None):
     - a list of (integer) track IDs corresponding to the input boxes
 
     """
-    if min_iou is None: min_iou = DEFAULT_MIN_IOU  # Default value
+    if min_iou is None:
+        min_iou = DEFAULT_MIN_IOU  # Default value
+
     # new_id() gets a new track ID, starting from 1
-    def new_id(_c=itertools.count(1)): return next(_c)
+    def new_id(_c=itertools.count(1)):
+        return next(_c)
+
     output = None
     prev_boxes = None
     while True:
@@ -194,11 +221,16 @@ def core_track(min_iou=None):
         prev_boxes = boxes
         output = track_ids
 
-HomographyF2F = namedtuple('HomographyF2F', [
-    'homog',  # Homography instance
-    'from_id',  # Source coordinate space ID
-    'to_id',  # Destination coordinate space ID
-])
+
+HomographyF2F = namedtuple(
+    "HomographyF2F",
+    [
+        "homog",  # Homography instance
+        "from_id",  # Source coordinate space ID
+        "to_id",  # Destination coordinate space ID
+    ],
+)
+
 
 @Transformer.decorate
 def convert_homographies():
@@ -212,13 +244,16 @@ def convert_homographies():
     output = None
     prev = None
     while True:
-        curr, = yield output
+        (curr,) = yield output
         if prev is not None and prev.to_id == curr.to_id:
-            homog = Homography(np.matmul(np.linalg.inv(prev.homog.matrix), curr.homog.matrix))
+            homog = Homography(
+                np.matmul(np.linalg.inv(prev.homog.matrix), curr.homog.matrix)
+            )
         else:
             homog = None
         prev = curr
         output = homog
+
 
 @Transformer.decorate
 def build_tracks():
@@ -241,27 +276,28 @@ def build_tracks():
         for tid, ts in zip(track_ids, track_states):
             tracks.setdefault(tid, []).append((timestamp, ts))
         # Return a copy
-        output = {
-            tid: tss[:] for tid, tss in tracks.items()
-        }
+        output = {tid: tss[:] for tid, tss in tracks.items()}
+
 
 # Converters to / from Kwiver types
 
+
 def wrap_F2FHomography(h):
     """Convert Kwiver F2FHomography to HomographyF2F"""
-    arr = np.array([
-        [h.get(r, c) for c in range(3)] for r in range(3)
-    ])
+    arr = np.array([[h.get(r, c) for c in range(3)] for r in range(3)])
     return HomographyF2F(Homography(arr), h.from_id, h.to_id)
+
 
 def to_DetectedObject_list(dos):
     """Get a list of the DetectedObjects in a Kwiver DetectedObjectSet"""
     return list(dos)
 
+
 def get_DetectedObject_bbox(do):
     """Get the bounding box of a Kwiver DetectedObject as a BBox"""
     bbox = do.bounding_box()
     return BBox(bbox.min_x(), bbox.min_y(), bbox.max_x(), bbox.max_y())
+
 
 def to_ObjectTrackSet(tracks):
     """Create an ObjectTrackSet from a dict whose keys are track IDs
@@ -277,9 +313,11 @@ def to_ObjectTrackSet(tracks):
         result.append(t)
     return ObjectTrackSet(result)
 
+
 # Okay, here's our "not quite Kwiver" Transformer.  With the converters
 # suitably defined, this will work on Kwiver types.  Then the only
 # thing left to do is wrap it in a Sprokit process.
+
 
 @Transformer.decorate
 def track(min_iou=None):
@@ -304,49 +342,60 @@ def track(min_iou=None):
         tracks = bt.step(track_ids, dos, ts)
         output = to_ObjectTrackSet(tracks)
 
+
 # The process itself
+
 
 def add_declare_config(process, name_key, default, description):
     process.add_config_trait(name_key, name_key, default, description)
     process.declare_config_using_trait(name_key)
 
+
 class SimpleHomogTracker(KwiverProcess):
     def __init__(self, config):
         KwiverProcess.__init__(self, config)
 
-        add_declare_config(self, "min_iou", str(DEFAULT_MIN_IOU),
-                           "Minimum IOU to associate a detection to a track")
+        add_declare_config(
+            self,
+            "min_iou",
+            str(DEFAULT_MIN_IOU),
+            "Minimum IOU to associate a detection to a track",
+        )
 
         optional = process.PortFlags()
         required = process.PortFlags()
         required.add(self.flag_required)
 
-        self.declare_input_port_using_trait('detected_object_set', required)
-        self.declare_input_port_using_trait('timestamp', required)
-        self.declare_input_port_using_trait('homography_src_to_ref', required)
+        self.declare_input_port_using_trait("detected_object_set", required)
+        self.declare_input_port_using_trait("timestamp", required)
+        self.declare_input_port_using_trait("homography_src_to_ref", required)
 
-        self.declare_output_port_using_trait('object_track_set', optional)
+        self.declare_output_port_using_trait("object_track_set", optional)
 
     def _configure(self):
-        self._tracker = track(float(self.config_value('min_iou')))
+        self._tracker = track(float(self.config_value("min_iou")))
         self._base_configure()
 
     def _step(self):
-        ots = self._tracker.step(*map(
-            self.grab_input_using_trait,
-            ['detected_object_set', 'homography_src_to_ref', 'timestamp'],
-        ))
-        self.push_to_port_using_trait('object_track_set', ots)
+        ots = self._tracker.step(
+            *map(
+                self.grab_input_using_trait,
+                ["detected_object_set", "homography_src_to_ref", "timestamp"],
+            )
+        )
+        self.push_to_port_using_trait("object_track_set", ots)
         self._base_step()
+
 
 def __sprokit_register__():
     from kwiver.sprokit.pipeline import process_factory
-    module_name = 'python:kwiver.python.SimpleHomogTracker'
+
+    module_name = "python:kwiver.python.SimpleHomogTracker"
     if process_factory.is_process_module_loaded(module_name):
         return
     process_factory.add_process(
-        'simple_homog_tracker',
-        'Simple IOU-based tracker with homography support',
+        "simple_homog_tracker",
+        "Simple IOU-based tracker with homography support",
         SimpleHomogTracker,
     )
     process_factory.mark_process_module_as_loaded(module_name)

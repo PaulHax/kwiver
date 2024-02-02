@@ -34,6 +34,7 @@ import sys
 import os
 from importlib import import_module
 from kwiver.vital import vital_logging
+
 logger = vital_logging.getLogger(__name__)
 
 
@@ -49,15 +50,15 @@ class Loader(object):
         return self._cache
 
     def _meta(self, plugin):
-        meta = getattr(plugin, '__plugin__', None)
+        meta = getattr(plugin, "__plugin__", None)
         return meta
 
     def _post_fill(self):
         for plugin in self._cache:
             meta = self._meta(plugin)
-            if not getattr(meta, 'load', True):
+            if not getattr(meta, "load", True):
                 self._cache.remove(plugin)
-            for implied_namespace in getattr(meta, 'imply_plugins', []):
+            for implied_namespace in getattr(meta, "imply_plugins", []):
                 plugins = self._cache
                 self._cache = self.load(implied_namespace)
                 self._post_fill()
@@ -68,7 +69,7 @@ class Loader(object):
 
     def _plugin_priority(self, plugin):
         meta = self._meta(plugin)
-        return getattr(meta, 'priority', 0.0)
+        return getattr(meta, "priority", 0.0)
 
 
 class ModuleLoader(Loader):
@@ -78,7 +79,7 @@ class ModuleLoader(Loader):
     """
 
     def _isPackage(self, path):
-        pkg_init = os.path.join(path, '__init__.py')
+        pkg_init = os.path.join(path, "__init__.py")
         if os.path.exists(pkg_init):
             return True
 
@@ -98,15 +99,19 @@ class ModuleLoader(Loader):
         """
         already_seen = set()
 
-        py_exts = ['.py', '.pyc', '.pyo']
+        py_exts = [".py", ".pyc", ".pyo"]
 
         for ext in py_exts:
             if namespace.endswith(ext):
-                logger.warn(('do not specify .py extension for the {} '
-                             'sprokit python module').format(namespace))
-                namespace = namespace[:-len(ext)]
+                logger.warn(
+                    (
+                        "do not specify .py extension for the {} "
+                        "sprokit python module"
+                    ).format(namespace)
+                )
+                namespace = namespace[: -len(ext)]
 
-        namespace_rel_path = namespace.replace('.', os.path.sep)
+        namespace_rel_path = namespace.replace(".", os.path.sep)
 
         # Look in each location in the path
         for path in sys.path:
@@ -122,12 +127,11 @@ class ModuleLoader(Loader):
                         base = possible
                     else:
                         base, ext = os.path.splitext(possible)
-                        if base == '__init__' or ext != '.py':
+                        if base == "__init__" or ext != ".py":
                             continue
                     if base not in already_seen:
                         already_seen.add(base)
-                        mod_rel_path = os.path.join(namespace_rel_path,
-                                                    possible)
+                        mod_rel_path = os.path.join(namespace_rel_path, possible)
                         yield mod_rel_path
             else:
                 # namespace was not a package, check if it was a pyfile
@@ -147,15 +151,16 @@ class ModuleLoader(Loader):
             path_segments = list(filepath.split(os.path.sep))
             path_segments = [p for p in path_segments if p]
             path_segments[-1] = os.path.splitext(path_segments[-1])[0]
-            module_name = '.'.join(path_segments)
+            module_name = ".".join(path_segments)
 
             try:
                 module = import_module(module_name)
             except ImportError as e:
-                logger.warn('Could not import: {}, Reason: {}'.format(module_name, e))
+                logger.warn("Could not import: {}, Reason: {}".format(module_name, e))
                 import traceback
+
                 exc_info = sys.exc_info()
-                tbtext = ''.join(traceback.format_exception(*exc_info))
+                tbtext = "".join(traceback.format_exception(*exc_info))
                 logger.debug(tbtext)
                 module = None
 

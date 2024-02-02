@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Base class for testing the common functionality of all algorithms
 """
+
 import nose.tools
 import os
 

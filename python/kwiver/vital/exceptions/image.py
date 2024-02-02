@@ -33,11 +33,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 VITAL image related exceptions
 
 """
+
 # -*- coding: utf-8 -*-
 
 from .base import VitalBaseException
 
 
-class VitalImageSizeMismatchException (VitalBaseException):
-    """ When an image is of an incorrect size by some metric """
+class VitalImageSizeMismatchException(VitalBaseException):
+    """When an image is of an incorrect size by some metric"""
+
     pass

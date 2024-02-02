@@ -35,7 +35,6 @@ unknown_metadata_item, and metadata
 
 """
 
-
 import nose.tools as nt
 import numpy as np
 import sys
@@ -52,6 +51,8 @@ from kwiver.vital.types import (
     Timestamp,
 )
 from kwiver.vital.tests.cpp_helpers import type_check as tc
+
+
 # Helper class that stores a typed_metadata object's
 # name, tag, and data properties
 class PropInfo(object):
@@ -82,6 +83,7 @@ class TypeInfo(object):
         self.as_double = as_double
         self.as_uint64 = as_uint64
         self.as_string = as_string
+
 
 class TestVitalMetadataItemSubclasses(unittest.TestCase):
     # Creates a geo_point and geo_poly
@@ -118,12 +120,8 @@ class TestVitalMetadataItemSubclasses(unittest.TestCase):
         prop_info1 = PropInfo("Unix Timestamp (microseconds)", tag, 5)
         prop_info2 = PropInfo("Unix Timestamp (microseconds)", tag, 0)
         type_impl = tc.get_uint64_rep()
-        type_info1 = TypeInfo(
-            type_impl, has_uint64=True, as_uint64=5, as_string="5"
-        )
-        type_info2 = TypeInfo(
-            type_impl, has_uint64=True, as_uint64=0, as_string="0"
-        )
+        type_info1 = TypeInfo(type_impl, has_uint64=True, as_uint64=5, as_string="5")
+        type_info2 = TypeInfo(type_impl, has_uint64=True, as_uint64=0, as_string="0")
         self.check_instance(inst1, prop_info1, type_info1)
         self.check_instance(inst2, prop_info2, type_info2)
 
@@ -159,12 +157,8 @@ class TestVitalMetadataItemSubclasses(unittest.TestCase):
         inst2 = MetadataItem(tag, False)
         type_info1 = TypeInfo("bool", as_string="True")
         type_info2 = TypeInfo("bool", as_string="False")
-        self.check_instance(
-            inst1, PropInfo("Is Key Frame", tag, True), type_info1
-        )
-        self.check_instance(
-            inst2, PropInfo("Is Key Frame", tag, False), type_info2
-        )
+        self.check_instance(inst1, PropInfo("Is Key Frame", tag, True), type_info1)
+        self.check_instance(inst2, PropInfo("Is Key Frame", tag, False), type_info2)
 
         # FRAME_CENTER - kwiver::vital::geo_point
         tag = mt.tags.VITAL_META_FRAME_CENTER
@@ -173,10 +167,14 @@ class TestVitalMetadataItemSubclasses(unittest.TestCase):
         type_info1 = TypeInfo("kwiver::vital::geo_point", as_string=str(GeoPoint()))
         type_info2 = TypeInfo("kwiver::vital::geo_point", as_string=str(self.g_point))
         self.check_instance(
-            inst1, PropInfo("Geodetic Frame Center (lon/lat/alt)", tag, GeoPoint()), type_info1
+            inst1,
+            PropInfo("Geodetic Frame Center (lon/lat/alt)", tag, GeoPoint()),
+            type_info1,
         )
         self.check_instance(
-            inst2, PropInfo("Geodetic Frame Center (lon/lat/alt)", tag, self.g_point), type_info2
+            inst2,
+            PropInfo("Geodetic Frame Center (lon/lat/alt)", tag, self.g_point),
+            type_info2,
         )
 
         # CORNER_POINTS - kwiver::vital::geo_polygon
@@ -198,8 +196,12 @@ class TestVitalMetadataItemSubclasses(unittest.TestCase):
         inst2 = MetadataItem(tag, -2)
         type_info1 = TypeInfo("int", as_string="2")
         type_info2 = TypeInfo("int", as_string="-2")
-        self.check_instance(inst1, PropInfo("Unknown / Undefined Entry", tag, 2), type_info1, False)
-        self.check_instance(inst2, PropInfo("Unknown / Undefined Entry", tag, -2), type_info2, False)
+        self.check_instance(
+            inst1, PropInfo("Unknown / Undefined Entry", tag, 2), type_info1, False
+        )
+        self.check_instance(
+            inst2, PropInfo("Unknown / Undefined Entry", tag, -2), type_info2, False
+        )
 
     def check_instance(self, inst, prop_info, type_info, is_valid=True):
         self.check_initial_properties(inst, prop_info)

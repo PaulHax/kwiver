@@ -33,4 +33,5 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 VITAL exceptions sub-module
 
 """
+
 # -*- coding: utf-8 -*-

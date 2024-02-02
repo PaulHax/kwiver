@@ -33,7 +33,8 @@ import tempfile
 from kwiver.vital.modules import modules
 import os
 from kwiver.vital.types import ImageContainer
-import  numpy as np
+import numpy as np
+
 
 class TestVitalImageIO(TestCase):
     def setUp(self):

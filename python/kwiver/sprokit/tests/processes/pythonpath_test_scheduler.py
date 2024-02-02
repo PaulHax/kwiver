@@ -1,4 +1,4 @@
-#ckwg +28
+# ckwg +28
 # Copyright 2012 by Kitware, Inc.
 # All rights reserved.
 #
@@ -40,11 +40,13 @@ class TestPythonScheduler(scheduler.PythonScheduler):
 def __sprokit_register__():
     from kwiver.sprokit.pipeline import scheduler_factory
 
-    module_name = 'python:test.pythonpath.scheduler_test'
+    module_name = "python:test.pythonpath.scheduler_test"
 
     if scheduler_factory.is_scheduler_module_loaded(module_name):
         return
 
-    scheduler_factory.add_scheduler('pythonpath_test_scheduler', 'A test scheduler.', TestPythonScheduler)
+    scheduler_factory.add_scheduler(
+        "pythonpath_test_scheduler", "A test scheduler.", TestPythonScheduler
+    )
 
     scheduler_factory.mark_scheduler_module_as_loaded(module_name)

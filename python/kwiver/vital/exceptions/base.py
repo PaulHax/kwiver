@@ -33,22 +33,27 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 VITAL basic exceptions
 
 """
+
 # -*- coding: utf-8 -*-
 
+
 class VitalBaseException(Exception):
-    """ Base VITAL Exception class """
+    """Base VITAL Exception class"""
+
     pass
 
 
 class VitalInvalidValue(VitalBaseException):
-    """ Exception for when an invalid value is used """
+    """Exception for when an invalid value is used"""
+
     pass
 
 
-class VitalNullPointerException (VitalBaseException):
-    """ When an error occurs due to use of a NULL pointer """
+class VitalNullPointerException(VitalBaseException):
+    """When an error occurs due to use of a NULL pointer"""
+
     pass
 
 
-class VitalDynamicCastException (VitalBaseException):
-    """ When a casting error occurred dynamic casting a pointer """
+class VitalDynamicCastException(VitalBaseException):
+    """When a casting error occurred dynamic casting a pointer"""

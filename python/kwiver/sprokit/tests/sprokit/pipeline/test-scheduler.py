@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#ckwg +28
+# ckwg +28
 # Copyright 2011-2020 by Kitware, Inc.
 # All rights reserved.
 #
@@ -30,6 +30,7 @@
 
 from kwiver.sprokit.util.test import find_tests, run_test, test_error
 
+
 def test_import():
     try:
         import kwiver.sprokit.pipeline.scheduler
@@ -37,7 +38,7 @@ def test_import():
         test_error("Failed to import the scheduler module")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
 
     if len(sys.argv) != 2:

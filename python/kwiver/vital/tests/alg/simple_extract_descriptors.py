@@ -31,27 +31,30 @@ from __future__ import print_function
 from kwiver.vital.algo import ExtractDescriptors
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
 
-class SimpleExtractDescriptors(CommonConfigurationMixin,
-                                  ExtractDescriptors):
+
+class SimpleExtractDescriptors(CommonConfigurationMixin, ExtractDescriptors):
     """
     Implementation of ExtractDescriptors to test it
 
     Examples:
     """
+
     def __init__(self):
         ExtractDescriptors.__init__(self)
 
 
-
 def __vital_algorithm_register__():
     from kwiver.vital.algo import algorithm_factory
+
     # Register Algorithm
-    implementation_name  = "SimpleExtractDescriptors"
+    implementation_name = "SimpleExtractDescriptors"
     if algorithm_factory.has_algorithm_impl_name(
-                            SimpleExtractDescriptors.static_type_name(),
-                            implementation_name):
+        SimpleExtractDescriptors.static_type_name(), implementation_name
+    ):
         return
-    algorithm_factory.add_algorithm( implementation_name,
-                                "Test kwiver.vital.algo.ExtractDescriptors",
-                                 SimpleExtractDescriptors )
-    algorithm_factory.mark_algorithm_as_loaded( implementation_name )
+    algorithm_factory.add_algorithm(
+        implementation_name,
+        "Test kwiver.vital.algo.ExtractDescriptors",
+        SimpleExtractDescriptors,
+    )
+    algorithm_factory.mark_algorithm_as_loaded(implementation_name)

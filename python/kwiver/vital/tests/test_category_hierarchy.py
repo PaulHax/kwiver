@@ -41,6 +41,7 @@ import os
 import tempfile
 import unittest
 
+
 class TestVitalCategoryHierarchy(unittest.TestCase):
     def setUp(self):
         """
@@ -87,7 +88,6 @@ class TestVitalCategoryHierarchy(unittest.TestCase):
 
         # Close so C++ can read
         self.fp.close()
-
 
     # Manually delete the file
     def tearDown(self):
@@ -206,7 +206,6 @@ class TestVitalCategoryHierarchy(unittest.TestCase):
             nt.assert_equals(ch.get_class_name(syn0_name), cname)
             nt.assert_equals(ch.get_class_name(syn1_name), cname)
 
-
     def test_initial_relationships(self):
         empty, from_file, from_lists = self._create_hierarchies()
 
@@ -216,7 +215,9 @@ class TestVitalCategoryHierarchy(unittest.TestCase):
         # Tests for from_file
         nt.assert_equals(from_file.child_class_names(), ["class2_0"])
         nt.assert_equals(from_file.get_class_parents("class0"), [])
-        nt.assert_equals(from_file.get_class_parents("class2_0"), ["class1_0", "class1_1"])
+        nt.assert_equals(
+            from_file.get_class_parents("class2_0"), ["class1_0", "class1_1"]
+        )
         nt.assert_equals(from_file.get_class_parents("class1_0"), ["class0"])
         nt.assert_equals(from_file.get_class_parents("class1_1"), ["class0"])
 

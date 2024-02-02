@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 vital::descriptor interface tests
 
 """
+
 from __future__ import print_function
 import random
 import unittest
@@ -44,22 +45,20 @@ import numpy
 
 from kwiver.vital.types import new_descriptor, DescriptorD, DescriptorF, Descriptor
 
-class TestDescriptor (unittest.TestCase):
+
+class TestDescriptor(unittest.TestCase):
 
     def test_new(self):
         # Attempt construction using a bunch of random, non-zero integers
         random.seed(0)
         for i in range(100):
             n = random.randint(1, 4096)
-            new_descriptor(n, 'd')
-            new_descriptor(n, 'f')
+            new_descriptor(n, "d")
+            new_descriptor(n, "f")
 
     def test_new_invalid_size(self):
         # Check that we need to pass an integer size.
-        nose.tools.assert_raises(
-            TypeError,
-            new_descriptor, 42.3
-        )
+        nose.tools.assert_raises(TypeError, new_descriptor, 42.3)
 
     def test_size(self):
         # Check that we can check the size of the descriptor array.
@@ -73,16 +72,10 @@ class TestDescriptor (unittest.TestCase):
         random.seed(0)
         for i in range(100):
             n = random.randint(1, 4096)
-            print(n, end=' ')
+            print(n, end=" ")
 
-            nose.tools.assert_equal(
-                new_descriptor(n, 'd').nbytes,
-                8 * n
-            )
-            nose.tools.assert_equal(
-                new_descriptor(n, 'f').nbytes,
-                4 * n
-            )
+            nose.tools.assert_equal(new_descriptor(n, "d").nbytes, 8 * n)
+            nose.tools.assert_equal(new_descriptor(n, "f").nbytes, 4 * n)
 
     def test_raw_data(self):
         d = new_descriptor(64)
@@ -109,6 +102,6 @@ class TestDescriptor (unittest.TestCase):
         c = new_descriptor(5)
         d[:] = 1
         b[:] = 1
-        nose.tools.ok_(d==b)
-        nose.tools.ok_(c!=b)
-        nose.tools.ok_(not c!=c)
+        nose.tools.ok_(d == b)
+        nose.tools.ok_(c != b)
+        nose.tools.ok_(not c != c)

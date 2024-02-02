@@ -40,6 +40,7 @@ import nose.tools as nt
 import numpy as np
 import unittest
 
+
 class TestVitalFundamentalMatrix(unittest.TestCase):
     def setUp(self):
         self.rng = np.random.default_rng()
@@ -208,7 +209,7 @@ class TestVitalFundamentalMatrix(unittest.TestCase):
                     fm[i, j],
                     mat[i, j],
                     prec,
-                    err_msg="Element inequality at row {} column {}".format(i, j)
+                    err_msg="Element inequality at row {} column {}".format(i, j),
                 )
 
     def test_getitem(self):

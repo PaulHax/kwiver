@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Tests for TrackState interface class
 
 """
+
 import unittest
 
 import nose.tools
@@ -43,7 +44,7 @@ from kwiver.vital.types import TrackState
 
 # TODO: Uncomment below tests? kwiver::vital::track_state doesn't
 # have features or descriptors. Would need to be added to bindings.
-class TestTrackState (unittest.TestCase):
+class TestTrackState(unittest.TestCase):
     def test_new_ts(self):
         ts = TrackState(0)
         nose.tools.assert_equal(ts.frame_id, 0)
@@ -73,7 +74,8 @@ class TestTrackState (unittest.TestCase):
         ts1.frame_id = 23456
         nose.tools.ok_(ts1 == ts2)
 
-'''
+
+"""
     def test_feat_empty(self):
         ts = TrackState(0)
         nose.tools.assert_is_none(ts.feature)
@@ -95,4 +97,4 @@ class TestTrackState (unittest.TestCase):
 
         ts = TrackState(0, descriptor=d)
         numpy.testing.assert_equal(d, ts.descriptor)
-'''
+"""

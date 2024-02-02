@@ -37,22 +37,24 @@ Tests for Activity python class.
 import unittest
 import nose.tools as nt
 import numpy as np
-from kwiver.vital.types import ( Activity,
-            ActivityType,
-            DetectedObjectType,
-            Timestamp,
-            BoundingBoxD as BoundingBox,
-            DetectedObject,
-            ObjectTrackState,
-            ObjectTrackSet,
-            Track,
-            )
+from kwiver.vital.types import (
+    Activity,
+    ActivityType,
+    DetectedObjectType,
+    Timestamp,
+    BoundingBoxD as BoundingBox,
+    DetectedObject,
+    ObjectTrackState,
+    ObjectTrackSet,
+    Track,
+)
+
 
 class TestActivity(unittest.TestCase):
     @classmethod
     def setUp(self):
         bbox = BoundingBox(10, 10, 20, 20)
-        dot  = DetectedObjectType("test", 0.4)
+        dot = DetectedObjectType("test", 0.4)
         do = DetectedObject(bbox, 0.4, dot)
         track = Track()
         for i in range(10):
@@ -64,7 +66,9 @@ class TestActivity(unittest.TestCase):
         self.time_2.set_time_seconds(4321)
         self.obj_ts = ObjectTrackSet([self.track_])
         self.act_type = ActivityType("self_act", 0.87)
-        self.act = Activity(1, "self_act", 0.87, self.act_type, self.time_1, self.time_2, self.obj_ts)
+        self.act = Activity(
+            1, "self_act", 0.87, self.act_type, self.time_1, self.time_2, self.obj_ts
+        )
 
     def test_constructors(self):
         Activity()
@@ -94,7 +98,7 @@ class TestActivity(unittest.TestCase):
         self.assertEqual(a.end_time.get_time_seconds(), 4322)
         self.assertEqual(a.participants.all_frame_ids(), set(range(10)))
         bbox = BoundingBox(10, 10, 20, 20)
-        dot  = DetectedObjectType("test", 0.4)
+        dot = DetectedObjectType("test", 0.4)
         do = DetectedObject(bbox, 0.4, dot)
         track = Track()
         for i in range(5):
@@ -103,5 +107,9 @@ class TestActivity(unittest.TestCase):
         new_ots = ObjectTrackSet([new_t])
         a.participants = new_ots
         self.assertEqual(a.participants.all_frame_ids(), set(range(5)))
-        self.assertEqual(a.duration[0].get_time_seconds(), a.start_time.get_time_seconds())
-        self.assertEqual(a.duration[1].get_time_seconds(), a.end_time.get_time_seconds())
+        self.assertEqual(
+            a.duration[0].get_time_seconds(), a.start_time.get_time_seconds()
+        )
+        self.assertEqual(
+            a.duration[1].get_time_seconds(), a.end_time.get_time_seconds()
+        )

@@ -29,7 +29,6 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-
 from kwiver.vital.algo import VideoInput
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
 
@@ -50,6 +49,8 @@ def __vital_algorithm_register__():
         return
 
     algorithm_factory.add_algorithm(
-        implementation_name, "test simple video input", SimpleVideoInput,
+        implementation_name,
+        "test simple video input",
+        SimpleVideoInput,
     )
     algorithm_factory.mark_algorithm_as_loaded(implementation_name)

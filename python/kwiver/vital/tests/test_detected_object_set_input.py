@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Tests for the DetectedObjectSetInput wrapping class
 """
+
 import unittest
 
 from kwiver.vital.algo import DetectedObjectSetInput
@@ -46,8 +47,9 @@ SIMULATOR_CONFIG = dict(
     width=15,
     max_sets=10,
     set_size=4,
-    image_name='foo.png',
+    image_name="foo.png",
 )
+
 
 def _create_simulator_config():
     cfg = config.empty_config()
@@ -55,31 +57,32 @@ def _create_simulator_config():
         cfg[k] = v
     return cfg
 
+
 class TestVitalDetectedObjectSetInput(unittest.TestCase):
     def test_registered_names(self):
         """Print all the registered detected object set input arrows"""
         load_known_modules()
         print("All registered detected object set input arrows:")
         for arrow in DetectedObjectSetInput.registered_names():
-            print('  ' + arrow)
+            print("  " + arrow)
 
     def test_open(self):
         """Create a DetectedObjectSetInput and call .open on it"""
         load_known_modules()
-        dosi = DetectedObjectSetInput.create('simulator')
+        dosi = DetectedObjectSetInput.create("simulator")
         # The simulator doesn't actually try to open its file
-        dosi.open('/example/file/path')
+        dosi.open("/example/file/path")
 
     def test_read_set(self):
         """Create and configure a DetectedObjectSetInput and call .read_set"""
         load_known_modules()
-        dosi = DetectedObjectSetInput.create('simulator')
+        dosi = DetectedObjectSetInput.create("simulator")
         dosi.set_configuration(_create_simulator_config())
         sets = list(iter(dosi.read_set, None))
-        self.assertEqual(len(sets), SIMULATOR_CONFIG['max_sets'])
+        self.assertEqual(len(sets), SIMULATOR_CONFIG["max_sets"])
         for s in sets:
             self.assertEqual(len(s), 2)
             dos, image_name = s
             self.assertIsInstance(dos, DetectedObjectSet)
-            self.assertEqual(len(dos), SIMULATOR_CONFIG['set_size'])
-            self.assertEqual(image_name, SIMULATOR_CONFIG['image_name'])
+            self.assertEqual(len(dos), SIMULATOR_CONFIG["set_size"])
+            self.assertEqual(image_name, SIMULATOR_CONFIG["image_name"])

@@ -33,9 +33,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Tests for track_interval interface
 
 """
+
 import nose.tools as nt
 
 from kwiver.vital.types import TrackInterval, Timestamp
+
 
 class TestVitalTrackInterval(object):
     def test_create(self):
@@ -56,7 +58,6 @@ class TestVitalTrackInterval(object):
         ti.track = 0
         nt.assert_equals(ti.track, 0)
 
-
         # Check initial id
         ti = TrackInterval(20, Timestamp(), Timestamp())
         nt.assert_equals(ti.track, 20)
@@ -70,7 +71,6 @@ class TestVitalTrackInterval(object):
         ti.track = 0
         nt.assert_equals(ti.track, 0)
 
-
     def test_get_set_timestamps(self):
         ti = TrackInterval()
         nt.assert_false(ti.start.is_valid())
@@ -80,7 +80,7 @@ class TestVitalTrackInterval(object):
         ti.start = ts1
         ti.stop = ts2
         nt.ok_(ti.start == ts1)
-        nt.ok_(ti.stop ==  ts2)
+        nt.ok_(ti.stop == ts2)
 
         # Confirm its a copy, not a reference
         ts1.set_frame(3)
@@ -94,7 +94,7 @@ class TestVitalTrackInterval(object):
         nt.ok_(ti.start.is_valid())
         nt.ok_(ti.stop.is_valid())
         nt.ok_(ti.start == Timestamp(1234, 1))
-        nt.ok_(ti.stop  == Timestamp(5678, 2))
+        nt.ok_(ti.stop == Timestamp(5678, 2))
 
         ti.stop = Timestamp()
         nt.assert_false(ti.stop.is_valid())
@@ -117,7 +117,6 @@ class TestVitalTrackInterval(object):
         with nt.assert_raises(TypeError):
             ti.stop = "5"
 
-
         ti = TrackInterval(21, Timestamp(1234, 1), Timestamp(5678, 2))
 
         with nt.assert_raises(TypeError):
@@ -129,12 +128,10 @@ class TestVitalTrackInterval(object):
         with nt.assert_raises(TypeError):
             ti.stop = "5"
 
-
     def test_set_no_attribute(self):
         ti = TrackInterval()
         with nt.assert_raises(AttributeError):
             ti.nonexistant_attribute = 5
-
 
         ti = TrackInterval(21, Timestamp(1234, 1), Timestamp(5678, 2))
         with nt.assert_raises(AttributeError):

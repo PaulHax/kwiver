@@ -35,42 +35,71 @@ class TargetRNNDataLoader(data.Dataset):
                     # distance between the two bbox's x instead of center
                     dis = abs(cur_track[-1].bbox[0] - track_state.bbox[0])
 
-                    bbox_area_ratio = (float(cur_track[-1].bbox[2] * cur_track[-1].bbox[3]) /
-                                       float(track_state.bbox[2] * track_state.bbox[3]))
+                    bbox_area_ratio = float(
+                        cur_track[-1].bbox[2] * cur_track[-1].bbox[3]
+                    ) / float(track_state.bbox[2] * track_state.bbox[3])
                     if bbox_area_ratio < 1.0:
                         bbox_area_ratio = 1.0 / bbox_area_ratio
 
                     # in the search area, we prepare data and calculate the similarity score
-                    if (dis < self._track_search_threshold * cur_track[-1].bbox[2] and         # track dis constraint
-                        dis < self._track_search_threshold * track_state.bbox[2] and           # track_state dis constraint
-                        bbox_area_ratio < self._track_search_threshold):                       # bbox area constraint
+                    if (
+                        dis < self._track_search_threshold * cur_track[-1].bbox[2]
+                        and dis  # track dis constraint
+                        < self._track_search_threshold * track_state.bbox[2]
+                        and bbox_area_ratio  # track_state dis constraint
+                        < self._track_search_threshold
+                    ):  # bbox area constraint
                         cur_data_item = []
 
-                        #app feature and app target
-                        app_f_tensor = torch.stack([cur_track[i].app_feature
-                                                for i in range(-g_config.timeStep, 0)])
+                        # app feature and app target
+                        app_f_tensor = torch.stack(
+                            [
+                                cur_track[i].app_feature
+                                for i in range(-g_config.timeStep, 0)
+                            ]
+                        )
                         cur_data_item += app_f_tensor, track_state.app_feature
 
-                        #motion feature and motion target
-                        motion_f_tensor = torch.stack([cur_track[i].motion_feature
-                                                for i in range(-g_config.timeStep, 0)])
-                        motion_target_f = (np.asarray(track_state.bbox_center,
-                                            dtype=np.float32).reshape(g_config.M_F_num) -
-                                           np.asarray(cur_track[-1].bbox_center,
-                                               dtype=np.float32).reshape(g_config.M_F_num))
-                        cur_data_item += motion_f_tensor, torch.from_numpy(motion_target_f)
+                        # motion feature and motion target
+                        motion_f_tensor = torch.stack(
+                            [
+                                cur_track[i].motion_feature
+                                for i in range(-g_config.timeStep, 0)
+                            ]
+                        )
+                        motion_target_f = np.asarray(
+                            track_state.bbox_center, dtype=np.float32
+                        ).reshape(g_config.M_F_num) - np.asarray(
+                            cur_track[-1].bbox_center, dtype=np.float32
+                        ).reshape(
+                            g_config.M_F_num
+                        )
+                        cur_data_item += motion_f_tensor, torch.from_numpy(
+                            motion_target_f
+                        )
 
-                        #interaction feature and interaction target
-                        interaction_f_tensor = torch.stack([cur_track[i].interaction_feature
-                                                for i in range(-g_config.timeStep, 0)])
-                        cur_data_item += interaction_f_tensor, track_state.interaction_feature
+                        # interaction feature and interaction target
+                        interaction_f_tensor = torch.stack(
+                            [
+                                cur_track[i].interaction_feature
+                                for i in range(-g_config.timeStep, 0)
+                            ]
+                        )
+                        cur_data_item += (
+                            interaction_f_tensor,
+                            track_state.interaction_feature,
+                        )
 
-                        #bbar feature and bbar target
-                        bbar_f_tensor = torch.stack([cur_track[i].bbar_feature
-                                                for i in range(-g_config.timeStep, 0)])
+                        # bbar feature and bbar target
+                        bbar_f_tensor = torch.stack(
+                            [
+                                cur_track[i].bbar_feature
+                                for i in range(-g_config.timeStep, 0)
+                            ]
+                        )
                         cur_data_item += bbar_f_tensor, track_state.bbar_feature
 
-                        #corresponding position of the similarity matrix
+                        # corresponding position of the similarity matrix
                         cur_data_item += t, ts
 
                         _data_list.append(tuple(cur_data_item))
@@ -84,8 +113,13 @@ class TargetRNNDataLoader(data.Dataset):
 
 
 class SRNNMatching(object):
-    def __init__(self, targetRNN_full_model_path, targetRNN_AIM_V_model_path,
-                    batch_size, gpu_list=None):
+    def __init__(
+        self,
+        targetRNN_full_model_path,
+        targetRNN_AIM_V_model_path,
+        batch_size,
+        gpu_list=None,
+    ):
         self._device, self._use_gpu_flag = get_device(gpu_list)
         self._batch_size = batch_size
 
@@ -95,8 +129,8 @@ class SRNNMatching(object):
             if self._use_gpu_flag:
                 snapshot = torch.load(model_path)
             else:
-                snapshot = torch.load(model_path, map_location='cpu')
-            model.load_state_dict(snapshot['state_dict'])
+                snapshot = torch.load(model_path, map_location="cpu")
+            model.load_state_dict(snapshot["state_dict"])
             model.eval()
             if self._use_gpu_flag:
                 # DataParallel also understands device_ids=None to mean "all devices", so we're good.
@@ -105,11 +139,15 @@ class SRNNMatching(object):
 
         # load target AIM model, trained with fixed variable timestep
         full_model_list = (RnnType.Appearance, RnnType.Motion, RnnType.Interaction)
-        self._targetRNN_full_model = load_model(full_model_list, targetRNN_full_model_path)
+        self._targetRNN_full_model = load_model(
+            full_model_list, targetRNN_full_model_path
+        )
 
         # load target AIM_V model, but trained with variable timestep
         V_model_list = (RnnType.Appearance, RnnType.Motion, RnnType.Interaction)
-        self._targetRNN_AIM_V_model = load_model(V_model_list, targetRNN_AIM_V_model_path)
+        self._targetRNN_AIM_V_model = load_model(
+            V_model_list, targetRNN_AIM_V_model_path
+        )
 
     def __call__(self, track_set, track_state_list, track_search_threshold):
         tracks_num = track_set.active_count()
@@ -122,18 +160,39 @@ class SRNNMatching(object):
             # PyTorch doesn't handle zero-length dimensions cleanly
             # (see https://github.com/pytorch/pytorch/issues/5014);
             # this computes the intended result.
-            return np.empty((tracks_num, track_states_num), dtype=np.float32), track_idx_list
+            return (
+                np.empty((tracks_num, track_states_num), dtype=np.float32),
+                track_idx_list,
+            )
 
-        self._similarity_mat = torch.FloatTensor(tracks_num, track_states_num).fill_(1.0).to(self._device)
+        self._similarity_mat = (
+            torch.FloatTensor(tracks_num, track_states_num).fill_(1.0).to(self._device)
+        )
 
-        kwargs = {'num_workers': 0, 'pin_memory': True}
+        kwargs = {"num_workers": 0, "pin_memory": True}
         AIM_V_data_loader = torch.utils.data.DataLoader(
-            TargetRNNDataLoader(track_set, track_state_list, track_search_threshold, RnnType.Target_RNN_AIM_V),
-            batch_size=self._batch_size, shuffle=False, **kwargs)
+            TargetRNNDataLoader(
+                track_set,
+                track_state_list,
+                track_search_threshold,
+                RnnType.Target_RNN_AIM_V,
+            ),
+            batch_size=self._batch_size,
+            shuffle=False,
+            **kwargs
+        )
 
         AIM_data_loader = torch.utils.data.DataLoader(
-            TargetRNNDataLoader(track_set, track_state_list, track_search_threshold, RnnType.Target_RNN_AIM),
-            batch_size=self._batch_size, shuffle=False, **kwargs)
+            TargetRNNDataLoader(
+                track_set,
+                track_state_list,
+                track_search_threshold,
+                RnnType.Target_RNN_AIM,
+            ),
+            batch_size=self._batch_size,
+            shuffle=False,
+            **kwargs
+        )
 
         with torch.no_grad():
             self._est_similarity(AIM_V_data_loader, RnnType.Target_RNN_AIM_V)
@@ -141,13 +200,21 @@ class SRNNMatching(object):
 
         return self._similarity_mat.cpu().numpy(), track_idx_list
 
-
     def _est_similarity(self, loader, rnnType):
-        for (app_f_list, app_target_f, motion_f_list, motion_target_f,
-                interaction_f_list, interaction_target_f, bbar_f_list,
-                bbar_target_f, t, ts) in loader:
+        for (
+            app_f_list,
+            app_target_f,
+            motion_f_list,
+            motion_target_f,
+            interaction_f_list,
+            interaction_target_f,
+            bbar_f_list,
+            bbar_target_f,
+            t,
+            ts,
+        ) in loader:
             v_app_seq = app_f_list.to(self._device)
-            v_app_target =  app_target_f.to(self._device)
+            v_app_target = app_target_f.to(self._device)
             v_motion_seq = motion_f_list.to(self._device)
             v_motion_target = motion_target_f.to(self._device)
             v_interaction_seq = interaction_f_list.to(self._device)
@@ -155,24 +222,36 @@ class SRNNMatching(object):
             v_bbar_seq = bbar_f_list.to(self._device)
             v_bbar_target = bbar_target_f.to(self._device)
             if rnnType is RnnType.Target_RNN_AIM:
-                output = self._targetRNN_full_model(v_app_seq, v_app_target, v_motion_seq,
-                                        v_motion_target, v_interaction_seq,
-                                        v_interaction_target, v_bbar_seq, v_bbar_target)
+                output = self._targetRNN_full_model(
+                    v_app_seq,
+                    v_app_target,
+                    v_motion_seq,
+                    v_motion_target,
+                    v_interaction_seq,
+                    v_interaction_target,
+                    v_bbar_seq,
+                    v_bbar_target,
+                )
             elif rnnType is RnnType.Target_RNN_AIM_V:
-                output = self._targetRNN_AIM_V_model(v_app_seq, v_app_target, v_motion_seq,
-                                        v_motion_target, v_interaction_seq,
-                                        v_interaction_target)
+                output = self._targetRNN_AIM_V_model(
+                    v_app_seq,
+                    v_app_target,
+                    v_motion_seq,
+                    v_motion_target,
+                    v_interaction_seq,
+                    v_interaction_target,
+                )
 
             F_softmax = nn.Softmax()
             output = F_softmax(output)
             pred = torch.max(output, 1)
 
-            #label_mask = torch.ne(pred[1].data, 0)
+            # label_mask = torch.ne(pred[1].data, 0)
             label_mask = torch.ne(pred[1].detach(), 0)
 
             r_idx = t.to(self._device)[label_mask]
             c_idx = ts.to(self._device)[label_mask]
-            #val = -pred[0].data[label_mask]
+            # val = -pred[0].data[label_mask]
             val = -pred[0].detach()[label_mask]
 
             if len(r_idx) != 0:

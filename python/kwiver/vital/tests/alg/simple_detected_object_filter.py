@@ -31,27 +31,30 @@ from __future__ import print_function
 from kwiver.vital.algo import DetectedObjectFilter
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
 
-class SimpleDetectedObjectFilter(CommonConfigurationMixin,
-                                  DetectedObjectFilter):
+
+class SimpleDetectedObjectFilter(CommonConfigurationMixin, DetectedObjectFilter):
     """
     Implementation of DetectedObjectFilter to test it
 
     Examples:
     """
+
     def __init__(self):
         DetectedObjectFilter.__init__(self)
 
 
-
 def __vital_algorithm_register__():
     from kwiver.vital.algo import algorithm_factory
+
     # Register Algorithm
-    implementation_name  = "SimpleDetectedObjectFilter"
+    implementation_name = "SimpleDetectedObjectFilter"
     if algorithm_factory.has_algorithm_impl_name(
-                            SimpleDetectedObjectFilter.static_type_name(),
-                            implementation_name):
+        SimpleDetectedObjectFilter.static_type_name(), implementation_name
+    ):
         return
-    algorithm_factory.add_algorithm( implementation_name,
-                                "Test kwiver.vital.algo.DetectedObjectFilter",
-                                 SimpleDetectedObjectFilter )
-    algorithm_factory.mark_algorithm_as_loaded( implementation_name )
+    algorithm_factory.add_algorithm(
+        implementation_name,
+        "Test kwiver.vital.algo.DetectedObjectFilter",
+        SimpleDetectedObjectFilter,
+    )
+    algorithm_factory.mark_algorithm_as_loaded(implementation_name)

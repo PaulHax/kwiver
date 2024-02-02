@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#ckwg +28
+# ckwg +28
 # Copyright 2011-2020 by Kitware, Inc.
 # All rights reserved.
 #
@@ -30,6 +30,7 @@
 
 from kwiver.sprokit.util.test import expect_exception, find_tests, run_test, test_error
 
+
 def test_import():
     try:
         import kwiver.sprokit.pipeline.process
@@ -52,8 +53,8 @@ def test_create():
     process.PortAddrs()
     process.Connection()
     process.Connections()
-    process.PortInfo('type', process.PortFlags(), 'desc', process.PortFrequency(1, 1))
-    process.ConfInfo('default', 'desc', False)
+    process.PortInfo("type", process.PortFlags(), "desc", process.PortFrequency(1, 1))
+    process.ConfInfo("default", "desc", False)
     process.DataInfo(True, datum.DatumType.invalid)
     process.DataCheck.none
     process.DataCheck.sync
@@ -67,18 +68,18 @@ def test_api_calls():
     a = process.PortAddr()
     a.process
     a.port
-    a.process = ''
-    a.port = ''
+    a.process = ""
+    a.port = ""
 
     f = process.PortFrequency(1, 1)
 
-    a = process.PortInfo('type', process.PortFlags(), 'desc', f)
+    a = process.PortInfo("type", process.PortFlags(), "desc", f)
     a.type
     a.flags
     a.description
     a.frequency
 
-    a = process.ConfInfo('default', 'desc', False)
+    a = process.ConfInfo("default", "desc", False)
     a.default
     a.description
     a.tunable
@@ -130,8 +131,9 @@ def test_flags_as_set():
         test_error(".add() added a duplicate item: expected 4, got %d" % len(a))
 
     # adding invalid objects
-    expect_exception('adding a value of an invalid type', TypeError,
-                     process.PortFlags.add, a, True),
+    expect_exception(
+        "adding a value of an invalid type", TypeError, process.PortFlags.add, a, True
+    ),
 
     # 'in' keyword
     if process.PythonProcess.flag_required not in a:
@@ -153,10 +155,14 @@ def test_flags_as_set():
         test_error("an empty set is True-like")
 
     # removal
-    expect_exception('.pop() on an empty set', KeyError,
-                     process.PortFlags.pop, b)
-    expect_exception('.remove() with an item that does not exist in the set', KeyError,
-                     process.PortFlags.remove, a, process.PythonProcess.flag_output_const)
+    expect_exception(".pop() on an empty set", KeyError, process.PortFlags.pop, b)
+    expect_exception(
+        ".remove() with an item that does not exist in the set",
+        KeyError,
+        process.PortFlags.remove,
+        a,
+        process.PythonProcess.flag_output_const,
+    )
     a.discard(process.PythonProcess.flag_output_const)
 
     if not len(a) == 4:
@@ -246,6 +252,7 @@ def test_flags_as_set():
     if not len(a) == 4:
         test_error(".update() does not work: expected 4, got %d" % len(a))
 
+
 def test_peek_at_datum_on_port():
     """
     Test peek at datum on a test port with complete datum
@@ -255,6 +262,7 @@ def test_peek_at_datum_on_port():
     from kwiver.vital.config import config
     from kwiver.sprokit.pipeline import edge
     from kwiver.sprokit.pipeline import stamp
+
     cfg = config.empty_config()
     # Create Dummy Receiver process
     receiver_proc = process.PythonProcess(cfg)
@@ -269,9 +277,14 @@ def test_peek_at_datum_on_port():
     test_edge.push_datum(e_datum)
     receiver_datum_type = receiver_proc.peek_at_datum_on_port("test_port").type()
     if receiver_datum_type != DatumType.complete:
-        test_error("Datum mismatch: expected a complete datum, got {0}".format(receiver_datum_type))
+        test_error(
+            "Datum mismatch: expected a complete datum, got {0}".format(
+                receiver_datum_type
+            )
+        )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     import sys
 
     if len(sys.argv) != 2:

@@ -42,11 +42,11 @@ class Grid(object):
 
     def obtain_grid_feature_list(self, im_size, bbox_list, mot_flag):
         r"""
-            The output of the function is a grid feature list for
-            each corresponding bbox of current frame/image
+        The output of the function is a grid feature list for
+        each corresponding bbox of current frame/image
 
-            A grid feature records which cells in the configured
-            neighborhood have at least one bonuding box in them.
+        A grid feature records which cells in the configured
+        neighborhood have at least one bonuding box in them.
         """
         self.img_w, self.img_h = im_size
 
@@ -89,15 +89,18 @@ class Grid(object):
             neighborhood_grid_top = row_idx - self._half_cell_w
             neighborhood_grid_left = col_idx - self._half_cell_w
 
-            neighborhood_grid = torch.FloatTensor(self._target_neighborhood_w,
-                                            self._target_neighborhood_w).zero_()
+            neighborhood_grid = torch.FloatTensor(
+                self._target_neighborhood_w, self._target_neighborhood_w
+            ).zero_()
 
             for r in range(self._target_neighborhood_w):
                 for c in range(self._target_neighborhood_w):
-                    if (0 <= neighborhood_grid_top + r < grid.size(0)
-                        and 0 <= neighborhood_grid_left + c < grid.size(1)):
-                        neighborhood_grid[r, c] = grid[neighborhood_grid_top + r,
-                                                    neighborhood_grid_left + c]
+                    if 0 <= neighborhood_grid_top + r < grid.size(
+                        0
+                    ) and 0 <= neighborhood_grid_left + c < grid.size(1):
+                        neighborhood_grid[r, c] = grid[
+                            neighborhood_grid_top + r, neighborhood_grid_left + c
+                        ]
 
             grid_feature_list.append(neighborhood_grid.view(neighborhood_grid.numel()))
 

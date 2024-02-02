@@ -39,19 +39,21 @@ class SimpleCloseLoops(CommonConfigurationMixin, CloseLoops):
 
     Examples:
     """
+
     def __init__(self):
         CloseLoops.__init__(self)
 
 
 def __vital_algorithm_register__():
     from kwiver.vital.algo import algorithm_factory
+
     # Register Algorithm
-    implementation_name  = "SimpleCloseLoops"
+    implementation_name = "SimpleCloseLoops"
     if algorithm_factory.has_algorithm_impl_name(
-                            SimpleCloseLoops.static_type_name(),
-                            implementation_name):
+        SimpleCloseLoops.static_type_name(), implementation_name
+    ):
         return
-    algorithm_factory.add_algorithm( implementation_name,
-                                "Test kwiver.vital.algo.CloseLoops",
-                                 SimpleCloseLoops )
-    algorithm_factory.mark_algorithm_as_loaded( implementation_name )
+    algorithm_factory.add_algorithm(
+        implementation_name, "Test kwiver.vital.algo.CloseLoops", SimpleCloseLoops
+    )
+    algorithm_factory.mark_algorithm_as_loaded(implementation_name)

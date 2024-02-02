@@ -31,27 +31,28 @@ from __future__ import print_function
 from kwiver.vital.algo import ConvertImage
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
 
-class SimpleConvertImage(CommonConfigurationMixin,
-                                  ConvertImage):
+
+class SimpleConvertImage(CommonConfigurationMixin, ConvertImage):
     """
     Implementation of ConvertImage to test it
 
     Examples:
     """
+
     def __init__(self):
         ConvertImage.__init__(self)
 
 
-
 def __vital_algorithm_register__():
     from kwiver.vital.algo import algorithm_factory
+
     # Register Algorithm
-    implementation_name  = "SimpleConvertImage"
+    implementation_name = "SimpleConvertImage"
     if algorithm_factory.has_algorithm_impl_name(
-                            SimpleConvertImage.static_type_name(),
-                            implementation_name):
+        SimpleConvertImage.static_type_name(), implementation_name
+    ):
         return
-    algorithm_factory.add_algorithm( implementation_name,
-                                "Test kwiver.vital.algo.ConvertImage",
-                                 SimpleConvertImage )
-    algorithm_factory.mark_algorithm_as_loaded( implementation_name )
+    algorithm_factory.add_algorithm(
+        implementation_name, "Test kwiver.vital.algo.ConvertImage", SimpleConvertImage
+    )
+    algorithm_factory.mark_algorithm_as_loaded(implementation_name)

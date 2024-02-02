@@ -31,27 +31,30 @@ from __future__ import print_function
 from kwiver.vital.algo import DrawDetectedObjectSet
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
 
-class SimpleDrawDetectedObjectSet(CommonConfigurationMixin,
-                                  DrawDetectedObjectSet):
+
+class SimpleDrawDetectedObjectSet(CommonConfigurationMixin, DrawDetectedObjectSet):
     """
     Implementation of DrawDetectedObjectSet to test it
 
     Examples:
     """
+
     def __init__(self):
         DrawDetectedObjectSet.__init__(self)
 
 
-
 def __vital_algorithm_register__():
     from kwiver.vital.algo import algorithm_factory
+
     # Register Algorithm
-    implementation_name  = "SimpleDrawDetectedObjectSet"
+    implementation_name = "SimpleDrawDetectedObjectSet"
     if algorithm_factory.has_algorithm_impl_name(
-                            SimpleDrawDetectedObjectSet.static_type_name(),
-                            implementation_name):
+        SimpleDrawDetectedObjectSet.static_type_name(), implementation_name
+    ):
         return
-    algorithm_factory.add_algorithm( implementation_name,
-                                "Test kwiver.vital.algo.DrawDetectedObjectSet",
-                                 SimpleDrawDetectedObjectSet )
-    algorithm_factory.mark_algorithm_as_loaded( implementation_name )
+    algorithm_factory.add_algorithm(
+        implementation_name,
+        "Test kwiver.vital.algo.DrawDetectedObjectSet",
+        SimpleDrawDetectedObjectSet,
+    )
+    algorithm_factory.mark_algorithm_as_loaded(implementation_name)

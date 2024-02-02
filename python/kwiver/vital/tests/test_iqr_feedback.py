@@ -76,8 +76,8 @@ class TestVitalIQRFeedback(object):
         npt.assert_array_equal(iqrf.positive_ids, [])
         npt.assert_array_equal(iqrf.negative_ids, [])
 
-        l1 =  [2, 5, 6, 7, 8]
-        l2 =  [1, 3, 4 ]
+        l1 = [2, 5, 6, 7, 8]
+        l2 = [1, 3, 4]
 
         iqrf.positive_ids = l1
         iqrf.negative_ids = l2
@@ -101,7 +101,6 @@ class TestVitalIQRFeedback(object):
     def test_bad_set_pos_ids(self):
         iqrf = IQRFeedback()
         iqrf.positive_ids = "string, not list"
-
 
     @nt.raises(TypeError)
     def test_bad_set_neg_ids(self):

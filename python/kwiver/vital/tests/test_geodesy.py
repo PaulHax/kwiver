@@ -41,6 +41,7 @@ from kwiver.vital.modules import modules
 from kwiver.vital.types import geodesy as g
 from kwiver.vital.tests.py_helpers import no_call_pure_virtual_method
 
+
 class TestVitalGeodesy(unittest.TestCase):
     def setUp(self):
         self.loc1 = np.array([-73.759291, 42.849631])

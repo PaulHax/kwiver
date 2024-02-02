@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#ckwg +28
+# ckwg +28
 # Copyright 2011-2020 by Kitware, Inc.
 # All rights reserved.
 #
@@ -30,6 +30,7 @@
 
 from kwiver.sprokit.util.test import find_tests, run_test, test_error
 
+
 def test_import(path_unused):
     try:
         import kwiver.sprokit.pipeline_util.export_
@@ -50,7 +51,7 @@ def test_simple_pipeline(path):
     p = bake.bake_pipe_file(path)
     r, w = os.pipe()
 
-    name = 'graph'
+    name = "graph"
 
     export_.export_dot(w, p, name)
 
@@ -62,7 +63,7 @@ def test_simple_pipeline(path):
     os.close(w)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import os
     import sys
 
@@ -74,6 +75,6 @@ if __name__ == '__main__':
 
     pipeline_dir = sys.argv[2]
 
-    path = os.path.join(pipeline_dir, '%s.pipe' % testname)
+    path = os.path.join(pipeline_dir, "%s.pipe" % testname)
 
     run_test(testname, find_tests(locals()), path)

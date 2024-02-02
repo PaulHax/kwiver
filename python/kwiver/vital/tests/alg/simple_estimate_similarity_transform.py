@@ -31,27 +31,32 @@ from __future__ import print_function
 from kwiver.vital.algo import EstimateSimilarityTransform
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
 
-class SimpleEstimateSimilarityTransform(CommonConfigurationMixin,
-                                  EstimateSimilarityTransform):
+
+class SimpleEstimateSimilarityTransform(
+    CommonConfigurationMixin, EstimateSimilarityTransform
+):
     """
     Implementation of EstimateSimilarityTransform to test it
 
     Examples:
     """
+
     def __init__(self):
         EstimateSimilarityTransform.__init__(self)
 
 
-
 def __vital_algorithm_register__():
     from kwiver.vital.algo import algorithm_factory
+
     # Register Algorithm
-    implementation_name  = "SimpleEstimateSimilarityTransform"
+    implementation_name = "SimpleEstimateSimilarityTransform"
     if algorithm_factory.has_algorithm_impl_name(
-                            SimpleEstimateSimilarityTransform.static_type_name(),
-                            implementation_name):
+        SimpleEstimateSimilarityTransform.static_type_name(), implementation_name
+    ):
         return
-    algorithm_factory.add_algorithm( implementation_name,
-                                "Test kwiver.vital.algo.EstimateSimilarityTransform",
-                                 SimpleEstimateSimilarityTransform )
-    algorithm_factory.mark_algorithm_as_loaded( implementation_name )
+    algorithm_factory.add_algorithm(
+        implementation_name,
+        "Test kwiver.vital.algo.EstimateSimilarityTransform",
+        SimpleEstimateSimilarityTransform,
+    )
+    algorithm_factory.mark_algorithm_as_loaded(implementation_name)

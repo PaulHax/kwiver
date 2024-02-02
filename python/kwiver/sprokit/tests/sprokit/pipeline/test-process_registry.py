@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#ckwg +28
+# ckwg +28
 # Copyright 2011-2020 by Kitware, Inc.
 # All rights reserved.
 #
@@ -30,6 +30,7 @@
 
 from kwiver.sprokit.util.test import expect_exception, find_tests, run_test, test_error
 
+
 def test_import():
     try:
         from kwiver.vital.config import config
@@ -46,11 +47,11 @@ def test_api_calls():
 
     modules.load_known_modules()
 
-    proc_type = 'orphan'
+    proc_type = "orphan"
     c = config.empty_config()
 
-    process_factory.create_process(proc_type, '')
-    process_factory.create_process(proc_type, '', c)
+    process_factory.create_process(proc_type, "")
+    process_factory.create_process(proc_type, "", c)
     process_factory.types()
     process_factory.description(proc_type)
 
@@ -178,9 +179,9 @@ def example_process(check_init):
             if not self.ran_reset:
                 test_error("_reset override was not called")
             # TODO: See TODO below.
-            #if not self.ran_step:
+            # if not self.ran_step:
             #    test_error("_step override was not called")
-            #if not self.ran_reconfigure:
+            # if not self.ran_reconfigure:
             #    test_error("_reconfigure override was not called")
             if not self.ran_properties:
                 test_error("_properties override was not called")
@@ -236,8 +237,8 @@ def test_register():
     from kwiver.sprokit.pipeline import process
     from kwiver.sprokit.pipeline import process_factory
 
-    proc_type = 'python_example'
-    proc_desc = 'simple description'
+    proc_type = "python_example"
+    proc_desc = "simple description"
 
     process_factory.add_process(proc_type, proc_desc, example_process(True))
 
@@ -245,7 +246,7 @@ def test_register():
         test_error("Description was not preserved when registering")
 
     try:
-        p = process_factory.create_process(proc_type, '')
+        p = process_factory.create_process(proc_type, "")
         if p is None:
             raise Exception()
     except:
@@ -258,8 +259,8 @@ def test_register_cluster():
     from kwiver.sprokit.pipeline import process_cluster
     from kwiver.sprokit.pipeline import process_factory
 
-    proc_type = 'python_example'
-    proc_desc = 'simple description'
+    proc_type = "python_example"
+    proc_desc = "simple description"
 
     process_factory.add_process(proc_type, proc_desc, base_example_process_cluster())
 
@@ -269,7 +270,7 @@ def test_register_cluster():
     p = None
 
     try:
-        p = process_factory.create_process(proc_type, '')
+        p = process_factory.create_process(proc_type, "")
         if p is None:
             raise Exception()
     except BaseException:
@@ -277,10 +278,14 @@ def test_register_cluster():
 
         e = sys.exc_info()[1]
 
-        test_error("Could not create newly registered process cluster type: %s" % str(e))
+        test_error(
+            "Could not create newly registered process cluster type: %s" % str(e)
+        )
 
     if process_cluster.cluster_from_process(p) is None:
-        test_error("A cluster process from the registry was not detected as a cluster process")
+        test_error(
+            "A cluster process from the registry was not detected as a cluster process"
+        )
 
 
 def test_wrapper_api():
@@ -289,16 +294,16 @@ def test_wrapper_api():
     from kwiver.sprokit.pipeline import process
     from kwiver.sprokit.pipeline import process_factory
 
-    proc_type = 'python_example'
-    proc_desc = 'simple description'
+    proc_type = "python_example"
+    proc_desc = "simple description"
 
-    proc_base_type = 'python_base_example'
-    proc_base_desc = 'simple base description'
+    proc_base_type = "python_base_example"
+    proc_base_desc = "simple base description"
 
-    iport = 'no_such_iport'
-    oport = 'no_such_oport'
-    key = 'no_such_key'
-    ptype = 'no_type'
+    iport = "no_such_iport"
+    oport = "no_such_oport"
+    key = "no_such_key"
+    ptype = "no_type"
 
     process_factory.add_process(proc_type, proc_desc, example_process(False))
     process_factory.add_process(proc_base_type, proc_base_desc, base_example_process())
@@ -312,27 +317,59 @@ def test_wrapper_api():
 
         p.input_ports()
         p.output_ports()
-        expect_exception("asking for info on a non-existant input port", RuntimeError,
-                         p.input_port_info, iport)
-        expect_exception("asking for info on a non-existant output port", RuntimeError,
-                         p.output_port_info, oport)
+        expect_exception(
+            "asking for info on a non-existant input port",
+            RuntimeError,
+            p.input_port_info,
+            iport,
+        )
+        expect_exception(
+            "asking for info on a non-existant output port",
+            RuntimeError,
+            p.output_port_info,
+            oport,
+        )
 
         e = edge.Edge()
 
-        expect_exception("connecting to a non-existant input port", RuntimeError,
-                         p.connect_input_port, iport, e)
-        expect_exception("connecting to a non-existant output port", RuntimeError,
-                         p.connect_output_port, oport, e)
+        expect_exception(
+            "connecting to a non-existant input port",
+            RuntimeError,
+            p.connect_input_port,
+            iport,
+            e,
+        )
+        expect_exception(
+            "connecting to a non-existant output port",
+            RuntimeError,
+            p.connect_output_port,
+            oport,
+            e,
+        )
 
         p.available_config()
         p.available_tunable_config()
-        expect_exception("asking for info on a non-existant config key", RuntimeError,
-                         p.config_info, key)
+        expect_exception(
+            "asking for info on a non-existant config key",
+            RuntimeError,
+            p.config_info,
+            key,
+        )
 
-        expect_exception("setting a type on a non-existent input port", RuntimeError,
-                         p.set_input_port_type, iport, ptype)
-        expect_exception("setting a type on a non-existent output port", RuntimeError,
-                         p.set_output_port_type, oport, ptype)
+        expect_exception(
+            "setting a type on a non-existent input port",
+            RuntimeError,
+            p.set_input_port_type,
+            iport,
+            ptype,
+        )
+        expect_exception(
+            "setting a type on a non-existent output port",
+            RuntimeError,
+            p.set_output_port_type,
+            oport,
+            ptype,
+        )
 
         p.reset()
 
@@ -341,24 +378,24 @@ def test_wrapper_api():
         # TODO: Can't check this because the core frequency of the process
         # cannot be set. Needs to be stepped within a pipeline to verify this.
         # Enable the ran_step check in p.check when this is fixed.
-        #p.step()
+        # p.step()
 
         # TODO: Can't check this because only the process_cluster base class
         # and the pipeline may reconfigure a process. Needs to be stepped
         # within a pipeline to verify this. Enable the ran_step check in
         # p.check when this is fixed.
-        #p.reconfigure(reconf)
+        # p.reconfigure(reconf)
 
         del p
 
-    p = process_factory.create_process(proc_type, '')
+    p = process_factory.create_process(proc_type, "")
     check_process(p)
 
-    p = process_factory.create_process(proc_base_type, '')
+    p = process_factory.create_process(proc_base_type, "")
     check_process(p)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
 
     if len(sys.argv) != 2:

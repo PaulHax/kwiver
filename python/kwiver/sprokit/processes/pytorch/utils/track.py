@@ -31,12 +31,22 @@ import numpy as np
 import torch
 import collections
 
+
 class track_state(object):
-    def __init__(self, frame_id, bbox_center, interaction_feature, app_feature, bbox, 
-                    detected_object, sys_frame_id, sys_frame_time):
+    def __init__(
+        self,
+        frame_id,
+        bbox_center,
+        interaction_feature,
+        app_feature,
+        bbox,
+        detected_object,
+        sys_frame_id,
+        sys_frame_time,
+    ):
         self.bbox_center = bbox_center
 
-        '''a list [x, y, w, h]'''
+        """a list [x, y, w, h]"""
         self.bbox = bbox
 
         # got required AMI features in torch.tensor format
@@ -55,7 +65,7 @@ class track_state(object):
 
         # FIXME: the detected_object confidence does not work
         # For now, I just set the confidence = 1.0
-        #self.conf = detectedObject.confidence()
+        # self.conf = detectedObject.confidence()
         self.conf = 1.0
 
 
@@ -79,15 +89,21 @@ class track(object):
         if not self.track_state_list:
             new_track_state.motion_feature = torch.FloatTensor(2).zero_()
         else:
-            pre_bbox_center = np.asarray(self.track_state_list[-1].bbox_center, dtype=np.float32).reshape(2)
-            cur_bbox_center = np.asarray(new_track_state.bbox_center, dtype=np.float32).reshape(2)
-            new_track_state.motion_feature = torch.from_numpy(cur_bbox_center - pre_bbox_center)
+            pre_bbox_center = np.asarray(
+                self.track_state_list[-1].bbox_center, dtype=np.float32
+            ).reshape(2)
+            cur_bbox_center = np.asarray(
+                new_track_state.bbox_center, dtype=np.float32
+            ).reshape(2)
+            new_track_state.motion_feature = torch.from_numpy(
+                cur_bbox_center - pre_bbox_center
+            )
 
         new_track_state.track_id = self.track_id
         self.track_state_list.append(new_track_state)
         self.max_conf = max(self.max_conf, new_track_state.conf)
 
-    def duplicate_track_state(self, timestep_len = 6):
+    def duplicate_track_state(self, timestep_len=6):
         du_track = track(self.track_id)
         du_track.track_state_list = list(self.track_state_list)
         du_track.updated_flag = self.updated_flag
@@ -161,10 +177,10 @@ class track_set(object):
             track.updated_flag = False
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     t = track(0)
     for i in range(10):
-        t.append(track_state((i, i*i*0.1), [], []))
+        t.append(track_state((i, i * i * 0.1), [], []))
 
     for item in t[:]:
         print(item.motion_feature)

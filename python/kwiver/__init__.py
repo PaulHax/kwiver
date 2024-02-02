@@ -2,8 +2,8 @@ import logging
 import os
 
 
-PYTHON_PLUGIN_ENTRYPOINT = 'kwiver.python_plugin_registration'
-CPP_SEARCH_PATHS_ENTRYPOINT = 'kwiver.cpp_search_paths'
+PYTHON_PLUGIN_ENTRYPOINT = "kwiver.python_plugin_registration"
+CPP_SEARCH_PATHS_ENTRYPOINT = "kwiver.cpp_search_paths"
 
 
 _LOGGING_ENVIRON_VAR = "KWIVER_PYTHON_DEFAULT_LOG_LEVEL"
@@ -26,19 +26,22 @@ def _logging_onetime_init() -> None:
         if _LOGGING_ENVIRON_VAR in os.environ:
             llevel_str = os.environ[_LOGGING_ENVIRON_VAR].lower()
             # error warn info debug trace
-            m = {"error": logging.ERROR,
-                 "warn": logging.WARN,
-                 "info": logging.INFO,
-                 "debug": logging.DEBUG,
-                 "trace": 1}
+            m = {
+                "error": logging.ERROR,
+                "warn": logging.WARN,
+                "info": logging.INFO,
+                "debug": logging.DEBUG,
+                "trace": 1,
+            }
             if llevel_str in m:
                 llevel = m[llevel_str]
             else:
                 logging.getLogger("kwiver").warning(
                     f"KWIVER python logging level value set but did not match "
-                    f"a valid value. Was given: \"{llevel_str}\". "
+                    f'a valid value. Was given: "{llevel_str}". '
                     f"Must be one of: {list(m.keys())}. Defaulting to warning "
-                    f"level.")
+                    f"level."
+                )
         logging.getLogger(__name__).setLevel(llevel)
         # Mark this one-time logic as invoked to mater calls are idempotent.
         _logging_onetime_init.called = True

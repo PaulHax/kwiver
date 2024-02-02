@@ -257,14 +257,14 @@ class TestVitalFeature(unittest.TestCase):
         float_def = FeatureF()
         float_nondef = FeatureF([1, 1], 1, 2, 1)
 
-        nt.ok_(FeatureD(double_def)    == double_def)
+        nt.ok_(FeatureD(double_def) == double_def)
         nt.ok_(FeatureD(double_nondef) == double_nondef)
-        nt.ok_(FeatureF(double_def)    != double_def)
+        nt.ok_(FeatureF(double_def) != double_def)
         nt.ok_(FeatureF(double_nondef) != double_nondef)
 
-        nt.ok_(FeatureF(float_def)    == float_def)
+        nt.ok_(FeatureF(float_def) == float_def)
         nt.ok_(FeatureF(float_nondef) == float_nondef)
-        nt.ok_(FeatureD(float_def)    != float_def)
+        nt.ok_(FeatureD(float_def) != float_def)
         nt.ok_(FeatureD(float_nondef) != float_nondef)
 
     def test_clone(self):

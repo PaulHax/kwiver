@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#ckwg +28
+# ckwg +28
 # Copyright 2011-2020 by Kitware, Inc.
 # All rights reserved.
 #
@@ -29,6 +29,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from kwiver.sprokit.util.test import find_tests, run_test, test_error
+
 
 def test_import():
     try:
@@ -91,7 +92,7 @@ def test_api_calls():
 
     modules.load_known_modules()
 
-    p = process_factory.create_process('orphan', 'process_name')
+    p = process_factory.create_process("orphan", "process_name")
 
     e.set_upstream_process(p)
     e.set_downstream_process(p)
@@ -119,7 +120,7 @@ def test_datum_api_calls():
     ed.stamp = s
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
 
     if len(sys.argv) != 2:

@@ -33,21 +33,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 tests for Similarity class
 
 """
+
 from __future__ import print_function
 import unittest
 
 import nose.tools
 import numpy
 
-from kwiver.vital.types import (
-    RotationF,
-    RotationD,
-    SimilarityF,
-    SimilarityD
-)
+from kwiver.vital.types import RotationF, RotationD, SimilarityF, SimilarityD
 
 
-class TestSimiliarity (unittest.TestCase):
+class TestSimiliarity(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -56,50 +52,69 @@ class TestSimiliarity (unittest.TestCase):
         cls.r_f = RotationF([0.1, -1.5, 2.0])
         cls.t = [1, -2, 5]
 
-    def check_members_equal(self, sim, exp_type, exp_scale, exp_rot_mat, exp_trans, prec):
+    def check_members_equal(
+        self, sim, exp_type, exp_scale, exp_rot_mat, exp_trans, prec
+    ):
         nose.tools.assert_equal(sim.type_name, exp_type)
         numpy.testing.assert_almost_equal(sim.scale, exp_scale, prec)
-        numpy.testing.assert_array_almost_equal(sim.rotation.matrix(), exp_rot_mat, prec)
+        numpy.testing.assert_array_almost_equal(
+            sim.rotation.matrix(), exp_rot_mat, prec
+        )
         numpy.testing.assert_array_almost_equal(sim.translation, exp_trans, prec)
 
     def test_new_default(self):
-        self.check_members_equal(SimilarityD(), 'd', 1, RotationD().matrix(), [0, 0, 0], 15)
-        self.check_members_equal(SimilarityF(), 'f', 1, RotationF().matrix(), [0, 0, 0], 6)
-
+        self.check_members_equal(
+            SimilarityD(), "d", 1, RotationD().matrix(), [0, 0, 0], 15
+        )
+        self.check_members_equal(
+            SimilarityF(), "f", 1, RotationF().matrix(), [0, 0, 0], 6
+        )
 
     def test_new_from_rot(self):
         sim = SimilarityD(self.s, self.r, self.t)
-        self.check_members_equal(sim, 'd', self.s, self.r.matrix(), self.t, 15)
+        self.check_members_equal(sim, "d", self.s, self.r.matrix(), self.t, 15)
 
         sim = SimilarityF(self.s, self.r_f, self.t)
-        self.check_members_equal(sim, 'f', self.s, self.r_f.matrix(), self.t, 6)
+        self.check_members_equal(sim, "f", self.s, self.r_f.matrix(), self.t, 6)
 
     def test_new_from_mat(self):
         sim = SimilarityD(self.s, self.r, self.t)
         sim_cpy = SimilarityD(sim.matrix())
-        self.check_members_equal(sim_cpy, 'd', sim.scale, sim.rotation.matrix(), sim.translation, 15)
+        self.check_members_equal(
+            sim_cpy, "d", sim.scale, sim.rotation.matrix(), sim.translation, 15
+        )
 
         sim = SimilarityF(self.s, self.r_f, self.t)
         sim_cpy = SimilarityF(sim.matrix())
-        self.check_members_equal(sim_cpy, 'f', sim.scale, sim.rotation.matrix(), sim.translation, 6)
+        self.check_members_equal(
+            sim_cpy, "f", sim.scale, sim.rotation.matrix(), sim.translation, 6
+        )
 
     def test_copy_constructor(self):
         sim = SimilarityD(self.s, self.r, self.t)
         sim_cpy = SimilarityD(sim)
-        self.check_members_equal(sim_cpy, 'd', sim.scale, sim.rotation.matrix(), sim.translation, 15)
+        self.check_members_equal(
+            sim_cpy, "d", sim.scale, sim.rotation.matrix(), sim.translation, 15
+        )
 
         sim = SimilarityF(self.s, self.r_f, self.t)
         sim_cpy = SimilarityF(sim)
-        self.check_members_equal(sim_cpy, 'f', sim.scale, sim.rotation.matrix(), sim.translation, 6)
+        self.check_members_equal(
+            sim_cpy, "f", sim.scale, sim.rotation.matrix(), sim.translation, 6
+        )
 
     def test_copy_constructor_different_types(self):
         sim = SimilarityF(self.s, self.r_f, self.t)
         sim_cpy = SimilarityD(sim)
-        self.check_members_equal(sim_cpy, 'd', sim.scale, sim.rotation.matrix(), sim.translation, 6)
+        self.check_members_equal(
+            sim_cpy, "d", sim.scale, sim.rotation.matrix(), sim.translation, 6
+        )
 
         sim = SimilarityD(self.s, self.r, self.t)
         sim_cpy = SimilarityF(sim)
-        self.check_members_equal(sim_cpy, 'f', sim.scale, sim.rotation.matrix(), sim.translation, 6)
+        self.check_members_equal(
+            sim_cpy, "f", sim.scale, sim.rotation.matrix(), sim.translation, 6
+        )
 
     def test_equals(self):
         # Double
@@ -152,14 +167,16 @@ class TestSimiliarity (unittest.TestCase):
 
     def test_get_rotation(self):
         s = SimilarityD()
-        numpy.testing.assert_array_almost_equal(s.rotation.matrix(), RotationD().matrix())
+        numpy.testing.assert_array_almost_equal(
+            s.rotation.matrix(), RotationD().matrix()
+        )
 
         s = SimilarityD(self.s, self.r, self.t)
         numpy.testing.assert_array_almost_equal(s.rotation.matrix(), self.r.matrix())
 
     def test_get_translation(self):
         s = SimilarityD()
-        numpy.testing.assert_equal(s.translation, [0,0,0])
+        numpy.testing.assert_equal(s.translation, [0, 0, 0])
 
         s = SimilarityD(self.s, self.r, self.t)
         numpy.testing.assert_equal(s.translation, self.t)
@@ -180,18 +197,15 @@ class TestSimiliarity (unittest.TestCase):
 
     def test_mul_sim(self):
         s1 = SimilarityD(self.s, self.r, self.t)
-        s2 = SimilarityD(0.75,
-                        RotationD([-0.5, -0.5, 1.0]),
-                        [4, 6.5, 8])
+        s2 = SimilarityD(0.75, RotationD([-0.5, -0.5, 1.0]), [4, 6.5, 8])
 
         sim_comp = (s1 * s2).matrix()
         mat_comp = numpy.dot(s1.matrix(), s2.matrix())
-        print('sim12 comp:\n', sim_comp)
-        print('mat comp:\n', mat_comp)
-        print('sim - mat:\n', sim_comp - mat_comp)
+        print("sim12 comp:\n", sim_comp)
+        print("mat comp:\n", mat_comp)
+        print("sim - mat:\n", sim_comp - mat_comp)
         nose.tools.assert_almost_equal(
-            numpy.linalg.norm(sim_comp - mat_comp, 2),
-            0., 12
+            numpy.linalg.norm(sim_comp - mat_comp, 2), 0.0, 12
         )
 
     def test_mul_vector(self):
@@ -208,7 +222,7 @@ class TestSimiliarity (unittest.TestCase):
         with nose.tools.assert_raises(TypeError):
             s * 0
         with nose.tools.assert_raises(TypeError):
-            s * 'foo'
+            s * "foo"
 
     def test_inverse(self):
         # Inverse of identity is itself
@@ -219,7 +233,6 @@ class TestSimiliarity (unittest.TestCase):
         s_i = s.inverse()
         i = s * s_i
         # Similarity composed with inverse should be identity
-        nose.tools.assert_almost_equal(i.scale, 1., 14)
-        nose.tools.assert_almost_equal(i.rotation.angle(), .0, 14)
-        nose.tools.assert_almost_equal(numpy.linalg.norm(i.translation, 2),
-                                       0., 12)
+        nose.tools.assert_almost_equal(i.scale, 1.0, 14)
+        nose.tools.assert_almost_equal(i.rotation.angle(), 0.0, 14)
+        nose.tools.assert_almost_equal(numpy.linalg.norm(i.translation, 2), 0.0, 12)

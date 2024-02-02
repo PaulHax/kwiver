@@ -46,12 +46,13 @@ from kwiver.vital.types import (
     SimpleLandmarkMap,
 )
 
+
 class TestSimpleLandmarkMap(unittest.TestCase):
     @classmethod
     def setUp(self):
         self.landmark1 = LandmarkF([0, 1, 2])
         self.landmark2 = LandmarkF([0, 1, 3])
-        self.landmarks_dict = {0:self.landmark1, 1:self.landmark2}
+        self.landmarks_dict = {0: self.landmark1, 1: self.landmark2}
 
     def test_inherits(self):
         nt.ok_(issubclass(SimpleLandmarkMap, LandmarkMap))

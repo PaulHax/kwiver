@@ -1,4 +1,4 @@
-#ckwg +28
+# ckwg +28
 # Copyright 2015 by Kitware, Inc.
 # All rights reserved.
 #
@@ -32,35 +32,31 @@ import kwiver.vital.config.config
 
 import os.path
 
+
 class kw_print_number_process(kwiver.sprokit.pipeline.process.PythonProcess):
-    def __init__(self, conf ):
+    def __init__(self, conf):
         kwiver.sprokit.pipeline.process.PythonProcess.__init__(self, conf)
 
         # declare our configuration items
-        self.declare_configuration_key(
-            'output',
-            '.',
-            'The path for the output file.')
+        self.declare_configuration_key("output", ".", "The path for the output file.")
 
         # create port flags
         flags = kwiver.sprokit.pipeline.process.PortFlags()
         flags.add(self.flag_required)
 
         # create input ports
-        self.declare_input_port( # example
-            'input',
-            'integer',
-            flags,
-            'Where numbers are read from.')
+        self.declare_input_port(  # example
+            "input", "integer", flags, "Where numbers are read from."
+        )
 
     # ----------------------------------------------------------------
     def _configure(self):
-        path = self.config_value('output')
+        path = self.config_value("output")
 
         if not path:
-            raise RuntimeError('The path given was empty')
+            raise RuntimeError("The path given was empty")
 
-        self.fout = open(path, 'w+')
+        self.fout = open(path, "w+")
         self.fout.flush()
 
         self._base_configure()
@@ -73,24 +69,27 @@ class kw_print_number_process(kwiver.sprokit.pipeline.process.PythonProcess):
 
     # ----------------------------------------------------------------
     def _step(self):
-        num = self.grab_value_from_port('input')
+        num = self.grab_value_from_port("input")
 
         print("Number received:", num)
-        self.fout.write('%d\n' % num)
+        self.fout.write("%d\n" % num)
 
         self._base_step()
+
 
 # ==================================================================
 def __sprokit_register__():
     from kwiver.sprokit.pipeline import process_factory
 
-    module_name = 'python:kwiver.print_number'
+    module_name = "python:kwiver.print_number"
 
     if process_factory.is_process_module_loaded(module_name):
         return
 
-    process_factory.add_process('kw_print_number_process',
-                                'A Simple Kwiver Test Process',
-                                kw_print_number_process)
+    process_factory.add_process(
+        "kw_print_number_process",
+        "A Simple Kwiver Test Process",
+        kw_print_number_process,
+    )
 
     process_factory.mark_process_module_as_loaded(module_name)

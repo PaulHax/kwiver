@@ -1,4 +1,4 @@
-#ckwg +28
+# ckwg +28
 # Copyright 2012-2015 by Kitware, Inc.
 # All rights reserved.
 #
@@ -37,18 +37,23 @@ logger = vital_logging.getLogger(__name__)
 
 MAGIC_REGISTRARS = ["__sprokit_register__", "__vital_algorithm_register__"]
 
+
 @vital_logging.exc_report
 def _load_python_module(mod):
     logger.debug('Loading python module: "{}"'.format(mod))
     for registrar in MAGIC_REGISTRARS:
         if hasattr(mod, registrar):
             import collections
+
             if isinstance(getattr(mod, registrar), collections.Callable):
                 getattr(mod, registrar)()
                 return
             else:
-                logger.warn(('Python module "{}" defined {} but '
-                             'it is not callable').format(mod, registrar))
+                logger.warn(
+                    ('Python module "{}" defined {} but ' "it is not callable").format(
+                        mod, registrar
+                    )
+                )
 
     logger.warn(('Python module "{}" does not have registrar method').format(mod))
 
@@ -64,20 +69,21 @@ def load_python_modules():
     them with the C++ backend.
     """
     import os
-    logger.info('Loading python modules')
+
+    logger.info("Loading python modules")
 
     # default plugins that are always loaded
-    packages = ['sprokit.processes',
-                'sprokit.schedulers']
+    packages = ["sprokit.processes", "sprokit.schedulers"]
 
-    envvar = 'SPROKIT_PYTHON_MODULES'
+    envvar = "SPROKIT_PYTHON_MODULES"
 
-    extra_modules = os.environ.get(envvar, '').split(os.pathsep)
+    extra_modules = os.environ.get(envvar, "").split(os.pathsep)
     # ensure the empty string is not considered as a module
     packages.extend([p for p in extra_modules if p])
     logger.debug(
-        'Preparing to load sprokit python plugin modules: '
-        '[\n    {}\n]'.format(',\n    '.join(list(map(repr, packages)))))
+        "Preparing to load sprokit python plugin modules: "
+        "[\n    {}\n]".format(",\n    ".join(list(map(repr, packages))))
+    )
 
     loader = loaders.ModuleLoader()
     all_modules = []

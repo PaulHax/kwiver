@@ -34,13 +34,21 @@ Tests for Python interface to vital::database_query
 
 """
 
-from kwiver.vital.types import (database_query, uid, track_descriptor,
-    Timestamp, GeoPolygon, Polygon, geodesy as g)
+from kwiver.vital.types import (
+    database_query,
+    uid,
+    track_descriptor,
+    Timestamp,
+    GeoPolygon,
+    Polygon,
+    geodesy as g,
+)
 
 from kwiver.vital.tests.py_helpers import create_track_descriptor_set
 
 import nose.tools as nt
 import numpy as np
+
 
 class TestVitalDatabaseQuery(object):
     def _create_database_query(self):
@@ -57,30 +65,36 @@ class TestVitalDatabaseQuery(object):
     def test_set_and_get_id(self):
         dq = self._create_database_query()
         # First check default
-        nt.assert_equals(dq.id.value(), "",
-            "Fresh database_query instance starts with non_empty id")
-        nt.assert_false(dq.id.is_valid(),
-            "Fresh database_query instance starts with valid id")
+        nt.assert_equals(
+            dq.id.value(), "", "Fresh database_query instance starts with non_empty id"
+        )
+        nt.assert_false(
+            dq.id.is_valid(), "Fresh database_query instance starts with valid id"
+        )
 
         # Now check setting, then getting
-        test_ids = [uid.UID("first_id"), uid.UID("second_id"),
-                    uid.UID("third_id")]
+        test_ids = [uid.UID("first_id"), uid.UID("second_id"), uid.UID("third_id")]
 
         for u in test_ids:
             dq.id = u
             expected = u.value()
             actual = dq.id.value()
-            nt.assert_equals(expected, actual,
-                "Got incorrect id. Expected {}, got {}".format(expected, actual))
-            nt.ok_(dq.id.is_valid(),
-                "database_query has invalid uid after setting to valid value")
+            nt.assert_equals(
+                expected,
+                actual,
+                "Got incorrect id. Expected {}, got {}".format(expected, actual),
+            )
+            nt.ok_(
+                dq.id.is_valid(),
+                "database_query has invalid uid after setting to valid value",
+            )
 
         # Try setting back to empty
         dq.id = uid.UID()
-        nt.assert_equals(dq.id.value(), "",
-            "Setting id back to empty string failed")
-        nt.assert_false(dq.id.is_valid(),
-            "id should be invalid after setting to empty string")
+        nt.assert_equals(dq.id.value(), "", "Setting id back to empty string failed")
+        nt.assert_false(
+            dq.id.is_valid(), "id should be invalid after setting to empty string"
+        )
 
     @nt.raises(TypeError)
     def test_bad_set_id(self):
@@ -92,39 +106,66 @@ class TestVitalDatabaseQuery(object):
         nt.assert_equals(
             expected,
             enum_value,
-            "enum mismatch for {}. Expected {}, got {}".format(enum_str, expected, enum_value))
+            "enum mismatch for {}. Expected {}, got {}".format(
+                enum_str, expected, enum_value
+            ),
+        )
 
     def test_query_filter_enum(self):
-        self._check_enum_helper(0, database_query.query_filter.IGNORE_FILTER,
-            "query_filter.IGNORE_FILTER")
-        self._check_enum_helper(1, database_query.query_filter.CONTAINS_WHOLLY,
-            "query_filter.CONTAINS_WHOLLY")
-        self._check_enum_helper(2, database_query.query_filter.CONTAINS_PARTLY,
-            "query_filter.CONTAINS_PARTLY")
-        self._check_enum_helper(3, database_query.query_filter.INTERSECTS,
-            "query_filter.INTERSECTS")
-        self._check_enum_helper(4, database_query.query_filter.INTERSECTS_INBOUND,
-            "query_filter.INTERSECTS_INBOUND")
-        self._check_enum_helper(5, database_query.query_filter.INTERSECTS_OUTBOUND,
-            "query_filter.INTERSECTS_OUTBOUND")
-        self._check_enum_helper(6, database_query.query_filter.DOES_NOT_CONTAIN,
-            "query_filter.DOES_NOT_CONTAIN")
+        self._check_enum_helper(
+            0, database_query.query_filter.IGNORE_FILTER, "query_filter.IGNORE_FILTER"
+        )
+        self._check_enum_helper(
+            1,
+            database_query.query_filter.CONTAINS_WHOLLY,
+            "query_filter.CONTAINS_WHOLLY",
+        )
+        self._check_enum_helper(
+            2,
+            database_query.query_filter.CONTAINS_PARTLY,
+            "query_filter.CONTAINS_PARTLY",
+        )
+        self._check_enum_helper(
+            3, database_query.query_filter.INTERSECTS, "query_filter.INTERSECTS"
+        )
+        self._check_enum_helper(
+            4,
+            database_query.query_filter.INTERSECTS_INBOUND,
+            "query_filter.INTERSECTS_INBOUND",
+        )
+        self._check_enum_helper(
+            5,
+            database_query.query_filter.INTERSECTS_OUTBOUND,
+            "query_filter.INTERSECTS_OUTBOUND",
+        )
+        self._check_enum_helper(
+            6,
+            database_query.query_filter.DOES_NOT_CONTAIN,
+            "query_filter.DOES_NOT_CONTAIN",
+        )
 
     def test_query_type_enum(self):
-        self._check_enum_helper(0, database_query.query_type.SIMILARITY,
-            "query_type.SIMILARITY")
-        self._check_enum_helper(1, database_query.query_type.RETRIEVAL,
-            "query_type.RETRIEVAL")
+        self._check_enum_helper(
+            0, database_query.query_type.SIMILARITY, "query_type.SIMILARITY"
+        )
+        self._check_enum_helper(
+            1, database_query.query_type.RETRIEVAL, "query_type.RETRIEVAL"
+        )
 
     def test_set_and_get_type(self):
         dq = self._create_database_query()
         # First check default
-        nt.assert_equals(dq.type, database_query.query_type.SIMILARITY,
-            "Fresh database_query instance not of query_type SIMILARITY")
+        nt.assert_equals(
+            dq.type,
+            database_query.query_type.SIMILARITY,
+            "Fresh database_query instance not of query_type SIMILARITY",
+        )
 
         # Now check setting, then getting
-        test_types = [database_query.query_type.RETRIEVAL,
-                      database_query.query_type.SIMILARITY ]
+        test_types = [
+            database_query.query_type.RETRIEVAL,
+            database_query.query_type.SIMILARITY,
+        ]
         for t in test_types:
             dq.type = t
             nt.assert_equals(dq.type, t)
@@ -141,13 +182,15 @@ class TestVitalDatabaseQuery(object):
 
     def test_set_and_get_temporal_filter(self):
         dq = self._create_database_query()
-        test_filters = [database_query.query_filter.IGNORE_FILTER,
-                        database_query.query_filter.CONTAINS_WHOLLY,
-                        database_query.query_filter.CONTAINS_PARTLY,
-                        database_query.query_filter.INTERSECTS,
-                        database_query.query_filter.INTERSECTS_INBOUND,
-                        database_query.query_filter.INTERSECTS_OUTBOUND,
-                        database_query.query_filter.DOES_NOT_CONTAIN]
+        test_filters = [
+            database_query.query_filter.IGNORE_FILTER,
+            database_query.query_filter.CONTAINS_WHOLLY,
+            database_query.query_filter.CONTAINS_PARTLY,
+            database_query.query_filter.INTERSECTS,
+            database_query.query_filter.INTERSECTS_INBOUND,
+            database_query.query_filter.INTERSECTS_OUTBOUND,
+            database_query.query_filter.DOES_NOT_CONTAIN,
+        ]
 
         for f in test_filters:
             dq.temporal_filter = f
@@ -163,16 +206,17 @@ class TestVitalDatabaseQuery(object):
         dq = self._create_database_query()
         dq.temporal_filter = int(database_query.query_filter.DOES_NOT_CONTAIN) + 1
 
-
     def test_set_and_get_spatial_filter(self):
         dq = self._create_database_query()
-        test_filters = [database_query.query_filter.IGNORE_FILTER,
-                        database_query.query_filter.CONTAINS_WHOLLY,
-                        database_query.query_filter.CONTAINS_PARTLY,
-                        database_query.query_filter.INTERSECTS,
-                        database_query.query_filter.INTERSECTS_INBOUND,
-                        database_query.query_filter.INTERSECTS_OUTBOUND,
-                        database_query.query_filter.DOES_NOT_CONTAIN]
+        test_filters = [
+            database_query.query_filter.IGNORE_FILTER,
+            database_query.query_filter.CONTAINS_WHOLLY,
+            database_query.query_filter.CONTAINS_PARTLY,
+            database_query.query_filter.INTERSECTS,
+            database_query.query_filter.INTERSECTS_INBOUND,
+            database_query.query_filter.INTERSECTS_OUTBOUND,
+            database_query.query_filter.DOES_NOT_CONTAIN,
+        ]
 
         for f in test_filters:
             dq.spatial_filter = f
@@ -211,16 +255,22 @@ class TestVitalDatabaseQuery(object):
         dq = self._create_database_query()
         dq.spatial_region = "string, not geo_polygon"
 
-
     def test_set_and_get_stream_filter(self):
         dq = self._create_database_query()
         nt.assert_equals(dq.stream_filter, "", "Default stream filter not empty string")
 
         # Now test setting and getting some values
-        test_strs = ["first_stream_filter", "second_stream_filter", "", "fourth_stream_filter"]
+        test_strs = [
+            "first_stream_filter",
+            "second_stream_filter",
+            "",
+            "fourth_stream_filter",
+        ]
         for s in test_strs:
             dq.stream_filter = s
-            nt.assert_equals(dq.stream_filter, s, "Setting stream_filter to {} failed".format(s))
+            nt.assert_equals(
+                dq.stream_filter, s, "Setting stream_filter to {} failed".format(s)
+            )
 
     @nt.raises(TypeError)
     def test_bad_set_stream_filter(self):
@@ -281,11 +331,13 @@ class TestVitalDatabaseQuery(object):
         nt.assert_false(dq.temporal_lower_bound().is_valid())
         nt.assert_false(dq.temporal_upper_bound().is_valid())
 
-        test_bounds = [(Timestamp(100, 1), Timestamp(100, 1)),
-                       (Timestamp(100, 1), Timestamp(200, 2)),
-                       (Timestamp(300, 5), Timestamp(400, 6))]
+        test_bounds = [
+            (Timestamp(100, 1), Timestamp(100, 1)),
+            (Timestamp(100, 1), Timestamp(200, 2)),
+            (Timestamp(300, 5), Timestamp(400, 6)),
+        ]
 
-        for (t1, t2) in test_bounds:
+        for t1, t2 in test_bounds:
             dq.set_temporal_bounds(t1, t2)
             nt.assert_equals(dq.temporal_lower_bound(), t1)
             nt.assert_equals(dq.temporal_upper_bound(), t2)
