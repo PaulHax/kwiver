@@ -5,7 +5,6 @@
 /// \file
 /// \brief Implementation for uid factory
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/uuid_factory.h>
 
 namespace kwiver {
@@ -25,7 +24,3 @@ uuid_factory
 } // namespace vital
 
 } // namespace kwiver
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::uuid_factory );
-/// \endcond

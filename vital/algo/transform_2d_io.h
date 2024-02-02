@@ -28,13 +28,11 @@ namespace algo {
 /// This class represents an abstract interface for reading and writing
 /// transforms.
 class VITAL_ALGO_EXPORT transform_2d_io
-  : public kwiver::vital::algorithm_def< transform_2d_io >
+  : public kwiver::vital::algorithm
 {
 public:
-  virtual ~transform_2d_io() = default;
-
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "transform_2d_io"; }
+  transform_2d_io();
+  PLUGGABLE_INTERFACE(transform_2d_io);
 
   /// Load transform from the file
   ///
@@ -70,8 +68,6 @@ public:
   void save( std::string const& filename,
              kwiver::vital::transform_2d_sptr data ) const;
 
-protected:
-  transform_2d_io();
 
 private:
   /// Implementation specific load functionality.

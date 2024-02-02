@@ -7,7 +7,6 @@
 
 #include <vital/algo/detect_motion.h>
 
-#include <vital/algo/algorithm.txx>
 
 namespace kwiver {
 
@@ -26,7 +25,3 @@ detect_motion
 } // namespace vital
 
 } // namespace kwiver
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::detect_motion );
-/// \endcond

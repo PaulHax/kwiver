@@ -2,7 +2,6 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <vital/algo/algorithm.txx>
 
 #include "keyframe_selection.h"
 
@@ -23,7 +22,3 @@ keyframe_selection
 } // namespace vital
 
 } // namespace kwiver
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::keyframe_selection );
-/// \endcond

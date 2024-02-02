@@ -23,12 +23,11 @@ namespace algo {
 
 /// An abstract base class for matching feature points
 class VITAL_ALGO_EXPORT match_features
-  : public kwiver::vital::algorithm_def< match_features >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "match_features"; }
-
+  match_features();
+  PLUGGABLE_INTERFACE(match_features);
   /// Match one set of features and corresponding descriptors to another
   ///
   /// \param feat1 the first set of features to match
@@ -42,8 +41,6 @@ public:
          kwiver::vital::feature_set_sptr feat2,
          kwiver::vital::descriptor_set_sptr desc2 ) const = 0;
 
-protected:
-  match_features();
 };
 
 /// Shared pointer type for match_features algorithm definition class

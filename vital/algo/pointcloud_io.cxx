@@ -8,13 +8,8 @@
 #include "pointcloud_io.h"
 
 #include <kwiversys/SystemTools.hxx>
-#include <vital/algo/algorithm.txx>
 #include <vital/exceptions/io.h>
 #include <vital/types/local_geo_cs.h>
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::pointcloud_io );
-/// \endcond
 
 namespace kwiver {
 namespace vital {

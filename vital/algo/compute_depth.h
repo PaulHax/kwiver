@@ -26,12 +26,11 @@ namespace algo {
 
 /// An abstract base class for depth map estimation
 class VITAL_ALGO_EXPORT compute_depth
-  : public kwiver::vital::algorithm_def< compute_depth >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "compute_depth"; }
-
+  compute_depth();
+  PLUGGABLE_INTERFACE(compute_depth);
   /// Compute a depth map from an image sequence
   ///
   /// Implementations of this function should not modify the underlying objects
@@ -92,8 +91,6 @@ public:
   virtual void set_callback( callback_t cb );
 
 protected:
-  compute_depth();
-
   /// The callback function
   callback_t m_callback;
 };

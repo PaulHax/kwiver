@@ -21,12 +21,11 @@ namespace algo {
 
 /// An abstract base class for detecting feature points
 class VITAL_ALGO_EXPORT nearest_neighbors
-  : public kwiver::vital::algorithm_def< nearest_neighbors >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "nearest_neighbors"; }
-
+  nearest_neighbors();
+  PLUGGABLE_INTERFACE(nearest_neighbors);
   /// Build the search tree
   ///
   /// /param [in] points the set of points to build the search tree from
@@ -69,8 +68,6 @@ public:
     double r,
     std::vector< int >& indices ) const = 0;
 
-protected:
-  nearest_neighbors();
 };
 
 /// Shared pointer for nearest_neighbors algorithm definition class

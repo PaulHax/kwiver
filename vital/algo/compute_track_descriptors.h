@@ -25,12 +25,11 @@ namespace algo {
 
 /// An abstract base class for computing track descriptors
 class VITAL_ALGO_EXPORT compute_track_descriptors
-  : public kwiver::vital::algorithm_def< compute_track_descriptors >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "compute_track_descriptors"; }
-
+  compute_track_descriptors();
+  PLUGGABLE_INTERFACE(compute_track_descriptors);
   /// Compute track descriptors given an image and tracks
   ///
   /// \param ts timestamp for the current frame
@@ -52,8 +51,6 @@ public:
   /// \returns a set of track descriptors
   virtual kwiver::vital::track_descriptor_set_sptr flush() = 0;
 
-protected:
-  compute_track_descriptors();
 };
 
 /// Shared pointer for base compute_track_descriptors algorithm definition

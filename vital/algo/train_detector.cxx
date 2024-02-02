@@ -7,7 +7,6 @@
 
 #include "train_detector.h"
 
-#include <vital/algo/algorithm.txx>
 #include <vital/vital_config.h>
 
 namespace kwiver {
@@ -51,7 +50,3 @@ train_detector
 } // namespace vital
 
 } // namespace kwiver
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::train_detector );
-/// \endcond

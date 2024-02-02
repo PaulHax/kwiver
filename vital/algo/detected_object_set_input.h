@@ -32,13 +32,13 @@ namespace algo {
 /// with enough information to recreate a unique image identifier,
 /// usually the file name, and an associated set of detections.
 class VITAL_ALGO_EXPORT detected_object_set_input
-  : public kwiver::vital::algorithm_def< detected_object_set_input >
+  : public kwiver::vital::algorithm
 {
 public:
   virtual ~detected_object_set_input();
 
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "detected_object_set_input"; }
+  detected_object_set_input();
+  PLUGGABLE_INTERFACE_NO_DESTR(detected_object_set_input);
 
   /// Open a file of detection sets.
   ///
@@ -94,8 +94,6 @@ public:
   bool at_eof() const;
 
 protected:
-  detected_object_set_input();
-
   std::istream& stream();
 
   // Called when a new stream is specified. Allows derived classes to

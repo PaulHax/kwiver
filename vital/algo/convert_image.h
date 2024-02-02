@@ -30,12 +30,11 @@ namespace algo {
 /// will change the value of a pixel, then use the image_filter
 /// interface.
 class VITAL_ALGO_EXPORT convert_image
-  : public kwiver::vital::algorithm_def< convert_image >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "convert_image"; }
-
+  convert_image();
+  PLUGGABLE_INTERFACE(convert_image);
   /// Set this algorithm's properties via a config block
   virtual void set_configuration( kwiver::vital::config_block_sptr config );
   /// Check that the algorithm's currently configuration is valid
@@ -45,8 +44,6 @@ public:
   virtual kwiver::vital::image_container_sptr convert(
     kwiver::vital::image_container_sptr img ) const = 0;
 
-protected:
-  convert_image();
 };
 
 typedef std::shared_ptr< convert_image > convert_image_sptr;

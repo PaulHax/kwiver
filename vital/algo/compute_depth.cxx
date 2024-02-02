@@ -2,7 +2,6 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/compute_depth.h>
 
 namespace kwiver {
@@ -46,7 +45,3 @@ const
 }  // namespace vital
 
 }  // namespace kwiver
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::compute_depth );
-/// \endcond

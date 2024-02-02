@@ -27,16 +27,11 @@ namespace algo {
 /// An abstract base class for estimating a fundamental matrix from matching 2D
 /// points
 class VITAL_ALGO_EXPORT estimate_fundamental_matrix
-  : public kwiver::vital::algorithm_def< estimate_fundamental_matrix >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string
-  static_type_name()
-  {
-    return "estimate_fundamental_matrix";
-  }
-
+  estimate_fundamental_matrix();
+  PLUGGABLE_INTERFACE(estimate_fundamental_matrix);
   /// Estimate an fundamental matrix from corresponding features
   ///
   /// \param [in]  feat1 the set of all features from the first image
@@ -70,8 +65,6 @@ public:
             std::vector< bool >& inliers,
             double inlier_scale = 1.0 ) const = 0;
 
-protected:
-  estimate_fundamental_matrix();
 };
 
 /// Shared pointer type of base estimate_fundamental_matrix algorithm

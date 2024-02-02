@@ -29,14 +29,11 @@ namespace algo {
 /// This class represents an abstract interface for reading and writing
 /// feature and descriptor sets
 class VITAL_ALGO_EXPORT feature_descriptor_io
-  : public kwiver::vital::algorithm_def< feature_descriptor_io >
+  : public kwiver::vital::algorithm
 {
 public:
-  virtual ~feature_descriptor_io() = default;
-
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "feature_descriptor_io"; }
-
+  feature_descriptor_io();
+  PLUGGABLE_INTERFACE(feature_descriptor_io);
   /// Load features and descriptors from a file
   ///
   /// \throws kwiver::vital::path_not_exists Thrown when the given path does not
@@ -72,8 +69,6 @@ public:
              feature_set_sptr feat,
              descriptor_set_sptr desc ) const;
 
-protected:
-  feature_descriptor_io();
 
 private:
   /// Implementation specific load functionality.

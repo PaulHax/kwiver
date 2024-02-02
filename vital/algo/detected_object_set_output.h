@@ -33,14 +33,13 @@ namespace algo {
 /// usually the file name, and an associated wet of detections.
 ///
 class VITAL_ALGO_EXPORT detected_object_set_output
-  : public kwiver::vital::algorithm_def< detected_object_set_output >
+  : public kwiver::vital::algorithm
 {
 public:
   virtual ~detected_object_set_output();
 
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "detected_object_set_output"; }
-
+  detected_object_set_output();
+  PLUGGABLE_INTERFACE_NO_DESTR(detected_object_set_output);
   /// Open a file of detection sets.
   ///
   /// This method opens a detection set file for writing.
@@ -85,8 +84,6 @@ public:
   virtual void complete() {}
 
 protected:
-  detected_object_set_output();
-
   std::ostream& stream();
 
   std::string const& filename();

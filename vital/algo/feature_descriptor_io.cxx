@@ -7,15 +7,10 @@
 
 #include "feature_descriptor_io.h"
 
-#include <vital/algo/algorithm.txx>
 #include <vital/exceptions/io.h>
 #include <vital/vital_types.h>
 
 #include <kwiversys/SystemTools.hxx>
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::feature_descriptor_io );
-/// \endcond
 
 namespace kwiver {
 
@@ -26,7 +21,7 @@ namespace algo {
 feature_descriptor_io
 ::feature_descriptor_io()
 {
-  attach_logger( static_type_name() );
+  attach_logger( interface_name() );
 }
 
 void

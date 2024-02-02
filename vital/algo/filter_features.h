@@ -27,12 +27,12 @@ namespace algo {
 
 /// \brief Abstract base class for feature set filter algorithms.
 class VITAL_ALGO_EXPORT filter_features
-  : public kwiver::vital::algorithm_def< filter_features >
+  : public kwiver::vital::algorithm
 {
 public:
   /// Return the name of this algorithm.
-  static std::string static_type_name() { return "filter_features"; }
-
+  filter_features();
+  PLUGGABLE_INTERFACE(filter_features);
   /// Filter a feature set and return a subset of the features
   ///
   /// The default implementation call the pure virtual function
@@ -57,8 +57,6 @@ public:
           kwiver::vital::descriptor_set_sptr descr ) const;
 
 protected:
-  filter_features();
-
   /// Filter a feature set and return a new feature set with a subset of
   /// features
   ///

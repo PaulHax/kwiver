@@ -25,17 +25,14 @@ namespace algo {
 /// @brief activity detector base class/
 ///
 class VITAL_ALGO_EXPORT activity_detector
-  : public algorithm_def< activity_detector >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "activity_detector"; }
-
+  activity_detector();
+  PLUGGABLE_INTERFACE(activity_detector);
   virtual std::vector< kwiver::vital::activity >
   detect( image_container_sptr image ) const = 0;
 
-protected:
-  activity_detector();
 };
 
 /// Shared pointer for generic activity_detector definition type.

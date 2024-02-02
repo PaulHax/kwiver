@@ -33,14 +33,13 @@ namespace algo {
 /// and an associated set of object tracks. Alternatively, tracks can be read in
 /// batch mode.
 class VITAL_ALGO_EXPORT read_object_track_set
-  : public kwiver::vital::algorithm_def< read_object_track_set >
+  : public kwiver::vital::algorithm
 {
 public:
   virtual ~read_object_track_set();
 
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "read_object_track_set"; }
-
+  read_object_track_set();
+  PLUGGABLE_INTERFACE_NO_DESTR(read_object_track_set);
   /// Open a file of object track sets.
   ///
   /// This method opens a object track set file for reading.
@@ -89,8 +88,6 @@ public:
   /// @return \b true if file is at end.
   bool at_eof() const;
 
-protected:
-  read_object_track_set();
 
   std::istream& stream();
 

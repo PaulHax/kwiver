@@ -21,11 +21,11 @@ namespace algo {
 ///        U.I. control that is desired to control the performance of an
 ///        algorithm by varying some of its configuration values.
 class VITAL_ALGO_EXPORT dynamic_configuration
-  : public kwiver::vital::algorithm_def< dynamic_configuration >
+  : public kwiver::vital::algorithm
 {
 public:
-  static std::string static_type_name() { return "dynamic_configuration"; }
-
+  dynamic_configuration();
+  PLUGGABLE_INTERFACE(dynamic_configuration);
   virtual void set_configuration( config_block_sptr config ) = 0;
   virtual bool check_configuration( config_block_sptr config ) const = 0;
 
@@ -35,8 +35,6 @@ public:
   ///        block is returned even if there are not values being returned.
   virtual config_block_sptr get_dynamic_configuration() = 0;
 
-protected:
-  dynamic_configuration();
 };
 
 /// Shared pointer for generic dynamic_configuration definition type.

@@ -3,9 +3,6 @@
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
 #include "convert_image.h"
-#include <vital/algo/algorithm.txx>
-
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::convert_image );
 
 namespace kwiver {
 

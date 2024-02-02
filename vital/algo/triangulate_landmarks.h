@@ -31,7 +31,7 @@ class VITAL_ALGO_EXPORT triangulate_landmarks
 {
 public:
   triangulate_landmarks();
-  PLUGGABLE_INTERFACE( triangulate_landmarks );
+  PLUGGABLE_INTERFACE(triangulate_landmarks);
   /// Triangulate the landmark locations given sets of cameras and feature
   /// tracks
   ///

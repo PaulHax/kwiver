@@ -24,12 +24,11 @@ namespace algo {
 
 /// An abstract base class for computing association cost matrices for tracking
 class VITAL_ALGO_EXPORT initialize_object_tracks
-  : public kwiver::vital::algorithm_def< initialize_object_tracks >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "initialize_object_tracks"; }
-
+  initialize_object_tracks();
+  PLUGGABLE_INTERFACE(initialize_object_tracks);
   /// Initialize new object tracks given detections.
   ///
   /// \param ts frame ID
@@ -41,8 +40,6 @@ public:
               kwiver::vital::image_container_sptr image,
               kwiver::vital::detected_object_set_sptr detections ) const = 0;
 
-protected:
-  initialize_object_tracks();
 };
 
 /// Shared pointer for initialize_object_tracks algorithm definition class

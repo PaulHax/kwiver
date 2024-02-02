@@ -34,18 +34,11 @@ namespace algo {
 /// usually the file name, and an associated wet of track descriptors.
 ///
 class VITAL_ALGO_EXPORT write_track_descriptor_set
-  : public kwiver::vital::algorithm_def< write_track_descriptor_set >
+  : public kwiver::vital::algorithm
 {
 public:
-  virtual ~write_track_descriptor_set();
-
-  /// Return the name of this algorithm
-  static std::string
-  static_type_name()
-  {
-    return "write_track_descriptor_set";
-  }
-
+  write_track_descriptor_set();
+  PLUGGABLE_INTERFACE(write_track_descriptor_set);
   /// Open a file of track descriptor sets.
   ///
   /// This method opens a track descriptor set file for reading.
@@ -83,8 +76,6 @@ public:
   = 0;
 
 protected:
-  write_track_descriptor_set();
-
   std::ostream& stream();
 
   std::string const& filename();

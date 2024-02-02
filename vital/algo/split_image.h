@@ -20,18 +20,15 @@ namespace algo {
 
 /// An abstract base class for converting base image type
 class VITAL_ALGO_EXPORT split_image
-  : public kwiver::vital::algorithm_def< split_image >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "split_image"; }
-
+  split_image();
+  PLUGGABLE_INTERFACE(split_image);
   /// Split image
   virtual std::vector< kwiver::vital::image_container_sptr >
   split( kwiver::vital::image_container_sptr img ) const = 0;
 
-protected:
-  split_image();
 };
 
 typedef std::shared_ptr< split_image > split_image_sptr;

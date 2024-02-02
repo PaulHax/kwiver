@@ -5,7 +5,6 @@
 /// \file
 /// \brief refine_detections algorithm instantiation
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/refine_detections.h>
 
 namespace kwiver {
@@ -25,7 +24,3 @@ refine_detections
 } // namespace vital
 
 } // namespace kwiver
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::refine_detections );
-/// \endcond

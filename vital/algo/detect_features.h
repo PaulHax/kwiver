@@ -21,12 +21,11 @@ namespace algo {
 
 /// An abstract base class for detecting feature points
 class VITAL_ALGO_EXPORT detect_features
-  : public kwiver::vital::algorithm_def< detect_features >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "detect_features"; }
-
+  detect_features();
+  PLUGGABLE_INTERFACE(detect_features);
   /// Extract a set of image features from the provided image
   ///
   /// A given mask image should be one-channel (mask->depth() == 1). If the
@@ -47,8 +46,6 @@ public:
           kwiver::vital::image_container_sptr mask = kwiver::vital::image_container_sptr() )
   const = 0;
 
-protected:
-  detect_features();
 };
 
 /// Shared pointer for detect_features algorithm definition class

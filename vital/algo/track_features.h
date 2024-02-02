@@ -22,12 +22,11 @@ namespace algo {
 
 /// An abstract base class for tracking feature points
 class VITAL_ALGO_EXPORT track_features
-  : public algorithm_def< track_features >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "track_features"; }
-
+  track_features();
+  PLUGGABLE_INTERFACE(track_features);
   /// Extend a previous set of feature tracks using the current frame
   ///
   /// \throws image_size_mismatch_exception
@@ -48,8 +47,6 @@ public:
          image_container_sptr image_data,
          image_container_sptr mask = {} ) const = 0;
 
-protected:
-  track_features();
 };
 
 /// Shared pointer for generic track_features definition type.

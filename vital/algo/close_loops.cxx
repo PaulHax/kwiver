@@ -4,9 +4,6 @@
 
 #include <vital/algo/close_loops.h>
 
-#include <vital/algo/algorithm.txx>
-
-
 namespace kwiver {
 
 namespace vital {
@@ -24,5 +21,3 @@ close_loops
 } // namespace vital
 
 } // namespace kwiver
-
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::close_loops );

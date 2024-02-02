@@ -25,12 +25,11 @@ namespace algo {
 /// @brief Case class for refining detected object sets.
 ///
 class VITAL_ALGO_EXPORT refine_detections
-  : public algorithm_def< refine_detections >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "refine_detections"; }
-
+  refine_detections();
+  PLUGGABLE_INTERFACE(refine_detections);
   /// Refine all object detections on the provided image
   ///
   /// This method analyzes the supplied image and and detections on it,
@@ -43,8 +42,6 @@ public:
   refine( image_container_sptr image_data,
           detected_object_set_sptr detections ) const = 0;
 
-protected:
-  refine_detections();
 };
 
 /// Shared pointer for generic refine_detections definition type.

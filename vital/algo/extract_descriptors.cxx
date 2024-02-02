@@ -5,7 +5,6 @@
 /// \file
 /// \brief extract_descriptors algorithm instantiation
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/extract_descriptors.h>
 
 namespace kwiver {
@@ -25,7 +24,3 @@ extract_descriptors
 } // namespace vital
 
 } // namespace kwiver
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::extract_descriptors );
-/// \endcond

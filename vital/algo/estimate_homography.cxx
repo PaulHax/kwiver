@@ -6,12 +6,7 @@
 /// \brief estimate_homography algorithm definition instantiation +
 /// implementation
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/estimate_homography.h>
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::estimate_homography );
-/// \endcond
 
 namespace kwiver {
 

@@ -9,15 +9,10 @@
 
 #include <memory>
 
-#include <vital/algo/algorithm.txx>
 #include <vital/exceptions/io.h>
 #include <vital/vital_types.h>
 
 #include <kwiversys/SystemTools.hxx>
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::write_object_track_set );
-/// \endcond
 
 namespace kwiver {
 

@@ -35,7 +35,7 @@ class VITAL_ALGO_EXPORT estimate_similarity_transform
 {
 public:
   estimate_similarity_transform();
-  PLUGGABLE_INTERFACE( estimate_similarity_transform );
+  PLUGGABLE_INTERFACE(estimate_similarity_transform);
 
   /// Estimate the similarity transform between two corresponding point sets
   ///

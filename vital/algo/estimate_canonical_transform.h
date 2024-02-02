@@ -39,7 +39,7 @@ class VITAL_ALGO_EXPORT estimate_canonical_transform
 {
 public:
   estimate_canonical_transform();
-  PLUGGABLE_INTERFACE( estimate_canonical_transform );
+  PLUGGABLE_INTERFACE(estimate_canonical_transform);
 
   /// Estimate a canonical similarity transform for cameras and points
   ///

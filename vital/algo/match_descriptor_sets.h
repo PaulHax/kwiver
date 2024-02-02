@@ -29,15 +29,11 @@ namespace algo {
 /// A common use for this algorithm is bag of visual words matching on sets of
 /// descriptor extracted around features detected in images.
 class VITAL_ALGO_EXPORT match_descriptor_sets
-  : public kwiver::vital::algorithm_def< match_descriptor_sets >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Desctuctor
-  virtual ~match_descriptor_sets() = default;
-
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "match_descriptor_sets"; }
-
+  match_descriptor_sets();
+  PLUGGABLE_INTERFACE(match_descriptor_sets);
   /// Add a descriptor set to the inverted file system.
   ///
   /// Add a descriptor set and frame number to the inverted file system.
@@ -76,10 +72,6 @@ public:
   std::vector< vital::frame_id_t >
   query_and_append( const vital::descriptor_set_sptr desc,
                     frame_id_t frame );
-
-protected:
-  /// Default constructor
-  match_descriptor_sets();
 };
 
 /// Shared pointer type for generic image_io definition type.

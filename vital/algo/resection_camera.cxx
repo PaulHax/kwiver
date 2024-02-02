@@ -5,14 +5,9 @@
 /// \file
 /// \brief resection_camera instantiation
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/resection_camera.h>
 
 #include <vital/range/iota.h>
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::resection_camera );
-/// \endcond
 
 namespace kwiver {
 

@@ -26,12 +26,12 @@ namespace algo {
 
 /// \brief Abstract base class for track set filter algorithms.
 class VITAL_ALGO_EXPORT filter_tracks
-  : public kwiver::vital::algorithm_def< filter_tracks >
+  : public kwiver::vital::algorithm
 {
 public:
   /// Return the name of this algorithm.
-  static std::string static_type_name() { return "filter_tracks"; }
-
+  filter_tracks();
+  PLUGGABLE_INTERFACE(filter_tracks);
   /// Filter a track set and return a subset of the tracks
   ///
   /// \param [in] input The track set to filter
@@ -39,8 +39,6 @@ public:
   virtual kwiver::vital::track_set_sptr
   filter( kwiver::vital::track_set_sptr input ) const = 0;
 
-protected:
-  filter_tracks();
 };
 
 /// type definition for shared pointer to a filter_tracks algorithm

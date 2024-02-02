@@ -27,12 +27,12 @@ namespace algo {
 
 /// \brief Abstract base class for track set filter algorithms.
 class VITAL_ALGO_EXPORT keyframe_selection
-  : public kwiver::vital::algorithm_def< keyframe_selection >
+  : public kwiver::vital::algorithm
 {
 public:
   /// Return the name of this algorithm.
-  static std::string static_type_name() { return "keyframe_selection"; }
-
+  keyframe_selection();
+  PLUGGABLE_INTERFACE(keyframe_selection);
   /// Select keyframes from a set of tracks.
   ///
   /// Different implementations can select key-frames in different ways.
@@ -45,10 +45,6 @@ public:
   /// \returns a track set that includes the selected keyframe data structure
   virtual kwiver::vital::track_set_sptr
   select( kwiver::vital::track_set_sptr tracks ) const = 0;
-
-protected:
-  /// Default constructor
-  keyframe_selection();
 };
 
 /// type definition for shared pointer to a filter_tracks algorithm

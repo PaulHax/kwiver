@@ -45,8 +45,6 @@ class VITAL_ALGO_EXPORT algorithm :  public vital::pluggable
 {
 public:
   algorithm();
-  virtual ~algorithm() = default;
-
   PLUGGABLE_INTERFACE( algorithm );
 
   /// Get \link kwiver::vital::config_block configuration

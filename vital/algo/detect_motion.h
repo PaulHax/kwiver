@@ -21,12 +21,12 @@ namespace algo {
 
 /// \brief Abstract base class for motion detection algorithms.
 class VITAL_ALGO_EXPORT detect_motion
-  : public kwiver::vital::algorithm_def< detect_motion >
+  : public kwiver::vital::algorithm
 {
 public:
   /// Return the name of this algorithm.
-  static std::string static_type_name() { return "detect_motion"; }
-
+  detect_motion();
+  PLUGGABLE_INTERFACE(detect_motion);
   /// Detect motion from a sequence of images
   ///
   /// This method detects motion of foreground objects within a
@@ -49,8 +49,6 @@ public:
                  const image_container_sptr image,
                  bool reset_model ) = 0;
 
-protected:
-  detect_motion();
 };
 
 /// type definition for shared pointer to a detect_motion algorithm

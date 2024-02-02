@@ -5,7 +5,6 @@
 /// \file
 /// \brief Implementation of bag of words matching
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/match_descriptor_sets.h>
 #include <vital/exceptions/io.h>
 #include <vital/vital_types.h>
@@ -39,7 +38,3 @@ match_descriptor_sets
 } // namespace vital
 
 } // namespace kwiver
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::match_descriptor_sets );
-/// \endcond

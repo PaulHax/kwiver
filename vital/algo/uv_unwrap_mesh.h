@@ -21,19 +21,16 @@ namespace algo {
 
 /// \brief Abstract base class for mesh uv unwrapping.
 class VITAL_ALGO_EXPORT uv_unwrap_mesh
-  : public kwiver::vital::algorithm_def< uv_unwrap_mesh >
+  : public kwiver::vital::algorithm
 {
 public:
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "uv_unwrap_mesh"; }
-
+  uv_unwrap_mesh();
+  PLUGGABLE_INTERFACE(uv_unwrap_mesh);
   /// Unwrap a mesh and generate texture coordinates
   ///
   /// \param mesh [in/out] mesh to unwrap
   virtual void unwrap( kwiver::vital::mesh_sptr mesh ) const = 0;
 
-protected:
-  uv_unwrap_mesh();
 };
 
 typedef std::shared_ptr< uv_unwrap_mesh > uv_unwrap_mesh_sptr;

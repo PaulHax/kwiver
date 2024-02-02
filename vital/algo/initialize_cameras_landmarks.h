@@ -32,7 +32,6 @@ class VITAL_ALGO_EXPORT initialize_cameras_landmarks
 {
 public:
   initialize_cameras_landmarks();
-  PLUGGABLE_INTERFACE( initialize_cameras_landmarks );
 
   /// Initialize the camera and landmark parameters given a set of feature
   /// tracks

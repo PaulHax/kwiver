@@ -32,14 +32,13 @@ namespace algo {
 /// enough information to recreate a unique image identifier, usually a frame
 /// number, and an associated set of object tracks.
 class VITAL_ALGO_EXPORT write_object_track_set
-  : public kwiver::vital::algorithm_def< write_object_track_set >
+  : public kwiver::vital::algorithm
 {
 public:
   virtual ~write_object_track_set();
 
-  /// Return the name of this algorithm
-  static std::string static_type_name() { return "write_object_track_set"; }
-
+  write_object_track_set();
+  PLUGGABLE_INTERFACE_NO_DESTR(write_object_track_set);
   /// Open a file of object track sets.
   ///
   /// This method opens a object track set file for reading.
@@ -81,8 +80,6 @@ public:
     std::string const& frame_identifier = {} ) = 0;
 
 protected:
-  write_object_track_set();
-
   std::ostream& stream();
 
   std::string const& filename();

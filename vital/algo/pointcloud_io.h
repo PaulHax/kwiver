@@ -20,16 +20,11 @@ namespace kwiver {
 namespace vital {
 namespace algo {
 class VITAL_ALGO_EXPORT pointcloud_io
-  : public kwiver::vital::algorithm_def< pointcloud_io >
+  : public kwiver::vital::algorithm
 {
 public:
-  virtual
-  ~pointcloud_io() = default;
-
-  /// Return the name of this algorithm
-  static std::string
-  static_type_name() { return "pointcloud_io"; }
-
+  pointcloud_io();
+  PLUGGABLE_INTERFACE(pointcloud_io);
   /// Load point cloud from the file
   ///
   /// \throws kwiver::vital::path_not_exists Thrown when the given path does
@@ -73,8 +68,6 @@ public:
   /// \param lgcs the target local geo coordinate system
   virtual void set_local_geo_cs( vital::local_geo_cs const& lgcs );
 
-protected:
-  pointcloud_io();
 
 private:
   virtual pointcloud_d load_( vital::path_t const& filename ) const = 0;

@@ -5,12 +5,7 @@
 /// \file
 /// \brief estimate fundamental matrix instantiation
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/estimate_fundamental_matrix.h>
-
-/// \cond DoxygenSuppress
-INSTANTIATE_ALGORITHM_DEF( kwiver::vital::algo::estimate_fundamental_matrix );
-/// \endcond
 
 namespace kwiver {
 

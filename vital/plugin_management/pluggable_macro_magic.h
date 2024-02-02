@@ -251,6 +251,14 @@ public:                                     \
  */
 #define PLUGGABLE_INTERFACE( name ) \
 public:                             \
+  static std::string interface_name() { return #name; } \
+  virtual ~name() = default;
+
+/**
+ * Variant for classes that define their own destructor.
+ */
+#define PLUGGABLE_INTERFACE_NO_DESTR( name ) \
+public:                             \
   static std::string interface_name() { return #name; }
 
 /**

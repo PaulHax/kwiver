@@ -27,14 +27,13 @@ namespace algo {
 
 /// Abstract base class for writing out human readable track statistics.
 class VITAL_ALGO_EXPORT analyze_tracks
-  : public kwiver::vital::algorithm_def< analyze_tracks >
+  : public kwiver::vital::algorithm
 {
 public:
   typedef std::ostream stream_t;
 
-  /// Return the name of this algorithm.
-  static std::string static_type_name() { return "analyze_tracks"; }
-
+  analyze_tracks();
+  PLUGGABLE_INTERFACE(analyze_tracks);
   /// Output various information about the tracks stored in the input set.
   ///
   /// \param [in] track_set the tracks to analyze
@@ -43,8 +42,6 @@ public:
   print_info( kwiver::vital::track_set_sptr track_set,
               stream_t& stream = std::cout ) const = 0;
 
-protected:
-  analyze_tracks();
 };
 
 typedef std::shared_ptr< analyze_tracks > analyze_tracks_sptr;
