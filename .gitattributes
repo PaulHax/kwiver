@@ -15,3 +15,7 @@
 
 # The sprokit codebase uses a different consistent style. Ignore it for now.
 sprokit/**  -our-c-style
+
+[attr]our-py-style  format.black=24
+
+*.py     our-py-style
