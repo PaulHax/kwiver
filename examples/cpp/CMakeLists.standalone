@@ -46,9 +46,9 @@ endif()
 # (Once you find kwiver, as shown above)
 include_directories(${KWIVER_INCLUDE_DIRS})
 link_directories(${KWIVER_LIBRARY_DIRS})
-set(SOURCE "main.cpp"
-           "how_to_part_01_images.cpp"
-           "how_to_part_02_detections.cpp"
+set(SOURCE "main.cxx"
+           "how_to_part_01_images.cxx"
+           "how_to_part_02_detections.cxx"
 )
 
 add_executable(HowToDriver ${SOURCE})
