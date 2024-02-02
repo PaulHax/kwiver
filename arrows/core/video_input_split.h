@@ -9,6 +9,8 @@
 
 #include <arrows/core/kwiver_algo_core_export.h>
 
+#include <vital/algo/algorithm.txx>
+
 namespace kwiver {
 namespace arrows {
 namespace core {
@@ -21,20 +23,21 @@ class KWIVER_ALGO_CORE_EXPORT video_input_split
   : public  vital::algo::video_input
 {
 public:
-  PLUGIN_INFO( "split",
+  PLUGGABLE_IMPL(video_input_split,
                "Coordinate two video readers."
                " One reader supplies the image/data stream."
-               " The other reader supplies the metadata stream." )
+               " The other reader supplies the metadata stream.",
+               PARAM(image_source,
+                      vital::algo::video_input_sptr,
+                      "Algorithm pointer to reader"),
+               PARAM(metadata_source,
+                      vital::algo::video_input_sptr,
+                      "Algorithm pointer to metadata stream")
+                  );
 
   /// Constructor
   video_input_split();
   virtual ~video_input_split();
-
-  /// Get this algorithm's \link vital::config_block configuration block \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration(vital::config_block_sptr config);
 
   /// Check that the algorithm's currently configuration is valid
   virtual bool check_configuration(vital::config_block_sptr config) const;
@@ -61,6 +64,9 @@ public:
 
   kwiver::vital::video_settings_uptr implementation_settings() const override;
 
+protected:
+  void initialize() override;
+
 private:
   kwiver::vital::timestamp merge_timestamps(
     kwiver::vital::timestamp const& image_ts,
@@ -68,7 +74,7 @@ private:
 
   /// private implementation class
   class priv;
-  const std::unique_ptr<priv> d;
+  KWIVER_UNIQUE_PTR(priv,d);
 };
 
 } } } // end namespace
