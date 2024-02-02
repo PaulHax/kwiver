@@ -676,7 +676,8 @@ file_format_kwxml
       else if (string(descr_type) == "CUBoF" )
       {
         vector< double > bof_data;
-        if ( ! read_vector_from_xml<double>( descriptor, "data", bof_data )) //said descRaw
+        //said descRaw
+        if ( ! read_vector_from_xml<double>( descriptor, "data", bof_data ))
         {
           LOG_WARN( main_logger,"No CUBoF data at " << descriptor->Row() << "\n");
         }
@@ -689,7 +690,8 @@ file_format_kwxml
       else if (string(descr_type) == "CUTexture" )
       {
         vector< double > tex_data;
-        if ( ! read_vector_from_xml<double>( descriptor, "data", tex_data )) //said descRaw
+        //said descRaw
+        if ( ! read_vector_from_xml<double>( descriptor, "data", tex_data ))
         {
           LOG_WARN( main_logger,"No CUTexture at " << descriptor->Row() << "\n");
         }
@@ -702,7 +704,8 @@ file_format_kwxml
       else if (string(descr_type) == "CUColMoment" )
       {
         vector< double > colmom_data;
-        if ( ! read_vector_from_xml<double>( descriptor, "data", colmom_data )) //said descRaw
+        //said descRaw
+        if ( ! read_vector_from_xml<double>( descriptor, "data", colmom_data ))
         {
           LOG_WARN( main_logger,"No CUColMoment data at " << descriptor->Row() << "\n");
         }

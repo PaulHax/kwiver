@@ -369,7 +369,8 @@ feature_descriptor_io
   {
     std::vector<feature_sptr> features = feat->features();
 
-    ar( cereal::make_size_tag( static_cast<cereal::size_type>(features.size()) ) ); // number of elements
+    // number of elements
+    ar( cereal::make_size_tag( static_cast<cereal::size_type>(features.size()) ) );
     uint8_t type_code = code_from_typeid(features[0]->data_type());
     // if requested, force the output format to use floats instead of doubles
     if(d_->write_float_features)
@@ -396,7 +397,8 @@ feature_descriptor_io
 
   if( desc && desc->size() > 0 )
   {
-    ar( cereal::make_size_tag( static_cast<cereal::size_type>(desc->size()) ) ); // number of elements
+    // number of elements
+    ar( cereal::make_size_tag( static_cast<cereal::size_type>(desc->size()) ) );
     uint8_t type_code = code_from_typeid(desc->at(0)->data_type());
     ar( type_code );
     switch( type_code )

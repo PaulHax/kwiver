@@ -228,7 +228,8 @@ detect( kwiver::vital::image_container_sptr image_data) const
   d->engine()->put_variable( "in_image", mx_image );
   d->eval( "detect(in_image)" );
 
-  MxArraySptr detections = d->engine()-> get_variable( "detected_object_set" ); // throws
+  // throws
+  MxArraySptr detections = d->engine()-> get_variable( "detected_object_set" );
   d->check_result();
 
   // Check dimensionality of returned array
@@ -273,10 +274,11 @@ detect( kwiver::vital::image_container_sptr image_data) const
   // Process each detection and create an object
   for ( size_t i = 0; i < num_det; i++ )
   {
-    kwiver::vital::bounding_box_d bbox( detections->at<double>(i, (size_t) 0), // tl-x
-                                        detections->at<double>(i, (size_t) 1), // tl-y
-                                        detections->at<double>(i, (size_t) 2), // lr-x
-                                        detections->at<double>(i, (size_t) 3) ); // lr-y
+    kwiver::vital::bounding_box_d bbox(
+      detections->at< double >( i, ( size_t ) 0 ),    // tl-x
+      detections->at< double >( i, ( size_t ) 1 ),    // tl-y
+      detections->at< double >( i, ( size_t ) 2 ),    // lr-x
+      detections->at< double >( i, ( size_t ) 3 ) );  // lr-y
 
     // Save classifications in DOT
     kwiver::vital::detected_object_type_sptr dot;

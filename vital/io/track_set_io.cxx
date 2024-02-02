@@ -193,7 +193,8 @@ read_feature_track_file( path_t const& file_path )
     ftsd->feature = feat;
     if (has_desc)
     {
-      ftsd->descriptor = std::make_shared<descriptor_fixed<unsigned char,1>>();  //dummy descriptor.
+      //dummy descriptor.
+      ftsd->descriptor = std::make_shared<descriptor_fixed<unsigned char,1>>();
       //this will be overwritten when the descriptor file is read.
     }
     t->append( ftsd );

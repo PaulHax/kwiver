@@ -514,7 +514,7 @@ void kwiver::vital::python::image::image(py::module& m)
        # this may work in a future version of xdoctest
        python -m xdoctest vital.types Image --xdoc-dynamic
 
-   References:
+   See:
        http://pybind11.readthedocs.io/en/stable/advanced/pycpp/numpy.html#buffer-protocol
   */
 

@@ -56,7 +56,8 @@ make_dos()
 
   auto dot = create_dot( n, s );
 
-  auto detection = std::make_shared< kwiver::vital::detected_object >( bb1 ); // using defaults
+  // using defaults
+  auto detection = std::make_shared< kwiver::vital::detected_object >( bb1 );
   do_set->add( detection );
 
   detection = std::make_shared< kwiver::vital::detected_object >( bb1, 0.65, dot  );

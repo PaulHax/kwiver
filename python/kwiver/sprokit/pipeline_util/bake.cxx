@@ -132,9 +132,13 @@ register_cluster(::sprokit::cluster_info_t const& info)
 
   kwiver::vital::plugin_manager& vpm = kwiver::vital::plugin_manager::instance();
   ::sprokit::process::type_t derived_type = "python::";
-  auto fact = vpm.add_factory( new ::sprokit::cpp_process_factory( derived_type + type, // derived type name string
-                                                                 type, // name of the cluster/process
-                                                                 ctor ) );
+  auto fact = vpm.add_factory(
+    new ::sprokit::cpp_process_factory(
+      // derived type name string
+      derived_type + type,
+      // name of the cluster/process
+      type,
+      ctor ) );
 
   fact->add_attribute( kwiver::vital::plugin_factory::PLUGIN_NAME, type )
     .add_attribute( kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME, "python-runtime-cluster" )

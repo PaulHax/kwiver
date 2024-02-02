@@ -565,7 +565,8 @@ file_format_kst
         if ( ! n->e_is_node( node_index, d )) return false;
         string s;
         if ( ! d->e_is_str( 0, s )) return false;
-        bool is_classifier = ( (s == "\"Classifier\"") || (s == "\"classifier\"")); // that's great.
+        // that's great.
+        bool is_classifier = ( (s == "\"Classifier\"") || (s == "\"classifier\""));
         bool is_pvmoving = ( s == "\"PersonOrVehicleMovement\"");
         if ( is_classifier || is_pvmoving )
         {
