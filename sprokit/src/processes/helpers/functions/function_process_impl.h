@@ -525,9 +525,9 @@ conf(DEFINE_CONF_VARS, LINES)                                         \
 iports(DEFINE_IPORT_VARS, LINES)                                      \
 oports(DEFINE_OPORT_VARS, LINES)                                      \
                                                                       \
-CLASS_NAME(name)                                                        \
-::CLASS_NAME(name)(kwiver::vital::config_block_sptr const& config)      \
-                  : sprokit::process(config)                            \
+CLASS_NAME(name)                                                      \
+::CLASS_NAME(name)(kwiver::vital::config_block_sptr const& config)    \
+                  : sprokit::process(config)                          \
 {                                                                     \
   port_flags_t required;                                              \
                                                                       \
