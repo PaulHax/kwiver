@@ -24,17 +24,19 @@ namespace core {
 class video_input_pos::priv
 {
 public:
-  priv()
-  : c_meta_extension( ".pos" )
+  priv(video_input_pos& parent)
+  : m_parent(parent)
   , d_current_files( d_img_md_files.end() )
   , d_frame_number( 0 )
   , d_metadata( nullptr )
   , d_have_metadata_map( false )
   {}
 
+  video_input_pos& m_parent;
+
   // Configuration values
-  std::string c_meta_directory;
-  std::string c_meta_extension;
+  std::string c_meta_directory() { return m_parent.get_metadata_directory(); };
+  std::string c_meta_extension() { return m_parent.get_metadata_extension(); };
   std::string c_image_list_file;
 
   // local state
@@ -87,10 +89,10 @@ public:
 };
 
 // ----------------------------------------------------------------------------
-video_input_pos
-::video_input_pos()
-  : d( new video_input_pos::priv )
+void
+video_input_pos::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR(priv,d);
   attach_logger( "arrows.core.video_input_pos" );
 
   set_capability( vital::algo::video_input::HAS_EOV, true );
@@ -108,38 +110,6 @@ video_input_pos
 video_input_pos
 ::~video_input_pos()
 {
-}
-
-// ----------------------------------------------------------------------------
-vital::config_block_sptr
-video_input_pos
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config = vital::algo::video_input::get_configuration();
-
-  config->set_value( "metadata_directory", d->c_meta_directory,
-                     "Name of directory containing metadata files." );
-
-  config->set_value( "metadata_extension", d->c_meta_extension,
-                     "File extension of metadata files." );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-void
-video_input_pos
-::set_configuration( vital::config_block_sptr in_config )
-{
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config(in_config);
-
-  d->c_meta_directory = config->get_value<std::string>(
-    "metadata_directory", d->c_meta_directory );
-
-  d->c_meta_extension = config->get_value<std::string>(
-    "metadata_extension", d->c_meta_extension );
 }
 
 // ----------------------------------------------------------------------------
@@ -174,9 +144,9 @@ video_input_pos
   while ( stream_reader.getline( line ) )
   {
     // Get base name from file
-    std::string resolved_file = d->c_meta_directory;
+    std::string resolved_file = d->c_meta_directory();
     resolved_file += "/" + ST::GetFilenameWithoutLastExtension( line )
-                     + d->c_meta_extension;
+                     + d->c_meta_extension();
     if ( ! ST::FileExists( resolved_file ) )
     {
       LOG_DEBUG( logger(), "Could not find file " << resolved_file
