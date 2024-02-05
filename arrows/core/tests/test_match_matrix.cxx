@@ -1,33 +1,9 @@
-/*ckwg +29
- * Copyright 2014-2017 by Kitware, Inc.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
- *  * Neither name of Kitware, Inc. nor the names of any contributors may be
- * used
- *    to endorse or promote products derived from this software without specific
- *    prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+// This file is part of KWIVER, and is distributed under the
+// OSI-approved BSD 3-Clause License. See top-level LICENSE file or
+// https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
+
+/// \file
+/// \brief test match matrix with generated track sets.
 
 #include <test_tracks.h>
 
@@ -63,7 +39,7 @@ gen_set_tracks(
   double skip_fraction = 0.01,
   double frame_drop_fraction = 0.01 )
 {
-  // Manually terminate tracks on frames 0, 1 and 3
+  // Manually terminate tracks on frames 1, 2 and 4
   track_id_t track_id = 0;
   std::vector< track_sptr > all_tracks, active_tracks;
   for( unsigned f = 0; f < frames; ++f )
@@ -85,7 +61,7 @@ gen_set_tracks(
 
     if( f == 0 )
     {
-      // Terminate tracks 0 and 3 on frame 0
+      // Terminate tracks 0 and 3 on frame 1
       std::vector< track_sptr > next_tracks;
       for( auto t : active_tracks )
       {
@@ -99,7 +75,7 @@ gen_set_tracks(
 
     if( f == 1 )
     {
-      // Terminate tracks 2 and 7 on frame 1
+      // Terminate tracks 2 and 7 on frame 2
       std::vector< track_sptr > next_tracks;
       for( auto t : active_tracks )
       {
@@ -113,7 +89,7 @@ gen_set_tracks(
 
     if( f == 3 )
     {
-      // Terminate tracks 5 and 9 on frame 3
+      // Terminate tracks 5 and 9 on frame 4
       std::vector< track_sptr > next_tracks;
       for( auto t : active_tracks )
       {
