@@ -7,7 +7,7 @@
 
 #include <arrows/serialize/json/kwiver_serialize_json_plugin_export.h>
 
-#include <vital/algo/algorithm_factory.h>
+#include <vital/plugin_management/plugin_manager.h>
 
 #include "activity.h"
 #include "activity_type.h"
@@ -16,6 +16,7 @@
 #include "detected_object_set.h"
 #include "detected_object_type.h"
 #include "image.h"
+#include "metadata.h"
 #include "metadata_map_io.h"
 #include "object_track_set.h"
 #include "object_track_state.h"
@@ -39,39 +40,128 @@ KWIVER_SERIALIZE_JSON_PLUGIN_EXPORT
 void
 register_factories( kwiver::vital::plugin_loader& vpm )
 {
-  auto const module_name = std::string{ "arrows.serialize.json" };
-  kwiver::vital::serializer_registrar sreg( vpm, module_name, "json" );
-  kwiver::vital::algorithm_registrar areg( vpm, module_name );
-
-  if( sreg.is_module_loaded() )
-  {
-    return;
-  }
-
   using namespace kwiver::arrows::serialize::json;
 
-  sreg.register_algorithm< activity >();
-  sreg.register_algorithm< activity_type >();
-  sreg.register_algorithm< bounding_box >();
-  sreg.register_algorithm< detected_object >();
-  sreg.register_algorithm< detected_object_set >();
-  sreg.register_algorithm< detected_object_type >();
-  sreg.register_algorithm< timestamp >();
-  sreg.register_algorithm< image >();
-  sreg.register_algorithm< image >( "kwiver:mask" );
-  sreg.register_algorithm< string >();
-  sreg.register_algorithm< track_state >();
-  sreg.register_algorithm< object_track_state >();
-  sreg.register_algorithm< track >();
-  sreg.register_algorithm< track_set >();
-  sreg.register_algorithm< object_track_set >();
-  sreg.register_algorithm< string >( "kwiver:file_name" );
-  sreg.register_algorithm< string >( "kwiver:image_name" );
-  sreg.register_algorithm< string >( "kwiver:video_name" );
+  auto fact =
+    vpm.add_factory< vital::algo::data_serializer,
+      activity >( "kwiver:activity" );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
+    "arrows.serialize.json" );
 
-  areg.register_algorithm< metadata_map_io >();
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    activity_type >( "kwiver:activity_type" );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
+    "arrows.serialize.json" );
 
-  sreg.mark_module_as_loaded();
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    bounding_box >( "kwiver:bounding_box" );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
+    "arrows.serialize.json" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    detected_object >( "kwiver:detected_object" );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
+    "arrows.serialize.json" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    detected_object_set >( "kwiver:detected_object_set" );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
+    "arrows.serialize.json" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    detected_object_type >( "kwiver:detected_object_type" );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
+    "arrows.serialize.json" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    image >( "kwiver:image" );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
+    "arrows.serialize.json" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    image >( "kwiver:mask" );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
+    "arrows.serialize.json" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    metadata >( "kwiver:metadata" );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
+    "arrows.serialize.json" );
+
+  fact = vpm.add_factory< vital::algo::metadata_map_io,
+    metadata_map_io >( "json" );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
+    "arrows.serialize.json" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    object_track_set >( "kwiver:object_track_set" );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
+    "arrows.serialize.json" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    object_track_state >( "kwiver:object_track_state" );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
+    "arrows.serialize.json" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    string >( "kwiver:string" );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
+    "arrows.serialize.json" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    timestamp >( "kwiver:timestamp" );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
+    "arrows.serialize.json" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    track >( "kwiver:track" );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
+    "arrows.serialize.json" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    track_set >( "kwiver:track_set" );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
+    "arrows.serialize.json" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    track_state >( "kwiver:track_state" );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
+    "arrows.serialize.json" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    string >( "kwiver:file_name" );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
+    "arrows.serialize.json" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    string >( "kwiver:image_name" );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
+    "arrows.serialize.json" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    string >( "kwiver:video_name" );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
+    "arrows.serialize.json" );
 }
 
 } // end namespace json
