@@ -6,7 +6,6 @@
 /// \brief PDAL algorithm registration implementation
 
 #include <arrows/pdal/kwiver_algo_pdal_plugin_export.h>
-// #include <vital/algo/algorithm_factory.h>
 
 #include <arrows/pdal/algo/pointcloud_io.h>
 
