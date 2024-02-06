@@ -14,24 +14,26 @@ namespace core {
 class video_input_split::priv
 {
 public:
-  priv()
-  : d_has_timeout( false )
+  priv(video_input_split& parent)
+  :d_has_timeout( false ),
+  parent(parent)
   { }
 
   // local state
   bool d_has_timeout;
 
   // processing classes
-  vital::algo::video_input_sptr d_image_source;
-  vital::algo::video_input_sptr d_metadata_source;
+  vital::algo::video_input_sptr image_source() { return parent.get_image_source(); };
+  vital::algo::video_input_sptr metadata_source() { return parent.get_metadata_source(); };
+
+  video_input_split& parent;
 
 };
 
 // ----------------------------------------------------------------------------
-video_input_split
-::video_input_split()
-  : d( new video_input_split::priv )
+void video_input_split::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR(priv,d);
   attach_logger( "arrows.core.video_input_split" );
 }
 
@@ -42,46 +44,17 @@ video_input_split
 }
 
 // ----------------------------------------------------------------------------
-vital::config_block_sptr
-video_input_split
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config = vital::algo::video_input::get_configuration();
-
-  vital::algo::video_input::
-    get_nested_algo_configuration( "image_source", config, d->d_image_source );
-
-  vital::algo::video_input::
-    get_nested_algo_configuration( "metadata_source", config, d->d_metadata_source );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-void
-video_input_split
-::set_configuration( vital::config_block_sptr config )
-{
-  vital::algo::video_input::
-    set_nested_algo_configuration( "image_source", config, d->d_image_source );
-
-  vital::algo::video_input::
-    set_nested_algo_configuration( "metadata_source", config, d->d_metadata_source );
-}
-
-// ----------------------------------------------------------------------------
 bool
 video_input_split
 ::check_configuration( vital::config_block_sptr config ) const
 {
   // Check the image reader configuration.
-  bool image_stat = vital::algo::video_input::
-    check_nested_algo_configuration( "image_source", config );
+  bool image_stat =
+    kwiver::vital::check_nested_algo_configuration<vital::algo::video_input>( "image_source", config );
 
   // Check the metadata reader configuration.
-  bool meta_stat = vital::algo::video_input::
-    check_nested_algo_configuration( "metadata_source", config );
+  bool meta_stat =
+    kwiver::vital::check_nested_algo_configuration<vital::algo::video_input>( "metadata_source", config );
 
   return image_stat && meta_stat;
 }
@@ -91,21 +64,21 @@ void
 video_input_split
 ::open( std::string name )
 {
-  if ( ! d->d_image_source )
+  if ( ! d->image_source() )
   {
-    VITAL_THROW( kwiver::vital::algorithm_configuration_exception, type_name(), impl_name(),
+    VITAL_THROW( kwiver::vital::algorithm_configuration_exception, interface_name(), impl_name(),
           "invalid video_input algorithm for image source" );
   }
-  if ( ! d->d_metadata_source )
+  if ( ! d->metadata_source() )
   {
-    VITAL_THROW( kwiver::vital::algorithm_configuration_exception, type_name(), impl_name(),
+    VITAL_THROW( kwiver::vital::algorithm_configuration_exception, interface_name(), impl_name(),
           "invalid video_input algorithm for metadata source" );
   }
-  d->d_image_source->open( name );
-  d->d_metadata_source->open( name );
+  d->image_source()->open( name );
+  d->metadata_source()->open( name );
 
-  auto const& is_caps = d->d_image_source->get_implementation_capabilities();
-  auto const& ms_caps = d->d_metadata_source->get_implementation_capabilities();
+  auto const& is_caps = d->image_source()->get_implementation_capabilities();
+  auto const& ms_caps = d->metadata_source()->get_implementation_capabilities();
 
   typedef vital::algo::video_input vi;
 
@@ -137,13 +110,13 @@ void
 video_input_split
 ::close()
 {
-  if( d->d_image_source )
+  if( d->image_source() )
   {
-    d->d_image_source->close();
+    d->image_source()->close();
   }
-  if( d->d_metadata_source )
+  if( d->metadata_source() )
   {
-    d->d_metadata_source->close();
+    d->metadata_source()->close();
   }
 }
 
@@ -152,8 +125,8 @@ bool
 video_input_split
 ::end_of_video() const
 {
-  return (!d->d_image_source || d->d_image_source->end_of_video()) ||
-         (!d->d_metadata_source || d->d_metadata_source->end_of_video());
+  return (!d->image_source() || d->image_source()->end_of_video()) ||
+         (!d->metadata_source() || d->metadata_source()->end_of_video());
 }
 
 // ----------------------------------------------------------------------------
@@ -161,8 +134,8 @@ bool
 video_input_split
 ::good() const
 {
-  return (d->d_image_source && d->d_image_source->good()) &&
-         (d->d_metadata_source && d->d_metadata_source->good());
+  return (d->image_source() && d->image_source()->good()) &&
+         (d->metadata_source() && d->metadata_source()->good());
 }
 
 // ----------------------------------------------------------------------------
@@ -170,8 +143,8 @@ bool
 video_input_split
 ::seekable() const
 {
-  return (d->d_image_source && d->d_image_source->seekable()) &&
-         (d->d_metadata_source && d->d_metadata_source->seekable());
+  return (d->image_source() && d->image_source()->seekable()) &&
+         (d->metadata_source() && d->metadata_source()->seekable());
 }
 
 // ----------------------------------------------------------------------------
@@ -179,10 +152,10 @@ size_t
 video_input_split
 ::num_frames() const
 {
-  if (d->d_image_source && d->d_metadata_source)
+  if (d->image_source() && d->metadata_source())
   {
-    return std::min(d->d_image_source->num_frames(),
-                    d->d_metadata_source->num_frames());
+    return std::min(d->image_source()->num_frames(),
+                    d->metadata_source()->num_frames());
   }
   else
   {
@@ -209,10 +182,10 @@ video_input_split
   }
 
   kwiver::vital::timestamp image_ts;
-  bool image_stat = d->d_image_source->next_frame( image_ts, timeout );
+  bool image_stat = d->image_source()->next_frame( image_ts, timeout );
 
   kwiver::vital::timestamp metadata_ts;
-  bool meta_stat = d->d_metadata_source->next_frame( metadata_ts, timeout );
+  bool meta_stat = d->metadata_source()->next_frame( metadata_ts, timeout );
 
   if( !image_stat || !meta_stat )
   {
@@ -240,10 +213,10 @@ video_input_split
   }
 
   kwiver::vital::timestamp image_ts;
-  bool image_stat = d->d_image_source->seek_frame( image_ts, frame_number, timeout );
+  bool image_stat = d->image_source()->seek_frame( image_ts, frame_number, timeout );
 
   kwiver::vital::timestamp metadata_ts;
-  bool meta_stat = d->d_metadata_source->seek_frame( metadata_ts, frame_number, timeout );
+  bool meta_stat = d->metadata_source()->seek_frame( metadata_ts, frame_number, timeout );
 
   if( !image_stat || !meta_stat )
   {
@@ -286,8 +259,8 @@ video_input_split
     return {};
   }
 
-  auto const& image_ts = d->d_image_source->frame_timestamp();
-  auto const& metadata_ts = d->d_metadata_source->frame_timestamp();
+  auto const& image_ts = d->image_source()->frame_timestamp();
+  auto const& metadata_ts = d->metadata_source()->frame_timestamp();
 
   return merge_timestamps( image_ts, metadata_ts );
 }
@@ -297,7 +270,7 @@ kwiver::vital::image_container_sptr
 video_input_split
 ::frame_image()
 {
-  return d->d_image_source->frame_image();
+  return d->image_source()->frame_image();
 }
 
 // ----------------------------------------------------------------------------
@@ -305,8 +278,8 @@ kwiver::vital::metadata_vector
 video_input_split
 ::frame_metadata()
 {
-  auto md_vec1 = d->d_image_source->frame_metadata();
-  auto md_vec2 = d->d_metadata_source->frame_metadata();
+  auto md_vec1 = d->image_source()->frame_metadata();
+  auto md_vec2 = d->metadata_source()->frame_metadata();
   md_vec1.insert( md_vec1.end(), md_vec2.begin(), md_vec2.end() );
   return md_vec1;
 }
@@ -317,8 +290,8 @@ video_input_split
 {
   vital::metadata_map::map_metadata_t output_map;
 
-  auto md_map1 = d->d_image_source->metadata_map()->metadata();
-  auto md_map2 = d->d_metadata_source->metadata_map()->metadata();
+  auto md_map1 = d->image_source()->metadata_map()->metadata();
+  auto md_map2 = d->metadata_source()->metadata_map()->metadata();
   std::set<kwiver::vital::frame_id_t> merged_keys;
   for ( auto& md : md_map1 )
   {
@@ -349,7 +322,7 @@ kwiver::vital::video_settings_uptr
 video_input_split
 ::implementation_settings() const
 {
-  return d->d_image_source->implementation_settings();
+  return d->image_source()->implementation_settings();
 }
 
 // ----------------------------------------------------------------------------

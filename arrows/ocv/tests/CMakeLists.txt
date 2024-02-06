@@ -20,12 +20,13 @@ kwiver_discover_gtests(ocv image                       LIBRARIES ${test_librarie
 #kwiver_discover_gtests(ocv match_set                   LIBRARIES ${test_libraries})
 
 
+# kwiver-v2 xxx(enable as we bring more classes)
 # Additional tests that depend on the MVG arrow
-if (KWIVER_ENABLE_MVG)
-  list(APPEND test_libraries kwiver_algo_mvg)
-
-  kwiver_discover_gtests(ocv estimate_fundamental_matrix LIBRARIES ${test_libraries})
-  kwiver_discover_gtests(ocv estimate_homography         LIBRARIES ${test_libraries})
-  kwiver_discover_gtests(ocv estimate_pnp                LIBRARIES ${test_libraries})
-  kwiver_discover_gtests(ocv resection_camera            LIBRARIES ${test_libraries})
-endif()
+#if (KWIVER_ENABLE_MVG)
+#  list(APPEND test_libraries kwiver_algo_mvg)
+#
+#  kwiver_discover_gtests(ocv estimate_fundamental_matrix LIBRARIES ${test_libraries})
+#  kwiver_discover_gtests(ocv estimate_homography         LIBRARIES ${test_libraries})
+#  kwiver_discover_gtests(ocv estimate_pnp                LIBRARIES ${test_libraries})
+#  kwiver_discover_gtests(ocv resection_camera            LIBRARIES ${test_libraries})
+#endif()

@@ -24,26 +24,25 @@ class KWIVER_ALGO_CORE_EXPORT video_input_pos
   : public  vital::algo::video_input
 {
 public:
-  PLUGIN_INFO(  "pos",
+  PLUGGABLE_IMPL(video_input_pos,
                 "Read video metadata in AFRL POS format."
                 " The algorithm takes configuration for a directory full of images"
                 " and an associated directory name for the metadata files."
                 " These metadata files have the same base name as the image files."
                 " Each metadata file is associated with the image file"
-                " of the same base name." )
+                " of the same base name.",
+                PARAM_DEFAULT(metadata_directory,std::string,
+                     "Name of directory containing metadata files.","" ),
+                PARAM_DEFAULT(metadata_extension,std::string,
+                     "File extension of metadata files.",
+                     ".pos"));
 
   /// Constructor
   video_input_pos();
   virtual ~video_input_pos();
 
-  /// Get this algorithm's \link vital::config_block configuration block \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration(vital::config_block_sptr config);
-
   /// Check that the algorithm's currently configuration is valid
-  virtual bool check_configuration(vital::config_block_sptr config) const;
+  bool check_configuration(vital::config_block_sptr config) const override;
 
   /// @brief Open a list of images.
   ///
@@ -52,30 +51,31 @@ public:
   /// file in the directory supplied via the configuration.
   ///
   /// @param list_name Name of file that contains list of images.
-  virtual void open( std::string list_name );
-  virtual void close();
+  void open( std::string list_name ) override;
+  void close() override;
 
-  virtual bool end_of_video() const;
-  virtual bool good() const;
-  virtual bool seekable() const;
-  virtual size_t num_frames() const;
+  bool end_of_video() const override;
+  bool good() const override;
+  bool seekable() const override;
+  size_t num_frames() const override;
 
-  virtual bool next_frame( kwiver::vital::timestamp& ts,
-                           uint32_t timeout = 0 );
+  bool next_frame( kwiver::vital::timestamp& ts,
+                           uint32_t timeout = 0 ) override;
 
-  virtual bool seek_frame( kwiver::vital::timestamp& ts,
+  bool seek_frame( kwiver::vital::timestamp& ts,
                            kwiver::vital::timestamp::frame_t frame_number,
-                           uint32_t timeout = 0 );
+                           uint32_t timeout = 0 ) override;
 
-  virtual kwiver::vital::timestamp frame_timestamp() const;
-  virtual kwiver::vital::image_container_sptr frame_image();
-  virtual kwiver::vital::metadata_vector frame_metadata();
-  virtual kwiver::vital::metadata_map_sptr metadata_map();
-
+  kwiver::vital::timestamp frame_timestamp() const override;
+  kwiver::vital::image_container_sptr frame_image() override;
+  kwiver::vital::metadata_vector frame_metadata() override;
+  kwiver::vital::metadata_map_sptr metadata_map() override;
+protected:
+  void initialize() override;
 private:
   /// private implementation class
   class priv;
-  const std::unique_ptr<priv> d;
+  KWIVER_UNIQUE_PTR(priv,d);
 };
 
 } } } // end namespace

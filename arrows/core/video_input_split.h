@@ -9,6 +9,8 @@
 
 #include <arrows/core/kwiver_algo_core_export.h>
 
+#include <vital/algo/algorithm.txx>
+
 namespace kwiver {
 namespace arrows {
 namespace core {
@@ -21,45 +23,49 @@ class KWIVER_ALGO_CORE_EXPORT video_input_split
   : public  vital::algo::video_input
 {
 public:
-  PLUGIN_INFO( "split",
+  PLUGGABLE_IMPL(video_input_split,
                "Coordinate two video readers."
                " One reader supplies the image/data stream."
-               " The other reader supplies the metadata stream." )
+               " The other reader supplies the metadata stream.",
+               PARAM(image_source,
+                      vital::algo::video_input_sptr,
+                      "Algorithm pointer to reader"),
+               PARAM(metadata_source,
+                      vital::algo::video_input_sptr,
+                      "Algorithm pointer to metadata stream")
+                  );
 
   /// Constructor
   video_input_split();
   virtual ~video_input_split();
 
-  /// Get this algorithm's \link vital::config_block configuration block \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration(vital::config_block_sptr config);
-
   /// Check that the algorithm's currently configuration is valid
-  virtual bool check_configuration(vital::config_block_sptr config) const;
+  bool check_configuration(vital::config_block_sptr config) const override;
 
-  virtual void open( std::string name );
-  virtual void close();
+  void open( std::string name ) override;
+  void close() override;
 
-  virtual bool end_of_video() const;
-  virtual bool good() const;
-  virtual bool seekable() const;
-  virtual size_t num_frames() const;
+  bool end_of_video() const override;
+  bool good() const override;
+  bool seekable() const override;
+  size_t num_frames() const override;
 
-  virtual bool next_frame( kwiver::vital::timestamp& ts,
-                           uint32_t timeout = 0 );
+  bool next_frame( kwiver::vital::timestamp& ts,
+                           uint32_t timeout = 0 ) override;
 
-  virtual bool seek_frame( kwiver::vital::timestamp& ts,
+  bool seek_frame( kwiver::vital::timestamp& ts,
                            kwiver::vital::timestamp::frame_t frame_number,
-                           uint32_t timeout = 0 );
+                           uint32_t timeout = 0 ) override;
 
-  virtual kwiver::vital::timestamp frame_timestamp() const;
-  virtual kwiver::vital::image_container_sptr frame_image();
-  virtual kwiver::vital::metadata_vector frame_metadata();
-  virtual kwiver::vital::metadata_map_sptr metadata_map();
+  kwiver::vital::timestamp frame_timestamp() const override;
+  kwiver::vital::image_container_sptr frame_image() override;
+  kwiver::vital::metadata_vector frame_metadata() override;
+  kwiver::vital::metadata_map_sptr metadata_map() override;
 
   kwiver::vital::video_settings_uptr implementation_settings() const override;
+
+protected:
+  void initialize() override;
 
 private:
   kwiver::vital::timestamp merge_timestamps(
@@ -68,7 +74,7 @@ private:
 
   /// private implementation class
   class priv;
-  const std::unique_ptr<priv> d;
+  KWIVER_UNIQUE_PTR(priv,d);
 };
 
 } } } // end namespace

@@ -55,18 +55,33 @@ std::string const SEP_EXTS{ ";" };
 class video_input_image_list::priv
 {
 public:
-  priv( video_input_image_list* parent )
+  priv( video_input_image_list& parent )
     : m_parent{ parent },
       m_current_file{ m_files.end() }
   {}
 
-  video_input_image_list* const m_parent;
+  video_input_image_list& m_parent;
 
-  // Configuration values
-  unsigned short c_path_retain_n = 0;
-  std::vector< std::string > c_search_path;
-  std::vector< std::string > c_allowed_extensions;
-  bool c_sort_by_time = false;
+  // we need to recalculate these values each time because between invocations
+  // of set/get configuration parent.set_path() will make these out of sync.
+  std::vector< std::string > c_search_path()
+  {
+    auto const& path = m_parent.get_path();
+    std::vector<std::string> result;
+    kv::tokenize( path, result, SEP_PATH, kv::TokenizeTrimEmpty );
+    result.push_back(".");
+    return result;
+  }
+
+  std::vector< std::string > c_allowed_extensions()
+  {
+    auto const& extensions = m_parent.get_allowed_extensions();
+    std::vector<std::string> result;
+    kv::tokenize( extensions, result, SEP_EXTS, kv::TokenizeTrimEmpty );
+    return result;
+  }
+
+  bool c_sort_by_time() { return m_parent.get_sort_by_time(); };
 
   // Local state
   std::vector< kv::path_t > m_files;
@@ -80,7 +95,7 @@ public:
   std::map< kv::path_t, kv::metadata_sptr > m_metadata_by_path;
 
   // Processing classes
-  vital::algo::image_io_sptr m_image_reader;
+  vital::algo::image_io_sptr m_image_reader () { return m_parent.get_image_reader(); };
 
   void read_from_file( std::string const& filename );
   void read_from_directory( std::string const& dirname );
@@ -90,10 +105,10 @@ public:
 };
 
 // ----------------------------------------------------------------------------
-video_input_image_list
-::video_input_image_list()
-  : d( new video_input_image_list::priv( this ) )
+void
+video_input_image_list::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR(priv,d);
   attach_logger( "arrows.core.video_input_image_list" );
 
   set_capability( video_input::HAS_EOV, true );
@@ -114,78 +129,20 @@ video_input_image_list
 }
 
 // ----------------------------------------------------------------------------
-vital::config_block_sptr
-video_input_image_list
-::get_configuration() const
-{
-  // Get base configuration from base class
-  auto const& config = video_input::get_configuration();
-
-  // Construct path/allowed_extensions strings from the current vectors.
-  // Only keeping a certain first N entries in the path vector which corresponds
-  std::vector< kv::path_t > reconstruct_path_vec(
-      d->c_search_path.begin(), d->c_search_path.begin() + d->c_path_retain_n
-      );
-  std::string reconstruct_path = kv::join( reconstruct_path_vec, SEP_PATH );
-  std::string reconstruct_allowed_exts =
-      kv::join( d->c_allowed_extensions, SEP_EXTS );
-
-  config->set_value(
-    "path", reconstruct_path,
-    "Path to search for image file. "
-    "If a file name is not absolute, this list of directories is scanned "
-    "to find the file. The current directory '.' is automatically appended "
-    "to the end of the path. "
-    "The format of this path is the same as the standard path specification, "
-    "a set of directories separated by a colon (':')" );
-  config->set_value(
-    "allowed_extensions", reconstruct_allowed_exts,
-    "Semicolon-separated list of allowed file extensions. "
-    "Leave empty to allow all file extensions." );
-  config->set_value(
-    "sort_by_time", d->c_sort_by_time,
-    "Instead of accepting the input list as-is, sort the input file list "
-    "based on the timestamp metadata provided for the file." );
-
-  image_io::get_nested_algo_configuration(
-    "image_reader", config, d->m_image_reader );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
 void
 video_input_image_list
-::set_configuration( vital::config_block_sptr in_config )
+::set_configuration_internal( vital::config_block_sptr in_config )
 {
   auto const& config = this->get_configuration();
   config->merge_config( in_config );
 
-  // Extract string and create vector of directories
-  auto const& path = config->get_value< std::string >( "path", {} );
-  d->c_search_path.clear();  // make sure vec is empty before populating it
-  kv::tokenize( path, d->c_search_path, SEP_PATH, kv::TokenizeTrimEmpty );
-  d->c_path_retain_n = d->c_search_path.size();
-  d->c_search_path.push_back( "." ); // Add current directory
 
-  // Create vector of allowed file extensions
-  auto const& extensions =
-    config->get_value< std::string >( "allowed_extensions", {} );
-  kv::tokenize( extensions, d->c_allowed_extensions, SEP_EXTS,
-                kv::TokenizeTrimEmpty );
-
-  // Read standalone variables
-  d->c_sort_by_time = config->get_value< bool >( "sort_by_time" );
-
-  // Setup actual reader algorithm
-  image_io::set_nested_algo_configuration(
-    "image_reader", config, d->m_image_reader );
 
   // Check capabilities of image reader
-  if( d->m_image_reader != nullptr )
+  if( d->m_image_reader() != nullptr )
   {
     auto const& reader_capabilities =
-      d->m_image_reader->get_implementation_capabilities();
+      d->m_image_reader()->get_implementation_capabilities();
     set_capability( HAS_FRAME_TIME,
                     reader_capabilities.capability( image_io::HAS_TIME ) );
   }
@@ -197,7 +154,7 @@ video_input_image_list
 ::check_configuration( vital::config_block_sptr config ) const
 {
   // Check the reader configuration.
-  return image_io::check_nested_algo_configuration( "image_reader", config );
+  return kwiver::vital::check_nested_algo_configuration<image_io>( "image_reader", config );
 }
 
 // ----------------------------------------------------------------------------
@@ -208,10 +165,10 @@ video_input_image_list
   // Close the video in case already open
   this->close();
 
-  if ( !d->m_image_reader )
+  if ( !d->m_image_reader() )
   {
     VITAL_THROW( kv::algorithm_configuration_exception,
-                 type_name(), impl_name(), "invalid image_reader." );
+                 interface_name(), plugin_name(), "invalid image_reader." );
   }
 
   if ( ksst::FileIsDirectory( list_name ) )
@@ -349,7 +306,7 @@ video_input_image_list
   ts.set_frame( d->m_frame_number );
 
   auto const& reader_capabilities =
-    d->m_image_reader->get_implementation_capabilities();
+    d->m_image_reader()->get_implementation_capabilities();
   if ( reader_capabilities.capability( image_io::HAS_TIME ) )
   {
     auto const& md = d->frame_metadata( *d->m_current_file, d->m_image );
@@ -380,7 +337,7 @@ video_input_image_list
     //
     // This call returns a *new* image container; this is good since
     // we are going to pass it downstream using the sptr
-    d->m_image = d->m_image_reader->load( *d->m_current_file );
+    d->m_image = d->m_image_reader()->load( *d->m_current_file );
   }
   return d->m_image;
 }
@@ -430,11 +387,13 @@ video_input_image_list::priv
     VITAL_THROW( kv::invalid_file, filename, "Could not open file" );
   }
 
+  std::vector<std::string> search_path = this->c_search_path();
+
   // Add directory that contains the list file to the path
   auto const& list_path = ksst::GetFilenamePath( filename );
   if ( !list_path.empty() )
   {
-    this->c_search_path.push_back( list_path );
+    search_path.push_back( list_path );
   }
 
   kv::data_stream_reader stream_reader( ifs );
@@ -450,7 +409,7 @@ video_input_image_list::priv
     if ( !ksst::FileExists( resolved_file ) )
     {
       // Resolve against specified path
-      resolved_file = ksst::FindFile( line, this->c_search_path, true );
+      resolved_file = ksst::FindFile( line, search_path, true );
       if ( resolved_file.empty() )
       {
         VITAL_THROW( kv:: file_not_found_exception, line,
@@ -485,7 +444,7 @@ video_input_image_list::priv
     this->m_files.push_back( resolved_file );
   }
 
-  if ( c_sort_by_time )
+  if ( c_sort_by_time() )
   {
     sort_by_time( this->m_files );
   }
@@ -512,7 +471,7 @@ video_input_image_list::priv
 
   for ( auto& file : files )
   {
-    auto const& md = this->m_image_reader->load_metadata( file );
+    auto const& md = this->m_image_reader()->load_metadata( file );
 
     if ( !md || !md->timestamp().has_valid_time() )
     {
@@ -560,13 +519,13 @@ video_input_image_list::priv
     }
     if ( !ksst::FileIsDirectory( resolved_file ) )
     {
-      if ( this->c_allowed_extensions.empty() )
+      if ( this->c_allowed_extensions().empty() )
       {
         this->m_files.push_back( resolved_file );
       }
       else
       {
-        for ( auto const& extension : this->c_allowed_extensions )
+        for ( auto const& extension : this->c_allowed_extensions() )
         {
           std::string resolved_lower = ksst::LowerCase( resolved_file );
           std::string extension_lower = ksst::LowerCase( extension );
@@ -582,7 +541,7 @@ video_input_image_list::priv
   }
 
   // Sort the list
-  if ( c_sort_by_time )
+  if ( c_sort_by_time() )
   {
     sort_by_time( this->m_files );
   }
@@ -611,7 +570,7 @@ video_input_image_list::priv
   }
   if ( !md )
   {
-    md = m_image_reader->load_metadata( file );
+    md = m_image_reader()->load_metadata( file );
   }
   if ( !md )
   {
