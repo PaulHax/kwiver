@@ -45,7 +45,7 @@ public:
   { }
 
   uv_unwrap_mesh& parent;
-  double spacing() { return parent.c_spacing; };
+  double c_spacing() { return parent.c_spacing; };
 
   ~priv() = default;
 };
@@ -53,7 +53,7 @@ public:
 // ----------------------------------------------------------------------------
 void uv_unwrap_mesh::initialize()
 {
-  KWIVER_INITIALIZE_UNIQUE_PTR(priv,d);
+  KWIVER_INITIALIZE_UNIQUE_PTR(priv,d_);
   attach_logger( "arrows.core.uv_unwrap_mesh" );
 }
 
@@ -67,7 +67,7 @@ uv_unwrap_mesh
 bool uv_unwrap_mesh
 ::check_configuration(vital::config_block_sptr config) const
 {
-  double spacing = config->get_value<double>("spacing", d->spacing());
+  double spacing = config->get_value<double>("spacing", d_->c_spacing());
   if( spacing <= 0.0 || spacing > 1.0 )
   {
     LOG_ERROR( logger(),
@@ -173,7 +173,7 @@ void uv_unwrap_mesh::unwrap(kwiver::vital::mesh_sptr mesh) const
 
   // Estimate max width to have a more or less square texture atlas
   double max_width = (std::ceil(sqrt(total_area)));
-  double margin = max_width * d->spacing();    // margin between triangles
+  double margin = max_width * d_->c_spacing();    // margin between triangles
   // Update max_width with margins
   double correction = 0.0;
   for (auto& t : triangles)
