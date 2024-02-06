@@ -42,7 +42,7 @@ public:
   virtual ~video_input_pos();
 
   /// Check that the algorithm's currently configuration is valid
-  virtual bool check_configuration(vital::config_block_sptr config) const;
+  bool check_configuration(vital::config_block_sptr config) const override;
 
   /// @brief Open a list of images.
   ///
@@ -51,25 +51,25 @@ public:
   /// file in the directory supplied via the configuration.
   ///
   /// @param list_name Name of file that contains list of images.
-  virtual void open( std::string list_name );
-  virtual void close();
+  void open( std::string list_name ) override;
+  void close() override;
 
-  virtual bool end_of_video() const;
-  virtual bool good() const;
-  virtual bool seekable() const;
-  virtual size_t num_frames() const;
+  bool end_of_video() const override;
+  bool good() const override;
+  bool seekable() const override;
+  size_t num_frames() const override;
 
-  virtual bool next_frame( kwiver::vital::timestamp& ts,
-                           uint32_t timeout = 0 );
+  bool next_frame( kwiver::vital::timestamp& ts,
+                           uint32_t timeout = 0 ) override;
 
-  virtual bool seek_frame( kwiver::vital::timestamp& ts,
+  bool seek_frame( kwiver::vital::timestamp& ts,
                            kwiver::vital::timestamp::frame_t frame_number,
-                           uint32_t timeout = 0 );
+                           uint32_t timeout = 0 ) override;
 
-  virtual kwiver::vital::timestamp frame_timestamp() const;
-  virtual kwiver::vital::image_container_sptr frame_image();
-  virtual kwiver::vital::metadata_vector frame_metadata();
-  virtual kwiver::vital::metadata_map_sptr metadata_map();
+  kwiver::vital::timestamp frame_timestamp() const override;
+  kwiver::vital::image_container_sptr frame_image() override;
+  kwiver::vital::metadata_vector frame_metadata() override;
+  kwiver::vital::metadata_map_sptr metadata_map() override;
 protected:
   void initialize() override;
 private:
