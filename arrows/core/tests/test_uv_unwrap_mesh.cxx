@@ -65,7 +65,7 @@ TEST(uv_unwrap_mesh, create)
 
   plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE(nullptr, algo::uv_unwrap_mesh::create("core"));
+  EXPECT_NE(nullptr, create_algorithm<algo::uv_unwrap_mesh>("core"));
 }
 
 // ----------------------------------------------------------------------------

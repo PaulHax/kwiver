@@ -36,25 +36,24 @@ namespace kwiver {
 namespace arrows {
 namespace core {
 
-/// Private implementation class
+//----------------------------
 class uv_unwrap_mesh::priv
 {
 public:
-  /// Constructor
-  priv()
-    : spacing(0.005)
-  {
-  }
+  priv(uv_unwrap_mesh& parent)
+    :parent(parent)
+  { }
+
+  uv_unwrap_mesh& parent;
+  double c_spacing() { return parent.c_spacing; };
 
   ~priv() = default;
-
-  double spacing;
 };
 
-// Constructor
-uv_unwrap_mesh::uv_unwrap_mesh()
-  : d_(new priv)
+// ----------------------------------------------------------------------------
+void uv_unwrap_mesh::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR(priv,d_);
   attach_logger( "arrows.core.uv_unwrap_mesh" );
 }
 
@@ -64,32 +63,11 @@ uv_unwrap_mesh
 {
 }
 
-// Get this algorithm's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-uv_unwrap_mesh::get_configuration() const
-{
-  vital::config_block_sptr config =
-      vital::algo::uv_unwrap_mesh::get_configuration();
-   config->set_value("spacing", d_->spacing,
-                     "Spacing between triangles. It is a percentage of the texture size "
-                     "and should be relatively small (default is 0.005).");
-  return config;
-}
-
-// Set the configuration
-void uv_unwrap_mesh
-::set_configuration(vital::config_block_sptr in_config)
-{
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config(in_config);
-  d_->spacing = config->get_value<double>("spacing", d_->spacing);
-}
-
 // Check that the algorithm's configuration vital::config_block is valid
 bool uv_unwrap_mesh
 ::check_configuration(vital::config_block_sptr config) const
 {
-  double spacing = config->get_value<double>("spacing", d_->spacing);
+  double spacing = config->get_value<double>("spacing", d_->c_spacing());
   if( spacing <= 0.0 || spacing > 1.0 )
   {
     LOG_ERROR( logger(),
@@ -104,7 +82,7 @@ void uv_unwrap_mesh::unwrap(kwiver::vital::mesh_sptr mesh) const
 {
   if (mesh->faces().regularity() != 3)
   {
-    VITAL_THROW( algorithm_exception, this->type_name(), this->impl_name(),
+    VITAL_THROW( algorithm_exception, this->interface_name(), this->plugin_name(),
                  "This algorithm expects a regular mesh with triangular faces.");
   }
 
@@ -195,7 +173,7 @@ void uv_unwrap_mesh::unwrap(kwiver::vital::mesh_sptr mesh) const
 
   // Estimate max width to have a more or less square texture atlas
   double max_width = (std::ceil(sqrt(total_area)));
-  double margin = max_width * d_->spacing;    // margin between triangles
+  double margin = max_width * d_->c_spacing();    // margin between triangles
   // Update max_width with margins
   double correction = 0.0;
   for (auto& t : triangles)
