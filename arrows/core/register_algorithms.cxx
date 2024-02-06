@@ -18,6 +18,9 @@
 // implementation
 #include <arrows/core/uv_unwrap_mesh.h>
 #include <arrows/core/video_input_filter.h>
+#include <arrows/core/video_input_image_list.h>
+#include <arrows/core/video_input_split.h>
+#include <arrows/core/video_input_pos.h>
 #include <arrows/core/metadata_map_io_csv.h>
 
 namespace kwiver {
@@ -37,6 +40,15 @@ register_factories( kwiver::vital::plugin_loader& vpl )
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 
   fact = vpl.add_factory< vital::algo::uv_unwrap_mesh , uv_unwrap_mesh >( "core" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact =  vpl.add_factory< vital::algo::video_input , video_input_split >( "split" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact =  vpl.add_factory< vital::algo::video_input , video_input_image_list >( "image_list" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact =  vpl.add_factory< vital::algo::video_input , video_input_pos >( "pos" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 
   fact = vpl.add_factory< vital::algo::metadata_map_io , metadata_map_io_csv >( "csv" );
