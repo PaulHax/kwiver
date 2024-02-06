@@ -17,53 +17,61 @@
 #include <vital/algo/compute_stereo_depth_map.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
-template< class algorithm_def_csdm_base=
-            kwiver::vital::algorithm_def<
-               kwiver::vital::algo::compute_stereo_depth_map > >
-class algorithm_def_csdm_trampoline :
-      public algorithm_trampoline<algorithm_def_csdm_base>
+template < class algorithm_def_csdm_base =
+    kwiver::vital::algorithm_def<
+      kwiver::vital::algo::compute_stereo_depth_map > >
+class algorithm_def_csdm_trampoline
+  : public algorithm_trampoline< algorithm_def_csdm_base >
 {
-  public:
-    using algorithm_trampoline< algorithm_def_csdm_base >::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_csdm_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<
-          kwiver::vital::algo::compute_stereo_depth_map>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def<
+        kwiver::vital::algo::compute_stereo_depth_map >,
+      type_name,
+    );
+  }
 };
 
-template< class compute_stereo_depth_map_base=
-                  kwiver::vital::algo::compute_stereo_depth_map >
-class compute_stereo_depth_map_trampoline :
-      public algorithm_def_csdm_trampoline< compute_stereo_depth_map_base >
+template < class compute_stereo_depth_map_base =
+    kwiver::vital::algo::compute_stereo_depth_map >
+class compute_stereo_depth_map_trampoline
+  : public algorithm_def_csdm_trampoline< compute_stereo_depth_map_base >
 {
-  public:
-    using algorithm_def_csdm_trampoline< compute_stereo_depth_map_base >::
-              algorithm_def_csdm_trampoline;
+public:
+  using algorithm_def_csdm_trampoline< compute_stereo_depth_map_base >::
+  algorithm_def_csdm_trampoline;
 
-    kwiver::vital::image_container_sptr
-    compute( kwiver::vital::image_container_sptr left_image,
-             kwiver::vital::image_container_sptr right_image )
-         const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        kwiver::vital::image_container_sptr,
-        kwiver::vital::algo::compute_stereo_depth_map,
-        compute,
-        left_image,
-        right_image
-      );
-    }
+  kwiver::vital::image_container_sptr
+  compute(
+    kwiver::vital::image_container_sptr left_image,
+    kwiver::vital::image_container_sptr right_image )
+  const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      kwiver::vital::image_container_sptr,
+      kwiver::vital::algo::compute_stereo_depth_map,
+      compute,
+      left_image,
+      right_image
+    );
+  }
 };
-}
-}
-}
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
+
 #endif

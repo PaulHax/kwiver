@@ -11,7 +11,9 @@
 #include <arrows/pdal/algo/pointcloud_io.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace pdal {
 
 extern "C"
@@ -21,7 +23,7 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 {
   kwiver::vital::algorithm_registrar reg( vpm, "arrows.pdal" );
 
-  if (reg.is_module_loaded())
+  if( reg.is_module_loaded() )
   {
     return;
   }
@@ -32,5 +34,7 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 }
 
 } // end namespace pdal
+
 } // end namespace arrows
+
 } // end namespace kwiver

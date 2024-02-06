@@ -29,10 +29,8 @@ using vectorf = std::vector< float >;
 
 struct resection_camera::priv : public mvg::camera_options
 {
-
   priv() : m_logger{ vital::get_logger( "arrows.ocv.resection_camera" ) }
-  {
-  }
+  {}
 
   vital::logger_handle_t m_logger;
   // leave enogh of margin for inliers
@@ -70,13 +68,11 @@ operator>>( std::istream& s, vectorf& v )
 resection_camera
 ::resection_camera()
   : d_{ new priv }
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 resection_camera::~resection_camera()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 vital::config_block_sptr
@@ -86,15 +82,18 @@ resection_camera
   vital::config_block_sptr config =
     vital::algo::resection_camera::get_configuration();
   d_->get_configuration( config );
-  config->set_value( "reproj_accuracy", d_->reproj_accuracy,
-                     "desired re-projection positive accuracy for inlier points" );
-  config->set_value( "max_iterations", d_->max_iterations,
-                     "maximum number of iterations to run optimization [1, INT_MAX]" );
+  config->set_value(
+    "reproj_accuracy", d_->reproj_accuracy,
+    "desired re-projection positive accuracy for inlier points" );
+  config->set_value(
+    "max_iterations", d_->max_iterations,
+    "maximum number of iterations to run optimization [1, INT_MAX]" );
 
   std::stringstream ss;
   ss << d_->focal_scales;
-  config->set_value( "focal_scales", ss.str(),
-                     "focal length scales to optimize f*scale over" );
+  config->set_value(
+    "focal_scales", ss.str(),
+    "focal length scales to optimize f*scale over" );
   return config;
 }
 
@@ -104,13 +103,16 @@ resection_camera
 ::set_configuration( vital::config_block_sptr config )
 {
   d_->set_configuration( config );
-  d_->reproj_accuracy = config->get_value< double >( "reproj_accuracy",
-                                                     d_->reproj_accuracy );
-  d_->max_iterations = config->get_value< int >( "max_iterations",
-                                                 d_->max_iterations );
+  d_->reproj_accuracy = config->get_value< double >(
+    "reproj_accuracy",
+    d_->reproj_accuracy );
+  d_->max_iterations = config->get_value< int >(
+    "max_iterations",
+    d_->max_iterations );
 
-  std::stringstream ss( config->get_value< std::string >( "focal_scales",
-                                                          "1" ) );
+  std::stringstream ss( config->get_value< std::string >(
+    "focal_scales",
+    "1" ) );
   d_->focal_scales.clear();
   ss >> d_->focal_scales;
 }
@@ -125,9 +127,10 @@ resection_camera
     config->get_value< double >( "reproj_accuracy", d_->reproj_accuracy );
   if( reproj_accuracy <= 0.0 )
   {
-    LOG_ERROR( d_->m_logger,
-               "reproj_accuracy parameter is " << reproj_accuracy <<
-               ", but needs to be positive." );
+    LOG_ERROR(
+      d_->m_logger,
+      "reproj_accuracy parameter is " << reproj_accuracy <<
+        ", but needs to be positive." );
     good_conf = false;
   }
 
@@ -135,29 +138,33 @@ resection_camera
     config->get_value< int >( "max_iterations", d_->max_iterations );
   if( max_iterations < 1 )
   {
-    LOG_ERROR( d_->m_logger,
-               "max iterations is " << max_iterations <<
-               ", needs to be greater than zero." );
+    LOG_ERROR(
+      d_->m_logger,
+      "max iterations is " << max_iterations <<
+        ", needs to be greater than zero." );
     good_conf = false;
   }
 
-  std::stringstream ss( config->get_value< std::string >( "focal_scales",
-                                                          "1" ) );
+  std::stringstream ss( config->get_value< std::string >(
+    "focal_scales",
+    "1" ) );
   vectorf focal_scales;
   ss >> focal_scales;
 
   auto m = std::min_element( focal_scales.begin(), focal_scales.end() );
   if( m == focal_scales.end() )
   {
-    LOG_ERROR( d_->m_logger,
-               "expected non-empty focal_scales array" );
+    LOG_ERROR(
+      d_->m_logger,
+      "expected non-empty focal_scales array" );
     good_conf = false;
   }
   else if( *m <= 0 )
   {
-    LOG_ERROR( d_->m_logger,
-               "focal_scales: " << focal_scales <<
-               ", minimal value needs to be positive." );
+    LOG_ERROR(
+      d_->m_logger,
+      "focal_scales: " << focal_scales <<
+        ", minimal value needs to be positive." );
     good_conf = false;
   }
 
@@ -183,18 +190,22 @@ resection_camera
   constexpr size_t min_count = 3;
   if( point_count < min_count )
   {
-    LOG_ERROR( d_->m_logger,
-               "camera resection needs at least " << min_count << " points, "
-               "but only " << point_count << " were provided" );
+    LOG_ERROR(
+      d_->m_logger,
+      "camera resection needs at least " << min_count << " points, "
+                                                         "but only " <<
+        point_count << " were provided" );
     return nullptr;
   }
 
   auto const wpoint_count = world_points.size();
   if( point_count != wpoint_count )
   {
-    LOG_WARN( d_->m_logger,
-              "counts of 3D points (" << wpoint_count << ") and "
-              "their projections (" << point_count << ") do not match" );
+    LOG_WARN(
+      d_->m_logger,
+      "counts of 3D points (" << wpoint_count << ") and "
+                                                 "their projections (" <<
+        point_count << ") do not match" );
   }
 
   std::vector< cv::Point2f > cv_image_points;
@@ -298,15 +309,17 @@ resection_camera
       err = e;
     }
   }
-  LOG_DEBUG( d_->m_logger, "re-projection error=" << err <<
-             ", focal scale=" << focal_scale );
+  LOG_DEBUG(
+    d_->m_logger, "re-projection error=" << err <<
+      ", focal scale=" << focal_scale );
 
   auto const reproj_error = d_->reproj_accuracy;
   if( err > reproj_error )
   {
-    LOG_WARN( d_->m_logger, "estimated re-projection error " <<
-              err << " exceeds expected re-projection error " <<
-              reproj_error );
+    LOG_WARN(
+      d_->m_logger, "estimated re-projection error " <<
+        err << " exceeds expected re-projection error " <<
+        reproj_error );
   }
 
   cv::Mat rvec = vrvec[ 0 ];
@@ -315,8 +328,9 @@ resection_camera
   if( inliers )
   {
     std::vector< cv::Point2f > projected_points;
-    projectPoints( cv_world_points, rvec, tvec, cv_K,
-                   dist_coeffs, projected_points );
+    projectPoints(
+      cv_world_points, rvec, tvec, cv_K,
+      dist_coeffs, projected_points );
 
     inliers->resize( point_count );
     for( auto const i : kvr::iota( point_count ) )
@@ -347,12 +361,15 @@ resection_camera
 
   if( !res_cam->center().allFinite() )
   {
-    LOG_DEBUG( d_->m_logger, "rvec " << rvec.at< double >( 0 ) << " " <<
-               rvec.at< double >( 1 ) << " " << rvec.at< double >( 2 ) );
-    LOG_DEBUG( d_->m_logger, "tvec " << tvec.at< double >( 0 ) << " " <<
-               tvec.at< double >( 1 ) << " " << tvec.at< double >( 2 ) );
-    LOG_DEBUG( d_->m_logger,
-               "rotation angle " << res_cam->rotation().angle() );
+    LOG_DEBUG(
+      d_->m_logger, "rvec " << rvec.at< double >( 0 ) << " " <<
+        rvec.at< double >( 1 ) << " " << rvec.at< double >( 2 ) );
+    LOG_DEBUG(
+      d_->m_logger, "tvec " << tvec.at< double >( 0 ) << " " <<
+        tvec.at< double >( 1 ) << " " << tvec.at< double >( 2 ) );
+    LOG_DEBUG(
+      d_->m_logger,
+      "rotation angle " << res_cam->rotation().angle() );
     LOG_WARN( d_->m_logger, "non-finite camera center found" );
     return nullptr;
   }

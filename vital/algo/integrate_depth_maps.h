@@ -39,7 +39,7 @@ class VITAL_ALGO_EXPORT integrate_depth_maps
 {
 public:
   integrate_depth_maps();
-  PLUGGABLE_INTERFACE(integrate_depth_maps);
+  PLUGGABLE_INTERFACE( integrate_depth_maps );
   /// Integrate multiple depth maps into a common volume
   ///
   /// \param [in]     minpt_bound the min point of the bounding region
@@ -49,12 +49,13 @@ public:
   /// \param [in,out] volume      the fused volumetric data
   /// \param [out]    spacing     the spacing between voxels in each dimension
   virtual void
-  integrate( kwiver::vital::vector_3d const& minpt_bound,
-             kwiver::vital::vector_3d const& maxpt_bound,
-             std::vector< kwiver::vital::image_container_sptr > const& depth_maps,
-             std::vector< kwiver::vital::camera_perspective_sptr > const& cameras,
-             kwiver::vital::image_container_sptr& volume,
-             kwiver::vital::vector_3d& spacing ) const;
+  integrate(
+    kwiver::vital::vector_3d const& minpt_bound,
+    kwiver::vital::vector_3d const& maxpt_bound,
+    std::vector< kwiver::vital::image_container_sptr > const& depth_maps,
+    std::vector< kwiver::vital::camera_perspective_sptr > const& cameras,
+    kwiver::vital::image_container_sptr& volume,
+    kwiver::vital::vector_3d& spacing ) const;
 
   /// Integrate multiple depth maps with per-pixel weights into a common volume
   ///
@@ -70,13 +71,14 @@ public:
   /// \param [in,out] volume      the fused volumetric data
   /// \param [out]    spacing     the spacing between voxels in each dimension
   virtual void
-  integrate( kwiver::vital::vector_3d const& minpt_bound,
-             kwiver::vital::vector_3d const& maxpt_bound,
-             std::vector< kwiver::vital::image_container_sptr > const& depth_maps,
-             std::vector< kwiver::vital::image_container_sptr > const& weight_maps,
-             std::vector< kwiver::vital::camera_perspective_sptr > const& cameras,
-             kwiver::vital::image_container_sptr& volume,
-             kwiver::vital::vector_3d& spacing ) const = 0;
+  integrate(
+    kwiver::vital::vector_3d const& minpt_bound,
+    kwiver::vital::vector_3d const& maxpt_bound,
+    std::vector< kwiver::vital::image_container_sptr > const& depth_maps,
+    std::vector< kwiver::vital::image_container_sptr > const& weight_maps,
+    std::vector< kwiver::vital::camera_perspective_sptr > const& cameras,
+    kwiver::vital::image_container_sptr& volume,
+    kwiver::vital::vector_3d& spacing ) const = 0;
 };
 
 /// type definition for shared pointer to a bundle adjust algorithm

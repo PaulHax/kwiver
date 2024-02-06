@@ -7,7 +7,7 @@
 
 #include "extract_descriptors_BRIEF.h"
 
-#if KWIVER_OPENCV_VERSION_MAJOR < 3 || defined(HAVE_OPENCV_XFEATURES2D)
+#if KWIVER_OPENCV_VERSION_MAJOR < 3 || defined( HAVE_OPENCV_XFEATURES2D )
 
 #include <sstream>
 
@@ -21,7 +21,9 @@ typedef cv::xfeatures2d::BriefDescriptorExtractor cv_BRIEF_t;
 using namespace kwiver::vital;
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace ocv {
 
 class extract_descriptors_BRIEF::priv
@@ -31,16 +33,17 @@ public:
   priv()
     : bytes( 32 )
 #if KWIVER_OPENCV_VERSION_MAJOR >= 3
-    , use_orientation( false )
+      ,
+      use_orientation( false )
 #endif
-  {
-  }
+  {}
 
   /// Create new algorithm instance using current parameter values
-  cv::Ptr<cv_BRIEF_t> create() const
+  cv::Ptr< cv_BRIEF_t >
+  create() const
   {
 #if KWIVER_OPENCV_VERSION_MAJOR < 3
-    return cv::Ptr<cv_BRIEF_t>( new cv_BRIEF_t(bytes) );
+    return cv::Ptr< cv_BRIEF_t >( new cv_BRIEF_t( bytes ) );
 #else
     return cv_BRIEF_t::create( bytes, use_orientation );
 #endif
@@ -48,42 +51,49 @@ public:
 
 #if KWIVER_OPENCV_VERSION_MAJOR < 3
   /// Update given algorithm using current parameter values
-  void update(cv::Ptr<cv_BRIEF_t> descriptor) const
+  void
+  update( cv::Ptr< cv_BRIEF_t > descriptor ) const
   {
     descriptor->set( "bytes", bytes );
   }
 #endif
 
-  void update_config( config_block_sptr config ) const
+  void
+  update_config( config_block_sptr config ) const
   {
-    config->set_value( "bytes", bytes,
-                       "Length of descriptor in bytes. It can be equal 16, 32 "
-                       "or 64 bytes." );
+    config->set_value(
+      "bytes", bytes,
+      "Length of descriptor in bytes. It can be equal 16, 32 "
+      "or 64 bytes." );
 #if KWIVER_OPENCV_VERSION_MAJOR >= 3
-    config->set_value( "use_orientation", use_orientation,
-                       "sample patterns using keypoints orientation, disabled "
-                       "by default." );
+    config->set_value(
+      "use_orientation", use_orientation,
+      "sample patterns using keypoints orientation, disabled "
+      "by default." );
 #endif
   }
 
-  void set_config( config_block_sptr config )
+  void
+  set_config( config_block_sptr config )
   {
-    bytes = config->get_value<int>( "bytes" );
+    bytes = config->get_value< int >( "bytes" );
 #if KWIVER_OPENCV_VERSION_MAJOR >= 3
-    use_orientation = config->get_value<bool>( "use_orientation" );
+    use_orientation = config->get_value< bool >( "use_orientation" );
 #endif
   }
 
-  bool check_config( config_block_sptr config, logger_handle_t const &logger ) const
+  bool
+  check_config( config_block_sptr config, logger_handle_t const& logger ) const
   {
     bool valid = true;
 
     // check that bytes param is one of the required 3 values
-    int b = config->get_value<int>( "bytes" );
-    if( ! ( b == 16 || b == 32 || b == 64 ) )
+    int b = config->get_value< int >( "bytes" );
+    if( !( b == 16 || b == 32 || b == 64 ) )
     {
-      LOG_ERROR( logger,
-                 "Bytes parameter must be either 16, 32 or 64. Given: " << b );
+      LOG_ERROR(
+        logger,
+        "Bytes parameter must be either 16, 32 or 64. Given: " << b );
       valid = false;
     }
 
@@ -92,6 +102,7 @@ public:
 
   // Parameters
   int bytes;
+
 #if KWIVER_OPENCV_VERSION_MAJOR >= 3
   bool use_orientation;
 #endif
@@ -100,31 +111,30 @@ public:
 /// Constructor
 extract_descriptors_BRIEF
 ::extract_descriptors_BRIEF()
-  : p_(new priv)
+  : p_( new priv )
 {
-  attach_logger("arrows.ocv.BRIEF");
+  attach_logger( "arrows.ocv.BRIEF" );
   extractor = p_->create();
 }
 
 /// Destructor
 extract_descriptors_BRIEF
 ::~extract_descriptors_BRIEF()
-{
-}
+{}
 
 vital::config_block_sptr
 extract_descriptors_BRIEF
 ::get_configuration() const
 {
   vital::config_block_sptr config =
-      ocv::extract_descriptors::get_configuration();
+    ocv::extract_descriptors::get_configuration();
   p_->update_config( config );
   return config;
 }
 
 void
 extract_descriptors_BRIEF
-::set_configuration(vital::config_block_sptr config)
+::set_configuration( vital::config_block_sptr config )
 {
   vital::config_block_sptr c = get_configuration();
   c->merge_config( config );
@@ -139,15 +149,17 @@ extract_descriptors_BRIEF
 
 bool
 extract_descriptors_BRIEF
-::check_configuration(vital::config_block_sptr in_config) const
+::check_configuration( vital::config_block_sptr in_config ) const
 {
   vital::config_block_sptr config = get_configuration();
-  config->merge_config(in_config);
+  config->merge_config( in_config );
   return p_->check_config( config, logger() );
 }
 
 } // end namespace ocv
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif // has OCV support

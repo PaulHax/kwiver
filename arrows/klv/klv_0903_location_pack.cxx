@@ -37,8 +37,9 @@ klv_0903_read_sigma_pack( klv_read_iter_t& data, size_t length )
 
 // ----------------------------------------------------------------------------
 void
-klv_0903_write_sigma_pack( klv_0903_sigma_pack const& value,
-                           klv_write_iter_t& data, size_t length )
+klv_0903_write_sigma_pack(
+  klv_0903_sigma_pack const& value,
+  klv_write_iter_t& data, size_t length )
 {
   auto const tracker = track_it( data, length );
   klv_write_imap( value.east, { 0.0, 650.0 }, data, tracker.verify( 2 ) );
@@ -67,8 +68,9 @@ klv_0903_read_rho_pack( klv_read_iter_t& data, size_t length )
 
 // ----------------------------------------------------------------------------
 void
-klv_0903_write_rho_pack( klv_0903_rho_pack const& value,
-                         klv_write_iter_t& data, size_t length )
+klv_0903_write_rho_pack(
+  klv_0903_rho_pack const& value,
+  klv_write_iter_t& data, size_t length )
 {
   auto const tracker = track_it( data, length );
   klv_write_imap( value.east_north, { -1.0, 1.0 }, data, tracker.verify( 2 ) );
@@ -89,11 +91,11 @@ klv_0903_rho_pack_length()
 std::ostream&
 operator<<( std::ostream& os, klv_0903_sigma_pack const& value )
 {
-  os    << "{ "
-        << "east: " << value.east << ", "
-        << "north: " << value.north << ", "
-        << "up: " << value.up
-        << " }";
+  os << "{ "
+     << "east: " << value.east << ", "
+     << "north: " << value.north << ", "
+     << "up: " << value.up
+     << " }";
   return os;
 }
 
@@ -103,17 +105,17 @@ DEFINE_STRUCT_CMP(
   &klv_0903_sigma_pack::east,
   &klv_0903_sigma_pack::north,
   &klv_0903_sigma_pack::up
-  )
+)
 
 // ----------------------------------------------------------------------------
 std::ostream&
 operator<<( std::ostream& os, klv_0903_rho_pack const& value )
 {
-  os    << "{ "
-        << "east-north: " << value.east_north << ", "
-        << "east-up: " << value.east_up << ", "
-        << "north-up: " << value.north_up
-        << " }";
+  os << "{ "
+     << "east-north: " << value.east_north << ", "
+     << "east-up: " << value.east_up << ", "
+     << "north-up: " << value.north_up
+     << " }";
   return os;
 }
 
@@ -123,19 +125,19 @@ DEFINE_STRUCT_CMP(
   &klv_0903_rho_pack::east_north,
   &klv_0903_rho_pack::east_up,
   &klv_0903_rho_pack::north_up
-  )
+)
 
 // ----------------------------------------------------------------------------
 std::ostream&
 operator<<( std::ostream& os, klv_0903_location_pack const& value )
 {
-  os    << "{ "
-        << "latitude: " << value.latitude << ", "
-        << "longitude: " << value.longitude << ", "
-        << "altitude: " << value.altitude << ", "
-        << "sigma: " << value.sigma << ", "
-        << "rho: " << value.rho
-        << " }";
+  os << "{ "
+     << "latitude: " << value.latitude << ", "
+     << "longitude: " << value.longitude << ", "
+     << "altitude: " << value.altitude << ", "
+     << "sigma: " << value.sigma << ", "
+     << "rho: " << value.rho
+     << " }";
   return os;
 }
 
@@ -147,19 +149,19 @@ DEFINE_STRUCT_CMP(
   &klv_0903_location_pack::altitude,
   &klv_0903_location_pack::sigma,
   &klv_0903_location_pack::rho
-  )
+)
 
 // ----------------------------------------------------------------------------
 std::ostream&
 operator<<( std::ostream& os, klv_0903_velocity_pack const& value )
 {
-  os    << "{ " << std::setprecision( 17 )
-        << "east: " << value.east << ", "
-        << "north: " << value.north << ", "
-        << "up: " << value.up << ", "
-        << "stddev: " << value.sigma << ", "
-        << "correlation: " << value.rho
-        << " }";
+  os << "{ " << std::setprecision( 17 )
+     << "east: " << value.east << ", "
+     << "north: " << value.north << ", "
+     << "up: " << value.up << ", "
+     << "stddev: " << value.sigma << ", "
+     << "correlation: " << value.rho
+     << " }";
   return os;
 }
 
@@ -171,7 +173,7 @@ DEFINE_STRUCT_CMP(
   &klv_0903_velocity_pack::up,
   &klv_0903_velocity_pack::sigma,
   &klv_0903_velocity_pack::rho
-  )
+)
 
 // ----------------------------------------------------------------------------
 klv_0903_location_pack_format
@@ -217,8 +219,9 @@ klv_0903_location_pack_format
 // ----------------------------------------------------------------------------
 void
 klv_0903_location_pack_format
-::write_typed( klv_0903_location_pack const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_0903_location_pack const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
   klv_write_imap( value.latitude, { -90.0, 90.0 }, data, tracker.verify( 4 ) );
@@ -238,8 +241,9 @@ klv_0903_location_pack_format
   }
   else if( value.rho )
   {
-    LOG_WARN( kv::get_logger( "klv" ),
-              "cannot write rho pack without preceding sigma pack" );
+    LOG_WARN(
+      kv::get_logger( "klv" ),
+      "cannot write rho pack without preceding sigma pack" );
   }
 }
 
@@ -294,8 +298,9 @@ klv_0903_velocity_pack_format
 // ----------------------------------------------------------------------------
 void
 klv_0903_velocity_pack_format
-::write_typed( klv_0903_velocity_pack const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_0903_velocity_pack const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
   klv_write_imap( value.east, { -900.0, 900.0 }, data, tracker.verify( 2 ) );
@@ -313,8 +318,9 @@ klv_0903_velocity_pack_format
   }
   else if( value.rho )
   {
-    LOG_WARN( kv::get_logger( "klv" ),
-              "cannot write rho pack without preceding sigma pack" );
+    LOG_WARN(
+      kv::get_logger( "klv" ),
+      "cannot write rho pack without preceding sigma pack" );
   }
 }
 

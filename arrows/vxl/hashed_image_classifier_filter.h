@@ -20,8 +20,9 @@ class KWIVER_ALGO_VXL_EXPORT hashed_image_classifier_filter
   : public vital::algo::image_filter
 {
 public:
-  PLUGIN_INFO( "vxl_hashed_image_classifier_filter",
-               "Perform per-pixel classification on an image of features." )
+  PLUGIN_INFO(
+    "vxl_hashed_image_classifier_filter",
+    "Perform per-pixel classification on an image of features." )
 
   hashed_image_classifier_filter();
   virtual ~hashed_image_classifier_filter();

@@ -8,18 +8,20 @@
 #include "associate_detections_to_tracks_threshold.h"
 
 #include <vital/algo/detected_object_filter.h>
-#include <vital/types/object_track_set.h>
 #include <vital/exceptions/algorithm.h>
+#include <vital/types/object_track_set.h>
 #include <vital/vital_config.h>
 
+#include <algorithm>
+#include <atomic>
+#include <limits>
 #include <string>
 #include <vector>
-#include <atomic>
-#include <algorithm>
-#include <limits>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 using namespace kwiver::vital;
@@ -30,12 +32,11 @@ class associate_detections_to_tracks_threshold::priv
 public:
   /// Constructor
   priv()
-    : threshold( 0.50 )
-    , higher_is_better( true )
-    , m_logger( vital::get_logger(
+    : threshold( 0.50 ),
+      higher_is_better( true ),
+      m_logger( vital::get_logger(
         "arrows.core.associate_detections_to_tracks_threshold" ) )
-  {
-  }
+  {}
 
   /// Threshold to apply on the matrix
   double threshold;
@@ -51,14 +52,12 @@ public:
 associate_detections_to_tracks_threshold
 ::associate_detections_to_tracks_threshold()
   : d_( new priv )
-{
-}
+{}
 
 /// Destructor
 associate_detections_to_tracks_threshold
 ::~associate_detections_to_tracks_threshold() noexcept
-{
-}
+{}
 
 /// Get this alg's \link vital::config_block configuration block \endlink
 vital::config_block_sptr
@@ -68,10 +67,12 @@ associate_detections_to_tracks_threshold
   // get base config from base class
   vital::config_block_sptr config = algorithm::get_configuration();
 
-  config->set_value( "threshold", d_->threshold,
+  config->set_value(
+    "threshold", d_->threshold,
     "Threshold to apply on the matrix." );
 
-  config->set_value( "higher_is_better", d_->higher_is_better,
+  config->set_value(
+    "higher_is_better", d_->higher_is_better,
     "Whether values above or below the threshold indicate a better fit." );
 
   return config;
@@ -85,8 +86,8 @@ associate_detections_to_tracks_threshold
   vital::config_block_sptr config = this->get_configuration();
   config->merge_config( in_config );
 
-  d_->threshold = config->get_value<double>( "threshold" );
-  d_->higher_is_better = config->get_value<bool>( "higher_is_better" );
+  d_->threshold = config->get_value< double >( "threshold" );
+  d_->higher_is_better = config->get_value< bool >( "higher_is_better" );
 }
 
 bool
@@ -99,13 +100,14 @@ associate_detections_to_tracks_threshold
 /// Associate object detections to object tracks
 bool
 associate_detections_to_tracks_threshold
-::associate( kwiver::vital::timestamp ts,
-             kwiver::vital::image_container_sptr /* image */,
-             kwiver::vital::object_track_set_sptr tracks,
-             kwiver::vital::detected_object_set_sptr detections,
-             kwiver::vital::matrix_d matrix,
-             kwiver::vital::object_track_set_sptr& output,
-             kwiver::vital::detected_object_set_sptr& unused ) const
+::associate(
+  kwiver::vital::timestamp ts,
+  kwiver::vital::image_container_sptr /* image */,
+  kwiver::vital::object_track_set_sptr tracks,
+  kwiver::vital::detected_object_set_sptr detections,
+  kwiver::vital::matrix_d matrix,
+  kwiver::vital::object_track_set_sptr& output,
+  kwiver::vital::detected_object_set_sptr& unused ) const
 {
   auto all_detections = detections;
   auto all_tracks = tracks->tracks();
@@ -116,7 +118,7 @@ associate_detections_to_tracks_threshold
   for( unsigned t = 0; t < all_tracks.size(); ++t )
   {
     double best_score = ( d_->higher_is_better ? -1 : 1 ) *
-      std::numeric_limits<double>::max();
+                        std::numeric_limits< double >::max();
 
     unsigned best_index = std::numeric_limits< unsigned >::max();
 
@@ -145,18 +147,19 @@ associate_detections_to_tracks_threshold
     if( best_index < all_detections->size() )
     {
       vital::track_state_sptr new_track_state(
-        new vital::object_track_state( ts,
-                all_detections->at(best_index) ) );
+        new vital::object_track_state(
+          ts,
+          all_detections->at( best_index ) ) );
 
-      vital::track_sptr adj_track( all_tracks[t]->clone() );
+      vital::track_sptr adj_track( all_tracks[ t ]->clone() );
       adj_track->append( new_track_state );
       tracks_to_output.push_back( adj_track );
 
-      detections_used[best_index] = true;
+      detections_used[ best_index ] = true;
     }
     else
     {
-      tracks_to_output.push_back( all_tracks[t] );
+      tracks_to_output.push_back( all_tracks[ t ] );
     }
   }
 
@@ -164,9 +167,9 @@ associate_detections_to_tracks_threshold
 
   for( unsigned i = 0; i < all_detections->size(); ++i )
   {
-    if( !detections_used[i] )
+    if( !detections_used[ i ] )
     {
-      unused_dets.push_back( all_detections->at(i) );
+      unused_dets.push_back( all_detections->at( i ) );
     }
   }
 
@@ -179,5 +182,7 @@ associate_detections_to_tracks_threshold
 }
 
 } // end namespace core
+
 } // end namespace arrows
+
 } // end namespace kwiver

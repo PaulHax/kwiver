@@ -23,6 +23,7 @@ extern "C"
 DECLARE_COMMON_ALGO_API( image_io );
 
 /// Load image from file
+
 /**
  * \param algo Opaque pointer to algorithm instance.
  * \param filename The string file path to where the image should be loaded
@@ -32,11 +33,13 @@ DECLARE_COMMON_ALGO_API( image_io );
  *         loaded image file.
  */
 VITAL_C_EXPORT
-vital_image_container_t* vital_algorithm_image_io_load( vital_algorithm_t *algo,
-                                                        char const *filename,
-                                                        vital_error_handle_t *eh);
+vital_image_container_t* vital_algorithm_image_io_load(
+  vital_algorithm_t* algo,
+  char const* filename,
+  vital_error_handle_t* eh );
 
 /// Save an image to file
+
 /**
  * \param algo Opaque pointer to algorithm instance.
  * \param filename String file path to where the image should be saved.
@@ -44,10 +47,11 @@ vital_image_container_t* vital_algorithm_image_io_load( vital_algorithm_t *algo,
  * \param eh Error handle instance.
  */
 VITAL_C_EXPORT
-void vital_algorithm_image_io_save( vital_algorithm_t *algo,
-                                    char const *filename,
-                                    vital_image_container_t *ic,
-                                    vital_error_handle_t *eh );
+void vital_algorithm_image_io_save(
+  vital_algorithm_t* algo,
+  char const* filename,
+  vital_image_container_t* ic,
+  vital_error_handle_t* eh );
 
 #ifdef __cplusplus
 }

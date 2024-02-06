@@ -17,53 +17,59 @@
 #include <vital/algo/merge_images.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
-template < class algorithm_def_mi_base=
-            kwiver::vital::algorithm_def<
-              kwiver::vital::algo::merge_images > >
-class algorithm_def_mi_trampoline :
-      public algorithm_trampoline<algorithm_def_mi_base>
+template < class algorithm_def_mi_base =
+    kwiver::vital::algorithm_def<
+      kwiver::vital::algo::merge_images > >
+class algorithm_def_mi_trampoline
+  : public algorithm_trampoline< algorithm_def_mi_base >
 {
-  public:
-    using algorithm_trampoline<algorithm_def_mi_base>::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_mi_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<kwiver::vital::algo::merge_images>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::merge_images >,
+      type_name,
+    );
+  }
 };
 
-template< class merge_images_base=
-                kwiver::vital::algo::merge_images >
-class merge_images_trampoline :
-      public algorithm_def_mi_trampoline< merge_images_base >
+template < class merge_images_base =
+    kwiver::vital::algo::merge_images >
+class merge_images_trampoline
+  : public algorithm_def_mi_trampoline< merge_images_base >
 {
-  public:
-    using algorithm_def_mi_trampoline< merge_images_base>::
-              algorithm_def_mi_trampoline;
+public:
+  using algorithm_def_mi_trampoline< merge_images_base >::
+  algorithm_def_mi_trampoline;
 
-    kwiver::vital::image_container_sptr
-    merge( kwiver::vital::image_container_sptr image1,
-           kwiver::vital::image_container_sptr image2 ) const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        kwiver::vital::image_container_sptr,
-        kwiver::vital::algo::merge_images,
-        merge,
-        image1,
-        image2
-      );
-    }
+  kwiver::vital::image_container_sptr
+  merge(
+    kwiver::vital::image_container_sptr image1,
+    kwiver::vital::image_container_sptr image2 ) const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      kwiver::vital::image_container_sptr,
+      kwiver::vital::algo::merge_images,
+      merge,
+      image1,
+      image2
+    );
+  }
 };
 
-}
-}
-}
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
 
 #endif

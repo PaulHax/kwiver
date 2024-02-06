@@ -17,74 +17,82 @@
 #include <vital/algo/write_object_track_set.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
-template < class algorithm_def_wots_base=
-            kwiver::vital::algorithm_def<
-              kwiver::vital::algo::write_object_track_set > >
-class algorithm_def_wots_trampoline :
-      public algorithm_trampoline<algorithm_def_wots_base>
+template < class algorithm_def_wots_base =
+    kwiver::vital::algorithm_def<
+      kwiver::vital::algo::write_object_track_set > >
+class algorithm_def_wots_trampoline
+  : public algorithm_trampoline< algorithm_def_wots_base >
 {
-  public:
-    using algorithm_trampoline<algorithm_def_wots_base>::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_wots_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<kwiver::vital::algo::write_object_track_set>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::write_object_track_set >,
+      type_name,
+    );
+  }
 };
 
-template< class write_object_track_set_base=
-                kwiver::vital::algo::write_object_track_set >
-class write_object_track_set_trampoline :
-      public algorithm_def_wots_trampoline< write_object_track_set_base >
+template < class write_object_track_set_base =
+    kwiver::vital::algo::write_object_track_set >
+class write_object_track_set_trampoline
+  : public algorithm_def_wots_trampoline< write_object_track_set_base >
 {
-  public:
-    using algorithm_def_wots_trampoline< write_object_track_set_base>::
-              algorithm_def_wots_trampoline;
+public:
+  using algorithm_def_wots_trampoline< write_object_track_set_base >::
+  algorithm_def_wots_trampoline;
 
-    void open( std::string const& filename ) override
-    {
-      PYBIND11_OVERLOAD(
-        void,
-        kwiver::vital::algo::write_object_track_set,
-        open,
-        filename
-      );
-    }
+  void
+  open( std::string const& filename ) override
+  {
+    PYBIND11_OVERLOAD(
+      void,
+      kwiver::vital::algo::write_object_track_set,
+      open,
+      filename
+    );
+  }
 
-    void close() override
-    {
-      PYBIND11_OVERLOAD(
-        void,
-        kwiver::vital::algo::write_object_track_set,
-        close,
-      );
-    }
+  void
+  close() override
+  {
+    PYBIND11_OVERLOAD(
+      void,
+      kwiver::vital::algo::write_object_track_set,
+      close,
+    );
+  }
 
-    void
-    write_set(const kwiver::vital::object_track_set_sptr& set,
-              kwiver::vital::timestamp const& ts = {},
-              std::string const& frame_identifier = {}) override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        void,
-        kwiver::vital::algo::write_object_track_set,
-        write_set,
-        set,
-        ts,
-        frame_identifier
-      );
-    }
+  void
+  write_set(
+    const kwiver::vital::object_track_set_sptr& set,
+    kwiver::vital::timestamp const& ts = {},
+    std::string const& frame_identifier = {} ) override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      void,
+      kwiver::vital::algo::write_object_track_set,
+      write_set,
+      set,
+      ts,
+      frame_identifier
+    );
+  }
 };
 
-}
-}
-}
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
 
 #endif

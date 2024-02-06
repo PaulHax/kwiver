@@ -42,32 +42,39 @@ TEST ( interval_map, construct )
   EXPECT_NE( map_type{}, map_type( { { { 0.0, 0.1 }, 1 } } ) );
 
   // Equality test
-  EXPECT_EQ( map_type( { { { 0.0, 0.1 }, 1 } } ),
-             map_type( { { { 0.0, 0.1 }, 1 } } ) );
+  EXPECT_EQ(
+    map_type( { { { 0.0, 0.1 }, 1 } } ),
+    map_type( { { { 0.0, 0.1 }, 1 } } ) );
 
   // Intervals differentiate
-  EXPECT_NE( map_type( { { { 0.0, 0.1 }, 1 } } ),
-             map_type( { { { 0.0, 0.2 }, 1 } } ) );
+  EXPECT_NE(
+    map_type( { { { 0.0, 0.1 }, 1 } } ),
+    map_type( { { { 0.0, 0.2 }, 1 } } ) );
 
   // Values differentiate
-  EXPECT_NE( map_type( { { { 0.0, 0.1 }, 1 } } ),
-             map_type( { { { 0.0, 0.1 }, 2 } } ) );
+  EXPECT_NE(
+    map_type( { { { 0.0, 0.1 }, 1 } } ),
+    map_type( { { { 0.0, 0.1 }, 2 } } ) );
 
   // Order independent
-  EXPECT_EQ( map_type( { { { 0.0, 0.1 }, 1 }, { { 0.1, 0.2 }, 2 } } ),
-             map_type( { { { 0.1, 0.2 }, 2 }, { { 0.0, 0.1 }, 1 } } ) );
+  EXPECT_EQ(
+    map_type( { { { 0.0, 0.1 }, 1 }, { { 0.1, 0.2 }, 2 } } ),
+    map_type( { { { 0.1, 0.2 }, 2 }, { { 0.0, 0.1 }, 1 } } ) );
 
   // Adjacent intervals merge
-  EXPECT_EQ( map_type( { { { 0.0, 0.2 }, 1 } } ),
-             map_type( { { { 0.1, 0.2 }, 1 }, { { 0.0, 0.1 }, 1 } } ) );
+  EXPECT_EQ(
+    map_type( { { { 0.0, 0.2 }, 1 } } ),
+    map_type( { { { 0.1, 0.2 }, 1 }, { { 0.0, 0.1 }, 1 } } ) );
 
   // Can't construct from overlapping intervals
-  EXPECT_THROW( map_type( { { { 1.0, 2.0 }, 1 }, { { 1.5, 2.5 }, 1 } } ),
-                std::invalid_argument );
+  EXPECT_THROW(
+    map_type( { { { 1.0, 2.0 }, 1 }, { { 1.5, 2.5 }, 1 } } ),
+    std::invalid_argument );
 
   // Empty intervals still considered overlapping
-  EXPECT_THROW( map_type( { { { 1.0, 2.0 }, 1 }, { { 1.5, 1.5 }, 1 } } ),
-                std::invalid_argument );
+  EXPECT_THROW(
+    map_type( { { { 1.0, 2.0 }, 1 }, { { 1.5, 1.5 }, 1 } } ),
+    std::invalid_argument );
 }
 
 // ----------------------------------------------------------------------------
@@ -94,6 +101,7 @@ TEST ( interval_map, size )
 TEST ( interval_map, clear )
 {
   using map_type = interval_map< int, int >;
+
   auto test_map = map_type{ { { { 0, 1 }, 0 }, { { 1, 2 }, 1 } } };
   test_map.clear();
   EXPECT_EQ( map_type{}, test_map );
@@ -122,8 +130,10 @@ TEST ( interval_map, iterators )
     }
 
     // Use iterators to test that all entries have been modified
-    EXPECT_TRUE( std::equal( test_map.cbegin(), test_map.cend(),
-                            modified_entries.cbegin() ) );
+    EXPECT_TRUE(
+      std::equal(
+        test_map.cbegin(), test_map.cend(),
+        modified_entries.cbegin() ) );
   }
 
   {
@@ -293,13 +303,14 @@ TEST ( interval_map, set )
     auto test_map = basis_map;
     test_map.set( { 5.0, 10.0 }, 20 );
     EXPECT_EQ(
-      map_type( {
-        { { -dinf, -50.0 }, -1 },
-        { { 0.0, 5.0 }, 0 },
-        { { 5.0, 10.0 }, 20 },
-        { { 10.0, 12.0 }, 2 },
-        { { 15.0, 20.0 }, 3 },
-        { { 50.0, 100.0 }, 4 }, } ),
+      map_type(
+    {
+      { { -dinf, -50.0 }, -1 },
+      { { 0.0, 5.0 }, 0 },
+      { { 5.0, 10.0 }, 20 },
+      { { 10.0, 12.0 }, 2 },
+      { { 15.0, 20.0 }, 3 },
+      { { 50.0, 100.0 }, 4 }, } ),
       test_map );
   }
 
@@ -308,12 +319,13 @@ TEST ( interval_map, set )
     auto test_map = basis_map;
     test_map.set( { 5.0, 10.0 }, 0 );
     EXPECT_EQ(
-      map_type( {
-        { { -dinf, -50.0 }, -1 },
-        { { 0.0, 10.0 }, 0 },
-        { { 10.0, 12.0 }, 2 },
-        { { 15.0, 20.0 }, 3 },
-        { { 50.0, 100.0 }, 4 }, } ),
+      map_type(
+    {
+      { { -dinf, -50.0 }, -1 },
+      { { 0.0, 10.0 }, 0 },
+      { { 10.0, 12.0 }, 2 },
+      { { 15.0, 20.0 }, 3 },
+      { { 50.0, 100.0 }, 4 }, } ),
       test_map );
   }
 
@@ -322,12 +334,13 @@ TEST ( interval_map, set )
     auto test_map = basis_map;
     test_map.set( { 5.0, 10.0 }, 2 );
     EXPECT_EQ(
-      map_type( {
-        { { -dinf, -50.0 }, -1 },
-        { { 0.0, 5.0 }, 0 },
-        { { 5.0, 12.0 }, 2 },
-        { { 15.0, 20.0 }, 3 },
-        { { 50.0, 100.0 }, 4 }, } ),
+      map_type(
+    {
+      { { -dinf, -50.0 }, -1 },
+      { { 0.0, 5.0 }, 0 },
+      { { 5.0, 12.0 }, 2 },
+      { { 15.0, 20.0 }, 3 },
+      { { 50.0, 100.0 }, 4 }, } ),
       test_map );
   }
 
@@ -336,15 +349,16 @@ TEST ( interval_map, set )
     auto test_map = basis_map;
     test_map.set( { -100.0, -60.0 }, -2 );
     EXPECT_EQ(
-      map_type( {
-        { { -dinf, -100.0 }, -1 },
-        { { -100, -60.0 }, -2 },
-        { { -60.0, -50.0 }, -1 },
-        { { 0.0, 5.0 }, 0 },
-        { { 5.0, 10.0 }, 1 },
-        { { 10.0, 12.0 }, 2 },
-        { { 15.0, 20.0 }, 3 },
-        { { 50.0, 100.0 }, 4 }, } ),
+      map_type(
+    {
+      { { -dinf, -100.0 }, -1 },
+      { { -100, -60.0 }, -2 },
+      { { -60.0, -50.0 }, -1 },
+      { { 0.0, 5.0 }, 0 },
+      { { 5.0, 10.0 }, 1 },
+      { { 10.0, 12.0 }, 2 },
+      { { 15.0, 20.0 }, 3 },
+      { { 50.0, 100.0 }, 4 }, } ),
       test_map );
   }
 
@@ -360,9 +374,10 @@ TEST ( interval_map, set )
     auto test_map = basis_map;
     test_map.set( { -100.0, 60.0 }, 4 );
     EXPECT_EQ(
-      map_type( {
-        { { -dinf, -100.0 }, -1 },
-        { { -100.0, 100.0 }, 4 }, } ),
+      map_type(
+    {
+      { { -dinf, -100.0 }, -1 },
+      { { -100.0, 100.0 }, 4 }, } ),
       test_map );
   }
 
@@ -371,8 +386,9 @@ TEST ( interval_map, set )
     auto test_map = basis_map;
     test_map.set( { -dinf, dinf }, -1 );
     EXPECT_EQ(
-      map_type( {
-        { { -dinf, dinf }, -1 }, } ),
+      map_type(
+    {
+      { { -dinf, dinf }, -1 }, } ),
       test_map );
   }
 }
@@ -381,6 +397,7 @@ TEST ( interval_map, set )
 TEST ( interval_map, weak_set )
 {
   using map_type = interval_map< int, int >;
+
   auto const basis_map = map_type{
     { { 0, 5 }, 0 },
     { { 5, 10 }, 1 },
@@ -422,13 +439,14 @@ TEST ( interval_map, weak_set )
     auto test_map = basis_map;
     test_map.weak_set( { 30, 40 }, 10 );
     EXPECT_EQ(
-      map_type( {
-        { { 0, 5 }, 0 },
-        { { 5, 10 }, 1 },
-        { { 10, 12 }, 2 },
-        { { 15, 20 }, 3 },
-        { { 30, 40 }, 10 },
-        { { 50, 100 }, 4 } } ),
+      map_type(
+    {
+      { { 0, 5 }, 0 },
+      { { 5, 10 }, 1 },
+      { { 10, 12 }, 2 },
+      { { 15, 20 }, 3 },
+      { { 30, 40 }, 10 },
+      { { 50, 100 }, 4 } } ),
       test_map );
   }
 
@@ -437,12 +455,13 @@ TEST ( interval_map, weak_set )
     auto test_map = basis_map;
     test_map.weak_set( { 20, 50 }, 3 );
     EXPECT_EQ(
-      map_type( {
-        { { 0, 5 }, 0 },
-        { { 5, 10 }, 1 },
-        { { 10, 12 }, 2 },
-        { { 15, 50 }, 3 },
-        { { 50, 100 }, 4 } } ),
+      map_type(
+    {
+      { { 0, 5 }, 0 },
+      { { 5, 10 }, 1 },
+      { { 10, 12 }, 2 },
+      { { 15, 50 }, 3 },
+      { { 50, 100 }, 4 } } ),
       test_map );
   }
 
@@ -451,12 +470,13 @@ TEST ( interval_map, weak_set )
     auto test_map = basis_map;
     test_map.weak_set( { 20, 50 }, 4 );
     EXPECT_EQ(
-      map_type( {
-        { { 0, 5 }, 0 },
-        { { 5, 10 }, 1 },
-        { { 10, 12 }, 2 },
-        { { 15, 20 }, 3 },
-        { { 20, 100 }, 4 } } ),
+      map_type(
+    {
+      { { 0, 5 }, 0 },
+      { { 5, 10 }, 1 },
+      { { 10, 12 }, 2 },
+      { { 15, 20 }, 3 },
+      { { 20, 100 }, 4 } } ),
       test_map );
   }
 
@@ -472,14 +492,15 @@ TEST ( interval_map, weak_set )
     auto test_map = basis_map;
     test_map.weak_set( { 40, 150 }, 10 );
     EXPECT_EQ(
-      map_type( {
-        { { 0, 5 }, 0 },
-        { { 5, 10 }, 1 },
-        { { 10, 12 }, 2 },
-        { { 15, 20 }, 3 },
-        { { 40, 50 }, 10 },
-        { { 50, 100 }, 4 },
-        { { 100, 150 }, 10 } } ),
+      map_type(
+    {
+      { { 0, 5 }, 0 },
+      { { 5, 10 }, 1 },
+      { { 10, 12 }, 2 },
+      { { 15, 20 }, 3 },
+      { { 40, 50 }, 10 },
+      { { 50, 100 }, 4 },
+      { { 100, 150 }, 10 } } ),
       test_map );
   }
 
@@ -488,12 +509,13 @@ TEST ( interval_map, weak_set )
     auto test_map = basis_map;
     test_map.weak_set( { 5, 50 }, 3 );
     EXPECT_EQ(
-      map_type( {
-        { { 0, 5 }, 0 },
-        { { 5, 10 }, 1 },
-        { { 10, 12 }, 2 },
-        { { 12, 50 }, 3 },
-        { { 50, 100 }, 4 } } ),
+      map_type(
+    {
+      { { 0, 5 }, 0 },
+      { { 5, 10 }, 1 },
+      { { 10, 12 }, 2 },
+      { { 12, 50 }, 3 },
+      { { 50, 100 }, 4 } } ),
       test_map );
   }
 
@@ -502,12 +524,13 @@ TEST ( interval_map, weak_set )
     auto test_map = basis_map;
     test_map.weak_set( { 0, 100 }, 3 );
     EXPECT_EQ(
-      map_type( {
-        { { 0, 5 }, 0 },
-        { { 5, 10 }, 1 },
-        { { 10, 12 }, 2 },
-        { { 12, 50 }, 3 },
-        { { 50, 100 }, 4 } } ),
+      map_type(
+    {
+      { { 0, 5 }, 0 },
+      { { 5, 10 }, 1 },
+      { { 10, 12 }, 2 },
+      { { 12, 50 }, 3 },
+      { { 50, 100 }, 4 } } ),
       test_map );
   }
 
@@ -516,14 +539,15 @@ TEST ( interval_map, weak_set )
     auto test_map = basis_map;
     test_map.weak_set( { -200, 200 }, 3 );
     EXPECT_EQ(
-      map_type( {
-        { { -200, 0 }, 3 },
-        { { 0, 5 }, 0 },
-        { { 5, 10 }, 1 },
-        { { 10, 12 }, 2 },
-        { { 12, 50 }, 3 },
-        { { 50, 100 }, 4 },
-        { { 100, 200 }, 3 } } ),
+      map_type(
+    {
+      { { -200, 0 }, 3 },
+      { { 0, 5 }, 0 },
+      { { 5, 10 }, 1 },
+      { { 10, 12 }, 2 },
+      { { 12, 50 }, 3 },
+      { { 50, 100 }, 4 },
+      { { 100, 200 }, 3 } } ),
       test_map );
   }
 }
@@ -532,6 +556,7 @@ TEST ( interval_map, weak_set )
 TEST ( interval_map, erase )
 {
   using map_type = interval_map< int, int >;
+
   auto const basis_map = map_type{
     { { 0, 5 }, 0 },
     { { 5, 10 }, 1 },
@@ -544,11 +569,12 @@ TEST ( interval_map, erase )
     auto test_map = basis_map;
     test_map.erase( test_map.cbegin() );
     EXPECT_EQ(
-      map_type( {
-        { { 5, 10 }, 1 },
-        { { 10, 12 }, 2 },
-        { { 15, 20 }, 3 },
-        { { 50, 100 }, 4 }, } ),
+      map_type(
+    {
+      { { 5, 10 }, 1 },
+      { { 10, 12 }, 2 },
+      { { 15, 20 }, 3 },
+      { { 50, 100 }, 4 }, } ),
       test_map );
   }
 
@@ -579,11 +605,12 @@ TEST ( interval_map, erase )
     auto test_map = basis_map;
     test_map.erase( { 40, 120 } );
     EXPECT_EQ(
-      map_type( {
-        { { 0, 5 }, 0 },
-        { { 5, 10 }, 1 },
-        { { 10, 12 }, 2 },
-        { { 15, 20 }, 3 }, } ),
+      map_type(
+    {
+      { { 0, 5 }, 0 },
+      { { 5, 10 }, 1 },
+      { { 10, 12 }, 2 },
+      { { 15, 20 }, 3 }, } ),
       test_map );
   }
 
@@ -592,11 +619,12 @@ TEST ( interval_map, erase )
     auto test_map = basis_map;
     test_map.erase( { 5, 10 } );
     EXPECT_EQ(
-      map_type( {
-        { { 0, 5 }, 0 },
-        { { 10, 12 }, 2 },
-        { { 15, 20 }, 3 },
-        { { 50, 100 }, 4 }, } ),
+      map_type(
+    {
+      { { 0, 5 }, 0 },
+      { { 10, 12 }, 2 },
+      { { 15, 20 }, 3 },
+      { { 50, 100 }, 4 }, } ),
       test_map );
   }
 
@@ -605,12 +633,13 @@ TEST ( interval_map, erase )
     auto test_map = basis_map;
     test_map.erase( { 6, 10 } );
     EXPECT_EQ(
-      map_type( {
-        { { 0, 5 }, 0 },
-        { { 5, 6 }, 1 },
-        { { 10, 12 }, 2 },
-        { { 15, 20 }, 3 },
-        { { 50, 100 }, 4 }, } ),
+      map_type(
+    {
+      { { 0, 5 }, 0 },
+      { { 5, 6 }, 1 },
+      { { 10, 12 }, 2 },
+      { { 15, 20 }, 3 },
+      { { 50, 100 }, 4 }, } ),
       test_map );
   }
 
@@ -619,12 +648,13 @@ TEST ( interval_map, erase )
     auto test_map = basis_map;
     test_map.erase( { 5, 9 } );
     EXPECT_EQ(
-      map_type( {
-        { { 0, 5 }, 0 },
-        { { 9, 10 }, 1 },
-        { { 10, 12 }, 2 },
-        { { 15, 20 }, 3 },
-        { { 50, 100 }, 4 }, } ),
+      map_type(
+    {
+      { { 0, 5 }, 0 },
+      { { 9, 10 }, 1 },
+      { { 10, 12 }, 2 },
+      { { 15, 20 }, 3 },
+      { { 50, 100 }, 4 }, } ),
       test_map );
   }
 
@@ -633,13 +663,14 @@ TEST ( interval_map, erase )
     auto test_map = basis_map;
     test_map.erase( { 7, 9 } );
     EXPECT_EQ(
-      map_type( {
-        { { 0, 5 }, 0 },
-        { { 5, 7 }, 1 },
-        { { 9, 10 }, 1 },
-        { { 10, 12 }, 2 },
-        { { 15, 20 }, 3 },
-        { { 50, 100 }, 4 }, } ),
+      map_type(
+    {
+      { { 0, 5 }, 0 },
+      { { 5, 7 }, 1 },
+      { { 9, 10 }, 1 },
+      { { 10, 12 }, 2 },
+      { { 15, 20 }, 3 },
+      { { 50, 100 }, 4 }, } ),
       test_map );
   }
 
@@ -648,9 +679,10 @@ TEST ( interval_map, erase )
     auto test_map = basis_map;
     test_map.erase( { -1, 14 } );
     EXPECT_EQ(
-      map_type( {
-        { { 15, 20 }, 3 },
-        { { 50, 100 }, 4 }, } ),
+      map_type(
+    {
+      { { 15, 20 }, 3 },
+      { { 50, 100 }, 4 }, } ),
       test_map );
   }
 
@@ -659,9 +691,10 @@ TEST ( interval_map, erase )
     auto test_map = basis_map;
     test_map.erase( { 0, 12 } );
     EXPECT_EQ(
-      map_type( {
-        { { 15, 20 }, 3 },
-        { { 50, 100 }, 4 }, } ),
+      map_type(
+    {
+      { { 15, 20 }, 3 },
+      { { 50, 100 }, 4 }, } ),
       test_map );
   }
 
@@ -670,11 +703,12 @@ TEST ( interval_map, erase )
     auto test_map = basis_map;
     test_map.erase( { 3, 11 } );
     EXPECT_EQ(
-      map_type( {
-        { { 0, 3 }, 0 },
-        { { 11, 12 }, 2 },
-        { { 15, 20 }, 3 },
-        { { 50, 100 }, 4 }, } ),
+      map_type(
+    {
+      { { 0, 3 }, 0 },
+      { { 11, 12 }, 2 },
+      { { 15, 20 }, 3 },
+      { { 50, 100 }, 4 }, } ),
       test_map );
   }
 
@@ -688,8 +722,9 @@ TEST ( interval_map, erase )
   // Interval - match everything
   {
     auto test_map = basis_map;
-    test_map.erase( { std::numeric_limits< int >::lowest(),
-                      std::numeric_limits< int >::max() } );
+    test_map.erase(
+      { std::numeric_limits< int >::lowest(),
+        std::numeric_limits< int >::max() } );
     EXPECT_EQ( map_type{}, test_map );
   }
 }

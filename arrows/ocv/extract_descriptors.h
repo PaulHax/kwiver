@@ -15,7 +15,9 @@
 #include <opencv2/features2d/features2d.hpp>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace ocv {
 
 /// OCV specific definition for algorithms that describe feature points
@@ -32,17 +34,21 @@ public:
   /// \param features the feature locations at which descriptors are extracted
   /// \returns a set of feature descriptors
   virtual vital::descriptor_set_sptr
-  extract(vital::image_container_sptr image_data,
-          vital::feature_set_sptr &features,
-          vital::image_container_sptr image_mask = vital::image_container_sptr()) const;
+  extract(
+    vital::image_container_sptr image_data,
+    vital::feature_set_sptr& features,
+    vital::image_container_sptr image_mask = vital::image_container_sptr() )
+  const;
 
 protected:
   /// the descriptor extractor algorithm
-  cv::Ptr<cv::DescriptorExtractor> extractor;
+  cv::Ptr< cv::DescriptorExtractor > extractor;
 };
 
 } // end namespace ocv
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif

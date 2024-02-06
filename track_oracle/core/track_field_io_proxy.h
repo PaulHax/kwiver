@@ -20,25 +20,33 @@
 #include <track_oracle/core/kwiver_io_base.h>
 
 namespace kwiver {
+
 namespace track_oracle {
 
-template <typename T>
+template < typename T >
 class track_field_io_proxy
 {
-  template <typename Tio > friend std::ostream& operator<<( std::ostream& os, const track_field_io_proxy<Tio>& iop );
+  template < typename Tio > friend std::ostream& operator<<(
+    std::ostream& os,
+    const track_field_io_proxy< Tio >& iop );
+
 public:
-  track_field_io_proxy( kwiver_io_base<T>* p, const T& v ):
-    io_ptr(p), val(v)
+  track_field_io_proxy( kwiver_io_base< T >* p, const T& v )
+    : io_ptr( p ),
+      val( v )
   {}
 
 private:
-  kwiver_io_base<T>* io_ptr;
+  kwiver_io_base< T >* io_ptr;
   T val;
 };
 
-template < typename Tio > std::ostream& operator<<( std::ostream& os, const track_field_io_proxy<Tio>& iop );
+template < typename Tio > std::ostream& operator<<(
+  std::ostream& os,
+  const track_field_io_proxy< Tio >& iop );
 
 } // ...track_oracle
+
 } // ...kwiver
 
 #endif

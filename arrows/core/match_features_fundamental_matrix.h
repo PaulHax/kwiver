@@ -17,16 +17,21 @@
 #include <vital/config/config_block.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 /// Combines a feature matcher, fundamental matrix estimation, and filtering
 ///
-///  This is a meta-algorithm for feature matching that combines one other feature
+///  This is a meta-algorithm for feature matching that combines one other
+/// feature
 ///  matcher with fundamental matrix estimation and feature filtering.
 ///  The algorithm applies another configurable feature matcher algorithm and
-///  then applies a fundamental matrix estimation algorithm to the resulting matches.
-///  Outliers to the fit fundamental matrix are discarded from the set of matches.
+///  then applies a fundamental matrix estimation algorithm to the resulting
+/// matches.
+///  Outliers to the fit fundamental matrix are discarded from the set of
+/// matches.
 ///
 ///  If a filter_features algorithm is provided, this will be run on the
 ///  input features \b before running the matcher.
@@ -34,9 +39,10 @@ class KWIVER_ALGO_CORE_EXPORT match_features_fundamental_matrix
   : public vital::algo::match_features
 {
 public:
-  PLUGIN_INFO( "fundamental_matrix_guided",
-               "Use an estimated fundamental matrix as a geometric filter"
-               " to remove outlier matches." )
+  PLUGIN_INFO(
+    "fundamental_matrix_guided",
+    "Use an estimated fundamental matrix as a geometric filter"
+    " to remove outlier matches." )
 
   /// Default Constructor
   match_features_fundamental_matrix();
@@ -47,9 +53,9 @@ public:
   /// Get this alg's \link vital::config_block configuration block \endlink
   virtual vital::config_block_sptr get_configuration() const;
   /// Set this algo's properties via a config block
-  virtual void set_configuration(vital::config_block_sptr config);
+  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's currently configuration is valid
-  virtual bool check_configuration(vital::config_block_sptr config) const;
+  virtual bool check_configuration( vital::config_block_sptr config ) const;
 
   /// Match one set of features and corresponding descriptors to another
   ///
@@ -59,17 +65,21 @@ public:
   /// \param [in] desc2 the descriptors corresponding to \a feat2
   /// \returns a set of matching indices from \a feat1 to \a feat2
   virtual vital::match_set_sptr
-  match(vital::feature_set_sptr feat1, vital::descriptor_set_sptr desc1,
-        vital::feature_set_sptr feat2, vital::descriptor_set_sptr desc2) const;
+  match(
+    vital::feature_set_sptr feat1, vital::descriptor_set_sptr desc1,
+    vital::feature_set_sptr feat2, vital::descriptor_set_sptr desc2 ) const;
 
 private:
   /// private implementation class
   class priv;
-  const std::unique_ptr<priv> d_;
+
+  const std::unique_ptr< priv > d_;
 };
 
 } // end namespace algo
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif

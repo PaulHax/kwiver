@@ -24,12 +24,12 @@ public:
   virtual ~apply_child_klv();
 
   PLUGGABLE_IMPL(
-    // name 
+    // name
     apply_child_klv,
     // description
     "Produces resultant klv sets from source klv with ST1607 amend "
     "or segment sets."
-    )
+  )
 
   bool check_configuration( vital::config_block_sptr config ) const override;
 

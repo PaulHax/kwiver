@@ -12,14 +12,15 @@
 #include <sstream>
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
 }
 
 // ----------------------------------------------------------------------------
-TEST(polygon, conversions)
+TEST ( polygon, conversions )
 {
   auto p = std::make_shared< kwiver::vital::polygon >();
 
@@ -33,15 +34,15 @@ TEST(polygon, conversions)
   ASSERT_EQ( 4, xpoly->num_vertices() );
 
   // Convert back to vital_polygon
-  auto vpoly =  kwiver::arrows::vxl::vxl_to_vital( *xpoly.get() );
+  auto vpoly = kwiver::arrows::vxl::vxl_to_vital( *xpoly.get() );
   ASSERT_EQ( 4, vpoly->num_vertices() );
 
-  auto x_sheet = xpoly->operator[](0);
+  auto x_sheet = xpoly->operator[]( 0 );
   auto v_vert = vpoly->get_vertices();
 
-  for ( size_t i = 0; i < xpoly->num_vertices(); ++i )
+  for( size_t i = 0; i < xpoly->num_vertices(); ++i )
   {
-    EXPECT_EQ( v_vert[i](0), x_sheet[i].x() ) << "Vertex at index " << i;
-    EXPECT_EQ( v_vert[i](1), x_sheet[i].y() ) << "Vertex at index " << i;
+    EXPECT_EQ( v_vert[ i ]( 0 ), x_sheet[ i ].x() ) << "Vertex at index " << i;
+    EXPECT_EQ( v_vert[ i ]( 1 ), x_sheet[ i ].y() ) << "Vertex at index " << i;
   }
 }

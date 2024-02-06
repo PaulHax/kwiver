@@ -32,15 +32,22 @@ operator<<( std::ostream& os, klv_1303_apa value )
                         : value ];
 }
 
-#define KLV_INSTANTIATE( T )                                                              \
-  template struct klv_1303_mdap< T >;                                                     \
-  template std::ostream& operator<< < T >( std::ostream&, klv_1303_mdap< T > const& );    \
-  template bool operator< < T >( klv_1303_mdap< T > const&, klv_1303_mdap< T > const& );  \
-  template bool operator> < T >( klv_1303_mdap< T > const&, klv_1303_mdap< T > const& );  \
-  template bool operator<= < T >( klv_1303_mdap< T > const&, klv_1303_mdap< T > const& ); \
-  template bool operator>= < T >( klv_1303_mdap< T > const&, klv_1303_mdap< T > const& ); \
-  template bool operator!= < T >( klv_1303_mdap< T > const&, klv_1303_mdap< T > const& ); \
-  template bool operator== < T >( klv_1303_mdap< T > const&, klv_1303_mdap< T > const& );
+#define KLV_INSTANTIATE( T )                                         \
+template struct klv_1303_mdap< T >;                                  \
+template std::ostream& operator<<< T >( std::ostream&,               \
+                                        klv_1303_mdap< T > const& ); \
+template bool operator< < T >( klv_1303_mdap< T > const&,            \
+                               klv_1303_mdap< T > const& );          \
+template bool operator>< T >( klv_1303_mdap< T > const&,             \
+                              klv_1303_mdap< T > const& );           \
+template bool operator<=< T >( klv_1303_mdap< T > const&,            \
+                               klv_1303_mdap< T > const& );          \
+template bool operator>=< T >( klv_1303_mdap< T > const&,            \
+                               klv_1303_mdap< T > const& );          \
+template bool operator!=< T >( klv_1303_mdap< T > const&,            \
+                               klv_1303_mdap< T > const& );          \
+template bool operator==< T >( klv_1303_mdap< T > const&,            \
+                               klv_1303_mdap< T > const& );
 
 KLV_INSTANTIATE( bool );
 KLV_INSTANTIATE( double );
@@ -51,7 +58,7 @@ KLV_INSTANTIATE( uint64_t );
 #undef KLV_INSTANTIATE
 
 #define KLV_INSTANTIATE( FORMAT ) \
-  template class klv_1303_mdap_format< FORMAT >;
+template class klv_1303_mdap_format< FORMAT >;
 
 KLV_INSTANTIATE( klv_ascii_format );
 KLV_INSTANTIATE( klv_ber_format );
@@ -67,7 +74,6 @@ KLV_INSTANTIATE( klv_utf_16_format );
 KLV_INSTANTIATE( klv_utf_8_format );
 
 #undef KLV_INSTANTIATE
-
 
 } // namespace klv
 

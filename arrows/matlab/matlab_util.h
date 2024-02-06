@@ -10,11 +10,13 @@
 
 #include <vital/types/image_container.h>
 
-#include <arrows/matlab/mxarray.h>
 #include <arrows/matlab/kwiver_algo_matlab_export.h>
+#include <arrows/matlab/mxarray.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace matlab {
 
 /// @brief Convert image_container to matlab image
@@ -70,6 +72,10 @@ KWIVER_ALGO_MATLAB_EXPORT
 MxArraySptr create_mxDoubleArray( size_t r, size_t c );
 //@}
 
-} } } // end namespace
+} // namespace matlab
+
+} // namespace arrows
+
+}     // end namespace
 
 #endif // ARROWS_MATLAB_UTIL_H

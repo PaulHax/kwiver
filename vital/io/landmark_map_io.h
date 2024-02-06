@@ -15,6 +15,7 @@
 #include <vital/types/landmark_map.h>
 
 namespace kwiver {
+
 namespace vital {
 
 /// Output the given \c landmark_map object to the specified PLY file path
@@ -29,8 +30,9 @@ namespace vital {
 /// \param landmarks The \c landmark_map object to output.
 /// \param file_path The path to output the file to.
 void
-VITAL_EXPORT write_ply_file( landmark_map_sptr const& landmarks,
-                                 path_t const&            file_path );
+VITAL_EXPORT write_ply_file(
+  landmark_map_sptr const& landmarks,
+  path_t const&            file_path );
 
 /// Load a given \c landmark_map object from the specified PLY file path
 ///
@@ -44,6 +46,8 @@ VITAL_EXPORT write_ply_file( landmark_map_sptr const& landmarks,
 landmark_map_sptr
 VITAL_EXPORT read_ply_file( path_t const& file_path );
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // VITAL_LANDMARK_MAP_IO_H_

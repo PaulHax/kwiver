@@ -24,8 +24,7 @@ namespace klv {
 std::ostream&
 operator<<( std::ostream& os, klv_1204_device_id_type value )
 {
-  static std::string strings[ KLV_1204_DEVICE_ID_ENUM_END + 1 ] =
-  {
+  static std::string strings[ KLV_1204_DEVICE_ID_ENUM_END + 1 ] = {
     "None",
     "Managed",
     "Virtual",
@@ -140,14 +139,16 @@ klv_1204_miis_id_format
 // ----------------------------------------------------------------------------
 void
 klv_1204_miis_id_format
-::write_typed( klv_1204_miis_id const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_1204_miis_id const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
 
   // Single byte version number
-  klv_write_int( value.version, data, std::min< size_t >(
-                   tracker.remaining(), 1 ) );
+  klv_write_int(
+    value.version, data, std::min< size_t >(
+      tracker.remaining(), 1 ) );
 
   // Combine bit fields into single usage byte
   auto const usage = static_cast< uint8_t >(

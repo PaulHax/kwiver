@@ -38,7 +38,7 @@ public:
   virtual ~write_object_track_set();
 
   write_object_track_set();
-  PLUGGABLE_INTERFACE_NO_DESTR(write_object_track_set);
+  PLUGGABLE_INTERFACE_NO_DESTR( write_object_track_set );
   /// Open a file of object track sets.
   ///
   /// This method opens a object track set file for reading.

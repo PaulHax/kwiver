@@ -11,12 +11,13 @@
 #ifndef KWIVER_CONFIG_BLOCK_IO_H_
 #define KWIVER_CONFIG_BLOCK_IO_H_
 
-#include <vital/config/vital_config_export.h>
 #include "config_block.h"
+#include <vital/config/vital_config_export.h>
 
 #include <ostream>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -41,7 +42,8 @@ namespace vital {
 ///   An optional list of directories to use in locating included files.
 /// \param use_system_paths
 ///   If false, we do not use paths in the KWIVER_CONFIG_PATH environment
-///   variable or current working directory for searching, otherwise those paths are
+///   variable or current working directory for searching, otherwise those paths
+/// are
 ///   searched first.
 ///
 /// \return A \c config_block object representing the contents of the read-in
@@ -49,7 +51,7 @@ namespace vital {
 config_block_sptr VITAL_CONFIG_EXPORT read_config_file(
   config_path_t const&      file_path,
   config_path_list_t const& search_paths = config_path_list_t(),
-  bool                      use_system_paths = true );
+  bool use_system_paths = true );
 
 // ----------------------------------------------------------------------------
 /// Read in (a) configuration file(s), producing a \c config_block object
@@ -83,11 +85,13 @@ config_block_sptr VITAL_CONFIG_EXPORT read_config_file(
 /// ## OS/X Apple Platform
 /// - .  (the current working directory
 /// - ${KWIVER_CONFIG_PATH}                                    (if set)
-/// - ${XDG_CONFIG_HOME}/<app-name>[/<app-version>]/config     (if $XDG_CONFIG_HOME set)
+/// - ${XDG_CONFIG_HOME}/<app-name>[/<app-version>]/config     (if
+/// $XDG_CONFIG_HOME set)
 /// - ${HOME}/.config/<app-name>[/<app-version>]/config        (if $HOME set)
 /// - /etc/xdg/<app-name>[/<app-version>]/config
 /// - /etc/<app-name>[/<app-version>]/config
-/// - ${HOME}/Library/Application Support/<app-name>[/<app-version>]/config (if $HOME set)
+/// - ${HOME}/Library/Application Support/<app-name>[/<app-version>]/config (if
+/// $HOME set)
 /// - /Library/Application Support/<app-name>[/<app-version>]/config
 /// - /usr/local/share/<app-name>[/<app-version>]/config
 /// - /usr/share/<app-name>[/<app-version>]/config
@@ -102,7 +106,8 @@ config_block_sptr VITAL_CONFIG_EXPORT read_config_file(
 /// ## Other Posix Platforms (e.g. Linux)
 /// - .  (the current working directory
 /// - ${KWIVER_CONFIG_PATH}                                    (if set)
-/// - ${XDG_CONFIG_HOME}/<app-name>[/<app-version>]/config     (if $XDG_CONFIG_HOME set)
+/// - ${XDG_CONFIG_HOME}/<app-name>[/<app-version>]/config     (if
+/// $XDG_CONFIG_HOME set)
 /// - ${HOME}/.config/<app-name>[/<app-version>]/config        (if $HOME set)
 /// - /etc/xdg/<app-name>[/<app-version>]/config
 /// - /etc/<app-name>[/<app-version>]/config
@@ -187,8 +192,9 @@ std::vector< config_path_t > VITAL_CONFIG_EXPORT find_config_file(
 ///
 /// \param config    The \c config_block object to output.
 /// \param file_path The path to output the file to.
-void VITAL_CONFIG_EXPORT write_config_file( config_block_sptr const&  config,
-                                            config_path_t const&      file_path );
+void VITAL_CONFIG_EXPORT write_config_file(
+  config_block_sptr const&  config,
+  config_path_t const&      file_path );
 
 // ----------------------------------------------------------------------------
 /// Output to file the given \c config_block object to the specified stream.
@@ -204,8 +210,9 @@ void VITAL_CONFIG_EXPORT write_config_file( config_block_sptr const&  config,
 ///
 /// \param config    The \c config_block object to output.
 /// \param str       The output stream.
-void VITAL_CONFIG_EXPORT write_config( config_block_sptr const& config,
-                                       std::ostream&            str );
+void VITAL_CONFIG_EXPORT write_config(
+  config_block_sptr const& config,
+  std::ostream&            str );
 
 // ----------------------------------------------------------------------------
 /// Get additional application configuration file paths
@@ -230,9 +237,10 @@ void VITAL_CONFIG_EXPORT write_config( config_block_sptr const& config,
 /// \return
 ///   List of additional application configuration search paths.
 config_path_list_t VITAL_CONFIG_EXPORT
-application_config_file_paths(std::string const& application_name,
-                              std::string const& application_version,
-                              config_path_t const& install_prefix);
+application_config_file_paths(
+  std::string const& application_name,
+  std::string const& application_version,
+  config_path_t const& install_prefix );
 
 // ----------------------------------------------------------------------------
 /// Get additional application configuration file paths
@@ -259,10 +267,11 @@ application_config_file_paths(std::string const& application_name,
 /// \note This is the only function that will not guess the install prefix if
 ///       an empty prefix is specified.
 config_path_list_t VITAL_CONFIG_EXPORT
-application_config_file_paths(std::string const& application_name,
-                              std::string const& application_version,
-                              config_path_t const& app_install_prefix,
-                              config_path_t const& kwiver_install_prefix);
+application_config_file_paths(
+  std::string const& application_name,
+  std::string const& application_version,
+  config_path_t const& app_install_prefix,
+  config_path_t const& kwiver_install_prefix );
 
 // ----------------------------------------------------------------------------
 /// Get KWIVER configuration file paths
@@ -279,8 +288,10 @@ application_config_file_paths(std::string const& application_name,
 /// \return
 ///   List of KWIVER configuration search paths.
 config_path_list_t VITAL_CONFIG_EXPORT
-kwiver_config_file_paths(config_path_t const& install_prefix);
+kwiver_config_file_paths( config_path_t const& install_prefix );
 
-} }
+} // namespace vital
+
+} // namespace kwiver
 
 #endif

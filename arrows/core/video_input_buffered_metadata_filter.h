@@ -27,9 +27,10 @@ class KWIVER_ALGO_CORE_EXPORT video_input_buffered_metadata_filter
   : public vital::algo::video_input
 {
 public:
-  PLUGIN_INFO( "buffered_metadata_filter",
-               "A video input that calls another video input and applies a "
-               "buffered filter to the output metadata." )
+  PLUGIN_INFO(
+    "buffered_metadata_filter",
+    "A video input that calls another video input and applies a "
+    "buffered filter to the output metadata." )
 
   video_input_buffered_metadata_filter();
   virtual ~video_input_buffered_metadata_filter();
@@ -46,12 +47,14 @@ public:
   bool seekable() const override;
   size_t num_frames() const override;
 
-  bool next_frame( vital::timestamp& ts,
-                   uint32_t timeout = 0 ) override;
+  bool next_frame(
+    vital::timestamp& ts,
+    uint32_t timeout = 0 ) override;
 
-  bool seek_frame( vital::timestamp& ts,
-                   vital::timestamp::frame_t frame_number,
-                   uint32_t timeout = 0 ) override;
+  bool seek_frame(
+    vital::timestamp& ts,
+    vital::timestamp::frame_t frame_number,
+    uint32_t timeout = 0 ) override;
 
   vital::timestamp frame_timestamp() const override;
   vital::image_container_sptr frame_image() override;

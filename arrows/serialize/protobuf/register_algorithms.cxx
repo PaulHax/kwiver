@@ -8,24 +8,27 @@
 #include <arrows/serialize/protobuf/kwiver_serialize_protobuf_plugin_export.h>
 #include <vital/algo/algorithm_factory.h>
 
-#include "bounding_box.h"
-#include "detected_object_type.h"
 #include "activity_type.h"
+#include "bounding_box.h"
 #include "detected_object.h"
 #include "detected_object_set.h"
+#include "detected_object_type.h"
 #include "image.h"
 #include "metadata.h"
+#include "object_track_set.h"
+#include "object_track_state.h"
 #include "string.h"
 #include "timestamp.h"
-#include "track_state.h"
-#include "object_track_state.h"
 #include "track.h"
 #include "track_set.h"
-#include "object_track_set.h"
+#include "track_state.h"
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace serialize {
+
 namespace protobuf {
 
 // ----------------------------------------------------------------------------
@@ -35,9 +38,9 @@ void
 register_factories( kwiver::vital::plugin_loader& vpm )
 {
   kwiver::vital::serializer_registrar reg( vpm, "arrows.serialize.protobuf",
-                                           "protobuf" );
+    "protobuf" );
 
-  if (reg.is_module_loaded())
+  if( reg.is_module_loaded() )
   {
     return;
   }
@@ -67,6 +70,9 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 }
 
 } // end namespace protobuf
+
 } // end namespace serialize
+
 } // end namespace arrows
+
 } // end namespace kwiver

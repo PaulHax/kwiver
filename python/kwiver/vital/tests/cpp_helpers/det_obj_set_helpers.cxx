@@ -16,17 +16,17 @@ typedef kwiver::vital::detected_object_set det_obj_set;
 // We'll use these to test that these camera methods can be overriden in C++
 PYBIND11_MODULE( det_obj_set_helpers, m )
 {
-  m.def( "call_size", [] (const det_obj_set &obj)
-  {
-    return obj.size();
-  });
+  m.def(
+    "call_size", [](const det_obj_set& obj){
+      return obj.size();
+    } );
 
-  m.def( "call_empty", [] (const det_obj_set &obj)
-  {
-    return obj.empty();
-  });
-  m.def( "call_at", [] (const det_obj_set &obj, int pos)
-  {
-    return obj.at(pos);
-  });
+  m.def(
+    "call_empty", [](const det_obj_set& obj){
+      return obj.empty();
+    } );
+  m.def(
+    "call_at", [](const det_obj_set& obj, int pos){
+      return obj.at( pos );
+    } );
 }

@@ -29,20 +29,25 @@ pixel_traits::pixel_type pixel_type( std::shared_ptr< image_t >& self );
 std::string pixel_type_name( std::shared_ptr< image_t >& self );
 size_t pixel_num_bytes( std::shared_ptr< image_t >& self );
 
-py::object get_pixel2( std::shared_ptr< image_t >& img,
-                       unsigned i, unsigned j );
-py::object get_pixel3( std::shared_ptr< image_t >& img,
-                       unsigned i, unsigned j, unsigned k );
-py::object get_pixel( std::shared_ptr< image_t >& img,
-                      std::vector< unsigned > idx );
+py::object get_pixel2(
+  std::shared_ptr< image_t >& img,
+  unsigned i, unsigned j );
+py::object get_pixel3(
+  std::shared_ptr< image_t >& img,
+  unsigned i, unsigned j, unsigned k );
+py::object get_pixel(
+  std::shared_ptr< image_t >& img,
+  std::vector< unsigned > idx );
 void* first_pixel( std::shared_ptr< image_t >& img );
-image_t new_image( size_t width, size_t height, size_t depth, bool interleave,
-                   pixel_traits::pixel_type& type, size_t bytes );
-image_t new_image_from_data( char* first_pixel,
-                             size_t width, size_t height, size_t depth,
-                             int32_t w_step, int32_t h_step, int32_t d_step,
-                             pixel_traits::pixel_type pixel_type,
-                             size_t bytes );
+image_t new_image(
+  size_t width, size_t height, size_t depth, bool interleave,
+  pixel_traits::pixel_type& type, size_t bytes );
+image_t new_image_from_data(
+  char* first_pixel,
+  size_t width, size_t height, size_t depth,
+  int32_t w_step, int32_t h_step, int32_t d_step,
+  pixel_traits::pixel_type pixel_type,
+  size_t bytes );
 
 template < typename T >
 image_t
@@ -80,8 +85,9 @@ new_image_from_numpy( py::array_t< T > array )
   }
 
   char* first_pixel = static_cast< char* >( info.ptr );
-  image_t img = image_t( first_pixel, width, height, depth,
-                         w_step, h_step, d_step, traits );
+  image_t img = image_t(
+    first_pixel, width, height, depth,
+    w_step, h_step, d_step, traits );
   // TODO: is is possible to share memory?
   image_t new_img = image_t();   // copy so we can use fresh memory not used
                                  // elsewhere

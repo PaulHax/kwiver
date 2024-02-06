@@ -32,8 +32,9 @@ main( int argc, char** argv )
 
 // ----------------------------------------------------------------------------
 void
-test_read_write( klv_value const& expected_result,
-                 klv_bytes_t const& input_bytes )
+test_read_write(
+  klv_value const& expected_result,
+  klv_bytes_t const& input_bytes )
 {
   using format_t = klv_0903_local_set_format;
   test_read_write_format< format_t >( expected_result, input_bytes );
@@ -403,8 +404,7 @@ TEST ( klv, read_write_0903_vchip )
   auto const expected_result = klv_local_set{
     { KLV_0903_VCHIP_IMAGE_TYPE, std::string{ "jpeg" } },
     { KLV_0903_VCHIP_IMAGE_IRI, std::string{ "IRI" } },
-    { KLV_0903_VCHIP_EMBEDDED_IMAGE, klv_blob{ 0x01, 0x02, 0x03, 0x04 } },
-  };
+    { KLV_0903_VCHIP_EMBEDDED_IMAGE, klv_blob{ 0x01, 0x02, 0x03, 0x04 } }, };
 
   auto const input_bytes = klv_bytes_t{
     0x01, 0x04,

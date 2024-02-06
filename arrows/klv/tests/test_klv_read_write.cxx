@@ -147,6 +147,7 @@ test_write_int( size_t length, T value )
   auto it = &*data.begin();
   klv_write_int< T >( value, it, length );
   EXPECT_EQ( it, &*data.begin() + length );
+
   auto cit = &*data.cbegin();
   EXPECT_EQ( value, klv_read_int< T >( cit, length ) );
 }
@@ -353,26 +354,33 @@ TEST ( klv, read_ber )
   // Long form
   CALL_TEST( test_read_ber< uint8_t >,  0xFF,       { 0x81, 0xFF } );
   CALL_TEST( test_read_ber< uint16_t >, 0x102,      { 0x82, 0x01, 0x02 } );
-  CALL_TEST( test_read_ber< uint32_t >, 0x010203,
-             { 0x83, 0x01, 0x02, 0x03 } );
-  CALL_TEST( test_read_ber< uint32_t >, 0xFF428012,
-             { 0x84, 0xFF, 0x42, 0x80, 0x12 } );
+  CALL_TEST(
+    test_read_ber< uint32_t >, 0x010203,
+    { 0x83, 0x01, 0x02, 0x03 } );
+  CALL_TEST(
+    test_read_ber< uint32_t >, 0xFF428012,
+    { 0x84, 0xFF, 0x42, 0x80, 0x12 } );
 
   // Not enough buffer space given
   CALL_TEST( test_read_ber_buffer_overflow< uint32_t >, 1, { 0x81, 0xFF } );
-  CALL_TEST( test_read_ber_buffer_overflow< uint32_t >, 2,
-             { 0x82, 0xFF, 0x00 } );
+  CALL_TEST(
+    test_read_ber_buffer_overflow< uint32_t >, 2,
+    { 0x82, 0xFF, 0x00 } );
   CALL_TEST( test_read_ber_buffer_overflow< uint32_t >, 0, { 0 } );
 
   // Specified type too small
-  CALL_TEST( test_read_ber_type_overflow< uint8_t  >, 3,
-             { 0x82, 0x01, 0x00 } );
-  CALL_TEST( test_read_ber_type_overflow< uint16_t >, 4,
-             { 0x83, 0x01, 0x00, 0x00 } );
-  CALL_TEST( test_read_ber_type_overflow< uint32_t >, 6,
-             { 0x85, 0x01, 0x00, 0x00, 0x00, 0x00 } );
-  CALL_TEST( test_read_ber_type_overflow< uint64_t >, 10,
-             { 0x89, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } );
+  CALL_TEST(
+    test_read_ber_type_overflow< uint8_t  >, 3,
+    { 0x82, 0x01, 0x00 } );
+  CALL_TEST(
+    test_read_ber_type_overflow< uint16_t >, 4,
+    { 0x83, 0x01, 0x00, 0x00 } );
+  CALL_TEST(
+    test_read_ber_type_overflow< uint32_t >, 6,
+    { 0x85, 0x01, 0x00, 0x00, 0x00, 0x00 } );
+  CALL_TEST(
+    test_read_ber_type_overflow< uint64_t >, 10,
+    { 0x89, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } );
 }
 
 // ----------------------------------------------------------------------------
@@ -393,7 +401,7 @@ test_write_ber( uint64_t value, size_t length )
     // Avoid leading zero bytes in value
     EXPECT_NE( 0x00, data.at( 1 ) );
   }
-  catch ( std::exception const& )
+  catch( std::exception const& )
   {
     // data.at() threw - data doesn't have 0 or 1 index
   }
@@ -520,18 +528,24 @@ TEST ( klv, read_ber_oid )
   CALL_TEST( test_read_ber_oid< uint8_t  >, 0x80,        { 0x81, 0 } );
   CALL_TEST( test_read_ber_oid< uint8_t  >, 0xFF,        { 0x81, 0x7F } );
   CALL_TEST( test_read_ber_oid< uint16_t >, 0x3FFF,      { 0xFF, 0x7F } );
-  CALL_TEST( test_read_ber_oid< uint16_t >, 0x4000,
-             { 0x81, 0x80, 0x00 } );
-  CALL_TEST( test_read_ber_oid< uint32_t >, 0x1FFFFF,
-             { 0xFF, 0xFF, 0x7F } );
-  CALL_TEST( test_read_ber_oid< uint32_t >, 0x200000,
-             { 0x81, 0x80, 0x80, 0x00 } );
-  CALL_TEST( test_read_ber_oid< uint64_t >, 0x7FFFFFFFF,
-             { 0xFF, 0xFF, 0xFF, 0xFF, 0x7F } );
-  CALL_TEST( test_read_ber_oid< uint64_t >, 0x800000000,
-             { 0x81, 0x80, 0x80, 0x80, 0x80, 0x00 } );
-  CALL_TEST( test_read_ber_oid< uint64_t >, uint64_max,
-             { 0x81, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F } );
+  CALL_TEST(
+    test_read_ber_oid< uint16_t >, 0x4000,
+    { 0x81, 0x80, 0x00 } );
+  CALL_TEST(
+    test_read_ber_oid< uint32_t >, 0x1FFFFF,
+    { 0xFF, 0xFF, 0x7F } );
+  CALL_TEST(
+    test_read_ber_oid< uint32_t >, 0x200000,
+    { 0x81, 0x80, 0x80, 0x00 } );
+  CALL_TEST(
+    test_read_ber_oid< uint64_t >, 0x7FFFFFFFF,
+    { 0xFF, 0xFF, 0xFF, 0xFF, 0x7F } );
+  CALL_TEST(
+    test_read_ber_oid< uint64_t >, 0x800000000,
+    { 0x81, 0x80, 0x80, 0x80, 0x80, 0x00 } );
+  CALL_TEST(
+    test_read_ber_oid< uint64_t >, uint64_max,
+    { 0x81, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F } );
 
   // Truncated values
   CALL_TEST( test_read_ber_oid_buffer_overflow< uint64_t >, {} );
@@ -540,8 +554,9 @@ TEST ( klv, read_ber_oid )
 
   // Values too large for native type
   CALL_TEST( test_read_ber_oid_type_overflow< uint8_t  >, { 0x82, 0X00 } );
-  CALL_TEST( test_read_ber_oid_type_overflow< uint16_t >,
-             { 0x84, 0x80, 0X00 } );
+  CALL_TEST(
+    test_read_ber_oid_type_overflow< uint16_t >,
+    { 0x84, 0x80, 0X00 } );
 }
 
 // ----------------------------------------------------------------------------
@@ -555,6 +570,7 @@ test_write_ber_oid( T value, size_t length )
   EXPECT_EQ( &*data.end(), it );
   // Avoid technically correct but bad-form encoding ( leading zero bytes )
   EXPECT_NE( data[ 0 ], 0x80 );
+
   auto cit = &*data.cbegin();
   EXPECT_EQ( value, klv_read_ber_oid< T >( cit, length ) );
 }
@@ -641,6 +657,7 @@ test_read_flint(
   auto data = vec_t( length, 0xba );
   auto it = &*data.begin();
   klv_write_int< T >( int_value, it, length );
+
   auto cit = &*data.cbegin();
 
   auto const result = klv_read_flint< T >( { minimum, maximum }, cit, length );
@@ -666,6 +683,7 @@ test_read_flint_throw(
   auto data = vec_t( length, 0xba );
   auto it = &*data.begin();
   klv_write_int< T >( int_value, it, length );
+
   auto cit = &*data.cbegin();
   EXPECT_THROW( klv_read_flint< T >( { minimum, maximum }, cit, length ), E );
   EXPECT_EQ( &*data.cbegin(), cit );
@@ -686,58 +704,82 @@ TEST ( klv, read_flint )
 {
   // Decimals provided by Wolfram Alpha's super-precision arithmetic
   // Unsigned values
-  CALL_TEST( test_read_flint< uint8_t >,  0x00,               1,
-             -1.0,                   -1.0,    1.0 );
-  CALL_TEST( test_read_flint< uint8_t >,  0xFF,               1,
-             1.0,                   -1.0,    1.0 );
-  CALL_TEST( test_read_flint< uint8_t >,  0xA3,               1,
-             0.2784313725490196,    -1.0,    1.0 );
-  CALL_TEST( test_read_flint< uint8_t >,  0x29,               1,
-             -0.6784313725490196,    -1.0,    1.0 );
-  CALL_TEST( test_read_flint< uint16_t >, 0xA196,             2,
-             1.4716258487830925e10, -2.0e10, 3.5e10 );
-  CALL_TEST( test_read_flint< uint32_t >, 0x000000,           3,
-             -2.0e10,                -2.0e10, 3.5e10 );
-  CALL_TEST( test_read_flint< uint32_t >, 0xFFE345,           3,
-             3.4975891707890730e10, -2.0e10, 3.5e10 );
-  CALL_TEST( test_read_flint< uint32_t >, 0xA3425468,         4,
-             4.8060157894170880e10,  2.0e10, 6.4e10 );
-  CALL_TEST( test_read_flint< uint64_t >, 0x0000000001,       5,
-             -9.9999999999536158e-6, -1.0e-5, 4.1e-5 );
-  CALL_TEST( test_read_flint< uint64_t >, 0xFF001234FFFFFFFF, 8,
-             2.7773500442970544e99, -3.0e99, 2.8e99 );
-  CALL_TEST( test_read_flint< uint64_t >, 0xFFFFFFFFFFFFFFFF, 8,
-             2.0,                    1.0,    2.0 );
+  CALL_TEST(
+    test_read_flint< uint8_t >,  0x00,               1,
+    -1.0,                   -1.0,    1.0 );
+  CALL_TEST(
+    test_read_flint< uint8_t >,  0xFF,               1,
+    1.0,                   -1.0,    1.0 );
+  CALL_TEST(
+    test_read_flint< uint8_t >,  0xA3,               1,
+    0.2784313725490196,    -1.0,    1.0 );
+  CALL_TEST(
+    test_read_flint< uint8_t >,  0x29,               1,
+    -0.6784313725490196,    -1.0,    1.0 );
+  CALL_TEST(
+    test_read_flint< uint16_t >, 0xA196,             2,
+    1.4716258487830925e10, -2.0e10, 3.5e10 );
+  CALL_TEST(
+    test_read_flint< uint32_t >, 0x000000,           3,
+    -2.0e10,                -2.0e10, 3.5e10 );
+  CALL_TEST(
+    test_read_flint< uint32_t >, 0xFFE345,           3,
+    3.4975891707890730e10, -2.0e10, 3.5e10 );
+  CALL_TEST(
+    test_read_flint< uint32_t >, 0xA3425468,         4,
+    4.8060157894170880e10,  2.0e10, 6.4e10 );
+  CALL_TEST(
+    test_read_flint< uint64_t >, 0x0000000001,       5,
+    -9.9999999999536158e-6, -1.0e-5, 4.1e-5 );
+  CALL_TEST(
+    test_read_flint< uint64_t >, 0xFF001234FFFFFFFF, 8,
+    2.7773500442970544e99, -3.0e99, 2.8e99 );
+  CALL_TEST(
+    test_read_flint< uint64_t >, 0xFFFFFFFFFFFFFFFF, 8,
+    2.0,                    1.0,    2.0 );
 
   // Signed values
-  CALL_TEST( test_read_flint< int8_t >,   0x00ll,               1,
-             0.0,                -1.0, 1.0 );
-  CALL_TEST( test_read_flint< int8_t >,  -0x7Fll,               1,
-             -1.0,                -1.0, 1.0 );
-  CALL_TEST( test_read_flint< int8_t >,   0x7Fll,               1,
-             1.0,                -1.0, 1.0 );
-  CALL_TEST( test_read_flint< int32_t >, -0x7FFFFFll,           3,
-             -1.0,                -1.0, 1.0 );
-  CALL_TEST( test_read_flint< int32_t >,  0x321CBAll,           3,
-             0.3915017117859973, -1.0, 1.0 );
-  CALL_TEST( test_read_flint< int32_t >, -0x123ABCll,           3,
-             -0.1424174478551683, -1.0, 1.0 );
-  CALL_TEST( test_read_flint< int32_t >,  0x7FFFFFll,           3,
-             1.0,                -1.0, 1.0 );
-  CALL_TEST( test_read_flint< int64_t >,  0x00ll,               5,
-             0.0,                -1.0, 1.0 );
-  CALL_TEST( test_read_flint< int64_t >, -0x7FFFFFFFFFFFFFFFll, 8,
-             -2.0,                -2.0, 2.0 );
-  CALL_TEST( test_read_flint< int64_t >,  0x7FFFFFFFFFFFFFFFll, 8,
-             2.0,                -2.0, 2.0 );
+  CALL_TEST(
+    test_read_flint< int8_t >,   0x00ll,               1,
+    0.0,                -1.0, 1.0 );
+  CALL_TEST(
+    test_read_flint< int8_t >,  -0x7Fll,               1,
+    -1.0,                -1.0, 1.0 );
+  CALL_TEST(
+    test_read_flint< int8_t >,   0x7Fll,               1,
+    1.0,                -1.0, 1.0 );
+  CALL_TEST(
+    test_read_flint< int32_t >, -0x7FFFFFll,           3,
+    -1.0,                -1.0, 1.0 );
+  CALL_TEST(
+    test_read_flint< int32_t >,  0x321CBAll,           3,
+    0.3915017117859973, -1.0, 1.0 );
+  CALL_TEST(
+    test_read_flint< int32_t >, -0x123ABCll,           3,
+    -0.1424174478551683, -1.0, 1.0 );
+  CALL_TEST(
+    test_read_flint< int32_t >,  0x7FFFFFll,           3,
+    1.0,                -1.0, 1.0 );
+  CALL_TEST(
+    test_read_flint< int64_t >,  0x00ll,               5,
+    0.0,                -1.0, 1.0 );
+  CALL_TEST(
+    test_read_flint< int64_t >, -0x7FFFFFFFFFFFFFFFll, 8,
+    -2.0,                -2.0, 2.0 );
+  CALL_TEST(
+    test_read_flint< int64_t >,  0x7FFFFFFFFFFFFFFFll, 8,
+    2.0,                -2.0, 2.0 );
 
   // Lowest representable value = NaN
-  CALL_TEST( test_read_flint< int8_t >,  int8_min,        1,
-             double_qnan, -1.0, 1.0 );
-  CALL_TEST( test_read_flint< int64_t >, -0x8000000000ll, 5,
-             double_qnan, -1.0, 1.0 );
-  CALL_TEST( test_read_flint< int64_t >, int64_min,       8,
-             double_qnan, -1.0, 1.0 );
+  CALL_TEST(
+    test_read_flint< int8_t >,  int8_min,        1,
+    double_qnan, -1.0, 1.0 );
+  CALL_TEST(
+    test_read_flint< int64_t >, -0x8000000000ll, 5,
+    double_qnan, -1.0, 1.0 );
+  CALL_TEST(
+    test_read_flint< int64_t >, int64_min,       8,
+    double_qnan, -1.0, 1.0 );
 
   // Invalid values
   auto test_uint_invalid_value = test_read_flint_logic_error< uint64_t >;
@@ -754,13 +796,15 @@ TEST ( klv, read_flint )
 // ----------------------------------------------------------------------------
 template < class T >
 void
-test_write_flint( size_t length, double value, double expected_value,
-                  double minimum, double maximum )
+test_write_flint(
+  size_t length, double value, double expected_value,
+  double minimum, double maximum )
 {
   auto data = vec_t( length, 0xba );
   auto it = &*data.begin();
   klv_write_flint< T >( value, { minimum, maximum }, it, length );
   EXPECT_EQ( &*data.end(), it );
+
   auto cit = &*data.cbegin();
 
   auto const result = klv_read_flint< T >( { minimum, maximum }, cit, length );
@@ -802,8 +846,9 @@ test_write_flint_throw(
 {
   auto data = vec_t( length, 0xba );
   auto it = &*data.begin();
-  EXPECT_THROW( klv_write_flint< T >( value, { minimum, maximum }, it, length ),
-                E );
+  EXPECT_THROW(
+    klv_write_flint< T >( value, { minimum, maximum }, it, length ),
+    E );
   EXPECT_EQ( &*data.begin(), it );
 }
 
@@ -917,30 +962,41 @@ TEST ( klv, read_float )
   CALL_TEST( test_read_float, +float_qnan, { 0x7F, 0x80, 0x00, 0x01 } );
 
   // Normal values - double
-  CALL_TEST( test_read_float,  0.0,
-             { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } );
-  CALL_TEST( test_read_float, +1.01,
-             { 0x3F, 0xF0, 0x28, 0xF5, 0xC2, 0x8F, 0x5C, 0x29 } );
-  CALL_TEST( test_read_float, -1.01,
-             { 0xBF, 0xF0, 0x28, 0xF5, 0xC2, 0x8F, 0x5C, 0x29 } );
-  CALL_TEST( test_read_float, +1.1e123,
-             { 0x59, 0x7A, 0x9F, 0xC3, 0x03, 0x5E, 0x18, 0x09 } );
-  CALL_TEST( test_read_float, -1.1e-123,
-             { 0xA6, 0x67, 0x44, 0xE8, 0x54, 0xEE, 0xA5, 0x5D } );
+  CALL_TEST(
+    test_read_float,  0.0,
+    { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } );
+  CALL_TEST(
+    test_read_float, +1.01,
+    { 0x3F, 0xF0, 0x28, 0xF5, 0xC2, 0x8F, 0x5C, 0x29 } );
+  CALL_TEST(
+    test_read_float, -1.01,
+    { 0xBF, 0xF0, 0x28, 0xF5, 0xC2, 0x8F, 0x5C, 0x29 } );
+  CALL_TEST(
+    test_read_float, +1.1e123,
+    { 0x59, 0x7A, 0x9F, 0xC3, 0x03, 0x5E, 0x18, 0x09 } );
+  CALL_TEST(
+    test_read_float, -1.1e-123,
+    { 0xA6, 0x67, 0x44, 0xE8, 0x54, 0xEE, 0xA5, 0x5D } );
 
   // Special values - double
-  CALL_TEST( test_read_float,  double_min,
-             { 0xFF, 0xEF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF } );
-  CALL_TEST( test_read_float,  double_max,
-             { 0x7F, 0xEF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF } );
-  CALL_TEST( test_read_float, -double_inf,
-             { 0xFF, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } );
-  CALL_TEST( test_read_float, +double_inf,
-             { 0x7F, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } );
-  CALL_TEST( test_read_float, -double_qnan,
-             { 0xFF, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01 } );
-  CALL_TEST( test_read_float, +double_qnan,
-             { 0x7F, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01 } );
+  CALL_TEST(
+    test_read_float,  double_min,
+    { 0xFF, 0xEF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF } );
+  CALL_TEST(
+    test_read_float,  double_max,
+    { 0x7F, 0xEF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF } );
+  CALL_TEST(
+    test_read_float, -double_inf,
+    { 0xFF, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } );
+  CALL_TEST(
+    test_read_float, +double_inf,
+    { 0x7F, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 } );
+  CALL_TEST(
+    test_read_float, -double_qnan,
+    { 0xFF, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01 } );
+  CALL_TEST(
+    test_read_float, +double_qnan,
+    { 0x7F, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01 } );
 
   // Invalid length
   CALL_TEST( test_read_float_invalid_value, {} );
@@ -957,6 +1013,7 @@ test_write_float( double value, size_t length )
   auto it = &*bytes.begin();
   klv_write_float( value, it, length );
   EXPECT_EQ( it, &*bytes.end() );
+
   auto cit = &*bytes.cbegin();
   auto const result = klv_read_float( cit, length );
   if( std::isnan( value ) )
@@ -1041,6 +1098,7 @@ test_read_imap(
   auto data = vec_t( length, 0xba );
   auto it = &*data.begin();
   klv_write_int< uint64_t >( int_value, it, length );
+
   auto cit = &*data.cbegin();
 
   auto const result = klv_read_imap( { minimum, maximum }, cit, length );
@@ -1067,6 +1125,7 @@ test_read_imap_throw(
   auto data = vec_t( write_length, 0xba );
   auto it = &*data.begin();
   klv_write_int< uint64_t >( int_value, it, write_length );
+
   auto cit = &*data.cbegin();
   EXPECT_THROW( klv_read_imap( { minimum, maximum }, cit, length ), E );
   EXPECT_EQ( &*data.cbegin(), cit );
@@ -1114,18 +1173,24 @@ TEST ( klv, read_imap )
   CALL_TEST( test_read_imap, 0xE800, 2, -double_inf,       0.1, 0.9 );
 
   // Special values
-  CALL_TEST( test_read_imap, _imap_infinity(   false, 5 ), 5,
-             +double_inf,  1.0, 2.0 );
-  CALL_TEST( test_read_imap, _imap_infinity(   true,  5 ), 5,
-             -double_inf,  1.0, 2.0 );
-  CALL_TEST( test_read_imap, _imap_quiet_nan(  false, 5 ), 5,
-             +double_qnan, 1.0, 2.0 );
-  CALL_TEST( test_read_imap, _imap_quiet_nan(  true,  5 ), 5,
-             -double_qnan, 1.0, 2.0 );
-  CALL_TEST( test_read_imap, _imap_signal_nan( false, 5 ), 5,
-             +double_snan, 1.0, 2.0 );
-  CALL_TEST( test_read_imap, _imap_signal_nan( true,  5 ), 5,
-             -double_snan, 1.0, 2.0 );
+  CALL_TEST(
+    test_read_imap, _imap_infinity(   false, 5 ), 5,
+    +double_inf,  1.0, 2.0 );
+  CALL_TEST(
+    test_read_imap, _imap_infinity(   true,  5 ), 5,
+    -double_inf,  1.0, 2.0 );
+  CALL_TEST(
+    test_read_imap, _imap_quiet_nan(  false, 5 ), 5,
+    +double_qnan, 1.0, 2.0 );
+  CALL_TEST(
+    test_read_imap, _imap_quiet_nan(  true,  5 ), 5,
+    -double_qnan, 1.0, 2.0 );
+  CALL_TEST(
+    test_read_imap, _imap_signal_nan( false, 5 ), 5,
+    +double_snan, 1.0, 2.0 );
+  CALL_TEST(
+    test_read_imap, _imap_signal_nan( true,  5 ), 5,
+    -double_snan, 1.0, 2.0 );
 
   // Values too large for native type
   CALL_TEST( test_read_imap_type_overflow, uint64_max, 9, -123.0, 321.0 );
@@ -1149,6 +1214,7 @@ test_write_imap(
   auto it = &*data.begin();
   klv_write_imap( value, { minimum, maximum }, it, data.size() );
   EXPECT_EQ( &*data.end(), it );
+
   auto cit = &*data.cbegin();
 
   auto const result = klv_read_imap( { minimum, maximum }, cit, data.size() );
@@ -1187,7 +1253,9 @@ test_write_imap_throw(
 {
   auto data = vec_t( length, 0xba );
   auto it = &*data.begin();
-  EXPECT_THROW( klv_write_imap( value, { minimum, maximum }, it, data.size() ), E );
+  EXPECT_THROW(
+    klv_write_imap( value, { minimum, maximum }, it, data.size() ),
+    E );
   EXPECT_EQ( &*data.begin(), it );
 }
 
@@ -1251,10 +1319,12 @@ TEST ( klv, read_string )
   CALL_TEST( test_read_string, "",   {} );
   CALL_TEST( test_read_string, "",   { '\0' } );
   CALL_TEST( test_read_string, "\1", { '\1' } );
-  CALL_TEST( test_read_string, "Kitware",
-             { 'K', 'i', 't', 'w', 'a', 'r', 'e' } );
-  CALL_TEST( test_read_string, { "\0Kitware\0", 9 },
-             { '\0', 'K', 'i', 't', 'w', 'a', 'r', 'e', '\0' } );
+  CALL_TEST(
+    test_read_string, "Kitware",
+    { 'K', 'i', 't', 'w', 'a', 'r', 'e' } );
+  CALL_TEST(
+    test_read_string, { "\0Kitware\0", 9 },
+    { '\0', 'K', 'i', 't', 'w', 'a', 'r', 'e', '\0' } );
 }
 
 // ----------------------------------------------------------------------------
@@ -1290,6 +1360,7 @@ test_write_string( std::string const& s )
   auto it = &*data.begin();
   klv_write_string( s, it, data.size() );
   EXPECT_EQ( it, &*data.end() );
+
   auto cit = &*data.cbegin();
   EXPECT_EQ( s, klv_read_string( cit, data.size() ) );
 }

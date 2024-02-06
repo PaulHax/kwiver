@@ -23,8 +23,10 @@ klv_stream_settings
 {}
 
 // ----------------------------------------------------------------------------
-bool operator==( klv_stream_settings const& lhs,
-                 klv_stream_settings const& rhs )
+bool
+operator==(
+  klv_stream_settings const& lhs,
+  klv_stream_settings const& rhs )
 {
   return lhs.type == rhs.type && lhs.index == rhs.index;
 }

@@ -28,7 +28,7 @@ class VITAL_ALGO_EXPORT draw_detected_object_set
 public:
   /// Return the name of this algorithm.
   draw_detected_object_set();
-  PLUGGABLE_INTERFACE(draw_detected_object_set);
+  PLUGGABLE_INTERFACE( draw_detected_object_set );
   /// Draw detected object boxes on Image.
   ///
   /// This method draws the detections on a copy of the image. The
@@ -40,9 +40,9 @@ public:
   ///
   /// @return Image with boxes and other annotations added.
   virtual kwiver::vital::image_container_sptr
-  draw( kwiver::vital::detected_object_set_sptr detected_set,
-        kwiver::vital::image_container_sptr image ) = 0;
-
+  draw(
+    kwiver::vital::detected_object_set_sptr detected_set,
+    kwiver::vital::image_container_sptr image ) = 0;
 };
 
 /// A smart pointer to a draw_tracks instance.

@@ -18,19 +18,22 @@ namespace klv {
 // ----------------------------------------------------------------------------
 misp_timestamp
 ::misp_timestamp()
-  : m_timestamp{ 0 }, m_status{ default_status }
+  : m_timestamp{ 0 },
+    m_status{ default_status }
 {}
 
 // ----------------------------------------------------------------------------
 misp_timestamp
 ::misp_timestamp( std::chrono::microseconds timestamp, uint8_t status )
-  : m_timestamp{ timestamp }, m_status{ status }
+  : m_timestamp{ timestamp },
+    m_status{ status }
 {}
 
 // ----------------------------------------------------------------------------
 misp_timestamp
 ::misp_timestamp( std::chrono::nanoseconds timestamp, uint8_t status )
-  : m_timestamp{ timestamp }, m_status{ status }
+  : m_timestamp{ timestamp },
+    m_status{ status }
 {}
 
 // ----------------------------------------------------------------------------
@@ -83,8 +86,9 @@ misp_timestamp
 
 // ----------------------------------------------------------------------------
 klv_read_iter_t
-find_misp_timestamp( klv_read_iter_t begin, klv_read_iter_t end,
-                     misp_timestamp_tag_type tag_type )
+find_misp_timestamp(
+  klv_read_iter_t begin, klv_read_iter_t end,
+  misp_timestamp_tag_type tag_type )
 {
   auto it = end;
   if( tag_type == MISP_TIMESTAMP_TAG_STRING )
@@ -151,8 +155,9 @@ read_misp_timestamp( klv_read_iter_t& data )
 
 // ----------------------------------------------------------------------------
 void
-write_misp_timestamp( misp_timestamp value, klv_write_iter_t& data,
-                      misp_timestamp_tag_type tag_type, bool is_nano )
+write_misp_timestamp(
+  misp_timestamp value, klv_write_iter_t& data,
+  misp_timestamp_tag_type tag_type, bool is_nano )
 {
   // Write tag
   auto const& tag =

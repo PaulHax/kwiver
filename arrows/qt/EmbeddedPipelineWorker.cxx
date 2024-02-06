@@ -39,8 +39,10 @@ class EmbeddedPipeline : public kwiver::embedded_pipeline
 public:
   EmbeddedPipeline( RequiredEndcaps );
 
-  bool hasInput() const { return this->inputConnected_; }
-  bool hasOutput() const { return this->outputConnected_; }
+  bool
+  hasInput() const { return this->inputConnected_; }
+  bool
+  hasOutput() const { return this->outputConnected_; }
 
 protected:
   bool connect_input_adapter() override;
@@ -59,10 +61,10 @@ EmbeddedPipeline
   // Helper to convert to std::string using the system locale (don't assume it
   // is UTF-8 like QString::toStdString does)
   auto ss = []( QString const& qs ){
-    auto const& data = qs.toLocal8Bit();
-    auto const l = static_cast< size_t >( data.size() );
-    return std::string{ data.constData(), l };
-  };
+              auto const& data = qs.toLocal8Bit();
+              auto const l = static_cast< size_t >( data.size() );
+              return std::string{ data.constData(), l };
+            };
 
   auto const& an = ss( qApp->applicationName() );
   auto const& av = ss( qApp->applicationVersion() );
@@ -129,9 +131,12 @@ private:
 class kaq::EmbeddedPipelineWorkerPrivate : public QThread
 {
 public:
-  EmbeddedPipelineWorkerPrivate( RequiredEndcaps endcaps,
-                                 EmbeddedPipelineWorker* q )
-    : pipeline{ endcaps }, endcap{ this }, q_ptr{ q } {}
+  EmbeddedPipelineWorkerPrivate(
+    RequiredEndcaps endcaps,
+    EmbeddedPipelineWorker* q )
+    : pipeline{ endcaps },
+      endcap{ this },
+      q_ptr{ q } {}
 
   void processOutput( kwiver::adapter::adapter_data_set_t const& output );
 
@@ -193,6 +198,7 @@ EmbeddedPipelineWorkerPrivate
   if( output->is_end_of_data() )
   {
     this->atEnd = true;
+
     emit q->finished();
     return;
   }
@@ -218,13 +224,11 @@ EmbeddedPipelineWorker
 ::EmbeddedPipelineWorker( RequiredEndcaps endcaps, QObject* parent )
   : QObject{ parent },
     d_ptr{ new EmbeddedPipelineWorkerPrivate{ endcaps, this } }
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 EmbeddedPipelineWorker::~EmbeddedPipelineWorker()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 bool
@@ -242,9 +246,10 @@ EmbeddedPipelineWorker
     pipelineStream.open( stdString( pipelineFile ), std::ifstream::in );
     if( !pipelineStream )
     {
-      this->reportError( "Failed to initialize pipeline: pipeline file '" +
-                         pipelineFile + "' could not be read",
-                         "Pipeline Error" );
+      this->reportError(
+        "Failed to initialize pipeline: pipeline file '" +
+        pipelineFile + "' could not be read",
+        "Pipeline Error" );
       return false;
     }
 
@@ -255,11 +260,12 @@ EmbeddedPipelineWorker
       return false;
     }
   }
-  catch ( std::exception& e )
+  catch( std::exception& e )
   {
-    this->reportError( "Failed to initialize pipeline: " +
-                       QString::fromLocal8Bit( e.what() ),
-                       "Pipeline Error" );
+    this->reportError(
+      "Failed to initialize pipeline: " +
+      QString::fromLocal8Bit( e.what() ),
+      "Pipeline Error" );
     return false;
   }
 

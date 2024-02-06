@@ -4,11 +4,11 @@
 
 #include "load_save_point.h"
 
-#include <vital/internal/cereal/cereal.hpp>
 #include <vital/internal/cereal/archives/json.hpp>
-#include <vital/internal/cereal/types/vector.hpp>
+#include <vital/internal/cereal/cereal.hpp>
 #include <vital/internal/cereal/types/map.hpp>
 #include <vital/internal/cereal/types/utility.hpp>
+#include <vital/internal/cereal/types/vector.hpp>
 
 #include <vital/logger/logger.h>
 
@@ -17,13 +17,14 @@
 namespace cereal {
 
 // ----------------------------------------------------------------------------
-  template <class P, unsigned N>
-void save_point( ::cereal::JSONOutputArchive& archive, const P& pt )
+template < class P, unsigned N >
+void
+save_point( ::cereal::JSONOutputArchive& archive, const P& pt )
 {
   // Get values as an vector
   auto data = pt.value();
   std::vector< typename P::data_type > values;
-  for ( unsigned i = 0; i < N; ++i )
+  for( unsigned i = 0; i < N; ++i )
   {
     values.push_back( data( i ) );
   }
@@ -35,8 +36,9 @@ void save_point( ::cereal::JSONOutputArchive& archive, const P& pt )
 }
 
 // ----------------------------------------------------------------------------
-  template <class P, unsigned N>
-void load_point( ::cereal::JSONInputArchive& archive, P& pt )
+template < class P, unsigned N >
+void
+load_point( ::cereal::JSONInputArchive& archive, P& pt )
 {
   // get values as a vector
   std::vector< typename P::data_type > values;
@@ -44,17 +46,18 @@ void load_point( ::cereal::JSONInputArchive& archive, P& pt )
 
   if( values.size() != N )
   {
-    LOG_ERROR( ::kwiver::vital::get_logger( "data_serializer" ),
-               "Number of elements for loading a point is not as expected. "
-               "Expected " << N << " but got " << values.size()
-               << "." );
+    LOG_ERROR(
+      ::kwiver::vital::get_logger( "data_serializer" ),
+      "Number of elements for loading a point is not as expected. "
+      "Expected " << N << " but got " << values.size()
+                  << "." );
     return;
   }
 
   typename P::vector_type lpt;
-  for ( unsigned i = 0; i < N; ++i )
+  for( unsigned i = 0; i < N; ++i )
   {
-    lpt(i) = values[i];
+    lpt( i ) = values[ i ];
   }
 
   // Construct point from vector
@@ -67,25 +70,30 @@ void load_point( ::cereal::JSONInputArchive& archive, P& pt )
 }
 
 // ----------------------------------------------------------------------------
-#define LOAD_SAVE( P, N )                                       \
-  void save( ::cereal::JSONOutputArchive& archive, const P& pt )  \
-  { save_point<P, N>( archive, pt ); }                          \
-  void load( ::cereal::JSONInputArchive& archive, P& pt )         \
-  { load_point<P, N>(archive, pt ); }
+#define LOAD_SAVE( P, N )                                      \
+void save( ::cereal::JSONOutputArchive& archive, const P& pt ) \
+{                                                              \
+  save_point< P, N >( archive, pt );                           \
+}                                                              \
+void load( ::cereal::JSONInputArchive& archive, P & pt )       \
+{                                                              \
+  load_point< P, N >( archive, pt );                           \
+}
 
-  LOAD_SAVE( ::kwiver::vital::point_2i, 2 )
-  LOAD_SAVE( ::kwiver::vital::point_2d, 2 )
-  LOAD_SAVE( ::kwiver::vital::point_2f, 2 )
-  LOAD_SAVE( ::kwiver::vital::point_3d, 3 )
-  LOAD_SAVE( ::kwiver::vital::point_3f, 3 )
-  LOAD_SAVE( ::kwiver::vital::point_4d, 4 )
-  LOAD_SAVE( ::kwiver::vital::point_4f, 4 )
+LOAD_SAVE( ::kwiver::vital::point_2i, 2 )
+LOAD_SAVE( ::kwiver::vital::point_2d, 2 )
+LOAD_SAVE( ::kwiver::vital::point_2f, 2 )
+LOAD_SAVE( ::kwiver::vital::point_3d, 3 )
+LOAD_SAVE( ::kwiver::vital::point_3f, 3 )
+LOAD_SAVE( ::kwiver::vital::point_4d, 4 )
+LOAD_SAVE( ::kwiver::vital::point_4f, 4 )
 
 #undef LOAD_SAVE
 
 // ----------------------------------------------------------------------------
-template <class C>
-void save_covariance( ::cereal::JSONOutputArchive& archive, const C& cov )
+template < class C >
+void
+save_covariance( ::cereal::JSONOutputArchive& archive, const C& cov )
 {
   auto* data = cov.data();
   std::vector< typename C::data_type > cov_values( data, data + C::data_size );
@@ -94,8 +102,9 @@ void save_covariance( ::cereal::JSONOutputArchive& archive, const C& cov )
 }
 
 // ----------------------------------------------------------------------------
-template <class C>
-void load_covariance( ::cereal::JSONInputArchive& archive, C& cov )
+template < class C >
+void
+load_covariance( ::cereal::JSONInputArchive& archive, C& cov )
 {
   std::vector< typename C::data_type > cov_values;
 
@@ -105,27 +114,32 @@ void load_covariance( ::cereal::JSONInputArchive& archive, C& cov )
 
   if( cov_values.size() != C::data_size )
   {
-    LOG_ERROR( ::kwiver::vital::get_logger( "data_serializer" ),
-               "Number of elements for loading covariance is not as expected. "
-               "Expected " << C::data_size << " but got " << cov_values.size()
-               << "." );
+    LOG_ERROR(
+      ::kwiver::vital::get_logger( "data_serializer" ),
+      "Number of elements for loading covariance is not as expected. "
+      "Expected " << C::data_size << " but got " << cov_values.size()
+                  << "." );
     return;
   }
 }
 
 // ----------------------------------------------------------------------------
 #define LOAD_SAVE( C )                                          \
-void save( ::cereal::JSONOutputArchive& archive, const C& cov )   \
-{ save_covariance<C>(archive, cov ); }                          \
-void load( ::cereal::JSONInputArchive& archive, C& cov )          \
-{ load_covariance<C>(archive, cov ); }
+void save( ::cereal::JSONOutputArchive& archive, const C& cov ) \
+{                                                               \
+  save_covariance< C >( archive, cov );                         \
+}                                                               \
+void load( ::cereal::JSONInputArchive& archive, C & cov )       \
+{                                                               \
+  load_covariance< C >( archive, cov );                         \
+}
 
-  LOAD_SAVE( ::kwiver::vital::covariance_2d )
-  LOAD_SAVE( ::kwiver::vital::covariance_2f )
-  LOAD_SAVE( ::kwiver::vital::covariance_3d )
-  LOAD_SAVE( ::kwiver::vital::covariance_3f )
-  LOAD_SAVE( ::kwiver::vital::covariance_4d )
-  LOAD_SAVE( ::kwiver::vital::covariance_4f )
+LOAD_SAVE( ::kwiver::vital::covariance_2d )
+LOAD_SAVE( ::kwiver::vital::covariance_2f )
+LOAD_SAVE( ::kwiver::vital::covariance_3d )
+LOAD_SAVE( ::kwiver::vital::covariance_3f )
+LOAD_SAVE( ::kwiver::vital::covariance_4d )
+LOAD_SAVE( ::kwiver::vital::covariance_4f )
 
 #undef LOAD_SAVE
 

@@ -5,12 +5,13 @@
 #ifndef INCL_TRACK_FIELD_HOST_H
 #define INCL_TRACK_FIELD_HOST_H
 
-#include <vital/vital_config.h>
 #include <track_oracle/core/track_oracle_export.h>
+#include <vital/vital_config.h>
 
 #include <track_oracle/core/track_oracle_core.h>
 
 namespace kwiver {
+
 namespace track_oracle {
 
 // this class exists ONLY to supply a common row
@@ -29,10 +30,10 @@ public:
   oracle_entry_handle_type get_cursor() const;
 
   void set_cursor( oracle_entry_handle_type h ) const;
-
 };
 
 } // ...track_oracle
+
 } // ...kwiver
 
 #endif

@@ -8,8 +8,8 @@
 #ifndef VITAL_EIGEN_IO_H_
 #define VITAL_EIGEN_IO_H_
 
-#include <iostream>
 #include <cstring>
+#include <iostream>
 
 #include <Eigen/Core>
 
@@ -30,14 +30,15 @@ template < typename T, int M, int N >
 std::istream&
 operator>>( std::istream& s, Matrix< T, M, N >& m )
 {
-  for ( int i = 0; i < M; ++i )
+  for( int i = 0; i < M; ++i )
   {
-    for ( int j = 0; j < N; ++j )
+    for( int j = 0; j < N; ++j )
     {
-      if ( ! ( s >> std::skipws >> m( i, j ) ) )
+      if( !( s >> std::skipws >> m( i, j ) ) )
       {
-        VITAL_THROW( kwiver::vital::invalid_data, "Encountered a non-numeric value while "
-                                    "parsing an Eigen::Matrix" );
+        VITAL_THROW(
+          kwiver::vital::invalid_data, "Encountered a non-numeric value while "
+                                       "parsing an Eigen::Matrix" );
       }
     }
   }
@@ -46,11 +47,12 @@ operator>>( std::istream& s, Matrix< T, M, N >& m )
 
 /// Serialization of fixed Eigen matrices
 template < typename Archive, typename T, int M, int N, int O, int MM, int NN >
-void serialize(Archive & archive, Matrix< T, M, N, O, MM, NN >& m)
+void
+serialize( Archive& archive, Matrix< T, M, N, O, MM, NN >& m )
 {
-  for ( int i = 0; i < M; ++i )
+  for( int i = 0; i < M; ++i )
   {
-    for ( int j = 0; j < N; ++j )
+    for( int j = 0; j < N; ++j )
     {
       archive( m( i, j ) );
     }

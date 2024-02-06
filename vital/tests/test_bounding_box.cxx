@@ -10,17 +10,18 @@
 #include <gtest/gtest.h>
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
 }
 
 // ----------------------------------------------------------------------------
-TEST(bounding_box, construct_bbox_i)
+TEST ( bounding_box, construct_bbox_i )
 {
   kwiver::vital::bounding_box_i::vector_type tl{ 12, 23 };
-  kwiver::vital::bounding_box_i::vector_type  br{ 200, 223 };
+  kwiver::vital::bounding_box_i::vector_type br{ 200, 223 };
   kwiver::vital::bounding_box_i bb{ tl, br };
 
   EXPECT_EQ( tl, bb.upper_left() );
@@ -28,7 +29,7 @@ TEST(bounding_box, construct_bbox_i)
 }
 
 // ----------------------------------------------------------------------------
-TEST(bounding_box, construct_bbox_d)
+TEST ( bounding_box, construct_bbox_d )
 {
   kwiver::vital::bounding_box_d::vector_type tl{ 12, 23 };
   kwiver::vital::bounding_box_d::vector_type br{ 12 + 111, 23 + 222 };
@@ -39,7 +40,7 @@ TEST(bounding_box, construct_bbox_d)
 }
 
 // ----------------------------------------------------------------------------
-TEST(bounding_box, translate_bbox_d)
+TEST ( bounding_box, translate_bbox_d )
 {
   kwiver::vital::bounding_box_d::vector_type tl{ 12, 23 };
   kwiver::vital::bounding_box_d::vector_type br{ 200, 223 };
@@ -55,7 +56,7 @@ TEST(bounding_box, translate_bbox_d)
 }
 
 // ----------------------------------------------------------------------------
-TEST(bounding_box, intersection_bbox_d)
+TEST ( bounding_box, intersection_bbox_d )
 {
   kwiver::vital::bounding_box_d::vector_type tl{ 12, 23 };
   kwiver::vital::bounding_box_d::vector_type br{ 200, 223 };
@@ -64,6 +65,7 @@ TEST(bounding_box, intersection_bbox_d)
 
   kwiver::vital::bounding_box_d bb2 = bb1;
   kwiver::vital::translate( bb2, t );
+
   kwiver::vital::bounding_box_d bbi = kwiver::vital::intersection( bb1, bb2 );
 
   EXPECT_EQ( 132, bbi.upper_left().x() );
@@ -73,7 +75,7 @@ TEST(bounding_box, intersection_bbox_d)
 }
 
 // ----------------------------------------------------------------------------
-TEST(bounding_box, comparisons)
+TEST ( bounding_box, comparisons )
 {
   kwiver::vital::bounding_box_d::vector_type tl1{ 12, 23 };
   kwiver::vital::bounding_box_d::vector_type br1{ 200, 223 };

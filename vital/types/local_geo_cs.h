@@ -8,14 +8,14 @@
 #ifndef VITAL_LOCAL_GEO_CS_H_
 #define VITAL_LOCAL_GEO_CS_H_
 
-#include <vital/vital_export.h>
 #include <vital/vital_config.h>
+#include <vital/vital_export.h>
 
 #include <vital/types/geo_point.h>
 #include <vital/vital_types.h>
-#include <vital/vital_config.h>
 
 namespace kwiver {
+
 namespace vital {
 
 /// Represents a local geo coordinate system origin expressed in UTM
@@ -28,15 +28,15 @@ public:
   /// Set the geographic coordinate origin
   ///
   /// Internally converts this coordinate to WGS84 UTM
-  void set_origin(const vital::geo_point& origin);
+  void set_origin( const vital::geo_point& origin );
 
   /// Access the geographic coordinate of the origin
-  const vital::geo_point& origin() const { return geo_origin_; }
+  const vital::geo_point&
+  origin() const { return geo_origin_; }
 
 private:
   /// The local coordinates origin
   vital::geo_point geo_origin_;
-
 };
 
 /// Read a local_geo_cs from a text file
@@ -50,8 +50,9 @@ private:
 /// \param [in]     file_path The path to the file to read.
 VITAL_EXPORT
 bool
-read_local_geo_cs_from_file(local_geo_cs& lgcs,
-                            vital::path_t const& file_path);
+read_local_geo_cs_from_file(
+  local_geo_cs& lgcs,
+  vital::path_t const& file_path );
 
 /// Write a local_geo_cs to a text file
 ///
@@ -63,10 +64,12 @@ read_local_geo_cs_from_file(local_geo_cs& lgcs,
 /// \param [in] file_path The path to the file to write.
 VITAL_EXPORT
 bool
-write_local_geo_cs_to_file(local_geo_cs const& lgcs,
-                           vital::path_t const& file_path);
+write_local_geo_cs_to_file(
+  local_geo_cs const& lgcs,
+  vital::path_t const& file_path );
 
 } // end namespace vital
+
 } // end namespace kwiver
 
 #endif // VITAL_LOCAL_GEO_CS_H_

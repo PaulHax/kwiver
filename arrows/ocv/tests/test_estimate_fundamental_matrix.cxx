@@ -17,18 +17,19 @@ static constexpr double ideal_tolerance = 3e-6;
 static constexpr double outlier_tolerance = 0.01;
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
 }
 
 // ----------------------------------------------------------------------------
-TEST(estimate_fundamental_matrix, create)
+TEST ( estimate_fundamental_matrix, create )
 {
   plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE( nullptr, algo::estimate_fundamental_matrix::create("ocv") );
+  EXPECT_NE( nullptr, algo::estimate_fundamental_matrix::create( "ocv" ) );
 }
 
 // ----------------------------------------------------------------------------

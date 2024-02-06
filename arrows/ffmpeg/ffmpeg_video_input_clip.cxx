@@ -8,9 +8,9 @@
 #include <arrows/ffmpeg/ffmpeg_video_input_clip.h>
 
 #include <arrows/ffmpeg/ffmpeg_video_input.h>
-#include <arrows/ffmpeg/ffmpeg_video_settings.h>
 #include <arrows/ffmpeg/ffmpeg_video_raw_image.h>
 #include <arrows/ffmpeg/ffmpeg_video_raw_metadata.h>
+#include <arrows/ffmpeg/ffmpeg_video_settings.h>
 #include <arrows/ffmpeg/ffmpeg_video_uninterpreted_data.h>
 
 #include <stdexcept>
@@ -65,10 +65,10 @@ ffmpeg_video_input_clip::impl
 ::seek_to_start()
 {
   if( !video->seek_frame_(
-        initial_timestamp, frame_begin,
-        start_at_keyframe
-        ? ffmpeg_video_input::SEEK_MODE_KEYFRAME_BEFORE
-        : ffmpeg_video_input::SEEK_MODE_EXACT ) )
+    initial_timestamp, frame_begin,
+    start_at_keyframe
+    ? ffmpeg_video_input::SEEK_MODE_KEYFRAME_BEFORE
+    : ffmpeg_video_input::SEEK_MODE_EXACT ) )
   {
     throw_error( "Could not start video clip" );
   }
@@ -144,7 +144,7 @@ ffmpeg_video_input_clip
     "keyframe." );
 
   vital::algo::video_input::
-    get_nested_algo_configuration( "video_input", config, d->video );
+  get_nested_algo_configuration( "video_input", config, d->video );
   return config;
 }
 
@@ -195,6 +195,7 @@ ffmpeg_video_input_clip
   d->before_first_frame = true;
   d->video->open( video_name );
   d->seek_to_start();
+
   auto const raw_image =
     dynamic_cast< ffmpeg_video_raw_image const* >(
       d->video->raw_frame_image().get() );
@@ -207,17 +208,17 @@ ffmpeg_video_input_clip
   auto const& capabilities = d->video->get_implementation_capabilities();
   using vi = vital::algo::video_input;
   for( auto const& capability : {
-    vi::HAS_EOV,
-    vi::HAS_FRAME_NUMBERS,
-    vi::HAS_FRAME_DATA,
-    vi::HAS_FRAME_TIME,
-    vi::HAS_METADATA,
-    vi::HAS_ABSOLUTE_FRAME_TIME,
-    vi::HAS_TIMEOUT,
-    vi::IS_SEEKABLE,
-    vi::HAS_RAW_IMAGE,
-    vi::HAS_RAW_METADATA,
-    vi::HAS_UNINTERPRETED_DATA, } )
+          vi::HAS_EOV,
+          vi::HAS_FRAME_NUMBERS,
+          vi::HAS_FRAME_DATA,
+          vi::HAS_FRAME_TIME,
+          vi::HAS_METADATA,
+          vi::HAS_ABSOLUTE_FRAME_TIME,
+          vi::HAS_TIMEOUT,
+          vi::IS_SEEKABLE,
+          vi::HAS_RAW_IMAGE,
+          vi::HAS_RAW_METADATA,
+          vi::HAS_UNINTERPRETED_DATA, } )
   {
     set_capability( capability, capabilities.capability( capability ) );
   }

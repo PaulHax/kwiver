@@ -4,8 +4,8 @@
 
 #include "vital_applets_export.h"
 
-#include <vital/plugin_management/plugin_loader.h>
 #include <vital/applets/applet_registrar.h>
+#include <vital/plugin_management/plugin_loader.h>
 
 #include "config_explorer.h"
 
@@ -19,7 +19,7 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 
   kwiver::applet_registrar reg( vpm, "vital_tool_group" );
 
-  if (reg.is_module_loaded())
+  if( reg.is_module_loaded() )
   {
     return;
   }

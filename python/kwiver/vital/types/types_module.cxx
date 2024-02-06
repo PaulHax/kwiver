@@ -15,8 +15,10 @@
 namespace py = pybind11;
 using namespace kwiver::vital::python;
 
-PYBIND11_MODULE(types, m)
+PYBIND11_MODULE( types, m )
 {
-  image::image(m);
-  image_container::image_container(m);
+  image
+  ::image( m );
+  image_container
+  ::image_container( m );
 }

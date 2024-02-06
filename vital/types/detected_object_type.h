@@ -24,7 +24,8 @@ using detected_object_type = class_map< detected_object_type_tag >;
 
 // typedef for a class_map shared pointer
 using detected_object_type_sptr = std::shared_ptr< detected_object_type >;
-using detected_object_type_scptr = std::shared_ptr< detected_object_type const >;
+using detected_object_type_scptr =
+  std::shared_ptr< detected_object_type const >;
 
 } // namespace vital
 

@@ -27,14 +27,15 @@ const std::string expected_4D = "point4D\n"
                                 "                  0, 0, 0, 1 ]\n";
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
 }
 
 // ----------------------------------------------------------------------------
-TEST(point, print_2i)
+TEST ( point, print_2i )
 {
   kwiver::vital::point_2i p2i( 1234, 2345 );
   std::stringstream output;
@@ -49,7 +50,7 @@ TEST(point, print_2i)
 }
 
 // ----------------------------------------------------------------------------
-TEST(point, print_2d)
+TEST ( point, print_2d )
 {
   kwiver::vital::point_2d p2d( 12.34, 23.45 );
   std::stringstream output;
@@ -59,7 +60,7 @@ TEST(point, print_2d)
 }
 
 // ----------------------------------------------------------------------------
-TEST(point, print_2f)
+TEST ( point, print_2f )
 {
   kwiver::vital::point_2f p2f( 12.34, 23.45 );
   std::stringstream output;
@@ -69,7 +70,7 @@ TEST(point, print_2f)
 }
 
 // ----------------------------------------------------------------------------
-TEST(point, print_3d)
+TEST ( point, print_3d )
 {
   kwiver::vital::point_3d p3d( 12.34, 23.45, 34.56 );
   std::stringstream output;
@@ -79,7 +80,7 @@ TEST(point, print_3d)
 }
 
 // ----------------------------------------------------------------------------
-TEST(point, print_3f)
+TEST ( point, print_3f )
 {
   kwiver::vital::point_3f p3f( 12.34, 23.45, 34.56 );
   std::stringstream output;
@@ -89,7 +90,7 @@ TEST(point, print_3f)
 }
 
 // ----------------------------------------------------------------------------
-TEST(point, print_4d)
+TEST ( point, print_4d )
 {
   kwiver::vital::point_4d p4d( 12.34, 23.45, 34.56, 45.67 );
   std::stringstream output;
@@ -99,7 +100,7 @@ TEST(point, print_4d)
 }
 
 // ----------------------------------------------------------------------------
-TEST(point, print_4f)
+TEST ( point, print_4f )
 {
   kwiver::vital::point_4f p4f( 12.34, 23.45, 34.56, 45.67 );
   std::stringstream output;

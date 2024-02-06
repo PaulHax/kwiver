@@ -17,84 +17,91 @@
 #include <vital/algo/integrate_depth_maps.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
-template < class algorithm_def_idm_base=
-            kwiver::vital::algorithm_def<
-              kwiver::vital::algo::integrate_depth_maps > >
-class algorithm_def_idm_trampoline :
-      public algorithm_trampoline<algorithm_def_idm_base>
+template < class algorithm_def_idm_base =
+    kwiver::vital::algorithm_def<
+      kwiver::vital::algo::integrate_depth_maps > >
+class algorithm_def_idm_trampoline
+  : public algorithm_trampoline< algorithm_def_idm_base >
 {
-  public:
-    using algorithm_trampoline<algorithm_def_idm_base>::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_idm_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<kwiver::vital::algo::integrate_depth_maps>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::integrate_depth_maps >,
+      type_name,
+    );
+  }
 };
 
-template< class integrate_depth_maps_base=
-                kwiver::vital::algo::integrate_depth_maps >
-class integrate_depth_maps_trampoline :
-      public algorithm_def_idm_trampoline< integrate_depth_maps_base >
+template < class integrate_depth_maps_base =
+    kwiver::vital::algo::integrate_depth_maps >
+class integrate_depth_maps_trampoline
+  : public algorithm_def_idm_trampoline< integrate_depth_maps_base >
 {
-  public:
-    using algorithm_def_idm_trampoline< integrate_depth_maps_base>::
-              algorithm_def_idm_trampoline;
+public:
+  using algorithm_def_idm_trampoline< integrate_depth_maps_base >::
+  algorithm_def_idm_trampoline;
 
-    void
-    integrate( kwiver::vital::vector_3d const& minpt_bound,
-               kwiver::vital::vector_3d const& maxpt_bound,
-               std::vector<kwiver::vital::image_container_sptr> const& depth_maps,
-               std::vector<kwiver::vital::camera_perspective_sptr> const& cameras,
-               kwiver::vital::image_container_sptr& volume,
-               kwiver::vital::vector_3d& spacing ) const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        void,
-        kwiver::vital::algo::integrate_depth_maps,
-        integrate,
-        minpt_bound,
-        maxpt_bound,
-        depth_maps,
-        cameras,
-        volume,
-        spacing
-      );
-    }
+  void
+  integrate(
+    kwiver::vital::vector_3d const& minpt_bound,
+    kwiver::vital::vector_3d const& maxpt_bound,
+    std::vector< kwiver::vital::image_container_sptr > const& depth_maps,
+    std::vector< kwiver::vital::camera_perspective_sptr > const& cameras,
+    kwiver::vital::image_container_sptr& volume,
+    kwiver::vital::vector_3d& spacing ) const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      void,
+      kwiver::vital::algo::integrate_depth_maps,
+      integrate,
+      minpt_bound,
+      maxpt_bound,
+      depth_maps,
+      cameras,
+      volume,
+      spacing
+    );
+  }
 
-    void
-    integrate( kwiver::vital::vector_3d const& minpt_bound,
-               kwiver::vital::vector_3d const& maxpt_bound,
-               std::vector<kwiver::vital::image_container_sptr> const& depth_maps,
-               std::vector<kwiver::vital::image_container_sptr> const& weight_maps,
-               std::vector<kwiver::vital::camera_perspective_sptr> const& cameras,
-               kwiver::vital::image_container_sptr& volume,
-               kwiver::vital::vector_3d& spacing ) const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        void,
-        kwiver::vital::algo::integrate_depth_maps,
-        integrate,
-        minpt_bound,
-        maxpt_bound,
-        depth_maps,
-        weight_maps,
-        cameras,
-        volume,
-        spacing
-      );
-    }
+  void
+  integrate(
+    kwiver::vital::vector_3d const& minpt_bound,
+    kwiver::vital::vector_3d const& maxpt_bound,
+    std::vector< kwiver::vital::image_container_sptr > const& depth_maps,
+    std::vector< kwiver::vital::image_container_sptr > const& weight_maps,
+    std::vector< kwiver::vital::camera_perspective_sptr > const& cameras,
+    kwiver::vital::image_container_sptr& volume,
+    kwiver::vital::vector_3d& spacing ) const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      void,
+      kwiver::vital::algo::integrate_depth_maps,
+      integrate,
+      minpt_bound,
+      maxpt_bound,
+      depth_maps,
+      weight_maps,
+      cameras,
+      volume,
+      spacing
+    );
+  }
 };
 
-}
-}
-}
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
 
 #endif

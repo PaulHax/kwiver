@@ -26,10 +26,12 @@ struct is_shared_ptr< std::shared_ptr< T > >: std::true_type {};
 // A helper for getting a value from a config block. This specialization is for
 // all types but std::shared_ptr. The value is returned via \p value
 template < typename ValueType,
-           typename std::enable_if_t< !detail::is_shared_ptr< ValueType >::value, bool > = true >
+  typename std::enable_if_t< !detail::is_shared_ptr< ValueType >::value,
+    bool > = true >
 void
-set_config_helper( config_block_sptr config, const std::string& value_name,
-                   const ValueType& value )
+set_config_helper(
+  config_block_sptr config, const std::string& value_name,
+  const ValueType& value )
 {
   config->set_value< ValueType >( value_name, value );
 }
@@ -38,7 +40,8 @@ set_config_helper( config_block_sptr config, const std::string& value_name,
 // A helper for getting a value to a config block. This specialization is for
 // all types except std::shared_ptr
 template < typename ValueType,
-           typename std::enable_if_t< !detail::is_shared_ptr< ValueType >::value, bool > = true >
+  typename std::enable_if_t< !detail::is_shared_ptr< ValueType >::value,
+    bool > = true >
 ValueType
 get_config_helper( config_block_sptr config, config_block_key_t const& key )
 {
@@ -49,10 +52,12 @@ get_config_helper( config_block_sptr config, config_block_key_t const& key )
 // A helper for getting a value from a config block. This specialization is for
 // all types except std::shared_ptr with a default value
 template < typename ValueType,
-           typename std::enable_if_t< !detail::is_shared_ptr< ValueType >::value, bool > = true >
+  typename std::enable_if_t< !detail::is_shared_ptr< ValueType >::value,
+    bool > = true >
 ValueType
-get_config_helper( config_block_sptr config, config_block_key_t const& key,
-                   ValueType const& default_value )
+get_config_helper(
+  config_block_sptr config, config_block_key_t const& key,
+  ValueType const& default_value )
 {
   return config->get_value< ValueType >( key, default_value );
 }

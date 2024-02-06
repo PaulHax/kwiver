@@ -10,29 +10,42 @@
 #include <vital/types/detected_object_set.h>
 
 namespace cereal {
-  class JSONOutputArchive;
-  class JSONInputArchive;
+
+class JSONOutputArchive;
+class JSONInputArchive;
+
 } // end namespace cereal
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace serialize {
+
 namespace json {
 
 class KWIVER_SERIALIZE_JSON_EXPORT detected_object_set
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO( "kwiver:detected_object_set",
-               "Serializes a detected_object_set using JSON notation." );
+  PLUGIN_INFO(
+    "kwiver:detected_object_set",
+    "Serializes a detected_object_set using JSON notation." );
 
   detected_object_set();
   virtual ~detected_object_set();
 
-  std::shared_ptr< std::string > serialize( const vital::any& element ) override;
+  std::shared_ptr< std::string > serialize(
+    const vital::any& element ) override;
   vital::any deserialize( const std::string& message ) override;
 };
 
-} } } }       // end namespace kwiver
+} // namespace json
+
+} // namespace serialize
+
+} // namespace arrows
+
+}             // end namespace kwiver
 
 #endif // ARROWS_SERIALIZATION_JSON_DETECTED_OBJECT_SET

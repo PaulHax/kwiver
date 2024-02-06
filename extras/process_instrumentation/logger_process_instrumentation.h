@@ -17,6 +17,7 @@
 namespace sprokit {
 
 // -----------------------------------------------------------------
+
 /**
  * \brief Process instrumentation using the logger.
  *
@@ -59,7 +60,6 @@ private:
 
   kwiver::vital::logger_handle_t m_logger;
   kwiver::vital::kwiver_logger::log_level_t m_log_level;
-
 }; // end class logger_process_instrumentation
 
 } // end namespace

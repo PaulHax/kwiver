@@ -29,7 +29,7 @@ class VITAL_ALGO_EXPORT image_object_detector
 {
 public:
   image_object_detector();
-  PLUGGABLE_INTERFACE(image_object_detector);
+  PLUGGABLE_INTERFACE( image_object_detector );
   /// Find all objects on the provided image
   ///
   /// This method analyzes the supplied image and along with any saved
@@ -39,7 +39,6 @@ public:
   /// \returns vector of image objects found
   virtual detected_object_set_sptr
   detect( image_container_sptr image_data ) const = 0;
-
 };
 
 /// Shared pointer for generic image_object_detector definition type.
@@ -51,4 +50,4 @@ typedef std::shared_ptr< image_object_detector > image_object_detector_sptr;
 
 } // namespace kwiver
 
-#endif //VITAL_ALGO_IMAGE_OBJECT_DETECTOR_H_
+#endif // VITAL_ALGO_IMAGE_OBJECT_DETECTOR_H_

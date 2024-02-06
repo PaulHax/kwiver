@@ -22,8 +22,9 @@ class KWIVER_ALGO_VXL_EXPORT threshold
   : public vital::algo::image_filter
 {
 public:
-  PLUGIN_INFO( "vxl_threshold",
-               "Threshold at image at a given percentile or value." )
+  PLUGIN_INFO(
+    "vxl_threshold",
+    "Threshold at image at a given percentile or value." )
 
   threshold();
   virtual ~threshold();

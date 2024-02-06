@@ -8,8 +8,8 @@
 #ifndef KWIVER_ARROWS_FFMPEG_FFMPEG_VIDEO_SETTINGS_H_
 #define KWIVER_ARROWS_FFMPEG_FFMPEG_VIDEO_SETTINGS_H_
 
-#include <arrows/ffmpeg/ffmpeg_util.h>
 #include <arrows/ffmpeg/ffmpeg_audio_stream_settings.h>
+#include <arrows/ffmpeg/ffmpeg_util.h>
 #include <arrows/ffmpeg/kwiver_algo_ffmpeg_export.h>
 
 #include <arrows/klv/klv_stream_settings.h>
@@ -79,6 +79,7 @@ struct KWIVER_ALGO_FFMPEG_EXPORT ffmpeg_video_settings
   /// FFmpeg-defined string options passed to the video codec.
   std::map< std::string, std::string > codec_options;
 };
+
 using ffmpeg_video_settings_uptr = std::unique_ptr< ffmpeg_video_settings >;
 
 } // namespace ffmpeg

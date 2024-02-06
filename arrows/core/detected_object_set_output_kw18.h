@@ -15,7 +15,9 @@
 #include <memory>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 class KWIVER_ALGO_CORE_EXPORT detected_object_set_output_kw18
@@ -23,7 +25,8 @@ class KWIVER_ALGO_CORE_EXPORT detected_object_set_output_kw18
 {
 public:
   // NOTE: Keep description in sync with detected_object_set_input_kw18
-  PLUGIN_INFO( "kw18",
+  PLUGIN_INFO(
+    "kw18",
     "Detected object set writer using kw18 format.\n\n"
     "  - Column(s) 1: Track-id\n"
     "  - Column(s) 2: Track-length (number of detections)\n"
@@ -46,13 +49,20 @@ public:
   virtual void set_configuration( vital::config_block_sptr config );
   virtual bool check_configuration( vital::config_block_sptr config ) const;
 
-  virtual void write_set( const kwiver::vital::detected_object_set_sptr set, std::string const& image_name );
+  virtual void write_set(
+    const kwiver::vital::detected_object_set_sptr set,
+    std::string const& image_name );
 
 private:
   class priv;
+
   std::unique_ptr< priv > d;
 };
 
-} } } // end namespace
+} // namespace core
+
+} // namespace arrows
+
+}     // end namespace
 
 #endif // KWIVER_ARROWS_DETECTED_OBJECT_SET_OUTPUT_KW18_H

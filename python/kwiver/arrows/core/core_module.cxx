@@ -5,8 +5,8 @@
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(core, m)
+PYBIND11_MODULE( core, m )
 {
-  render_mesh_depth_map(m);
-  transfer_bbox_with_depth_map(m);
+  render_mesh_depth_map( m );
+  transfer_bbox_with_depth_map( m );
 }

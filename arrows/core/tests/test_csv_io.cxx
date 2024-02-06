@@ -289,14 +289,18 @@ TEST ( csv_io, read_float )
   EXPECT_EQ( -1.0f, reader.read< float >() );
   EXPECT_EQ( 3.6e10, reader.read< double >() );
   EXPECT_NO_THROW( reader.next_line() );
-  EXPECT_EQ( std::numeric_limits< float >::infinity(),
-             reader.read< float >() );
-  EXPECT_EQ( std::numeric_limits< double >::infinity(),
-             reader.read< double >() );
-  EXPECT_EQ( -std::numeric_limits< float >::infinity(),
-             reader.read< float >() );
-  EXPECT_EQ( -std::numeric_limits< double >::infinity(),
-             reader.read< double >() );
+  EXPECT_EQ(
+    std::numeric_limits< float >::infinity(),
+    reader.read< float >() );
+  EXPECT_EQ(
+    std::numeric_limits< double >::infinity(),
+    reader.read< double >() );
+  EXPECT_EQ(
+    -std::numeric_limits< float >::infinity(),
+    reader.read< float >() );
+  EXPECT_EQ(
+    -std::numeric_limits< double >::infinity(),
+    reader.read< double >() );
   EXPECT_TRUE( std::isnan( reader.read< float >() ) );
   EXPECT_TRUE( std::isnan( reader.read< double >() ) );
   EXPECT_TRUE( std::isnan( reader.read< float >() ) );

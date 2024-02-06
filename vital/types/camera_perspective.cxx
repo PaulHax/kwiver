@@ -6,21 +6,21 @@
 /// \brief Implementation of \link kwiver::vital::camera_perspective
 /// camera_perspective \endlink class
 
-#include <vital/types/camera_perspective.h>
-#include <vital/io/eigen_io.h>
-#include <vital/types/matrix.h>
 #include <Eigen/Geometry>
+#include <vital/io/eigen_io.h>
+#include <vital/types/camera_perspective.h>
+#include <vital/types/matrix.h>
 
 #include <iomanip>
 
 namespace kwiver {
+
 namespace vital {
 
 camera_perspective
 ::camera_perspective()
   : m_logger( kwiver::vital::get_logger( "vital.camera_perspective" ) )
-{
-}
+{}
 
 /// Convert to a 3x4 homogeneous projection matrix
 matrix_3x4d
@@ -31,8 +31,8 @@ camera_perspective
   matrix_3x3d R( this->rotation().matrix() );
   matrix_3x3d K( this->intrinsics()->as_matrix() );
   vector_3d t( this->translation() );
-  P.block< 3, 3 > ( 0, 0 ) = R;
-  P.block< 3, 1 > ( 0, 3 ) = t;
+  P.block< 3, 3 >( 0, 0 ) = R;
+  P.block< 3, 1 >( 0, 3 ) = t;
   return K * P;
 }
 
@@ -42,10 +42,10 @@ camera_perspective
 ::pose_matrix() const
 {
   matrix_3x4d P;
-  matrix_3x3d R(this->rotation().matrix());
-  vector_3d t(this->translation());
-  P.block< 3, 3 >(0, 0) = R;
-  P.block< 3, 1 >(0, 3) = t;
+  matrix_3x3d R( this->rotation().matrix() );
+  vector_3d t( this->translation() );
+  P.block< 3, 3 >( 0, 0 ) = R;
+  P.block< 3, 1 >( 0, 3 ) = t;
   return P;
 }
 
@@ -54,15 +54,15 @@ vector_2d
 camera_perspective
 ::project( const vector_3d& pt ) const
 {
-  return this->intrinsics()->map( this->rotation() * ( pt - this->center() ));
+  return this->intrinsics()->map( this->rotation() * ( pt - this->center() ) );
 }
 
 /// Compute the distance of the 3D point to the image plane
 double
 camera_perspective
-::depth(const vector_3d& pt) const
+::depth( const vector_3d& pt ) const
 {
-  return (this->rotation() * (pt - this->center())).z();
+  return ( this->rotation() * ( pt - this->center() ) ).z();
 }
 
 /// output stream operator for a base class camera_perspective
@@ -70,13 +70,14 @@ std::ostream&
 operator<<( std::ostream& s, const camera_perspective& c )
 {
   using std::setprecision;
-  std::vector<double> dc = c.intrinsics()->dist_coeffs();
-  Eigen::VectorXd d = Eigen::VectorXd::Map(dc.data(), dc.size());
+
+  std::vector< double > dc = c.intrinsics()->dist_coeffs();
+  Eigen::VectorXd d = Eigen::VectorXd::Map( dc.data(), dc.size() );
   // if no distortion coefficients, create a zero entry as a place holder
-  if ( d.rows() == 0 )
+  if( d.rows() == 0 )
   {
     d.resize( 1 );
-    d[0] = 0.0;
+    d[ 0 ] = 0.0;
   }
   s << setprecision( 12 ) << c.intrinsics()->as_matrix() << "\n\n"
     << setprecision( 12 ) << c.rotation().matrix() << "\n\n"
@@ -88,8 +89,9 @@ operator<<( std::ostream& s, const camera_perspective& c )
 /// Rotate the camera about its center such that it looks at the given point.
 void
 simple_camera_perspective
-::look_at( const vector_3d &stare_point,
-           const vector_3d &up_direction )
+::look_at(
+  const vector_3d& stare_point,
+  const vector_3d& up_direction )
 {
   // a unit vector in the up direction
   const vector_3d up = up_direction.normalized();
@@ -102,14 +104,16 @@ simple_camera_perspective
 
   // if the cross product magnitude is small then the up and z vectors are
   // nearly parallel and the up direction is poorly defined.
-  if ( x_mag < 1e-4 )
+  if( x_mag < 1e-4 )
   {
-    LOG_WARN( m_logger,
-              "simple_camera_perspective::look_at up_direction nearly parallel"
-              " with the look direction" );
+    LOG_WARN(
+      m_logger,
+      "simple_camera_perspective::look_at up_direction nearly parallel"
+      " with the look direction" );
   }
 
   x /= x_mag;
+
   vector_3d y = z.cross( x ).normalized();
 
   matrix_3x3d R;
@@ -117,18 +121,21 @@ simple_camera_perspective
     y.x(), y.y(), y.z(),
     z.x(), z.y(), z.z();
 
-  this->set_rotation( rotation_d ( R ) );
+  this->set_rotation( rotation_d( R ) );
 }
 
 /// Create a clone of this camera that is rotated to look at the given point
 camera_perspective_sptr
 simple_camera_perspective
-::clone_look_at( const vector_3d &stare_point,
-                 const vector_3d &up_direction ) const
+::clone_look_at(
+  const vector_3d& stare_point,
+  const vector_3d& up_direction ) const
 {
-  auto c_sptr = std::dynamic_pointer_cast<camera_perspective>(this->clone());
-  dynamic_cast<simple_camera_perspective *>(c_sptr.get())->look_at( stare_point,
-                                                                    up_direction );
+  auto c_sptr =
+    std::dynamic_pointer_cast< camera_perspective >( this->clone() );
+  dynamic_cast< simple_camera_perspective* >( c_sptr.get() )->look_at(
+    stare_point,
+    up_direction );
   return c_sptr;
 }
 
@@ -141,30 +148,36 @@ operator>>( std::istream& s, simple_camera_perspective& k )
   s >> K >> R >> t;
 
   double dVal;
-  std::vector<double> dValues;
+  std::vector< double > dValues;
 
-  while (s >> dVal)
+  while( s >> dVal )
   {
-    dValues.push_back(dVal);
+    dValues.push_back( dVal );
   }
 
-  Eigen::VectorXd d(dValues.size());
+  Eigen::VectorXd d( dValues.size() );
 
-  for (size_t i = 0; i < dValues.size(); ++i)
+  for( size_t i = 0; i < dValues.size(); ++i )
   {
-    d(i) =  dValues[i];
+    d( i ) = dValues[ i ];
   }
 
   // a single 0 in d is used as a place holder,
   // if a single 0 was loaded then clear d
-  if ( ( d.rows() == 1 ) && ( d[0] ==  0.0 ) )
+  if( ( d.rows() == 1 ) && ( d[ 0 ] ==  0.0 ) )
   {
     d.resize( 0 );
   }
-  k.set_intrinsics( camera_intrinsics_sptr(new simple_camera_intrinsics( K, d ) ) );
-  k.set_rotation( rotation_d ( R ) );
+  k.set_intrinsics(
+    camera_intrinsics_sptr(
+      new simple_camera_intrinsics(
+        K,
+        d ) ) );
+  k.set_rotation( rotation_d( R ) );
   k.set_translation( t );
   return s;
 }
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace

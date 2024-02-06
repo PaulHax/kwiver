@@ -6,13 +6,14 @@
 #include <stdexcept>
 
 namespace kwiver {
+
 namespace track_oracle {
 
 track_oracle_frame_view
 ::track_oracle_frame_view( track_oracle_row_view& parent )
-  : track_oracle_row_view(), parent_track_view( parent )
-{
-}
+  : track_oracle_row_view(),
+    parent_track_view( parent )
+{}
 
 frame_handle_type
 track_oracle_frame_view
@@ -27,8 +28,9 @@ track_oracle_frame_view
   pt( this->get_cursor() ) = this->parent_track_view.get_cursor();
 
   // add ourselves to our parent track
-  track_field<frame_handle_list_type> frame_list( "__frame_list" );
-  frame_list( this->parent_track_view.get_cursor() ).push_back( frame_handle_type( this->get_cursor() ));
+  track_field< frame_handle_list_type > frame_list( "__frame_list" );
+  frame_list( this->parent_track_view.get_cursor() ).push_back(
+    frame_handle_type( this->get_cursor() ) );
 
   return frame_handle_type( this->get_cursor() );
 }
@@ -51,32 +53,32 @@ track_oracle_frame_view
   size_t n = frames.size();
   size_t found_index = 0;
   bool found = false;
-  for (unsigned i=0; ( ! found ) && (i<n); ++i)
+  for( unsigned i = 0; ( !found ) && ( i < n ); ++i )
   {
-    if (frames[i].row == row)
+    if( frames[ i ].row == row )
     {
       found_index = i;
       found = true;
     }
   }
   // fail if we're not actually a member of our parent track
-  if ( ! found )
+  if( !found )
   {
     return false;
   }
 
   // remove from our parent's list of frames
-  if (n == 1)
+  if( n == 1 )
   {
     frames.clear();
   }
   else
   {
-    for (size_t i=found_index; i<n-1; ++i)
+    for( size_t i = found_index; i < n - 1; ++i )
     {
-      frames[i] = frames[i+1];
+      frames[ i ] = frames[ i + 1 ];
     }
-    frames.resize( n-1 );
+    frames.resize( n - 1 );
   }
   track_oracle_core::set_frames( p, frames );
 
@@ -84,4 +86,5 @@ track_oracle_frame_view
 }
 
 } // ...track_oracle
+
 } // ...kwiver

@@ -7,10 +7,13 @@
 using std::map;
 using std::string;
 
-const unsigned kwiver::track_oracle::file_format_schema_type::SOURCE_FILE_NOT_FOUND = 0;
-kwiver::track_oracle::file_format_schema_impl* kwiver::track_oracle::file_format_schema_type::impl = 0;
+const unsigned kwiver::track_oracle::file_format_schema_type::
+SOURCE_FILE_NOT_FOUND = 0;
+kwiver::track_oracle::file_format_schema_impl* kwiver::track_oracle::
+file_format_schema_type::impl = 0;
 
 namespace kwiver {
+
 namespace track_oracle {
 
 typedef map< string, unsigned > src_fn_to_id_map_type;
@@ -28,7 +31,7 @@ file_format_schema_impl&
 file_format_schema_type
 ::get_instance()
 {
-  if ( ! file_format_schema_type::impl )
+  if( !file_format_schema_type::impl )
   {
     file_format_schema_type::impl = new file_format_schema_impl();
   }
@@ -42,7 +45,7 @@ file_format_schema_type
   const id_to_src_fn_map_type& m = get_instance().id_to_src_fn;
   id_to_src_fn_map_cit probe = m.find( id );
   return
-    (probe == m.end())
+    ( probe == m.end() )
     ? ""
     : probe->second;
 }
@@ -54,26 +57,28 @@ file_format_schema_type
   const src_fn_to_id_map_type& m = get_instance().src_fn_to_id;
   src_fn_to_id_map_cit probe = m.find( fn );
   return
-    (probe == m.end())
+    ( probe == m.end() )
     ? SOURCE_FILE_NOT_FOUND
     : probe->second;
 }
 
 void
 file_format_schema_type
-::record_track_source( const track_handle_list_type& tracks,
-                       const string& src_fn,
-                       file_format_enum fmt )
+::record_track_source(
+  const track_handle_list_type& tracks,
+  const string& src_fn,
+  file_format_enum fmt )
 {
   unsigned id = SOURCE_FILE_NOT_FOUND;
 
   // lookup or create an id for this source filename
   src_fn_to_id_map_type& m = get_instance().src_fn_to_id;
   map< string, unsigned >::iterator probe = m.find( src_fn );
-  if (probe == m.end())
+  if( probe == m.end() )
   {
-    id = static_cast<unsigned>(m.size()) + 1; // first ID is 1
+    id = static_cast< unsigned >( m.size() ) + 1; // first ID is 1
     m[ src_fn ] = id;
+
     id_to_src_fn_map_type& m2 = get_instance().id_to_src_fn;
     m2[ id ] = src_fn;
   }
@@ -83,12 +88,13 @@ file_format_schema_type
   }
 
   file_format_schema_type ffs;
-  for (size_t i=0; i<tracks.size(); ++i)
+  for( size_t i = 0; i < tracks.size(); ++i )
   {
-    ffs( tracks[i] ).format() = fmt;
-    ffs( tracks[i] ).source_file_id() = id;
+    ffs( tracks[ i ] ).format() = fmt;
+    ffs( tracks[ i ] ).source_file_id() = id;
   }
 }
 
 } // ...track_oracle
+
 } // ...kwiver

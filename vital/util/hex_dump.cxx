@@ -4,23 +4,26 @@
 
 #include "hex_dump.h"
 
-#include <iomanip>
-#include <cctype>
 #include <algorithm>
+#include <cctype>
+#include <iomanip>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
 
 std::ostream&
-hex_dump( std::ostream& os,
-          const void* buffer,
-          std::size_t bufsize,
-          bool showPrintableChars )
+hex_dump(
+  std::ostream& os,
+  const void* buffer,
+  std::size_t bufsize,
+  bool showPrintableChars )
 {
-  if ( buffer == nullptr )
+  if( buffer == nullptr )
   {
     return os;
   }
+
 
   auto oldFormat = os.flags();
   auto oldFillChar = os.fill();
@@ -28,27 +31,27 @@ hex_dump( std::ostream& os,
   size_t offset { 0 };
 
   // create a place to store text version of string
-  char renderString[maxline + 1];
+  char renderString[ maxline + 1 ];
   char* rsptr { renderString };
 
   // convenience cast
-  const unsigned char* buf { reinterpret_cast< const unsigned char* > ( buffer ) };
+  const unsigned char* buf { reinterpret_cast< const unsigned char* >( buffer ) };
 
   os << std::setw( 4 )  << std::setfill( '0' ) << std::hex
      << offset << ": ";
   ++offset;
 
-  for ( std::size_t linecount = maxline; bufsize; --bufsize, ++buf, ++offset )
+  for( std::size_t linecount = maxline; bufsize; --bufsize, ++buf, ++offset )
   {
-    os  << std::setw( 2 ) << std::setfill( '0' ) << std::hex
-        << static_cast< unsigned > ( *buf ) << ' ';
+    os << std::setw( 2 ) << std::setfill( '0' ) << std::hex
+       << static_cast< unsigned >( *buf ) << ' ';
 
     *rsptr++ = std::isprint( *buf ) ? *buf : '.';
 
-    if ( --linecount == 0 )
+    if( --linecount == 0 )
     {
       *rsptr++ = '\0';        // terminate string
-      if ( showPrintableChars )
+      if( showPrintableChars )
       {
         os << " | " << renderString;
       }
@@ -61,14 +64,14 @@ hex_dump( std::ostream& os,
 
       linecount = std::min( maxline, bufsize );
     }
-  } //end for
+  } // end for
 
   // emit newline if we haven't already
-  if ( rsptr != renderString )
+  if( rsptr != renderString )
   {
-    if ( showPrintableChars )
+    if( showPrintableChars )
     {
-      for ( *rsptr++ = '\0'; rsptr != &renderString[maxline + 1]; ++rsptr )
+      for( *rsptr++ = '\0'; rsptr != &renderString[ maxline + 1 ]; ++rsptr )
       {
         os << "   ";
       }
@@ -84,4 +87,5 @@ hex_dump( std::ostream& os,
 } // hex_dump
 
 } // namespace vital
+
 } // namespace kwiver

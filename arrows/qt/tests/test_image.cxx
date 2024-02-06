@@ -31,7 +31,7 @@ main( int argc, char** argv )
 }
 
 // ----------------------------------------------------------------------------
-TEST( image, create )
+TEST ( image, create )
 {
   plugin_manager::instance().load_all_plugins();
 
@@ -145,29 +145,30 @@ struct image_type
 
 // Declare storage for these members, which is required to use them in
 // assertions
-template < typename T, size_t Depth, QImage::Format QImageFormat >
-constexpr size_t image_type< T, Depth, QImageFormat >::depth;
+template < typename T, size_t Depth,
+  QImage::Format QImageFormat > constexpr size_t image_type< T, Depth,
+  QImageFormat >::depth;
 
-template < typename T, size_t Depth, QImage::Format QImageFormat >
-constexpr QImage::Format image_type< T, Depth, QImageFormat >::qimage_format;
+template < typename T, size_t Depth,
+  QImage::Format QImageFormat > constexpr QImage::Format image_type< T, Depth,
+  QImageFormat >::qimage_format;
 
 // ----------------------------------------------------------------------------
 template < typename T >
 class image_io : public ::testing::Test
-{
-};
+{};
 
 using test_types = ::testing::Types<
   image_type< byte, 1, QImage::Format_Grayscale8 >,
   image_type< byte, 3, QImage::Format_RGB888 >,
   image_type< byte, 4, QImage::Format_RGBA8888 >,
   image_type< bool, 1, QImage::Format_Mono >
-  >;
+>;
 
 TYPED_TEST_CASE( image_io, test_types );
 
 // ----------------------------------------------------------------------------
-TYPED_TEST( image_io, type )
+TYPED_TEST ( image_io, type )
 {
   using pix_t = typename TypeParam::pixel_type;
 
@@ -314,8 +315,9 @@ run_qt_conversion_tests( QImage const& img )
   // Convert to a vital image and verify that the properties are correct
   image const& vimg = qt::image_container::qt_to_vital( img );
   EXPECT_EQ( sizeof( pix_t ), vimg.pixel_traits().num_bytes );
-  EXPECT_EQ( image_pixel_traits_of< pix_t >::static_type,
-             vimg.pixel_traits().type );
+  EXPECT_EQ(
+    image_pixel_traits_of< pix_t >::static_type,
+    vimg.pixel_traits().type );
   EXPECT_EQ( T::depth, vimg.depth() );
   EXPECT_EQ( static_cast< size_t >( img.height() ), vimg.height() );
   EXPECT_EQ( static_cast< size_t >( img.width() ), vimg.width() );
@@ -362,8 +364,9 @@ run_vital_conversion_tests( image_of< typename T::pixel_type > const& img )
   EXPECT_EQ( native_format( T::qimage_format ), qimg.format() );
   EXPECT_EQ( static_cast< int >( img.height() ), qimg.height() );
   EXPECT_EQ( static_cast< int >( img.width() ), qimg.width() );
-  EXPECT_NE( static_cast< void const* >( img.first_pixel() ),
-             static_cast< void const* >( qimg.constBits() ) )
+  EXPECT_NE(
+    static_cast< void const* >( img.first_pixel() ),
+    static_cast< void const* >( qimg.constBits() ) )
     << "QImage should NOT share memory with vital::image";
 
   // Don't try to compare images if they don't have the same layout!
@@ -384,8 +387,9 @@ run_vital_conversion_tests( image_of< typename T::pixel_type > const& img )
   // Convert back to vital::image and test again
   image img2 = qt::image_container::qt_to_vital( qimg );
   EXPECT_EQ( sizeof( pix_t ), img2.pixel_traits().num_bytes );
-  EXPECT_EQ( image_pixel_traits_of< pix_t >::static_type,
-             img2.pixel_traits().type );
+  EXPECT_EQ(
+    image_pixel_traits_of< pix_t >::static_type,
+    img2.pixel_traits().type );
   EXPECT_TRUE( equal_content( img, img2 ) );
   EXPECT_NE( img.first_pixel(), img2.first_pixel() )
     << "re-converted vital::image should NOT share memory with original";
@@ -396,13 +400,12 @@ run_vital_conversion_tests( image_of< typename T::pixel_type > const& img )
 // ----------------------------------------------------------------------------
 template < typename T >
 class image_conversion : public ::testing::Test
-{
-};
+{};
 
 TYPED_TEST_CASE( image_conversion, test_types );
 
 // ----------------------------------------------------------------------------
-TYPED_TEST( image_conversion, qt_to_vital )
+TYPED_TEST ( image_conversion, qt_to_vital )
 {
   using pix_t = typename TypeParam::pixel_type;
 
@@ -413,7 +416,7 @@ TYPED_TEST( image_conversion, qt_to_vital )
 }
 
 // ----------------------------------------------------------------------------
-TYPED_TEST( image_conversion, vital_to_qt )
+TYPED_TEST ( image_conversion, vital_to_qt )
 {
   using pix_t = typename TypeParam::pixel_type;
 
@@ -426,7 +429,7 @@ TYPED_TEST( image_conversion, vital_to_qt )
 }
 
 // ----------------------------------------------------------------------------
-TEST( image_conversion, vital_to_qt_interleaved )
+TEST ( image_conversion, vital_to_qt_interleaved )
 {
   using test_type_t = image_type< byte, 3, QImage::Format_RGB888 >;
 

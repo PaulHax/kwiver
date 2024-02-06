@@ -7,7 +7,10 @@
 
 #include <track_oracle/core/track_field_io_proxy.txx>
 
-#define TRACK_FIELD_IO_PROXY_INSTANCES(T) \
-  template TRACK_FIELD_IO_PROXY_EXPORT std::ostream& kwiver::track_oracle::operator<<( std::ostream& os, const kwiver::track_oracle::track_field_io_proxy<T>& iop );
+#define TRACK_FIELD_IO_PROXY_INSTANCES( T )                               \
+template TRACK_FIELD_IO_PROXY_EXPORT std::ostream& kwiver::track_oracle:: \
+operator<<(                                                               \
+  std::ostream& os,                                                       \
+  const kwiver::track_oracle::track_field_io_proxy< T >& iop );
 
 #endif

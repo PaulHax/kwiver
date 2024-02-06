@@ -15,6 +15,7 @@
 #include <vital/types/feature_track_set.h>
 
 namespace kwiver {
+
 namespace vital {
 
 /// Read in a track file, producing a track_set
@@ -45,8 +46,9 @@ VITAL_EXPORT read_track_file( path_t const& file_path );
 /// \param tracks    The \c track_set object to output.
 /// \param file_path The path to output the file to.
 void
-VITAL_EXPORT write_track_file( track_set_sptr const&  tracks,
-                               path_t const&          file_path );
+VITAL_EXPORT write_track_file(
+  track_set_sptr const&  tracks,
+  path_t const&          file_path );
 
 /// Read in a feature track file, producing a feature_track_set
 ///
@@ -79,9 +81,12 @@ VITAL_EXPORT read_feature_track_file( path_t const& file_path );
 /// \param tracks    The \c track_set object to output.
 /// \param file_path The path to output the file to.
 void
-VITAL_EXPORT write_feature_track_file( feature_track_set_sptr const&  tracks,
-                                       path_t const&                  file_path );
+VITAL_EXPORT write_feature_track_file(
+  feature_track_set_sptr const&  tracks,
+  path_t const&                  file_path );
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // VITAL_TRACK_SET_IO_H_

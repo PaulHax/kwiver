@@ -23,8 +23,9 @@ namespace vital {
 class bytestream_compressor::impl
 {
 public:
-  impl( mode_t mode, compression_type_t compression_type,
-        data_type_t data_type );
+  impl(
+    mode_t mode, compression_type_t compression_type,
+    data_type_t data_type );
 
   ~impl();
 
@@ -38,10 +39,14 @@ public:
 
 // ----------------------------------------------------------------------------
 bytestream_compressor::impl
-::impl( mode_t mode, compression_type_t compression_type,
-        data_type_t data_type )
-  : mode{ mode }, compression_type{ compression_type }, data_type{ data_type },
-    stream{}, flush{ false }
+::impl(
+  mode_t mode, compression_type_t compression_type,
+  data_type_t data_type )
+  : mode{ mode },
+    compression_type{ compression_type },
+    data_type{ data_type },
+    stream{},
+    flush{ false }
 {
   if( mode >= MODE_ENUM_END ||
       compression_type >= COMPRESSION_TYPE_ENUM_END ||
@@ -171,7 +176,7 @@ bytestream_compressor
       throw std::runtime_error{ "(De)compression failed" };
     }
     d->buffer.insert(
-        d->buffer.end(), &*tmp_buffer.begin(), d->stream.next_out );
+      d->buffer.end(), &*tmp_buffer.begin(), d->stream.next_out );
   } while( d->stream.avail_out == 0 );
 
   d->flush = false;
@@ -199,7 +204,9 @@ bytestream_compressor
   auto const end_byte = static_cast< Bytef* >( end );
 
   // Copy data, careful not to overflow bounds
-  auto const input_size = static_cast< size_t >( std::distance( begin_byte, end_byte ) );
+  auto const input_size = static_cast< size_t >( std::distance(
+    begin_byte,
+    end_byte ) );
   auto const copy_size = std::min( input_size, d->buffer.size() );
   auto const result = std::copy_n( d->buffer.begin(), copy_size, begin_byte );
 

@@ -7,10 +7,11 @@
 
 #include <vital/config/config_block.h>
 
-#include <vital/noncopyable.h>
 #include <memory>
+#include <vital/noncopyable.h>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -31,7 +32,8 @@ namespace vital {
 ///
 /// Example code:
 /// \code
-/// std::auto< kwiver::vital::config_parser> input_config( new kwiver::vital::config_parser() );
+/// std::auto< kwiver::vital::config_parser> input_config( new
+/// kwiver::vital::config_parser() );
 /// input_config->add_search_path( "../config" );
 /// input_config->parse_config( filename );
 /// // Optionally, additional files can be parsed into the same config block.
@@ -42,7 +44,6 @@ class VITAL_CONFIG_EXPORT config_parser
   : private kwiver::vital::noncopyable
 {
 public:
-
   /// \brief Create object
   ///
   config_parser();
@@ -100,13 +101,14 @@ protected:
   // method to add token classes
 
 private:
-
   class priv;
 
   config_path_t m_config_file;
   const std::unique_ptr< priv > m_priv;
 };
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // KWIVER_VITAL_CONFIG_PARSER_H

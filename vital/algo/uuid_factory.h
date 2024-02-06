@@ -25,9 +25,8 @@ class VITAL_ALGO_EXPORT uuid_factory
 {
 public:
   uuid_factory();
-  PLUGGABLE_INTERFACE(uuid_factory);
+  PLUGGABLE_INTERFACE( uuid_factory );
   virtual uid create_uuid() = 0;
-
 };
 
 typedef std::shared_ptr< uuid_factory > uuid_factory_sptr;

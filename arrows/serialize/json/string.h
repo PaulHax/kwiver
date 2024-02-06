@@ -9,34 +9,49 @@
 #include <vital/algo/data_serializer.h>
 
 namespace cereal {
-  class JSONOutputArchive;
-  class JSONInputArchive;
-}
+
+class JSONOutputArchive;
+class JSONInputArchive;
+
+} // namespace cereal
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace serialize {
+
 namespace json {
 
 class KWIVER_SERIALIZE_JSON_EXPORT string
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO( "kwiver:string",
-               "Serializes a string using json notation. "
-               "This implementation only handles a single data item." );
+  PLUGIN_INFO(
+    "kwiver:string",
+    "Serializes a string using json notation. "
+    "This implementation only handles a single data item." );
 
   string();
   virtual ~string();
 
-  std::shared_ptr< std::string > serialize( const vital::any& element ) override;
+  std::shared_ptr< std::string > serialize(
+    const vital::any& element ) override;
   vital::any deserialize( const std::string& message ) override;
 
-  static void save( cereal::JSONOutputArchive& archive, const std::string&  str );
+  static void save(
+    cereal::JSONOutputArchive& archive,
+    const std::string&  str );
 
-  static void load( cereal::JSONInputArchive& archive , std::string& str );
+  static void load( cereal::JSONInputArchive& archive, std::string& str );
 };
 
-} } } }       // end namespace kwiver
+} // namespace json
+
+} // namespace serialize
+
+} // namespace arrows
+
+}             // end namespace kwiver
 
 #endif // ARROWS_SERIALIZATION_JSON_STRING_H

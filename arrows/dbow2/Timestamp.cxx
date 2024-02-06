@@ -1,32 +1,33 @@
 /*ckwg +29
-* Copyright 2017 by Kitware, Inc.
-* All rights reserved.
-*
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted provided that the following conditions are met:
-*
-*  * Redistributions of source code must retain the above copyright notice,
-*    this list of conditions and the following disclaimer.
-*
-*  * Redistributions in binary form must reproduce the above copyright notice,
-*    this list of conditions and the following disclaimer in the documentation
-*    and/or other materials provided with the distribution.
-*
-*  * Neither name of Kitware, Inc. nor the names of any contributors may be used
-*    to endorse or promote products derived from this software without specific
-*    prior written permission.
-*
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
-* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-* ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE LIABLE FOR
-* ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-* CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-* OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-* OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ * Copyright 2017 by Kitware, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *  * Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ *  * Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ *  * Neither name of Kitware, Inc. nor the names of any contributors may be
+ * used
+ *    to endorse or promote products derived from this software without specific
+ *    prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 /*
  * File: Timestamp.cpp
@@ -40,12 +41,12 @@
  *
  */
 
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
-#include <cmath>
-#include <sstream>
 #include <iomanip>
+#include <sstream>
 
 #ifdef _WIN32
 #ifndef WIN32
@@ -66,25 +67,33 @@ using namespace std;
 
 using namespace DUtils;
 
-Timestamp::Timestamp(Timestamp::tOptions option)
+Timestamp
+::Timestamp( Timestamp::tOptions option )
 {
-  if(option & CURRENT_TIME)
+  if( option & CURRENT_TIME )
+  {
     setToCurrentTime();
-  else if(option & ZERO)
-    setTime(0.);
+  }
+  else if( option & ZERO )
+  {
+    setTime( 0. );
+  }
 }
 
-Timestamp::~Timestamp(void)
-{
-}
+Timestamp::~Timestamp( void )
+{}
 
-bool Timestamp::empty() const
+bool
+Timestamp
+::empty() const
 {
   return m_secs == 0 && m_usecs == 0;
 }
 
-void Timestamp::setToCurrentTime(){
-
+void
+Timestamp
+::setToCurrentTime()
+{
 #ifdef WIN32
   struct __timeb32 timebuffer;
   _ftime32_s( &timebuffer ); // C4996
@@ -93,182 +102,226 @@ void Timestamp::setToCurrentTime(){
   m_usecs = timebuffer.millitm * 1000;
 #else
   struct timeval now;
-  gettimeofday(&now, NULL);
+  gettimeofday( &now, NULL );
   m_secs = now.tv_sec;
   m_usecs = now.tv_usec;
 #endif
-
 }
 
-void Timestamp::setTime(const string &stime){
-  string::size_type p = stime.find('.');
-  if(p == string::npos){
-    m_secs = atol(stime.c_str());
+void
+Timestamp
+::setTime( const string& stime )
+{
+  string::size_type p = stime.find( '.' );
+  if( p == string::npos )
+  {
+    m_secs = atol( stime.c_str() );
     m_usecs = 0;
-  }else{
-    m_secs = atol(stime.substr(0, p).c_str());
+  }
+  else
+  {
+    m_secs = atol( stime.substr( 0, p ).c_str() );
 
-    string s_usecs = stime.substr(p+1, 6);
-    m_usecs = atol(stime.substr(p+1).c_str());
-    m_usecs *= (unsigned long)pow(10.0, double(6 - s_usecs.length()));
+    string s_usecs = stime.substr( p + 1, 6 );
+    m_usecs = atol( stime.substr( p + 1 ).c_str() );
+    m_usecs *= ( unsigned long ) pow( 10.0, double( 6 - s_usecs.length() ) );
   }
 }
 
-void Timestamp::setTime(double s)
+void
+Timestamp
+::setTime( double s )
 {
-  m_secs = (unsigned long)s;
-  m_usecs = static_cast<unsigned long>((s - (double)m_secs) * 1e6);
+  m_secs = ( unsigned long ) s;
+  m_usecs = static_cast< unsigned long >( ( s - ( double ) m_secs ) * 1e6 );
 }
 
-double Timestamp::getFloatTime() const {
-  return double(m_secs) + double(m_usecs)/1000000.0;
+double
+Timestamp
+::getFloatTime() const
+{
+  return double( m_secs ) + double( m_usecs ) / 1000000.0;
 }
 
-string Timestamp::getStringTime() const {
-  char buf[32];
-  sprintf(buf, "%.6f", this->getFloatTime());
-  return string(buf);
+string
+Timestamp
+::getStringTime() const
+{
+  char buf[ 32 ];
+  sprintf( buf, "%.6f", this->getFloatTime() );
+  return string( buf );
 }
 
-double Timestamp::operator- (const Timestamp &t) const {
+double
+Timestamp::operator-( const Timestamp& t ) const
+{
   return this->getFloatTime() - t.getFloatTime();
 }
 
-Timestamp& Timestamp::operator+= (double s)
+Timestamp&
+Timestamp::operator+=( double s )
 {
   *this = *this + s;
   return *this;
 }
 
-Timestamp& Timestamp::operator-= (double s)
+Timestamp&
+Timestamp::operator-=( double s )
 {
   *this = *this - s;
   return *this;
 }
 
-Timestamp Timestamp::operator+ (double s) const
+Timestamp
+Timestamp::operator+( double s ) const
 {
-  unsigned long secs = (long)floor(s);
-  unsigned long usecs = (long)((s - (double)secs) * 1e6);
+  unsigned long secs = ( long ) floor( s );
+  unsigned long usecs = ( long ) ( ( s - ( double ) secs ) * 1e6 );
 
-  return this->plus(secs, usecs);
+  return this->plus( secs, usecs );
 }
 
-Timestamp Timestamp::plus(unsigned long secs, unsigned long usecs) const
-{
-  Timestamp t;
-
-  const unsigned long max = 1000000ul;
-
-  if(m_usecs + usecs >= max)
-    t.setTime(m_secs + secs + 1, m_usecs + usecs - max);
-  else
-    t.setTime(m_secs + secs, m_usecs + usecs);
-
-  return t;
-}
-
-Timestamp Timestamp::operator- (double s) const
-{
-  unsigned long secs = (long)floor(s);
-  unsigned long usecs = (long)((s - (double)secs) * 1e6);
-
-  return this->minus(secs, usecs);
-}
-
-Timestamp Timestamp::minus(unsigned long secs, unsigned long usecs) const
+Timestamp
+Timestamp
+::plus( unsigned long secs, unsigned long usecs ) const
 {
   Timestamp t;
 
   const unsigned long max = 1000000ul;
 
-  if(m_usecs < usecs)
-    t.setTime(m_secs - secs - 1, max - (usecs - m_usecs));
+  if( m_usecs + usecs >= max )
+  {
+    t.setTime( m_secs + secs + 1, m_usecs + usecs - max );
+  }
   else
-    t.setTime(m_secs - secs, m_usecs - usecs);
+  {
+    t.setTime( m_secs + secs, m_usecs + usecs );
+  }
 
   return t;
 }
 
-bool Timestamp::operator> (const Timestamp &t) const
+Timestamp
+Timestamp::operator-( double s ) const
 {
-  if(m_secs > t.m_secs) return true;
-  else if(m_secs == t.m_secs) return m_usecs > t.m_usecs;
-  else return false;
+  unsigned long secs = ( long ) floor( s );
+  unsigned long usecs = ( long ) ( ( s - ( double ) secs ) * 1e6 );
+
+  return this->minus( secs, usecs );
 }
 
-bool Timestamp::operator>= (const Timestamp &t) const
+Timestamp
+Timestamp
+::minus( unsigned long secs, unsigned long usecs ) const
 {
-  if(m_secs > t.m_secs) return true;
-  else if(m_secs == t.m_secs) return m_usecs >= t.m_usecs;
-  else return false;
+  Timestamp t;
+
+  const unsigned long max = 1000000ul;
+
+  if( m_usecs < usecs )
+  {
+    t.setTime( m_secs - secs - 1, max - ( usecs - m_usecs ) );
+  }
+  else
+  {
+    t.setTime( m_secs - secs, m_usecs - usecs );
+  }
+
+  return t;
 }
 
-bool Timestamp::operator< (const Timestamp &t) const
+bool
+Timestamp::operator>( const Timestamp& t ) const
 {
-  if(m_secs < t.m_secs) return true;
-  else if(m_secs == t.m_secs) return m_usecs < t.m_usecs;
-  else return false;
+  if( m_secs > t.m_secs ) { return true; }
+  else if( m_secs == t.m_secs ) { return m_usecs > t.m_usecs; }
+  else { return false; }
 }
 
-bool Timestamp::operator<= (const Timestamp &t) const
+bool
+Timestamp::operator>=( const Timestamp& t ) const
 {
-  if(m_secs < t.m_secs) return true;
-  else if(m_secs == t.m_secs) return m_usecs <= t.m_usecs;
-  else return false;
+  if( m_secs > t.m_secs ) { return true; }
+  else if( m_secs == t.m_secs ) { return m_usecs >= t.m_usecs; }
+  else { return false; }
 }
 
-bool Timestamp::operator== (const Timestamp &t) const
+bool
+Timestamp::operator<( const Timestamp& t ) const
 {
-  return(m_secs == t.m_secs && m_usecs == t.m_usecs);
+  if( m_secs < t.m_secs ) { return true; }
+  else if( m_secs == t.m_secs ) { return m_usecs < t.m_usecs; }
+  else { return false; }
 }
 
+bool
+Timestamp::operator<=( const Timestamp& t ) const
+{
+  if( m_secs < t.m_secs ) { return true; }
+  else if( m_secs == t.m_secs ) { return m_usecs <= t.m_usecs; }
+  else { return false; }
+}
 
-string Timestamp::Format(bool machine_friendly) const
+bool
+Timestamp::operator==( const Timestamp& t ) const
+{
+  return ( m_secs == t.m_secs && m_usecs == t.m_usecs );
+}
+
+string
+Timestamp
+::Format( bool machine_friendly ) const
 {
   struct tm tm_time;
 
-  time_t t = (time_t)getFloatTime();
+  time_t t = ( time_t ) getFloatTime();
 
 #ifdef WIN32
-  localtime_s(&tm_time, &t);
+  localtime_s( &tm_time, &t );
 #else
-  localtime_r(&t, &tm_time);
+  localtime_r( &t, &tm_time );
 #endif
 
-  char buffer[128];
+  char buffer[ 128 ];
 
-  if(machine_friendly)
+  if( machine_friendly )
   {
-    strftime(buffer, 128, "%Y%m%d_%H%M%S", &tm_time);
+    strftime( buffer, 128, "%Y%m%d_%H%M%S", &tm_time );
   }
   else
   {
-    strftime(buffer, 128, "%c", &tm_time); // Thu Aug 23 14:55:02 2001
+    strftime( buffer, 128, "%c", &tm_time ); // Thu Aug 23 14:55:02 2001
   }
 
-  return string(buffer);
+  return string( buffer );
 }
 
-string Timestamp::Format(double s) {
-  int days = int(s / (24. * 3600.0));
-  s -= days * (24. * 3600.0);
-  int hours = int(s / 3600.0);
+string
+Timestamp
+::Format( double s )
+{
+  int days = int( s / ( 24. * 3600.0 ) );
+  s -= days * ( 24. * 3600.0 );
+
+  int hours = int( s / 3600.0 );
   s -= hours * 3600;
-  int minutes = int(s / 60.0);
+
+  int minutes = int( s / 60.0 );
   s -= minutes * 60;
-  int seconds = int(s);
-  int ms = int((s - seconds)*1e6);
+
+  int seconds = int( s );
+  int ms = int( ( s - seconds ) * 1e6 );
 
   stringstream ss;
-  ss.fill('0');
+  ss.fill( '0' );
+
   bool b;
-  if((b = (days > 0))) ss << days << "d ";
-  if((b = (b || hours > 0))) ss << setw(2) << hours << ":";
-  if((b = (b || minutes > 0))) ss << setw(2) << minutes << ":";
-  if(b) ss << setw(2);
+  if( ( b = ( days > 0 ) ) ) { ss << days << "d "; }
+  if( ( b = ( b || hours > 0 ) ) ) { ss << setw( 2 ) << hours << ":"; }
+  if( ( b = ( b || minutes > 0 ) ) ) { ss << setw( 2 ) << minutes << ":"; }
+  if( b ) { ss << setw( 2 ); }
   ss << seconds;
-  if(!b) ss << "." << setw(6) << ms;
+  if( !b ) { ss << "." << setw( 6 ) << ms; }
 
   return ss.str();
 }

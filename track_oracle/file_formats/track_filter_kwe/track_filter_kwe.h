@@ -5,8 +5,8 @@
 #ifndef INCL_TRACK_FILTER_KWE_H
 #define INCL_TRACK_FILTER_KWE_H
 
-#include <vital/vital_config.h>
 #include <track_oracle/track_filter_kwe/track_filter_kwe_export.h>
+#include <vital/vital_config.h>
 
 #include <track_oracle/event_adapter.h>
 
@@ -45,17 +45,20 @@
 ///
 
 namespace kwiver {
+
 namespace track_oracle {
 
-struct TRACK_FILTER_KWE_EXPORT track_filter_kwe_type: public event_data_schema
+struct TRACK_FILTER_KWE_EXPORT track_filter_kwe_type : public event_data_schema
 {
-  static bool read( const std::string& fn,
-                    const track_handle_list_type& ref_tracks,
-                    const std::string& track_style,
-                    track_handle_list_type& new_tracks );
+  static bool read(
+    const std::string& fn,
+    const track_handle_list_type& ref_tracks,
+    const std::string& track_style,
+    track_handle_list_type& new_tracks );
 };
 
 } // ...track_oracle
+
 } // ...kwiver
 
 #endif

@@ -21,18 +21,19 @@ static constexpr double outlier_rotation_tolerance = 0.008;
 static constexpr double outlier_center_tolerance = 0.05;
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
 }
 
 // ----------------------------------------------------------------------------
-TEST(estimate_pnp, create)
+TEST ( estimate_pnp, create )
 {
   plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE( nullptr, algo::estimate_pnp::create("ocv") );
+  EXPECT_NE( nullptr, algo::estimate_pnp::create( "ocv" ) );
 }
 
 // ----------------------------------------------------------------------------

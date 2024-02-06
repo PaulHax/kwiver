@@ -71,7 +71,6 @@ public:
   virtual void set_callback( callback_t cb );
 
 protected:
-
   /// The callback function
   callback_t m_callback;
 };

@@ -11,6 +11,7 @@
 #include <vital/exceptions/base.h>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -33,7 +34,7 @@ class VITAL_EXCEPTIONS_EXPORT plugin_factory_not_found
 {
 public:
   /// Constructor
-  plugin_factory_not_found( std::string const& msg) noexcept;
+  plugin_factory_not_found( std::string const& msg ) noexcept;
 
   /// Destructor
   virtual ~plugin_factory_not_found() noexcept;
@@ -46,7 +47,7 @@ class VITAL_EXCEPTIONS_EXPORT plugin_factory_type_creation_error
 {
 public:
   /// Constructor
-  plugin_factory_type_creation_error( std::string const& msg) noexcept;
+  plugin_factory_type_creation_error( std::string const& msg ) noexcept;
 
   /// Destructor
   virtual ~plugin_factory_type_creation_error() noexcept;
@@ -73,12 +74,14 @@ class VITAL_EXCEPTIONS_EXPORT plugin_already_exists
 {
 public:
   /// Constructor
-  plugin_already_exists( std::string const& msg) noexcept;
+  plugin_already_exists( std::string const& msg ) noexcept;
 
   /// Destructor
   virtual ~plugin_already_exists() noexcept;
 };
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // VITAL_CORE_EXCEPTION_PLUGIN_H

@@ -31,7 +31,7 @@ class VITAL_ALGO_EXPORT estimate_fundamental_matrix
 {
 public:
   estimate_fundamental_matrix();
-  PLUGGABLE_INTERFACE(estimate_fundamental_matrix);
+  PLUGGABLE_INTERFACE( estimate_fundamental_matrix );
   /// Estimate an fundamental matrix from corresponding features
   ///
   /// \param [in]  feat1 the set of all features from the first image
@@ -44,11 +44,12 @@ public:
   /// inliers
   virtual
   kwiver::vital::fundamental_matrix_sptr
-  estimate( const kwiver::vital::feature_set_sptr feat1,
-            const kwiver::vital::feature_set_sptr feat2,
-            const kwiver::vital::match_set_sptr matches,
-            std::vector< bool >& inliers,
-            double inlier_scale = 1.0 ) const;
+  estimate(
+    const kwiver::vital::feature_set_sptr feat1,
+    const kwiver::vital::feature_set_sptr feat2,
+    const kwiver::vital::match_set_sptr matches,
+    std::vector< bool >& inliers,
+    double inlier_scale = 1.0 ) const;
 
   /// Estimate an fundamental matrix from corresponding points
   ///
@@ -60,11 +61,11 @@ public:
   /// inliers
   virtual
   kwiver::vital::fundamental_matrix_sptr
-  estimate( const std::vector< kwiver::vital::vector_2d >& pts1,
-            const std::vector< kwiver::vital::vector_2d >& pts2,
-            std::vector< bool >& inliers,
-            double inlier_scale = 1.0 ) const = 0;
-
+  estimate(
+    const std::vector< kwiver::vital::vector_2d >& pts1,
+    const std::vector< kwiver::vital::vector_2d >& pts2,
+    std::vector< bool >& inliers,
+    double inlier_scale = 1.0 ) const = 0;
 };
 
 /// Shared pointer type of base estimate_fundamental_matrix algorithm

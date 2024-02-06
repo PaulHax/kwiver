@@ -64,7 +64,8 @@ klv_length_constraints
 // ----------------------------------------------------------------------------
 klv_length_constraints
 ::klv_length_constraints( std::set< size_t > const& allowed, size_t suggested )
-  : m_impl{ allowed }, m_suggested{ suggested }
+  : m_impl{ allowed },
+    m_suggested{ suggested }
 {
   if( allowed.empty() )
   {

@@ -26,7 +26,7 @@ class VITAL_ALGO_EXPORT track_features
 {
 public:
   track_features();
-  PLUGGABLE_INTERFACE(track_features);
+  PLUGGABLE_INTERFACE( track_features );
   /// Extend a previous set of feature tracks using the current frame
   ///
   /// \throws image_size_mismatch_exception
@@ -42,11 +42,11 @@ public:
   ///                  value).
   /// \returns an updated set of feature tracks including the current frame
   virtual feature_track_set_sptr
-  track( feature_track_set_sptr prev_tracks,
-         frame_id_t frame_number,
-         image_container_sptr image_data,
-         image_container_sptr mask = {} ) const = 0;
-
+  track(
+    feature_track_set_sptr prev_tracks,
+    frame_id_t frame_number,
+    image_container_sptr image_data,
+    image_container_sptr mask = {} ) const = 0;
 };
 
 /// Shared pointer for generic track_features definition type.

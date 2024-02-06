@@ -39,8 +39,7 @@ class pixel_feature_extractor::priv
 {
 public:
   priv( pixel_feature_extractor* parent ) : p{ parent }
-  {
-  }
+  {}
 
   // Check the configuration of the sub algoirthms
   bool check_sub_algorithm( vital::config_block_sptr config, std::string key );
@@ -85,7 +84,7 @@ public:
     std::make_shared< vxl::high_pass_filter >();
 
   std::map< std::string,
-            std::shared_ptr< vital::algo::image_filter > > filters{
+    std::shared_ptr< vital::algo::image_filter > > filters{
     std::make_pair( "aligned_edge", aligned_edge_detection_filter ),
     std::make_pair( "average", average_frames_filter ),
     std::make_pair( "color_commonality", color_commonality_filter ),
@@ -104,6 +103,7 @@ pixel_feature_extractor::priv
   {
     return true;
   }
+
   auto subblock = config->subblock_view( key );
   if( !filters.at( key )->check_configuration( subblock ) )
   {
@@ -377,8 +377,7 @@ pixel_feature_extractor
 // ----------------------------------------------------------------------------
 pixel_feature_extractor
 ::~pixel_feature_extractor()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 vital::config_block_sptr
@@ -388,42 +387,53 @@ pixel_feature_extractor
   // get base config from base class
   vital::config_block_sptr config = algorithm::get_configuration();
 
-  config->set_value( "enable_color",
-                     d->enable_color,
-                     "Enable color channels." );
-  config->set_value( "enable_gray",
-                     d->enable_gray,
-                     "Enable grayscale channel." );
-  config->set_value( "enable_aligned_edge",
-                     d->enable_aligned_edge,
-                     "Enable aligned_edge_detection filter." );
-  config->set_value( "enable_average",
-                     d->enable_average,
-                     "Enable average_frames filter." );
-  config->set_value( "enable_color_commonality",
-                     d->enable_color_commonality,
-                     "Enable color_commonality_filter filter." );
-  config->set_value( "enable_high_pass_box",
-                     d->enable_high_pass_box,
-                     "Enable high_pass_filter filter." );
-  config->set_value( "enable_high_pass_bidir",
-                     d->enable_high_pass_bidir,
-                     "Enable high_pass_filter filter." );
-  config->set_value( "enable_normalized_variance",
-                     d->enable_normalized_variance,
-                     "Enable the normalized variance since the last shot break. "
-                     "This will be a scalar multiple with the normal variance until "
-                     "shot breaks are implemented." );
-  config->set_value( "enable_spatial_prior",
-                     d->enable_spatial_prior,
-                     "Enable an image which encodes the location" );
-  config->set_value( "variance_scale_factor",
-                     d->variance_scale_factor,
-                     "The multiplicative value for the normalized varaince" );
-  config->set_value( "grid_length",
-                     d->grid_length,
-                     "The number of grids in each directions of the spatial "
-                     "prior" );
+  config->set_value(
+    "enable_color",
+    d->enable_color,
+    "Enable color channels." );
+  config->set_value(
+    "enable_gray",
+    d->enable_gray,
+    "Enable grayscale channel." );
+  config->set_value(
+    "enable_aligned_edge",
+    d->enable_aligned_edge,
+    "Enable aligned_edge_detection filter." );
+  config->set_value(
+    "enable_average",
+    d->enable_average,
+    "Enable average_frames filter." );
+  config->set_value(
+    "enable_color_commonality",
+    d->enable_color_commonality,
+    "Enable color_commonality_filter filter." );
+  config->set_value(
+    "enable_high_pass_box",
+    d->enable_high_pass_box,
+    "Enable high_pass_filter filter." );
+  config->set_value(
+    "enable_high_pass_bidir",
+    d->enable_high_pass_bidir,
+    "Enable high_pass_filter filter." );
+  config->set_value(
+    "enable_normalized_variance",
+    d->enable_normalized_variance,
+    "Enable the normalized variance since the last shot break. "
+    "This will be a scalar multiple with the normal variance until "
+    "shot breaks are implemented." );
+  config->set_value(
+    "enable_spatial_prior",
+    d->enable_spatial_prior,
+    "Enable an image which encodes the location" );
+  config->set_value(
+    "variance_scale_factor",
+    d->variance_scale_factor,
+    "The multiplicative value for the normalized varaince" );
+  config->set_value(
+    "grid_length",
+    d->grid_length,
+    "The number of grids in each directions of the spatial "
+    "prior" );
   return config;
 }
 

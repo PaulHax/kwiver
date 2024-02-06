@@ -9,6 +9,6 @@
 
 namespace py = pybind11;
 
-void render_mesh_depth_map(py::module &m);
+void render_mesh_depth_map( py::module& m );
 
 #endif

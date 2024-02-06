@@ -94,8 +94,9 @@ private:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( mdap_t const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    mdap_t const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( mdap_t const& value ) const override;

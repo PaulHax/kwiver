@@ -22,14 +22,12 @@ class PipelineWorkerPrivate {};
 // ----------------------------------------------------------------------------
 PipelineWorker
 ::PipelineWorker( QWidget* parent ) : super{ RequiresOutput, parent }
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 PipelineWorker
 ::~PipelineWorker()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 void

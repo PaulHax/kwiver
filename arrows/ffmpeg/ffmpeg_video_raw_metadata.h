@@ -8,8 +8,8 @@
 #ifndef KWIVER_ARROWS_FFMPEG_FFMPEG_VIDEO_RAW_METADATA_H_
 #define KWIVER_ARROWS_FFMPEG_FFMPEG_VIDEO_RAW_METADATA_H_
 
-#include <arrows/ffmpeg/kwiver_algo_ffmpeg_export.h>
 #include <arrows/ffmpeg/ffmpeg_util.h>
+#include <arrows/ffmpeg/kwiver_algo_ffmpeg_export.h>
 
 #include <arrows/klv/klv_stream_settings.h>
 
@@ -43,6 +43,7 @@ struct KWIVER_ALGO_FFMPEG_EXPORT ffmpeg_video_raw_metadata
 
   std::list< packet_info > packets;
 };
+
 using ffmpeg_video_raw_metadata_sptr =
   std::shared_ptr< ffmpeg_video_raw_metadata >;
 

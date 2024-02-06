@@ -60,7 +60,7 @@ uint8_t const tag_uuid_nano[] = {
 enum misp_timestamp_tag_type
 {
   MISP_TIMESTAMP_TAG_STRING,
-  MISP_TIMESTAMP_TAG_UUID
+  MISP_TIMESTAMP_TAG_UUID,
 };
 
 // ----------------------------------------------------------------------------
@@ -119,8 +119,9 @@ private:
 /// \return Iterator to beginning of MISP packet, or \p end on failure.
 KWIVER_ALGO_KLV_EXPORT
 klv_read_iter_t
-find_misp_timestamp( klv_read_iter_t begin, klv_read_iter_t end,
-                     misp_timestamp_tag_type tag_type );
+find_misp_timestamp(
+  klv_read_iter_t begin, klv_read_iter_t end,
+  misp_timestamp_tag_type tag_type );
 
 // ----------------------------------------------------------------------------
 /// Determine whether the MISP timestamp at \p data is in nanoseconds.
@@ -152,8 +153,9 @@ read_misp_timestamp( klv_read_iter_t& data );
 //              on success.
 KWIVER_ALGO_KLV_EXPORT
 void
-write_misp_timestamp( misp_timestamp value, klv_write_iter_t& data,
-                      misp_timestamp_tag_type tag_type, bool is_nano );
+write_misp_timestamp(
+  misp_timestamp value, klv_write_iter_t& data,
+  misp_timestamp_tag_type tag_type, bool is_nano );
 
 // ----------------------------------------------------------------------------
 /// Return the length of a MISP timestamp packet in bytes.

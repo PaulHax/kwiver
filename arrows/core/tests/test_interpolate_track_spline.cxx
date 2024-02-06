@@ -16,7 +16,7 @@ namespace algo = kwiver::vital::algo;
 
 // ----------------------------------------------------------------------------
 int
-main(int argc, char* argv[])
+main( int argc, char* argv[] )
 {
   ::testing::InitGoogleTest( &argc, argv );
   TEST_LOAD_PLUGINS();
@@ -24,9 +24,9 @@ main(int argc, char* argv[])
 }
 
 // ----------------------------------------------------------------------------
-TEST(interpolate_track_spline, create)
+TEST ( interpolate_track_spline, create )
 {
-  EXPECT_NE( nullptr, algo::interpolate_track::create("spline") );
+  EXPECT_NE( nullptr, algo::interpolate_track::create( "spline" ) );
 }
 
 namespace {
@@ -34,8 +34,10 @@ namespace {
 constexpr static auto FRAME_RATE = kv::time_usec_t{ 3000 };
 
 // ----------------------------------------------------------------------------
-void add_track_state( kv::track_sptr track, kv::frame_id_t frame,
-                      kv::bounding_box_d bbox, double confidence )
+void
+add_track_state(
+  kv::track_sptr track, kv::frame_id_t frame,
+  kv::bounding_box_d bbox, double confidence )
 {
   auto const time = frame * FRAME_RATE;
   auto d = std::make_shared< kv::detected_object >( bbox, confidence );
@@ -44,8 +46,10 @@ void add_track_state( kv::track_sptr track, kv::frame_id_t frame,
 }
 
 // ----------------------------------------------------------------------------
-void check_track_state( kv::track_sptr track, kv::frame_id_t frame,
-                        kv::bounding_box_d bbox, double confidence )
+void
+check_track_state(
+  kv::track_sptr track, kv::frame_id_t frame,
+  kv::bounding_box_d bbox, double confidence )
 {
   SCOPED_TRACE( "At frame " + std::to_string( frame ) );
 
@@ -73,12 +77,13 @@ void check_track_state( kv::track_sptr track, kv::frame_id_t frame,
 } // end anonymous namespace
 
 // ----------------------------------------------------------------------------
-TEST(interpolate_track_spline, linear)
+TEST ( interpolate_track_spline, linear )
 {
   kac::interpolate_track_spline its;
 
   // Create input track
   class test_track_data : public kv::track_data {};
+
   auto data = std::make_shared< test_track_data >();
   auto key_track = kv::track::create( data );
 

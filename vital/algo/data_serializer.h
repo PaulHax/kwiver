@@ -46,7 +46,7 @@ class VITAL_ALGO_EXPORT data_serializer
 {
 public:
   data_serializer();
-  PLUGGABLE_INTERFACE(data_serializer);
+  PLUGGABLE_INTERFACE( data_serializer );
   /// Serialize the item into a byte string.
   ///
   /// This method serializes the supplied data item(s) and returns a
@@ -71,7 +71,8 @@ public:
   ///
   /// @throws kwiver::vital::bad_any_cast
   /// @throws kwiver::vital::serialization - for unexpected element name
-  virtual std::shared_ptr< std::string > serialize( const vital::any& element ) = 0;
+  virtual std::shared_ptr< std::string > serialize(
+    const vital::any& element ) = 0;
 
   /// Deserialize byte string into data type.
   ///
@@ -104,7 +105,6 @@ public:
   virtual void set_configuration( kwiver::vital::config_block_sptr config ) {}
   virtual bool
   check_configuration( config_block_sptr config ) const { return true; }
-
 };
 
 /// Shared pointer for detect_features algorithm definition class

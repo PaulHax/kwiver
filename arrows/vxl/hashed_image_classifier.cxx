@@ -23,18 +23,20 @@ namespace kvr = kwiver::vital::range;
 template < typename FeatureType, typename OutputType >
 void
 hashed_image_classifier< FeatureType, OutputType >
-::classify_images( input_image_t const& input_features,
-                   weight_image_t& output_image,
-                   weight_t const offset ) const
+::classify_images(
+  input_image_t const& input_features,
+  weight_image_t& output_image,
+  weight_t const offset ) const
 {
   feature_vector_t input_features_vector;
   for( auto const i : kvr::iota( input_features.nplanes() ) )
   {
     input_features_vector.push_back( vil_plane( input_features, i ) );
   }
-  classify_images( input_features_vector,
-                   output_image,
-                   offset );
+  classify_images(
+    input_features_vector,
+    output_image,
+    offset );
 }
 
 // ----------------------------------------------------------------------------
@@ -42,9 +44,10 @@ hashed_image_classifier< FeatureType, OutputType >
 template < typename FeatureType, typename OutputType >
 void
 hashed_image_classifier< FeatureType, OutputType >
-::classify_images( feature_vector_t const& input_features,
-                   weight_image_t& output_image,
-                   weight_t const offset ) const
+::classify_images(
+  feature_vector_t const& input_features,
+  weight_image_t& output_image,
+  weight_t const offset ) const
 {
   if( !model_->is_valid() )
   {
@@ -55,8 +58,9 @@ hashed_image_classifier< FeatureType, OutputType >
 
   if( num_features != feature_count() )
   {
-    LOG_ERROR( logger, "Feature counts don't match, features: "
-               << num_features << ", feature_count(): " << feature_count() );
+    LOG_ERROR(
+      logger, "Feature counts don't match, features: "
+        << num_features << ", feature_count(): " << feature_count() );
   }
 
   if( num_features == 0 )
@@ -65,7 +69,7 @@ hashed_image_classifier< FeatureType, OutputType >
   }
 
   output_image.set_size(
-      input_features[ 0 ].ni(), input_features[ 0 ].nj() );
+    input_features[ 0 ].ni(), input_features[ 0 ].nj() );
   output_image.fill( offset );
 
   std::vector< std::ptrdiff_t > sisteps( num_features );
@@ -104,10 +108,11 @@ hashed_image_classifier< FeatureType, OutputType >
 template < typename FeatureType, typename OutputType >
 void
 hashed_image_classifier< FeatureType, OutputType >
-::classify_images( feature_vector_t const& input_features,
-                   mask_image_t const& mask,
-                   weight_image_t& output_image,
-                   weight_t const offset ) const
+::classify_images(
+  feature_vector_t const& input_features,
+  mask_image_t const& mask,
+  weight_image_t& output_image,
+  weight_t const offset ) const
 {
   size_t const features = input_features.size();
 
@@ -127,7 +132,6 @@ hashed_image_classifier< FeatureType, OutputType >
   for( unsigned j = 0; j < output_image.nj(); ++j )
   {
     for( unsigned i = 0; i < output_image.ni(); ++i )
-
     {
       if( mask( i, j ) )
       {
@@ -215,9 +219,10 @@ hashed_image_classifier< FeatureType, OutputType >
       // Make sure the model file has at least 1 input feature
       if( model_->num_features == 0 )
       {
-        LOG_ERROR( logger,
-                   "Number of input features to use must be > 1 but was " <<
-                   model_->num_features );
+        LOG_ERROR(
+          logger,
+          "Number of input features to use must be > 1 but was " <<
+            model_->num_features );
         return false;
       }
 
@@ -241,10 +246,11 @@ hashed_image_classifier< FeatureType, OutputType >
     // Data corruption, model file ill formatted
     if( parsed.size() != num_values + 1  || entry >= model_->num_features )
     {
-      LOG_ERROR( logger,
-                 "Number of weights (" << parsed.size() - 1
-                                       << ") does not match "
-                                       << num_values );
+      LOG_ERROR(
+        logger,
+        "Number of weights (" << parsed.size() - 1
+                              << ") does not match "
+                              << num_values );
       return false;
     }
 
@@ -261,8 +267,9 @@ hashed_image_classifier< FeatureType, OutputType >
   // the number of features specified
   if( weights.size() != model_->num_features )
   {
-    LOG_ERROR( logger,
-               "Weight vector size does not match " << model_->num_features );
+    LOG_ERROR(
+      logger,
+      "Weight vector size does not match " << model_->num_features );
     return false;
   }
 
@@ -305,9 +312,10 @@ hashed_image_classifier< FeatureType, OutputType >
 template < typename FeatureType, typename OutputType >
 void
 hashed_image_classifier< FeatureType, OutputType >
-::generate_weight_image( input_image_t const& src,
-                         weight_image_t& dst,
-                         unsigned const& feature_id ) const
+::generate_weight_image(
+  input_image_t const& src,
+  weight_image_t& dst,
+  unsigned const& feature_id ) const
 {
   dst.set_size( src.ni(), src.nj() );
   dst.fill( 0 );
@@ -448,8 +456,9 @@ hashed_image_classifier_model< FloatType >
 // ----------------------------------------------------------------------------
 template < typename FloatType >
 std::ostream&
-operator<<( std::ostream& os,
-            hashed_image_classifier_model< FloatType > const& obj )
+operator<<(
+  std::ostream& os,
+  hashed_image_classifier_model< FloatType > const& obj )
 {
   if( !obj.is_valid() )
   {
@@ -474,8 +483,9 @@ operator<<( std::ostream& os,
 // ----------------------------------------------------------------------------
 template < typename FeatureType, typename OutputType >
 std::ostream&
-operator<<( std::ostream& os,
-            hashed_image_classifier< FeatureType, OutputType > const& obj )
+operator<<(
+  std::ostream& os,
+  hashed_image_classifier< FeatureType, OutputType > const& obj )
 {
   if( obj.model_ )
   {

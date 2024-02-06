@@ -7,16 +7,19 @@
 
 #include "read_object_track_set_kw18.h"
 
-#include <vital/util/tokenize.h>
 #include <vital/util/data_stream_reader.h>
+#include <vital/util/tokenize.h>
 #include <vital/vital_config.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 // field numbers for KW18 file format
-enum{
+enum
+{
   COL_ID = 0,   // 0: Object ID
   COL_LEN,      // 1: Track length (always 1 for detections)
   COL_FRAME,    // 2: in this case, set index
@@ -24,8 +27,8 @@ enum{
   COL_LOC_Y,    // 4
   COL_VEL_X,    // 5
   COL_VEL_Y,    // 6
-  COL_IMG_LOC_X,// 7
-  COL_IMG_LOC_Y,// 8
+  COL_IMG_LOC_X, // 7
+  COL_IMG_LOC_Y, // 8
   COL_MIN_X,    // 9
   COL_MIN_Y,    // 10
   COL_MAX_X,    // 11
@@ -35,21 +38,21 @@ enum{
   COL_WORLD_Y,  // 15
   COL_WORLD_Z,  // 16
   COL_TIME,     // 17
-  COL_CONFIDENCE// 18
+  COL_CONFIDENCE, // 18
 };
 
 // ----------------------------------------------------------------------------
 class read_object_track_set_kw18::priv
 {
 public:
-  priv( read_object_track_set_kw18* parent)
-    : m_parent( parent )
-    , m_logger( vital::get_logger( "read_object_track_set_kw18" ) )
-    , m_first( true )
-    , m_batch_load( true )
-    , m_delim( " " )
-    , m_current_idx( 0 )
-    , m_last_idx( 1 )
+  priv( read_object_track_set_kw18* parent )
+    : m_parent( parent ),
+      m_logger( vital::get_logger( "read_object_track_set_kw18" ) ),
+      m_first( true ),
+      m_batch_load( true ),
+      m_delim( " " ),
+      m_current_idx( 0 ),
+      m_last_idx( 1 )
   {}
 
   ~priv() {}
@@ -67,7 +70,8 @@ public:
 
   // Map of object tracks indexed by frame number. Each set contains all tracks
   // referenced (active) on that individual frame.
-  std::map< vital::frame_id_t, std::vector< vital::track_sptr > > m_tracks_by_frame_id;
+  std::map< vital::frame_id_t,
+    std::vector< vital::track_sptr > > m_tracks_by_frame_id;
 
   // Compilation of all loaded tracks, track id -> track sptr mapping
   std::map< vital::frame_id_t, vital::track_sptr > m_all_tracks;
@@ -77,21 +81,19 @@ public:
 read_object_track_set_kw18
 ::read_object_track_set_kw18()
   : d( new read_object_track_set_kw18::priv( this ) )
-{
-}
+{}
 
 read_object_track_set_kw18
 ::~read_object_track_set_kw18()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 void
 read_object_track_set_kw18
 ::set_configuration( vital::config_block_sptr config )
 {
-  d->m_delim = config->get_value<std::string>( "delimiter", d->m_delim );
-  d->m_batch_load = config->get_value<bool>( "batch_load", d->m_batch_load );
+  d->m_delim = config->get_value< std::string >( "delimiter", d->m_delim );
+  d->m_batch_load = config->get_value< bool >( "batch_load", d->m_batch_load );
 }
 
 // ----------------------------------------------------------------------------
@@ -117,7 +119,7 @@ read_object_track_set_kw18
 
   if( d->m_batch_load )
   {
-    if ( !first )
+    if( !first )
     {
       return false;
     }
@@ -137,7 +139,7 @@ read_object_track_set_kw18
   if( d->m_tracks_by_frame_id.count( d->m_current_idx ) == 0 )
   {
     // Return empty set
-    set = std::make_shared< vital::object_track_set>();
+    set = std::make_shared< vital::object_track_set >();
   }
   else
   {
@@ -168,7 +170,7 @@ read_object_track_set_kw18::priv
 
   while( stream_reader.getline( line ) )
   {
-    if( !line.empty() && line[0] == '#' )
+    if( !line.empty() && line[ 0 ] == '#' )
     {
       continue;
     }
@@ -193,21 +195,21 @@ read_object_track_set_kw18::priv
     //
     //  This allows for track states to be written in a non-contiguous
     //  manner as may be done by streaming writers.
-    vital::frame_id_t frame_index = atoi( col[COL_FRAME].c_str() );
-    vital::time_usec_t frame_time = atof( col[COL_TIME].c_str() );
-    int track_index = atoi( col[COL_ID].c_str() );
+    vital::frame_id_t frame_index = atoi( col[ COL_FRAME ].c_str() );
+    vital::time_usec_t frame_time = atof( col[ COL_TIME ].c_str() );
+    int track_index = atoi( col[ COL_ID ].c_str() );
 
     vital::bounding_box_d bbox(
-      atof( col[COL_MIN_X].c_str() ),
-      atof( col[COL_MIN_Y].c_str() ),
-      atof( col[COL_MAX_X].c_str() ),
-      atof( col[COL_MAX_Y].c_str() ) );
+      atof( col[ COL_MIN_X ].c_str() ),
+      atof( col[ COL_MIN_Y ].c_str() ),
+      atof( col[ COL_MAX_X ].c_str() ),
+      atof( col[ COL_MAX_Y ].c_str() ) );
 
     double conf = 1.0;
 
     if( col.size() == 19 )
     {
-      conf = atof( col[COL_CONFIDENCE].c_str() );
+      conf = atof( col[ COL_CONFIDENCE ].c_str() );
     }
 
     // Create new detection
@@ -216,7 +218,9 @@ read_object_track_set_kw18::priv
 
     // Create new object track state
     vital::track_state_sptr ots =
-      std::make_shared< vital::object_track_state >( frame_index, frame_time, det );
+      std::make_shared< vital::object_track_state >(
+        frame_index, frame_time,
+        det );
 
     // Assign object track state to track
     vital::track_sptr trk;
@@ -243,4 +247,8 @@ read_object_track_set_kw18::priv
   }
 }
 
-} } } // end namespace
+} // namespace core
+
+} // namespace arrows
+
+}     // end namespace

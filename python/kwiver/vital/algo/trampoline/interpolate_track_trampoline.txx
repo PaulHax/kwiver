@@ -17,51 +17,56 @@
 #include <vital/algo/interpolate_track.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
-template < class algorithm_def_it_base=
-            kwiver::vital::algorithm_def<
-              kwiver::vital::algo::interpolate_track > >
-class algorithm_def_it_trampoline :
-      public algorithm_trampoline<algorithm_def_it_base>
+template < class algorithm_def_it_base =
+    kwiver::vital::algorithm_def<
+      kwiver::vital::algo::interpolate_track > >
+class algorithm_def_it_trampoline
+  : public algorithm_trampoline< algorithm_def_it_base >
 {
-  public:
-    using algorithm_trampoline<algorithm_def_it_base>::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_it_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<kwiver::vital::algo::interpolate_track>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::interpolate_track >,
+      type_name,
+    );
+  }
 };
 
-template< class interpolate_track_base=
-                kwiver::vital::algo::interpolate_track >
-class interpolate_track_trampoline :
-      public algorithm_def_it_trampoline< interpolate_track_base >
+template < class interpolate_track_base =
+    kwiver::vital::algo::interpolate_track >
+class interpolate_track_trampoline
+  : public algorithm_def_it_trampoline< interpolate_track_base >
 {
-  public:
-    using algorithm_def_it_trampoline< interpolate_track_base>::
-              algorithm_def_it_trampoline;
+public:
+  using algorithm_def_it_trampoline< interpolate_track_base >::
+  algorithm_def_it_trampoline;
 
-    kwiver::vital::track_sptr
-    interpolate( kwiver::vital::track_sptr init_states ) override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        kwiver::vital::track_sptr,
-        kwiver::vital::algo::interpolate_track,
-        interpolate,
-        init_states
-      );
-    }
+  kwiver::vital::track_sptr
+  interpolate( kwiver::vital::track_sptr init_states ) override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      kwiver::vital::track_sptr,
+      kwiver::vital::algo::interpolate_track,
+      interpolate,
+      init_states
+    );
+  }
 };
 
-}
-}
-}
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
 
 #endif

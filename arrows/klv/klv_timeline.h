@@ -60,17 +60,20 @@ public:
   /// value exists.
   ///
   /// \throws logic_error If more than one value is present.
-  klv_value at( klv_top_level_tag standard, klv_lds_key tag,
-                uint64_t time ) const;
+  klv_value at(
+    klv_top_level_tag standard, klv_lds_key tag,
+    uint64_t time ) const;
 
   /// Return the value at the given location, or an empty \c klv_value if no
   /// value exists.
-  klv_value at( klv_top_level_tag standard, klv_lds_key tag,
-                klv_value const& index, uint64_t time ) const;
+  klv_value at(
+    klv_top_level_tag standard, klv_lds_key tag,
+    klv_value const& index, uint64_t time ) const;
 
   /// Return all values at the given location.
-  std::vector< klv_value > all_at( klv_top_level_tag standard, klv_lds_key tag,
-                                   uint64_t time ) const;
+  std::vector< klv_value > all_at(
+    klv_top_level_tag standard, klv_lds_key tag,
+    uint64_t time ) const;
 
   /// Return the range of all entries using \p standard.
   range find_all( klv_top_level_tag standard );
@@ -96,17 +99,20 @@ public:
 
   /// Return an iterator to the given location, or the end iterator if none
   /// exists.
-  iterator find( klv_top_level_tag standard, klv_lds_key tag,
-                 klv_value const& index );
+  iterator find(
+    klv_top_level_tag standard, klv_lds_key tag,
+    klv_value const& index );
 
   /// \copydoc iterator find( klv_top_level_tag, klv_lds_key )
-  const_iterator find( klv_top_level_tag standard, klv_lds_key tag,
-                       klv_value const& index ) const;
+  const_iterator find(
+    klv_top_level_tag standard, klv_lds_key tag,
+    klv_value const& index ) const;
 
   /// Return an iterator to the given location, creating a new timeline if none
   /// exists.
-  iterator insert_or_find( klv_top_level_tag standard, klv_lds_key tag,
-                           klv_value const& index );
+  iterator insert_or_find(
+    klv_top_level_tag standard, klv_lds_key tag,
+    klv_value const& index );
 
   /// Erase an existing timeline.
   void erase( const_iterator it );
@@ -134,8 +140,9 @@ bool operator!=( klv_timeline const& lhs, klv_timeline const& rhs );
 
 // ----------------------------------------------------------------------------
 KWIVER_ALGO_KLV_EXPORT
-std::ostream& operator<<( std::ostream& os,
-                          typename klv_timeline::key_t const& rhs );
+std::ostream& operator<<(
+  std::ostream& os,
+  typename klv_timeline::key_t const& rhs );
 
 // ----------------------------------------------------------------------------
 KWIVER_ALGO_KLV_EXPORT

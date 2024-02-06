@@ -11,6 +11,7 @@
 #include "query_result.h"
 
 namespace kwiver {
+
 namespace vital {
 
 /// Shared pointer to query result set
@@ -19,6 +20,8 @@ typedef std::vector< query_result_sptr > query_result_set;
 /// Shared pointer to query result set
 typedef std::shared_ptr< query_result_set > query_result_set_sptr;
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital
 
 #endif // VITAL_QUERY_RESULT_SET_H_

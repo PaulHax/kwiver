@@ -35,10 +35,11 @@ enum morphology_mode
   MORPHOLOGY_none,
 };
 
-ENUM_CONVERTER( morphology_converter, morphology_mode,
-                { "erode", MORPHOLOGY_erode }, { "dilate", MORPHOLOGY_dilate },
-                { "open", MORPHOLOGY_open }, { "close", MORPHOLOGY_close },
-                { "none", MORPHOLOGY_none } );
+ENUM_CONVERTER(
+  morphology_converter, morphology_mode,
+  { "erode", MORPHOLOGY_erode }, { "dilate", MORPHOLOGY_dilate },
+  { "open", MORPHOLOGY_open }, { "close", MORPHOLOGY_close },
+  { "none", MORPHOLOGY_none } );
 
 enum element_mode
 {
@@ -47,8 +48,9 @@ enum element_mode
   ELEMENT_iline,
 };
 
-ENUM_CONVERTER( element_converter, element_mode, { "disk", ELEMENT_disk },
-                { "iline", ELEMENT_iline }, { "jline", ELEMENT_jline } );
+ENUM_CONVERTER(
+  element_converter, element_mode, { "disk", ELEMENT_disk },
+  { "iline", ELEMENT_iline }, { "jline", ELEMENT_jline } );
 
 enum combine_mode
 {
@@ -57,9 +59,10 @@ enum combine_mode
   COMBINE_intersection,
 };
 
-ENUM_CONVERTER( combine_converter, combine_mode, { "none", COMBINE_none },
-                { "union", COMBINE_union },
-                { "intersection", COMBINE_intersection } );
+ENUM_CONVERTER(
+  combine_converter, combine_mode, { "none", COMBINE_none },
+  { "union", COMBINE_union },
+  { "intersection", COMBINE_intersection } );
 
 // ----------------------------------------------------------------------------
 inline bool
@@ -81,19 +84,22 @@ intersection_functor( bool x1, bool x2 )
 class morphology::priv
 {
 public:
-  using morphology_func_t = void ( * )( vil_image_view< bool > const&,
-                                        vil_image_view< bool >&,
-                                        vil_structuring_element const& );
+  using morphology_func_t = void ( * )(
+    vil_image_view< bool > const&,
+    vil_image_view< bool >&,
+    vil_structuring_element const& );
 
   // Set up structuring elements
   void setup_internals();
 
   // Compute the morphological operation on an image
-  void apply_morphology( vil_image_view< bool > const& input,
-                         vil_image_view< bool >& output );
-  void apply_morphology( vil_image_view< bool > const& input,
-                         vil_image_view< bool >& output,
-                         morphology_func_t func );
+  void apply_morphology(
+    vil_image_view< bool > const& input,
+    vil_image_view< bool >& output );
+  void apply_morphology(
+    vil_image_view< bool > const& input,
+    vil_image_view< bool >& output,
+    morphology_func_t func );
 
   // Perform a morphological operation and optionally combine across channels
   vil_image_view< bool >
@@ -125,15 +131,15 @@ morphology::priv
       case ELEMENT_iline:
       {
         morphological_element.set_to_line_i(
-            -static_cast< int >( kernel_radius ),
-            static_cast< int >( kernel_radius ) );
+          -static_cast< int >( kernel_radius ),
+          static_cast< int >( kernel_radius ) );
         break;
       }
       case ELEMENT_jline:
       {
         morphological_element.set_to_line_j(
-            -static_cast< int >( kernel_radius ),
-            static_cast< int >( kernel_radius ) );
+          -static_cast< int >( kernel_radius ),
+          static_cast< int >( kernel_radius ) );
         break;
       }
     }
@@ -145,9 +151,10 @@ morphology::priv
 // ----------------------------------------------------------------------------
 void
 morphology::priv
-::apply_morphology( vil_image_view< bool > const& input,
-                    vil_image_view< bool >& output,
-                    morphology_func_t func )
+::apply_morphology(
+  vil_image_view< bool > const& input,
+  vil_image_view< bool >& output,
+  morphology_func_t func )
 {
   for( auto plane_index : vital::range::iota( input.nplanes() ) )
   {
@@ -160,8 +167,9 @@ morphology::priv
 // ----------------------------------------------------------------------------
 void
 morphology::priv
-::apply_morphology( vil_image_view< bool > const& input,
-                    vil_image_view< bool >& output )
+::apply_morphology(
+  vil_image_view< bool > const& input,
+  vil_image_view< bool >& output )
 {
   switch( morphology_type )
   {
@@ -252,8 +260,9 @@ morphology
     "element_shape", element_converter().to_string( d->element_type ),
     "Shape of the structuring element. Possible options are: " +
     element_converter().element_name_string() );
-  config->set_value( "kernel_radius", d->kernel_radius,
-                     "Radius of morphological kernel." );
+  config->set_value(
+    "kernel_radius", d->kernel_radius,
+    "Radius of morphological kernel." );
   config->set_value(
     "channel_combination", combine_converter().to_string( d->combine_type ),
     "Method for combining multiple binary channels. Possible options are: " +

@@ -6,23 +6,32 @@
 #include <python/kwiver/arrows/serialize/json/serialize_utils.txx>
 
 #include <arrows/serialize/json/timestamp.h>
-#include <vital/types/timestamp.h>
 #include <vital/any.h>
+#include <vital/types/timestamp.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace python {
-void serialize_timestamp(py::module &m)
+
+void
+serialize_timestamp( py::module& m )
 {
-  m.def("serialize_timestamp",
-        &kwiver::python::arrows::json::serialize<
-                              kwiver::vital::timestamp,
-                              kwiver::arrows::serialize::json::timestamp > );
-  m.def("deserialize_timestamp",
-        &kwiver::python::arrows::json::deserialize<
-                              kwiver::vital::timestamp,
-                              kwiver::arrows::serialize::json::timestamp > );
+  m.def(
+    "serialize_timestamp",
+    &kwiver::python::arrows::json::serialize<
+      kwiver::vital::timestamp,
+      kwiver::arrows::serialize::json::timestamp > );
+  m.def(
+    "deserialize_timestamp",
+    &kwiver::python::arrows::json::deserialize<
+      kwiver::vital::timestamp,
+      kwiver::arrows::serialize::json::timestamp > );
 }
-}
-}
-}
+
+} // namespace python
+
+} // namespace arrows
+
+} // namespace kwiver

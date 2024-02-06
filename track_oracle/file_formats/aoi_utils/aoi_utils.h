@@ -16,13 +16,14 @@
 /// ***
 ///
 
-#include <vital/vital_config.h>
 #include <track_oracle/aoi_utils/track_oracle_aoi_utils_export.h>
+#include <vital/vital_config.h>
 
-#include <string>
 #include <stdexcept>
+#include <string>
 
 namespace kwiver {
+
 namespace track_oracle {
 
 namespace aoi_utils {
@@ -32,7 +33,7 @@ struct aoi_impl;
 class TRACK_ORACLE_AOI_UTILS_EXPORT aoi_t
 {
 public:
-  enum flavor_t { INVALID, PIXEL, GEO };
+  enum flavor_t { INVALID, PIXEL, GEO, };
 
   aoi_t();
   explicit aoi_t( const std::string& s );   // can throw!
@@ -40,7 +41,7 @@ public:
   virtual ~aoi_t();
 
   flavor_t flavor() const;
-  bool in_aoi( double x, double y) const;
+  bool in_aoi( double x, double y ) const;
 
   std::string to_str() const;
 
@@ -50,14 +51,16 @@ private:
   aoi_impl* p;
 };
 
-class TRACK_ORACLE_AOI_UTILS_EXPORT aoi_exception: public std::runtime_error
+class TRACK_ORACLE_AOI_UTILS_EXPORT aoi_exception : public std::runtime_error
 {
 public:
-  explicit aoi_exception( const std::string& s ): std::runtime_error( s ) {}
+  explicit aoi_exception( const std::string& s ) : std::runtime_error( s ) {}
 };
 
 } // ...aoi_utils
+
 } // ...track_oracle
+
 } // ...kwiver
 
 #endif

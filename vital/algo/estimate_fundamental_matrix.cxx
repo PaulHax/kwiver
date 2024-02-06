@@ -22,11 +22,12 @@ estimate_fundamental_matrix
 /// Estimate an fundamental matrix from corresponding features
 fundamental_matrix_sptr
 estimate_fundamental_matrix
-::estimate( feature_set_sptr feat1,
-            feature_set_sptr feat2,
-            match_set_sptr matches,
-            std::vector< bool >& inliers,
-            double inlier_scale ) const
+::estimate(
+  feature_set_sptr feat1,
+  feature_set_sptr feat2,
+  match_set_sptr matches,
+  std::vector< bool >& inliers,
+  double inlier_scale ) const
 {
   if( !feat1 || !feat2 || !matches )
   {

@@ -25,6 +25,7 @@ extern "C"
 DECLARE_COMMON_ALGO_API( triangulate_landmarks )
 
 /// Triangulate the landmark locations given sets of cameras and tracks
+
 /**
  * This function only triangulates the landmarks with indices in the
  * landmark map and which have support in the tracks and cameras.
@@ -37,14 +38,15 @@ DECLARE_COMMON_ALGO_API( triangulate_landmarks )
  */
 VITAL_C_EXPORT
 void
-vital_algorithm_triangulate_landmarks_triangulate( vital_algorithm_t *algo,
-                                                   vital_camera_map_t *cameras,
-                                                   vital_trackset_t *tracks,
-                                                   vital_landmark_map_t **landmarks,
-                                                   vital_error_handle_t *eh );
+vital_algorithm_triangulate_landmarks_triangulate(
+  vital_algorithm_t* algo,
+  vital_camera_map_t* cameras,
+  vital_trackset_t* tracks,
+  vital_landmark_map_t** landmarks,
+  vital_error_handle_t* eh );
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif //VITAL_C_ALGO_TRIANGULATE_LANDMARKS_H_
+#endif // VITAL_C_ALGO_TRIANGULATE_LANDMARKS_H_

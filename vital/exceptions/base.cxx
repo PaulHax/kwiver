@@ -9,19 +9,18 @@
 #include <sstream>
 
 namespace kwiver {
+
 namespace vital {
 
 vital_exception
 ::vital_exception() noexcept
-  : std::exception()
-  , m_line_number(0)
-{
-}
+  : std::exception(),
+    m_line_number( 0 )
+{}
 
 vital_exception
 ::~vital_exception() noexcept
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 void
@@ -40,7 +39,7 @@ vital_exception
   std::ostringstream sstr;
   sstr << m_what;
 
-  if ( ! m_file_name.empty() )
+  if( !m_file_name.empty() )
   {
     sstr << ", thrown from " << m_file_name << ":" << m_line_number;
   }
@@ -59,7 +58,8 @@ invalid_value
 
 invalid_value
 ::~invalid_value() noexcept
-{
-}
+{}
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital

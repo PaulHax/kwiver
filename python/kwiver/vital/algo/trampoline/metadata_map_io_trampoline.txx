@@ -10,8 +10,8 @@
 #ifndef METADATA_MAP_IO_TRAMPOLINE_TXX
 #define METADATA_MAP_IO_TRAMPOLINE_TXX
 
-#include <python/kwiver/vital/algo/trampoline/algorithm_trampoline.txx>
 #include <pybind11/pybind11.h>
+#include <python/kwiver/vital/algo/trampoline/algorithm_trampoline.txx>
 #include <vital/algo/metadata_map_io.h>
 #include <vital/types/vector.h>
 
@@ -22,7 +22,7 @@ namespace vital {
 namespace python {
 
 template < class algorithm_def_metadata_map_io_base =
-             kwiver::vital::algorithm_def< kwiver::vital::algo::metadata_map_io > >
+    kwiver::vital::algorithm_def< kwiver::vital::algo::metadata_map_io > >
 class algorithm_def_metadata_map_io_trampoline
   : public algorithm_trampoline< algorithm_def_metadata_map_io_base >
 {
@@ -60,8 +60,9 @@ public:
   }
 
   void
-  save_( std::ostream& fout, kwiver::vital::metadata_map_sptr data,
-         std::string const& filename ) const override
+  save_(
+    std::ostream& fout, kwiver::vital::metadata_map_sptr data,
+    std::string const& filename ) const override
   {
     PYBIND11_OVERLOAD_PURE(
       void,

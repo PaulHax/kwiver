@@ -17,10 +17,9 @@
 #include <memory>
 #include <string>
 
-namespace kwiver
-{
-namespace vital
-{
+namespace kwiver {
+
+namespace vital {
 
 /// alias for ground control point id
 using ground_control_point_id_t = uint32_t;
@@ -31,71 +30,93 @@ class VITAL_EXPORT ground_control_point
 public:
   /// Constructor
   ground_control_point();
-  ground_control_point(vector_3d const& loc,
-                       std::string const& name = std::string());
+  ground_control_point(
+    vector_3d const& loc,
+    std::string const& name = std::string() );
 
   /// Destructor
   ~ground_control_point() = default;
 
-  ground_control_point(ground_control_point const&) = default;
-  ground_control_point(ground_control_point&&) = default;
+  ground_control_point( ground_control_point const& ) = default;
+  ground_control_point( ground_control_point&& ) = default;
 
-  ground_control_point& operator=(ground_control_point const&) = default;
-  ground_control_point& operator=(ground_control_point&&) = default;
+  ground_control_point& operator=( ground_control_point const& ) = default;
+  ground_control_point& operator=( ground_control_point&& ) = default;
 
   /// Accessor for the world coordinates
-  vector_3d loc() const
+  vector_3d
+  loc() const
   {
     return loc_;
   }
+
   /// Set the world location
-  void set_loc(vector_3d const& loc)
+  void
+  set_loc( vector_3d const& loc )
   {
     loc_ = loc;
   }
+
   /// Accessor for the geodetic location
-  geo_point geo_loc() const
+  geo_point
+  geo_loc() const
   {
     return geo_loc_;
   }
+
   /// Set the geodetic location
-  void set_geo_loc(geo_point const& geo_loc)
+  void
+  set_geo_loc( geo_point const& geo_loc )
   {
     geo_loc_ = geo_loc;
   }
+
   /// Accessor for the elevation of the ground control point
-  double elevation() const
+  double
+  elevation() const
   {
     return elevation_;
   }
+
   /// Set the elevation for the ground control point
-  void set_elevation(double elev)
+  void
+  set_elevation( double elev )
   {
     elevation_ = elev;
   }
+
   /// Overload to set geo_loc and elevation at the same time
-  void set_geo_loc(geo_point const& geo_loc, double elev)
+  void
+  set_geo_loc( geo_point const& geo_loc, double elev )
   {
     geo_loc_ = geo_loc;
     elevation_ = elev;
   }
+
   /// Accessor for the name of the ground control point
-  bool is_geo_loc_user_provided() const
+  bool
+  is_geo_loc_user_provided() const
   {
     return geo_loc_user_provided_;
   }
+
   /// Set the name of the ground control point
-  void set_geo_loc_user_provided(bool state)
+  void
+  set_geo_loc_user_provided( bool state )
   {
     geo_loc_user_provided_ = state;
   }
+
   /// Accessor for the name of the ground control point
-  std::string name() const
+  std::string
+  name() const
   {
     return name_;
   }
+
   /// Set the name of the ground control point
-  void set_name(std::string const& name)
+  void
+  set_name( std::string const& name )
   {
     name_ = name;
   }
@@ -109,14 +130,16 @@ protected:
 };
 
 /// output stream operator for a ground control point
+
 /**
  * \param s output stream
  * \param m ground_control_point to stream
  */
 
 /// output stream operator for a ground_control_point
-VITAL_EXPORT std::ostream& operator<<(std::ostream& s,
-                                      ground_control_point const& m);
+VITAL_EXPORT std::ostream& operator<<(
+  std::ostream& s,
+  ground_control_point const& m );
 
 /// input stream operator for a ground_control_point
 // The input stream operator is commented since geo_point doesn't have an
@@ -125,7 +148,7 @@ VITAL_EXPORT std::ostream& operator<<(std::ostream& s,
 // m);
 
 /// alias for a ground_control_point shared pointer
-using ground_control_point_sptr = std::shared_ptr<ground_control_point>;
+using ground_control_point_sptr = std::shared_ptr< ground_control_point >;
 
 // ----------------------------------------------------------------------------
 /// A mapping between IDs and ground control points
@@ -134,25 +157,26 @@ class VITAL_EXPORT ground_control_point_map
 public:
   /// alias for std::map from integer IDs to ground control points
   using ground_control_point_map_t =
-    std::map<ground_control_point_id_t, ground_control_point_sptr>;
+    std::map< ground_control_point_id_t, ground_control_point_sptr >;
 
   /// Constructor
-  explicit ground_control_point_map(const ground_control_point_map_t& m)
-    : data_(m)
-  {
-  }
+  explicit ground_control_point_map( const ground_control_point_map_t& m )
+    : data_( m )
+  {}
 
   /// Destructor
   ~ground_control_point_map() = default;
 
   /// Return the number of ground control points in the map
-  size_t size() const
+  size_t
+  size() const
   {
     return data_.size();
   }
 
   /// Return a map from integer IDs to ground control point shared pointers
-  ground_control_point_map_t ground_control_points() const
+  ground_control_point_map_t
+  ground_control_points() const
   {
     return data_;
   }
@@ -163,9 +187,10 @@ protected:
 };
 
 /// alias for a ground control point shared pointer
-using ground_control_point_map_sptr = std::shared_ptr<ground_control_point_map>;
+using ground_control_point_map_sptr = std::shared_ptr< ground_control_point_map >;
 
 } // vital
+
 } // kwiver
 
 #endif

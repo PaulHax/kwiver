@@ -43,10 +43,12 @@ make_metadata()
   m1->add< kv::VITAL_META_SLANT_RANGE >( 13296.55762 );
 
   // Add the geo point traits
-  m1->add< kv::VITAL_META_SENSOR_LOCATION >( { kv::geo_point::geo_3d_point_t{
-                                                 0, 0, SENSOR_ELEVATION },
-                                               kv::SRID::lat_lon_WGS84 } );
-  m1->add< kv::VITAL_META_FRAME_CENTER >( {
+  m1->add< kv::VITAL_META_SENSOR_LOCATION >(
+    { kv::geo_point::geo_3d_point_t{
+        0, 0, SENSOR_ELEVATION },
+      kv::SRID::lat_lon_WGS84 } );
+  m1->add< kv::VITAL_META_FRAME_CENTER >(
+    {
       kv::geo_point::geo_3d_point_t{
         0, 0, FRAME_CENTER_ELEVATION }, kv::SRID::lat_lon_WGS84 } );
 
@@ -91,7 +93,7 @@ public:
 };
 
 // ----------------------------------------------------------------------------
-TEST_F( derive_metadata, compute_derived )
+TEST_F ( derive_metadata, compute_derived )
 {
   kv::metadata_item const& gsd_value =
     derived_metadata.at( 0 )->find( kv::VITAL_META_AVERAGE_GSD );
@@ -100,7 +102,7 @@ TEST_F( derive_metadata, compute_derived )
   kv::metadata_item const& slant_range_value =
     derived_metadata.at( 0 )->find( kv::VITAL_META_SLANT_RANGE );
 
-  EXPECT_NEAR( 0.202224, gsd_value.as_double(), 0.000001);
+  EXPECT_NEAR( 0.202224, gsd_value.as_double(), 0.000001 );
 
   // This only takes into account terms a0 and a1
   EXPECT_NEAR( 6.578685, vniirs_value.as_double(), 0.000001 );

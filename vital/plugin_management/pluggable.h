@@ -8,16 +8,13 @@
 #include <memory>
 #include <vital/plugin_management/vital_vpm_export.h>
 
-
-namespace kwiver::vital
-{
+namespace kwiver::vital {
 
 // ----------------------------------------------------------------------------
 // Pluggable base-class
 
 class pluggable;
-typedef std::shared_ptr<pluggable> pluggable_sptr;
-
+typedef std::shared_ptr< pluggable > pluggable_sptr;
 
 /**
  * Base-class for pluggable classes.
@@ -50,7 +47,8 @@ public:
   // static std::set<std::string> interface_names();
 
   /**
-   * Curry construction of this concrete class from an input config_block instance.
+   * Curry construction of this concrete class from an input config_block
+   * instance.
    * This must be defined on concrete implementations as this is what will
    * return a real instance pointer.
    */
@@ -62,6 +60,7 @@ public:
   // static void get_default_config( config_block & cb );
 
   // TODO: Is this even really needed?
+
   /**
    * @brief Set into the given config_block the configuration of this instance
    *
@@ -76,7 +75,6 @@ protected:
   // Protected constructor to make non-constructable by itself.
   pluggable() = default;
 };
-
 
 // ----------------------------------------------------------------------------
 // Static-method Existence Helpers
@@ -126,13 +124,12 @@ CREATE_HAS_CHECK( from_config );
  * @code
  *   static_assert( has_get_default_config<T>::value );
  * @endcode
-*/
+ */
 CREATE_HAS_CHECK( get_default_config );
 
 // Clean up our macro.
 #undef CREATE_HAS_CHECK
 
+} // namespace kwiver::vital
 
-}
-
-#endif //KWIVER_VITAL_PLUGGABLE_H_
+#endif // KWIVER_VITAL_PLUGGABLE_H_

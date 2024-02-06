@@ -15,29 +15,31 @@ using namespace kwiver::vital;
 using namespace kwiver::arrows;
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
 }
 
 // ----------------------------------------------------------------------------
-TEST(feature_set, default_set)
+TEST ( feature_set, default_set )
 {
   ocv::feature_set fs;
-  if (fs.size() != 0)
+  if( fs.size() != 0 )
   {
-    TEST_ERROR("Default features_set is not empty");
+    TEST_ERROR( "Default features_set is not empty" );
   }
-  if (!fs.features().empty())
+  if( !fs.features().empty() )
   {
-    TEST_ERROR("Default features_set produces non-empty features");
+    TEST_ERROR( "Default features_set produces non-empty features" );
   }
 }
 
 // ----------------------------------------------------------------------------
 // It seems operator== on cv::Keypoint is not defined in OpenCV
-static bool keypoints_equal(const cv::KeyPoint& kp1, const cv::KeyPoint& kp2)
+static bool
+keypoints_equal( const cv::KeyPoint& kp1, const cv::KeyPoint& kp2 )
 {
   return kp1.angle == kp2.angle &&
          kp1.class_id == kp2.class_id &&
@@ -48,38 +50,43 @@ static bool keypoints_equal(const cv::KeyPoint& kp1, const cv::KeyPoint& kp2)
 }
 
 // ----------------------------------------------------------------------------
-TEST(feature_set, populated_set)
+TEST ( feature_set, populated_set )
 {
   static constexpr unsigned num_feat = 100;
 
-  std::vector<cv::KeyPoint> kpts;
-  for ( unsigned i = 0; i < num_feat; ++i )
+  std::vector< cv::KeyPoint > kpts;
+  for( unsigned i = 0; i < num_feat; ++i )
   {
-    cv::KeyPoint kp(i/2.0f, i/3.0f, i/10.0f, (i*3.14159f)/num_feat, 100.0f/i);
-    kpts.push_back(kp);
+    cv::KeyPoint kp( i / 2.0f, i / 3.0f, i / 10.0f, ( i * 3.14159f ) / num_feat,
+      100.0f / i );
+    kpts.push_back( kp );
   }
 
-  ocv::feature_set fs(kpts);
+  ocv::feature_set fs( kpts );
   EXPECT_EQ( num_feat, fs.size() );
 
-  std::vector<cv::KeyPoint> kpts2 = fs.ocv_keypoints();
-  EXPECT_TRUE( std::equal( kpts.begin(), kpts.end(),
-                           kpts2.begin(), keypoints_equal ) );
+  std::vector< cv::KeyPoint > kpts2 = fs.ocv_keypoints();
+  EXPECT_TRUE(
+    std::equal(
+      kpts.begin(), kpts.end(),
+      kpts2.begin(), keypoints_equal ) );
 
-  std::vector<feature_sptr> feats = fs.features();
+  std::vector< feature_sptr > feats = fs.features();
   EXPECT_EQ( fs.size(), feats.size() );
 
-  [&]{
-    for ( unsigned i = 0; i < num_feat; ++i )
+  [ & ]{
+    for( unsigned i = 0; i < num_feat; ++i )
     {
-      SCOPED_TRACE( "At feature " + std::to_string(i) );
-      ASSERT_EQ( typeid(float), feats[i]->data_type() );
+      SCOPED_TRACE( "At feature " + std::to_string( i ) );
+      ASSERT_EQ( typeid( float ), feats[ i ]->data_type() );
     }
   }();
 
-  simple_feature_set simp_fs(feats);
-  kpts2 = ocv::features_to_ocv_keypoints(simp_fs);
-  EXPECT_TRUE( std::equal( kpts.begin(), kpts.end(),
-                           kpts2.begin(), keypoints_equal ) )
+  simple_feature_set simp_fs( feats );
+  kpts2 = ocv::features_to_ocv_keypoints( simp_fs );
+  EXPECT_TRUE(
+    std::equal(
+      kpts.begin(), kpts.end(),
+      kpts2.begin(), keypoints_equal ) )
     << "Conversion to and from ARROWS features should preserve cv::KeyPoints";
 }

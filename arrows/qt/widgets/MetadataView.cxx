@@ -27,7 +27,9 @@ namespace kv = kwiver::vital;
 namespace kvr = kwiver::vital::range;
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace qt {
 
 QTE_IMPLEMENT_D_FUNC( MetadataView )
@@ -186,7 +188,8 @@ MetadataViewPrivate
 // ----------------------------------------------------------------------------
 MetadataView
 ::MetadataView( QWidget* parent )
-  : QScrollArea{ parent }, d_ptr{ new MetadataViewPrivate }
+  : QScrollArea{ parent },
+    d_ptr{ new MetadataViewPrivate }
 {
   QTE_D();
 
@@ -199,8 +202,7 @@ MetadataView
 
 // ----------------------------------------------------------------------------
 MetadataView::~MetadataView()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 bool
@@ -316,5 +318,7 @@ MetadataView
 //END MetadataView
 
 } // namespace qt
+
 } // namespace arrows
+
 } // namespace kwiver

@@ -50,19 +50,21 @@ public:
     kv::vital_metadata_tag tag,
     kv::metadata_value const& value );
 
-  priv(metadata_map_io_csv& par)
-  :parent(par)
+  priv( metadata_map_io_csv& par )
+    : parent( par )
   {}
-  
+
   metadata_map_io_csv& parent;
   bool write_remaining_columns() { return parent.c_write_remaining_columns; }
   bool write_enum_names() { return parent.c_write_enum_names; }
   std::string names_string() { return parent.c_column_names; }
+
   std::vector< std::string > column_names;
-  std::string overrides_string() {return parent.c_column_overrides; }
+  std::string overrides_string() { return parent.c_column_overrides; }
+
   std::vector< std::string > column_overrides;
   uint64_t every_n_microseconds() { return parent.c_every_n_microseconds; }
-  uint64_t every_n_frames() { return parent.c_every_n_frames; } 
+  uint64_t every_n_frames() { return parent.c_every_n_frames; }
 };
 
 namespace {
@@ -70,8 +72,9 @@ namespace {
 constexpr auto crs = kv::SRID::lat_lon_WGS84;
 
 // ----------------------------------------------------------------------------
-struct read_visitor {
-  template< class T >
+struct read_visitor
+{
+  template < class T >
   std::optional< kv::metadata_value >
   operator()() const
   {
@@ -95,8 +98,9 @@ struct read_visitor {
 };
 
 // ----------------------------------------------------------------------------
-struct write_visitor {
-  template< class T >
+struct write_visitor
+{
+  template < class T >
   void
   operator()( T const& data ) const
   {
@@ -197,8 +201,7 @@ special_column_names()
     { { kv::VITAL_META_CORNER_POINTS, 6 },
       "Lower Left Corner Longitude (EPSG:4326)" },
     { { kv::VITAL_META_CORNER_POINTS, 7 },
-      "Lower Left Corner Latitude (EPSG:4326)" },
-  };
+      "Lower Left Corner Latitude (EPSG:4326)" }, };
 
   return names;
 }
@@ -307,7 +310,7 @@ parse_column_id( std::string const& s )
 // ----------------------------------------------------------------------------
 struct subvalue_visitor
 {
-  template< class T >
+  template < class T >
   kv::metadata_value
   operator()( T const& value ) const
   {
@@ -318,8 +321,7 @@ struct subvalue_visitor
 };
 
 // ----------------------------------------------------------------------------
-template<>
-kv::metadata_value
+template <> kv::metadata_value
 subvalue_visitor
 ::operator()< kv::geo_point >( kv::geo_point const& value ) const
 {
@@ -327,8 +329,7 @@ subvalue_visitor
 }
 
 // ----------------------------------------------------------------------------
-template<>
-kv::metadata_value
+template <> kv::metadata_value
 subvalue_visitor
 ::operator()< kv::geo_polygon >( kv::geo_polygon const& value ) const
 {
@@ -346,7 +347,7 @@ get_subvalue( kv::metadata_value const& value, size_t index )
 // ----------------------------------------------------------------------------
 struct set_subvalue_visitor
 {
-  template< class T >
+  template < class T >
   void
   operator()() const
   {
@@ -373,7 +374,7 @@ struct set_subvalue_visitor
         : default_value;
       auto internal_value = original_value.polygon( crs ).get_vertices();
       internal_value.at( column.index / 2 )( column.index % 2 ) =
-        std::get< double >( value );
+          std::get< double > ( value );
       original_value.set_polygon( internal_value, crs );
       metadata.add( column.tag, original_value );
     }
@@ -402,6 +403,7 @@ metadata_map_io_csv::priv
     {
       return std::nullopt;
     }
+
     auto const& s = *maybe_s;
 
     static std::regex const pattern( "(\\d{2}):(\\d{2}):(\\d{2}).(\\d{6})" );
@@ -410,9 +412,10 @@ metadata_map_io_csv::priv
     {
       return std::nullopt;
     }
+
     uint64_t microseconds = 0;
     auto const convert =
-      [ &match, &microseconds ]( size_t index, uint64_t factor ) {
+      [ &match, &microseconds ]( size_t index, uint64_t factor ){
         microseconds *= factor;
         microseconds += std::stoull( match.str( index ) );
       };
@@ -465,24 +468,24 @@ metadata_map_io_csv::priv
 }
 
 // ----------------------------------------------------------------------------
-void metadata_map_io_csv::initialize()
+void
+metadata_map_io_csv
+::initialize()
 {
-  KWIVER_INITIALIZE_UNIQUE_PTR(priv, d_);
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
   attach_logger( "arrows.core.metadata_map_io" );
 }
 
 // ----------------------------------------------------------------------------
 metadata_map_io_csv
 ::~metadata_map_io_csv()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 void
 metadata_map_io_csv
 ::set_configuration_internal( [[maybe_unused]] vital::config_block_sptr config )
 {
-
   auto const split_and_trim =
     []( std::string const& s ) -> std::vector< std::string > {
       if( s.empty() )
@@ -492,8 +495,9 @@ metadata_map_io_csv
 
       std::vector< std::string > result;
       kwiver::vital::tokenize( s, result, "," );
-      std::for_each( result.begin(), result.end(),
-                     kwiver::vital::string_trim );
+      std::for_each(
+        result.begin(), result.end(),
+        kwiver::vital::string_trim );
       return result;
     };
 
@@ -554,9 +558,10 @@ metadata_map_io_csv
       {
         if( !values.emplace( column, *value ).second )
         {
-          LOG_WARN( logger(),
+          LOG_WARN(
+            logger(),
             "Dropping duplicate value for column: "
-            << get_column_name( column, true ) );
+              << get_column_name( column, true ) );
         }
       }
     }
@@ -564,6 +569,7 @@ metadata_map_io_csv
     // Create an empty metadata packet for this frame
     using frame_number_t =
       vital::type_of_tag< vital::VITAL_META_VIDEO_FRAME_NUMBER >;
+
     auto const& frame_number_value =
       values.at( { vital::VITAL_META_VIDEO_FRAME_NUMBER, 0 } );
     auto const frame_number = std::get< frame_number_t >( frame_number_value );
@@ -588,14 +594,16 @@ metadata_map_io_csv
 // ----------------------------------------------------------------------------
 void
 metadata_map_io_csv
-::save_( std::ostream& os,
-         kv::metadata_map_sptr data,
-         std::string const& filename ) const
+::save_(
+  std::ostream& os,
+  kv::metadata_map_sptr data,
+  std::string const& filename ) const
 {
   if( !os )
   {
-    VITAL_THROW( kv::file_write_exception, filename,
-                 "Insufficient permissions or moved file" );
+    VITAL_THROW(
+      kv::file_write_exception, filename,
+      "Insufficient permissions or moved file" );
   }
 
   // Accumulate the unique metadata IDs
@@ -637,8 +645,8 @@ metadata_map_io_csv
     info.id = parse_column_id( name );
     info.name =
       name_override.empty()
-        ? get_column_name( info.id, d_->write_enum_names() )
-        : name_override;
+      ? get_column_name( info.id, d_->write_enum_names() )
+      : name_override;
 
     if( info.id.tag != kv::VITAL_META_UNKNOWN )
     {

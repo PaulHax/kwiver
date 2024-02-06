@@ -8,8 +8,8 @@
 #ifndef KWIVER_ARROWS_KLV_KLV_CHECKSUM_H_
 #define KWIVER_ARROWS_KLV_KLV_CHECKSUM_H_
 
-#include <arrows/klv/kwiver_algo_klv_export.h>
 #include <arrows/klv/klv_data_format.h>
+#include <arrows/klv/kwiver_algo_klv_export.h>
 
 #include <cstdint>
 
@@ -32,8 +32,9 @@ namespace klv {
 /// \return Checksum of the data buffer.
 KWIVER_ALGO_KLV_EXPORT
 uint8_t
-klv_crc_8_ccitt( klv_read_iter_t data_begin, klv_read_iter_t data_end,
-                 uint8_t initial_value = 0x00 );
+klv_crc_8_ccitt(
+  klv_read_iter_t data_begin, klv_read_iter_t data_end,
+  uint8_t initial_value = 0x00 );
 
 // ----------------------------------------------------------------------------
 /// Calculate a running sum of each 16-byte word in the given bytes.
@@ -47,8 +48,9 @@ klv_crc_8_ccitt( klv_read_iter_t data_begin, klv_read_iter_t data_end,
 /// \return Running 16-bit sum of the data buffer.
 KWIVER_ALGO_KLV_EXPORT
 uint16_t
-klv_running_sum_16( klv_read_iter_t data_begin, klv_read_iter_t data_end,
-                    uint16_t initial_value = 0x0000, bool parity = false );
+klv_running_sum_16(
+  klv_read_iter_t data_begin, klv_read_iter_t data_end,
+  uint16_t initial_value = 0x0000, bool parity = false );
 
 // ----------------------------------------------------------------------------
 /// Calculate the CRC-16-CCITT checksum of the given bytes.
@@ -63,8 +65,9 @@ klv_running_sum_16( klv_read_iter_t data_begin, klv_read_iter_t data_end,
 /// \return Checksum of the data buffer.
 KWIVER_ALGO_KLV_EXPORT
 uint16_t
-klv_crc_16_ccitt( klv_read_iter_t data_begin, klv_read_iter_t data_end,
-                  uint16_t initial_value = 0xFFFF );
+klv_crc_16_ccitt(
+  klv_read_iter_t data_begin, klv_read_iter_t data_end,
+  uint16_t initial_value = 0xFFFF );
 
 // ----------------------------------------------------------------------------
 /// Calculate the CRC-32-MPEG checksum of the given bytes.
@@ -79,8 +82,9 @@ klv_crc_16_ccitt( klv_read_iter_t data_begin, klv_read_iter_t data_end,
 /// \return Checksum of the data buffer.
 KWIVER_ALGO_KLV_EXPORT
 uint32_t
-klv_crc_32_mpeg( klv_read_iter_t data_begin, klv_read_iter_t data_end,
-                 uint32_t initial_value = 0xFFFFFFFF );
+klv_crc_32_mpeg(
+  klv_read_iter_t data_begin, klv_read_iter_t data_end,
+  uint32_t initial_value = 0xFFFFFFFF );
 
 // ----------------------------------------------------------------------------
 class KWIVER_ALGO_KLV_EXPORT klv_checksum_packet_format
@@ -99,8 +103,9 @@ protected:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( uint64_t const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    uint64_t const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( uint64_t const& value ) const override;
@@ -117,7 +122,7 @@ private:
 class KWIVER_ALGO_KLV_EXPORT klv_crc_8_ccitt_packet_format
   : public klv_checksum_packet_format
 {
-  public:
+public:
   klv_crc_8_ccitt_packet_format( klv_bytes_t const& header );
 
   std::string
@@ -131,7 +136,7 @@ class KWIVER_ALGO_KLV_EXPORT klv_crc_8_ccitt_packet_format
 class KWIVER_ALGO_KLV_EXPORT klv_running_sum_16_packet_format
   : public klv_checksum_packet_format
 {
-  public:
+public:
   klv_running_sum_16_packet_format( klv_bytes_t const& header );
 
   std::string
@@ -145,7 +150,7 @@ class KWIVER_ALGO_KLV_EXPORT klv_running_sum_16_packet_format
 class KWIVER_ALGO_KLV_EXPORT klv_crc_16_ccitt_packet_format
   : public klv_checksum_packet_format
 {
-  public:
+public:
   klv_crc_16_ccitt_packet_format( klv_bytes_t const& header );
 
   std::string
@@ -159,7 +164,7 @@ class KWIVER_ALGO_KLV_EXPORT klv_crc_16_ccitt_packet_format
 class KWIVER_ALGO_KLV_EXPORT klv_crc_32_mpeg_packet_format
   : public klv_checksum_packet_format
 {
-  public:
+public:
   klv_crc_32_mpeg_packet_format( klv_bytes_t const& header );
 
   std::string

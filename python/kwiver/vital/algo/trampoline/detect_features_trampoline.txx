@@ -17,49 +17,57 @@
 #include <vital/algo/detect_features.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
-template< class algorithm_def_df_base=
-           kwiver::vital::algorithm_def< kwiver::vital::algo::detect_features > >
-class algorithm_def_df_trampoline :
-      public algorithm_trampoline< algorithm_def_df_base>
+template < class algorithm_def_df_base =
+    kwiver::vital::algorithm_def< kwiver::vital::algo::detect_features > >
+class algorithm_def_df_trampoline
+  : public algorithm_trampoline< algorithm_def_df_base >
 {
-  public:
-    using algorithm_trampoline< algorithm_def_df_base >::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_df_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<kwiver::vital::algo::detect_features>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::detect_features >,
+      type_name,
+    );
+  }
 };
 
-template< class detect_features_base=kwiver::vital::algo::detect_features >
-class detect_features_trampoline :
-      public algorithm_def_df_trampoline< detect_features_base >
+template < class detect_features_base = kwiver::vital::algo::detect_features >
+class detect_features_trampoline
+  : public algorithm_def_df_trampoline< detect_features_base >
 {
-  public:
-    using algorithm_def_df_trampoline< detect_features_base >::
-              algorithm_def_df_trampoline;
+public:
+  using algorithm_def_df_trampoline< detect_features_base >::
+  algorithm_def_df_trampoline;
 
-    kwiver::vital::feature_set_sptr
-    detect( kwiver::vital::image_container_sptr image_data,
-            kwiver::vital::image_container_sptr mask ) const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        kwiver::vital::feature_set_sptr,
-        kwiver::vital::algo::detect_features,
-        detect,
-        image_data,
-        mask
-      );
-    }
+  kwiver::vital::feature_set_sptr
+  detect(
+    kwiver::vital::image_container_sptr image_data,
+    kwiver::vital::image_container_sptr mask ) const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      kwiver::vital::feature_set_sptr,
+      kwiver::vital::algo::detect_features,
+      detect,
+      image_data,
+      mask
+    );
+  }
 };
-}
-}
-}
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
+
 #endif

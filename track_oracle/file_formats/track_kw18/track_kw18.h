@@ -5,26 +5,26 @@
 #ifndef INCL_TRACK_KW_18_H
 #define INCL_TRACK_KW_18_H
 
-#include <vital/vital_config.h>
 #include <track_oracle/file_formats/track_kw18/track_kw18_export.h>
+#include <vital/vital_config.h>
 
 #include <track_oracle/core/track_base.h>
 #include <track_oracle/core/track_field.h>
 #include <track_oracle/data_terms/data_terms.h>
 
 namespace kwiver {
+
 namespace track_oracle {
 
-struct TRACK_KW18_EXPORT track_kw18_type: public track_base< track_kw18_type >
+struct TRACK_KW18_EXPORT track_kw18_type : public track_base< track_kw18_type >
 {
-
   track_field< dt::tracking::external_id > external_id;
 
   track_field< dt::tracking::fg_mask_area > fg_mask_area;
   track_field< dt::tracking::track_location > track_location;
   track_field< dt::tracking::obj_x > obj_x;
   track_field< dt::tracking::obj_y > obj_y;
-  track_field< dt::tracking::obj_location> obj_location;
+  track_field< dt::tracking::obj_location > obj_location;
   track_field< dt::tracking::velocity_x > velocity_x;
   track_field< dt::tracking::velocity_y > velocity_y;
   track_field< dt::tracking::bounding_box > bounding_box;
@@ -53,10 +53,10 @@ struct TRACK_KW18_EXPORT track_kw18_type: public track_base< track_kw18_type >
     Frame.add_field( timestamp_usecs );
     Frame.add_field( frame_number );
   }
-
 };
 
 } // ...track_oracle
+
 } // ...kwiver
 
 #endif

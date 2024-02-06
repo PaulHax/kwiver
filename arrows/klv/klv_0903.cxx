@@ -150,8 +150,7 @@ klv_0903_traits_lookup()
       "Ontology Series",
       "A series of ontology local sets.",
       { 0, 1 },
-      &klv_0903_ontology_set_traits_lookup() },
-  };
+      &klv_0903_ontology_set_traits_lookup() }, };
 
   return lookup;
 }

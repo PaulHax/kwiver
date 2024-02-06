@@ -8,27 +8,35 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include <sstream>
 #include <memory>
+#include <sstream>
 
-namespace py=pybind11;
-namespace kv=kwiver::vital;
+namespace py = pybind11;
+namespace kv = kwiver::vital;
 
-PYBIND11_MODULE(geo_polygon, m)
+PYBIND11_MODULE( geo_polygon, m )
 {
-  py::class_< kv::geo_polygon, std::shared_ptr< kv::geo_polygon> >(m, "GeoPolygon")
-  .def(py::init<>())
-  .def(py::init< kv::geo_polygon::geo_raw_polygon_t const&, int >())
-  .def("polygon", (kv::geo_polygon::geo_raw_polygon_t (kv::geo_polygon::*) () const) (&kv::geo_polygon::polygon))
-  .def("polygon", (kv::geo_polygon::geo_raw_polygon_t (kv::geo_polygon::*) (int) const) (&kv::geo_polygon::polygon))
-  .def("crs", &kv::geo_polygon::crs)
-  .def("set_polygon", &kv::geo_polygon::set_polygon)
-  .def("is_empty", &kv::geo_polygon::is_empty)
-  .def("__str__", [](const kv::geo_polygon& self)
-  {
-    std::stringstream res;
-    res << self;
-    return res.str();
-  })
+  py::class_< kv::geo_polygon, std::shared_ptr< kv::geo_polygon > >(
+    m,
+    "GeoPolygon" )
+    .def( py::init<>() )
+    .def( py::init< kv::geo_polygon::geo_raw_polygon_t const&, int >() )
+    .def(
+      "polygon",
+      ( kv::geo_polygon::geo_raw_polygon_t ( kv::geo_polygon::* )() const )(
+        &kv::geo_polygon::polygon ) )
+    .def(
+      "polygon",
+      ( kv::geo_polygon::geo_raw_polygon_t ( kv::geo_polygon::* )(
+        int ) const )( &kv::geo_polygon::polygon ) )
+    .def( "crs", &kv::geo_polygon::crs )
+    .def( "set_polygon", &kv::geo_polygon::set_polygon )
+    .def( "is_empty", &kv::geo_polygon::is_empty )
+    .def(
+      "__str__", [](const kv::geo_polygon& self){
+        std::stringstream res;
+        res << self;
+        return res.str();
+      } )
   ;
 }

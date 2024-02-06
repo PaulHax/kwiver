@@ -7,12 +7,13 @@
 
 #include <kwiversys/DynamicLoader.hxx>
 
-#include <vital/vital_types.h>
 #include <vital/vital_config.h>
+#include <vital/vital_types.h>
 
 #include <memory>
 
 namespace kwiver {
+
 namespace vital {
 
 // base class of factory hierarchy
@@ -52,10 +53,13 @@ public:
   /// @param path File path to the plugin being loaded.
   /// @param lib_handle Handle to library.
   ///
-  /// @return \b true if the plugin should be loaded, \b false if plugin should not be loaded
-  virtual bool load_plugin( VITAL_UNUSED path_t const& path,
-                            VITAL_UNUSED DL::LibraryHandle lib_handle ) const
-    { return true; }
+  /// @return \b true if the plugin should be loaded, \b false if plugin should
+  /// not be loaded
+  virtual bool
+  load_plugin(
+    VITAL_UNUSED path_t const& path,
+    VITAL_UNUSED DL::LibraryHandle lib_handle ) const
+  { return true; }
 
   /// @brief Test if factory should be registered.
   ///
@@ -76,16 +80,18 @@ public:
   /// @param fact Pointer to the factory object.
   ///
   /// @return \b true if the plugin should be registered, \b false otherwise.
-  virtual bool add_factory( VITAL_UNUSED plugin_factory_handle_t fact ) const
-    { return true; }
+  virtual bool
+  add_factory( VITAL_UNUSED plugin_factory_handle_t fact ) const
+  { return true; }
 
   // reference to the owning loader.
   plugin_loader* m_loader;
-
 }; // end class plugin_loader_filter
 
 using plugin_filter_handle_t = std::shared_ptr< plugin_loader_filter >;
 
-} } // end namespace
+} // namespace vital
 
-#endif //KWIVER_VITAL_PLUGIN_LOADER_FILTER_H
+}   // end namespace
+
+#endif // KWIVER_VITAL_PLUGIN_LOADER_FILTER_H

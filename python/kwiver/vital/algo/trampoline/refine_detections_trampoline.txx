@@ -17,53 +17,59 @@
 #include <vital/algo/refine_detections.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
-template < class algorithm_def_rd_base=
-            kwiver::vital::algorithm_def<
-              kwiver::vital::algo::refine_detections > >
-class algorithm_def_rd_trampoline :
-      public algorithm_trampoline<algorithm_def_rd_base>
+template < class algorithm_def_rd_base =
+    kwiver::vital::algorithm_def<
+      kwiver::vital::algo::refine_detections > >
+class algorithm_def_rd_trampoline
+  : public algorithm_trampoline< algorithm_def_rd_base >
 {
-  public:
-    using algorithm_trampoline<algorithm_def_rd_base>::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_rd_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<kwiver::vital::algo::refine_detections>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::refine_detections >,
+      type_name,
+    );
+  }
 };
 
-template< class refine_detections_base=
-                kwiver::vital::algo::refine_detections >
-class refine_detections_trampoline :
-      public algorithm_def_rd_trampoline< refine_detections_base >
+template < class refine_detections_base =
+    kwiver::vital::algo::refine_detections >
+class refine_detections_trampoline
+  : public algorithm_def_rd_trampoline< refine_detections_base >
 {
-  public:
-    using algorithm_def_rd_trampoline< refine_detections_base>::
-              algorithm_def_rd_trampoline;
+public:
+  using algorithm_def_rd_trampoline< refine_detections_base >::
+  algorithm_def_rd_trampoline;
 
-    kwiver::vital::detected_object_set_sptr
-    refine( kwiver::vital::image_container_sptr image_data,
-            kwiver::vital::detected_object_set_sptr detections ) const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        kwiver::vital::detected_object_set_sptr,
-        kwiver::vital::algo::refine_detections,
-        refine,
-        image_data,
-        detections
-      );
-    }
+  kwiver::vital::detected_object_set_sptr
+  refine(
+    kwiver::vital::image_container_sptr image_data,
+    kwiver::vital::detected_object_set_sptr detections ) const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      kwiver::vital::detected_object_set_sptr,
+      kwiver::vital::algo::refine_detections,
+      refine,
+      image_data,
+      detections
+    );
+  }
 };
 
-}
-}
-}
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
 
 #endif

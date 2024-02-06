@@ -10,6 +10,7 @@
 #include <vital/plugin_management/plugin_loader_filter.h>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -25,12 +26,16 @@ class VITAL_VPM_EXPORT plugin_filter_category
   : public plugin_loader_filter
 {
 public:
-  enum class condition { EQUAL, // select plugins of specified category
-                         NOT_EQUAL }; // excludeplugins of specified category
+  enum class condition
+  {
+    EQUAL,                      // select plugins of specified category
+    NOT_EQUAL,
+  };                                  // excludeplugins of specified category
 
-  // -- CONSTRUCTORS --
-  plugin_filter_category( plugin_filter_category::condition cond,
-                          const std::string& cat);
+// -- CONSTRUCTORS --
+  plugin_filter_category(
+    plugin_filter_category::condition cond,
+    const std::string& cat );
   virtual ~plugin_filter_category() = default;
 
   virtual bool add_factory( plugin_factory_handle_t fact ) const;
@@ -38,9 +43,10 @@ public:
 private:
   plugin_filter_category::condition m_condition;
   std::string m_category;
-
 }; // end class plugin_filter_category
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // KWIVER_FITAL_PLUGIN_FILTER_CATEGORY_H

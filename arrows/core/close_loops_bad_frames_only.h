@@ -10,15 +10,17 @@
 
 #include <arrows/core/kwiver_algo_core_export.h>
 
-#include <vital/types/image_container.h>
 #include <vital/types/feature_track_set.h>
+#include <vital/types/image_container.h>
 
-#include <vital/algo/match_features.h>
 #include <vital/algo/close_loops.h>
+#include <vital/algo/match_features.h>
 #include <vital/config/config_block.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 /// Attempts to stitch over incomplete or bad input frames.
@@ -31,9 +33,10 @@ class KWIVER_ALGO_CORE_EXPORT close_loops_bad_frames_only
   : public vital::algo::close_loops
 {
 public:
-  PLUGIN_INFO( "bad_frames_only",
-               "Attempts short-term loop closure based on percentage "
-               "of feature points tracked." )
+  PLUGIN_INFO(
+    "bad_frames_only",
+    "Attempts short-term loop closure based on percentage "
+    "of feature points tracked." )
 
   /// Default Constructor
   close_loops_bad_frames_only();
@@ -41,7 +44,8 @@ public:
   /// Destructor
   virtual ~close_loops_bad_frames_only() = default;
 
-  /// Get this algorithm's \link vital::config_block configuration block \endlink
+  /// Get this algorithm's \link vital::config_block configuration block
+  /// \endlink
   ///
   /// This base virtual function implementation returns an empty configuration
   /// block whose name is set to \c this->type_name.
@@ -60,7 +64,7 @@ public:
   ///
   /// \param config  The \c config_block instance containing the configuration
   ///                parameters for this algorithm
-  virtual void set_configuration(vital::config_block_sptr config);
+  virtual void set_configuration( vital::config_block_sptr config );
 
   /// Check that the algorithm's currently configuration is valid
   ///
@@ -71,7 +75,7 @@ public:
   /// \param config  The config block to check configuration of.
   ///
   /// \returns true if the configuration check passed and false if it didn't.
-  virtual bool check_configuration(vital::config_block_sptr config) const;
+  virtual bool check_configuration( vital::config_block_sptr config ) const;
 
   /// Perform basic shot stitching for bad frame detection
   ///
@@ -82,13 +86,13 @@ public:
   ///                  regions to consider in the input image.
   /// \returns an updated set a feature tracks after the stitching operation
   virtual vital::feature_track_set_sptr
-  stitch( vital::frame_id_t frame_number,
-          vital::feature_track_set_sptr input,
-          vital::image_container_sptr image,
-          vital::image_container_sptr mask = vital::image_container_sptr() ) const;
+  stitch(
+    vital::frame_id_t frame_number,
+    vital::feature_track_set_sptr input,
+    vital::image_container_sptr image,
+    vital::image_container_sptr mask = vital::image_container_sptr() ) const;
 
 protected:
-
   /// Is bad frame detection enabled?
   bool enabled_;
 
@@ -103,11 +107,12 @@ protected:
 
   /// The feature matching algorithm to use
   vital::algo::match_features_sptr matcher_;
-
 };
 
 } // end namespace algo
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif

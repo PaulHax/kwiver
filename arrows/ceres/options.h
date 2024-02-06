@@ -65,9 +65,10 @@ struct camera_options : public mvg::camera_options
 
   /// Add the camera position priors costs to the Ceres problem.
   int
-  add_position_prior_cost( ::ceres::Problem& problem,
-                           cam_param_map_t& ext_params,
-                           vital::sfm_constraints_sptr constraints );
+  add_position_prior_cost(
+    ::ceres::Problem& problem,
+    cam_param_map_t& ext_params,
+    vital::sfm_constraints_sptr constraints );
 
   /// Add the camera intrinsic priors costs to the Ceres problem.
   void add_intrinsic_priors_cost(
@@ -91,8 +92,9 @@ struct camera_options : public mvg::camera_options
   /// \param [out] params and array of 6 doubles to populate with parameters
   ///
   /// This function is the inverse of update_camera_extrinsics.
-  void extract_camera_extrinsics( const vital::camera_perspective_sptr camera,
-                                  double* params ) const;
+  void extract_camera_extrinsics(
+    const vital::camera_perspective_sptr camera,
+    double* params ) const;
   /// Extract the set of all unique intrinsic and extrinsic parameters from a
   /// camera map.
   ///
@@ -130,10 +132,11 @@ struct camera_options : public mvg::camera_options
   ///
   /// This function is the inverse of extract_camera_parameters.
   void
-  update_camera_parameters( vital::camera_map::map_camera_t& cameras,
-                            cam_param_map_t const& ext_params,
-                            std::vector< std::vector< double > > const& int_params,
-                            cam_intrinsic_id_map_t const& int_map ) const;
+  update_camera_parameters(
+    vital::camera_map::map_camera_t& cameras,
+    cam_param_map_t const& ext_params,
+    std::vector< std::vector< double > > const& int_params,
+    cam_intrinsic_id_map_t const& int_map ) const;
 
   /// Return true if any options to optimize intrinsic parameters are set.
   bool optimize_intrinsics() const;
@@ -157,8 +160,9 @@ struct camera_options : public mvg::camera_options
   ///  on the number of distortion parameters used.
   ///
   /// This function is the inverse of update_camera_intrinsics.
-  void extract_camera_intrinsics( const vital::camera_intrinsics_sptr K,
-                                  double* params ) const;
+  void extract_camera_intrinsics(
+    const vital::camera_intrinsics_sptr K,
+    double* params ) const;
 
   /// Update the camera intrinsics from a parameter array.
   ///

@@ -16,16 +16,20 @@
 #include <vital/bindings/c/helpers/image_container.h>
 
 namespace kwiver {
+
 namespace vital_c {
 
 // Allocate our shared pointer cache object
 SharedPointerCache< kwiver::vital::image_container, vital_image_container_t >
-  IMGC_SPTR_CACHE( "image_container" );
+IMGC_SPTR_CACHE( "image_container" );
 
-} }
+} // namespace vital_c
 
-//+ really need a way to display SPTR_CACHE.
-// need to verify that pointers are released as needed and cache does not grow without bound
+} // namespace kwiver
+
+// + really need a way to display SPTR_CACHE.
+// need to verify that pointers are released as needed and cache does not grow
+// without bound
 
 // ==================================================================
 // These two functions support C++ access to the SPTR_CACHE.
@@ -41,35 +45,38 @@ SharedPointerCache< kwiver::vital::image_container, vital_image_container_t >
  *
  * @return Opaque object pointer/handle
  */
-vital_image_container_t* vital_image_container_from_sptr( kwiver::vital::image_container_sptr sptr )
+vital_image_container_t*
+vital_image_container_from_sptr( kwiver::vital::image_container_sptr sptr )
 {
   STANDARD_CATCH(
     "C::image_container::from_sptr", 0,
 
     kwiver::vital_c::IMGC_SPTR_CACHE.store( sptr );
-    return reinterpret_cast<vital_image_container_t*>( sptr.get() );
-    );
+    return reinterpret_cast< vital_image_container_t* >( sptr.get() );
+  );
   return 0;
 }
 
-vital_image_container_t* vital_image_container_from_c_pointer( kwiver::vital::image_container* ptr )
+vital_image_container_t*
+vital_image_container_from_c_pointer( kwiver::vital::image_container* ptr )
 {
   STANDARD_CATCH(
     "C::image_container::from_c_ptr", 0,
-    kwiver::vital::image_container_sptr sptr(ptr);
+    kwiver::vital::image_container_sptr sptr( ptr );
     kwiver::vital_c::IMGC_SPTR_CACHE.store( sptr );
-    return reinterpret_cast<vital_image_container_t*>( ptr );
-    );
+    return reinterpret_cast< vital_image_container_t* >( ptr );
+  );
   return 0;
 }
 
-kwiver::vital::image_container_sptr vital_image_container_to_sptr( vital_image_container_t* handle )
+kwiver::vital::image_container_sptr
+vital_image_container_to_sptr( vital_image_container_t* handle )
 {
   STANDARD_CATCH(
     "C::image_container::to_sptr", 0,
 
     return kwiver::vital_c::IMGC_SPTR_CACHE.get( handle );
-    );
+  );
   return kwiver::vital::image_container_sptr();
 }
 
@@ -78,22 +85,27 @@ kwiver::vital::image_container_sptr vital_image_container_to_sptr( vital_image_c
 // and associated SPTR_CACHE
 // ------------------------------------------------------------------
 // / Create a new, simple image container around an image
-vital_image_container_t* vital_image_container_new_simple( vital_image_t *img )
+vital_image_container_t*
+vital_image_container_new_simple( vital_image_t* img )
 {
   STANDARD_CATCH(
     "C::image_container::new_simple", 0,
 
-    kwiver::vital::image *vital_img = reinterpret_cast<kwiver::vital::image*>(img);
-    kwiver::vital::image_container_sptr img_sptr( new kwiver::vital::simple_image_container( *vital_img ) );
+    kwiver::vital::image *
+    vital_img = reinterpret_cast< kwiver::vital::image* >( img );
+    kwiver::vital::image_container_sptr img_sptr(
+      new kwiver::vital::simple_image_container( *vital_img ) );
     kwiver::vital_c::IMGC_SPTR_CACHE.store( img_sptr );
-    return reinterpret_cast<vital_image_container_t*>( img_sptr.get() );
+    return reinterpret_cast< vital_image_container_t* >( img_sptr.get() );
   );
   return 0;
 }
 
 /// Destroy a vital_image_container_t instance
-void vital_image_container_destroy( vital_image_container_t *img_container,
-                                    vital_error_handle_t *eh )
+void
+vital_image_container_destroy(
+  vital_image_container_t* img_container,
+  vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "C::image_container::destroy", eh,
@@ -102,7 +114,8 @@ void vital_image_container_destroy( vital_image_container_t *img_container,
 }
 
 /// Get the size in bytes of an image container
-size_t vital_image_container_size( vital_image_container_t *img_c )
+size_t
+vital_image_container_size( vital_image_container_t* img_c )
 {
   STANDARD_CATCH(
     "C::image_container::size", 0,
@@ -112,7 +125,8 @@ size_t vital_image_container_size( vital_image_container_t *img_c )
 }
 
 /// Get the width of the given image in pixels
-size_t vital_image_container_width( vital_image_container_t *img_c )
+size_t
+vital_image_container_width( vital_image_container_t* img_c )
 {
   STANDARD_CATCH(
     "C::image_container::width", 0,
@@ -122,7 +136,8 @@ size_t vital_image_container_width( vital_image_container_t *img_c )
 }
 
 /// Get the height of the given image in pixels
-size_t vital_image_container_height( vital_image_container_t *img_c )
+size_t
+vital_image_container_height( vital_image_container_t* img_c )
 {
   STANDARD_CATCH(
     "C::image_container::height", 0,
@@ -132,7 +147,8 @@ size_t vital_image_container_height( vital_image_container_t *img_c )
 }
 
 /// Get the depth (number of channels) of the image
-size_t vital_image_container_depth( vital_image_container_t *img_c )
+size_t
+vital_image_container_depth( vital_image_container_t* img_c )
 {
   STANDARD_CATCH(
     "C::image_container::depth", 0,
@@ -142,12 +158,14 @@ size_t vital_image_container_depth( vital_image_container_t *img_c )
 }
 
 /// Get the in-memory image class to access data
-vital_image_t* vital_image_container_get_image( vital_image_container_t *img_c )
+vital_image_t*
+vital_image_container_get_image( vital_image_container_t* img_c )
 {
   STANDARD_CATCH(
     "C::image_container::get_image", NULL,
-    kwiver::vital::image_container_sptr ic_sptr( kwiver::vital_c::IMGC_SPTR_CACHE.get( img_c ) );
-    return reinterpret_cast<vital_image_t*>(
+    kwiver::vital::image_container_sptr ic_sptr(
+      kwiver::vital_c::IMGC_SPTR_CACHE.get( img_c ) );
+    return reinterpret_cast< vital_image_t* >(
       new kwiver::vital::image( ic_sptr->get_image() )
     );
   );

@@ -12,17 +12,20 @@
 
 #include <vital/types/track_set.h>
 
-#include <vital/bindings/c/types/track_set.h>
 #include <vital/bindings/c/helpers/c_utils.h>
+#include <vital/bindings/c/types/track_set.h>
 
 namespace kwiver {
+
 namespace vital_c {
 
 /// Cache for saving shared pointer references for pointers in use
 extern
 SharedPointerCache< vital::track_set, vital_trackset_t >
-  TRACK_SET_SPTR_CACHE;
+TRACK_SET_SPTR_CACHE;
 
-} }
+} // namespace vital_c
+
+} // namespace kwiver
 
 #endif // VITAL_C_HELPERS_TRACK_SET_H_

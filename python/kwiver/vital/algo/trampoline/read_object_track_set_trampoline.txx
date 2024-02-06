@@ -17,71 +17,77 @@
 #include <vital/algo/read_object_track_set.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
-template < class algorithm_def_rots_base=
-            kwiver::vital::algorithm_def<
-              kwiver::vital::algo::read_object_track_set > >
-class algorithm_def_rots_trampoline :
-      public algorithm_trampoline<algorithm_def_rots_base>
+template < class algorithm_def_rots_base =
+    kwiver::vital::algorithm_def<
+      kwiver::vital::algo::read_object_track_set > >
+class algorithm_def_rots_trampoline
+  : public algorithm_trampoline< algorithm_def_rots_base >
 {
-  public:
-    using algorithm_trampoline<algorithm_def_rots_base>::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_rots_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<kwiver::vital::algo::read_object_track_set>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::read_object_track_set >,
+      type_name,
+    );
+  }
 };
 
-template< class read_object_track_set_base=
-                kwiver::vital::algo::read_object_track_set >
-class read_object_track_set_trampoline :
-      public algorithm_def_rots_trampoline< read_object_track_set_base >
+template < class read_object_track_set_base =
+    kwiver::vital::algo::read_object_track_set >
+class read_object_track_set_trampoline
+  : public algorithm_def_rots_trampoline< read_object_track_set_base >
 {
-  public:
-    using algorithm_def_rots_trampoline< read_object_track_set_base>::
-              algorithm_def_rots_trampoline;
-    void
-    open( std::string const& filename ) override
-    {
-      PYBIND11_OVERLOAD(
-        void,
-        kwiver::vital::algo::read_object_track_set,
-        open,
-        filename
-      );
-    }
+public:
+  using algorithm_def_rots_trampoline< read_object_track_set_base >::
+  algorithm_def_rots_trampoline;
 
-    void
-    close() override
-    {
-      PYBIND11_OVERLOAD(
-        void,
-        kwiver::vital::algo::read_object_track_set,
-        close,
-      );
-    }
+  void
+  open( std::string const& filename ) override
+  {
+    PYBIND11_OVERLOAD(
+      void,
+      kwiver::vital::algo::read_object_track_set,
+      open,
+      filename
+    );
+  }
 
-    bool
-    read_set( kwiver::vital::object_track_set_sptr& track_set ) override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        bool,
-        kwiver::vital::algo::read_object_track_set,
-        read_set,
-        track_set
-      );
-    }
+  void
+  close() override
+  {
+    PYBIND11_OVERLOAD(
+      void,
+      kwiver::vital::algo::read_object_track_set,
+      close,
+    );
+  }
+
+  bool
+  read_set( kwiver::vital::object_track_set_sptr& track_set ) override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      bool,
+      kwiver::vital::algo::read_object_track_set,
+      read_set,
+      track_set
+    );
+  }
 };
 
-}
-}
-}
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
 
 #endif

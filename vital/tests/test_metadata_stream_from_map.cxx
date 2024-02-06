@@ -31,6 +31,7 @@ TEST ( metadata_stream_from_map, istream )
 {
   auto const md = std::make_shared< metadata >();
   md->add< VITAL_META_UNIX_TIMESTAMP >( 5 );
+
   metadata_istream_from_map::map_t map{
     { 1, { md } },
     { 3, {} }, };
@@ -49,6 +50,7 @@ TEST ( metadata_stream_from_map, ostream )
 {
   auto const md = std::make_shared< metadata >();
   md->add< VITAL_META_UNIX_TIMESTAMP >( 5 );
+
   metadata_ostream_from_map::map_t map;
   metadata_ostream_from_map os{ map };
 

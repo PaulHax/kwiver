@@ -12,6 +12,7 @@
 #endif
 
 namespace kwiver {
+
 namespace vital {
 
 // Factory methods
@@ -35,13 +36,11 @@ track_descriptor
 
 track_descriptor
 ::track_descriptor()
-{
-}
+{}
 
 track_descriptor
 ::~track_descriptor()
-{
-}
+{}
 
 void
 track_descriptor
@@ -117,15 +116,16 @@ double&
 track_descriptor
 ::at( const size_t idx )
 {
-  #ifdef DEBUG_CHECK_DATA_NULL
-  if (!this->data_)
+#ifdef DEBUG_CHECK_DATA_NULL
+  if( !this->data_ )
   {
-    throw std::logic_error( "Attempted to access raw data of null descriptor ptr" );
+    throw std::logic_error(
+      "Attempted to access raw data of null descriptor ptr" );
   }
-  #endif
+#endif
 
   // validate element index
-  if ( idx >= this->data_->size() )
+  if( idx >= this->data_->size() )
   {
     std::stringstream msg;
     msg << "Raw descriptor index " << idx
@@ -134,22 +134,23 @@ track_descriptor
     throw std::out_of_range( msg.str() );
   }
 
-  return this->data_->raw_data()[idx];
+  return this->data_->raw_data()[ idx ];
 }
 
 double const&
 track_descriptor
 ::at( const size_t idx ) const
 {
-  #ifdef DEBUG_CHECK_DATA_NULL
-  if (!this->data_)
+#ifdef DEBUG_CHECK_DATA_NULL
+  if( !this->data_ )
   {
-    throw std::logic_error( "Attempted to access raw data of null descriptor ptr" );
+    throw std::logic_error(
+      "Attempted to access raw data of null descriptor ptr" );
   }
-  #endif
+#endif
 
   // validate element index
-  if ( idx >= this->data_->size() )
+  if( idx >= this->data_->size() )
   {
     std::stringstream msg;
     msg << "Raw descriptor index " << idx
@@ -158,19 +159,19 @@ track_descriptor
     throw std::out_of_range( msg.str() );
   }
 
-  return this->data_->raw_data()[idx];
+  return this->data_->raw_data()[ idx ];
 }
 
 size_t
 track_descriptor
 ::descriptor_size() const
 {
-  #ifdef DEBUG_CHECK_DATA_NULL
-  if (!this->data_)
+#ifdef DEBUG_CHECK_DATA_NULL
+  if( !this->data_ )
   {
     throw std::logic_error( "Attempted to access size of null descriptor ptr" );
   }
-  #endif
+#endif
 
   return this->data_->size();
 }
@@ -190,7 +191,8 @@ track_descriptor
   this->data_ = descriptor_data_sptr(
     new descriptor_data_t( s ) );
 
-  std::fill( this->data_->raw_data(),
+  std::fill(
+    this->data_->raw_data(),
     this->data_->raw_data() + s, v );
 }
 
@@ -198,7 +200,7 @@ bool
 track_descriptor
 ::has_descriptor() const
 {
-  return (this->data_ && this->data_->size());
+  return ( this->data_ && this->data_->size() );
 }
 
 void
@@ -223,44 +225,46 @@ track_descriptor
 }
 
 // ----------------------------------------------------------------------------
-track_descriptor::history_entry::
-history_entry( const vital::timestamp& ts,
-               const image_bbox_t& img_loc,
-               const world_bbox_t& world_loc )
-  : ts_(ts),
+track_descriptor::history_entry
+::history_entry(
+  const vital::timestamp& ts,
+  const image_bbox_t& img_loc,
+  const world_bbox_t& world_loc )
+  : ts_( ts ),
     img_loc_( img_loc ),
     world_loc_( world_loc )
-{
-}
+{}
 
-track_descriptor::history_entry::
-history_entry( const vital::timestamp& ts,
-               const image_bbox_t& img_loc )
+track_descriptor::history_entry
+::history_entry(
+  const vital::timestamp& ts,
+  const image_bbox_t& img_loc )
   : ts_( ts ),
     img_loc_( img_loc ),
     world_loc_( 0, 0, 0, 0 )
-{
-}
+{}
 
 vital::timestamp
-track_descriptor::history_entry::
-get_timestamp() const
+track_descriptor::history_entry
+::get_timestamp() const
 {
   return this->ts_;
 }
 
 track_descriptor::history_entry::image_bbox_t const&
-track_descriptor::history_entry::
-get_image_location() const
+track_descriptor::history_entry
+::get_image_location() const
 {
   return this->img_loc_;
 }
 
 track_descriptor::history_entry::world_bbox_t const&
-track_descriptor::history_entry::
-get_world_location() const
+track_descriptor::history_entry
+::get_world_location() const
 {
   return this->world_loc_;
 }
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace

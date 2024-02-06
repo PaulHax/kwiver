@@ -7,7 +7,7 @@
 
 #include "detect_features_STAR.h"
 
-#if KWIVER_OPENCV_VERSION_MAJOR < 3 || defined(HAVE_OPENCV_XFEATURES2D)
+#if KWIVER_OPENCV_VERSION_MAJOR < 3 || defined( HAVE_OPENCV_XFEATURES2D )
 
 #include <vital/vital_config.h>
 
@@ -21,37 +21,42 @@ typedef cv::xfeatures2d::StarDetector cv_STAR_t;
 using namespace kwiver::vital;
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace ocv {
 
 class detect_features_STAR::priv
 {
 public:
   priv()
-    : max_size( 45 )
-    , response_threshold( 30 )
-    , line_threshold_projected( 10 )
-    , line_threshold_binarized( 8 )
-    , suppress_nonmax_size( 5 )
-  {
-  }
+    : max_size( 45 ),
+      response_threshold( 30 ),
+      line_threshold_projected( 10 ),
+      line_threshold_binarized( 8 ),
+      suppress_nonmax_size( 5 )
+  {}
 
-  cv::Ptr<cv_STAR_t> create() const
+  cv::Ptr< cv_STAR_t >
+  create() const
   {
 #if KWIVER_OPENCV_VERSION_MAJOR < 3
-    return cv::Ptr<cv_STAR_t>(
-      new cv_STAR_t( max_size, response_threshold, line_threshold_projected,
-                     line_threshold_binarized, suppress_nonmax_size )
+    return cv::Ptr< cv_STAR_t >(
+      new cv_STAR_t(
+        max_size, response_threshold, line_threshold_projected,
+        line_threshold_binarized, suppress_nonmax_size )
     );
 #else
-    return cv_STAR_t::create( max_size, response_threshold,
-                              line_threshold_projected,
-                              line_threshold_binarized, suppress_nonmax_size );
+    return cv_STAR_t::create(
+      max_size, response_threshold,
+      line_threshold_projected,
+      line_threshold_binarized, suppress_nonmax_size );
 #endif
   }
 
 #if KWIVER_OPENCV_VERSION_MAJOR < 3
-  void update( cv::Ptr<cv_STAR_t> a ) const
+  void
+  update( cv::Ptr< cv_STAR_t > a ) const
   {
     a->set( "maxSize", max_size );
     a->set( "responseThreshold", response_threshold );
@@ -61,7 +66,8 @@ public:
   }
 #endif
 
-  void update_config( config_block_sptr config ) const
+  void
+  update_config( config_block_sptr config ) const
   {
     config->set_value( "max_size", max_size );
     config->set_value( "response_threshold", response_threshold );
@@ -70,13 +76,16 @@ public:
     config->set_value( "suppress_nonmax_size", suppress_nonmax_size );
   }
 
-  void set_config( config_block_sptr config )
+  void
+  set_config( config_block_sptr config )
   {
-    max_size = config->get_value<int>( "max_size" );
-    response_threshold = config->get_value<int>( "response_threshold" );
-    line_threshold_projected = config->get_value<int>( "line_threshold_projected" );
-    line_threshold_binarized = config->get_value<int>( "line_threshold_binarized" );
-    suppress_nonmax_size = config->get_value<int>( "suppress_nonmax_size" );
+    max_size = config->get_value< int >( "max_size" );
+    response_threshold = config->get_value< int >( "response_threshold" );
+    line_threshold_projected =
+      config->get_value< int >( "line_threshold_projected" );
+    line_threshold_binarized =
+      config->get_value< int >( "line_threshold_binarized" );
+    suppress_nonmax_size = config->get_value< int >( "suppress_nonmax_size" );
   }
 
   // Parameters
@@ -97,8 +106,7 @@ detect_features_STAR
 
 detect_features_STAR
 ::~detect_features_STAR()
-{
-}
+{}
 
 vital::config_block_sptr
 detect_features_STAR
@@ -111,7 +119,7 @@ detect_features_STAR
 
 void
 detect_features_STAR
-::set_configuration(vital::config_block_sptr config)
+::set_configuration( vital::config_block_sptr config )
 {
   config_block_sptr c = get_configuration();
   c->merge_config( config );
@@ -131,7 +139,9 @@ detect_features_STAR
 }
 
 } // end namespace ocv
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
-#endif //has OCV support
+#endif // has OCV support

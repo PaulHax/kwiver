@@ -75,8 +75,10 @@ TEST_F ( aligned_edge_detection, seperate )
   auto const filtered_image_ptr = filter.filter( input_image );
   auto const expected_image_ptr = io.load( expected_filename );
 
-  EXPECT_TRUE( equal_content( filtered_image_ptr->get_image(),
-                              expected_image_ptr->get_image() ) );
+  EXPECT_TRUE(
+    equal_content(
+      filtered_image_ptr->get_image(),
+      expected_image_ptr->get_image() ) );
 }
 
 // ----------------------------------------------------------------------------
@@ -87,6 +89,8 @@ TEST_F ( aligned_edge_detection, combined )
   auto const filtered_image_ptr = filter.filter( input_image );
   auto const expected_image_ptr = io.load( expected_filename );
 
-  EXPECT_TRUE( equal_content( filtered_image_ptr->get_image(),
-                              expected_image_ptr->get_image() ) );
+  EXPECT_TRUE(
+    equal_content(
+      filtered_image_ptr->get_image(),
+      expected_image_ptr->get_image() ) );
 }

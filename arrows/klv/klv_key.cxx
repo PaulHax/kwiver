@@ -212,11 +212,13 @@ bool
 operator<( klv_uds_key const& lhs, klv_uds_key const& rhs )
 {
   // SMPTE specifies that byte 7 does not play a role in a key's uniqueness
-  return std::lexicographical_compare( lhs.cbegin(), lhs.cbegin() + 7,
-                                       rhs.cbegin(), rhs.cbegin() + 7 ) ||
+  return std::lexicographical_compare(
+    lhs.cbegin(), lhs.cbegin() + 7,
+    rhs.cbegin(), rhs.cbegin() + 7 ) ||
          ( std::equal( lhs.cbegin(), lhs.cbegin() + 7, rhs.cbegin() ) &&
-           std::lexicographical_compare( lhs.cbegin() + 8, lhs.cend(),
-                                         rhs.cbegin() + 8, rhs.cend() ) );
+           std::lexicographical_compare(
+             lhs.cbegin() + 8, lhs.cend(),
+             rhs.cbegin() + 8, rhs.cend() ) );
 }
 
 // ----------------------------------------------------------------------------
@@ -243,8 +245,9 @@ klv_read_uds_key( klv_read_iter_t& data, size_t max_length )
 {
   if( max_length < klv_uds_key::length )
   {
-    VITAL_THROW( kwiver::vital::metadata_buffer_overflow,
-                 "uds key overflows data buffer" );
+    VITAL_THROW(
+      kwiver::vital::metadata_buffer_overflow,
+      "uds key overflows data buffer" );
   }
 
   auto const value = klv_uds_key( data );
@@ -259,8 +262,9 @@ klv_write_uds_key(
 {
   if( max_length < klv_uds_key::length )
   {
-    VITAL_THROW( kwiver::vital::metadata_buffer_overflow,
-                 "uds key overflows data buffer" );
+    VITAL_THROW(
+      kwiver::vital::metadata_buffer_overflow,
+      "uds key overflows data buffer" );
   }
   data = std::copy( value.cbegin(), value.cend(), data );
 }

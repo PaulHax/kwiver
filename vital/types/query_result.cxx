@@ -8,13 +8,13 @@
 #include "query_result.h"
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
 query_result
 ::query_result()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 uid
@@ -169,4 +169,6 @@ query_result
   m_image_data = i;
 }
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace

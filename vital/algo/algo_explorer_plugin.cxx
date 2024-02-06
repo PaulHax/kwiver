@@ -67,7 +67,7 @@ algo_explorer
   {
     // Wrong type of factory returned.
     m_context->output_stream() <<
-        "Factory for algorithm could not be converted to algorithm_factory type.";
+      "Factory for algorithm could not be converted to algorithm_factory type.";
     return;
   }
 
@@ -88,22 +88,23 @@ algo_explorer
   fact->get_attribute( kwiver::vital::plugin_factory::PLUGIN_NAME, impl );
 
   std::string descrip = "-- Not_Set --";
-  fact->get_attribute( kwiver::vital::plugin_factory::PLUGIN_DESCRIPTION,
-                       descrip );
+  fact->get_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_DESCRIPTION,
+    descrip );
   descrip = m_context->format_description( descrip );
 
   if( m_context->if_brief() )
   {
-    m_context->output_stream()  << indent << "Algorithm type: "
-                                << type << "   Implementation: " << impl
-                                << std::endl;
+    m_context->output_stream() << indent << "Algorithm type: "
+                               << type << "   Implementation: " << impl
+                               << std::endl;
     return;
   }
 
-  m_context->output_stream()    << "---------------------\n"
-                                << "Info on algorithm type \"" << type
-                                << "\" implementation \"" << impl << "\""
-                                << std::endl;
+  m_context->output_stream() << "---------------------\n"
+                             << "Info on algorithm type \"" << type
+                             << "\" implementation \"" << impl << "\""
+                             << std::endl;
 
   m_context->display_attr( fact );
 
@@ -130,9 +131,9 @@ algo_explorer
 
       kwiver::vital::config_block_description_t descr =
         config->get_description( key );
-      m_context->output_stream()        << indent << "Description: " <<
-          m_context->format_description( descr )
-                                        << std::endl;
+      m_context->output_stream() << indent << "Description: " <<
+        m_context->format_description( descr )
+                                 << std::endl;
       any_config = true;
     }
 
@@ -200,24 +201,25 @@ algo_explorer_pipe
   {
     // Wrong type of factory returned.
     m_context->output_stream() <<
-        "Factory for algorithm could not be converted to algorithm_factory type.";
+      "Factory for algorithm could not be converted to algorithm_factory type.";
     return;
   }
 
   std::string descrip = "-- Not_Set --";
-  fact->get_attribute( kwiver::vital::plugin_factory::PLUGIN_DESCRIPTION,
-                       descrip );
+  fact->get_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_DESCRIPTION,
+    descrip );
   descrip = m_wtb.wrap_text( descrip );
 
   std::string impl = "-- not set --";
   fact->get_attribute( kwiver::vital::plugin_factory::PLUGIN_NAME, impl );
 
   // algo.type = impl
-  m_context->output_stream()    << "# ---------------------------------"
-                                << std::endl
-                                << "type = " << impl << std::endl
-                                << descrip << std::endl
-                                << "block " << impl << std::endl;
+  m_context->output_stream() << "# ---------------------------------"
+                             << std::endl
+                             << "type = " << impl << std::endl
+                             << descrip << std::endl
+                             << "block " << impl << std::endl;
 
   kwiver::vital::algorithm_sptr ptr = fact->create_object();
 
@@ -255,20 +257,26 @@ register_explorer_plugin( kwiver::vital::plugin_loader& vpm )
     return;
   }
 
-  auto fact = vpm.ADD_FACTORY( kwiver::vital::category_explorer,
-                               kwiver::vital::algo_explorer );
-  fact->add_attribute( kwiver::vital::plugin_factory::PLUGIN_NAME,
-                       "algorithm" )
-    .add_attribute( kwiver::vital::plugin_factory::PLUGIN_DESCRIPTION,
-                    "Plugin explorer for algorithm category." )
+  auto fact = vpm.ADD_FACTORY(
+    kwiver::vital::category_explorer,
+    kwiver::vital::algo_explorer );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_NAME,
+    "algorithm" )
+    .add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_DESCRIPTION,
+    "Plugin explorer for algorithm category." )
     .add_attribute( kwiver::vital::plugin_factory::PLUGIN_VERSION, "1.0" );
 
-  fact = vpm.ADD_FACTORY( kwiver::vital::category_explorer,
-                          kwiver::vital::algo_explorer_pipe );
-  fact->add_attribute( kwiver::vital::plugin_factory::PLUGIN_NAME,
-                       "algorithm-pipe" )
-    .add_attribute( kwiver::vital::plugin_factory::PLUGIN_DESCRIPTION,
-                    "Plugin explorer for algorithm category. Generates pipeline format output." )
+  fact = vpm.ADD_FACTORY(
+    kwiver::vital::category_explorer,
+    kwiver::vital::algo_explorer_pipe );
+  fact->add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_NAME,
+    "algorithm-pipe" )
+    .add_attribute(
+    kwiver::vital::plugin_factory::PLUGIN_DESCRIPTION,
+    "Plugin explorer for algorithm category. Generates pipeline format output." )
     .add_attribute( kwiver::vital::plugin_factory::PLUGIN_VERSION, "1.0" );
 
   vpm.mark_module_as_loaded( module );

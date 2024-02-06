@@ -29,7 +29,7 @@ class VITAL_ALGO_EXPORT compute_track_descriptors
 {
 public:
   compute_track_descriptors();
-  PLUGGABLE_INTERFACE(compute_track_descriptors);
+  PLUGGABLE_INTERFACE( compute_track_descriptors );
   /// Compute track descriptors given an image and tracks
   ///
   /// \param ts timestamp for the current frame
@@ -38,9 +38,10 @@ public:
   ///
   /// \returns a set of track descriptors
   virtual kwiver::vital::track_descriptor_set_sptr
-  compute( kwiver::vital::timestamp ts,
-           kwiver::vital::image_container_sptr image_data,
-           kwiver::vital::object_track_set_sptr tracks ) = 0;
+  compute(
+    kwiver::vital::timestamp ts,
+    kwiver::vital::image_container_sptr image_data,
+    kwiver::vital::object_track_set_sptr tracks ) = 0;
 
   /// Flush any remaining in-progress descriptors
   ///
@@ -50,7 +51,6 @@ public:
   ///
   /// \returns a set of track descriptors
   virtual kwiver::vital::track_descriptor_set_sptr flush() = 0;
-
 };
 
 /// Shared pointer for base compute_track_descriptors algorithm definition

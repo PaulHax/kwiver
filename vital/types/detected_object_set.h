@@ -8,15 +8,16 @@
 #ifndef VITAL_DETECTED_OBJECT_SET_H_
 #define VITAL_DETECTED_OBJECT_SET_H_
 
-#include <vital/vital_export.h>
-#include <vital/vital_config.h>
 #include <vital/attribute_set.h>
 #include <vital/noncopyable.h>
 #include <vital/set.h>
+#include <vital/vital_config.h>
+#include <vital/vital_export.h>
 
 #include <vital/types/detected_object.h>
 
 namespace kwiver {
+
 namespace vital {
 
 // forward declaration of detected_object class
@@ -37,11 +38,10 @@ using detected_object_set_scptr = std::shared_ptr< detected_object_set const >;
 ///   It is possible to have an application where two threads are accessing the
 ///   same set concurrently.
 class VITAL_EXPORT detected_object_set
-  : public set< detected_object_sptr >
-  , private noncopyable
+  : public set< detected_object_sptr >,
+    private noncopyable
 {
 public:
-
   /// Create an empty detection set.
   ///
   /// This constructor creates an empty detection set. Detections can be added
@@ -201,6 +201,8 @@ private:
   attribute_set_sptr m_attrs;
 };
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif

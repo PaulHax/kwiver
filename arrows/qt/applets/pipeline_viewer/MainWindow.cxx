@@ -26,24 +26,27 @@ KQ_IMPLEMENT_D_FUNC( MainWindow )
 // ----------------------------------------------------------------------------
 MainWindow
 ::MainWindow( QWidget* parent )
-  : QMainWindow{ parent }, d_ptr{ new MainWindowPrivate }
+  : QMainWindow{ parent },
+    d_ptr{ new MainWindowPrivate }
 {
   KQ_D();
 
   d->ui.setupUi( this );
 
-  connect( d->ui.actionExecutePipeline, &QAction::triggered,
-           this, QOverload<>::of( &MainWindow::executePipeline ) );
-  connect( d->ui.actionSuspendUpdates, &QAction::toggled,
-           this, &MainWindow::setUpdatesSuspended );
-  connect( d->ui.actionFitToWindow, &QAction::toggled,
-           this, &MainWindow::setFitToWindow );
+  connect(
+    d->ui.actionExecutePipeline, &QAction::triggered,
+    this, QOverload<>::of( &MainWindow::executePipeline ) );
+  connect(
+    d->ui.actionSuspendUpdates, &QAction::toggled,
+    this, &MainWindow::setUpdatesSuspended );
+  connect(
+    d->ui.actionFitToWindow, &QAction::toggled,
+    this, &MainWindow::setFitToWindow );
 }
 
 // ----------------------------------------------------------------------------
 MainWindow::~MainWindow()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 void
@@ -75,8 +78,9 @@ MainWindow
     d->ui.actionExecutePipeline->setEnabled( false );
     d->ui.actionSuspendUpdates->setEnabled( true );
 
-    connect( &worker, &PipelineWorker::imageAvailable,
-             d->ui.imageView, &ImageView::displayImage );
+    connect(
+      &worker, &PipelineWorker::imageAvailable,
+      d->ui.imageView, &ImageView::displayImage );
 
     worker.execute();
 

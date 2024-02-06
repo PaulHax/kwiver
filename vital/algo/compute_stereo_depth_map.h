@@ -24,7 +24,7 @@ class VITAL_ALGO_EXPORT compute_stereo_depth_map
 {
 public:
   compute_stereo_depth_map();
-  PLUGGABLE_INTERFACE(compute_stereo_depth_map);
+  PLUGGABLE_INTERFACE( compute_stereo_depth_map );
   /// Compute a stereo depth map given two images
   ///
   /// \throws image_size_mismatch_exception
@@ -34,9 +34,9 @@ public:
   /// \param right_image contains the second image to process
   /// \returns a depth map image
   virtual kwiver::vital::image_container_sptr
-  compute( kwiver::vital::image_container_sptr left_image,
-           kwiver::vital::image_container_sptr right_image ) const = 0;
-
+  compute(
+    kwiver::vital::image_container_sptr left_image,
+    kwiver::vital::image_container_sptr right_image ) const = 0;
 };
 
 /// Shared pointer for compute_stereo_depth_map algorithm definition class

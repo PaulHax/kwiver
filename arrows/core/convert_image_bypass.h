@@ -13,7 +13,9 @@
 #include <vital/algo/convert_image.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 /// A class for bypassing image conversion
@@ -21,21 +23,25 @@ class KWIVER_ALGO_CORE_EXPORT convert_image_bypass
   : public vital::algo::convert_image
 {
 public:
-  PLUGIN_INFO( "bypass",
-               "Performs no conversion and returns the given image container." )
+  PLUGIN_INFO(
+    "bypass",
+    "Performs no conversion and returns the given image container." )
 
-   /// Default Constructor
+  /// Default Constructor
   convert_image_bypass();
 
   /// Default image converter ( does nothing )
   ///
   /// \param [in] img image to be converted
   /// \returns the input image
-  virtual vital::image_container_sptr convert(vital::image_container_sptr img) const;
+  virtual vital::image_container_sptr convert(
+    vital::image_container_sptr img ) const;
 };
 
 } // end namespace core
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif

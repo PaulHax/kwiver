@@ -13,11 +13,11 @@
 #include <arrows/klv/klv_key_traits.h>
 #include <arrows/klv/klv_metadata.h>
 
-#include <vital/types/metadata_stream.h>
-#include <vital/types/metadata_stream_from_map.h>
 #include <vital/algo/metadata_map_io.h>
 #include <vital/algo/video_input.h>
 #include <vital/config/config_block_io.h>
+#include <vital/types/metadata_stream.h>
+#include <vital/types/metadata_stream_from_map.h>
 
 #include <vital/algo/algorithm.txx>
 
@@ -58,9 +58,9 @@ public:
     {
       config->set_value( "metadata_input:klv-json:compress", true );
     }
-    vital::set_nested_algo_configuration<vital::algo::metadata_map_io>(
+    vital::set_nested_algo_configuration< vital::algo::metadata_map_io >(
       "metadata_input", config, importer );
-    vital::get_nested_algo_configuration<vital::algo::metadata_map_io>(
+    vital::get_nested_algo_configuration< vital::algo::metadata_map_io >(
       "metadata_input", config, importer );
     if( !importer )
     {
@@ -98,9 +98,9 @@ public:
     std::filesystem::path const& filepath,
     vital::config_block_sptr const& config )
   {
-    vital::set_nested_algo_configuration<vital::algo::video_input>(
+    vital::set_nested_algo_configuration< vital::algo::video_input >(
       "video_input", config, m_video );
-    vital::get_nested_algo_configuration<vital::algo::video_input>(
+    vital::get_nested_algo_configuration< vital::algo::video_input >(
       "video_input", config, m_video );
 
     if( !m_video )
@@ -162,7 +162,9 @@ struct istream_data
 {
   istream_data(
     vital::metadata_istream& is, vital::metadata_sptr const& metadata )
-    : is{ is }, metadata{ metadata }, klv{ nullptr },
+    : is{ is },
+      metadata{ metadata },
+      klv{ nullptr },
       stream_index{ INT_MIN }
   {
     auto const klv_metadata =
@@ -192,7 +194,7 @@ struct istream_data
 class compare_klv::impl
 {
 public:
-  impl(compare_klv&);
+  impl( compare_klv& );
 
   void print_breadcrumbs() const;
   void print_difference( std::string const& message ) const;
@@ -239,8 +241,8 @@ struct possible_pair
 
 // ----------------------------------------------------------------------------
 compare_klv::impl
-::impl(compare_klv& parent)
-:parent(parent)
+::impl( compare_klv& parent )
+  : parent( parent )
 {}
 
 // ----------------------------------------------------------------------------
@@ -359,7 +361,7 @@ compare_klv::impl
   {
     equivalent = false;
     print_difference( "unmatched tags in lhs packet:" );
-    for(size_t i = 0; i < lhs_unmatched.size(); ++i)
+    for( size_t i = 0; i < lhs_unmatched.size(); ++i )
     {
       auto const& entry = *lhs_unmatched.at( i );
       std::stringstream ss;
@@ -376,7 +378,7 @@ compare_klv::impl
   {
     equivalent = false;
     print_difference( "unmatched tags in lhs packet:" );
-    for(size_t i = 0; i < rhs_unmatched.size(); ++i)
+    for( size_t i = 0; i < rhs_unmatched.size(); ++i )
     {
       auto const& entry = *rhs_unmatched.at( i );
       std::cout << "  | (" << i << ") Tag " << entry.first;
@@ -405,6 +407,7 @@ compare_klv::impl
     ss << "Tag " << trait->tag() << " (" << trait->name() << ")";
     breadcrumbs.push_back( ss.str() );
   }
+
   auto equivalent = true;
   auto const traits = trait ? trait->subtag_lookup() : nullptr;
 
@@ -412,8 +415,7 @@ compare_klv::impl
   if( lhs.type() != rhs.type() )
   {
     auto const type_string =
-      [ trait ]( klv::klv_value const& value ) -> std::string
-      {
+      [ trait ]( klv::klv_value const& value ) -> std::string {
         if( value.empty() )
         {
           return "<none>";
@@ -429,11 +431,10 @@ compare_klv::impl
         return "incorrect type: " + value.type_name();
       };
     auto const value_string =
-      [ trait ]( klv::klv_value const& value ) -> std::string
-      {
+      [ trait ]( klv::klv_value const& value ) -> std::string {
         return ( trait && value.type() == trait->type() )
-          ? trait->format().to_string( value )
-          : value.to_string();
+               ? trait->format().to_string( value )
+               : value.to_string();
       };
     print_difference( "types differ" );
     std::cout << "  | lhs type:  " << type_string( lhs ) << std::endl;
@@ -446,14 +447,16 @@ compare_klv::impl
   else if( lhs.type() == typeid( klv::klv_local_set ) )
   {
     equivalent =
-      compare( lhs.get< klv::klv_local_set >(),
-               rhs.get< klv::klv_local_set >(), traits );
+      compare(
+        lhs.get< klv::klv_local_set >(),
+        rhs.get< klv::klv_local_set >(), traits );
   }
   else if( lhs.type() == typeid( klv::klv_universal_set ) )
   {
     equivalent =
-      compare( lhs.get< klv::klv_universal_set >(),
-               rhs.get< klv::klv_universal_set >(), traits );
+      compare(
+        lhs.get< klv::klv_universal_set >(),
+        rhs.get< klv::klv_universal_set >(), traits );
   }
   // Values must be equal
   else
@@ -500,7 +503,7 @@ compare_klv::impl
 {
   // Just compare each pair of packets in turn
   auto equivalent = true;
-  for(size_t i = 0; i < std::max( lhs.size(), rhs.size() ); ++i)
+  for( size_t i = 0; i < std::max( lhs.size(), rhs.size() ); ++i )
   {
     breadcrumbs.emplace_back(
       std::string{} + "klv_packet (" + std::to_string( i ) + ")" );
@@ -564,7 +567,7 @@ compare_klv::impl
       result.resize( std::max( result.size(), subscore.size() + 1 ), 0 );
 
       // Add scores at each sub-level, maxing out at SIZE_MAX to avoid overflow
-      for(size_t i = 0; i < subscore.size(); ++i)
+      for( size_t i = 0; i < subscore.size(); ++i )
       {
         auto const sum = result.at( i + 1 ) + subscore.at( i );
         result.at( i + 1 ) = ( sum < result.at( i + 1 ) ) ? SIZE_MAX : sum;
@@ -609,13 +612,15 @@ compare_klv::impl
   // Reroute to set-specific logic
   if( lhs.type() == typeid( klv::klv_local_set ) )
   {
-    return difference_score( lhs.get< klv::klv_local_set >(),
-                             rhs.get< klv::klv_local_set >() );
+    return difference_score(
+      lhs.get< klv::klv_local_set >(),
+      rhs.get< klv::klv_local_set >() );
   }
   if( lhs.type() == typeid( klv::klv_universal_set ) )
   {
-    return difference_score( lhs.get< klv::klv_universal_set >(),
-                             rhs.get< klv::klv_universal_set >() );
+    return difference_score(
+      lhs.get< klv::klv_universal_set >(),
+      rhs.get< klv::klv_universal_set >() );
   }
 
   if( lhs != rhs )
@@ -629,11 +634,12 @@ compare_klv::impl
 }
 
 // ----------------------------------------------------------------------------
-void compare_klv::initialize()
+void
+compare_klv
+::initialize()
 {
-  KWIVER_INITIALIZE_UNIQUE_PTR(impl,d);
+  KWIVER_INITIALIZE_UNIQUE_PTR( impl, d );
 }
-
 
 // ----------------------------------------------------------------------------
 int
@@ -687,14 +693,13 @@ compare_klv
       rhs_is->at_end() ? INT64_MAX : rhs_is->frame_number();
     auto const frame_number = std::min( lhs_frame_number, rhs_frame_number );
     d->breadcrumbs.emplace_back(
-        std::string{} + "frame (" + std::to_string( frame_number ) + ")" );
+      std::string{} + "frame (" + std::to_string( frame_number ) + ")" );
 
     // Extract information about this frame's KLV
     auto const build_data =
       [ frame_number ](
         vital::metadata_istream& is, vital::frame_id_t this_frame_number )
-      -> std::vector< istream_data >
-      {
+      -> std::vector< istream_data > {
         if( is.at_end() || this_frame_number > frame_number )
         {
           return {};
@@ -736,7 +741,7 @@ compare_klv
             auto const score =
               d->difference_score( lhs_packet.value, rhs_packet.value );
             ranked_pairs.emplace(
-                score, possible_pair{ lhs, lhs_packet, rhs, rhs_packet } );
+              score, possible_pair{ lhs, lhs_packet, rhs, rhs_packet } );
           }
         }
       }
@@ -800,7 +805,7 @@ compare_klv
       for( size_t i = 0; i < unmatched_lhs.size(); ++i )
       {
         std::cout << "  | (" << i << ") " << *unmatched_lhs.at( i ) <<
-        std::endl;
+          std::endl;
       }
     }
 
@@ -836,7 +841,7 @@ compare_klv
       for( size_t i = 0; i < unmatched_rhs.size(); ++i )
       {
         std::cout << "  | (" << i << ") " << *unmatched_rhs.at( i ) <<
-        std::endl;
+          std::endl;
       }
     }
 
@@ -870,12 +875,12 @@ compare_klv
     "\n  rhs-file: Right-hand-side video or JSON file for comparison." );
 
   m_cmd_options->add_options()( "h,help", "Display applet usage." )
-    ( "c,config", "Provide configuration file.",
-      cxxopts::value< std::string >(), "filename" )
-    ( "lhs-file", "Left-hand-side video or JSON file for comparison.",
-    cxxopts::value< std::string >() )
-    ( "rhs-file", "Right-hand-side video or JSON file for comparison.",
-    cxxopts::value< std::string >() )
+  ( "c,config", "Provide configuration file.",
+    cxxopts::value< std::string > (), "filename" )
+  ( "lhs-file", "Left-hand-side video or JSON file for comparison.",
+    cxxopts::value< std::string > () )
+  ( "rhs-file", "Right-hand-side video or JSON file for comparison.",
+    cxxopts::value< std::string > () )
   ;
 
   m_cmd_options->parse_positional( { "lhs-file", "rhs-file" } );

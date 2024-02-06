@@ -97,8 +97,9 @@ private:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_0903_fpa_index const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    klv_0903_fpa_index const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( klv_0903_fpa_index const& value ) const override;
@@ -136,8 +137,9 @@ private:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_0903_vtarget_pack const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    klv_0903_vtarget_pack const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( klv_0903_vtarget_pack const& value ) const override;

@@ -244,9 +244,10 @@ mesh_triangle_closest_point(
   mesh_triangle_closest_point( p, a, b, c, dist, u, v );
 
   double t = 1 - u - v;
-  return point_3d( t * a[ 0 ] + u * b[ 0 ] + v * c[ 0 ],
-                   t * a[ 1 ] + u * b[ 1 ] + v * c[ 1 ],
-                   t * a[ 2 ] + u * b[ 2 ] + v * c[ 2 ] );
+  return point_3d(
+    t * a[ 0 ] + u * b[ 0 ] + v * c[ 0 ],
+    t * a[ 1 ] + u * b[ 1 ] + v * c[ 1 ],
+    t * a[ 2 ] + u * b[ 2 ] + v * c[ 2 ] );
 }
 
 // ----------------------------------------------------------------------------
@@ -257,8 +258,9 @@ mesh_closest_point(
   // check for a triangular mesh
   if( mesh.faces().regularity() != 3 )
   {
-    LOG_ERROR( vital::get_logger( "arrows.core.mesh_closest_point" ),
-               "Closest point calculation requires triangular mesh." );
+    LOG_ERROR(
+      vital::get_logger( "arrows.core.mesh_closest_point" ),
+      "Closest point calculation requires triangular mesh." );
     return -1;
   }
 
@@ -293,9 +295,11 @@ mesh_closest_point(
   vital::point_3d a( verts[ f[ 0 ] ] );
   vital::point_3d b( verts[ f[ 1 ] ] );
   vital::point_3d c( verts[ f[ 2 ] ] );
-  cp.set_value( vector_3d( t * a[ 0 ] + u * b[ 0 ] + v * c[ 0 ],
-                           t * a[ 1 ] + u * b[ 1 ] + v * c[ 1 ],
-                           t * a[ 2 ] + u * b[ 2 ] + v * c[ 2 ] ) );
+  cp.set_value(
+    vector_3d(
+      t * a[ 0 ] + u * b[ 0 ] + v * c[ 0 ],
+      t * a[ 1 ] + u * b[ 1 ] + v * c[ 1 ],
+      t * a[ 2 ] + u * b[ 2 ] + v * c[ 2 ] ) );
   return isect;
 }
 
@@ -308,16 +312,18 @@ mesh_intersect(
   // check for a triangular mesh
   if( mesh.faces().regularity() != 3 )
   {
-    LOG_ERROR( vital::get_logger( "arrows.core.mesh_closest_point" ),
-               "Closest point calculation requires triangular mesh." );
+    LOG_ERROR(
+      vital::get_logger( "arrows.core.mesh_closest_point" ),
+      "Closest point calculation requires triangular mesh." );
     return -1;
   }
 
   // Calculate normals if needed
   if( !mesh.faces().has_normals() )
   {
-    LOG_ERROR( vital::get_logger( "arrows.core.mesh_closest_point" ),
-               "Closest point calculation requires faces normals." );
+    LOG_ERROR(
+      vital::get_logger( "arrows.core.mesh_closest_point" ),
+      "Closest point calculation requires faces normals." );
     return -1;
   }
 
@@ -330,9 +336,10 @@ mesh_intersect(
         .cross( verts[ faces[ 0 ][ 2 ] ] - verts[ faces[ 0 ][ 0 ] ] ) -
         0.5 * faces.normal( 0 ) ).norm() < 1e-14 )
   {
-    LOG_ERROR( vital::get_logger(
-                 "arrows.core.mesh_closest_point" ),
-               "Closest point calculation requires faces normal lengths be set to face area." );
+    LOG_ERROR(
+      vital::get_logger(
+        "arrows.core.mesh_closest_point" ),
+      "Closest point calculation requires faces normal lengths be set to face area." );
     return -1;
   }
 
@@ -344,8 +351,9 @@ mesh_intersect(
     vital::point_3d a( verts[ f[ 0 ] ] );
     vital::point_3d b( verts[ f[ 1 ] ] );
     vital::point_3d c( verts[ f[ 2 ] ] );
-    if( mesh_intersect_triangle_min_dist( p, d, a, b, c, faces.normal( i ),
-                                          dist, u, v ) )
+    if( mesh_intersect_triangle_min_dist(
+      p, d, a, b, c, faces.normal( i ),
+      dist, u, v ) )
     {
       isect = i;
     }

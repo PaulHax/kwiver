@@ -20,7 +20,7 @@ main( int argc, char** argv )
 }
 
 // ----------------------------------------------------------------------------
-TEST( merge_metadata_streams, merge_empty )
+TEST ( merge_metadata_streams, merge_empty )
 {
   arrows::core::merge_metadata_streams filter;
   auto const result = filter.filter( {}, nullptr );
@@ -30,7 +30,7 @@ TEST( merge_metadata_streams, merge_empty )
 }
 
 // ----------------------------------------------------------------------------
-TEST( merge_metadata_streams, merge_null )
+TEST ( merge_metadata_streams, merge_null )
 {
   arrows::core::merge_metadata_streams filter;
   auto const result = filter.filter( { nullptr, nullptr }, nullptr );
@@ -40,11 +40,12 @@ TEST( merge_metadata_streams, merge_null )
 }
 
 // ----------------------------------------------------------------------------
-TEST( merge_metadata_streams, merge_one )
+TEST ( merge_metadata_streams, merge_one )
 {
   arrows::core::merge_metadata_streams filter;
   auto const md = std::make_shared< vital::metadata >();
   md->add< vital::VITAL_META_UNIX_TIMESTAMP >( 7 );
+
   auto const result = filter.filter( { md }, nullptr );
   ASSERT_EQ( 1, result.size() );
   ASSERT_NE( nullptr, result[ 0 ] );
@@ -52,14 +53,13 @@ TEST( merge_metadata_streams, merge_one )
 }
 
 // ----------------------------------------------------------------------------
-TEST( merge_metadata_streams, merge_multiple )
+TEST ( merge_metadata_streams, merge_multiple )
 {
   arrows::core::merge_metadata_streams filter;
   vital::metadata_vector md = {
     std::make_shared< vital::metadata >(),
     std::make_shared< vital::metadata >(),
-    std::make_shared< vital::metadata >()
-  };
+    std::make_shared< vital::metadata >() };
   md[ 0 ]->add< vital::VITAL_META_UNIX_TIMESTAMP >( 0 );
   md[ 0 ]->add< vital::VITAL_META_MISSION_ID >( "0" );
   md[ 0 ]->add< vital::VITAL_META_MISSION_NUMBER >( "#" );

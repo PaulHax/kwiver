@@ -27,34 +27,41 @@ typedef unsigned char vital_image_byte;
 typedef struct vital_image_s vital_image_t;
 
 /// Enum for different pixel types in an image
-enum vital_image_pixel_type_t {VITAL_PIXEL_UNKNOWN = 0,
-                               VITAL_PIXEL_UNSIGNED = 1,
-                               VITAL_PIXEL_SIGNED = 2,
-                               VITAL_PIXEL_FLOAT = 3,
-                               VITAL_PIXEL_BOOL = 4};
+enum vital_image_pixel_type_t
+{
+  VITAL_PIXEL_UNKNOWN = 0,
+  VITAL_PIXEL_UNSIGNED = 1,
+  VITAL_PIXEL_SIGNED = 2,
+  VITAL_PIXEL_FLOAT = 3,
+  VITAL_PIXEL_BOOL = 4,
+};
 
 /// Create a new, empty image
 VITAL_C_EXPORT
 vital_image_t* vital_image_new();
 
 /// Create a new image with dimensions and type, allocating memory
+
 /**
  * @param width Width of image in pixels
  * @param height Height of image in pixels
  * @param depth Number of planes in image
- * @param interleave If true change the memory layout to interleave the channels (depth)
+ * @param interleave If true change the memory layout to interleave the channels
+ * (depth)
  * @param pixel_type The class of data type used for the pixels
  * @param pixel_num_bytes The number of bytes use to reperesent a pixel
  *
  * @return Opaque pointer to new image
  */
 VITAL_C_EXPORT
-vital_image_t* vital_image_new_with_dim( size_t width, size_t height,
-                                         size_t depth, bool interleave,
-                                         vital_image_pixel_type_t pixel_type,
-                                         size_t pixel_num_bytes);
+vital_image_t* vital_image_new_with_dim(
+  size_t width, size_t height,
+  size_t depth, bool interleave,
+  vital_image_pixel_type_t pixel_type,
+  size_t pixel_num_bytes );
 
 /// Create a new image wrapping existing data
+
 /**
  * This function creates an image object from raw memory owned by the
  * caller.  The constructed image does not take ownership of the memory.
@@ -72,24 +79,27 @@ vital_image_t* vital_image_new_with_dim( size_t width, size_t height,
  * @return Opaque pointer to new image
  */
 VITAL_C_EXPORT
-vital_image_t* vital_image_new_from_data( void const* first_pixel,
-                                          size_t width, size_t height, size_t depth,
-                                          int32_t w_step, int32_t h_step, int32_t d_step,
-                                          vital_image_pixel_type_t pixel_type,
-                                          size_t pixel_num_bytes);
+vital_image_t* vital_image_new_from_data(
+  void const* first_pixel,
+  size_t width, size_t height, size_t depth,
+  int32_t w_step, int32_t h_step, int32_t d_step,
+  vital_image_pixel_type_t pixel_type,
+  size_t pixel_num_bytes );
 
 /// Create a new image from an existing image, sharing the same memory
+
 /**
  * The new image will share the same memory as the old image
  */
 VITAL_C_EXPORT
-vital_image_t* vital_image_new_from_image( vital_image_t *other_image );
+vital_image_t* vital_image_new_from_image( vital_image_t* other_image );
 
 /// Destroy an image instance
 VITAL_C_EXPORT
 void vital_image_destroy( vital_image_t* image );
 
 /// Copy the data from \p image_src into \p image_dest
+
 /**
  * The if destination image does not match the source image in size
  * or pixel type, the destination image will be reallocated to match
@@ -98,8 +108,9 @@ void vital_image_destroy( vital_image_t* image );
  * @param image_src  The source image to copy
  */
 VITAL_C_EXPORT
-void vital_image_copy_from_image(vital_image_t *image_dest,
-                                 vital_image_t *image_src );
+void vital_image_copy_from_image(
+  vital_image_t* image_dest,
+  vital_image_t* image_src );
 
 /// Get the number of bytes allocated in the given image
 VITAL_C_EXPORT
@@ -149,93 +160,145 @@ bool vital_image_is_contiguous( vital_image_t* image );
 VITAL_C_EXPORT
 bool vital_image_equal_content( vital_image_t* image1, vital_image_t* image2 );
 
-/// Get pixel value at location (i,j) assuming a single channel unsigned 8-bit image
+/// Get pixel value at location (i,j) assuming a single channel unsigned 8-bit
+/// image
 VITAL_C_EXPORT
-uint8_t vital_image_get_pixel2_uint8( vital_image_t *image, unsigned i, unsigned j );
+uint8_t vital_image_get_pixel2_uint8(
+  vital_image_t* image, unsigned i,
+  unsigned j );
 
 /// Get pixel value at location (i,j,k) assuming an unsigned 8-bit image
 VITAL_C_EXPORT
-uint8_t vital_image_get_pixel3_uint8( vital_image_t *image, unsigned i, unsigned j, unsigned k );
+uint8_t vital_image_get_pixel3_uint8(
+  vital_image_t* image, unsigned i,
+  unsigned j, unsigned k );
 
-/// Get pixel value at location (i,j) assuming a single channel signed 8-bit image
+/// Get pixel value at location (i,j) assuming a single channel signed 8-bit
+/// image
 VITAL_C_EXPORT
-int8_t vital_image_get_pixel2_int8( vital_image_t *image, unsigned i, unsigned j );
+int8_t vital_image_get_pixel2_int8(
+  vital_image_t* image, unsigned i,
+  unsigned j );
 
 /// Get pixel value at location (i,j,k) assuming an signed 8-bit image
 VITAL_C_EXPORT
-int8_t vital_image_get_pixel3_int8( vital_image_t *image, unsigned i, unsigned j, unsigned k );
+int8_t vital_image_get_pixel3_int8(
+  vital_image_t* image, unsigned i,
+  unsigned j, unsigned k );
 
-/// Get pixel value at location (i,j) assuming a single channel unsigned 16-bit image
+/// Get pixel value at location (i,j) assuming a single channel unsigned 16-bit
+/// image
 VITAL_C_EXPORT
-uint16_t vital_image_get_pixel2_uint16( vital_image_t *image, unsigned i, unsigned j );
+uint16_t vital_image_get_pixel2_uint16(
+  vital_image_t* image, unsigned i,
+  unsigned j );
 
 /// Get pixel value at location (i,j,k) assuming an unsigned 16-bit image
 VITAL_C_EXPORT
-uint16_t vital_image_get_pixel3_uint16( vital_image_t *image, unsigned i, unsigned j, unsigned k );
+uint16_t vital_image_get_pixel3_uint16(
+  vital_image_t* image, unsigned i,
+  unsigned j, unsigned k );
 
-/// Get pixel value at location (i,j) assuming a single channel signed 16-bit image
+/// Get pixel value at location (i,j) assuming a single channel signed 16-bit
+/// image
 VITAL_C_EXPORT
-int16_t vital_image_get_pixel2_int16( vital_image_t *image, unsigned i, unsigned j );
+int16_t vital_image_get_pixel2_int16(
+  vital_image_t* image, unsigned i,
+  unsigned j );
 
 /// Get pixel value at location (i,j,k) assuming an signed 16-bit image
 VITAL_C_EXPORT
-int16_t vital_image_get_pixel3_int16( vital_image_t *image, unsigned i, unsigned j, unsigned k );
+int16_t vital_image_get_pixel3_int16(
+  vital_image_t* image, unsigned i,
+  unsigned j, unsigned k );
 
-/// Get pixel value at location (i,j) assuming a single channel unsigned 32-bit image
+/// Get pixel value at location (i,j) assuming a single channel unsigned 32-bit
+/// image
 VITAL_C_EXPORT
-uint32_t vital_image_get_pixel2_uint32( vital_image_t *image, unsigned i, unsigned j );
+uint32_t vital_image_get_pixel2_uint32(
+  vital_image_t* image, unsigned i,
+  unsigned j );
 
 /// Get pixel value at location (i,j,k) assuming an unsigned 32-bit image
 VITAL_C_EXPORT
-uint32_t vital_image_get_pixel3_uint32( vital_image_t *image, unsigned i, unsigned j, unsigned k );
+uint32_t vital_image_get_pixel3_uint32(
+  vital_image_t* image, unsigned i,
+  unsigned j, unsigned k );
 
-/// Get pixel value at location (i,j) assuming a single channel signed 32-bit image
+/// Get pixel value at location (i,j) assuming a single channel signed 32-bit
+/// image
 VITAL_C_EXPORT
-int32_t vital_image_get_pixel2_int32( vital_image_t *image, unsigned i, unsigned j );
+int32_t vital_image_get_pixel2_int32(
+  vital_image_t* image, unsigned i,
+  unsigned j );
 
 /// Get pixel value at location (i,j,k) assuming an signed 32-bit image
 VITAL_C_EXPORT
-int32_t vital_image_get_pixel3_int32( vital_image_t *image, unsigned i, unsigned j, unsigned k );
+int32_t vital_image_get_pixel3_int32(
+  vital_image_t* image, unsigned i,
+  unsigned j, unsigned k );
 
-/// Get pixel value at location (i,j) assuming a single channel unsigned 64-bit image
+/// Get pixel value at location (i,j) assuming a single channel unsigned 64-bit
+/// image
 VITAL_C_EXPORT
-uint64_t vital_image_get_pixel2_uint64( vital_image_t *image, unsigned i, unsigned j );
+uint64_t vital_image_get_pixel2_uint64(
+  vital_image_t* image, unsigned i,
+  unsigned j );
 
 /// Get pixel value at location (i,j,k) assuming an unsigned 64-bit image
 VITAL_C_EXPORT
-uint64_t vital_image_get_pixel3_uint64( vital_image_t *image, unsigned i, unsigned j, unsigned k );
+uint64_t vital_image_get_pixel3_uint64(
+  vital_image_t* image, unsigned i,
+  unsigned j, unsigned k );
 
-/// Get pixel value at location (i,j) assuming a single channel signed 64-bit image
+/// Get pixel value at location (i,j) assuming a single channel signed 64-bit
+/// image
 VITAL_C_EXPORT
-int64_t vital_image_get_pixel2_int64( vital_image_t *image, unsigned i, unsigned j );
+int64_t vital_image_get_pixel2_int64(
+  vital_image_t* image, unsigned i,
+  unsigned j );
 
 /// Get pixel value at location (i,j,k) assuming an signed 64-bit image
 VITAL_C_EXPORT
-int64_t vital_image_get_pixel3_int64( vital_image_t *image, unsigned i, unsigned j, unsigned k );
+int64_t vital_image_get_pixel3_int64(
+  vital_image_t* image, unsigned i,
+  unsigned j, unsigned k );
 
 /// Get pixel value at location (i,j) assuming a single channel float image
 VITAL_C_EXPORT
-float vital_image_get_pixel2_float( vital_image_t *image, unsigned i, unsigned j );
+float vital_image_get_pixel2_float(
+  vital_image_t* image, unsigned i,
+  unsigned j );
 
 /// Get pixel value at location (i,j,k) assuming a float image
 VITAL_C_EXPORT
-float vital_image_get_pixel3_float( vital_image_t *image, unsigned i, unsigned j, unsigned k );
+float vital_image_get_pixel3_float(
+  vital_image_t* image, unsigned i,
+  unsigned j, unsigned k );
 
 /// Get pixel value at location (i,j) assuming a single channel double image
 VITAL_C_EXPORT
-double vital_image_get_pixel2_double( vital_image_t *image, unsigned i, unsigned j );
+double vital_image_get_pixel2_double(
+  vital_image_t* image, unsigned i,
+  unsigned j );
 
 /// Get pixel value at location (i,j,k) assuming a double image
 VITAL_C_EXPORT
-double vital_image_get_pixel3_double( vital_image_t *image, unsigned i, unsigned j, unsigned k );
+double vital_image_get_pixel3_double(
+  vital_image_t* image, unsigned i,
+  unsigned j, unsigned k );
 
 /// Get pixel value at location (i,j) assuming a single channel bool image
 VITAL_C_EXPORT
-bool vital_image_get_pixel2_bool( vital_image_t *image, unsigned i, unsigned j );
+bool vital_image_get_pixel2_bool(
+  vital_image_t* image, unsigned i,
+  unsigned j );
 
 /// Get pixel value at location (i,j,k) assuming a bool image
 VITAL_C_EXPORT
-bool vital_image_get_pixel3_bool( vital_image_t *image, unsigned i, unsigned j, unsigned k );
+bool vital_image_get_pixel3_bool(
+  vital_image_t* image, unsigned i, unsigned j,
+  unsigned k );
 
 #ifdef __cplusplus
 }

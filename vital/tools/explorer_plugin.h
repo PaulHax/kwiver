@@ -7,17 +7,18 @@
 
 #include <vital/tools/explorer_plugin_export.h>
 
-#include <vital/vital_config.h>
-#include <vital/noncopyable.h>
-#include <vital/plugin_management/plugin_factory.h>
 #include <vital/applets/cxxopts.hpp>
 #include <vital/config/config_block.h>
+#include <vital/noncopyable.h>
+#include <vital/plugin_management/plugin_factory.h>
+#include <vital/vital_config.h>
 
 namespace kwiver {
+
 namespace vital {
 
 class category_explorer;
-using category_explorer_sptr = std::shared_ptr<category_explorer>;
+using category_explorer_sptr = std::shared_ptr< category_explorer >;
 
 // ----------------------------------------------------------------------------
 /// @brief Context for category_explorer.
@@ -28,7 +29,6 @@ class EXPLORER_PLUGIN_EXPORT explorer_context
   : private kwiver::vital::noncopyable
 {
 public:
-
   ~explorer_context();
 
   /// @brief Get output stream.
@@ -77,7 +77,7 @@ public:
   /// factory. This can be useful when the detail output option has
   /// been selected so that all attributes can be displayed in raw
   /// format in addition to this plugin's output format.
-  void display_attr( const kwiver::vital::plugin_factory_handle_t fact) const;
+  void display_attr( const kwiver::vital::plugin_factory_handle_t fact ) const;
 
   /// @brief Format description text.
   ///
@@ -107,11 +107,10 @@ public:
   class priv;
 
 protected:
-  explorer_context( priv * pp );
+  explorer_context( priv* pp );
 
 private:
   priv* p;
-
 }; // end class explorer_context
 
 // ----------------------------------------------------------------------------
@@ -131,9 +130,12 @@ private:
 /// ALGO_EXPLORER_PLUGIN_EXPORT // Need appropriate export decorator
 /// void register_explorer_plugin( kwiver::vital::plugin_loader& vpm )
 /// {
-/// auto fact = vpm.ADD_FACTORY( kwiver::vital::category_explorer, kwiver::vital::algo_explorer );
-/// fact->add_attribute( kwiver::vital::plugin_factory::PLUGIN_NAME, "algorithm" )
-///  .add_attribute( kwiver::vital::plugin_factory::PLUGIN_DESCRIPTION, "Plugin explorer for algorithm category." )
+/// auto fact = vpm.ADD_FACTORY( kwiver::vital::category_explorer,
+/// kwiver::vital::algo_explorer );
+/// fact->add_attribute( kwiver::vital::plugin_factory::PLUGIN_NAME, "algorithm"
+/// )
+///  .add_attribute( kwiver::vital::plugin_factory::PLUGIN_DESCRIPTION, "Plugin
+/// explorer for algorithm category." )
 ///  .add_attribute( kwiver::vital::plugin_factory::PLUGIN_VERSION, "1.0" );
 /// }
 /// \endcode
@@ -167,9 +169,10 @@ public:
   ///
   /// @param fact Factory to explore
   virtual void explore( const kwiver::vital::plugin_factory_handle_t fact ) = 0;
-
 }; // end class category_explorer
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // VITAL_TOOLS_EXPLORER_PLUGIN_H

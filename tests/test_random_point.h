@@ -12,12 +12,13 @@
 #ifndef ALGORITHMS_TEST_TEST_RANDOM_POINT_H_
 #define ALGORITHMS_TEST_TEST_RANDOM_POINT_H_
 
-#include <vital/vital_config.h>
 #include <vital/types/vector.h>
+#include <vital/vital_config.h>
 
 #include <random>
 
 namespace kwiver {
+
 namespace testing {
 
 /// random number generator type
@@ -28,7 +29,8 @@ typedef std::normal_distribution<> norm_dist_t;
 
 // ------------------------------------------------------------------
 inline
-kwiver::vital::vector_3d random_point3d( double stdev, rng_t& rng )
+kwiver::vital::vector_3d
+random_point3d( double stdev, rng_t& rng )
 {
   norm_dist_t norm( 0.0, stdev );
   kwiver::vital::vector_3d v( norm( rng ), norm( rng ), norm( rng ) );
@@ -37,7 +39,8 @@ kwiver::vital::vector_3d random_point3d( double stdev, rng_t& rng )
 
 // ------------------------------------------------------------------
 inline
-kwiver::vital::vector_2d random_point2d( double stdev, rng_t& rng )
+kwiver::vital::vector_2d
+random_point2d( double stdev, rng_t& rng )
 {
   norm_dist_t norm( 0.0, stdev );
   kwiver::vital::vector_2d v( norm( rng ), norm( rng ) );
@@ -45,6 +48,7 @@ kwiver::vital::vector_2d random_point2d( double stdev, rng_t& rng )
 }
 
 } // end namespace testing
+
 } // end namespace kwiver
 
 #endif // ALGORITHMS_TEST_TEST_RANDOM_POINT_H_

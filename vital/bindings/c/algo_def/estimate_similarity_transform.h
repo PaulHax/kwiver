@@ -25,6 +25,7 @@ extern "C"
 DECLARE_COMMON_ALGO_API( estimate_similarity_transform )
 
 /// Estimate the similarity transform between two corresponding point sets
+
 /**
  * This function can fail when from and to point sets are misaligned,
  * insufficient or degenerate, setting an error code of 1.
@@ -41,14 +42,15 @@ DECLARE_COMMON_ALGO_API( estimate_similarity_transform )
 VITAL_C_EXPORT
 vital_similarity_d_t*
 vital_algorithm_estimate_similarity_transform_estimate_transform_points(
-  vital_algorithm_t const *algo,
+  vital_algorithm_t const* algo,
   size_t n,
-  vital_eigen_matrix3x1d_t const **from,
-  vital_eigen_matrix3x1d_t const **to,
-  vital_error_handle_t *eh
+  vital_eigen_matrix3x1d_t const** from,
+  vital_eigen_matrix3x1d_t const** to,
+  vital_error_handle_t * eh
 );
 
 /// Estimate the similarity transform between two corresponding camera maps
+
 /**
  * Cameras with corresponding frame IDs in the two maps are paired for
  * transform estimation. Cameras with no corresponding frame ID in the other
@@ -71,12 +73,12 @@ vital_algorithm_estimate_similarity_transform_estimate_transform_points(
 VITAL_C_EXPORT
 vital_similarity_d_t*
 vital_algorithm_estimate_similarity_transform_estimate_camera_map(
-  vital_algorithm_t const *algo,
-  vital_camera_map_t const *from, vital_camera_map_t const *to,
-  vital_error_handle_t *eh
-);
+  vital_algorithm_t const* algo,
+  vital_camera_map_t const* from, vital_camera_map_t const* to,
+  vital_error_handle_t* eh );
 
 /// Estimate the similarity transform between two corresponding landmark maps
+
 /**
  * Landmarks with corresponding frame IDs in the two maps are paired for
  * transform estimation. Landmarks with no corresponding frame ID in the
@@ -99,13 +101,12 @@ vital_algorithm_estimate_similarity_transform_estimate_camera_map(
 VITAL_C_EXPORT
 vital_similarity_d_t*
 vital_algorithm_estimate_similarity_transform_estimate_landmark_map(
-  vital_algorithm_t const *algo,
-  vital_landmark_map_t const *from, vital_landmark_map_t const *to,
-  vital_error_handle_t *eh
-);
+  vital_algorithm_t const* algo,
+  vital_landmark_map_t const* from, vital_landmark_map_t const* to,
+  vital_error_handle_t* eh );
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif //VITAL_C_ALGO_ESTIMATE_SIMILARITY_TRANSFORM_H_
+#endif // VITAL_C_ALGO_ESTIMATE_SIMILARITY_TRANSFORM_H_

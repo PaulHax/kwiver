@@ -3,7 +3,8 @@
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
 /// @file
-/// \brief Header for \link kwiver::vital::config_block configuration \endlink object
+/// \brief Header for \link kwiver::vital::config_block configuration \endlink
+/// object
 
 #ifndef KWIVER_CONFIG_BLOCK_H_
 #define KWIVER_CONFIG_BLOCK_H_
@@ -13,24 +14,25 @@
 #include <vital/util/source_location.h>
 #include <vital/util/tokenize.h>
 
-#include "config_block_types.h"
 #include "config_block_exception.h"
+#include "config_block_types.h"
 
 #include <algorithm>
 #include <array>
 #include <cstddef>
+#include <exception>
 #include <iterator>
 #include <map>
+#include <memory>
+#include <ostream>
 #include <set>
+#include <sstream>
 #include <string>
 #include <typeinfo>
 #include <vector>
-#include <ostream>
-#include <memory>
-#include <exception>
-#include <sstream>
 
 namespace kwiver {
+
 namespace vital {
 
 template < typename R >
@@ -88,18 +90,21 @@ public:
   ///
   /// \param name The name of the configuration block.
   /// \returns An empty configuration block.
-  static config_block_sptr empty_config( config_block_key_t const& name = config_block_key_t() );
+  static config_block_sptr empty_config(
+    config_block_key_t const& name = config_block_key_t() );
 
   /// Class method that returns the block seperator for configuration
   /// \returns The block separator config key
-  inline static const config_block_key_t block_sep()
+  inline static const config_block_key_t
+  block_sep()
   {
     return config_block_key_t( ":" );
   }
 
   /// Class method that returns magic group for global parameters.
   /// \returns global config key
-  inline static const config_block_key_t global_value()
+  inline static const config_block_key_t
+  global_value()
   {
     return config_block_key_t( "_global" );
   }
@@ -132,7 +137,8 @@ public:
   ///
   /// Get value from config entry converted to the desired type.
   ///
-  /// \throws no_such_configuration_value_exception Thrown if the requested index does not exist.
+  /// \throws no_such_configuration_value_exception Thrown if the requested
+  /// index does not exist.
   /// \throws bad_configuration_cast_exception Thrown if the cast fails.
   ///
   /// \param key The index of the configuration value to retrieve.
@@ -152,7 +158,8 @@ public:
   /// \param key The index of the configuration value to retrieve.
   /// \param def The value \p key does not exist or the cast fails.
   /// \tparam T Desired type for config value.
-  /// \returns The value stored within the configuration, or \p def if something goes wrong.
+  /// \returns The value stored within the configuration, or \p def if something
+  /// goes wrong.
   template < typename T >
   T get_value( config_block_key_t const& key, T const& def ) const noexcept;
 
@@ -163,7 +170,7 @@ public:
   /// enum_converter struct.
   /// \return Correctly typed enum value
   /// \throws std::runtime_error with message detailing valid enum strings.
-  template < typename C>
+  template < typename C >
   typename C::enum_type get_enum_value( const config_block_key_t& key ) const;
 
   /// Cast the value as an enum, returning a default value in case of an error.
@@ -182,21 +189,28 @@ public:
   ///           \p def if something goes wrong.
   template < typename C >
   typename C::enum_type
-  get_enum_value(config_block_key_t const& key,
-                 typename C::enum_type const& def) const noexcept;
+  get_enum_value(
+    config_block_key_t const& key,
+    typename C::enum_type const& def ) const noexcept;
 
   /// Convert string to vector of values.
   ///
-  /// Convert config string into a vector of values of the same type. This method
-  /// splits the config string associated with the key using the supplied delimeter
-  /// string. Each of these resulting strings is converted to the templated type and
-  /// added to the output vector. The final set of values is returned in the vector.
+  /// Convert config string into a vector of values of the same type. This
+  /// method
+  /// splits the config string associated with the key using the supplied
+  /// delimeter
+  /// string. Each of these resulting strings is converted to the templated type
+  /// and
+  /// added to the output vector. The final set of values is returned in the
+  /// vector.
   ///
   /// \param key The index of the configuration value to retrieve.
   /// \param delim List of delimeter characters for splitting vector elements.
   /// \tparam T Type of vector element.
-  template< typename T >
-  std::vector< T > get_value_as_vector( config_block_key_t const& key, const std::string& delim = " " ) const;
+  template < typename T >
+  std::vector< T > get_value_as_vector(
+    config_block_key_t const& key,
+    const std::string& delim = " " ) const;
 
   /// Get the description associated to a value
   ///
@@ -208,7 +222,8 @@ public:
   ///
   /// \param key The name of the parameter to get the description of.
   /// \returns The description of the requested key.
-  config_block_description_t get_description( config_block_key_t const& key ) const;
+  config_block_description_t get_description(
+    config_block_key_t const& key ) const;
 
   /// Set a value within the configuration.
   ///
@@ -233,9 +248,10 @@ public:
   ///   key already exists and nothing was provided for this parameter, the
   ///   existing description is maintained.
   template < typename T >
-  void set_value( config_block_key_t const&         key,
-                  T const&                          value,
-                  config_block_description_t const& descr );
+  void set_value(
+    config_block_key_t const&         key,
+    T const&                          value,
+    config_block_description_t const& descr );
 
   /// Set a value within the configuration.
   ///
@@ -247,7 +263,8 @@ public:
   /// be overwritten, the other \c set_value function that has a parameter for
   /// description setting should be used.
   ///
-  /// \throws set_on_read_only_value_exception Thrown if \p key is marked as read-only.
+  /// \throws set_on_read_only_value_exception Thrown if \p key is marked as
+  /// read-only.
   ///
   /// \postconds
   /// \postcond{<code>this->get_value<value_t>(key) == value</code>}
@@ -256,16 +273,20 @@ public:
   /// \param key The index of the configuration value to set.
   /// \param value The value to set for the \p key.
   template < typename T >
-  void set_value( config_block_key_t const& key,
-                  T const&                  value);
+  void set_value(
+    config_block_key_t const& key,
+    T const&                  value );
 
   /// Remove a value from the configuration.
   ///
-  /// \throws unset_on_read_only_value_exception Thrown if \p key is marked as read-only.
-  /// \throws no_such_configuration_value_exception Thrown if the requested index does not exist.
+  /// \throws unset_on_read_only_value_exception Thrown if \p key is marked as
+  /// read-only.
+  /// \throws no_such_configuration_value_exception Thrown if the requested
+  /// index does not exist.
   ///
   /// \postconds
-  /// \postcond{<code>this->get_value<T>(key)</code> throws \c no_such_configuration_value_exception}
+  /// \postcond{<code>this->get_value<T>(key)</code> throws \c
+  /// no_such_configuration_value_exception}
   /// \endpostconds
   ///
   /// \param key The index of the configuration value to unset.
@@ -305,9 +326,11 @@ public:
   /// block is marked as read-only, that attribute is not copied to
   /// this block.
   ///
-  /// \note Any values currently set within \c *this will be overwritten if conflicts occur.
+  /// \note Any values currently set within \c *this will be overwritten if
+  /// conflicts occur.
   ///
-  /// \throws set_on_read_only_value_exception Thrown if \p key is marked as read-only.
+  /// \throws set_on_read_only_value_exception Thrown if \p key is marked as
+  /// read-only.
   ///
   /// \postconds
   /// \postcond{\c this->available_values() ⊆ \c config->available_values()}
@@ -325,7 +348,7 @@ public:
   /// \param other The config block to be differenced with.
   config_block_sptr difference_config( const config_block_sptr other ) const;
 
-  ///Return the values available in the configuration.
+  /// Return the values available in the configuration.
   ///
   /// This method returns a list of all config entry keys available
   /// in this config block. The returned list contains a copy of the
@@ -350,8 +373,12 @@ public:
   /// \param key Config entry key string
   /// \param file Name of defining file
   /// \param line Line number in file
-  void set_location( config_block_key_t const& key, std::shared_ptr< std::string > file, int line );
-  void set_location( config_block_key_t const& key, const kwiver::vital::source_location& loc );
+  void set_location(
+    config_block_key_t const& key,
+    std::shared_ptr< std::string > file, int line );
+  void set_location(
+    config_block_key_t const& key,
+    const kwiver::vital::source_location& loc );
 
   /// Get file location where config key was defined.
   ///
@@ -364,9 +391,10 @@ public:
   /// \param[out] line Line number in file of definition
   ///
   /// \return \b true if the location is available.
-  bool get_location( config_block_key_t const& key,
-                     std::string& file,
-                     int& line) const;
+  bool get_location(
+    config_block_key_t const& key,
+    std::string& file,
+    int& line ) const;
 
   /// Get file location where config key was defined.
   ///
@@ -378,33 +406,43 @@ public:
   /// \param[out] loc Location of where this entry was defined.
   ///
   /// \return \b true if the location is available.
-  bool get_location( config_block_key_t const& key, kwiver::vital::source_location& loc ) const;
+  bool get_location(
+    config_block_key_t const& key,
+    kwiver::vital::source_location& loc ) const;
 
 private:
   /// Internal constructor
-  VITAL_CONFIG_NO_EXPORT config_block( config_block_key_t const& name, config_block_sptr parent );
+  VITAL_CONFIG_NO_EXPORT config_block(
+    config_block_key_t const& name,
+    config_block_sptr parent );
 
   /// Private helper method to extract a value for a key
   ///
   /// \param[in] key key to find the associated value to.
   /// \param[out] val value associated with key
-  /// \returns \b true if key is found and value returned, \b false if key not found.
-  bool find_value( config_block_key_t const& key,  config_block_value_t& val ) const;
+  /// \returns \b true if key is found and value returned, \b false if key not
+  /// found.
+  bool find_value(
+    config_block_key_t const& key,
+    config_block_value_t& val ) const;
 
   /// private value getter function
   ///
   /// \param key key to get the associated value to.
-  /// \returns key's value or an empty config_block_value_t if the key is not found.
-  VITAL_CONFIG_NO_EXPORT config_block_value_t i_get_value( config_block_key_t const& key ) const;
+  /// \returns key's value or an empty config_block_value_t if the key is not
+  /// found.
+  VITAL_CONFIG_NO_EXPORT config_block_value_t i_get_value(
+    config_block_key_t const& key ) const;
 
   /// private key/value setter
   ///
   /// \param key key to set a value to
   /// \param value the value as a config_block_value_t
   /// \param descr optional description of the key.
-  void i_set_value( config_block_key_t const& key,
-                    config_block_value_t const& value,
-                    config_block_description_t const& descr = config_block_key_t() );
+  void i_set_value(
+    config_block_key_t const& key,
+    config_block_value_t const& value,
+    config_block_description_t const& descr = config_block_key_t() );
 
   /// Copies config entry to this config block.
   ///
@@ -413,11 +451,13 @@ private:
   ///
   /// @param key Specifies the config entry to copy.
   /// @param from The source config block.
-  void copy_entry( config_block_key_t const& key,
-                   const config_block_sptr from );
+  void copy_entry(
+    config_block_key_t const& key,
+    const config_block_sptr from );
 
-  void copy_entry( config_block_key_t const& key,
-                   const config_block* from );
+  void copy_entry(
+    config_block_key_t const& key,
+    const config_block* from );
 
   typedef std::map< config_block_key_t, config_block_value_t > store_t;
   typedef std::set< config_block_key_t > ro_list_t;
@@ -442,7 +482,8 @@ private:
   // list of keys that are read-only
   ro_list_t m_ro_list;
 
-  typedef std::map< config_block_key_t, kwiver::vital::source_location > location_t;
+  typedef std::map< config_block_key_t,
+    kwiver::vital::source_location > location_t;
 
   // location where key was defined.
   location_t m_def_store;
@@ -467,7 +508,8 @@ private:
 /// around this problem define a specialized version of
 /// config_block_get_value_cast<>() for your specific type.
 ///
-/// \note Do not use this in user code. Use config_block_get_value_cast() instead.
+/// \note Do not use this in user code. Use config_block_get_value_cast()
+/// instead.
 ///
 /// \param value The value to convert.
 /// \tparam R Type returned.
@@ -486,8 +528,9 @@ config_block_get_value_cast_default( config_block_value_t const& value )
     interpreter >> result;
     if( interpreter.fail() )
     {
-      VITAL_THROW( bad_config_block_cast,
-                   "failed to convert from string representation \"" + value + "\"" );
+      VITAL_THROW(
+        bad_config_block_cast,
+        "failed to convert from string representation \"" + value + "\"" );
     }
 
     return result;
@@ -538,7 +581,7 @@ inline
 R
 config_block_get_value_cast( config_block_value_t const& value )
 {
-  return config_block_get_value_cast_default< R > ( value );
+  return config_block_get_value_cast_default< R >( value );
 }
 
 // ----------------------------------------------------------------------------
@@ -550,7 +593,7 @@ config_block_get_value_cast( config_block_value_t const& value )
 ///
 /// \param value The value to convert.
 /// \returns The value of \p value in the requested type.
-template < >
+template <>
 VITAL_CONFIG_EXPORT
 bool config_block_get_value_cast( config_block_value_t const& value );
 
@@ -562,17 +605,17 @@ bool config_block_get_value_cast( config_block_value_t const& value );
 /// @param value String to be converted
 ///
 /// @return Resulting string
-template < >
+template <>
 VITAL_CONFIG_EXPORT
 std::string config_block_get_value_cast( config_block_value_t const& value );
 
 // ------------------------------------------------------------------
 /// Specialization for std::array
 // template<typename Tp, size_t Nm>
-template<>
+template <>
 VITAL_CONFIG_EXPORT
-std::array<double, 3> config_block_get_value_cast( config_block_value_t const& value );
-
+std::array< double,
+  3 > config_block_get_value_cast( config_block_value_t const& value );
 
 // ----------------------------------------------------------------------------
 // Internally cast the value.
@@ -582,7 +625,7 @@ config_block
 ::get_value( config_block_key_t const& key ) const
 {
   config_block_value_t value;
-  if ( ! find_value(key, value ) )
+  if( !find_value( key, value ) )
   {
     VITAL_THROW( no_such_configuration_value_exception, key );
   }
@@ -590,32 +633,36 @@ config_block
   try
   {
     // Convert config block value to requested type
-    return config_block_get_value_cast< T > ( value );
+    return config_block_get_value_cast< T >( value );
   }
-  catch ( bad_config_block_cast const& e )
+  catch( bad_config_block_cast const& e )
   {
     // Upgrade exception by adding more known details.
-    VITAL_THROW( bad_config_block_cast_exception,
-                 key, value, typeid( T ).name(), e.what() );
+    VITAL_THROW(
+      bad_config_block_cast_exception,
+      key, value, typeid( T ).name(), e.what() );
   }
 }
 
 // ----------------------------------------------------------------------------
 template < typename C >
 typename C::enum_type
+
 config_block
 ::get_enum_value( const config_block_key_t& key ) const
 {
-  return C().from_string( get_value < std::string >( key ) );
+  return C().from_string( get_value< std::string >( key ) );
 }
 
 // ----------------------------------------------------------------------------
-template< typename T >
+template < typename T >
 std::vector< T >
 config_block
-::get_value_as_vector( config_block_key_t const& key, const std::string& delim ) const
+::get_value_as_vector(
+  config_block_key_t const& key,
+  const std::string& delim ) const
 {
-  std::vector< std::string> sv;
+  std::vector< std::string > sv;
   std::vector< T > val_vector;
 
   {
@@ -625,9 +672,9 @@ config_block
   }
 
   // iterate over all strings and convert to target type
-  for (std::string str : sv )
+  for( std::string str : sv )
   {
-    T val = config_block_get_value_cast<T>( str );
+    T val = config_block_get_value_cast< T >( str );
     val_vector.push_back( val );
   }
 
@@ -643,9 +690,9 @@ config_block
 {
   try
   {
-    return get_value< T > ( key );
+    return get_value< T >( key );
   }
-  catch ( ... )
+  catch( ... )
   {
     return def;
   }
@@ -655,28 +702,31 @@ config_block
 // Cast the value as an enum, returning a default value in case of an error.
 template < typename C >
 typename C::enum_type
+
 config_block
-::get_enum_value(config_block_key_t const& key,
-                 typename C::enum_type const& def) const noexcept
+::get_enum_value(
+  config_block_key_t const& key,
+  typename C::enum_type const& def ) const noexcept
 {
   try
   {
-    return get_enum_value< C >(key);
+    return get_enum_value< C >( key );
   }
-  catch (...)
+  catch( ... )
   {
     return def;
   }
 }
+
 //@}
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 // --- set value group ----
 // ----------------------------------------------------------------------------
-  /// \defgroup set_value_group Set Config Value Group
- /// Functions to set typed values in a config entry.
- /// @{
+/// \defgroup set_value_group Set Config Value Group
+/// Functions to set typed values in a config entry.
+/// @{
 
 /// Default cast handling for setting config values
 ///
@@ -705,15 +755,16 @@ config_block_set_value_cast_default( T const& value )
   try
   {
     val_str << value;
-    if ( val_str.fail() )
+    if( val_str.fail() )
     {
-      VITAL_THROW( bad_config_block_cast,
-                   "failed to convert value to string representation" );
+      VITAL_THROW(
+        bad_config_block_cast,
+        "failed to convert value to string representation" );
     }
 
     return val_str.str();
   }
-    catch( std::exception& e )
+  catch( std::exception& e )
   {
     VITAL_THROW( bad_config_block_cast, e.what() );
   }
@@ -752,7 +803,7 @@ inline
 config_block_value_t
 config_block_set_value_cast( T const& value )
 {
-  return config_block_set_value_cast_default< T > ( value );
+  return config_block_set_value_cast_default< T >( value );
 }
 
 // ----------------------------------------------------------------------------
@@ -761,13 +812,17 @@ template < typename T >
 inline
 void
 config_block
-::set_value( config_block_key_t const&          key,
-             T const&                           value )
+::set_value(
+  config_block_key_t const&          key,
+  T const&                           value )
 {
   // Need to convert value (type T) to string
-  config_block_value_t val_str = config_block_set_value_cast< T > ( value );
+  config_block_value_t val_str = config_block_set_value_cast< T >( value );
 
-  this->i_set_value( key,  val_str, config_block_description_t() ); // we know that the value is a string
+  this->i_set_value( key,  val_str, config_block_description_t() ); // we know
+                                                                    // that the
+                                                                    // value is
+                                                                    // a string
 }
 
 // ----------------------------------------------------------------------------
@@ -776,14 +831,16 @@ template < typename T >
 inline
 void
 config_block
-::set_value( config_block_key_t const&          key,
-             T const&                           value,
-             config_block_description_t const&  descr )
+::set_value(
+  config_block_key_t const&          key,
+  T const&                           value,
+  config_block_description_t const&  descr )
 {
   // Need to convert value (type T) to string
-  config_block_value_t val_str = config_block_set_value_cast< T > ( value );
+  config_block_value_t val_str = config_block_set_value_cast< T >( value );
 
-  this->i_set_value( key,  val_str, descr ); // we know that the value is a string
+  this->i_set_value( key,  val_str, descr ); // we know that the value is a
+                                             // string
 }
 
 // ----------------------------------------------------------------------------
@@ -795,15 +852,16 @@ config_block
 /// \param key The configuration key string
 /// \param value The value to convert.
 /// \param descr Configuration item descrription
-template < >
+template <>
 inline
 void
 config_block
-::set_value( config_block_key_t const&          key,
-             bool const&                        value,
-             config_block_description_t const&  descr )
+::set_value(
+  config_block_key_t const&          key,
+  bool const&                        value,
+  config_block_description_t const&  descr )
 {
-  this->i_set_value( key, (value ? "true" : "false"), descr );
+  this->i_set_value( key, ( value ? "true" : "false" ), descr );
 }
 
 // ----------------------------------------------------------------------------
@@ -815,33 +873,36 @@ config_block
 /// \param key The configuration key string
 /// \param value The value to convert.
 /// \param descr Configuration item descrription
-template < >
+template <>
 inline
 void
 config_block
-::set_value( config_block_key_t const&          key,
-             std::string const&                 value,
-             config_block_description_t const&  descr )
+::set_value(
+  config_block_key_t const&          key,
+  std::string const&                 value,
+  config_block_description_t const&  descr )
 {
   this->i_set_value( key, value, descr );
 }
 
 /// Type-specific handling for std::array
 // template<typename Tp, size_t Nm>
-template<>
+template <>
 inline
 config_block_value_t
-config_block_set_value_cast( std::array<double, 3> const& value )
+config_block_set_value_cast( std::array< double, 3 > const& value )
 {
   std::stringstream str;
 
-  std::copy_n(value.begin(), 3, std::ostream_iterator<double>(str, " "));
+  std::copy_n( value.begin(), 3, std::ostream_iterator< double >( str, " " ) );
 
   return str.str();
 }
 
 //@}
 
-} }
+} // namespace vital
+
+} // namespace kwiver
 
 #endif

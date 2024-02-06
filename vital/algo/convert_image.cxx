@@ -21,7 +21,7 @@ void
 convert_image
 ::set_configuration( kwiver::vital::config_block_sptr config )
 {
-  (void) config;
+  ( void ) config;
 }
 
 /// Check that the algorithm's current configuration is valid
@@ -29,7 +29,7 @@ bool
 convert_image
 ::check_configuration( kwiver::vital::config_block_sptr config ) const
 {
-  (void) config;
+  ( void ) config;
   return true;
 }
 

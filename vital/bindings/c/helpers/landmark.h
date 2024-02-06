@@ -10,18 +10,20 @@
 #ifndef VITAL_C_HELPERS_LANDMARK_H_
 #define VITAL_C_HELPERS_LANDMARK_H_
 
-#include <vital/types/landmark.h>
 #include <vital/bindings/c/helpers/c_utils.h>
 #include <vital/bindings/c/types/landmark.h>
+#include <vital/types/landmark.h>
 
 namespace kwiver {
+
 namespace vital_c {
 
 /// Cache for landmark shared pointers that exit the C++ barrier
 extern
 SharedPointerCache< vital::landmark, vital_landmark_t > LANDMARK_SPTR_CACHE;
 
-}
-}
+} // namespace vital_c
 
-#endif //VITAL_C_HELPERS_LANDMARK_H_
+} // namespace kwiver
+
+#endif // VITAL_C_HELPERS_LANDMARK_H_

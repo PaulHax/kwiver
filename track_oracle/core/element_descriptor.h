@@ -5,8 +5,8 @@
 #ifndef INCL_ELEMENT_DESCRIPTOR_H
 #define INCL_ELEMENT_DESCRIPTOR_H
 
-#include <vital/vital_config.h>
 #include <track_oracle/core/track_oracle_export.h>
+#include <vital/vital_config.h>
 
 #include <string>
 
@@ -23,6 +23,7 @@
 //
 
 namespace kwiver {
+
 namespace track_oracle {
 
 struct TRACK_ORACLE_EXPORT element_descriptor
@@ -30,40 +31,48 @@ struct TRACK_ORACLE_EXPORT element_descriptor
   // is this element a system type (e.g. __frame_list),
   // a "well known" type meant to be shared across schemas (e.g. frame_number),
   // or an ad-hoc type the user added on the fly?
-  enum element_role { INVALID, SYSTEM, WELLKNOWN, ADHOC };
+  enum element_role { INVALID, SYSTEM, WELLKNOWN, ADHOC, };
 
-  // the unique-across-track-oracle name of the field (e.g. "frame_number")
+// the unique-across-track-oracle name of the field (e.g. "frame_number")
   std::string name;
 
-  // a description of the field
+// a description of the field
   std::string description;
 
-  // the machine-dependent typeid string of the type
+// the machine-dependent typeid string of the type
   std::string typeid_str;
 
-  // the role
+// the role
   element_role role;
 
-  // role helper functions
+// role helper functions
   static std::string role2str( element_role e );
-  static element_role str2role ( const std::string& s );
+  static element_role str2role( const std::string& s );
 
-  element_descriptor( const std::string& n,
-                      const std::string& d,
-                      const std::string& t,
-                      element_role r ) :
-    name(n), description(d), typeid_str(t), role(r)
+  element_descriptor(
+    const std::string& n,
+    const std::string& d,
+    const std::string& t,
+    element_role r )
+    : name( n ),
+      description( d ),
+      typeid_str( t ),
+      role( r )
   {}
 
-  element_descriptor() :
-    name("none"), description("none"), typeid_str(""), role(INVALID)
+  element_descriptor()
+    : name( "none" ),
+      description( "none" ),
+      typeid_str( "" ),
+      role( INVALID )
   {}
 
-  bool is_valid() const { return role != INVALID; }
-
+  bool
+  is_valid() const { return role != INVALID; }
 };
 
 } // ...track_oracle
+
 } // ...kwiver
 
 #endif

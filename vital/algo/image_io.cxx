@@ -19,7 +19,8 @@ namespace vital {
 
 namespace algo {
 
-const algorithm_capabilities::capability_name_t image_io::HAS_TIME( "has-time" );
+const algorithm_capabilities::capability_name_t image_io::HAS_TIME(
+  "has-time" );
 
 image_io
 ::image_io()
@@ -91,8 +92,9 @@ image_io
 
 void
 image_io
-::set_capability( algorithm_capabilities::capability_name_t const& name,
-                  bool val )
+::set_capability(
+  algorithm_capabilities::capability_name_t const& name,
+  bool val )
 {
   this->m_capabilities.set_capability( name, val );
 }

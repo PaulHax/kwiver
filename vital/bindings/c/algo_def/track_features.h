@@ -16,10 +16,10 @@ extern "C"
 #endif
 
 #include <vital/bindings/c/algorithm.h>
-#include <vital/bindings/c/vital_c_export.h>
 #include <vital/bindings/c/error_handle.h>
 #include <vital/bindings/c/types/image_container.h>
 #include <vital/bindings/c/types/track_set.h>
+#include <vital/bindings/c/vital_c_export.h>
 
 /// Common algorithm definition API
 DECLARE_COMMON_ALGO_API( track_features );
@@ -27,21 +27,23 @@ DECLARE_COMMON_ALGO_API( track_features );
 /// New track set of extended tracks using the current frame
 VITAL_C_EXPORT
 vital_trackset_t*
-vital_algorithm_track_features_track( vital_algorithm_t *algo,
-                                      vital_trackset_t *prev_tracks,
-                                      unsigned int frame_num,
-                                      vital_image_container_t *ic,
-                                      vital_error_handle_t *eh );
+vital_algorithm_track_features_track(
+  vital_algorithm_t* algo,
+  vital_trackset_t* prev_tracks,
+  unsigned int frame_num,
+  vital_image_container_t* ic,
+  vital_error_handle_t* eh );
 
 /// New track set of extended tracks using the current frame, masked version
 VITAL_C_EXPORT
 vital_trackset_t*
-vital_algorithm_track_features_track_with_mask( vital_algorithm_t *algo,
-                                                vital_trackset_t *prev_tracks,
-                                                unsigned int frame_num,
-                                                vital_image_container_t *ic,
-                                                vital_image_container_t *mask,
-                                                vital_error_handle_t *eh );
+vital_algorithm_track_features_track_with_mask(
+  vital_algorithm_t* algo,
+  vital_trackset_t* prev_tracks,
+  unsigned int frame_num,
+  vital_image_container_t* ic,
+  vital_image_container_t* mask,
+  vital_error_handle_t* eh );
 
 #ifdef __cplusplus
 }

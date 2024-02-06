@@ -8,6 +8,7 @@
 #include "gpu.h"
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -19,19 +20,19 @@ gpu_exception
 
 gpu_exception
 ::~gpu_exception() noexcept
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 gpu_memory_exception
-::gpu_memory_exception( std::string const& msg) noexcept
+::gpu_memory_exception( std::string const& msg ) noexcept
 {
   m_what = "GPU memory exception: " + msg;
 }
 
 gpu_memory_exception
 ::~gpu_memory_exception() noexcept
-{
-}
+{}
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace

@@ -16,37 +16,43 @@
 using namespace kwiver::vital;
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace ocv {
 
 class extract_descriptors_LUCID::priv
 {
 public:
   priv()
-    : lucid_kernel( 1 )
-    , blur_kernel( 1 )
-  {
-  }
+    : lucid_kernel( 1 ),
+      blur_kernel( 1 )
+  {}
 
-  cv::Ptr<cv::xfeatures2d::LUCID> create() const
+  cv::Ptr< cv::xfeatures2d::LUCID >
+  create() const
   {
     return cv::xfeatures2d::LUCID::create( lucid_kernel, blur_kernel );
   }
 
-  void update_config( config_block_sptr config ) const
+  void
+  update_config( config_block_sptr config ) const
   {
-    config->set_value( "lucid_kernel", lucid_kernel,
-                       "kernel for descriptor construction, where 1=3x3, "
-                       "2=5x5, 3=7x7 and so forth" );
-    config->set_value( "blur_kernel", blur_kernel,
-                       "kernel for blurring image prior to descriptor "
-                       "construction, where 1=3x3, 2=5x5, 3=7x7 and so forth" );
+    config->set_value(
+      "lucid_kernel", lucid_kernel,
+      "kernel for descriptor construction, where 1=3x3, "
+      "2=5x5, 3=7x7 and so forth" );
+    config->set_value(
+      "blur_kernel", blur_kernel,
+      "kernel for blurring image prior to descriptor "
+      "construction, where 1=3x3, 2=5x5, 3=7x7 and so forth" );
   }
 
-  void set_config( config_block_sptr config )
+  void
+  set_config( config_block_sptr config )
   {
-    lucid_kernel = config->get_value<int>( "lucid_kernel" );
-    blur_kernel = config->get_value<int>( "blur_kernel" );
+    lucid_kernel = config->get_value< int >( "lucid_kernel" );
+    blur_kernel = config->get_value< int >( "blur_kernel" );
   }
 
   // Parameters
@@ -64,8 +70,7 @@ extract_descriptors_LUCID
 
 extract_descriptors_LUCID
 ::~extract_descriptors_LUCID()
-{
-}
+{}
 
 vital::config_block_sptr
 extract_descriptors_LUCID
@@ -76,8 +81,9 @@ extract_descriptors_LUCID
   return config;
 }
 
-void extract_descriptors_LUCID
-::set_configuration(vital::config_block_sptr config)
+void
+extract_descriptors_LUCID
+::set_configuration( vital::config_block_sptr config )
 {
   config_block_sptr c = get_configuration();
   c->merge_config( config );
@@ -93,7 +99,9 @@ extract_descriptors_LUCID
 }
 
 } // end namespace ocv
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
-#endif //HAVE_OPENCV_XFEATURES2D
+#endif // HAVE_OPENCV_XFEATURES2D

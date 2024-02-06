@@ -8,7 +8,9 @@
 #include <type_traits>
 
 namespace kwiver {
+
 namespace vital {
+
 namespace range {
 
 // ----------------------------------------------------------------------------
@@ -31,11 +33,9 @@ namespace integer_sequence_detail {
 // https://stackoverflow.com/questions/22486386
 
 // Forward declarations
-template < typename S1, typename S2 >
-struct concatenator;
+template < typename S1, typename S2 > struct concatenator;
 
-template < typename T, T Count, typename = void >
-struct generator;
+template < typename T, T Count, typename = void > struct generator;
 
 // Type resolvers
 template < typename T > using sequence_type = typename T::type;
@@ -49,13 +49,13 @@ using gen_t = sequence_type< generator< T, Count > >;
 // Implementations
 template < typename T, T... I1, T... I2 >
 struct concatenator< integer_sequence_t< T, I1... >,
-                     integer_sequence_t< T, I2... > >
+  integer_sequence_t< T, I2... > >
   : integer_sequence_t< T, I1..., ( sizeof...( I1 ) + I2 )... >
 {};
 
 template < typename T, T Count, typename >
 struct generator : concat_t< gen_t< T, Count / 2 >,
-                             gen_t< T, Count - ( Count / 2 ) > >
+                     gen_t< T, Count - ( Count / 2 ) > >
 {};
 
 // Boundary cases
@@ -79,13 +79,16 @@ struct generator< T, Count, typename std::enable_if< Count == 1 >::type >
 // ----------------------------------------------------------------------------
 template < typename T, T Count >
 typename integer_sequence_detail::generator< T, Count >::type
+
 make_integer_sequence()
 {
   return {};
 }
 
 } // namespace range
+
 } // namespace vital
+
 } // namespace kwiver
 
 #endif

@@ -13,15 +13,19 @@
 #include <vital/bindings/c/helpers/track.h>
 
 namespace kwiver {
+
 namespace vital_c {
 
 /// Cache for saving shared pointer references for pointers in use
 SharedPointerCache< vital::track, vital_track_t >
-  TRACK_SPTR_CACHE( "track" );
+TRACK_SPTR_CACHE( "track" );
 
 SharedPointerCache< vital::track_state, vital_track_state_t >
-  TRACK_STATE_SPTR_CACHE( "track_state" );
-} }
+TRACK_STATE_SPTR_CACHE( "track_state" );
+
+} // namespace vital_c
+
+} // namespace kwiver
 
 using namespace kwiver;
 
@@ -30,7 +34,7 @@ using namespace kwiver;
 
 /// Create a new track state
 vital_track_state_t*
-vital_track_state_new( int64_t frame, vital_error_handle_t *eh )
+vital_track_state_new( int64_t frame, vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_track_state_new", eh,
@@ -43,7 +47,7 @@ vital_track_state_new( int64_t frame, vital_error_handle_t *eh )
 
 /// Destroy a track state instance
 void
-vital_track_state_destroy( vital_track_state_t *ts, vital_error_handle_t *eh )
+vital_track_state_destroy( vital_track_state_t* ts, vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_track_state_destroy", eh,
@@ -53,7 +57,7 @@ vital_track_state_destroy( vital_track_state_t *ts, vital_error_handle_t *eh )
 
 /// Get a track state's frame ID
 int64_t
-vital_track_state_frame_id( vital_track_state_t *ts, vital_error_handle_t *eh )
+vital_track_state_frame_id( vital_track_state_t* ts, vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_track_state_frame_id", eh,
@@ -68,21 +72,22 @@ vital_track_state_frame_id( vital_track_state_t *ts, vital_error_handle_t *eh )
 
 /// Create a new track
 vital_track_t*
-vital_track_new( vital_error_handle_t *eh )
+vital_track_new( vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_track_new", eh,
     kwiver::vital::track_sptr t_sptr = kwiver::vital::track::create();
     kwiver::vital_c::TRACK_SPTR_CACHE.store( t_sptr );
-    return reinterpret_cast<vital_track_t*>( t_sptr.get() );
+    return reinterpret_cast< vital_track_t* >( t_sptr.get() );
   );
   return 0;
 }
 
 /// Destroy a VITAL track pointer
 void
-vital_track_destroy( vital_track_t *track,
-                     vital_error_handle_t *eh )
+vital_track_destroy(
+  vital_track_t* track,
+  vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "C::track::destroy", eh,
@@ -92,7 +97,7 @@ vital_track_destroy( vital_track_t *track,
 
 /// Get the ID of the track
 int64_t
-vital_track_id( vital_track_t const *t, vital_error_handle_t *eh )
+vital_track_id( vital_track_t const* t, vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_track_id", eh,
@@ -103,7 +108,7 @@ vital_track_id( vital_track_t const *t, vital_error_handle_t *eh )
 
 /// Set the track identification number
 void
-vital_track_set_id( vital_track_t *t, int64_t i, vital_error_handle_t *eh )
+vital_track_set_id( vital_track_t* t, int64_t i, vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_track_set_id", eh,
@@ -113,7 +118,7 @@ vital_track_set_id( vital_track_t *t, int64_t i, vital_error_handle_t *eh )
 
 /// Access the first frame number covered by this track
 int64_t
-vital_track_first_frame( vital_track_t const *t, vital_error_handle_t *eh )
+vital_track_first_frame( vital_track_t const* t, vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_track_first_frame", eh,
@@ -124,7 +129,7 @@ vital_track_first_frame( vital_track_t const *t, vital_error_handle_t *eh )
 
 /// Access the last frame number covered by this track
 int64_t
-vital_track_last_frame( vital_track_t const *t, vital_error_handle_t *eh )
+vital_track_last_frame( vital_track_t const* t, vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_track_last_frame", eh,
@@ -135,22 +140,23 @@ vital_track_last_frame( vital_track_t const *t, vital_error_handle_t *eh )
 
 /// Return the set of all frame IDs covered by this track
 int64_t*
-vital_track_all_frame_ids( vital_track_t const *t, size_t *n,
-                           vital_error_handle_t *eh )
+vital_track_all_frame_ids(
+  vital_track_t const* t, size_t* n,
+  vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_track_all_frame_ids", eh,
     auto t_sptr = vital_c::TRACK_SPTR_CACHE.get( t );
-    std::set<int64_t> s = t_sptr->all_frame_ids();
+    std::set< int64_t > s = t_sptr->all_frame_ids();
     *n = s.size();
-    int64_t *r = (int64_t*)malloc(sizeof(int64_t) * s.size());
+    int64_t* r = ( int64_t* ) malloc( sizeof( int64_t ) * s.size() );
     size_t i = 0;
-    for( std::set<int64_t>::iterator it = s.begin();
+    for( std::set< int64_t >::iterator it = s.begin();
          it != s.end();
          ++it, ++i )
-    {
-      r[i] = *it;
-    }
+  {
+    r[ i ] = *it;
+  }
     return r;
   );
   return NULL;
@@ -158,8 +164,9 @@ vital_track_all_frame_ids( vital_track_t const *t, size_t *n,
 
 /// Get the number of states in the track
 size_t
-vital_track_size( vital_track_t const *track,
-                  vital_error_handle_t *eh )
+vital_track_size(
+  vital_track_t const* track,
+  vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "C::track::size", eh,
@@ -171,8 +178,9 @@ vital_track_size( vital_track_t const *track,
 /// Return whether or not this track has any states
 VITAL_C_EXPORT
 bool
-vital_track_empty( vital_track_t const *track,
-                   vital_error_handle_t *eh )
+vital_track_empty(
+  vital_track_t const* track,
+  vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "C::track::empty", eh,
@@ -183,42 +191,45 @@ vital_track_empty( vital_track_t const *track,
 
 /// Append a track state to this track
 bool
-vital_track_append_state( vital_track_t *t, vital_track_state_t *ts,
-                          vital_error_handle_t *eh )
+vital_track_append_state(
+  vital_track_t* t, vital_track_state_t* ts,
+  vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_track_append_state", eh,
     auto t_sptr = vital_c::TRACK_SPTR_CACHE.get( t );
     auto ts_sptr = vital_c::TRACK_STATE_SPTR_CACHE.get( ts );
     if( t_sptr && ts_sptr )
-    {
-      return t_sptr->append( ts_sptr );
-    }
-  );
+  {
+    return t_sptr->append( ts_sptr );
+  } );
   return false;
 }
 
 /// Find the track state matching the given frame ID
 vital_track_state_t*
-vital_track_find_state( vital_track_t *t, int64_t frame,
-                        vital_error_handle_t *eh )
+vital_track_find_state(
+  vital_track_t* t, int64_t frame,
+  vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_track_find_state", eh,
     auto t_sptr = vital_c::TRACK_SPTR_CACHE.get( t );
     auto it = t_sptr->find( frame );
     if( it != t_sptr->end() )
-    {
-      vital::track_state_sptr const &ts = *it;
+  {
+    vital::track_state_sptr const& ts = *it;
 
-      // Store this state in our cache and return a c_ptr to it. The state already
-      // exists so it doesn't need to be re-created with new, and when this function's
-      // ptr is returned, a new object will be created using the default python c_ptr
-      // VitalObject constructor, that will handle deleting the state sptr from the
-      // cache when that python object goes out of scope.
-      kwiver::vital_c::TRACK_STATE_SPTR_CACHE.store( ts );
-      return reinterpret_cast< vital_track_state_t* >( ts.get() );
-    }
-  );
+    // Store this state in our cache and return a c_ptr to it. The state already
+    // exists so it doesn't need to be re-created with new, and when this
+    // function's
+    // ptr is returned, a new object will be created using the default python
+    // c_ptr
+    // VitalObject constructor, that will handle deleting the state sptr from
+    // the
+    // cache when that python object goes out of scope.
+    kwiver::vital_c::TRACK_STATE_SPTR_CACHE.store( ts );
+    return reinterpret_cast< vital_track_state_t* >( ts.get() );
+  } );
   return NULL;
 }

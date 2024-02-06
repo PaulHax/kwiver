@@ -27,4 +27,5 @@ public:
 } // namespace arrows
 
 } // namespace kwiver
+
 #endif

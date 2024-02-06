@@ -21,14 +21,16 @@ main( int argc, char** argv )
 
 // ----------------------------------------------------------------------------
 void
-test_read_write( klv_value const& expected_result,
-                 klv_bytes_t const& input_bytes )
+test_read_write(
+  klv_value const& expected_result,
+  klv_bytes_t const& input_bytes )
 {
   using format_t = klv_1108_local_set_format;
   test_read_write_format< format_t >( expected_result, input_bytes );
 }
 
 using kld = klv_lengthy< double >;
+
 auto const expected_metric_set = klv_local_set{
   { KLV_1108_METRIC_SET_NAME,       std::string{ "VNIIRS" } },
   { KLV_1108_METRIC_SET_VERSION,    std::string{ "3.0" } },
@@ -84,6 +86,7 @@ TEST ( klv, read_write_1108 )
 TEST ( klv, read_write_1108_packet )
 {
   auto const packet_footer = klv_bytes_t{ KLV_1108_CHECKSUM, 2, 0x4A, 0xB4 };
-  CALL_TEST( test_read_write_packet,
-             expected_result, input_bytes, packet_footer, klv_1108_key() );
+  CALL_TEST(
+    test_read_write_packet,
+    expected_result, input_bytes, packet_footer, klv_1108_key() );
 }

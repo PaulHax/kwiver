@@ -12,17 +12,25 @@
 #include <vital/algo/image_object_detector.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace darknet {
 
 double
-scale_image_maintaining_ar( const cv::Mat& src, cv::Mat& dst,
-                            int width, int height );
+scale_image_maintaining_ar(
+  const cv::Mat& src, cv::Mat& dst,
+  int width, int height );
 
 double
-format_image( const cv::Mat& src, cv::Mat& dst, std::string option,
-              double scale_factor, int width, int height );
+format_image(
+  const cv::Mat& src, cv::Mat& dst, std::string option,
+  double scale_factor, int width, int height );
 
-} } }
+} // namespace darknet
+
+} // namespace arrows
+
+} // namespace kwiver
 
 #endif // KWIVER_ARROWS_DARKENT_DETECTOR

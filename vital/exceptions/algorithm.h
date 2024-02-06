@@ -12,6 +12,7 @@
 #include <string>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -21,22 +22,23 @@ namespace vital {
 class VITAL_EXCEPTIONS_EXPORT algorithm_exception
   : public vital_exception
 {
-  public:
-    /// Constructor
-    algorithm_exception(std::string type,
-                        std::string impl,
-                        std::string reason) noexcept;
-    /// Deconstructor
-    virtual ~algorithm_exception() noexcept;
+public:
+  /// Constructor
+  algorithm_exception(
+    std::string type,
+    std::string impl,
+    std::string reason ) noexcept;
+  /// Deconstructor
+  virtual ~algorithm_exception() noexcept;
 
-    /// The name of the algorithm type
-    std::string m_algo_type;
+  /// The name of the algorithm type
+  std::string m_algo_type;
 
-    /// The name of the algorithm implementation
-    std::string m_algo_impl;
+  /// The name of the algorithm implementation
+  std::string m_algo_impl;
 
-    /// String explanation of the reason for the exception
-    std::string m_reason;
+  /// String explanation of the reason for the exception
+  std::string m_reason;
 };
 
 // ----------------------------------------------------------------------------
@@ -46,13 +48,14 @@ class VITAL_EXCEPTIONS_EXPORT algorithm_exception
 class VITAL_EXCEPTIONS_EXPORT algorithm_configuration_exception
   : public algorithm_exception
 {
-  public:
-    /// Constructor
-    algorithm_configuration_exception(std::string type,
-                                      std::string impl,
-                                      std::string reason) noexcept;
-    /// Destructor
-    virtual ~algorithm_configuration_exception() noexcept;
+public:
+  /// Constructor
+  algorithm_configuration_exception(
+    std::string type,
+    std::string impl,
+    std::string reason ) noexcept;
+  /// Destructor
+  virtual ~algorithm_configuration_exception() noexcept;
 };
 
 // ----------------------------------------------------------------------------
@@ -62,15 +65,18 @@ class VITAL_EXCEPTIONS_EXPORT algorithm_configuration_exception
 class VITAL_EXCEPTIONS_EXPORT invalid_name_exception
   : public algorithm_exception
 {
-  public:
-    /// Constructor
-    invalid_name_exception(std::string type,
-                           std::string impl) noexcept;
+public:
+  /// Constructor
+  invalid_name_exception(
+    std::string type,
+    std::string impl ) noexcept;
 
-    /// Destructor
-    virtual ~invalid_name_exception() noexcept;
+  /// Destructor
+  virtual ~invalid_name_exception() noexcept;
 };
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital
 
 #endif // VITAL_CORE_EXCEPTIONS_ALGORITHM_H

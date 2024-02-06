@@ -9,29 +9,42 @@
 #include <vital/algo/data_serializer.h>
 
 namespace cereal {
-  class JSONOutputArchive;
-  class JSONInputArchive;
+
+class JSONOutputArchive;
+class JSONInputArchive;
+
 } // end namespace cereal
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace serialize {
+
 namespace json {
 
 class KWIVER_SERIALIZE_JSON_EXPORT image
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO( "kwiver:image",
-               "Serializes an image using JSON notation. " );
+  PLUGIN_INFO(
+    "kwiver:image",
+    "Serializes an image using JSON notation. " );
 
   image();
   virtual ~image();
 
-  std::shared_ptr< std::string > serialize( const vital::any& element ) override;
+  std::shared_ptr< std::string > serialize(
+    const vital::any& element ) override;
   vital::any deserialize( const std::string& message ) override;
 };
 
-} } } }       // end namespace kwiver
+} // namespace json
+
+} // namespace serialize
+
+} // namespace arrows
+
+}             // end namespace kwiver
 
 #endif // ARROWS_SERIALIZATION_JSON_IMAGE

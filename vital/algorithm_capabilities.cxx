@@ -7,13 +7,13 @@
 #include <map>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
 class algorithm_capabilities::priv
 {
 public:
-
   std::map< std::string, bool > m_capabilities;
 };
 
@@ -21,28 +21,28 @@ public:
 algorithm_capabilities
 ::algorithm_capabilities()
   : d( new algorithm_capabilities::priv )
-{
-}
+{}
 
 algorithm_capabilities
 ::algorithm_capabilities( algorithm_capabilities const& other )
-  : d( new algorithm_capabilities::priv(*other.d) ) // copy private implementation
-{
-}
+  : d( new algorithm_capabilities::priv( *other.d ) ) // copy private
+                                                      // implementation
+{}
 
 algorithm_capabilities
 ::~algorithm_capabilities()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 algorithm_capabilities&
 algorithm_capabilities
 ::operator=( algorithm_capabilities const& other )
 {
-  if ( this != &other)
+  if( this != &other )
   {
-    this->d.reset( new algorithm_capabilities::priv( *other.d ) ); // copy private implementation
+    this->d.reset( new algorithm_capabilities::priv( *other.d ) ); // copy
+                                                                   // private
+                                                                   // implementation
   }
 
   return *this;
@@ -59,11 +59,12 @@ algorithm_capabilities
 // ----------------------------------------------------------------------------
 algorithm_capabilities::capability_list_t
 algorithm_capabilities
-:: capability_list() const
+::capability_list() const
 {
   algorithm_capabilities::capability_list_t list;
 
-  for (auto ix = d->m_capabilities.begin(); ix != d->m_capabilities.end(); ++ix )
+  for( auto ix = d->m_capabilities.begin(); ix != d->m_capabilities.end();
+       ++ix )
   {
     list.push_back( ix->first );
   }
@@ -76,12 +77,12 @@ bool
 algorithm_capabilities
 ::capability( capability_name_t const& name ) const
 {
-  if ( ! has_capability( name ) )
+  if( !has_capability( name ) )
   {
     return false;
   }
 
-  return d->m_capabilities[name];
+  return d->m_capabilities[ name ];
 }
 
 // ----------------------------------------------------------------------------
@@ -89,7 +90,9 @@ void
 algorithm_capabilities
 ::set_capability( capability_name_t const& name, bool val )
 {
-  d->m_capabilities[name] = val;
+  d->m_capabilities[ name ] = val;
 }
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace

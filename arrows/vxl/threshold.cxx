@@ -35,8 +35,9 @@ enum threshold_mode
   MODE_percentile,
 };
 
-ENUM_CONVERTER( mode_converter, threshold_mode, { "absolute", MODE_absolute },
-                { "percentile", MODE_percentile } );
+ENUM_CONVERTER(
+  mode_converter, threshold_mode, { "absolute", MODE_absolute },
+  { "percentile", MODE_percentile } );
 
 // ----------------------------------------------------------------------------
 // Private implementation class
@@ -87,8 +88,7 @@ threshold
 // ----------------------------------------------------------------------------
 threshold
 ::~threshold()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 vital::config_block_sptr
@@ -98,11 +98,13 @@ threshold
   // get base config from base class
   vital::config_block_sptr config = algorithm::get_configuration();
 
-  config->set_value( "threshold", d->threshold,
-                     "Threshold to use. Meaning is dependent on type." );
-  config->set_value( "type", mode_converter().to_string( d->type ),
-                     "Type of thresholding to use. Possible options are: " +
-                     mode_converter().element_name_string() );
+  config->set_value(
+    "threshold", d->threshold,
+    "Threshold to use. Meaning is dependent on type." );
+  config->set_value(
+    "type", mode_converter().to_string( d->type ),
+    "Type of thresholding to use. Possible options are: " +
+    mode_converter().element_name_string() );
 
   return config;
 }
@@ -134,8 +136,9 @@ threshold
   auto const type = config->get_enum_value< mode_converter >( "type" );
   if( type == MODE_percentile && ( threshold < 0.0 || threshold > 1.0 ) )
   {
-    LOG_ERROR( logger(), "threshold must be in [0, 1] but instead was "
-               << threshold );
+    LOG_ERROR(
+      logger(), "threshold must be in [0, 1] but instead was "
+        << threshold );
   }
   return true;
 }
@@ -154,22 +157,22 @@ threshold
   vil_image_view_base_sptr view{
     vxl::image_container::vital_to_vxl( image_data->get_image() ) };
 
-#define HANDLE_CASE( T )                                               \
-  case T:                                                              \
-  {                                                                    \
-    using ipix_t = vil_pixel_format_type_of< T >::component_type;      \
-    vil_image_view< bool > thresholded{ d->filter< ipix_t >( view ) }; \
-    return std::make_shared< vxl::image_container >( thresholded );    \
-  }
+#define HANDLE_CASE( T )                                                 \
+  case T:                                                                \
+    {                                                                    \
+      using ipix_t = vil_pixel_format_type_of< T >::component_type;      \
+      vil_image_view< bool > thresholded{ d->filter< ipix_t >( view ) }; \
+      return std::make_shared< vxl::image_container >( thresholded );    \
+    }
 
   switch( view->pixel_format() )
   {
-    HANDLE_CASE( VIL_PIXEL_FORMAT_BYTE );
-    HANDLE_CASE( VIL_PIXEL_FORMAT_UINT_16 );
-    HANDLE_CASE( VIL_PIXEL_FORMAT_UINT_32 );
-    HANDLE_CASE( VIL_PIXEL_FORMAT_INT_32 );
-    HANDLE_CASE( VIL_PIXEL_FORMAT_FLOAT );
-    HANDLE_CASE( VIL_PIXEL_FORMAT_DOUBLE );
+  HANDLE_CASE( VIL_PIXEL_FORMAT_BYTE );
+  HANDLE_CASE( VIL_PIXEL_FORMAT_UINT_16 );
+  HANDLE_CASE( VIL_PIXEL_FORMAT_UINT_32 );
+  HANDLE_CASE( VIL_PIXEL_FORMAT_INT_32 );
+  HANDLE_CASE( VIL_PIXEL_FORMAT_FLOAT );
+  HANDLE_CASE( VIL_PIXEL_FORMAT_DOUBLE );
 #undef HANDLE_CASE
 
     default:

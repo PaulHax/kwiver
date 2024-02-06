@@ -6,16 +6,19 @@
 
 #include <opencv2/imgproc/imgproc.hpp>
 
-#include <string>
 #include <exception>
+#include <string>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace darknet {
 
 double
-scale_image_maintaining_ar( const cv::Mat& src, cv::Mat& dst,
-                            int width, int height )
+scale_image_maintaining_ar(
+  const cv::Mat& src, cv::Mat& dst,
+  int width, int height )
 {
   double scale = 1.0;
 
@@ -51,8 +54,9 @@ scale_image_maintaining_ar( const cv::Mat& src, cv::Mat& dst,
 }
 
 double
-format_image( const cv::Mat& src, cv::Mat& dst, std::string option,
-              double scale_factor, int width, int height )
+format_image(
+  const cv::Mat& src, cv::Mat& dst, std::string option,
+  double scale_factor, int width, int height )
 {
   double scale = 1.0;
 
@@ -81,4 +85,8 @@ format_image( const cv::Mat& src, cv::Mat& dst, std::string option,
   return scale;
 }
 
-} } } // end namespace
+} // namespace darknet
+
+} // namespace arrows
+
+}     // end namespace

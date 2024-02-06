@@ -4,9 +4,9 @@
 
 #include "burnout_image_enhancer.h"
 
-#include <string>
-#include <sstream>
 #include <exception>
+#include <sstream>
+#include <string>
 
 #include <arrows/vxl/image_container.h>
 
@@ -15,7 +15,9 @@
 #include <video_transforms/video_enhancement_process.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace burnout {
 
 typedef vidtk::video_enhancement_process< vxl_byte > process_8bit;
@@ -26,8 +28,8 @@ class burnout_image_enhancer::priv
 {
 public:
   priv()
-    : m_config_file( "burnout_enhancer.conf" )
-    , is_16bit_mode( true )
+    : m_config_file( "burnout_enhancer.conf" ),
+      is_16bit_mode( true )
   {}
 
   ~priv()
@@ -53,13 +55,11 @@ public:
 burnout_image_enhancer
 ::burnout_image_enhancer()
   : d( new priv() )
-{
-}
+{}
 
 burnout_image_enhancer
 ::~burnout_image_enhancer()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 
@@ -172,7 +172,8 @@ burnout_image_enhancer
     vil_image_view< vxl_uint_16 > input_image =
       vxl::image_container::vital_to_vxl( image_data->get_image() );
 
-    process_16bit* process = dynamic_cast< process_16bit* >( d->m_process.get() );
+    process_16bit* process =
+      dynamic_cast< process_16bit* >( d->m_process.get() );
 
     process->set_source_image( input_image );
 
@@ -205,4 +206,8 @@ burnout_image_enhancer
   return output;
 }
 
-} } } // end namespace
+} // namespace burnout
+
+} // namespace arrows
+
+}     // end namespace

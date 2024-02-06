@@ -13,10 +13,11 @@
 #define VITAL_METADATA_IO_H_
 
 #include <vital/types/metadata.h>
-#include <vital/vital_types.h>
 #include <vital/vital_export.h>
+#include <vital/vital_types.h>
 
 namespace kwiver {
+
 namespace vital {
 
 /// Extract an image file basename from metadata and (if needed) frame number
@@ -34,13 +35,15 @@ namespace vital {
 /// number appended.
 std::string
 VITAL_EXPORT
-basename_from_metadata(metadata_sptr md,
-                       frame_id_t frame);
+basename_from_metadata(
+  metadata_sptr md,
+  frame_id_t frame );
 
 std::string
 VITAL_EXPORT
-basename_from_metadata(kwiver::vital::metadata_vector const& mds,
-                       frame_id_t frame);
+basename_from_metadata(
+  kwiver::vital::metadata_vector const& mds,
+  frame_id_t frame );
 
 /// Read in a POS file, producing a metadata object
 ///
@@ -69,9 +72,12 @@ read_pos_file( path_t const& file_path );
 /// \param file_path The path to output the file to.
 void
 VITAL_EXPORT
-write_pos_file( metadata const& md,
-                path_t const& file_path );
+write_pos_file(
+  metadata const& md,
+  path_t const& file_path );
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // VITAL_METADATA_IO_H_

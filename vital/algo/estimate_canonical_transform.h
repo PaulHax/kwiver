@@ -39,7 +39,7 @@ class VITAL_ALGO_EXPORT estimate_canonical_transform
 {
 public:
   estimate_canonical_transform();
-  PLUGGABLE_INTERFACE(estimate_canonical_transform);
+  PLUGGABLE_INTERFACE( estimate_canonical_transform );
 
   /// Estimate a canonical similarity transform for cameras and points
   ///
@@ -51,8 +51,9 @@ public:
   /// \note This algorithm does not apply the transformation, it only estimates
   /// it.
   virtual kwiver::vital::similarity_d
-  estimate_transform( kwiver::vital::camera_map_sptr const cameras,
-                      kwiver::vital::landmark_map_sptr const landmarks ) const = 0;
+  estimate_transform(
+    kwiver::vital::camera_map_sptr const cameras,
+    kwiver::vital::landmark_map_sptr const landmarks ) const = 0;
 };
 
 /// Shared pointer for similarity transformation algorithms

@@ -8,15 +8,17 @@
  */
 
 #include <arrows/mvg/applets/kwiver_algo_mvg_applets_export.h>
-#include <vital/plugin_management/plugin_loader.h>
 #include <vital/applets/applet_registrar.h>
+#include <vital/plugin_management/plugin_loader.h>
 
 #include <arrows/mvg/applets/bundle_adjust_tool.h>
 #include <arrows/mvg/applets/init_cameras_landmarks.h>
 #include <arrows/mvg/applets/track_features.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace mvg {
 
 // ----------------------------------------------------------------------------
@@ -27,7 +29,7 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 {
   kwiver::applet_registrar reg( vpm, "arrows.mvg.applets" );
 
-  if (reg.is_module_loaded())
+  if( reg.is_module_loaded() )
   {
     return;
   }
@@ -41,5 +43,7 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 }
 
 } // end namespace mvg
+
 } // end namespace arrows
+
 } // end namespace kwiver

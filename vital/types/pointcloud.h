@@ -19,7 +19,9 @@
 #include "vector.h"
 
 namespace kwiver {
+
 namespace vital {
+
 /// forward declaration of pointcloud class
 class pointcloud;
 /// typedef for a pointcloud shared pointer
@@ -64,16 +66,16 @@ class VITAL_EXPORT pointcloud_ :
 {
 public:
   /// Default Constructor
-  pointcloud_< T >( );
+  pointcloud_< T >();
 
   /// Constructor for a pointcloud
   ///
   /// \param positions positions of the pointcloud
   pointcloud_< T >(
-    std::vector< Eigen::Matrix< T, 3, 1 > > const & positions );
+    std::vector< Eigen::Matrix< T, 3, 1 > > const& positions );
 
   /// Constructor for a pointcloud_ from a base class pointcloud
-  explicit pointcloud_< T >( pointcloud const & f );
+  explicit pointcloud_< T >( pointcloud const& f );
 
   /// Create a clone of this pointcloud object
   virtual pointcloud_sptr
@@ -85,31 +87,39 @@ public:
   /// Access statically available type of underlying data (double or float)
   static std::type_info const& static_data_type() { return typeid( T ); }
 
-  virtual std::type_info const& data_type() const { return typeid( T ); }
+  virtual std::type_info const&
+  data_type() const { return typeid( T ); }
 
   /// Accessor for the world coordinates using underlying data type
-  std::vector< Eigen::Matrix< T, 3, 1 > > const& get_positions() const { return pos_; }
+  std::vector< Eigen::Matrix< T, 3, 1 > > const&
+  get_positions() const { return pos_; }
 
   /// Accessor for the world coordinates
   virtual std::vector< vector_3d > positions() const;
 
   /// Accessor for a const reference to the RGB color
-  virtual std::vector< rgb_color > const& get_colors() const { return colors_; }
+  virtual std::vector< rgb_color > const&
+  get_colors() const { return colors_; }
 
   /// Accessor for the RGB color
-  virtual std::vector< rgb_color > colors() const { return colors_; }
+  virtual std::vector< rgb_color >
+  colors() const { return colors_; }
 
   /// Does point cloud have color data
-  virtual bool has_colors() const { return !colors_.empty(); }
+  virtual bool
+  has_colors() const { return !colors_.empty(); }
 
   /// Accessor for a const reference to the intensities
-  virtual std::vector< uint8_t > const& get_intensities() const { return inten_; }
+  virtual std::vector< uint8_t > const&
+  get_intensities() const { return inten_; }
 
   /// Accessor for the intensities
-  virtual std::vector< uint8_t > intensities() const { return inten_; }
+  virtual std::vector< uint8_t >
+  intensities() const { return inten_; }
 
   /// Does point cloud have intensity data
-  virtual bool has_intensities() const { return !inten_.empty(); }
+  virtual bool
+  has_intensities() const { return !inten_.empty(); }
 
   /// Set the point cloud positions
   void set_positions( std::vector< Eigen::Matrix< T, 3, 1 > > const& pos );
@@ -133,7 +143,9 @@ protected:
 typedef pointcloud_< double > pointcloud_d;
 /// A single precision pointcloud
 typedef pointcloud_< float > pointcloud_f;
+
 } // namespace vital
+
 }   // end namespace vital
 
 #endif // VITAL_POINTCLOUD_H_

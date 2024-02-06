@@ -17,51 +17,56 @@
 #include <vital/algo/uv_unwrap_mesh.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
-template < class algorithm_def_uvum_base=
-            kwiver::vital::algorithm_def<
-              kwiver::vital::algo::uv_unwrap_mesh > >
-class algorithm_def_uvum_trampoline :
-      public algorithm_trampoline<algorithm_def_uvum_base>
+template < class algorithm_def_uvum_base =
+    kwiver::vital::algorithm_def<
+      kwiver::vital::algo::uv_unwrap_mesh > >
+class algorithm_def_uvum_trampoline
+  : public algorithm_trampoline< algorithm_def_uvum_base >
 {
-  public:
-    using algorithm_trampoline<algorithm_def_uvum_base>::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_uvum_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<kwiver::vital::algo::uv_unwrap_mesh>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::uv_unwrap_mesh >,
+      type_name,
+    );
+  }
 };
 
-template< class uv_unwrap_mesh_base=
-                kwiver::vital::algo::uv_unwrap_mesh >
-class uv_unwrap_mesh_trampoline :
-      public algorithm_def_uvum_trampoline< uv_unwrap_mesh_base >
+template < class uv_unwrap_mesh_base =
+    kwiver::vital::algo::uv_unwrap_mesh >
+class uv_unwrap_mesh_trampoline
+  : public algorithm_def_uvum_trampoline< uv_unwrap_mesh_base >
 {
-  public:
-    using algorithm_def_uvum_trampoline< uv_unwrap_mesh_base>::
-              algorithm_def_uvum_trampoline;
+public:
+  using algorithm_def_uvum_trampoline< uv_unwrap_mesh_base >::
+  algorithm_def_uvum_trampoline;
 
-    void
-    unwrap( kwiver::vital::mesh_sptr mesh ) const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        void,
-        kwiver::vital::algo::uv_unwrap_mesh,
-        unwrap,
-        mesh
-      );
-    }
+  void
+  unwrap( kwiver::vital::mesh_sptr mesh ) const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      void,
+      kwiver::vital::algo::uv_unwrap_mesh,
+      unwrap,
+      mesh
+    );
+  }
 };
 
-}
-}
-}
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
 
 #endif

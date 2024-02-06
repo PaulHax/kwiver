@@ -28,18 +28,19 @@ static constexpr double outlier_matrix_tolerance = 1e-4;
 static constexpr double outlier_norm_tolerance = 1e-4;
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
 }
 
 // ----------------------------------------------------------------------------
-TEST(estimate_homography, create)
+TEST ( estimate_homography, create )
 {
   plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE( nullptr, algo::estimate_homography::create("ocv") );
+  EXPECT_NE( nullptr, algo::estimate_homography::create( "ocv" ) );
 }
 
 // ----------------------------------------------------------------------------

@@ -12,28 +12,32 @@
 #include <sstream>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace serialize {
+
 namespace protobuf {
 
 // ----------------------------------------------------------------------------
 // ---- point converter template
-  template < class PROTO_POINT, class POINT, int N >
+template < class PROTO_POINT, class POINT, int N >
 void
-convert_from_protobuf( const PROTO_POINT& proto_point,
-                  POINT& point )
+convert_from_protobuf(
+  const PROTO_POINT& proto_point,
+  POINT& point )
 {
-  if (proto_point.value_size() != N )
+  if( proto_point.value_size() != N )
   {
     std::stringstream msg;
-    msg << "Expecting " << N <<" values from protobuf point";
+    msg << "Expecting " << N << " values from protobuf point";
     VITAL_THROW( vital::serialization_exception, msg.str() );
   }
 
   typename POINT::vector_type values;
   for( int i = 0; i < N; ++i )
   {
-    values[i] = proto_point.value(i);
+    values[ i ] = proto_point.value( i );
   }
   point.set_value( values );
 
@@ -44,22 +48,22 @@ convert_from_protobuf( const PROTO_POINT& proto_point,
 }
 
 // ----------------------------------------------------------------------------
-  template < class POINT, class PROTO_POINT, int N >
+template < class POINT, class PROTO_POINT, int N >
 void
 convert_to_protobuf( const POINT& point, PROTO_POINT& proto_point )
 {
   auto values = point.value();
 
-  if (values.size() != N )
+  if( values.size() != N )
   {
     std::stringstream msg;
-    msg << "Expecting " << N <<" values from vital; point";
+    msg << "Expecting " << N << " values from vital; point";
     VITAL_THROW( ::kwiver::vital::serialization_exception, msg.str() );
   }
 
-  for (int i = 0; i < N; ++i)
+  for( int i = 0; i < N; ++i )
   {
-    proto_point.add_value( values[i] );
+    proto_point.add_value( values[ i ] );
   }
 
   // Covariance
@@ -69,11 +73,15 @@ convert_to_protobuf( const POINT& point, PROTO_POINT& proto_point )
 }
 
 // ----------------------------------------------------------------------------
-#define CONVERT( PT, VT, C )                                    \
-void convert_protobuf( const PT& proto_point, VT& point )       \
-{  convert_from_protobuf<PT, VT, C>( proto_point, point ); }    \
-void convert_protobuf( const VT& point, PT& proto_point )       \
-{ convert_to_protobuf<VT, PT, C> (point, proto_point ); }
+#define CONVERT( PT, VT, C )                                \
+void convert_protobuf( const PT& proto_point, VT & point )  \
+{                                                           \
+  convert_from_protobuf< PT, VT, C >( proto_point, point ); \
+}                                                           \
+void convert_protobuf( const VT& point, PT & proto_point )  \
+{                                                           \
+  convert_to_protobuf< VT, PT, C >( point, proto_point );   \
+}
 
 CONVERT( ::kwiver::protobuf::point_i, ::kwiver::vital::point_2i, 2 )
 CONVERT( ::kwiver::protobuf::point_d, ::kwiver::vital::point_2d, 2 )
@@ -87,42 +95,50 @@ CONVERT( ::kwiver::protobuf::point_d, ::kwiver::vital::point_4f, 4 )
 
 // ----------------------------------------------------------------------------
 // -- covariance converter template
-template <class COV>
+template < class COV >
 void
-convert_from_protobuf( const ::kwiver::protobuf::covariance& proto_covariance,
-                       COV& covariance )
+convert_from_protobuf(
+  const ::kwiver::protobuf::covariance& proto_covariance,
+  COV& covariance )
 {
-  typename COV::data_type values[COV::data_size];
-  for ( unsigned i = 0; i < COV::data_size; ++i )
+  typename COV::data_type values[ COV::data_size ];
+  for( unsigned i = 0; i < COV::data_size; ++i )
   {
-    values[i] = proto_covariance.value(i);
+    values[ i ] = proto_covariance.value( i );
   }
   covariance.set_data( values );
 }
 
-template <class COV>
+template < class COV >
 void
-convert_to_protobuf( const COV& covariance,
-                     ::kwiver::protobuf::covariance& proto_covariance )
+convert_to_protobuf(
+  const COV& covariance,
+  ::kwiver::protobuf::covariance& proto_covariance )
 {
   const auto* data = covariance.data();
 
   proto_covariance.set_dim( COV::data_size );
 
-  for (unsigned i = 0; i < COV::data_size; ++i )
+  for( unsigned i = 0; i < COV::data_size; ++i )
   {
-    proto_covariance.add_value( data[i] );
+    proto_covariance.add_value( data[ i ] );
   }
 }
 
 // ----------------------------------------------------------------------------
-#define CONVERT( VT )                                                   \
-void convert_protobuf( const ::kwiver::protobuf::covariance& proto_covariance, \
-                       VT& covariance )                                 \
-{ convert_from_protobuf<VT>( proto_covariance, covariance ); }          \
-void convert_protobuf( const VT& covariance,                            \
-                       ::kwiver::protobuf::covariance& proto_covariance ) \
-{ convert_to_protobuf<VT>(covariance, proto_covariance ); }
+#define CONVERT( VT )                                          \
+void convert_protobuf(                                         \
+  const ::kwiver::protobuf::covariance& proto_covariance,      \
+  VT & covariance )                                            \
+{                                                              \
+  convert_from_protobuf< VT >( proto_covariance, covariance ); \
+}                                                              \
+void convert_protobuf(                                         \
+  const VT& covariance,                                        \
+  ::kwiver::protobuf::covariance& proto_covariance )           \
+{                                                              \
+  convert_to_protobuf< VT >( covariance, proto_covariance );   \
+}
 
 CONVERT( ::kwiver::vital::covariance_2d )
 CONVERT( ::kwiver::vital::covariance_2f )
@@ -132,4 +148,11 @@ CONVERT( ::kwiver::vital::covariance_4d )
 CONVERT( ::kwiver::vital::covariance_4f )
 
 #undef CONVERT
-} } } } // end namespace
+
+} // namespace protobuf
+
+} // namespace serialize
+
+} // namespace arrows
+
+}       // end namespace

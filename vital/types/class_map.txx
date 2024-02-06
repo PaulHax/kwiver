@@ -4,28 +4,25 @@
 
 #include "class_map.h"
 
-#include <stdexcept>
-#include <sstream>
-#include <iostream>
 #include <algorithm>
+#include <iostream>
+#include <sstream>
+#include <stdexcept>
 
 namespace kwiver {
 
 namespace vital {
 
 // Master list of all type names, and members associated with the same
-template < typename T >
-signal< std::string const& >
+template < typename T > signal< std::string const& >
 class_map< T >
 ::class_name_added;
 
-template < typename T >
-std::unordered_set< std::string >
+template < typename T > std::unordered_set< std::string >
 class_map< T >
 ::s_master_name_set;
 
-template < typename T >
-std::mutex
+template < typename T > std::mutex
 class_map< T >
 ::s_table_mutex;
 
@@ -36,7 +33,8 @@ template < typename T1, typename T2 >
 struct less_second
 {
   typedef std::pair< T1, T2 > type;
-  bool operator()( type const& a, type const& b ) const
+  bool
+  operator()( type const& a, type const& b ) const
   {
     return a.second < b.second;
   }
@@ -47,7 +45,8 @@ template < typename T1, typename T2 >
 struct more_second
 {
   typedef std::pair< T1, T2 > type;
-  bool operator()( type const& a, type const& b ) const
+  bool
+  operator()( type const& a, type const& b ) const
   {
     return a.second > b.second;
   }
@@ -58,39 +57,43 @@ struct more_second
 // ----------------------------------------------------------------------------
 template < typename T >
 class_map< T >
+
 ::class_map()
-{ }
+{}
 
 // ----------------------------------------------------------------------------
 template < typename T >
 class_map< T >
-::class_map( const std::vector< std::string >& class_names,
-                        const std::vector< double >& scores )
+
+::class_map(
+  const std::vector< std::string >& class_names,
+  const std::vector< double >& scores )
 {
-  if ( class_names.size() != scores.size() )
+  if( class_names.size() != scores.size() )
   {
     // Throw error
     throw std::invalid_argument( "Parameter vector sizes differ." );
   }
 
-  if ( class_names.empty() )
+  if( class_names.empty() )
   {
     // Throw error
     throw std::invalid_argument( "Parameter vector are empty." );
   }
 
-  for ( size_t i = 0; i < class_names.size(); i++ )
+  for( size_t i = 0; i < class_names.size(); i++ )
   {
-    set_score( class_names[i], scores[i] );
+    set_score( class_names[ i ], scores[ i ] );
   }
 }
 
 // ----------------------------------------------------------------------------
 template < typename T >
 class_map< T >
+
 ::class_map( const std::string& class_name, double score )
 {
-  if ( class_name.empty() )
+  if( class_name.empty() )
   {
     throw std::invalid_argument( "Must supply a non-empty class name." );
   }
@@ -109,7 +112,8 @@ class_map< T >
     const std::string* str_ptr = find_string( class_name );
     return ( 0 != m_classes.count( str_ptr ) );
   }
-  catch ( ... ) {}
+  catch( ... )
+  {}
 
   return false;
 }
@@ -122,11 +126,12 @@ class_map< T >
 {
   const std::string* str_ptr = find_string( class_name );
 
-  if ( 0 == m_classes.count( str_ptr ) )
+  if( 0 == m_classes.count( str_ptr ) )
   {
     // Name not associated with this object
     std::stringstream sstr;
-    sstr << "Class name \"" << class_name << "\" is not associated with this object";
+    sstr << "Class name \"" << class_name <<
+      "\" is not associated with this object";
     throw std::runtime_error( sstr.str() );
   }
 
@@ -140,15 +145,17 @@ void
 class_map< T >
 ::get_most_likely( std::string& max_name ) const
 {
-  if ( m_classes.empty() )
+  if( m_classes.empty() )
   {
     // Throw error
     throw std::runtime_error( "This detection has no scores." );
   }
 
-  auto it = std::max_element( m_classes.begin(), m_classes.end(), less_second< const std::string*, double > () );
+  auto it = std::max_element(
+    m_classes.begin(), m_classes.end(),
+    less_second< const std::string*, double >() );
 
-  max_name = std::string ( *(it->first) );
+  max_name = std::string( *( it->first ) );
 }
 
 // ----------------------------------------------------------------------------
@@ -157,16 +164,17 @@ void
 class_map< T >
 ::get_most_likely( std::string& max_name, double& max_score ) const
 {
-  if ( m_classes.empty() )
+  if( m_classes.empty() )
   {
     // Throw error
     throw std::runtime_error( "This detection has no scores." );
   }
 
-  auto it = std::max_element( m_classes.begin(), m_classes.end(),
-                              less_second< std::string const*, double > () );
+  auto it = std::max_element(
+    m_classes.begin(), m_classes.end(),
+    less_second< std::string const*, double >() );
 
-  max_name = std::string ( *(it->first) );
+  max_name = std::string( *( it->first ) );
   max_score = it->second;
 }
 
@@ -180,7 +188,7 @@ class_map< T >
   // If not, add it
   std::lock_guard< std::mutex > lock{ s_table_mutex };
   auto it = s_master_name_set.find( class_name );
-  if ( it == s_master_name_set.end() )
+  if( it == s_master_name_set.end() )
   {
     auto result = s_master_name_set.insert( class_name );
     class_name_added( class_name );
@@ -188,10 +196,10 @@ class_map< T >
   }
 
   // Resolve string to canonical pointer
-  const std::string* str_ptr = &(*it);
+  const std::string* str_ptr = &( *it );
 
   // Insert new entry into map
-  m_classes[str_ptr] = score;
+  m_classes[ str_ptr ] = score;
 }
 
 // ----------------------------------------------------------------------------
@@ -201,11 +209,12 @@ class_map< T >
 ::delete_score( const std::string& class_name )
 {
   auto str_ptr = find_string( class_name );
-  if ( 0 == m_classes.count( str_ptr ) )
+  if( 0 == m_classes.count( str_ptr ) )
   {
     // Name not associated with this object
     std::stringstream sstr;
-    sstr << "Class name \"" << class_name << "\" is not associated with this object";
+    sstr << "Class name \"" << class_name <<
+      "\" is not associated with this object";
     throw std::runtime_error( sstr.str() );
   }
 
@@ -218,22 +227,25 @@ std::vector< std::string >
 class_map< T >
 ::class_names( double threshold ) const
 {
-  std::vector< std::pair< const std::string*, double > > items( m_classes.begin(), m_classes.end() );
+  std::vector< std::pair< const std::string*,
+    double > > items( m_classes.begin(), m_classes.end() );
 
   // sort map by value descending order
-  std::sort( items.begin(), items.end(), more_second< const std::string*, double > () );
+  std::sort(
+    items.begin(), items.end(),
+    more_second< const std::string*, double >() );
 
   std::vector< std::string > list;
 
   const size_t limit( items.size() );
-  for ( size_t i = 0; i < limit; i++ )
+  for( size_t i = 0; i < limit; i++ )
   {
-    if ( items[i].second < threshold )
+    if( items[ i ].second < threshold )
     {
       break;
     }
 
-    list.push_back( *(items[i].first) );
+    list.push_back( *( items[ i ].first ) );
   }
 
   return list;
@@ -251,6 +263,7 @@ class_map< T >
 // ----------------------------------------------------------------------------
 template < typename T >
 typename class_map< T >::class_const_iterator_t
+
 class_map< T >
 ::begin() const
 {
@@ -260,6 +273,7 @@ class_map< T >
 // ----------------------------------------------------------------------------
 template < typename T >
 typename class_map< T >::class_const_iterator_t
+
 class_map< T >
 ::cbegin() const
 {
@@ -269,6 +283,7 @@ class_map< T >
 // ----------------------------------------------------------------------------
 template < typename T >
 typename class_map< T >::class_const_iterator_t
+
 class_map< T >
 ::end() const
 {
@@ -278,6 +293,7 @@ class_map< T >
 // ----------------------------------------------------------------------------
 template < typename T >
 typename class_map< T >::class_const_iterator_t
+
 class_map< T >
 ::cend() const
 {
@@ -304,7 +320,7 @@ class_map< T >
 {
   std::lock_guard< std::mutex > lock{ s_table_mutex };
   auto it = s_master_name_set.find( str );
-  if ( it == s_master_name_set.end() )
+  if( it == s_master_name_set.end() )
   {
     // Name not associated with any object
     std::stringstream sstr;
@@ -312,7 +328,7 @@ class_map< T >
     throw std::runtime_error( sstr.str() );
   }
 
-  return &(*it);
+  return &( *it );
 }
 
 // ----------------------------------------------------------------------------
@@ -321,19 +337,17 @@ std::vector< std::string >
 class_map< T >
 ::all_class_names()
 {
-  auto out = []() -> std::vector< std::string >
-  {
-    std::lock_guard< std::mutex > lock{ s_table_mutex };
-    return { s_master_name_set.begin(), s_master_name_set.end() };
-  }();
+  auto out = []() -> std::vector< std::string > {
+               std::lock_guard< std::mutex > lock{ s_table_mutex };
+               return { s_master_name_set.begin(), s_master_name_set.end() };
+             }();
 
   std::sort( out.begin(), out.end() );
   return out;
 }
 
 // ----------------------------------------------------------------------------
-template < typename T >
-constexpr double
+template < typename T > constexpr double
 class_map< T >
 ::INVALID_SCORE;
 

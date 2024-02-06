@@ -12,7 +12,8 @@
 #include <track_oracle/core/schema_algorithm.h>
 
 #include <vital/logger/logger.h>
-static kwiver::vital::logger_handle_t main_logger( kwiver::vital::get_logger( __FILE__ ) );
+static kwiver::vital::logger_handle_t main_logger( kwiver::vital::get_logger(
+  __FILE__ ) );
 
 using std::istream;
 using std::map;
@@ -32,50 +33,50 @@ glob_to_regexp_string( const string& glob )
 
   static const string meta_chars = "^$.[()|?+*\\";
 
-  string baseglob = vul_file::basename(glob);
+  string baseglob = vul_file::basename( glob );
   string::iterator i = baseglob.begin();
-  bool prev_slash=false, in_sqr_brackets=false;
-  //assemble the Regexp string
+  bool prev_slash = false, in_sqr_brackets = false;
+  // assemble the Regexp string
   string re = "^"; // match the start of the string
-  while (i != baseglob.end())
+  while( i != baseglob.end() )
   {
     const char& c = *i;
-    if (c =='\\' && !prev_slash)
+    if( c == '\\' && !prev_slash )
     {
       prev_slash = true;
     }
-    else if (prev_slash)
+    else if( prev_slash )
     {
       prev_slash = false;
-      re.append(1,('\\'));
-      re.append(1,*i);
+      re.append( 1, ( '\\' ) );
+      re.append( 1, *i );
     }
-    else if (c=='[' && !in_sqr_brackets)
+    else if( c == '[' && !in_sqr_brackets )
     {
       in_sqr_brackets = true;
-      re.append(1,'[');
+      re.append( 1, '[' );
     }
-    else if (c==']' && in_sqr_brackets)
+    else if( c == ']' && in_sqr_brackets )
     {
       in_sqr_brackets = false;
-      re.append(1,']');
+      re.append( 1, ']' );
     }
-    else if (c=='?' && !in_sqr_brackets)
+    else if( c == '?' && !in_sqr_brackets )
     {
-      re.append(1,'.');
+      re.append( 1, '.' );
     }
-    else if (c=='*' && !in_sqr_brackets)
+    else if( c == '*' && !in_sqr_brackets )
     {
       re.append( ".*" );
     }
-    else if (meta_chars.find_first_of( c ) != string::npos)
+    else if( meta_chars.find_first_of( c ) != string::npos )
     {
       re.append( "\\" );
-      re.append(1, c );
+      re.append( 1, c );
     }
     else
     {
-      re.append(1, c);
+      re.append( 1, c );
     }
 
     ++i;
@@ -89,20 +90,20 @@ glob_to_regexp_string( const string& glob )
 } // anon
 
 namespace kwiver {
+
 namespace track_oracle {
 
 file_format_base
-::file_format_base( file_format_enum fmt,
-                    const string& desc
-  )
-  : type( fmt ), description( desc )
-{
-}
+::file_format_base(
+  file_format_enum fmt,
+  const string& desc )
+  : type( fmt ),
+    description( desc )
+{}
 
 file_format_base
 ::~file_format_base()
-{
-}
+{}
 
 string
 file_format_base
@@ -137,10 +138,10 @@ file_format_base
 ::filename_matches_globs( string fn ) const
 {
   vul_string_downcase( fn );
-  for (size_t i=0; i<this->globs.size(); ++i)
+  for( size_t i = 0; i < this->globs.size(); ++i )
   {
-    kwiversys::RegularExpression r( glob_to_regexp_string( this->globs[i] ));
-    if (r.find( fn )) return true;
+    kwiversys::RegularExpression r( glob_to_regexp_string( this->globs[ i ] ) );
+    if( r.find( fn ) ) { return true; }
   }
   return false;
 }
@@ -150,7 +151,8 @@ file_format_base
 ::enumerate_schema() const
 {
   track_base_impl* t = this->schema_instance();
-  map< field_handle_type, track_base_impl::schema_position_type > ret = t->list_schema_elements();
+  map< field_handle_type,
+    track_base_impl::schema_position_type > ret = t->list_schema_elements();
   delete t;
   return ret;
 }
@@ -164,57 +166,76 @@ file_format_base
 
 bool
 file_format_base
-::read( istream&,
-        track_handle_list_type& ) const
+::read(
+  istream&,
+  track_handle_list_type& ) const
 {
   // by default, not implemented
-  LOG_ERROR( main_logger, "Stream reading not supported for " << file_format_type::to_string( this->type ) << " tracks" );
+  LOG_ERROR(
+    main_logger,
+    "Stream reading not supported for " <<
+      file_format_type::to_string( this->type ) << " tracks" );
   return false;
 }
 
 bool
 file_format_base
-::write( const string&,
-         const track_handle_list_type& ) const
+::write(
+  const string&,
+  const track_handle_list_type& ) const
 {
   // by default, not implemented
-  LOG_ERROR( main_logger, "File writing not supported for " << file_format_type::to_string( this->type ) << " tracks" );
+  LOG_ERROR(
+    main_logger,
+    "File writing not supported for " <<
+      file_format_type::to_string( this->type ) << " tracks" );
   return false;
 }
 
 bool
 file_format_base
-::write( ostream&,
-         const track_handle_list_type& ) const
+::write(
+  ostream&,
+  const track_handle_list_type& ) const
 {
   // by default, not implemented
-  LOG_ERROR( main_logger, "Stream writing not supported for " << file_format_type::to_string( this->type ) << " tracks" );
+  LOG_ERROR(
+    main_logger,
+    "Stream writing not supported for " <<
+      file_format_type::to_string( this->type ) << " tracks" );
   return false;
 }
 
 bool
 file_format_base
-::read( const string& fn,
-        track_handle_list_type& tracks,
-        const track_base_impl& required_fields,
-        vector< element_descriptor >& missing_fields ) const
+::read(
+  const string& fn,
+  track_handle_list_type& tracks,
+  const track_base_impl& required_fields,
+  vector< element_descriptor >& missing_fields ) const
 {
-  if (! this->read( fn, tracks )) return false;
-  missing_fields = schema_algorithm::name_missing_fields( required_fields, tracks );
+  if( !this->read( fn, tracks ) ) { return false; }
+  missing_fields = schema_algorithm::name_missing_fields(
+    required_fields,
+    tracks );
   return true;
 }
 
 bool
 file_format_base
-::read( istream& is,
-        track_handle_list_type& tracks,
-        const track_base_impl& required_fields,
-        vector< element_descriptor >& missing_fields ) const
+::read(
+  istream& is,
+  track_handle_list_type& tracks,
+  const track_base_impl& required_fields,
+  vector< element_descriptor >& missing_fields ) const
 {
-  if (! this->read( is, tracks )) return false;
-  missing_fields = schema_algorithm::name_missing_fields( required_fields, tracks );
+  if( !this->read( is, tracks ) ) { return false; }
+  missing_fields = schema_algorithm::name_missing_fields(
+    required_fields,
+    tracks );
   return true;
 }
 
 } // ...track_oracle
+
 } // ...kwiver

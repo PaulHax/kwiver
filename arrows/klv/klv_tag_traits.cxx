@@ -19,12 +19,14 @@ namespace klv {
 
 // ----------------------------------------------------------------------------
 klv_tag_count_range
-::klv_tag_count_range( size_t exact ) : m_lower{ exact }, m_upper{ exact } {}
+::klv_tag_count_range( size_t exact ) : m_lower{ exact },
+                                        m_upper{ exact } {}
 
 // ----------------------------------------------------------------------------
 klv_tag_count_range
 ::klv_tag_count_range( size_t lower, size_t upper )
-  : m_lower{ std::min( lower, upper ) }, m_upper{ std::max( lower, upper ) }
+  : m_lower{ std::min( lower, upper ) },
+    m_upper{ std::max( lower, upper ) }
 {}
 
 // ----------------------------------------------------------------------------
@@ -76,17 +78,23 @@ klv_tag_count_range
 
 // ----------------------------------------------------------------------------
 klv_tag_traits
-::klv_tag_traits( klv_uds_key uds_key,
-                  klv_lds_key tag,
-                  std::string const& enum_name,
-                  klv_data_format_sptr format,
-                  std::string const& name,
-                  std::string const& description,
-                  klv_tag_count_range const& tag_count_range,
-                  klv_tag_traits_lookup const* subtag_lookup )
-  : m_name{ name }, m_enum_name{ enum_name }, m_description{ description },
-    m_lds_key{ tag }, m_uds_key{ uds_key }, m_format{ format },
-    m_tag_count_range{ tag_count_range }, m_subtag_lookup{ subtag_lookup }
+::klv_tag_traits(
+  klv_uds_key uds_key,
+  klv_lds_key tag,
+  std::string const& enum_name,
+  klv_data_format_sptr format,
+  std::string const& name,
+  std::string const& description,
+  klv_tag_count_range const& tag_count_range,
+  klv_tag_traits_lookup const* subtag_lookup )
+  : m_name{ name },
+    m_enum_name{ enum_name },
+    m_description{ description },
+    m_lds_key{ tag },
+    m_uds_key{ uds_key },
+    m_format{ format },
+    m_tag_count_range{ tag_count_range },
+    m_subtag_lookup{ subtag_lookup }
 {}
 
 // ----------------------------------------------------------------------------
@@ -185,6 +193,7 @@ klv_tag_traits_lookup
 
 // ----------------------------------------------------------------------------
 typename klv_tag_traits_lookup::iterator
+
 klv_tag_traits_lookup
 ::begin() const
 {
@@ -193,6 +202,7 @@ klv_tag_traits_lookup
 
 // ----------------------------------------------------------------------------
 typename klv_tag_traits_lookup::iterator
+
 klv_tag_traits_lookup
 ::end() const
 {

@@ -10,10 +10,11 @@
 
 #include <vital/vital_config.h>
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -39,28 +40,32 @@ typedef std::shared_ptr< match_set > match_set_sptr;
 
 // ----------------------------------------------------------------------------
 /// A concrete match set that simply wraps a vector of matches.
-class simple_match_set :
-  public match_set
+class simple_match_set
+  : public match_set
 {
 public:
   /// Default Constructor
-  simple_match_set() { }
+  simple_match_set() {}
 
   /// Constructor from a vector of matches
   explicit simple_match_set( const std::vector< match >& matches )
-    : data_( matches ) { }
+    : data_( matches ) {}
 
   /// Return the number of matches in the set
-  virtual size_t size() const { return data_.size(); }
+  virtual size_t
+  size() const { return data_.size(); }
 
   /// Return a vector of match shared pointers
-  virtual std::vector< match > matches() const { return data_; }
+  virtual std::vector< match >
+  matches() const { return data_; }
 
 protected:
   /// The vector of matches
   std::vector< match > data_;
 };
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital
 
 #endif // VITAL_MATCH_SET_H_

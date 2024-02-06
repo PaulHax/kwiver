@@ -68,24 +68,26 @@ protected:
     random_image_rgb_packed =
       kv::image( ptr, width, height, depth, depth, depth * width, 1 );
     random_image_bgr_packed =
-      kv::image( ptr + depth - 1, width, height, depth,
-                 depth, depth * width, -1 );
+      kv::image(
+        ptr + depth - 1, width, height, depth,
+        depth, depth * width, -1 );
     random_image_rgb_planar =
       kv::image( ptr, width, height, depth, 1, width, width * height );
     random_image_bgr_planar =
-      kv::image( ptr + width * height * ( depth - 1 ), width, height, depth,
-                 1, width, width * height * -1 );
+      kv::image(
+        ptr + width * height * ( depth - 1 ), width, height, depth,
+        1, width, width * height * -1 );
 
     random_image_container_gray.reset(
-        new kv::simple_image_container{ random_image_gray } );
+      new kv::simple_image_container{ random_image_gray } );
     random_image_container_rgb_packed.reset(
-        new kv::simple_image_container{ random_image_rgb_packed } );
+      new kv::simple_image_container{ random_image_rgb_packed } );
     random_image_container_bgr_packed.reset(
-        new kv::simple_image_container{ random_image_bgr_packed } );
+      new kv::simple_image_container{ random_image_bgr_packed } );
     random_image_container_rgb_planar.reset(
-        new kv::simple_image_container{ random_image_rgb_planar } );
+      new kv::simple_image_container{ random_image_rgb_planar } );
     random_image_container_bgr_planar.reset(
-        new kv::simple_image_container{ random_image_bgr_planar } );
+      new kv::simple_image_container{ random_image_bgr_planar } );
   }
 
   std::vector< uint8_t > random_image_data;
@@ -137,6 +139,7 @@ TEST_F ( ffmpeg_video_output, round_trip )
 
   ffmpeg::ffmpeg_video_output os;
   os.open( tmp_path, is.implementation_settings().get() );
+
   _tmp_file_deleter tmp_file_deleter{ tmp_path };
 
   // Write to a temporary file
@@ -176,6 +179,7 @@ TEST_F ( ffmpeg_video_output, round_trip_direct )
 
   ffmpeg::ffmpeg_video_output os;
   os.open( tmp_path, is.implementation_settings().get() );
+
   _tmp_file_deleter tmp_file_deleter{ tmp_path };
 
   // Skip this test if we can't write the output video in the same format as
@@ -228,6 +232,7 @@ TEST_F ( ffmpeg_video_output, round_trip_audio )
 
   ffmpeg::ffmpeg_video_output os;
   os.open( tmp_path, is.implementation_settings().get() );
+
   _tmp_file_deleter tmp_file_deleter{ tmp_path };
 
   // Write to a temporary file
@@ -272,6 +277,7 @@ TEST_F ( ffmpeg_video_output, round_trip_audio_direct )
 
   ffmpeg::ffmpeg_video_output os;
   os.open( tmp_path, is.implementation_settings().get() );
+
   _tmp_file_deleter tmp_file_deleter{ tmp_path };
 
   // Skip this test if we can't write the output video in the same format as
@@ -298,6 +304,7 @@ TEST_F ( ffmpeg_video_output, round_trip_audio_direct )
   {
     auto const image = is.raw_frame_image();
     ASSERT_TRUE( image );
+
     auto const uninterpreted_data = is.uninterpreted_frame_data();
     if( uninterpreted_data )
     {
@@ -337,6 +344,7 @@ TEST_F ( ffmpeg_video_output, generic_open )
 
   // Open / close
   os.open( tmp_path, nullptr );
+
   _tmp_file_deleter tmp_file_deleter{ tmp_path };
   kv::timestamp ts;
 

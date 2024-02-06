@@ -33,8 +33,9 @@ public:
   virtual ~mesh_vertex_array_base() {}
 
   /// Checks approximate equality
-  bool approx_equal( mesh_vertex_array_base const& other,
-                     double epsilon = 1e-6 ) const;
+  bool approx_equal(
+    mesh_vertex_array_base const& other,
+    double epsilon = 1e-6 ) const;
 
   /// returns the number of vertices
   virtual unsigned int size() const = 0;
@@ -54,8 +55,9 @@ public:
   {
     if( this->has_normals() && verts.has_normals() )
     {
-      normals_.insert( normals_.end(),
-                       verts.normals_.begin(), verts.normals_.end() );
+      normals_.insert(
+        normals_.end(),
+        verts.normals_.begin(), verts.normals_.end() );
     }
     else
     {
@@ -126,8 +128,9 @@ public:
   }
 
   /// Checks approximate equality
-  bool approx_equal( mesh_vertex_array_base const& other,
-                     double epsilon = 1e-6 ) const;
+  bool approx_equal(
+    mesh_vertex_array_base const& other,
+    double epsilon = 1e-6 ) const;
 
   /// returns the number of vertices
   virtual unsigned int
@@ -184,9 +187,10 @@ public:
 
 /// compute the vector normal to the plane defined by 3 vertices
 VITAL_EXPORT
-vector_3d mesh_tri_normal( const vector_3d& a,
-                           const vector_3d& b,
-                           const vector_3d& c );
+vector_3d mesh_tri_normal(
+  const vector_3d& a,
+  const vector_3d& b,
+  const vector_3d& c );
 
 // ----------------------------------------------------------------------------
 // Mesh faces
@@ -265,8 +269,9 @@ public:
 class mesh_quad : public mesh_regular_face< 4 >
 {
 public:
-  mesh_quad( unsigned int a, unsigned int b,
-             unsigned int c, unsigned int d )
+  mesh_quad(
+    unsigned int a, unsigned int b,
+    unsigned int c, unsigned int d )
   {
     verts_[ 0 ] = a;
     verts_[ 1 ] = b;
@@ -283,7 +288,9 @@ public:
   virtual ~mesh_face_array_base() {}
 
   /// Checks approximate equality
-  bool approx_equal( mesh_face_array_base const& other, double epsilon = 1e-6 ) const;
+  bool approx_equal(
+    mesh_face_array_base const& other,
+    double epsilon = 1e-6 ) const;
 
   /// returns the number of vertices per face if the same for all faces, zero
   /// otherwise
@@ -314,8 +321,9 @@ public:
   /// Append this array of faces (must be the same type)
   ///
   /// Optionally shift the indices in \param other by \param ind_shift
-  virtual void append( const mesh_face_array_base& other,
-                       unsigned int ind_shift = 0 );
+  virtual void append(
+    const mesh_face_array_base& other,
+    unsigned int ind_shift = 0 );
 
   /// Return true if the faces have normals
   bool
@@ -391,11 +399,13 @@ public:
 
   /// Copy Constructor
   mesh_face_array( const mesh_face_array& other )
-    : mesh_face_array_base( other ), faces_( other.faces_ ) {}
+    : mesh_face_array_base( other ),
+      faces_( other.faces_ ) {}
 
   /// Construct from base class
   explicit mesh_face_array( const mesh_face_array_base& fb )
-    : mesh_face_array_base( fb ), faces_( fb.size() )
+    : mesh_face_array_base( fb ),
+      faces_( fb.size() )
   {
     for( unsigned int i = 0; i < fb.size(); ++i )
     {
@@ -407,7 +417,9 @@ public:
   }
 
   /// Checks approximate equality
-  bool approx_equal( mesh_face_array_base const& other, double epsilon = 1e-6 ) const;
+  bool approx_equal(
+    mesh_face_array_base const& other,
+    double epsilon = 1e-6 ) const;
 
   /// returns the number of vertices per face if the same for all faces, zero
   /// otherwise
@@ -450,8 +462,9 @@ public:
   /// Append this array of faces
   ///
   /// Optionally shift the indices in \param other by \param ind_shift
-  virtual void append( const mesh_face_array_base& other,
-                       unsigned int ind_shift = 0 );
+  virtual void append(
+    const mesh_face_array_base& other,
+    unsigned int ind_shift = 0 );
 
   /// Add a face to the array
   void
@@ -493,8 +506,7 @@ public:
   /// Constructor (from a vector)
   mesh_regular_face_array< s >(
     const std::vector< mesh_regular_face< s > >& faces ) : faces_( faces )
-  {
-  }
+  {}
 
   /// Constructor (from an initializer list)
   mesh_regular_face_array< s >(
@@ -502,8 +514,9 @@ public:
     : faces_( faces ) {}
 
   /// Checks approximate equality
-  bool approx_equal( mesh_face_array_base const& other,
-                     double epsilon = 1e-6 ) const;
+  bool approx_equal(
+    mesh_face_array_base const& other,
+    double epsilon = 1e-6 ) const;
 
   /// returns the number of vertices per face if the same for all faces
   ///
@@ -517,8 +530,9 @@ public:
 
   /// returns the number of vertices in face \param f
   virtual unsigned int
-  num_verts( unsigned int                     // f
-             ) const { return s; }
+  num_verts(
+    unsigned int                              // f
+  ) const { return s; }
 
   /// Access a vertex index by face index and within-face index
   virtual unsigned int
@@ -546,8 +560,9 @@ public:
   ///
   /// Optionally shift the indices in \param other by \param ind_shift
   virtual void
-  append( const mesh_face_array_base& other,
-          unsigned int ind_shift = 0 )
+  append(
+    const mesh_face_array_base& other,
+    unsigned int ind_shift = 0 )
   {
     mesh_face_array_base::append( other, ind_shift );
     assert( other.regularity() == s );
@@ -602,9 +617,10 @@ public:
 /// Shift the mesh indices in \param f2 by \param ind_shift
 VITAL_EXPORT
 std::unique_ptr< mesh_face_array_base >
-merge_face_arrays( const mesh_face_array_base& f1,
-                   const mesh_face_array_base& f2,
-                   unsigned int ind_shift = 0 );
+merge_face_arrays(
+  const mesh_face_array_base& f1,
+  const mesh_face_array_base& f2,
+  unsigned int ind_shift = 0 );
 
 // ----------------------------------------------------------------------------
 // Mesh edges
@@ -614,9 +630,13 @@ class VITAL_EXPORT mesh_half_edge
   friend class mesh_half_edge_set;
 
 public:
-  mesh_half_edge( unsigned int e, unsigned int n, unsigned int v,
-                  unsigned int f )
-    : next_( n ), edge_( e ), vert_( v ), face_( f ) {}
+  mesh_half_edge(
+    unsigned int e, unsigned int n, unsigned int v,
+    unsigned int f )
+    : next_( n ),
+      edge_( e ),
+      vert_( v ),
+      face_( f ) {}
 
   /// Equality operator
   bool
@@ -716,7 +736,7 @@ public:
 
   /// An iterator of half edges adjacent to a face
   class f_iterator : public std::iterator< std::forward_iterator_tag,
-                                           mesh_half_edge >
+                       mesh_half_edge >
   {
     friend class f_const_iterator;
     friend class v_iterator;
@@ -724,7 +744,8 @@ public:
   public:
     /// Constructor
     f_iterator( unsigned int hei, mesh_half_edge_set& edge_set )
-      : half_edge_index_( hei ), edge_set_( edge_set ) {}
+      : half_edge_index_( hei ),
+        edge_set_( edge_set ) {}
 
     /// Constructor from vertex iterator
     explicit f_iterator( const v_iterator& other )
@@ -746,7 +767,7 @@ public:
     mesh_half_edge&
     operator*() const { return edge_set_[ half_edge_index_ ]; }
     mesh_half_edge*
-    operator->() const { return &** this; }
+    operator->() const { return &**this; }
     mesh_half_edge&
     pair() const { return edge_set_[ half_edge_index_ ^ 1 ]; }
     f_iterator&
@@ -797,7 +818,7 @@ public:
 
   /// A const iterator of half edges adjacent to a face
   class f_const_iterator : public std::iterator< std::forward_iterator_tag,
-                                                 mesh_half_edge >
+                             mesh_half_edge >
   {
     friend class f_iterator;
     friend class v_const_iterator;
@@ -805,7 +826,8 @@ public:
   public:
     /// Constructor
     f_const_iterator( unsigned int hei, const mesh_half_edge_set& edge_set )
-      : half_edge_index_( hei ), edge_set_( edge_set ) {}
+      : half_edge_index_( hei ),
+        edge_set_( edge_set ) {}
 
     /// Constructor from non-const iterator
     f_const_iterator( const f_iterator& other )
@@ -832,7 +854,7 @@ public:
     const mesh_half_edge&
     operator*() const { return edge_set_[ half_edge_index_ ]; }
     const mesh_half_edge*
-    operator->() const { return &** this; }
+    operator->() const { return &**this; }
     const mesh_half_edge&
     pair() const { return edge_set_[ half_edge_index_ ^ 1 ]; }
     f_const_iterator&
@@ -873,7 +895,7 @@ public:
 
   /// An iterator of half edges adjacent to a vertex
   class v_iterator : public std::iterator< std::forward_iterator_tag,
-                                           mesh_half_edge >
+                       mesh_half_edge >
   {
     friend class v_const_iterator;
     friend class f_iterator;
@@ -881,7 +903,8 @@ public:
   public:
     /// Constructor
     v_iterator( unsigned int hei, mesh_half_edge_set& edge_set )
-      : half_edge_index_( hei ), edge_set_( edge_set ) {}
+      : half_edge_index_( hei ),
+        edge_set_( edge_set ) {}
 
     /// Constructor from face iterator
     explicit v_iterator( const f_iterator& other )
@@ -903,7 +926,7 @@ public:
     mesh_half_edge&
     operator*() const { return edge_set_[ half_edge_index_ ]; }
     mesh_half_edge*
-    operator->() const { return &** this; }
+    operator->() const { return &**this; }
     mesh_half_edge&
     pair() const { return edge_set_[ half_edge_index_ ^ 1 ]; }
     v_iterator&
@@ -955,7 +978,7 @@ public:
 
   /// A const iterator of half edges adjacent to a vertex
   class v_const_iterator : public std::iterator< std::forward_iterator_tag,
-                                                 mesh_half_edge >
+                             mesh_half_edge >
   {
     friend class v_iterator;
     friend class f_const_iterator;
@@ -963,7 +986,8 @@ public:
   public:
     /// Constructor
     v_const_iterator( unsigned int hei, const mesh_half_edge_set& edge_set )
-      : half_edge_index_( hei ), edge_set_( edge_set ) {}
+      : half_edge_index_( hei ),
+        edge_set_( edge_set ) {}
 
     /// Constructor from non-const iterator
     v_const_iterator( const v_iterator& other )
@@ -990,7 +1014,7 @@ public:
     const mesh_half_edge&
     operator*() const { return edge_set_[ half_edge_index_ ]; }
     const mesh_half_edge*
-    operator->() const { return &** this; }
+    operator->() const { return &**this; }
     const mesh_half_edge&
     pair() const { return edge_set_[ half_edge_index_ ^ 1 ]; }
     v_const_iterator&
@@ -1078,8 +1102,9 @@ public:
   /// Constructor from vertex and face arrays
   ///
   /// Takes ownership of these arrays
-  mesh( std::unique_ptr< mesh_vertex_array_base > verts,
-        std::unique_ptr< mesh_face_array_base > faces )
+  mesh(
+    std::unique_ptr< mesh_vertex_array_base > verts,
+    std::unique_ptr< mesh_face_array_base > faces )
     : verts_( std::move( verts ) ),
       faces_( std::move( faces ) ),
       tex_coord_status_( TEX_COORD_NONE ) {}
@@ -1227,8 +1252,9 @@ public:
 
   /// Map a barycentric coordinate (u,v) on triangle \param tri into texture
   /// space
-  vector_2d texture_map( unsigned int tri,
-                         double u, double v ) const;
+  vector_2d texture_map(
+    unsigned int tri,
+    double u, double v ) const;
 
 private:
   /// array of mesh vertices

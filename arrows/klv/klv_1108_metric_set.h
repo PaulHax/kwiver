@@ -42,7 +42,8 @@ operator<<( std::ostream& os, klv_1108_metric_set_tag tag );
 
 // ----------------------------------------------------------------------------
 /// Indicates who implemented the software which calculated the metric.
-struct KWIVER_ALGO_KLV_EXPORT klv_1108_metric_implementer {
+struct KWIVER_ALGO_KLV_EXPORT klv_1108_metric_implementer
+{
   std::string organization;
   std::string subgroup;
 };
@@ -77,8 +78,9 @@ private:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_1108_metric_implementer const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    klv_1108_metric_implementer const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( klv_1108_metric_implementer const& value ) const override;

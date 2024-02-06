@@ -5,14 +5,15 @@
 #if !defined vital_simple_stats_HH_
 #define vital_simple_stats_HH_
 
-#include <limits>
-#include <iostream>
-#include <iomanip>
-#include <string>
-#include <cmath>
 #include <algorithm>
+#include <cmath>
+#include <iomanip>
+#include <iostream>
+#include <limits>
+#include <string>
 
 namespace kwiver {
+
 namespace vital {
 
 /// Simple statistics class
@@ -69,7 +70,7 @@ public:
   get_average() const
   {
     double avg = 0.0;
-    if ( m_count > 0 )
+    if( m_count > 0 )
     {
       avg = m_sum / m_count;
     }
@@ -87,7 +88,7 @@ public:
   get_standard_deviation() const
   {
     double std_dev = 0.0;
-    if ( m_count > 0 )
+    if( m_count > 0 )
     {
       double average = m_sum / m_count;
       std_dev = sqrt( ( m_sum_sqr / m_count ) - ( average * average ) );
@@ -102,10 +103,15 @@ public:
   /// This method returns the specific value from the cumulative
   /// statistics being calculated.  These values are undefined if the
   /// count == 0 (except count, which will be 0).
-  uint64_t get_count() const { return m_count; }
-  double get_sum() const { return m_sum; }
-  double get_min() const { return m_min; }
-  double get_max() const { return m_max; }
+  uint64_t
+  get_count() const { return m_count; }
+  double
+  get_sum() const { return m_sum; }
+  double
+  get_min() const { return m_min; }
+  double
+  get_max() const { return m_max; }
+
   /// @}
   ///
   /// \brief Display current statistics.
@@ -122,7 +128,7 @@ public:
     double min = 0.0;
     double max = 0.0;
 
-    if ( m_count > 0 )
+    if( m_count > 0 )
     {
       min = m_min;
       max = m_max;
@@ -161,8 +167,9 @@ private:
 /// @param[in] obj - object to format
 /// @returns The same output stream passed in
 
-inline std::ostream & operator<< (std::ostream & str, const simple_stats & stat)
-{ return stat.to_stream (str); }
+inline std::ostream&
+operator<<( std::ostream& str, const simple_stats& stat )
+{ return stat.to_stream( str ); }
 
 // ----------------------------------------------------------------------------
 /// Summary statistics.
@@ -176,6 +183,7 @@ class summary_stats
 {
 public:
   summary_stats() = default;
+
   summary_stats( const char* descr )
     : m_descr( descr )
   {}
@@ -190,6 +198,8 @@ private:
   std::string m_descr;
 };
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif

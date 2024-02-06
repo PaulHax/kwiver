@@ -14,6 +14,7 @@
 #include <vital/exceptions/iteration.h>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -24,19 +25,19 @@ namespace vital {
 /// \tparam Tb Base type for references and pointers. This will will be the
 ///            same as T for a non-const iterator and the const version of T
 ///            for a const iterator.
-template< typename T, typename Tb >
+template < typename T, typename Tb >
 class base_iterator
 {
 public:
   using difference_type   = ptrdiff_t;
   using value_type        = T;
-  using pointer           = Tb *;
-  using reference         = Tb &;
+  using pointer           = Tb*;
+  using reference         = Tb&;
   using iterator_category = std::input_iterator_tag;
 
   // Function that returns the reference to the next value to be iterated, or
   // throws a stop_iteration_exception to signal that iteration has ended.
-  using next_value_func_t = std::function<reference()>;
+  using next_value_func_t = std::function< reference ( ) >;
 
   /// Default destructor.
   virtual ~base_iterator() = default;
@@ -54,7 +55,8 @@ public:
   /// \param rhs Other iterator instance to assign to this iterator instance.
   /// \returns Reference to this iterator instance.
   virtual
-  base_iterator<T, Tb>& operator=( base_iterator<T, Tb> const & rhs )
+  base_iterator< T, Tb >&
+  operator=( base_iterator< T, Tb > const& rhs )
   {
     this->m_next_value_func = rhs.m_next_value_func;
     this->m_cur_val_ptr = rhs.m_cur_val_ptr;
@@ -69,11 +71,13 @@ public:
   ///
   /// \returns Reference to this iterator instance.
   virtual
-  base_iterator<T, Tb>& operator++()
+  base_iterator< T, Tb >&
+  operator++()
   {
     set_next_value();
     return *this;
   }
+
   /// Postfix increment operator overload (e.g. i++).
   ///
   /// \returns A copy of this iterator before requesting the next value
@@ -81,9 +85,9 @@ public:
   ///          sequentially unique references, then the returned iterator's
   ///          reference will point to the same value as this iterator.
   virtual
-  base_iterator<T, Tb> operator++(int)
+  base_iterator< T, Tb > operator++( int )
   {
-    base_iterator<T, Tb> it(*this);
+    base_iterator< T, Tb > it( *this );
     set_next_value();
     return it;
   }
@@ -92,7 +96,8 @@ public:
   ///
   /// \returns A copy of the current iteration reference.
   virtual
-  value_type operator*() const
+  value_type
+  operator*() const
   {
     // NOTE: A forward-iterator sub-class will want to override this operator
     //       to return `reference`.
@@ -103,7 +108,8 @@ public:
   ///
   /// \returns Pointer to the current iteration reference.
   virtual
-  pointer operator->() const
+  pointer
+  operator->() const
   {
     return m_cur_val_ptr;
   }
@@ -116,8 +122,10 @@ public:
   /// will never be equal.
   ///
   /// \returns If the two iterators are equal to each other.
-  friend bool operator==( base_iterator<T, Tb> const & lhs,
-                          base_iterator<T, Tb> const & rhs )
+  friend bool
+  operator==(
+    base_iterator< T, Tb > const& lhs,
+    base_iterator< T, Tb > const& rhs )
   {
     // If both iterators are at their ends, they are equal.
     if( lhs.m_at_end && rhs.m_at_end )
@@ -132,29 +140,34 @@ public:
     // Otherwise, the dereferenced value for each base_iterator are equal
     else
     {
-      return (*lhs.m_cur_val_ptr) == (*rhs.m_cur_val_ptr);
+      return ( *lhs.m_cur_val_ptr ) == ( *rhs.m_cur_val_ptr );
     }
   }
 
   /// Inequality operator overload
   ///
   /// \returns If the two iterators is *NOT* equal to each other.
-  friend bool operator!=( base_iterator<T, Tb> const & lhs,
-                          base_iterator<T, Tb> const & rhs )
+  friend bool
+  operator!=(
+    base_iterator< T, Tb > const& lhs,
+    base_iterator< T, Tb > const& rhs )
   {
-    return ! (lhs == rhs);
+    return !( lhs == rhs );
   }
 
   /// Override of swap function between two same-type iterators.
   ///
   /// Swaps function reference, current value pointer and past-end state
   /// boolean.
-  friend void swap( base_iterator<T, Tb> const & lhs,
-                    base_iterator<T, Tb> const & rhs )
+  friend void
+
+  swap(
+    base_iterator< T, Tb > const& lhs,
+    base_iterator< T, Tb > const& rhs )
   {
     next_value_func_t lhs_nvf = lhs.m_next_value_func;
-    pointer           lhs_ref = lhs.m_cur_val_ptr;
-    bool              lhs_ae  = lhs.m_at_end;
+    pointer lhs_ref = lhs.m_cur_val_ptr;
+    bool lhs_ae  = lhs.m_at_end;
     lhs = rhs;
     rhs.m_next_value_func = lhs_nvf;
     rhs.m_cur_val_ptr     = lhs_ref;
@@ -165,9 +178,9 @@ protected:
   // Next value reference generation function.
   next_value_func_t m_next_value_func;
   // Pointer to the most recent reference return from the generation function.
-  pointer           m_cur_val_ptr;
+  pointer m_cur_val_ptr;
   // If this iterator is past-end.
-  bool              m_at_end;
+  bool m_at_end;
 
   // Constructors: Protected to prevent construction of this base class -------
   /// Construct default iterator.
@@ -175,9 +188,9 @@ protected:
   /// A default constructed iterator is set to be a past-end iterator and is
   /// equal to any iterator past its end.
   base_iterator()
-    : m_next_value_func( nullptr )
-    , m_cur_val_ptr( nullptr )
-    , m_at_end( true )
+    : m_next_value_func( nullptr ),
+      m_cur_val_ptr( nullptr ),
+      m_at_end( true )
   {}
 
   /// Construct iterator with a function to yield the next iteration value
@@ -186,10 +199,10 @@ protected:
   /// \param next_value_func Function that returns the reference to the next
   ///                        value in a sequence until the end of that sequence,
   ///                        then raising the ``stop_iteration_exception``.
-  base_iterator( next_value_func_t const & next_value_func )
-    : m_next_value_func( next_value_func )
-    , m_cur_val_ptr( nullptr )
-    , m_at_end( false )
+  base_iterator( next_value_func_t const& next_value_func )
+    : m_next_value_func( next_value_func ),
+      m_cur_val_ptr( nullptr ),
+      m_at_end( false )
   {
     // Get the first iteration state value reference.
     set_next_value();
@@ -204,23 +217,24 @@ protected:
   /// generator function returns in the other iterator.
   ///
   /// \param other Other iterator to copy from.
-  base_iterator( base_iterator<T, Tb> const & other )
-    : m_next_value_func( other.m_next_value_func )
-    , m_cur_val_ptr( other.m_cur_val_ptr )
-    , m_at_end( other.m_at_end )
+  base_iterator( base_iterator< T, Tb > const& other )
+    : m_next_value_func( other.m_next_value_func ),
+      m_cur_val_ptr( other.m_cur_val_ptr ),
+      m_at_end( other.m_at_end )
   {}
 
   /// Acquire the next iteration value reference from the next value function.
   /// Handles receiving a stop iteration exception from the function and flags
   /// end of iteration if this occurs.
   virtual
-  void set_next_value()
+  void
+  set_next_value()
   {
     try
     {
       m_cur_val_ptr = &m_next_value_func();
     }
-    catch( stop_iteration_exception const & )
+    catch( stop_iteration_exception const& )
     {
       m_cur_val_ptr = nullptr;
       m_at_end = true;
@@ -230,13 +244,12 @@ protected:
 
 // ----------------------------------------------------------------------------
 // Forward declare const_iterator class for friending within iterator.
-template< typename T >
-class const_iterator;
+template < typename T > class const_iterator;
 
 /// Vital templated non-const iterator class.
 ///
 /// \tparam T Value type being iterated over.
-template< typename T >
+template < typename T >
 class iterator
   : public base_iterator< T, T >
 {
@@ -265,7 +278,7 @@ public:
   /// \param next_value_func Function that returns the reference to the next
   ///                        value in a sequence until the end of that sequence,
   ///                        then raising the ``stop_iteration_exception``.
-  iterator( next_value_func_t const & next_value_func )
+  iterator( next_value_func_t const& next_value_func )
     : base_t( next_value_func )
   {}
 
@@ -278,7 +291,7 @@ public:
   /// generator function returns in the other iterator.
   ///
   /// \param other Other iterator to copy from.
-  iterator( iterator<T> const & other )
+  iterator( iterator< T > const& other )
     : base_t( other )
   {}
 
@@ -289,7 +302,7 @@ public:
 
   /// Allow const_iterator to access protected members when copy-constructing
   /// from a non-const iterator instance.
-  friend class const_iterator<T>;
+  friend class const_iterator< T >;
 };
 
 // ----------------------------------------------------------------------------
@@ -303,7 +316,7 @@ public:
 /// combinations of const and non-const iterator equality checks.
 ///
 /// \tparam T Value type being iterated over.
-template< typename T >
+template < typename T >
 class const_iterator
   : public base_iterator< T, T const >
 {
@@ -332,7 +345,7 @@ public:
   /// \param next_value_func Function that returns the reference to the next
   ///                        value in a sequence until the end of that sequence,
   ///                        then raising the ``stop_iteration_exception``.
-  const_iterator( next_value_func_t const & next_value_func )
+  const_iterator( next_value_func_t const& next_value_func )
     : base_t( next_value_func )
   {}
 
@@ -345,7 +358,7 @@ public:
   /// generator function returns in the other iterator.
   ///
   /// \param other Other iterator to copy from.
-  const_iterator( const_iterator<T> const & other )
+  const_iterator( const_iterator< T > const& other )
     : base_t( other )
   {}
 
@@ -358,7 +371,7 @@ public:
   /// generator function returns in the other iterator.
   ///
   /// \param other Other iterator to copy from.
-  const_iterator( iterator<T> const & other )
+  const_iterator( iterator< T > const& other )
     : base_t()
   {
     this->m_next_value_func = other.m_next_value_func;
@@ -372,28 +385,39 @@ public:
   using base_t::operator=;
 
   /// Friend operator== overload for testing [non-const, const] equality.
-  friend bool operator==( iterator<T> const & it,
-                          const_iterator<T> const & cit )
+  friend bool
+  operator==(
+    iterator< T > const& it,
+    const_iterator< T > const& cit )
   {
-    return const_iterator<T>( it ) == cit;
+    return const_iterator< T >( it ) == cit;
   }
+
   /// Friend operator== overload for testing [const, non-const] equality.
-  friend bool operator==( const_iterator<T> const & cit,
-                          iterator<T> const & it )
+  friend bool
+  operator==(
+    const_iterator< T > const& cit,
+    iterator< T > const& it )
   {
     return it == cit;
   }
+
   /// Friend operator!= overload for testing [non-const, const] non-equality.
-  friend bool operator!=( iterator<T> const & it,
-                          const_iterator<T> const & cit )
+  friend bool
+  operator!=(
+    iterator< T > const& it,
+    const_iterator< T > const& cit )
   {
-    return ! (it == cit);
+    return !( it == cit );
   }
+
   /// Friend operator!= overload for testing [const, non-const] non-equality.
-  friend bool operator!=( const_iterator<T> const & cit,
-                          iterator<T> const & it )
+  friend bool
+  operator!=(
+    const_iterator< T > const& cit,
+    iterator< T > const& it )
   {
-    return ! (it == cit);
+    return !( it == cit );
   }
 };
 
@@ -401,7 +425,7 @@ public:
 /// Pure-virtual mixin class to add iteration support to a class.
 ///
 /// \tparam Type to iterate over.
-template< typename T >
+template < typename T >
 class iterable
 {
 public:
@@ -419,31 +443,36 @@ public:
   ///
   /// Get the non-const iterator to the beginning of the collection.
   /// @return An iterator over the objects in this collection.
-  virtual iterator begin()
+  virtual iterator
+  begin()
   {
     return vital::iterator< T >( get_iter_next_func() );
   }
 
   /// Get the non-const iterator past the end of the collection
   /// @return An iterator base the end of this collection.
-  virtual iterator end()
+  virtual iterator
+  end()
   {
     return vital::iterator< T >();
   }
 
   /// Get the const iterator to the beginning of the collection.
   /// @return An iterator over the objects in this collection.
-  virtual const_iterator cbegin() const
+  virtual const_iterator
+  cbegin() const
   {
     return vital::const_iterator< T >( get_const_iter_next_func() );
   }
 
   /// Get the const iterator past the end of the collection
   /// @return An iterator base the end of this collection.
-  virtual const_iterator cend() const
+  virtual const_iterator
+  cend() const
   {
     return vital::const_iterator< T >();
   }
+
   ///@}
 
 protected:
@@ -452,16 +481,18 @@ protected:
   ///
   /// @returns Function to generate value reference sequence.
   virtual typename iterator::next_value_func_t
-    get_iter_next_func() = 0;
+  get_iter_next_func() = 0;
 
   /// Get a new function that returns the const sequence of values via
   /// subsequent calls culminating with a stop_iteration_exception.
   ///
   /// @returns Function to generate value const-reference sequence.
   virtual typename const_iterator::next_value_func_t
-    get_const_iter_next_func() const = 0;
+  get_const_iter_next_func() const = 0;
 };
 
-} } // end namespaces
+} // namespace vital
 
-#endif //KWIVER_VITAL_ITERATOR_H_
+}   // end namespaces
+
+#endif // KWIVER_VITAL_ITERATOR_H_

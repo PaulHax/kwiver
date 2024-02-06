@@ -7,11 +7,12 @@
 
 #include <vital/vital_export.h>
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -81,9 +82,12 @@ public:
 private:
   /// private implementation class
   class priv;
-  std::unique_ptr<priv> d;
+
+  std::unique_ptr< priv > d;
 };
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // VITAL_ALGORITHM_CAPABILITIES_H

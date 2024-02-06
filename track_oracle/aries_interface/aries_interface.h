@@ -6,30 +6,30 @@
 #define INCL_ARIES_INTERFACE_H
 
 /*
-  This class acts as a weakly-coupled interface to those parts of
-  VIRAT which are outside Kitware's source tree, i.e. Lockheed or MCI
-  code.
-
-  In particular, we need the mapping of activity strings to their
-  index within the classifier vector.  This is maintained by MCI, but
-  we do not want to create a hard dependency on having an active ARIES
-  build in order to build vidtk.  On the other hand, we want to be able
-  to easily (maybe automatically) keep this up-to-date, perhaps by
-  automatically generating the list from an up-to-date ARIES checkout
-  (much easier to acquire than a build.)  This updating infrastructure
-  is deferred until later; for now, we just need to get things going.
-
-  Update 17jul2013 for cross-project activity recognition: add the
-  kwe_index_to_activity() routine to kwe activity indices to VIRAT strings.
-
+ *  This class acts as a weakly-coupled interface to those parts of
+ *  VIRAT which are outside Kitware's source tree, i.e. Lockheed or MCI
+ *  code.
+ *
+ *  In particular, we need the mapping of activity strings to their
+ *  index within the classifier vector.  This is maintained by MCI, but
+ *  we do not want to create a hard dependency on having an active ARIES
+ *  build in order to build vidtk.  On the other hand, we want to be able
+ *  to easily (maybe automatically) keep this up-to-date, perhaps by
+ *  automatically generating the list from an up-to-date ARIES checkout
+ *  (much easier to acquire than a build.)  This updating infrastructure
+ *  is deferred until later; for now, we just need to get things going.
+ *
+ *  Update 17jul2013 for cross-project activity recognition: add the
+ *  kwe_index_to_activity() routine to kwe activity indices to VIRAT strings.
+ *
  */
 
-#include <vital/vital_config.h>
 #include <track_oracle/aries_interface/scoring_aries_interface_export.h>
+#include <vital/vital_config.h>
 
-#include <string>
-#include <map>
 #include <exception>
+#include <map>
+#include <string>
 
 #undef VIBRANT_AVAILABLE
 #ifdef VIBRANT_AVAILABLE
@@ -37,26 +37,27 @@
 #endif
 
 namespace kwiver {
+
 namespace track_oracle {
 
 struct aries_interface_impl;
 
 class SCORING_ARIES_INTERFACE_EXPORT
-aries_interface_exception: public std::exception
+aries_interface_exception : public std::exception
 {
   std::string msg;
+
 public:
   explicit aries_interface_exception( const std::string& s )
     : msg( "aries_inteface_typo: couldn't lookup '" + s + "'" ) {}
-  virtual ~aries_interface_exception() throw() {}
-  virtual const char* what() const throw();
+  virtual ~aries_interface_exception() throw ( ) {}
+  virtual const char* what() const throw ( );
 };
 
 class SCORING_ARIES_INTERFACE_EXPORT
 aries_interface
 {
 public:
-
   // Now string->index operations no longer return maps; see implementation
   // comments for why.
 
@@ -65,12 +66,14 @@ public:
   // but communicates read-only semantics to the user.
 
   static size_t activity_to_index( const std::string& s );
+
   static const std::map< size_t, std::string >& index_to_activity_map();
 
 #ifdef VIBRANT_AVAILABLE
   // kwe index to VIRAT strings; empty if no match
 
-  static std::string kwe_index_to_activity( vidtk::event_types::enum_types kwe_index );
+  static std::string kwe_index_to_activity(
+    vidtk::event_types::enum_types kwe_index );
 #endif
 
   // vpd index to VIRAT strings; empty if no match
@@ -81,6 +84,7 @@ public:
   // information loss in this conversion, there is no vise-versa conversion.
   // Returns const map just like above
   static std::string activity_to_PVO( const std::string& s );
+
   static const std::map< size_t, std::string >& index_to_PVO_map();
 
   // Some, but not all, of the activity probabilities should be copied into
@@ -99,7 +103,8 @@ private:
   static aries_interface_impl* p;
 };
 
-} //...track_oracle
-} //...kwiver
+} // ...track_oracle
+
+} // ...kwiver
 
 #endif

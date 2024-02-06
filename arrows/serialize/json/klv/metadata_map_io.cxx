@@ -34,7 +34,8 @@ namespace {
 auto const output_options = cereal::JSONOutputArchive::Options{
   cereal::JSONOutputArchive::Options::MaxPrecision(),
   cereal::JSONOutputArchive::Options::IndentChar::tab, 1 };
-}
+
+} // namespace
 
 // ----------------------------------------------------------------------------
 class metadata_map_io_klv::priv
@@ -141,15 +142,16 @@ metadata_map_io_klv
 ::load_open_mode( VITAL_UNUSED std::string const& filename ) const
 {
   return d->compress
-    ? ( std::ios_base::in | std::ios_base::binary )
-    : ( std::ios_base::in );
+         ? ( std::ios_base::in | std::ios_base::binary )
+         : ( std::ios_base::in );
 }
 
 // ----------------------------------------------------------------------------
 void
 metadata_map_io_klv
-::save_( std::ostream& fout, vital::metadata_map_sptr data,
-         VITAL_UNUSED std::string const& filename ) const
+::save_(
+  std::ostream& fout, vital::metadata_map_sptr data,
+  VITAL_UNUSED std::string const& filename ) const
 {
   // Extract KLV from vital::metadata structures
   std::vector< klv::klv_timed_packet > packets;
@@ -162,8 +164,9 @@ metadata_map_io_klv
         dynamic_cast< klv::klv_metadata const* >( metadata_vital.get() );
       if( !metadata_klv )
       {
-        LOG_DEBUG( vital::get_logger( "json" ),
-                   "save_(): dropping metadata with no associated KLV" );
+        LOG_DEBUG(
+          vital::get_logger( "json" ),
+          "save_(): dropping metadata with no associated KLV" );
         continue;
       }
 
@@ -172,6 +175,7 @@ metadata_map_io_klv
       {
         auto ts = metadata_klv->timestamp();
         ts.set_frame( entry.first );
+
         klv::klv_timed_packet timed_packet{ packet, ts };
         auto const stream_index =
           metadata_klv->find( vital::VITAL_META_VIDEO_DATA_STREAM_INDEX );
@@ -209,8 +213,8 @@ metadata_map_io_klv
 ::save_open_mode( VITAL_UNUSED std::string const& filename ) const
 {
   return d->compress
-    ? ( std::ios_base::out | std::ios_base::binary )
-    : ( std::ios_base::out );
+         ? ( std::ios_base::out | std::ios_base::binary )
+         : ( std::ios_base::out );
 }
 
 // ----------------------------------------------------------------------------

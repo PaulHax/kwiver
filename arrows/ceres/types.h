@@ -60,12 +60,12 @@ CameraIntrinsicShareTypeToString( CameraIntrinsicShareType type );
 /// Parse a CameraIntrinsicShareType value from a string or return false
 KWIVER_ALGO_CERES_EXPORT
 bool
-StringToCameraIntrinsicShareType( std::string value,
-                                  CameraIntrinsicShareType* type );
+StringToCameraIntrinsicShareType(
+  std::string value,
+  CameraIntrinsicShareType* type );
 
 /// Default implementation of string options for Ceres enums
 template < typename T >
-
 std::string
 ceres_options()
 {
@@ -78,30 +78,27 @@ ceres_options()
 
 } // namespace kwiver
 
-#define CERES_ENUM_HELPERS( NS, ceres_type )                              \
-  namespace kwiver {                                                      \
-  namespace vital {                                                       \
-                                                                          \
-  template <>                                                             \
-  config_block_value_t                                                    \
-  config_block_set_value_cast( NS::ceres_type const & value );            \
-                                                                          \
-  template <>                                                             \
-  NS::ceres_type                                                          \
-  config_block_get_value_cast( config_block_value_t const & value );      \
-                                                                          \
-  }                                                                       \
-                                                                          \
-  namespace arrows {                                                      \
-  namespace ceres {                                                       \
-                                                                          \
-  template <>                                                             \
-  std::string                                                             \
-  ceres_options< NS::ceres_type >();                                      \
-                                                                          \
-  }                                                                       \
-  }                                                                       \
-  }
+#define CERES_ENUM_HELPERS( NS, ceres_type )                        \
+namespace kwiver {                                                  \
+  namespace vital {                                                 \
+                                                                    \
+  template <> config_block_value_t                                  \
+  config_block_set_value_cast( NS::ceres_type const& value );       \
+                                                                    \
+  template <> NS::ceres_type                                        \
+  config_block_get_value_cast( config_block_value_t const& value ); \
+                                                                    \
+  }                                                                 \
+                                                                    \
+  namespace arrows {                                                \
+  namespace ceres {                                                 \
+                                                                    \
+  template <> std::string                                           \
+  ceres_options< NS::ceres_type >();                                \
+                                                                    \
+  }                                                                 \
+  }                                                                 \
+}
 
 CERES_ENUM_HELPERS( ::ceres, LinearSolverType )
 CERES_ENUM_HELPERS( ::ceres, PreconditionerType )

@@ -30,7 +30,7 @@ namespace klv {
 #define ENUM_AND_NAME( X ) X, #X
 
 // ----------------------------------------------------------------------------
-template< class T >
+template < class T >
 std::ostream&
 operator<<( std::ostream& os, vital::interval< T > const& value )
 {
@@ -59,6 +59,7 @@ std::ostream&
 operator<<( std::ostream& os, std::vector< T > const& value )
 {
   os << "{ ";
+
   auto first = true;
   for( T const& item : value )
   {
@@ -88,12 +89,13 @@ operator<<( std::ostream& os, std::set< T > const& value )
 }
 
 // ----------------------------------------------------------------------------
-template< class T >
+template < class T >
 struct wrap_cmp_nan
 {
   explicit wrap_cmp_nan( T const& value ) : value{ value } {}
 
-  bool operator<( wrap_cmp_nan< T > const& other ) const
+  bool
+  operator<( wrap_cmp_nan< T > const& other ) const
   {
     if constexpr( std::is_floating_point_v< T > )
     {
@@ -106,22 +108,26 @@ struct wrap_cmp_nan
     }
   }
 
-  bool operator>( wrap_cmp_nan< T > const& other ) const
+  bool
+  operator>( wrap_cmp_nan< T > const& other ) const
   {
     return other < *this;
   }
 
-  bool operator<=( wrap_cmp_nan< T > const& other ) const
+  bool
+  operator<=( wrap_cmp_nan< T > const& other ) const
   {
     return !( other < *this );
   }
 
-  bool operator>=( wrap_cmp_nan< T > const& other ) const
+  bool
+  operator>=( wrap_cmp_nan< T > const& other ) const
   {
     return !( *this < other );
   }
 
-  bool operator==( wrap_cmp_nan< T > const& other ) const
+  bool
+  operator==( wrap_cmp_nan< T > const& other ) const
   {
     if constexpr( std::is_floating_point_v< T > )
     {
@@ -134,7 +140,8 @@ struct wrap_cmp_nan
     }
   }
 
-  bool operator!=( wrap_cmp_nan< T > const& other ) const
+  bool
+  operator!=( wrap_cmp_nan< T > const& other ) const
   {
     return !( *this == other );
   }
@@ -143,7 +150,7 @@ struct wrap_cmp_nan
 };
 
 // ----------------------------------------------------------------------------
-template< class T, class... Args >
+template < class T, class... Args >
 bool
 struct_lt( T const& lhs, T const& rhs, Args T::*... args )
 {
@@ -152,7 +159,7 @@ struct_lt( T const& lhs, T const& rhs, Args T::*... args )
 }
 
 // ----------------------------------------------------------------------------
-template< class T, class... Args >
+template < class T, class... Args >
 bool
 struct_gt( T const& lhs, T const& rhs, Args T::*... args )
 {
@@ -161,7 +168,7 @@ struct_gt( T const& lhs, T const& rhs, Args T::*... args )
 }
 
 // ----------------------------------------------------------------------------
-template< class T, class... Args >
+template < class T, class... Args >
 bool
 struct_le( T const& lhs, T const& rhs, Args T::*... args )
 {
@@ -170,7 +177,7 @@ struct_le( T const& lhs, T const& rhs, Args T::*... args )
 }
 
 // ----------------------------------------------------------------------------
-template< class T, class... Args >
+template < class T, class... Args >
 bool
 struct_ge( T const& lhs, T const& rhs, Args T::*... args )
 {
@@ -179,7 +186,7 @@ struct_ge( T const& lhs, T const& rhs, Args T::*... args )
 }
 
 // ----------------------------------------------------------------------------
-template< class T, class... Args >
+template < class T, class... Args >
 bool
 struct_eq( T const& lhs, T const& rhs, Args T::*... args )
 {
@@ -188,7 +195,7 @@ struct_eq( T const& lhs, T const& rhs, Args T::*... args )
 }
 
 // ----------------------------------------------------------------------------
-template< class T, class... Args >
+template < class T, class... Args >
 bool
 struct_ne( T const& lhs, T const& rhs, Args T::*... args )
 {
@@ -198,127 +205,225 @@ struct_ne( T const& lhs, T const& rhs, Args T::*... args )
 
 // ----------------------------------------------------------------------------
 #define DECLARE_CMP( T )                                      \
-KWIVER_ALGO_KLV_EXPORT bool operator< ( T const&, T const& ); \
-KWIVER_ALGO_KLV_EXPORT bool operator> ( T const&, T const& ); \
+KWIVER_ALGO_KLV_EXPORT bool operator<( T const&, T const& );  \
+KWIVER_ALGO_KLV_EXPORT bool operator>( T const&, T const& );  \
 KWIVER_ALGO_KLV_EXPORT bool operator<=( T const&, T const& ); \
 KWIVER_ALGO_KLV_EXPORT bool operator>=( T const&, T const& ); \
 KWIVER_ALGO_KLV_EXPORT bool operator==( T const&, T const& ); \
 KWIVER_ALGO_KLV_EXPORT bool operator!=( T const&, T const& );
 
 // ----------------------------------------------------------------------------
-#define DECLARE_TEMPLATE_CMP( TYPE )                                                    \
-template< class T > KWIVER_ALGO_KLV_EXPORT bool operator< ( TYPE const&, TYPE const& ); \
-template< class T > KWIVER_ALGO_KLV_EXPORT bool operator> ( TYPE const&, TYPE const& ); \
-template< class T > KWIVER_ALGO_KLV_EXPORT bool operator<=( TYPE const&, TYPE const& ); \
-template< class T > KWIVER_ALGO_KLV_EXPORT bool operator>=( TYPE const&, TYPE const& ); \
-template< class T > KWIVER_ALGO_KLV_EXPORT bool operator==( TYPE const&, TYPE const& ); \
-template< class T > KWIVER_ALGO_KLV_EXPORT bool operator!=( TYPE const&, TYPE const& );
+#define DECLARE_TEMPLATE_CMP( TYPE )                                \
+template < class T >                                                \
+KWIVER_ALGO_KLV_EXPORT bool operator<( TYPE const&, TYPE const& );  \
+template < class T >                                                \
+KWIVER_ALGO_KLV_EXPORT bool operator>( TYPE const&, TYPE const& );  \
+template < class T >                                                \
+KWIVER_ALGO_KLV_EXPORT bool operator<=( TYPE const&, TYPE const& ); \
+template < class T >                                                \
+KWIVER_ALGO_KLV_EXPORT bool operator>=( TYPE const&, TYPE const& ); \
+template < class T >                                                \
+KWIVER_ALGO_KLV_EXPORT bool operator==( TYPE const&, TYPE const& ); \
+template < class T >                                                \
+KWIVER_ALGO_KLV_EXPORT bool operator!=( TYPE const&, TYPE const& );
 
 // ----------------------------------------------------------------------------
-#define DEFINE_STRUCT_CMP( T, ... )                                                          \
-bool operator< ( T const& lhs, T const& rhs ) { return struct_lt( lhs, rhs, __VA_ARGS__ ); } \
-bool operator> ( T const& lhs, T const& rhs ) { return struct_gt( lhs, rhs, __VA_ARGS__ ); } \
-bool operator<=( T const& lhs, T const& rhs ) { return struct_le( lhs, rhs, __VA_ARGS__ ); } \
-bool operator>=( T const& lhs, T const& rhs ) { return struct_ge( lhs, rhs, __VA_ARGS__ ); } \
-bool operator==( T const& lhs, T const& rhs ) { return struct_eq( lhs, rhs, __VA_ARGS__ ); } \
-bool operator!=( T const& lhs, T const& rhs ) { return struct_ne( lhs, rhs, __VA_ARGS__ ); }
+#define DEFINE_STRUCT_CMP( T, ... )          \
+bool                                         \
+operator<( T const& lhs, T const& rhs )      \
+{                                            \
+  return struct_lt( lhs, rhs, __VA_ARGS__ ); \
+}                                            \
+bool                                         \
+operator>( T const& lhs, T const& rhs )      \
+{                                            \
+  return struct_gt( lhs, rhs, __VA_ARGS__ ); \
+}                                            \
+bool                                         \
+operator<=( T const& lhs, T const& rhs )     \
+{                                            \
+  return struct_le( lhs, rhs, __VA_ARGS__ ); \
+}                                            \
+bool                                         \
+operator>=( T const& lhs, T const& rhs )     \
+{                                            \
+  return struct_ge( lhs, rhs, __VA_ARGS__ ); \
+}                                            \
+bool                                         \
+operator==( T const& lhs, T const& rhs )     \
+{                                            \
+  return struct_eq( lhs, rhs, __VA_ARGS__ ); \
+}                                            \
+bool                                         \
+operator!=( T const& lhs, T const& rhs )     \
+{                                            \
+  return struct_ne( lhs, rhs, __VA_ARGS__ ); \
+}
 
 // ----------------------------------------------------------------------------
-#define DEFINE_TEMPLATE_CMP( TYPE, ... )                                                                               \
-template< class T > bool operator< ( TYPE const& lhs, TYPE const& rhs ) { return struct_lt( lhs, rhs, __VA_ARGS__ ); } \
-template< class T > bool operator> ( TYPE const& lhs, TYPE const& rhs ) { return struct_gt( lhs, rhs, __VA_ARGS__ ); } \
-template< class T > bool operator<=( TYPE const& lhs, TYPE const& rhs ) { return struct_le( lhs, rhs, __VA_ARGS__ ); } \
-template< class T > bool operator>=( TYPE const& lhs, TYPE const& rhs ) { return struct_ge( lhs, rhs, __VA_ARGS__ ); } \
-template< class T > bool operator==( TYPE const& lhs, TYPE const& rhs ) { return struct_eq( lhs, rhs, __VA_ARGS__ ); } \
-template< class T > bool operator!=( TYPE const& lhs, TYPE const& rhs ) { return struct_ne( lhs, rhs, __VA_ARGS__ ); }
+#define DEFINE_TEMPLATE_CMP( TYPE, ... )       \
+template < class T >                           \
+bool                                           \
+operator<( TYPE const& lhs, TYPE const& rhs )  \
+{                                              \
+  return struct_lt( lhs, rhs, __VA_ARGS__ );   \
+}                                              \
+template < class T >                           \
+bool                                           \
+operator>( TYPE const& lhs, TYPE const& rhs )  \
+{                                              \
+  return struct_gt( lhs, rhs, __VA_ARGS__ );   \
+}                                              \
+template < class T >                           \
+bool                                           \
+operator<=( TYPE const& lhs, TYPE const& rhs ) \
+{                                              \
+  return struct_le( lhs, rhs, __VA_ARGS__ );   \
+}                                              \
+template < class T >                           \
+bool                                           \
+operator>=( TYPE const& lhs, TYPE const& rhs ) \
+{                                              \
+  return struct_ge( lhs, rhs, __VA_ARGS__ );   \
+}                                              \
+template < class T >                           \
+bool                                           \
+operator==( TYPE const& lhs, TYPE const& rhs ) \
+{                                              \
+  return struct_eq( lhs, rhs, __VA_ARGS__ );   \
+}                                              \
+template < class T >                           \
+bool                                           \
+operator!=( TYPE const& lhs, TYPE const& rhs ) \
+{                                              \
+  return struct_ne( lhs, rhs, __VA_ARGS__ );   \
+}
 
 // ----------------------------------------------------------------------------
-#define DEFINE_STRUCT_CMP_TUPLIZE( T )                                                     \
-bool operator< ( T const& lhs, T const& rhs ) { return tuplize( lhs ) <  tuplize( rhs ); } \
-bool operator> ( T const& lhs, T const& rhs ) { return tuplize( lhs ) >  tuplize( rhs ); } \
-bool operator<=( T const& lhs, T const& rhs ) { return tuplize( lhs ) <= tuplize( rhs ); } \
-bool operator>=( T const& lhs, T const& rhs ) { return tuplize( lhs ) >= tuplize( rhs ); } \
-bool operator==( T const& lhs, T const& rhs ) { return tuplize( lhs ) == tuplize( rhs ); } \
-bool operator!=( T const& lhs, T const& rhs ) { return tuplize( lhs ) != tuplize( rhs ); }
+#define DEFINE_STRUCT_CMP_TUPLIZE( T )     \
+bool                                       \
+operator<( T const& lhs, T const& rhs )    \
+{                                          \
+  return tuplize( lhs ) <  tuplize( rhs ); \
+}                                          \
+bool                                       \
+operator>( T const& lhs, T const& rhs )    \
+{                                          \
+  return tuplize( lhs ) >  tuplize( rhs ); \
+}                                          \
+bool                                       \
+operator<=( T const& lhs, T const& rhs )   \
+{                                          \
+  return tuplize( lhs ) <= tuplize( rhs ); \
+}                                          \
+bool                                       \
+operator>=( T const& lhs, T const& rhs )   \
+{                                          \
+  return tuplize( lhs ) >= tuplize( rhs ); \
+}                                          \
+bool                                       \
+operator==( T const& lhs, T const& rhs )   \
+{                                          \
+  return tuplize( lhs ) == tuplize( rhs ); \
+}                                          \
+bool                                       \
+operator!=( T const& lhs, T const& rhs )   \
+{                                          \
+  return tuplize( lhs ) != tuplize( rhs ); \
+}
 
 // ----------------------------------------------------------------------------
-template< class T >
-class iterator_tracker {
+template < class T >
+class iterator_tracker
+{
 public:
   iterator_tracker( T& it, size_t length )
-    : m_begin( it ), m_length{ length }, m_it( it )
+    : m_begin( it ),
+      m_length{ length },
+      m_it( it )
   {
     static_assert(
       std::is_same_v< std::decay_t< decltype( *it ) >, uint8_t >,
       "iterator must point to uint8_t" );
   }
 
-  template<
+  template <
     class Int,
     std::enable_if_t< std::is_unsigned_v< std::decay_t< Int > >, bool > = true >
-  size_t verify( Int count ) const
+  size_t
+  verify( Int count ) const
   {
     if( count > remaining() )
     {
       m_it = m_begin;
-      VITAL_THROW( vital::metadata_buffer_overflow,
-                   "tried to read or write past end of data buffer" );
+      VITAL_THROW(
+        vital::metadata_buffer_overflow,
+        "tried to read or write past end of data buffer" );
     }
     return count;
   }
 
-  template<
+  template <
     class Int,
     std::enable_if_t< std::is_signed_v< std::decay_t< Int > >, bool > = true >
-  size_t verify( Int count ) const
+  size_t
+  verify( Int count ) const
   {
     if( count < 0 )
     {
       m_it = m_begin;
-      VITAL_THROW( vital::metadata_buffer_overflow,
-                   "tried to read or write a value of negative length" );
+      VITAL_THROW(
+        vital::metadata_buffer_overflow,
+        "tried to read or write a value of negative length" );
     }
 
     return verify( static_cast< size_t >( count ) );
   }
 
-  size_t traversed() const
+  size_t
+  traversed() const
   {
     auto const distance = std::distance( m_begin, m_it );
 
     if( distance < 0 )
     {
       m_it = m_begin;
-      VITAL_THROW( vital::metadata_buffer_overflow,
-                   "read or written before beginning of data buffer" );
+      VITAL_THROW(
+        vital::metadata_buffer_overflow,
+        "read or written before beginning of data buffer" );
     }
 
     if( static_cast< size_t >( distance ) > m_length )
     {
       m_it = m_begin;
-      VITAL_THROW( vital::metadata_buffer_overflow,
-                   "read or written past end of data buffer" );
+      VITAL_THROW(
+        vital::metadata_buffer_overflow,
+        "read or written past end of data buffer" );
     }
 
     return distance;
   }
 
-  size_t remaining() const
+  size_t
+  remaining() const
   {
     return m_length - traversed();
   }
 
-  T begin() const
+  T
+  begin() const
   {
     return m_begin;
   }
 
-  T end() const
+  T
+  end() const
   {
     return m_begin + m_length;
   }
 
-  T& it() const
+  T&
+  it() const
   {
     return m_it;
   }
@@ -330,8 +435,9 @@ private:
 };
 
 // ----------------------------------------------------------------------------
-template< class T >
-iterator_tracker< T > track_it( T& it, size_t length )
+template < class T >
+iterator_tracker< T >
+track_it( T& it, size_t length )
 {
   return { it, length };
 }

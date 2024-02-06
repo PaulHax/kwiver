@@ -19,9 +19,10 @@ namespace kvr = kwiver::vital::range;
 // difference is expected due to compression artifacts, but we need to make
 // sure the frame images we get out are generally the same as what we put in.
 void
-expect_eq_images( kv::image const& src_image,
-                  kv::image const& tmp_image,
-                  double epsilon )
+expect_eq_images(
+  kv::image const& src_image,
+  kv::image const& tmp_image,
+  double epsilon )
 {
   auto error = 0.0;
 
@@ -48,8 +49,9 @@ expect_eq_images( kv::image const& src_image,
 
 // ----------------------------------------------------------------------------
 void
-expect_eq_audio( kv::video_uninterpreted_data_sptr const& src_data,
-                 kv::video_uninterpreted_data_sptr const& tmp_data )
+expect_eq_audio(
+  kv::video_uninterpreted_data_sptr const& src_data,
+  kv::video_uninterpreted_data_sptr const& tmp_data )
 {
   ASSERT_EQ( src_data == nullptr, tmp_data == nullptr );
   if( !src_data )
@@ -71,8 +73,9 @@ expect_eq_audio( kv::video_uninterpreted_data_sptr const& src_data,
   {
     ASSERT_EQ( ( *src_it )->size, ( *tmp_it )->size );
     EXPECT_TRUE(
-      std::equal( ( *src_it )->data, ( *src_it )->data + ( *src_it )->size,
-                  ( *tmp_it )->data ) );
+      std::equal(
+        ( *src_it )->data, ( *src_it )->data + ( *src_it )->size,
+        ( *tmp_it )->data ) );
     ++src_it;
     ++tmp_it;
   }

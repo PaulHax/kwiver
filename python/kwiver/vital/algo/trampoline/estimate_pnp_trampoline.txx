@@ -18,56 +18,64 @@
 #include <vital/types/vector.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
-template< class algorithm_def_epnp_base=
-           kwiver::vital::algorithm_def<
-               kwiver::vital::algo::estimate_pnp > >
-class algorithm_def_epnp_trampoline :
-      public algorithm_trampoline< algorithm_def_epnp_base >
-{
-  public:
-    using algorithm_trampoline< algorithm_def_epnp_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<
-         kwiver::vital::algo::estimate_pnp >,
-        type_name,
-      );
-    }
+template < class algorithm_def_epnp_base =
+    kwiver::vital::algorithm_def<
+      kwiver::vital::algo::estimate_pnp > >
+class algorithm_def_epnp_trampoline
+  : public algorithm_trampoline< algorithm_def_epnp_base >
+{
+public:
+  using algorithm_trampoline< algorithm_def_epnp_base >::algorithm_trampoline;
+
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def<
+        kwiver::vital::algo::estimate_pnp >,
+      type_name,
+    );
+  }
 };
 
-template< class estimate_pnp_base =
-                  kwiver::vital::algo::estimate_pnp >
-class estimate_pnp_trampoline :
-      public algorithm_def_epnp_trampoline< estimate_pnp_base >
+template < class estimate_pnp_base =
+    kwiver::vital::algo::estimate_pnp >
+class estimate_pnp_trampoline
+  : public algorithm_def_epnp_trampoline< estimate_pnp_base >
 {
-  public:
-    using algorithm_def_epnp_trampoline< estimate_pnp_base >::
-              algorithm_def_epnp_trampoline;
+public:
+  using algorithm_def_epnp_trampoline< estimate_pnp_base >::
+  algorithm_def_epnp_trampoline;
 
-    kwiver::vital::camera_perspective_sptr
-      estimate( const std::vector<kwiver::vital::vector_2d>& pts2d,
-                const std::vector<kwiver::vital::vector_3d>& pts3d,
-                const kwiver::vital::camera_intrinsics_sptr cal,
-                std::vector<bool>& inliers )  const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        kwiver::vital::camera_perspective_sptr,
-        kwiver::vital::algo::estimate_pnp,
-        estimate,
-        pts2d,
-        pts3d,
-        cal,
-        inliers
-      );
-    }
+  kwiver::vital::camera_perspective_sptr
+  estimate(
+    const std::vector< kwiver::vital::vector_2d >& pts2d,
+    const std::vector< kwiver::vital::vector_3d >& pts3d,
+    const kwiver::vital::camera_intrinsics_sptr cal,
+    std::vector< bool >& inliers )  const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      kwiver::vital::camera_perspective_sptr,
+      kwiver::vital::algo::estimate_pnp,
+      estimate,
+      pts2d,
+      pts3d,
+      cal,
+      inliers
+    );
+  }
 };
-}
-}
-}
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
 
 #endif

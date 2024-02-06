@@ -91,8 +91,9 @@ TEST_F ( pointcloud_io, load )
 
   auto const octahedron_path = data_dir + "/" + octahedron_base + ".not";
 
-  EXPECT_THROW( pc_io.load( octahedron_path ),
-                kwiver::vital::invalid_file );
+  EXPECT_THROW(
+    pc_io.load( octahedron_path ),
+    kwiver::vital::invalid_file );
 }
 
 TEST_F ( pointcloud_io, save )

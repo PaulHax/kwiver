@@ -5,10 +5,11 @@
 #ifndef VITAL_DETECTED_OBJECT_SET_UTIL_H
 #define VITAL_DETECTED_OBJECT_SET_UTIL_H
 
-#include <vital/vital_export.h>
 #include "detected_object_set.h"
+#include <vital/vital_export.h>
 
 namespace kwiver {
+
 namespace vital {
 
 /// @brief Scale all detection locations by some scale factor.
@@ -18,8 +19,9 @@ namespace vital {
 ///
 /// @param scale Scale factor
 void VITAL_EXPORT
-scale_detections( detected_object_set_sptr dos,
-                  double scale_factor );
+scale_detections(
+  detected_object_set_sptr dos,
+  double scale_factor );
 
 /// @brief Shift all detection locations by some translation offset.
 ///
@@ -34,9 +36,12 @@ scale_detections( detected_object_set_sptr dos,
 /// @param col_shift Column  (a.k.a. x, i, width) translation factor
 /// @param row_shift Row (a.k.a. y, j, height) translation factor
 void VITAL_EXPORT
-shift_detections( detected_object_set_sptr dos,
-                  double col_shift, double row_shift );
+shift_detections(
+  detected_object_set_sptr dos,
+  double col_shift, double row_shift );
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // VITAL_DETECTED_OBJECT_SET_UTIL_H

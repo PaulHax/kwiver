@@ -11,22 +11,23 @@
 #include <arrows/vxl/vidl_ffmpeg_video_input.h>
 #include <vital/plugin_management/plugin_manager.h>
 
+#include <iostream>
 #include <memory>
 #include <string>
-#include <iostream>
 
 kwiver::vital::path_t g_data_dir;
 
 namespace algo = kwiver::vital::algo;
+
 static std::string video_file_name = "videos/vxl_video.mp4";
 
 // ----------------------------------------------------------------------------
 int
-main(int argc, char* argv[])
+main( int argc, char* argv[] )
 {
   ::testing::InitGoogleTest( &argc, argv );
 
-  GET_ARG(1, g_data_dir);
+  GET_ARG( 1, g_data_dir );
 
   return RUN_ALL_TESTS();
 }
@@ -34,18 +35,18 @@ main(int argc, char* argv[])
 // ----------------------------------------------------------------------------
 class vidl_ffmpeg_video_input : public ::testing::Test
 {
-  TEST_ARG(data_dir);
+  TEST_ARG( data_dir );
 };
 
 // ----------------------------------------------------------------------------
-TEST_F(vidl_ffmpeg_video_input, create)
+TEST_F ( vidl_ffmpeg_video_input, create )
 {
   kwiver::vital::plugin_manager::instance().load_all_plugins();
-  EXPECT_NE( nullptr, algo::video_input::create("vidl_ffmpeg") );
+  EXPECT_NE( nullptr, algo::video_input::create( "vidl_ffmpeg" ) );
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(vidl_ffmpeg_video_input, read_video)
+TEST_F ( vidl_ffmpeg_video_input, read_video )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
@@ -65,21 +66,21 @@ TEST_F(vidl_ffmpeg_video_input, read_video)
     << num_expected_frames;
 
   int num_frames = 0;
-  while ( vfvi.next_frame( ts ) )
+  while( vfvi.next_frame( ts ) )
   {
     auto img = vfvi.frame_image();
     auto md = vfvi.frame_metadata();
 
-    if (md.size() > 0)
+    if( md.size() > 0 )
     {
       std::cout << "-----------------------------------\n" << std::endl;
-      kwiver::vital::print_metadata( std::cout, *md[0] );
+      kwiver::vital::print_metadata( std::cout, *md[ 0 ] );
     }
 
     ++num_frames;
     EXPECT_EQ( num_frames, ts.get_frame() )
       << "Frame numbers should be sequential";
-    EXPECT_EQ( ts.get_frame(), decode_barcode(*img) )
+    EXPECT_EQ( ts.get_frame(), decode_barcode( *img ) )
       << "Frame number should match barcode in frame image";
   }
   EXPECT_EQ( num_expected_frames, num_frames )
@@ -91,7 +92,7 @@ TEST_F(vidl_ffmpeg_video_input, read_video)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(vidl_ffmpeg_video_input, read_video_sublist)
+TEST_F ( vidl_ffmpeg_video_input, read_video_sublist )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
@@ -113,7 +114,7 @@ TEST_F(vidl_ffmpeg_video_input, read_video_sublist)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(vidl_ffmpeg_video_input, read_video_sublist_nth_frame)
+TEST_F ( vidl_ffmpeg_video_input, read_video_sublist_nth_frame )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
@@ -136,7 +137,7 @@ TEST_F(vidl_ffmpeg_video_input, read_video_sublist_nth_frame)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(vidl_ffmpeg_video_input, seek_frame_sublist_nth_frame)
+TEST_F ( vidl_ffmpeg_video_input, seek_frame_sublist_nth_frame )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
@@ -159,7 +160,7 @@ TEST_F(vidl_ffmpeg_video_input, seek_frame_sublist_nth_frame)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(vidl_ffmpeg_video_input, is_good)
+TEST_F ( vidl_ffmpeg_video_input, is_good )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
@@ -194,7 +195,7 @@ TEST_F(vidl_ffmpeg_video_input, is_good)
   vfvi.open( video_file );
 
   int num_frames = 0;
-  while ( vfvi.next_frame( ts ) )
+  while( vfvi.next_frame( ts ) )
   {
     ++num_frames;
     EXPECT_TRUE( vfvi.good() )
@@ -207,7 +208,7 @@ TEST_F(vidl_ffmpeg_video_input, is_good)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(vidl_ffmpeg_video_input, seek_frame)
+TEST_F ( vidl_ffmpeg_video_input, seek_frame )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
@@ -228,7 +229,7 @@ TEST_F(vidl_ffmpeg_video_input, seek_frame)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(vidl_ffmpeg_video_input, seek_frame_sublist)
+TEST_F ( vidl_ffmpeg_video_input, seek_frame_sublist )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
@@ -252,7 +253,7 @@ TEST_F(vidl_ffmpeg_video_input, seek_frame_sublist)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(vidl_ffmpeg_video_input, seek_then_next_frame)
+TEST_F ( vidl_ffmpeg_video_input, seek_then_next_frame )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
@@ -273,7 +274,7 @@ TEST_F(vidl_ffmpeg_video_input, seek_then_next_frame)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(vidl_ffmpeg_video_input, next_then_seek_frame)
+TEST_F ( vidl_ffmpeg_video_input, next_then_seek_frame )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
@@ -294,7 +295,7 @@ TEST_F(vidl_ffmpeg_video_input, next_then_seek_frame)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(vidl_ffmpeg_video_input, next_then_seek_then_next)
+TEST_F ( vidl_ffmpeg_video_input, next_then_seek_then_next )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
@@ -315,7 +316,7 @@ TEST_F(vidl_ffmpeg_video_input, next_then_seek_then_next)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(vidl_ffmpeg_video_input, metadata_map)
+TEST_F ( vidl_ffmpeg_video_input, metadata_map )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
@@ -337,10 +338,10 @@ TEST_F(vidl_ffmpeg_video_input, metadata_map)
   // at a minimum this is just the video name and timestamp
   EXPECT_EQ( md_map.size(), vfvi.num_frames() );
 
-  if ( md_map.size() != vfvi.num_frames() )
+  if( md_map.size() != vfvi.num_frames() )
   {
     std::cout << "Found metadata on these frames: ";
-    for (auto md : md_map)
+    for( auto md : md_map )
     {
       std::cout << md.first << ", ";
     }
@@ -349,41 +350,43 @@ TEST_F(vidl_ffmpeg_video_input, metadata_map)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(vidl_ffmpeg_video_input, metadata_map_subset)
+TEST_F ( vidl_ffmpeg_video_input, metadata_map_subset )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
   kwiver::arrows::vxl::vidl_ffmpeg_video_input vfvi;
 
-  config->set_value("start_at_frame", start_at_frame);
-  config->set_value("stop_after_frame", stop_after_frame);
+  config->set_value( "start_at_frame", start_at_frame );
+  config->set_value( "stop_after_frame", stop_after_frame );
 
-  vfvi.check_configuration(config);
-  vfvi.set_configuration(config);
+  vfvi.check_configuration( config );
+  vfvi.set_configuration( config );
 
   kwiver::vital::path_t video_file = data_dir + "/" + video_file_name;
 
   // Open the video
-  vfvi.open(video_file);
+  vfvi.open( video_file );
 
   // Advance into the video to make sure these methods work
   // even when not called on the first frame
   kwiver::vital::timestamp ts;
-  for (int j = 0; j < 10; ++j)
-    vfvi.next_frame(ts);
+  for( int j = 0; j < 10; ++j )
+  {
+    vfvi.next_frame( ts );
+  }
 
   // Get metadata map
   auto md_map = vfvi.metadata_map()->metadata();
 
   // Each frame of video should have some metadata
   // at a minimum this is just the video name and timestamp
-  EXPECT_EQ(md_map.size(), vfvi.num_frames());
+  EXPECT_EQ( md_map.size(), vfvi.num_frames() );
 
-  if (md_map.size() != vfvi.num_frames())
+  if( md_map.size() != vfvi.num_frames() )
   {
     std::cout << "Found metadata on these frames: ";
-    for (auto md : md_map)
+    for( auto md : md_map )
     {
       std::cout << md.first << ", ";
     }
@@ -392,42 +395,44 @@ TEST_F(vidl_ffmpeg_video_input, metadata_map_subset)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(vidl_ffmpeg_video_input, metadata_map_nth_frame)
+TEST_F ( vidl_ffmpeg_video_input, metadata_map_nth_frame )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
   kwiver::arrows::vxl::vidl_ffmpeg_video_input vfvi;
 
-  config->set_value("start_at_frame", start_at_frame);
-  config->set_value("stop_after_frame", stop_after_frame);
-  config->set_value("output_nth_frame", nth_frame_output);
+  config->set_value( "start_at_frame", start_at_frame );
+  config->set_value( "stop_after_frame", stop_after_frame );
+  config->set_value( "output_nth_frame", nth_frame_output );
 
-  vfvi.check_configuration(config);
-  vfvi.set_configuration(config);
+  vfvi.check_configuration( config );
+  vfvi.set_configuration( config );
 
   kwiver::vital::path_t video_file = data_dir + "/" + video_file_name;
 
   // Open the video
-  vfvi.open(video_file);
+  vfvi.open( video_file );
 
   // Advance into the video to make sure these methods work
   // even when not called on the first frame
   kwiver::vital::timestamp ts;
-  for (int j = 0; j < 3; ++j)
-    vfvi.next_frame(ts);
+  for( int j = 0; j < 3; ++j )
+  {
+    vfvi.next_frame( ts );
+  }
 
   // Get metadata map
   auto md_map = vfvi.metadata_map()->metadata();
 
   // Each frame of video should have some metadata
   // at a minimum this is just the video name and timestamp
-  EXPECT_EQ(md_map.size(), 6);
+  EXPECT_EQ( md_map.size(), 6 );
 
-  if (md_map.size() != 6)
+  if( md_map.size() != 6 )
   {
     std::cout << "Found metadata on these frames: ";
-    for (auto md : md_map)
+    for( auto md : md_map )
     {
       std::cout << md.first << ", ";
     }
@@ -436,7 +441,7 @@ TEST_F(vidl_ffmpeg_video_input, metadata_map_nth_frame)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(vidl_ffmpeg_video_input, read_video_nth_frame_output)
+TEST_F ( vidl_ffmpeg_video_input, read_video_nth_frame_output )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
@@ -457,7 +462,7 @@ TEST_F(vidl_ffmpeg_video_input, read_video_nth_frame_output)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(vidl_ffmpeg_video_input, seek_nth_frame_output)
+TEST_F ( vidl_ffmpeg_video_input, seek_nth_frame_output )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();

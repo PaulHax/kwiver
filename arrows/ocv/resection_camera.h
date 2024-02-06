@@ -26,8 +26,9 @@ class KWIVER_ALGO_OCV_EXPORT resection_camera
   : public vital::algo::resection_camera
 {
 public:
-  PLUGIN_INFO( "ocv",
-               "resection camera using OpenCV calibrate camera method" )
+  PLUGIN_INFO(
+    "ocv",
+    "resection camera using OpenCV calibrate camera method" )
 
   resection_camera();
   virtual ~resection_camera();

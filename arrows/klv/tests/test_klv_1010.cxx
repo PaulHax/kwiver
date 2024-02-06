@@ -23,8 +23,9 @@ main( int argc, char** argv )
 
 // ----------------------------------------------------------------------------
 void
-test_read_write_0601( klv_value const& expected_result,
-                      klv_bytes_t const& input_bytes )
+test_read_write_0601(
+  klv_value const& expected_result,
+  klv_bytes_t const& input_bytes )
 {
   using format_t = klv_0601_local_set_format;
   test_read_write_format< format_t >( expected_result, input_bytes );
@@ -32,8 +33,9 @@ test_read_write_0601( klv_value const& expected_result,
 
 // ----------------------------------------------------------------------------
 void
-test_read_write_1107( klv_value const& expected_result,
-                      klv_bytes_t const& input_bytes )
+test_read_write_1107(
+  klv_value const& expected_result,
+  klv_bytes_t const& input_bytes )
 {
   using format_t = klv_1107_local_set_format;
   test_read_write_format< format_t >( expected_result, input_bytes );
@@ -104,9 +106,7 @@ TEST ( klv, read_write_1010_1107 )
         2, 0,
         true, false,
         true,
-        false
-      } }
-  };
+        false } } };
 
   auto const input_bytes = klv_bytes_t{
     KLV_1107_SLANT_RANGE,                  0x00,

@@ -18,15 +18,18 @@
 #include <arrows/ocv/kwiver_algo_ocv_export.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace ocv {
 
 class KWIVER_ALGO_OCV_EXPORT extract_descriptors_DAISY
   : public ocv::extract_descriptors
 {
 public:
-  PLUGIN_INFO( "ocv_DAISY",
-               "OpenCV feature-point descriptor extraction via the DAISY algorithm" )
+  PLUGIN_INFO(
+    "ocv_DAISY",
+    "OpenCV feature-point descriptor extraction via the DAISY algorithm" )
 
   /// Constructor
   extract_descriptors_DAISY();
@@ -34,24 +37,28 @@ public:
   /// Destructor
   virtual ~extract_descriptors_DAISY();
 
-  /// Get this algorithm's \link kwiver::vital::config_block configuration block \endlink
+  /// Get this algorithm's \link kwiver::vital::config_block configuration block
+  /// \endlink
   virtual vital::config_block_sptr get_configuration() const;
   /// Set this algorithm's properties via a config block
-  virtual void set_configuration(vital::config_block_sptr config);
+  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's configuration config_block is valid
-  virtual bool check_configuration(vital::config_block_sptr config) const;
+  virtual bool check_configuration( vital::config_block_sptr config ) const;
 
 private:
   class priv;
-  std::unique_ptr<priv> p_;
+
+  std::unique_ptr< priv > p_;
 };
 
 #define KWIVER_OCV_HAS_DAISY
 
 } // end namespace ocv
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
-#endif //HAVE_OPENCV_XFEATURES2D
+#endif // HAVE_OPENCV_XFEATURES2D
 
-#endif //KWIVER_ARROWS_EXTRACT_DESCRIPTORS_DAISY_H_
+#endif // KWIVER_ARROWS_EXTRACT_DESCRIPTORS_DAISY_H_

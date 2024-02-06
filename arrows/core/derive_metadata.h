@@ -25,13 +25,14 @@ public:
   derive_metadata();
   virtual ~derive_metadata();
 
-  PLUGIN_INFO( "derive_metadata",
-               "Fills in metadata values which can be calculated "
-               "from other metadata." )
+  PLUGIN_INFO(
+    "derive_metadata",
+    "Fills in metadata values which can be calculated "
+    "from other metadata." )
 
   vital::config_block_sptr get_configuration() const override;
-  void set_configuration(vital::config_block_sptr config) override;
-  bool check_configuration(vital::config_block_sptr config) const override;
+  void set_configuration( vital::config_block_sptr config ) override;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
   /// Fills in metadata values which can be calculated from other metadata.
   ///

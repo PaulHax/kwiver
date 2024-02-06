@@ -96,8 +96,9 @@ text_codec
     char32_t* decoded_begin = buffer;
     char32_t* decoded_end = buffer + BUFSIZ;
     std::tie( code, encoded_begin, decoded_end ) =
-      decode( encoded_begin, encoded_end,
-              decoded_begin, decoded_end, true );
+      decode(
+        encoded_begin, encoded_end,
+        decoded_begin, decoded_end, true );
     result.insert( result.end(), decoded_begin, decoded_end );
   } while( code == OUT_OF_SPACE );
 

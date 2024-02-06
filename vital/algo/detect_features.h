@@ -25,7 +25,7 @@ class VITAL_ALGO_EXPORT detect_features
 {
 public:
   detect_features();
-  PLUGGABLE_INTERFACE(detect_features);
+  PLUGGABLE_INTERFACE( detect_features );
   /// Extract a set of image features from the provided image
   ///
   /// A given mask image should be one-channel (mask->depth() == 1). If the
@@ -42,10 +42,11 @@ public:
   ///             considered.
   /// \returns a set of image features
   virtual kwiver::vital::feature_set_sptr
-  detect( kwiver::vital::image_container_sptr image_data,
-          kwiver::vital::image_container_sptr mask = kwiver::vital::image_container_sptr() )
+  detect(
+    kwiver::vital::image_container_sptr image_data,
+    kwiver::vital::image_container_sptr mask = kwiver::vital::
+    image_container_sptr() )
   const = 0;
-
 };
 
 /// Shared pointer for detect_features algorithm definition class

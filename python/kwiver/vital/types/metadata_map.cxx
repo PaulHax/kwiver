@@ -4,9 +4,9 @@
 
 #include <vital/types/metadata_map.h>
 
+#include <memory>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include <memory>
 
 namespace py = pybind11;
 namespace kv = kwiver::vital;
@@ -19,8 +19,12 @@ public:
 
   size_t size() const override;
   kv::metadata_map::map_metadata_t metadata() const override;
-  bool has_item( kv::vital_metadata_tag tag, kv::frame_id_t fid ) const override;
-  kv::metadata_item const& get_item( kv::vital_metadata_tag tag, kv::frame_id_t fid ) const override;
+  bool has_item(
+    kv::vital_metadata_tag tag,
+    kv::frame_id_t fid ) const override;
+  kv::metadata_item const& get_item(
+    kv::vital_metadata_tag tag,
+    kv::frame_id_t fid ) const override;
   kv::metadata_vector get_vector( kv::frame_id_t fid ) const override;
   std::set< kv::frame_id_t > frames() const override;
 };
@@ -28,15 +32,17 @@ public:
 PYBIND11_MODULE( metadata_map, m )
 {
   py::class_< kv::metadata_map,
-              std::shared_ptr< kv::metadata_map >,
-              metadata_map_trampoline >( m, "MetadataMap" )
-  .def( py::init<>() )
-  .def( "size",       &kv::metadata_map::size )
-  .def( "metadata",   &kv::metadata_map::metadata )
-  .def( "has_item",   &kv::metadata_map::has_item )
-  .def( "get_item",   &kv::metadata_map::get_item, py::return_value_policy::reference )
-  .def( "get_vector", &kv::metadata_map::get_vector )
-  .def( "frames",     &kv::metadata_map::frames )
+    std::shared_ptr< kv::metadata_map >,
+    metadata_map_trampoline >( m, "MetadataMap" )
+    .def( py::init<>() )
+    .def( "size",       &kv::metadata_map::size )
+    .def( "metadata",   &kv::metadata_map::metadata )
+    .def( "has_item",   &kv::metadata_map::has_item )
+    .def(
+      "get_item",   &kv::metadata_map::get_item,
+      py::return_value_policy::reference )
+    .def( "get_vector", &kv::metadata_map::get_vector )
+    .def( "frames",     &kv::metadata_map::frames )
   // Note that we are skipping the templated has and get methods.
   // Those methods are templated over the vital_metadata_tag enums
   // which have over 100 values. We would have to instantiate them all here
@@ -46,9 +52,9 @@ PYBIND11_MODULE( metadata_map, m )
   ;
 
   py::class_< kv::simple_metadata_map,
-              std::shared_ptr< kv::simple_metadata_map >,
-              kv::metadata_map >( m, "SimpleMetadataMap" )
-  .def( py::init<>() );
+    std::shared_ptr< kv::simple_metadata_map >,
+    kv::metadata_map >( m, "SimpleMetadataMap" )
+    .def( py::init<>() );
   // Everything will be inherited from metadata_map
 }
 
@@ -63,6 +69,7 @@ metadata_map_trampoline
     size,
   );
 }
+
 kv::metadata_map::map_metadata_t
 metadata_map_trampoline
 ::metadata() const
@@ -74,6 +81,7 @@ metadata_map_trampoline
 
   );
 }
+
 bool
 metadata_map_trampoline
 ::has_item( kv::vital_metadata_tag tag, kv::frame_id_t fid ) const
@@ -86,6 +94,7 @@ metadata_map_trampoline
     fid
   );
 }
+
 kv::metadata_item const&
 metadata_map_trampoline
 ::get_item( kv::vital_metadata_tag tag, kv::frame_id_t fid ) const
@@ -98,6 +107,7 @@ metadata_map_trampoline
     fid
   );
 }
+
 kv::metadata_vector
 metadata_map_trampoline
 ::get_vector( kv::frame_id_t fid ) const

@@ -2,14 +2,15 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include "plugin_filter_default.h"
 #include "plugin_factory.h"
+#include "plugin_filter_default.h"
 #include "plugin_loader.h"
 
 #include <vital/exceptions/plugin.h>
 #include <vital/util/demangle.h>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -48,11 +49,11 @@ plugin_filter_default
   fact->get_attribute( plugin_factory::PLUGIN_NAME, new_name );
 
   auto plugin_map = m_loader->get_plugin_map();
-  auto fact_list = plugin_map[interface_type];
+  auto fact_list = plugin_map[ interface_type ];
 
   // Make sure factory is not already in the list.
   // Check the two types and name as a signature.
-  if ( fact_list.size() > 0)
+  if( fact_list.size() > 0 )
   {
     for( auto const& afact : fact_list )
     {
@@ -65,9 +66,9 @@ plugin_filter_default
       std::string name;
       afact->get_attribute( plugin_factory::PLUGIN_NAME, name );
 
-      if ( (interface_type == interf) &&
-           (concrete_type == inst) &&
-           (new_name == name) )
+      if( ( interface_type == interf ) &&
+          ( concrete_type == inst ) &&
+          ( new_name == name ) )
       {
         std::string old_file;
         afact->get_attribute( plugin_factory::PLUGIN_FILE_NAME, old_file );
@@ -86,4 +87,6 @@ plugin_filter_default
   return true;
 }
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace

@@ -7,20 +7,21 @@
 
 #include <gtest/gtest.h>
 
-#include <arrows/serialize/protobuf/metadata.h>
 #include <arrows/serialize/protobuf/convert_protobuf.h>
+#include <arrows/serialize/protobuf/metadata.h>
 
+#include <vital/types/geo_polygon.h>
+#include <vital/types/geodesy.h>
 #include <vital/types/metadata.h>
 #include <vital/types/metadata_tags.h>
 #include <vital/types/metadata_traits.h>
 #include <vital/types/polygon.h>
-#include <vital/types/geo_polygon.h>
-#include <vital/types/geodesy.h>
 
 namespace kasp = kwiver::arrows::serialize::protobuf;
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
@@ -31,13 +32,13 @@ int main(int argc, char** argv)
 // 3) Build metadata collection with one element of each supported type.
 
 // ----------------------------------------------------------------------------
-TEST( serialize_metadata, metadata )
+TEST ( serialize_metadata, metadata )
 {
   // Create a metadata collection
   // duplicate that collection and make some modifications
   // put both collections in a vector
 
-  auto meta_sptr = std::make_shared< kwiver::vital::metadata>();
+  auto meta_sptr = std::make_shared< kwiver::vital::metadata >();
   meta_sptr->add< kwiver::vital::VITAL_META_METADATA_ORIGIN >( "test-source" );
   meta_sptr->add< kwiver::vital::VITAL_META_UNIX_TIMESTAMP >( 12345678 );
   meta_sptr->add< kwiver::vital::VITAL_META_SENSOR_VERTICAL_FOV >( 12345.678 );
@@ -60,8 +61,9 @@ TEST( serialize_metadata, metadata )
     raw_obj.push_back( 400, 100 );
     raw_obj.push_back( 400, 400 );
     raw_obj.push_back( 100, 400 );
+
     kwiver::vital::geo_polygon poly( raw_obj,
-                                     kwiver::vital::SRID::lat_lon_WGS84 );
+      kwiver::vital::SRID::lat_lon_WGS84 );
     meta_sptr->add< kwiver::vital::VITAL_META_CORNER_POINTS >( poly );
   }
 
@@ -79,5 +81,5 @@ TEST( serialize_metadata, metadata )
     kwiver::vital::any_cast< kwiver::vital::metadata_vector >( meta_dser_any );
 
   // test for equality
-  EXPECT_TRUE( test_equal_content( *meta_sptr, *meta_dser[0] ));
+  EXPECT_TRUE( test_equal_content( *meta_sptr, *meta_dser[ 0 ] ) );
 }

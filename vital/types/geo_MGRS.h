@@ -14,6 +14,7 @@
 #include <string>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -23,21 +24,22 @@ namespace vital {
 /// defined in Chapter 3 of:
 ///
 /// - J. W. Hager, L. L. Fry, S. S. Jacks, D. R. Hill,
-///   <a href="http://earth-info.nga.mil/GandG/publications/tm8358.1/pdf/TM8358_1.pdf">
+///   <a
+/// href="http://earth-info.nga.mil/GandG/publications/tm8358.1/pdf/TM8358_1.pdf">
 ///   Datums, Ellipsoids, Grids, and Grid Reference Systems</a>,
 ///   Defense Mapping Agency, Technical Manual TM8358.1 (1990).
 class VITAL_EXPORT geo_MGRS
 {
 public:
   geo_MGRS();
-  geo_MGRS(std::string const& coord);
+  geo_MGRS( std::string const& coord );
   ~geo_MGRS();
 
   /// default constructed coordinate
   bool is_empty() const;
   bool is_valid() const;
 
-  geo_MGRS & set_coord( std::string const& coord);
+  geo_MGRS& set_coord( std::string const& coord );
 
   std::string const& coord() const;
 
@@ -47,11 +49,14 @@ public:
 
 private:
   std::string mgrs_coord_;
-
 }; // end class geo_MGRS
 
-VITAL_EXPORT std::ostream & operator<< (std::ostream & str, const kwiver::vital::geo_MGRS & obj);
+VITAL_EXPORT std::ostream& operator<<(
+  std::ostream& str,
+  const kwiver::vital::geo_MGRS& obj );
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif

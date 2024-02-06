@@ -8,30 +8,31 @@
 #include "handle_descriptor_request_core.h"
 
 #include <algorithm>
+#include <exception>
 #include <iostream>
+#include <iterator>
 #include <set>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <iterator>
-#include <exception>
 
-#include <vital/types/descriptor_request.h>
 #include <vital/algo/algorithm.h>
 #include <vital/exceptions/algorithm.h>
 #include <vital/exceptions/image.h>
+#include <vital/types/descriptor_request.h>
 
 using namespace kwiver::vital;
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 /// Default Constructor
 handle_descriptor_request_core
 ::handle_descriptor_request_core()
-{
-}
+{}
 
 /// Get this alg's \link vital::config_block configuration block \endlink
 vital::config_block_sptr
@@ -56,12 +57,14 @@ handle_descriptor_request_core
 /// Set this algo's properties via a config block
 void
 handle_descriptor_request_core
-::set_configuration(vital::config_block_sptr in_config)
+::set_configuration( vital::config_block_sptr in_config )
 {
-  // Starting with our generated config_block to ensure that assumed values are present
-  // An alternative is to check for key presence before performing a get_value() call.
+  // Starting with our generated config_block to ensure that assumed values are
+  // present
+  // An alternative is to check for key presence before performing a get_value()
+  // call.
   vital::config_block_sptr config = this->get_configuration();
-  config->merge_config(in_config);
+  config->merge_config( in_config );
 
   // Setting nested algorithm instances via setter methods instead of directly
   // assigning to instance property.
@@ -70,18 +73,20 @@ handle_descriptor_request_core
   reader_ = df;
 
   algo::compute_track_descriptors_sptr ed;
-  algo::compute_track_descriptors::set_nested_algo_configuration( "descriptor_extractor", config, ed );
+  algo::compute_track_descriptors::set_nested_algo_configuration(
+    "descriptor_extractor", config, ed );
   extractor_ = ed;
 }
 
 bool
 handle_descriptor_request_core
-::check_configuration(vital::config_block_sptr config) const
+::check_configuration( vital::config_block_sptr config ) const
 {
   return (
     algo::image_io::check_nested_algo_configuration( "image_reader", config )
     &&
-    algo::compute_track_descriptors::check_nested_algo_configuration( "descriptor_extractor", config )
+    algo::compute_track_descriptors::check_nested_algo_configuration(
+      "descriptor_extractor", config )
   );
 }
 
@@ -97,8 +102,10 @@ handle_descriptor_request_core
   if( !reader_ || !extractor_ )
   {
     // Something did not initialize
-    VITAL_THROW( vital::algorithm_configuration_exception, this->type_name(), this->impl_name(),
-        "not all sub-algorithms have been initialized" );
+    VITAL_THROW(
+      vital::algorithm_configuration_exception, this->type_name(),
+      this->impl_name(),
+      "not all sub-algorithms have been initialized" );
   }
 
   // load images or video if required by query plan
@@ -138,5 +145,7 @@ handle_descriptor_request_core
 }
 
 } // end namespace core
+
 } // end namespace arrows
+
 } // end namespace kwiver

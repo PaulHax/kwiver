@@ -8,13 +8,14 @@
 #ifndef KWIVER_GET_PATHS_H
 #define KWIVER_GET_PATHS_H
 
-#include <vital/vital_config.h>
 #include <vital/util/vital_util_export.h>
+#include <vital/vital_config.h>
 
 #include <string>
 
 namespace kwiver {
-namespace vital{
+
+namespace vital {
 
 /// @brief Get path to current executable.
 ///
@@ -29,6 +30,8 @@ std::string VITAL_UTIL_EXPORT get_executable_path();
 /// @return Directory name.
 std::string VITAL_UTIL_EXPORT get_module_path();
 
-} }
+} // namespace vital
+
+} // namespace kwiver
 
 #endif // KWIVER_GET_PATHS_H

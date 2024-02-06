@@ -35,10 +35,10 @@ operator<<( std::ostream& os, klv_0903_vtrackitem_pack_tag tag )
 std::ostream&
 operator<<( std::ostream& os, klv_0903_vtrackitem_pack const& value )
 {
-  os    << "{ "
-        << "id: " << value.id << ", "
-        << "set: " << value.set
-        << " }";
+  os << "{ "
+     << "id: " << value.id << ", "
+     << "set: " << value.set
+     << " }";
   return os;
 }
 
@@ -47,7 +47,7 @@ DEFINE_STRUCT_CMP(
   klv_0903_vtrackitem_pack,
   &klv_0903_vtrackitem_pack::id,
   &klv_0903_vtrackitem_pack::set
-  )
+)
 
 // ----------------------------------------------------------------------------
 klv_0903_vtrackitem_pack_format
@@ -78,8 +78,9 @@ klv_0903_vtrackitem_pack_format
 // ----------------------------------------------------------------------------
 void
 klv_0903_vtrackitem_pack_format
-::write_typed( klv_0903_vtrackitem_pack const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_0903_vtrackitem_pack const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
   klv_write_ber_oid( value.id, data, tracker.remaining() );

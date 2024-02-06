@@ -29,13 +29,15 @@ namespace ffmpeg {
 namespace {
 
 // ----------------------------------------------------------------------------
-kv::logger_handle_t logger()
+kv::logger_handle_t
+logger()
 {
   return kv::get_logger( "cuda" );
 }
 
 // ----------------------------------------------------------------------------
-std::string dimensions_to_string( size_t w, size_t h )
+std::string
+dimensions_to_string( size_t w, size_t h )
 {
   return std::to_string( w ) + "x" + std::to_string( h );
 }
@@ -166,7 +168,7 @@ cuda_create_context( int device_index )
   hardware_device_context_uptr hw_context{
     throw_error_null(
       av_hwdevice_ctx_alloc( AV_HWDEVICE_TYPE_CUDA ),
-    "Could not allocate hardware device context" ) };
+      "Could not allocate hardware device context" ) };
 
   auto const cuda_hw_context =
     static_cast< AVCUDADeviceContext* >(

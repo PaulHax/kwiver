@@ -11,6 +11,7 @@
 #include <vital/types/image_container_set.h>
 
 namespace kwiver {
+
 namespace vital {
 
 /// A concrete image container set that simply wraps a vector of images.
@@ -22,7 +23,8 @@ public:
   simple_image_container_set();
 
   /// Constructor from a vector of images
-  explicit simple_image_container_set( std::vector< image_container_sptr > const& images );
+  explicit simple_image_container_set(
+    std::vector< image_container_sptr > const& images );
 
   /// Return the number of items
   size_t size() const override;
@@ -43,6 +45,8 @@ protected:
   const_iterator::next_value_func_t get_const_iter_next_func() const;
 };
 
-} } // end namespaces
+} // namespace vital
+
+}   // end namespaces
 
 #endif // VITAL_IMAGE_CONTAINER_SET_SIMPLE_H_

@@ -5,13 +5,14 @@
 #ifndef KWIVER_CONFIG_FORMATTER_H
 #define KWIVER_CONFIG_FORMATTER_H
 
-#include <vital/config/vital_config_export.h>
 #include <vital/config/config_block.h>
+#include <vital/config/vital_config_export.h>
 
-#include <string>
 #include <ostream>
+#include <string>
 
 namespace kwiver {
+
 namespace vital {
 
 /// @brief Generates formatted versions of a config block.
@@ -44,15 +45,18 @@ public:
   void generate_source_loc( bool opt );
 
 private:
-  void format_block( std::ostream& str,
-                     const config_block_sptr config,
-                     const std::string& prefix );
+  void format_block(
+    std::ostream& str,
+    const config_block_sptr config,
+    const std::string& prefix );
 
   config_block_sptr m_config;
   std::string m_prefix;
   bool m_gen_source_loc;
 };
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // KWIVER_CONFIG_FORMATTER_H

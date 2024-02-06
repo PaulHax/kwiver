@@ -18,8 +18,7 @@ namespace vital {
 algorithm
 ::algorithm()
   : m_logger( kwiver::vital::get_logger( "vital.algorithm" ) )
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 void
@@ -65,22 +64,19 @@ algorithm
 void
 algorithm
 ::get_default_config( [[maybe_unused]] kwiver::vital::config_block& cb )
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 void
 algorithm
 ::initialize()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 void
 algorithm
 ::set_configuration_internal( [[maybe_unused]] config_block_sptr config )
-{
-}
+{}
 
 } // namespace vital
 

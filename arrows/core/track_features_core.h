@@ -11,11 +11,13 @@
 #include <arrows/core/kwiver_algo_core_export.h>
 
 #include <vital/algo/track_features.h>
-#include <vital/types/image_container.h>
 #include <vital/types/feature_track_set.h>
+#include <vital/types/image_container.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 /// A basic feature tracker
@@ -23,9 +25,10 @@ class KWIVER_ALGO_CORE_EXPORT track_features_core
   : public vital::algo::track_features
 {
 public:
-  PLUGIN_INFO( "core",
-               "Track features from frame to frame"
-               " using feature detection, matching, and loop closure." )
+  PLUGIN_INFO(
+    "core",
+    "Track features from frame to frame"
+    " using feature detection, matching, and loop closure." )
 
   /// Default Constructor
   track_features_core();
@@ -33,7 +36,8 @@ public:
   /// Destructor
   virtual ~track_features_core() noexcept;
 
-  /// Get this algorithm's \link vital::config_block configuration block \endlink
+  /// Get this algorithm's \link vital::config_block configuration block
+  /// \endlink
   ///
   /// This base virtual function implementation returns an empty configuration
   /// block whose name is set to \c this->type_name.
@@ -52,7 +56,7 @@ public:
   ///
   /// \param config  The \c config_block instance containing the configuration
   ///                parameters for this algorithm
-  void set_configuration(vital::config_block_sptr config) override;
+  void set_configuration( vital::config_block_sptr config ) override;
 
   /// Check that the algorithm's currently configuration is valid
   ///
@@ -63,7 +67,7 @@ public:
   /// \param config  The config block to check configuration of.
   ///
   /// \returns true if the configuration check passed and false if it didn't.
-  bool check_configuration(vital::config_block_sptr config) const override;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
   /// Extend a previous set of feature tracks using the current frame
   ///
@@ -80,19 +84,23 @@ public:
   ///                  value).
   /// \returns an updated set of feature tracks including the current frame
   vital::feature_track_set_sptr
-  track(vital::feature_track_set_sptr prev_tracks,
-        vital::frame_id_t frame_number,
-        vital::image_container_sptr image_data,
-        vital::image_container_sptr mask = {}) const override;
+  track(
+    vital::feature_track_set_sptr prev_tracks,
+    vital::frame_id_t frame_number,
+    vital::image_container_sptr image_data,
+    vital::image_container_sptr mask = {} ) const override;
 
 private:
   /// private implementation class
   class priv;
-  const std::unique_ptr<priv> d_;
+
+  const std::unique_ptr< priv > d_;
 };
 
 } // end namespace core
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif

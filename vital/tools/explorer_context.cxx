@@ -2,63 +2,64 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include "explorer_plugin.h"
 #include "explorer_context_priv.h"
+#include "explorer_plugin.h"
 #include <vital/config/config_block.h>
 #include <vital/util/string.h>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 // --- Explorer context methods ---
 // ----------------------------------------------------------------------------
-explorer_context::
-explorer_context( explorer_context::priv* pp )
+explorer_context
+::explorer_context( explorer_context::priv* pp )
   : p( pp )
-{ }
+{}
 
 explorer_context::
 ~explorer_context()
-{ }
+{}
 
 // ----------------------------------------------------------------------------
 std::ostream&
-explorer_context::
-output_stream() const
+explorer_context
+::output_stream() const
 {
   return *p->m_out_stream;
 }
 
 // ----------------------------------------------------------------------------
 cxxopts::Options&
-explorer_context::
-command_line_args()
+explorer_context
+::command_line_args()
 {
   return *p->m_cmd_options;
 }
 
 // ----------------------------------------------------------------------------
 cxxopts::ParseResult&
-explorer_context::
-command_line_result()
+explorer_context
+::command_line_result()
 {
   return *p->m_result;
 }
 
 // ----------------------------------------------------------------------------
 const std::string&
-explorer_context::
-formatting_type() const
+explorer_context
+::formatting_type() const
 {
   return p->formatting_type;
 }
 
 // ----------------------------------------------------------------------------
 std::string
-explorer_context::
-wrap_text( const std::string& text ) const
+explorer_context
+::wrap_text( const std::string& text ) const
 {
   return p->m_wtb.wrap_text( text );
 }
@@ -68,8 +69,8 @@ wrap_text( const std::string& text ) const
 // display full factory list
 //
 void
-explorer_context::
-display_attr( const kwiver::vital::plugin_factory_handle_t fact ) const
+explorer_context
+::display_attr( const kwiver::vital::plugin_factory_handle_t fact ) const
 {
   p->display_attr( fact );
 }
@@ -83,7 +84,7 @@ explorer_context
 
   // String off the first line. Up to the first new-line.
   auto pos = text.find( '\n' );
-  if ( pos == std::string::npos)
+  if( pos == std::string::npos )
   {
     output = wrap_text( text );
     left_trim( output );
@@ -97,12 +98,11 @@ explorer_context
     // If in detail mode, print the rest of the description
     if( if_detail() )
     {
-      std::string descr {text.substr( pos )};
+      std::string descr { text.substr( pos ) };
       string_trim( descr );
       output += "\n";
       output += wrap_text( descr );
     }
-
   }
   return output;
 }
@@ -119,7 +119,7 @@ explorer_context
 
   for( auto key : all_keys )
   {
-    auto val = config->get_value< kwiver::vital::config_block_value_t > ( key );
+    auto val = config->get_value< kwiver::vital::config_block_value_t >( key );
     output_stream() << std::endl
                     << indent << "\"" << key << "\" = \"" << val << "\"\n";
 
@@ -131,7 +131,14 @@ explorer_context
 }
 
 // ----------------------------------------------------------------------------
-bool explorer_context::if_detail() const { return p->opt_detail; }
-bool explorer_context::if_brief() const { return p->opt_brief; }
+bool
+explorer_context
+::if_detail() const { return p->opt_detail; }
 
-} } // end namespace
+bool
+explorer_context
+::if_brief() const { return p->opt_brief; }
+
+} // namespace vital
+
+}   // end namespace

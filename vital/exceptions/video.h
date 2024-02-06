@@ -13,6 +13,7 @@
 #include <vital/exceptions/base.h>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -88,6 +89,8 @@ public:
   virtual ~video_runtime_exception() noexcept;
 };
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // VITAL_CORE_EXCEPTIONS_VIDEO_H

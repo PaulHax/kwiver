@@ -22,15 +22,15 @@ typedef struct vital_bounding_box_s vital_bounding_box_t;
 
 VITAL_C_EXPORT
 vital_bounding_box_t* vital_bounding_box_new_from_vectors(
-  double* ul, double* lr);
+  double* ul, double* lr );
 
 VITAL_C_EXPORT
 vital_bounding_box_t* vital_bounding_box_new_from_point_width_height(
-  double* ul, double  width, double height);
+  double* ul, double width, double height );
 
 VITAL_C_EXPORT
 vital_bounding_box_t* vital_bounding_box_new_from_coordinates(
-  double xmin, double  ymin, double xmax, double ymax);
+  double xmin, double ymin, double xmax, double ymax );
 
 VITAL_C_EXPORT
 vital_bounding_box_t* vital_bounding_box_copy(

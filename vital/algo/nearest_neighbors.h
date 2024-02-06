@@ -25,7 +25,7 @@ class VITAL_ALGO_EXPORT nearest_neighbors
 {
 public:
   nearest_neighbors();
-  PLUGGABLE_INTERFACE(nearest_neighbors);
+  PLUGGABLE_INTERFACE( nearest_neighbors );
   /// Build the search tree
   ///
   /// /param [in] points the set of points to build the search tree from
@@ -67,7 +67,6 @@ public:
     vital::point_3d& point,
     double r,
     std::vector< int >& indices ) const = 0;
-
 };
 
 /// Shared pointer for nearest_neighbors algorithm definition class

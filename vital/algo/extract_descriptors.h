@@ -27,7 +27,7 @@ class VITAL_ALGO_EXPORT extract_descriptors
 {
 public:
   extract_descriptors();
-  PLUGGABLE_INTERFACE(extract_descriptors);
+  PLUGGABLE_INTERFACE( extract_descriptors );
   /// Extract from the image a descriptor corresoponding to each feature
   ///
   /// \param [in]     image_data contains the image data to process
@@ -44,11 +44,11 @@ public:
   ///       a new feature_set is created and returned by reference.
 
   virtual kwiver::vital::descriptor_set_sptr
-  extract( kwiver::vital::image_container_sptr image_data,
-           kwiver::vital::feature_set_sptr& features,
-           kwiver::vital::image_container_sptr image_mask =
-	   kwiver::vital::image_container_sptr() ) const = 0;
-
+  extract(
+    kwiver::vital::image_container_sptr image_data,
+    kwiver::vital::feature_set_sptr& features,
+    kwiver::vital::image_container_sptr image_mask =
+    kwiver::vital::image_container_sptr() ) const = 0;
 };
 
 /// Shared pointer for base extract_descriptors algorithm definition class

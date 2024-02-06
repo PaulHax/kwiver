@@ -30,43 +30,51 @@ class KWIVER_ALGO_FFMPEG_EXPORT ffmpeg_video_output
   : public kwiver::vital::algo::video_output
 {
 public:
-   PLUGGABLE_IMPL(
-   ffmpeg_video_output,
-      "Use FFMPEG to write video files from a sequence of images.",
-   PARAM_DEFAULT(width,size_t, 
+  PLUGGABLE_IMPL(
+    ffmpeg_video_output,
+    "Use FFMPEG to write video files from a sequence of images.",
+    PARAM_DEFAULT(
+      width, size_t,
       "Output width in pixels.",
-      0),
-   PARAM_DEFAULT(height,size_t, 
+      0 ),
+    PARAM_DEFAULT(
+      height, size_t,
       "Output heigth pixels.",
-      0),
-   PARAM_DEFAULT(frame_rate_num,int, 
+      0 ),
+    PARAM_DEFAULT(
+      frame_rate_num, int,
       "Integral numerator of the output frame rate.",
-      0),
-   PARAM_DEFAULT(frame_rate_den,int,
-    "Integral denominator of the output frame rate. Defaults to 1.",
-    1),
-    PARAM_DEFAULT(bitrate,size_t,
-    "Desired bitrate in bits per second.",
-    0),
-    PARAM_DEFAULT(codec_name,std::string,
-     "String identifying the codec to use.",
-     ""),
-    PARAM_DEFAULT(cuda_enabled,bool,
-    "When set to true, uses CUDA/NVENC to accelerate video encoding.",
-    m_cuda_enabled_default),
-    PARAM_DEFAULT(cuda_device_index,int,
-    "Integer index of the CUDA-enabled device to use for encoding. "
-    "Defaults to 0.",
-     0)
+      0 ),
+    PARAM_DEFAULT(
+      frame_rate_den, int,
+      "Integral denominator of the output frame rate. Defaults to 1.",
+      1 ),
+    PARAM_DEFAULT(
+      bitrate, size_t,
+      "Desired bitrate in bits per second.",
+      0 ),
+    PARAM_DEFAULT(
+      codec_name, std::string,
+      "String identifying the codec to use.",
+      "" ),
+    PARAM_DEFAULT(
+      cuda_enabled, bool,
+      "When set to true, uses CUDA/NVENC to accelerate video encoding.",
+      m_cuda_enabled_default ),
+    PARAM_DEFAULT(
+      cuda_device_index, int,
+      "Integer index of the CUDA-enabled device to use for encoding. "
+      "Defaults to 0.",
+      0 )
   );
 
   virtual ~ffmpeg_video_output();
 
-
   bool check_configuration( vital::config_block_sptr config ) const override;
 
-  void open( std::string video_name,
-             vital::video_settings const* settings ) override;
+  void open(
+    std::string video_name,
+    vital::video_settings const* settings ) override;
 
   void close() override;
 
@@ -90,13 +98,13 @@ protected:
 
 private:
 #ifdef KWIVER_ENABLE_FFMPEG_CUDA
-    constexpr static bool m_cuda_enabled_default { true };
+  constexpr static bool m_cuda_enabled_default { true };
 #else
-    constexpr static bool m_cuda_enabled_default { false };
+  constexpr static bool m_cuda_enabled_default { false };
 #endif
 
   class impl;
-  KWIVER_UNIQUE_PTR(impl,d);
+  KWIVER_UNIQUE_PTR( impl, d );
 };
 
 } // namespace ffmpeg

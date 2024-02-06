@@ -4,8 +4,8 @@
 
 #include <arrows/serialize/json/load_save.h>
 #include <arrows/serialize/json/load_save_point.h>
-#include <arrows/serialize/json/load_save_track_state.h>
 #include <arrows/serialize/json/load_save_track_set.h>
+#include <arrows/serialize/json/load_save_track_state.h>
 #include <arrows/serialize/json/track_item.h>
 
 #include <vital/exceptions.h>
@@ -13,90 +13,107 @@
 #include <vital/types/detected_object_set.h>
 #include <vital/types/geo_point.h>
 #include <vital/types/geo_polygon.h>
+#include <vital/types/object_track_set.h>
 #include <vital/types/polygon.h>
 #include <vital/types/timestamp.h>
 #include <vital/types/track_set.h>
-#include <vital/types/object_track_set.h>
 #include <vital/vital_types.h>
 
-#include <vital/util/hex_dump.h>
 #include <vital/logger/logger.h>
+#include <vital/util/hex_dump.h>
 
-#include <vital/internal/cereal/cereal.hpp>
 #include <vital/internal/cereal/archives/json.hpp>
-#include <vital/internal/cereal/types/vector.hpp>
+#include <vital/internal/cereal/cereal.hpp>
 #include <vital/internal/cereal/types/map.hpp>
 #include <vital/internal/cereal/types/utility.hpp>
+#include <vital/internal/cereal/types/vector.hpp>
 
-#include <zlib.h>
 #include <iostream>
+#include <zlib.h>
 
 namespace cereal {
-// ----------------------------------------------------------------------------
-void save( ::cereal::JSONOutputArchive& archive, const ::kwiver::vital::activity_type& at )
-{
 
+// ----------------------------------------------------------------------------
+void
+save(
+  ::cereal::JSONOutputArchive& archive,
+  const ::kwiver::vital::activity_type& at )
+{
   // recreate the class/score map so we don't break encapsulation.
   std::map< std::string, double > activity_type_content;
-  for ( auto entry : at )
+  for( auto entry : at )
   {
-    activity_type_content[*(entry.first)] = entry.second;
+    activity_type_content[ *( entry.first ) ] = entry.second;
   }
 
   archive( CEREAL_NVP( activity_type_content ) );
 }
 
 // ----------------------------------------------------------------------------
-void load( ::cereal::JSONInputArchive& archive, ::kwiver::vital::activity_type& at )
+void
+load( ::cereal::JSONInputArchive& archive, ::kwiver::vital::activity_type& at )
 {
   std::map< std::string, double > activity_type_content;
   archive( CEREAL_NVP( activity_type_content ) );
 
-  for ( auto entry : activity_type_content )
+  for( auto entry : activity_type_content )
   {
     at.set_score( entry.first, entry.second );
   }
 }
 
 // ----------------------------------------------------------------------------
-void save( ::cereal::JSONOutputArchive& archive, const ::kwiver::vital::bounding_box_d& bbox )
+void
+save(
+  ::cereal::JSONOutputArchive& archive,
+  const ::kwiver::vital::bounding_box_d& bbox )
 {
-  archive( ::cereal::make_nvp( "min_x", bbox.min_x() ),
-           ::cereal::make_nvp( "min_y", bbox.min_y() ),
-           ::cereal::make_nvp( "max_x", bbox.max_x() ),
-           ::cereal::make_nvp( "max_y", bbox.max_y() ) );
+  archive(
+    ::cereal::make_nvp( "min_x", bbox.min_x() ),
+    ::cereal::make_nvp( "min_y", bbox.min_y() ),
+    ::cereal::make_nvp( "max_x", bbox.max_x() ),
+    ::cereal::make_nvp( "max_y", bbox.max_y() ) );
 }
 
 // ----------------------------------------------------------------------------
-void load( ::cereal::JSONInputArchive& archive, ::kwiver::vital::bounding_box_d& bbox )
+void
+load(
+  ::cereal::JSONInputArchive& archive,
+  ::kwiver::vital::bounding_box_d& bbox )
 {
   double min_x, min_y, max_x, max_y;
 
-  archive( CEREAL_NVP( min_x ),
-           CEREAL_NVP( min_y ),
-           CEREAL_NVP( max_x ),
-           CEREAL_NVP( max_y ) );
+  archive(
+    CEREAL_NVP( min_x ),
+    CEREAL_NVP( min_y ),
+    CEREAL_NVP( max_x ),
+    CEREAL_NVP( max_y ) );
 
   bbox = ::kwiver::vital::bounding_box_d( min_x, min_y, max_x, max_y );
 }
 
 // ----------------------------------------------------------------------------
-void save( ::cereal::JSONOutputArchive& archive, const ::kwiver::vital::detected_object& obj )
+void
+save(
+  ::cereal::JSONOutputArchive& archive,
+  const ::kwiver::vital::detected_object& obj )
 {
   // serialize bounding box
   save( archive, obj.bounding_box() );
 
-  archive( ::cereal::make_nvp( "confidence", obj.confidence() ),
-           ::cereal::make_nvp( "index", obj.index() ),
-           ::cereal::make_nvp( "detector_name", obj.detector_name() ),
-           ::cereal::make_nvp( "notes", obj.notes() ),
-           ::cereal::make_nvp( "keypoints", obj.keypoints() ),
-           ::cereal::make_nvp( "geo_point", obj.geo_point() )
-    );
+  archive(
+    ::cereal::make_nvp( "confidence", obj.confidence() ),
+    ::cereal::make_nvp( "index", obj.index() ),
+    ::cereal::make_nvp( "detector_name", obj.detector_name() ),
+    ::cereal::make_nvp( "notes", obj.notes() ),
+    ::cereal::make_nvp( "keypoints", obj.keypoints() ),
+    ::cereal::make_nvp( "geo_point", obj.geo_point() )
+  );
 
   // This pointer may be null
-  const auto dot_ptr = const_cast< ::kwiver::vital::detected_object& >(obj).type();
-  if ( dot_ptr )
+  const auto dot_ptr =
+    const_cast< ::kwiver::vital::detected_object& >( obj ).type();
+  if( dot_ptr )
   {
     save( archive, *dot_ptr );
   }
@@ -107,11 +124,14 @@ void save( ::cereal::JSONOutputArchive& archive, const ::kwiver::vital::detected
   }
 
   // Currently skipping the image chip and descriptor.
-  //+ TBD
+  // + TBD
 }
 
 // ----------------------------------------------------------------------------
-void load( ::cereal::JSONInputArchive& archive, ::kwiver::vital::detected_object& obj )
+void
+load(
+  ::cereal::JSONInputArchive& archive,
+  ::kwiver::vital::detected_object& obj )
 {
   // deserialize bounding box
   ::kwiver::vital::bounding_box_d bbox { 0, 0, 0, 0 };
@@ -125,26 +145,27 @@ void load( ::cereal::JSONInputArchive& archive, ::kwiver::vital::detected_object
   ::kwiver::vital::detected_object::keypoints_t keypoints;
   ::kwiver::vital::geo_point geo_point;
 
-  archive( CEREAL_NVP( confidence ),
-           CEREAL_NVP( index ),
-           CEREAL_NVP( detector_name ),
-           CEREAL_NVP( notes ),
-           CEREAL_NVP( keypoints ),
-           CEREAL_NVP( geo_point )
-    );
+  archive(
+    CEREAL_NVP( confidence ),
+    CEREAL_NVP( index ),
+    CEREAL_NVP( detector_name ),
+    CEREAL_NVP( notes ),
+    CEREAL_NVP( keypoints ),
+    CEREAL_NVP( geo_point )
+  );
 
   obj.set_confidence( confidence );
   obj.set_index( index );
   obj.set_detector_name( detector_name );
 
-  for ( const auto& n : notes )
+  for( const auto& n : notes )
   {
     obj.add_note( n );
   }
 
   obj.set_geo_point( geo_point );
 
-  for ( const auto& kp : keypoints )
+  for( const auto& kp : keypoints )
   {
     obj.add_keypoint( kp.first, kp.second );
   }
@@ -155,8 +176,10 @@ void load( ::cereal::JSONInputArchive& archive, ::kwiver::vital::detected_object
 }
 
 // ----------------------------------------------------------------------------
-void save( ::cereal::JSONOutputArchive&                archive,
-           const ::kwiver::vital::detected_object_set& obj )
+void
+save(
+  ::cereal::JSONOutputArchive&                archive,
+  const ::kwiver::vital::detected_object_set& obj )
 {
   archive( ::cereal::make_nvp( "size", obj.size() ) );
 
@@ -165,56 +188,63 @@ void save( ::cereal::JSONOutputArchive&                archive,
   dos::const_iterator ie = obj.cend();
   dos::const_iterator element;
 
-  for ( element = obj.cbegin(); element != ie; ++element )
+  for( element = obj.cbegin(); element != ie; ++element )
   {
     save( archive, **element );
   }
 
   // currently not handling atributes
-  //+ TBD
+  // + TBD
 }
 
 // ----------------------------------------------------------------------------
-void load( ::cereal::JSONInputArchive&           archive,
-           ::kwiver::vital::detected_object_set& obj )
+void
+load(
+  ::cereal::JSONInputArchive&           archive,
+  ::kwiver::vital::detected_object_set& obj )
 {
   ::cereal::size_type size;
   archive( CEREAL_NVP( size ) );
 
-  for ( ::cereal::size_type i = 0; i < size; ++i )
+  for( ::cereal::size_type i = 0; i < size; ++i )
   {
-    auto new_obj = std::make_shared< ::kwiver::vital::detected_object > (
-      ::kwiver::vital::bounding_box_d { 0, 0, 0, 0 } );
+    auto new_obj = std::make_shared< ::kwiver::vital::detected_object >(
+      ::kwiver::vital::bounding_box_d{ 0, 0, 0, 0 } );
     load( archive, *new_obj );
 
     obj.add( new_obj );
   }
 
   // currently not handling atributes
-  //+ TBD
+  // + TBD
 }
 
 // ----------------------------------------------------------------------------
-void save( ::cereal::JSONOutputArchive& archive, const ::kwiver::vital::detected_object_type& dot )
+void
+save(
+  ::cereal::JSONOutputArchive& archive,
+  const ::kwiver::vital::detected_object_type& dot )
 {
-
   // recreate the class/score map so we don't break encapsulation.
   std::map< std::string, double > detected_object_type_content;
-  for ( auto entry : dot )
+  for( auto entry : dot )
   {
-    detected_object_type_content[*(entry.first)] = entry.second;
+    detected_object_type_content[ *( entry.first ) ] = entry.second;
   }
 
   archive( CEREAL_NVP( detected_object_type_content ) );
 }
 
 // ----------------------------------------------------------------------------
-void load( ::cereal::JSONInputArchive& archive, ::kwiver::vital::detected_object_type& dot )
+void
+load(
+  ::cereal::JSONInputArchive& archive,
+  ::kwiver::vital::detected_object_type& dot )
 {
   std::map< std::string, double > detected_object_type_content;
   archive( CEREAL_NVP( detected_object_type_content ) );
 
-  for ( auto entry : detected_object_type_content )
+  for( auto entry : detected_object_type_content )
   {
     dot.set_score( entry.first, entry.second );
   }
@@ -251,12 +281,15 @@ void load( ::cereal::JSONInputArchive& archive, ::kwiver::vital::detected_object
 // multi-byte.
 
 // ----------------------------------------------------------------------------
-void save( ::cereal::JSONOutputArchive& archive, const ::kwiver::vital::image_container_sptr ctr )
+void
+save(
+  ::cereal::JSONOutputArchive& archive,
+  const ::kwiver::vital::image_container_sptr ctr )
 {
   ::kwiver::vital::image vital_image = ctr->get_image();
   ::kwiver::vital::image local_image;
 
-  if ( vital_image.memory() == nullptr || ! vital_image.is_contiguous() )
+  if( vital_image.memory() == nullptr || !vital_image.is_contiguous() )
   {
     // Either we do not own the memory or it is not contiguous.  We
     // need to consolidate the input image into a contiguous memory
@@ -270,142 +303,162 @@ void save( ::cereal::JSONOutputArchive& archive, const ::kwiver::vital::image_co
 
   // Compress raw pixel data
   const uLongf size = compressBound( vital_image.size() );
-  uLongf out_size(size);
-  std::vector<uint8_t> image_data( size );
-  Bytef* out_buf = reinterpret_cast< Bytef* >( &image_data[0] );
-  Bytef const* in_buf = reinterpret_cast< Bytef * >( local_image.first_pixel() );
+  uLongf out_size( size );
+  std::vector< uint8_t > image_data( size );
+  Bytef* out_buf = reinterpret_cast< Bytef* >( &image_data[ 0 ] );
+  Bytef const* in_buf = reinterpret_cast< Bytef* >( local_image.first_pixel() );
 
   // Since the image is contiguous, we can calculate the size
-  size_t local_size = local_image.width() * local_image.height()
-    * local_image.depth() * local_image.pixel_traits().num_bytes;
+  size_t local_size = local_image.width() * local_image.height() *
+                      local_image.depth() *
+                      local_image.pixel_traits().num_bytes;
 
-  int z_rc = compress( out_buf, &out_size, // outputs
-                       in_buf, local_size ); // inputs
-  if (Z_OK != z_rc )
+  int z_rc = compress(
+    out_buf, &out_size,                    // outputs
+    in_buf, local_size );                    // inputs
+  if( Z_OK != z_rc )
   {
-    switch (z_rc)
+    switch( z_rc )
     {
-    case Z_MEM_ERROR:
-      LOG_ERROR( ::kwiver::vital::get_logger( "data_serializer" ),
-                 "Error compressing image data. Not enough memory." );
-      break;
+      case Z_MEM_ERROR:
+        LOG_ERROR(
+          ::kwiver::vital::get_logger( "data_serializer" ),
+          "Error compressing image data. Not enough memory." );
+        break;
 
-    case Z_BUF_ERROR:
-      LOG_ERROR( ::kwiver::vital::get_logger( "data_serializer" ),
-                 "Error compressing image data. Not enough room in output buffer." );
-      break;
+      case Z_BUF_ERROR:
+        LOG_ERROR(
+          ::kwiver::vital::get_logger( "data_serializer" ),
+          "Error compressing image data. Not enough room in output buffer." );
+        break;
 
-    default:
-      LOG_ERROR( ::kwiver::vital::get_logger( "data_serializer" ),
-                 "Error compressing image data." );
-      break;
+      default:
+        LOG_ERROR(
+          ::kwiver::vital::get_logger( "data_serializer" ),
+          "Error compressing image data." );
+        break;
     } // end switch
     return;
   }
 
   // Copy compressed image to vector
-  uint8_t* cp = static_cast< uint8_t* >(out_buf );
-  uint8_t* cpe = cp +out_size;
+  uint8_t* cp = static_cast< uint8_t* >( out_buf );
+  uint8_t* cpe = cp + out_size;
   image_data.assign( cp, cpe );
 
   // Get pixel trait
   auto pixel_trait = local_image.pixel_traits();
 
-  archive( ::cereal::make_nvp( "width",  local_image.width() ),
-           ::cereal::make_nvp( "height", local_image.height() ),
-           ::cereal::make_nvp( "depth",  local_image.depth() ),
+  archive(
+    ::cereal::make_nvp( "width",  local_image.width() ),
+    ::cereal::make_nvp( "height", local_image.height() ),
+    ::cereal::make_nvp( "depth",  local_image.depth() ),
 
-           ::cereal::make_nvp( "w_step", local_image.w_step() ),
-           ::cereal::make_nvp( "h_step", local_image.h_step() ),
-           ::cereal::make_nvp( "d_step", local_image.d_step() ),
+    ::cereal::make_nvp( "w_step", local_image.w_step() ),
+    ::cereal::make_nvp( "h_step", local_image.h_step() ),
+    ::cereal::make_nvp( "d_step", local_image.d_step() ),
 
-           ::cereal::make_nvp( "trait_type", static_cast<int> (pixel_trait.type) ),
-           ::cereal::make_nvp( "trait_num_bytes", pixel_trait.num_bytes ),
+    ::cereal::make_nvp( "trait_type", static_cast< int >( pixel_trait.type ) ),
+    ::cereal::make_nvp( "trait_num_bytes", pixel_trait.num_bytes ),
 
-           ::cereal::make_nvp( "img_size", local_image.size() ), // uncompressed size
-           ::cereal::make_nvp( "img_data", image_data ) );       // compressed image
-
+    ::cereal::make_nvp( "img_size", local_image.size() ),        // uncompressed
+                                                                 // size
+    ::cereal::make_nvp( "img_data", image_data ) );              // compressed
+                                                                 // image
 }
 
 // ----------------------------------------------------------------------------
-void load( ::cereal::JSONInputArchive& archive, ::kwiver::vital::image_container_sptr& ctr )
+void
+load(
+  ::cereal::JSONInputArchive& archive,
+  ::kwiver::vital::image_container_sptr& ctr )
 {
   // deserialize image
   std::size_t width, height, depth, img_size;
   std::ptrdiff_t w_step, h_step, d_step;
-  std::vector<uint8_t> img_data;
+  std::vector< uint8_t > img_data;
   int trait_type, trait_num_bytes;
 
-  archive( CEREAL_NVP( width ),
-           CEREAL_NVP( height ),
-           CEREAL_NVP( depth ),
+  archive(
+    CEREAL_NVP( width ),
+    CEREAL_NVP( height ),
+    CEREAL_NVP( depth ),
 
-           CEREAL_NVP( w_step ),
-           CEREAL_NVP( h_step ),
-           CEREAL_NVP( d_step ),
+    CEREAL_NVP( w_step ),
+    CEREAL_NVP( h_step ),
+    CEREAL_NVP( d_step ),
 
-           CEREAL_NVP( trait_type ),
-           CEREAL_NVP( trait_num_bytes ),
+    CEREAL_NVP( trait_type ),
+    CEREAL_NVP( trait_num_bytes ),
 
-           CEREAL_NVP( img_size ), // uncompressed size
-           CEREAL_NVP( img_data )  // compressed image
-    );
+    CEREAL_NVP( img_size ),        // uncompressed size
+    CEREAL_NVP( img_data )         // compressed image
+  );
 
   auto img_mem = std::make_shared< ::kwiver::vital::image_memory >( img_size );
 
   const ::kwiver::vital::image_pixel_traits pix_trait(
-    static_cast<::kwiver::vital::image_pixel_traits::pixel_type>(trait_type ),
+    static_cast< ::kwiver::vital::image_pixel_traits::pixel_type >( trait_type ),
     trait_num_bytes );
 
   // decompress the data
-  Bytef* out_buf = reinterpret_cast< Bytef* >(img_mem->data());
+  Bytef* out_buf = reinterpret_cast< Bytef* >( img_mem->data() );
   uLongf out_size( img_size );
-  Bytef const* in_buf = reinterpret_cast< const Bytef *> (&img_data[0] );
+  Bytef const* in_buf = reinterpret_cast< const Bytef* >( &img_data[ 0 ] );
   uLongf in_size = img_data.size(); // byte size
 
-  int z_rc = uncompress( out_buf, &out_size, // outputs
-                         in_buf, in_size ); // inputs
-  if (Z_OK != z_rc )
+  int z_rc = uncompress(
+    out_buf, &out_size,                      // outputs
+    in_buf, in_size );                      // inputs
+  if( Z_OK != z_rc )
   {
-    switch (z_rc)
+    switch( z_rc )
     {
-    case Z_MEM_ERROR:
-      LOG_ERROR( ::kwiver::vital::get_logger( "data_serializer" ),
-                 "Error decompressing image data. Not enough memory." );
-      break;
+      case Z_MEM_ERROR:
+        LOG_ERROR(
+          ::kwiver::vital::get_logger( "data_serializer" ),
+          "Error decompressing image data. Not enough memory." );
+        break;
 
-    case Z_BUF_ERROR:
-      LOG_ERROR( ::kwiver::vital::get_logger( "data_serializer" ),
-                 "Error decompressing image data. Not enough room in output buffer." );
-      break;
+      case Z_BUF_ERROR:
+        LOG_ERROR(
+          ::kwiver::vital::get_logger( "data_serializer" ),
+          "Error decompressing image data. Not enough room in output buffer." );
+        break;
 
-    default:
-      LOG_ERROR( ::kwiver::vital::get_logger( "data_serializer" ),
-                 "Error decompressing image data." );
-      break;
+      default:
+        LOG_ERROR(
+          ::kwiver::vital::get_logger( "data_serializer" ),
+          "Error decompressing image data." );
+        break;
     } // end switch
     return;
   }
 
-  if ( static_cast< uLongf >(img_size) != out_size )
+  if( static_cast< uLongf >( img_size ) != out_size )
   {
-    LOG_ERROR( ::kwiver::vital::get_logger( "data_serializer" ),
-               "Uncompressed data not expected size. Possible data corruption." );
+    LOG_ERROR(
+      ::kwiver::vital::get_logger( "data_serializer" ),
+      "Uncompressed data not expected size. Possible data corruption." );
     return;
   }
 
-  auto vital_image = ::kwiver::vital::image( img_mem, img_mem->data(),
-                                           width, height, depth,
-                                           w_step, h_step, d_step,
-                                           pix_trait );
+  auto vital_image = ::kwiver::vital::image(
+    img_mem, img_mem->data(),
+    width, height, depth,
+    w_step, h_step, d_step,
+    pix_trait );
 
   // return newly constructed image container
-  ctr = std::make_shared< ::kwiver::vital::simple_image_container >( vital_image );
+  ctr =
+    std::make_shared< ::kwiver::vital::simple_image_container >( vital_image );
 }
 
 // ----------------------------------------------------------------------------
-void save( ::cereal::JSONOutputArchive&       archive,
-           const ::kwiver::vital::timestamp&  tstamp )
+void
+save(
+  ::cereal::JSONOutputArchive&       archive,
+  const ::kwiver::vital::timestamp&  tstamp )
 {
   if( tstamp.has_valid_time() )
   {
@@ -427,8 +480,10 @@ void save( ::cereal::JSONOutputArchive&       archive,
 }
 
 // ----------------------------------------------------------------------------
-void load( ::cereal::JSONInputArchive&  archive,
-           ::kwiver::vital::timestamp&  tstamp )
+void
+load(
+  ::cereal::JSONInputArchive&  archive,
+  ::kwiver::vital::timestamp&  tstamp )
 {
   tstamp.set_invalid();
 
@@ -452,14 +507,18 @@ void load( ::cereal::JSONInputArchive&  archive,
 }
 
 // ----------------------------------------------------------------------------
-void save( ::cereal::JSONOutputArchive& archive, const ::kwiver::vital::geo_polygon& poly )
+void
+save(
+  ::cereal::JSONOutputArchive& archive,
+  const ::kwiver::vital::geo_polygon& poly )
 {
   archive( ::cereal::make_nvp( "crs", poly.crs() ) );
   save( archive, poly.polygon() ); // save plain polygon
 }
 
 // ----------------------------------------------------------------------------
-void load( ::cereal::JSONInputArchive& archive, ::kwiver::vital::geo_polygon& poly )
+void
+load( ::cereal::JSONInputArchive& archive, ::kwiver::vital::geo_polygon& poly )
 {
   int crs;
   ::kwiver::vital::polygon raw_poly;
@@ -470,39 +529,45 @@ void load( ::cereal::JSONInputArchive& archive, ::kwiver::vital::geo_polygon& po
 }
 
 // ----------------------------------------------------------------------------
-void save( ::cereal::JSONOutputArchive& archive, const ::kwiver::vital::geo_point& point )
+void
+save(
+  ::cereal::JSONOutputArchive& archive,
+  const ::kwiver::vital::geo_point& point )
 {
-  if ( point.is_empty() )
+  if( point.is_empty() )
   {
-    const int crs(-1);
-    archive( CEREAL_NVP(crs) );
+    const int crs( -1 );
+    archive( CEREAL_NVP( crs ) );
   }
   else
   {
     const auto loc = point.location( point.crs() );
 
-    archive( ::cereal::make_nvp( "crs", point.crs() ),
-             ::cereal::make_nvp( "x", loc[0] ),
-             ::cereal::make_nvp( "y", loc[1] ),
-             ::cereal::make_nvp( "z", loc[2] )
-      );
+    archive(
+      ::cereal::make_nvp( "crs", point.crs() ),
+      ::cereal::make_nvp( "x", loc[ 0 ] ),
+      ::cereal::make_nvp( "y", loc[ 1 ] ),
+      ::cereal::make_nvp( "z", loc[ 2 ] )
+    );
   }
 }
 
 // ----------------------------------------------------------------------------
-void load( ::cereal::JSONInputArchive& archive, ::kwiver::vital::geo_point& point )
+void
+load( ::cereal::JSONInputArchive& archive, ::kwiver::vital::geo_point& point )
 {
   int crs;
-  archive( CEREAL_NVP(crs) );
+  archive( CEREAL_NVP( crs ) );
 
-  if ( crs != -1 ) // empty marker
+  if( crs != -1 ) // empty marker
   {
     double x, y, z;
-    archive( CEREAL_NVP( crs ),
-             CEREAL_NVP( x ),
-             CEREAL_NVP( y ),
-             CEREAL_NVP( z )
-      );
+    archive(
+      CEREAL_NVP( crs ),
+      CEREAL_NVP( x ),
+      CEREAL_NVP( y ),
+      CEREAL_NVP( z )
+    );
 
     const ::kwiver::vital::geo_point::geo_3d_point_t raw( x, y, z );
     point.set_location( raw, crs );
@@ -510,33 +575,43 @@ void load( ::cereal::JSONInputArchive& archive, ::kwiver::vital::geo_point& poin
 }
 
 // ----------------------------------------------------------------------------
-void save( ::cereal::JSONOutputArchive& archive, const ::kwiver::vital::polygon& poly )
+void
+save(
+  ::cereal::JSONOutputArchive& archive,
+  const ::kwiver::vital::polygon& poly )
 {
   auto vert = poly.get_vertices();
   archive( ::cereal::make_nvp( "points", vert ) );
 }
 
 // ----------------------------------------------------------------------------
-void load( ::cereal::JSONInputArchive& archive, ::kwiver::vital::polygon& poly )
+void
+load( ::cereal::JSONInputArchive& archive, ::kwiver::vital::polygon& poly )
 {
   std::vector< ::kwiver::vital::polygon::point_t > points;
   archive( CEREAL_NVP( points ) );
 
-  for ( auto const& pt : points )
+  for( auto const& pt : points )
   {
     poly.push_back( pt );
   }
 }
 
 // ----------------------------------------------------------------------------
-void save( ::cereal::JSONOutputArchive& archive, const ::kwiver::vital::track_state& trk_state )
+void
+save(
+  ::cereal::JSONOutputArchive& archive,
+  const ::kwiver::vital::track_state& trk_state )
 {
   ::kwiver::vital::frame_id_t frame = trk_state.frame();
   archive(  ::cereal::make_nvp( "track_frame", frame ) );
 }
 
 // ----------------------------------------------------------------------------
-void load( ::cereal::JSONInputArchive& archive, ::kwiver::vital::track_state& trk_state )
+void
+load(
+  ::cereal::JSONInputArchive& archive,
+  ::kwiver::vital::track_state& trk_state )
 {
   int64_t track_frame;
   archive( CEREAL_NVP( track_frame ) );
@@ -544,10 +619,15 @@ void load( ::cereal::JSONInputArchive& archive, ::kwiver::vital::track_state& tr
 }
 
 // ----------------------------------------------------------------------------
-void save( ::cereal::JSONOutputArchive& archive,
-           const ::kwiver::vital::object_track_state& obj_trk_state )
+void
+save(
+  ::cereal::JSONOutputArchive& archive,
+  const ::kwiver::vital::object_track_state& obj_trk_state )
 {
-  archive( ::cereal::base_class< ::kwiver::vital::track_state >( std::addressof( obj_trk_state ) ) );
+  archive(
+    ::cereal::base_class< ::kwiver::vital::track_state >(
+      std::addressof(
+        obj_trk_state ) ) );
   archive( ::cereal::make_nvp( "track_time", obj_trk_state.time() ) );
   archive( ::cereal::make_nvp( "image_point", obj_trk_state.image_point() ) );
   archive( ::cereal::make_nvp( "track_point", obj_trk_state.track_point() ) );
@@ -556,16 +636,21 @@ void save( ::cereal::JSONOutputArchive& archive,
 }
 
 // ----------------------------------------------------------------------------
-void load( ::cereal::JSONInputArchive& archive,
-           ::kwiver::vital::object_track_state& obj_trk_state )
+void
+load(
+  ::cereal::JSONInputArchive& archive,
+  ::kwiver::vital::object_track_state& obj_trk_state )
 {
   auto detection = std::make_shared< ::kwiver::vital::detected_object >(
-                      ::kwiver::vital::bounding_box_d{0, 0, 0, 0});
-  archive( ::cereal::base_class< ::kwiver::vital::track_state >( std::addressof( obj_trk_state ) ) );
+    ::kwiver::vital::bounding_box_d{ 0, 0, 0, 0 } );
+  archive(
+    ::cereal::base_class< ::kwiver::vital::track_state >(
+      std::addressof(
+        obj_trk_state ) ) );
 
   int64_t track_time;
   archive( CEREAL_NVP( track_time ) );
-  obj_trk_state.set_time(track_time);
+  obj_trk_state.set_time( track_time );
 
   // image point
   ::kwiver::vital::point_2d image_point;
@@ -574,103 +659,125 @@ void load( ::cereal::JSONInputArchive& archive,
 
   // track point
   ::kwiver::vital::point_3d track_point;
-  archive( CEREAL_NVP( track_point ) ) ;
+  archive( CEREAL_NVP( track_point ) );
   obj_trk_state.set_track_point( track_point );
 
-  load(archive, *detection);
-  obj_trk_state.set_detection(detection);
+  load( archive, *detection );
+  obj_trk_state.set_detection( detection );
 }
 
 // ----------------------------------------------------------------------------
-void save( ::cereal::JSONOutputArchive& archive, const ::kwiver::vital::track_set& trk_set )
+void
+save(
+  ::cereal::JSONOutputArchive& archive,
+  const ::kwiver::vital::track_set& trk_set )
 {
-  std::vector<::kwiver::arrows::serialize::json::track_item> track_items;
-  for ( auto trk_sptr : trk_set.tracks())
+  std::vector< ::kwiver::arrows::serialize::json::track_item > track_items;
+  for( auto trk_sptr : trk_set.tracks() )
   {
-    track_items.push_back( ::kwiver::arrows::serialize::json::track_item( trk_sptr ) );
+    track_items.push_back(
+      ::kwiver::arrows::serialize::json::track_item(
+        trk_sptr ) );
   }
   archive( ::cereal::make_nvp( "trk_items", track_items ) );
 }
 
 // ----------------------------------------------------------------------------
-void load( ::cereal::JSONInputArchive& archive, ::kwiver::vital::track_set& trk_set )
+void
+load( ::cereal::JSONInputArchive& archive, ::kwiver::vital::track_set& trk_set )
 {
   std::vector< ::kwiver::arrows::serialize::json::track_item > trk_items;
-  archive ( CEREAL_NVP(trk_items) );
+  archive( CEREAL_NVP( trk_items ) );
+
   std::vector< ::kwiver::vital::track_sptr > tracks;
-  for (auto trk_item : trk_items)
+  for( auto trk_item : trk_items )
   {
-    tracks.push_back(trk_item.get_track());
+    tracks.push_back( trk_item.get_track() );
   }
-  trk_set.set_tracks(tracks);
+  trk_set.set_tracks( tracks );
 }
 
 // ----------------------------------------------------------------------------
-void save( ::cereal::JSONOutputArchive& archive,
-          const ::kwiver::vital::object_track_set& obj_trk_set )
+void
+save(
+  ::cereal::JSONOutputArchive& archive,
+  const ::kwiver::vital::object_track_set& obj_trk_set )
 {
-  //TBD: Inheritance is not working between track set and object track set
+  // TBD: Inheritance is not working between track set and object track set
   // Causes the object associated with the track set to be a list
   //
-  //archive( ::cereal::base_class< ::kwiver::vital::track_set >( std::addressof( obj_trk_set ) ) );
-  std::vector<::kwiver::arrows::serialize::json::track_item> track_items;
-  for ( auto trk_sptr : obj_trk_set.tracks())
+  // archive( ::cereal::base_class< ::kwiver::vital::track_set >(
+  // std::addressof( obj_trk_set ) ) );
+  std::vector< ::kwiver::arrows::serialize::json::track_item > track_items;
+  for( auto trk_sptr : obj_trk_set.tracks() )
   {
-    track_items.push_back( ::kwiver::arrows::serialize::json::track_item( trk_sptr ) );
+    track_items.push_back(
+      ::kwiver::arrows::serialize::json::track_item(
+        trk_sptr ) );
   }
   archive( ::cereal::make_nvp( "object_trk_items", track_items ) );
 }
 
 // ----------------------------------------------------------------------------
-void load( ::cereal::JSONInputArchive& archive,
-            ::kwiver::vital::object_track_set& obj_trk_set )
+void
+load(
+  ::cereal::JSONInputArchive& archive,
+  ::kwiver::vital::object_track_set& obj_trk_set )
 {
-  //archive( ::cereal::base_class< ::kwiver::vital::object_track_set >( std::addressof( obj_trk_set ) ) );
+  // archive( ::cereal::base_class< ::kwiver::vital::object_track_set >(
+  // std::addressof( obj_trk_set ) ) );
   std::vector< ::kwiver::arrows::serialize::json::track_item > object_trk_items;
-  archive ( CEREAL_NVP(object_trk_items) );
+  archive( CEREAL_NVP( object_trk_items ) );
+
   std::vector< ::kwiver::vital::track_sptr > object_tracks;
-  for (auto object_trk_item : object_trk_items)
+  for( auto object_trk_item : object_trk_items )
   {
-    object_tracks.push_back(object_trk_item.get_track());
+    object_tracks.push_back( object_trk_item.get_track() );
   }
-  obj_trk_set.set_tracks(object_tracks);
+  obj_trk_set.set_tracks( object_tracks );
 }
 
-void save( cereal::JSONOutputArchive& archive,
-         const kwiver::vital::activity& activity )
+void
+save(
+  cereal::JSONOutputArchive& archive,
+  const kwiver::vital::activity& activity )
 {
-    archive( ::cereal::make_nvp( "id", activity.id() ),
-             ::cereal::make_nvp( "label", activity.label() ),
-             ::cereal::make_nvp( "confidence", activity.confidence() ) );
-    save( archive, activity.start());
-    save( archive, activity.end());
+  archive(
+    ::cereal::make_nvp( "id", activity.id() ),
+    ::cereal::make_nvp( "label", activity.label() ),
+    ::cereal::make_nvp( "confidence", activity.confidence() ) );
+  save( archive, activity.start() );
+  save( archive, activity.end() );
 
-    // These may be null
-    if ( activity.type() )
-    {
-      save( archive, *activity.type());
-    }
+  // These may be null
+  if( activity.type() )
+  {
+    save( archive, *activity.type() );
+  }
 
-    if ( activity.participants() )
-    {
-      save( archive, *activity.participants() );
-    }
+  if( activity.participants() )
+  {
+    save( archive, *activity.participants() );
+  }
 }
 
-void load( cereal::JSONInputArchive& archive,
-         kwiver::vital::activity& activity )
+void
+load(
+  cereal::JSONInputArchive& archive,
+  kwiver::vital::activity& activity )
 {
   kwiver::vital::activity_id_t id;
   kwiver::vital::activity_label_t label;
   double confidence;
   kwiver::vital::activity_type_sptr act_type =
-                           std::make_shared< kwiver::vital::activity_type >();
+    std::make_shared< kwiver::vital::activity_type >();
   kwiver::vital::object_track_set_sptr participants =
-                           std::make_shared< kwiver::vital::object_track_set >();
+    std::make_shared< kwiver::vital::object_track_set >();
   kwiver::vital::timestamp start_frame, end_frame;
-  archive( CEREAL_NVP( id ),
-           CEREAL_NVP( label ),
-           CEREAL_NVP( confidence ) );
+  archive(
+    CEREAL_NVP( id ),
+    CEREAL_NVP( label ),
+    CEREAL_NVP( confidence ) );
   load( archive, start_frame );
   load( archive, end_frame );
   activity.set_id( id );

@@ -29,7 +29,7 @@ test_codec_encode(
   std::string buffer( s.size(), '\0' );
   auto const buffer_encoded =
     codec.encode(
-        &*s32.begin(), &*s32.end(), &*buffer.begin(), &*buffer.end() );
+      &*s32.begin(), &*s32.end(), &*buffer.begin(), &*buffer.end() );
   EXPECT_EQ(
     std::make_tuple( text_codec::DONE, &*s32.end(), &*buffer.end() ),
     buffer_encoded );
@@ -51,8 +51,8 @@ test_codec_decode(
   std::u32string buffer( s32.size(), U'\0' );
   auto const buffer_decoded =
     codec.decode(
-        &*s.begin(), &*s.end(), &*buffer.begin(), &*buffer.end(),
-        has_true_end );
+      &*s.begin(), &*s.end(), &*buffer.begin(), &*buffer.end(),
+      has_true_end );
   EXPECT_EQ(
     std::make_tuple( text_codec::DONE, &*s.end(), &*buffer.end() ),
     buffer_decoded );
@@ -73,7 +73,7 @@ test_codec_round_trip(
   std::u32string buffer32( s32.size(), U'\0' );
   auto const buffer32_decoded =
     codec.decode(
-        &*s.begin(), &*s.end(), &*buffer32.begin(), &*buffer32.end(), true );
+      &*s.begin(), &*s.end(), &*buffer32.begin(), &*buffer32.end(), true );
   EXPECT_EQ(
     std::make_tuple( text_codec::DONE, &*s.end(), &*buffer32.end() ),
     buffer32_decoded );
@@ -88,7 +88,7 @@ test_codec_round_trip(
   std::string buffer( s.size(), '\0' );
   auto const buffer_encoded =
     codec.encode(
-        &*s32.begin(), &*s32.end(), &*buffer.begin(), &*buffer.end() );
+      &*s32.begin(), &*s32.end(), &*buffer.begin(), &*buffer.end() );
   EXPECT_EQ(
     std::make_tuple( text_codec::DONE, &*s32.end(), &*buffer.end() ),
     buffer_encoded );
@@ -127,7 +127,7 @@ test_codec_encode_out_of_space(
   std::string output( output_limit, '\0' );
   auto const encoded =
     codec.encode(
-        &*s32.begin(), &*s32.end(), &*output.begin(), &*output.end() );
+      &*s32.begin(), &*s32.end(), &*output.begin(), &*output.end() );
   EXPECT_EQ(
     std::make_tuple(
       text_codec::OUT_OF_SPACE,
@@ -148,8 +148,8 @@ test_codec_decode_out_of_space(
   std::u32string output( output_limit, U'\0' );
   auto const decoded =
     codec.decode(
-        &*s.begin(), &*s.end(), &*output.begin(), &*output.end(),
-        has_true_end );
+      &*s.begin(), &*s.end(), &*output.begin(), &*output.end(),
+      has_true_end );
   EXPECT_EQ(
     std::make_tuple(
       text_codec::OUT_OF_SPACE,

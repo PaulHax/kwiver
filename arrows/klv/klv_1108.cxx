@@ -107,8 +107,9 @@ klv_1108_metric_period_pack_format
 // ----------------------------------------------------------------------------
 void
 klv_1108_metric_period_pack_format
-::write_typed( klv_1108_metric_period_pack const& value,
-               klv_write_iter_t& data, [[maybe_unused]] size_t length ) const
+::write_typed(
+  klv_1108_metric_period_pack const& value,
+  klv_write_iter_t& data, [[maybe_unused]] size_t length ) const
 {
   klv_write_int( value.timestamp, data, 8 );
   klv_write_int( value.offset,    data, 4 );
@@ -136,8 +137,9 @@ namespace {
 std::tuple< uint16_t, uint16_t, uint16_t, uint16_t >
 tuplize( klv_1108_window_corners_pack const& value )
 {
-  return std::make_tuple( value.bbox.min_x(), value.bbox.min_y(),
-                          value.bbox.max_x(), value.bbox.max_y() );
+  return std::make_tuple(
+    value.bbox.min_x(), value.bbox.min_y(),
+    value.bbox.max_x(), value.bbox.max_y() );
 }
 
 } // namespace
@@ -177,8 +179,9 @@ klv_1108_window_corners_pack_format
 // ----------------------------------------------------------------------------
 void
 klv_1108_window_corners_pack_format
-::write_typed( klv_1108_window_corners_pack const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_1108_window_corners_pack const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
   klv_write_ber_oid( value.bbox.min_y(), data, tracker.remaining() );
@@ -371,6 +374,7 @@ klv_1108_create_index_set(
   return result;
 }
 
+
 // ----------------------------------------------------------------------------
 struct klv_compression_type_pair
 {
@@ -390,6 +394,7 @@ compression_type_pairs()
 
   return pairs;
 }
+
 
 // ----------------------------------------------------------------------------
 struct klv_compression_profile_pair
@@ -429,6 +434,7 @@ compression_profile_pairs()
   return pairs;
 }
 
+
 // ----------------------------------------------------------------------------
 struct klv_compression_level_pair
 {
@@ -450,8 +456,9 @@ compression_level_pairs_mpeg2()
 }
 
 // ----------------------------------------------------------------------------
-template< class PairType >
-void convert_vital_to_klv_via_pairs(
+template < class PairType >
+void
+convert_vital_to_klv_via_pairs(
   kv::metadata const& vital_data, klv_local_set& klv_data,
   kv::vital_metadata_tag vital_tag, klv_1108_tag klv_tag,
   std::vector< PairType > const& pairs )
@@ -483,6 +490,7 @@ klv_1108_fill_in_metadata(
       KLV_1108_ASSESSMENT_POINT, KLV_1108_ASSESSMENT_POINT_ARCHIVE );
   }
 
+
   // Bitrate
   auto const& bitrate_vital =
     vital_data.find( kv::VITAL_META_VIDEO_BITRATE );
@@ -510,8 +518,8 @@ klv_1108_fill_in_metadata(
         KLV_1108_COMPRESSION_TYPE_H262 )
     {
       convert_vital_to_klv_via_pairs(
-          vital_data, klv_data, kv::VITAL_META_VIDEO_COMPRESSION_LEVEL,
-          KLV_1108_COMPRESSION_LEVEL, compression_level_pairs_mpeg2() );
+        vital_data, klv_data, kv::VITAL_META_VIDEO_COMPRESSION_LEVEL,
+        KLV_1108_COMPRESSION_LEVEL, compression_level_pairs_mpeg2() );
     }
     else
     {
@@ -525,6 +533,7 @@ klv_1108_fill_in_metadata(
       }
     }
   }
+
 
   // Compression ratio
   auto const& frame_rate_vital =
@@ -552,14 +561,13 @@ klv_1108_fill_in_metadata(
 
   // Determine if we have values for all tags we are concerned with here
   for( auto const tag : {
-    KLV_1108_ASSESSMENT_POINT,
-    KLV_1108_COMPRESSION_TYPE,
-    KLV_1108_COMPRESSION_PROFILE,
-    KLV_1108_COMPRESSION_LEVEL,
-    KLV_1108_COMPRESSION_RATIO,
-    KLV_1108_STREAM_BITRATE,
-    KLV_1108_DOCUMENT_VERSION,
-  } )
+          KLV_1108_ASSESSMENT_POINT,
+          KLV_1108_COMPRESSION_TYPE,
+          KLV_1108_COMPRESSION_PROFILE,
+          KLV_1108_COMPRESSION_LEVEL,
+          KLV_1108_COMPRESSION_RATIO,
+          KLV_1108_STREAM_BITRATE,
+          KLV_1108_DOCUMENT_VERSION, } )
   {
     if( !klv_data.has( tag ) )
     {

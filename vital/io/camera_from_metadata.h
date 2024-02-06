@@ -12,11 +12,12 @@
 
 #include <vital/types/camera_intrinsics.h>
 #include <vital/types/camera_perspective.h>
-#include <vital/types/local_geo_cs.h>
 #include <vital/types/camera_rpc.h>
+#include <vital/types/local_geo_cs.h>
 #include <vital/types/metadata.h>
 
 namespace kwiver {
+
 namespace vital {
 
 /// Convert space separated sting to Eigen vector
@@ -33,7 +34,7 @@ string_to_vector( std::string const& s );
 /// \return A new camera object representing the contents of the read-in file.
 VITAL_EXPORT
 camera_sptr
-camera_from_metadata( metadata_sptr const& md);
+camera_from_metadata( metadata_sptr const& md );
 
 /// Use metadata to construct intrinsics
 ///
@@ -43,9 +44,10 @@ camera_from_metadata( metadata_sptr const& md);
 /// \returns nullptr if insufficient data to construct intrinsics
 VITAL_EXPORT
 camera_intrinsics_sptr
-intrinsics_from_metadata(metadata const& md,
-                         unsigned int image_width,
-                         unsigned int image_height);
+intrinsics_from_metadata(
+  metadata const& md,
+  unsigned int image_width,
+  unsigned int image_height );
 
 /// Use a sequence of metadata objects to initialize a sequence of cameras
 ///
@@ -62,13 +64,14 @@ intrinsics_from_metadata(metadata const& md,
 ///       If updated, the computed local origin is determined from the mean
 ///       camera easting and northing at zero altitude.
 VITAL_EXPORT
-std::map<frame_id_t, camera_sptr>
-initialize_cameras_with_metadata(std::map<frame_id_t,
-                                          metadata_sptr> const& md_map,
-                                 simple_camera_perspective const& base_camera,
-                                 local_geo_cs& lgcs,
-                                 bool init_intrinsics = true,
-                                 rotation_d const& rot_offset = rotation_d());
+std::map< frame_id_t, camera_sptr >
+initialize_cameras_with_metadata(
+  std::map< frame_id_t,
+    metadata_sptr > const& md_map,
+  simple_camera_perspective const& base_camera,
+  local_geo_cs& lgcs,
+  bool init_intrinsics = true,
+  rotation_d const& rot_offset = rotation_d() );
 
 /// Use the pose data provided by metadata to update camera pose
 ///
@@ -79,10 +82,11 @@ initialize_cameras_with_metadata(std::map<frame_id_t,
 /// \return            True only if metadata is sufficient to update the camera
 VITAL_EXPORT
 bool
-update_camera_from_metadata(metadata const& md,
-                            local_geo_cs const& lgcs,
-                            simple_camera_perspective& cam,
-                            rotation_d const& rot_offset = rotation_d());
+update_camera_from_metadata(
+  metadata const& md,
+  local_geo_cs const& lgcs,
+  simple_camera_perspective& cam,
+  rotation_d const& rot_offset = rotation_d() );
 
 /// Update a sequence of metadata from a sequence of cameras and local_geo_cs
 ///
@@ -94,9 +98,10 @@ update_camera_from_metadata(metadata const& md,
 ///                            a frame, a new one is created.
 VITAL_EXPORT
 void
-update_metadata_from_cameras(std::map<frame_id_t, camera_sptr> const& cam_map,
-                             local_geo_cs const& lgcs,
-                             std::map<frame_id_t, metadata_sptr>& md_map);
+update_metadata_from_cameras(
+  std::map< frame_id_t, camera_sptr > const& cam_map,
+  local_geo_cs const& lgcs,
+  std::map< frame_id_t, metadata_sptr >& md_map );
 
 /// Use the camera pose to update the metadata structure
 ///
@@ -106,10 +111,13 @@ update_metadata_from_cameras(std::map<frame_id_t, camera_sptr> const& cam_map,
 /// \param [in,out]  md    The metadata object to update in place
 VITAL_EXPORT
 void
-update_metadata_from_camera(simple_camera_perspective const& cam,
-                            local_geo_cs const& lgcs,
-                            metadata& md);
+update_metadata_from_camera(
+  simple_camera_perspective const& cam,
+  local_geo_cs const& lgcs,
+  metadata& md );
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // VITAL_CAMERA_FROM_METADATA_H_

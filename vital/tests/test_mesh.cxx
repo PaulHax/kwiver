@@ -64,8 +64,9 @@ TEST ( mesh, group_names )
 
   EXPECT_EQ( faces->make_group( "third testing name" ), 2 );
   EXPECT_EQ( faces->group_face_set( "third testing name" ).size(), 6 );
-  EXPECT_EQ( faces->group_face_set( "testing name" ).size(),
-             faces->size() - 6 );
+  EXPECT_EQ(
+    faces->group_face_set( "testing name" ).size(),
+    faces->size() - 6 );
 }
 
 // ----------------------------------------------------------------------------
@@ -95,8 +96,9 @@ TEST ( mesh, append )
   first_faces->append( *second_faces );
   EXPECT_EQ( first_faces->make_group( "second name" ), 0 );
   EXPECT_EQ( first_faces->size(), first_size + second_size );
-  EXPECT_EQ( first_faces->group_face_set( "second name" ).size(),
-             second_size );
+  EXPECT_EQ(
+    first_faces->group_face_set( "second name" ).size(),
+    second_size );
   EXPECT_TRUE( first_faces->has_normals() );
   first_faces->append( *third_faces );
   EXPECT_EQ( first_faces->make_group( "third name" ), third_size );
@@ -109,8 +111,8 @@ TEST ( mesh, append )
 TEST ( mesh, append_with_shift )
 {
   std::vector< std::vector< unsigned int > > first_list = { { 0, 1, 2 } };
-  std::vector< std::vector< unsigned int > > second_list =
-  { { 0, 1, 2, 3, 4 }, { 5, 6, 7, 8, 9 } };
+  std::vector< std::vector< unsigned int > > second_list = { { 0, 1, 2, 3, 4 },
+    { 5, 6, 7, 8, 9 } };
   unsigned int shift = 10;
 
   mesh_face_array first_faces( first_list );
@@ -131,8 +133,9 @@ TEST ( mesh, append_with_shift )
   {
     for( unsigned int j = 0; j < second_list[ i ].size(); j++ )
     {
-      EXPECT_EQ( second_list[ i ][ j ] + shift,
-                 first_faces[ i + offset ][ j ] );
+      EXPECT_EQ(
+        second_list[ i ][ j ] + shift,
+        first_faces[ i + offset ][ j ] );
     }
   }
 }
@@ -142,8 +145,8 @@ TEST ( mesh, half_edges )
 {
   mesh_sptr cube_mesh = kwiver::testing::cube_mesh( 1.0 );
 
-  std::vector< std::vector< unsigned int > > face_list =
-  { { 0, 1, 3, 2 }, { 4, 6, 7, 5 }, { 5, 7, 3, 1 }, { 6, 4, 0, 2 },
+  std::vector< std::vector< unsigned int > > face_list = { { 0, 1, 3, 2 },
+    { 4, 6, 7, 5 }, { 5, 7, 3, 1 }, { 6, 4, 0, 2 },
     { 7, 6, 2, 3 }, { 1, 0, 4, 5 } };
   unsigned int list_size = 0;
   for( unsigned int i = 0; i < face_list.size(); i++ )
@@ -198,9 +201,10 @@ TEST ( mesh, assignment_operator )
 
 // ----------------------------------------------------------------------------
 void
-check_vertex_normals( const std::vector< vector_3d > grid_vertex_normals,
-                      const std::vector< vector_3d > cube_vertex_normals,
-                      const std::vector< vector_3d > fusion_vertex_normals )
+check_vertex_normals(
+  const std::vector< vector_3d > grid_vertex_normals,
+  const std::vector< vector_3d > cube_vertex_normals,
+  const std::vector< vector_3d > fusion_vertex_normals )
 {
   double threshhold = 0.000001;
 
@@ -218,16 +222,20 @@ check_vertex_normals( const std::vector< vector_3d > grid_vertex_normals,
   EXPECT_EQ( cube_vertex_normals.size(), expected_cube_vertex_normals.size() );
   for( unsigned int i = 0; i < cube_vertex_normals.size(); i++ )
   {
-    EXPECT_NEAR( cube_vertex_normals[ i ][ 0 ],
-                 expected_cube_vertex_normals[ i ][ 0 ], threshhold );
-    EXPECT_NEAR( cube_vertex_normals[ i ][ 1 ],
-                 expected_cube_vertex_normals[ i ][ 1 ], threshhold );
-    EXPECT_NEAR( cube_vertex_normals[ i ][ 2 ],
-                 expected_cube_vertex_normals[ i ][ 2 ], threshhold );
+    EXPECT_NEAR(
+      cube_vertex_normals[ i ][ 0 ],
+      expected_cube_vertex_normals[ i ][ 0 ], threshhold );
+    EXPECT_NEAR(
+      cube_vertex_normals[ i ][ 1 ],
+      expected_cube_vertex_normals[ i ][ 1 ], threshhold );
+    EXPECT_NEAR(
+      cube_vertex_normals[ i ][ 2 ],
+      expected_cube_vertex_normals[ i ][ 2 ], threshhold );
   }
 
-  EXPECT_EQ( fusion_vertex_normals.size(),
-             grid_vertex_normals.size() + cube_vertex_normals.size() );
+  EXPECT_EQ(
+    fusion_vertex_normals.size(),
+    grid_vertex_normals.size() + cube_vertex_normals.size() );
 
   unsigned int i = 0;
   for(; i < grid_vertex_normals.size(); i++ )
@@ -236,12 +244,15 @@ check_vertex_normals( const std::vector< vector_3d > grid_vertex_normals,
   }
   for( unsigned int j = 0; j < cube_vertex_normals.size(); j++, i++ )
   {
-    EXPECT_NEAR( fusion_vertex_normals[ i ][ 0 ],
-                 expected_cube_vertex_normals[ j ][ 0 ], threshhold );
-    EXPECT_NEAR( fusion_vertex_normals[ i ][ 1 ],
-                 expected_cube_vertex_normals[ j ][ 1 ], threshhold );
-    EXPECT_NEAR( fusion_vertex_normals[ i ][ 2 ],
-                 expected_cube_vertex_normals[ j ][ 2 ], threshhold );
+    EXPECT_NEAR(
+      fusion_vertex_normals[ i ][ 0 ],
+      expected_cube_vertex_normals[ j ][ 0 ], threshhold );
+    EXPECT_NEAR(
+      fusion_vertex_normals[ i ][ 1 ],
+      expected_cube_vertex_normals[ j ][ 1 ], threshhold );
+    EXPECT_NEAR(
+      fusion_vertex_normals[ i ][ 2 ],
+      expected_cube_vertex_normals[ j ][ 2 ], threshhold );
   }
 }
 
@@ -275,8 +286,9 @@ TEST ( mesh, compute_vertex_normals )
   const std::vector< vector_3d > fusion_vertex_normals =
     grid_mesh->vertices().normals();
 
-  check_vertex_normals( grid_vertex_normals, cube_vertex_normals,
-                        fusion_vertex_normals );
+  check_vertex_normals(
+    grid_vertex_normals, cube_vertex_normals,
+    fusion_vertex_normals );
 }
 
 // ----------------------------------------------------------------------------
@@ -321,8 +333,9 @@ TEST ( mesh, compute_vertex_normals_from_faces )
   const std::vector< vector_3d > fusion_vertex_normals =
     grid_mesh->vertices().normals();
 
-  check_vertex_normals( grid_vertex_normals, cube_vertex_normals,
-                        fusion_vertex_normals );
+  check_vertex_normals(
+    grid_vertex_normals, cube_vertex_normals,
+    fusion_vertex_normals );
 
   const std::vector< vector_3d > fusion_face_normals =
     grid_mesh->faces().normals();
@@ -342,8 +355,9 @@ TEST ( mesh, compute_vertex_normals_from_faces )
     EXPECT_EQ( cube_face_normals[ i ], expected_cube_face_normals[ i ] );
   }
 
-  EXPECT_EQ( fusion_face_normals.size(),
-             grid_face_normals.size() + cube_face_normals.size() );
+  EXPECT_EQ(
+    fusion_face_normals.size(),
+    grid_face_normals.size() + cube_face_normals.size() );
 
   unsigned int i = 0;
   for(; i < grid_face_normals.size(); i++ )

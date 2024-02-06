@@ -26,31 +26,33 @@ main( int argc, char** argv )
 class metadata_map_csv : public ::testing::Test
 {
 protected:
-  void SetUp() override
+  void
+  SetUp() override
   {
     // Set write_enum_names so this test still works if the field names change
     kv::config_block_sptr config = kv::config_block::empty_config();
-    io.get_default_config(*config);
+    io.get_default_config( *config );
     config->set_value( "write_enum_names", true );
     io.set_configuration( config );
 
     map = {
       { 4, { std::make_shared< kv::metadata >() } },
       { 7, { std::make_shared< kv::metadata >(),
-            std::make_shared< kv::metadata >() } } };
+             std::make_shared< kv::metadata >() } } };
 
     map[ 4 ][ 0 ]->add< kv::VITAL_META_VIDEO_FRAME_NUMBER >( 4 );
     map[ 4 ][ 0 ]->add< kv::VITAL_META_UNIX_TIMESTAMP >( 1 );
     map[ 4 ][ 0 ]->add< kv::VITAL_META_VIDEO_DATA_STREAM_INDEX >( 1 );
     map[ 4 ][ 0 ]->add< kv::VITAL_META_SENSOR_HORIZONTAL_FOV >( 60.7 );
-    map[ 4 ][ 0 ]->add< kv::VITAL_META_PLATFORM_DESIGNATION >( "\"Platform,\"" );
+    map[ 4 ][ 0 ]->add< kv::VITAL_META_PLATFORM_DESIGNATION >(
+      "\"Platform,\"" );
     map[ 4 ][ 0 ]->add< kv::VITAL_META_SENSOR_LOCATION >(
       { kv::vector_2d{ 2.0, 3.0 }, kv::SRID::lat_lon_WGS84 } );
     map[ 4 ][ 0 ]->add< kv::VITAL_META_CORNER_POINTS >(
       { { kv::vector_2d{ 0.0, 3.0 },
-          kv::vector_2d{ 2.0, 3.0 },
-          kv::vector_2d{ 2.0, 6.0 },
-          kv::vector_2d{ 0.0, 6.0 } }, kv::SRID::lat_lon_WGS84 } );
+        kv::vector_2d{ 2.0, 3.0 },
+        kv::vector_2d{ 2.0, 6.0 },
+        kv::vector_2d{ 0.0, 6.0 } }, kv::SRID::lat_lon_WGS84 } );
 
     map[ 7 ][ 0 ]->add< kv::VITAL_META_VIDEO_FRAME_NUMBER >( 7 );
     map[ 7 ][ 0 ]->add< kv::VITAL_META_UNIX_TIMESTAMP >( 3 );
@@ -80,7 +82,7 @@ protected:
 };
 
 // ----------------------------------------------------------------------------
-TEST_F( metadata_map_csv, save )
+TEST_F ( metadata_map_csv, save )
 {
   // Write to CSV
   io.save_( ss, std::make_shared< kv::simple_metadata_map >( map ), "" );
@@ -89,10 +91,11 @@ TEST_F( metadata_map_csv, save )
 }
 
 // ----------------------------------------------------------------------------
-TEST_F( metadata_map_csv, load )
+TEST_F ( metadata_map_csv, load )
 {
   // Read from CSV
   ss.str( example_csv );
+
   auto const result_map = io.load_( ss, "" )->metadata();
 
   auto true_it = map.cbegin();
@@ -100,10 +103,11 @@ TEST_F( metadata_map_csv, load )
   while( true_it != map.cend() && result_it != result_map.cend() )
   {
     EXPECT_EQ( true_it->first, result_it->first );
-    EXPECT_TRUE( std::equal(
-      true_it->second.begin(), true_it->second.end(),
-      result_it->second.begin(), result_it->second.end(),
-      []( auto const& lhs, auto const& rhs ){ return *lhs == *rhs; } ) )
+    EXPECT_TRUE(
+      std::equal(
+        true_it->second.begin(), true_it->second.end(),
+        result_it->second.begin(), result_it->second.end(),
+        []( auto const& lhs, auto const& rhs ){ return *lhs == *rhs; } ) )
       << "Frame " << true_it->first << " not equal";
     ++true_it;
     ++result_it;

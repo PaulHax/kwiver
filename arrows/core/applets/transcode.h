@@ -18,10 +18,11 @@ class transcode_applet : public tools::kwiver_applet
 public:
   transcode_applet();
 
-  PLUGIN_INFO( "transcode",
-               "Transcode video.\n\n"
-               "This program reads video from one format, "
-               "then writes it to another format." );
+  PLUGIN_INFO(
+    "transcode",
+    "Transcode video.\n\n"
+    "This program reads video from one format, "
+    "then writes it to another format." );
 
   void add_command_options() override;
 

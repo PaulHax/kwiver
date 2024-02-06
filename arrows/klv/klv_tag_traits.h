@@ -58,14 +58,15 @@ private:
 class KWIVER_ALGO_KLV_EXPORT klv_tag_traits
 {
 public:
-  klv_tag_traits( klv_uds_key uds_key,
-                  klv_lds_key tag,
-                  std::string const& enum_name,
-                  klv_data_format_sptr format,
-                  std::string const& name,
-                  std::string const& description,
-                  klv_tag_count_range const& tag_count_range,
-                  klv_tag_traits_lookup const* subtag_lookup = nullptr );
+  klv_tag_traits(
+    klv_uds_key uds_key,
+    klv_lds_key tag,
+    std::string const& enum_name,
+    klv_data_format_sptr format,
+    std::string const& name,
+    std::string const& description,
+    klv_tag_count_range const& tag_count_range,
+    klv_tag_traits_lookup const* subtag_lookup = nullptr );
 
   /// Return the LDS tag.
   klv_lds_key

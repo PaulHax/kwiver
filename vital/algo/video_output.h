@@ -67,10 +67,10 @@ public:
   /// This capability indicates if the implementation can take data which a
   /// video input did not interpret and put it back in the video stream.
   static const algorithm_capabilities::capability_name_t
-  SUPPORTS_UNINTERPRETED_DATA;
+    SUPPORTS_UNINTERPRETED_DATA;
 
   video_output();
-  PLUGGABLE_INTERFACE(video_output);
+  PLUGGABLE_INTERFACE( video_output );
 
   /// Open a video stream.
   ///
@@ -83,8 +83,9 @@ public:
   ///   Additional information used to configure the video output.
   ///
   /// \throws exception Thrown if opening the video stream failed.
-  virtual void open( std::string video_name,
-                     video_settings const* settings ) = 0;
+  virtual void open(
+    std::string video_name,
+    video_settings const* settings ) = 0;
 
   /// Close video stream.
   ///
@@ -144,7 +145,7 @@ public:
   ///
   /// This method writes the uninterpreted data to the video stream.
   virtual void add_uninterpreted_data(
-      video_uninterpreted_data const& misc_data );
+    video_uninterpreted_data const& misc_data );
 
   /// Extract implementation-specific video encoding settings.
   ///

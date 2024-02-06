@@ -17,20 +17,29 @@
 #include <string>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace vxl {
 
 class KWIVER_ALGO_VXL_EXPORT optimize_cameras
   : public vital::algo::optimize_cameras
 {
 public:
-  PLUGIN_INFO( "vxl",
-               "Use VXL (vpgl) to optimize camera parameters for fixed "
-               "landmarks and tracks." )
+  PLUGIN_INFO(
+    "vxl",
+    "Use VXL (vpgl) to optimize camera parameters for fixed "
+    "landmarks and tracks." )
 
   /// \cond DoxygenSuppress
-  virtual void set_configuration(vital::config_block_sptr /*config*/) { }
-  virtual bool check_configuration(vital::config_block_sptr /*config*/) const { return true; }
+  virtual void set_configuration( vital::config_block_sptr /*config*/ ) {}
+
+  virtual bool
+  check_configuration( vital::config_block_sptr /*config*/ ) const
+  {
+    return true;
+  }
+
   /// \endcond
 
   using vital::algo::optimize_cameras::optimize;
@@ -49,14 +58,17 @@ public:
   /// \param[in]     metadata  The optional metadata to constrain the
   ///                          optimization.
   virtual void
-  optimize(kwiver::vital::camera_perspective_sptr & camera,
-           const std::vector<vital::feature_sptr>& features,
-           const std::vector<vital::landmark_sptr>& landmarks,
-           kwiver::vital::sfm_constraints_sptr constraints = nullptr) const;
+  optimize(
+    kwiver::vital::camera_perspective_sptr& camera,
+    const std::vector< vital::feature_sptr >& features,
+    const std::vector< vital::landmark_sptr >& landmarks,
+    kwiver::vital::sfm_constraints_sptr constraints = nullptr ) const;
 };
 
 } // end namespace vxl
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif

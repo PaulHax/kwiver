@@ -10,7 +10,9 @@
 #include <arrows/core/kwiver_algo_core_export.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 /// Metadata reader using the AFRL POS file format.
@@ -21,28 +23,31 @@ namespace core {
 /// and an associated directory name for the metadata files. These
 /// metadata files have the same base name as the image files.
 class KWIVER_ALGO_CORE_EXPORT video_input_pos
-  : public  vital::algo::video_input
+  : public vital::algo::video_input
 {
 public:
-  PLUGGABLE_IMPL(video_input_pos,
-                "Read video metadata in AFRL POS format."
-                " The algorithm takes configuration for a directory full of images"
-                " and an associated directory name for the metadata files."
-                " These metadata files have the same base name as the image files."
-                " Each metadata file is associated with the image file"
-                " of the same base name.",
-                PARAM_DEFAULT(metadata_directory,std::string,
-                     "Name of directory containing metadata files.","" ),
-                PARAM_DEFAULT(metadata_extension,std::string,
-                     "File extension of metadata files.",
-                     ".pos"));
+  PLUGGABLE_IMPL(
+    video_input_pos,
+    "Read video metadata in AFRL POS format."
+    " The algorithm takes configuration for a directory full of images"
+    " and an associated directory name for the metadata files."
+    " These metadata files have the same base name as the image files."
+    " Each metadata file is associated with the image file"
+    " of the same base name.",
+    PARAM_DEFAULT(
+      metadata_directory, std::string,
+      "Name of directory containing metadata files.", "" ),
+    PARAM_DEFAULT(
+      metadata_extension, std::string,
+      "File extension of metadata files.",
+      ".pos" ) );
 
   /// Constructor
   video_input_pos();
   virtual ~video_input_pos();
 
   /// Check that the algorithm's currently configuration is valid
-  bool check_configuration(vital::config_block_sptr config) const override;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
   /// @brief Open a list of images.
   ///
@@ -59,25 +64,33 @@ public:
   bool seekable() const override;
   size_t num_frames() const override;
 
-  bool next_frame( kwiver::vital::timestamp& ts,
-                           uint32_t timeout = 0 ) override;
+  bool next_frame(
+    kwiver::vital::timestamp& ts,
+    uint32_t timeout = 0 ) override;
 
-  bool seek_frame( kwiver::vital::timestamp& ts,
-                           kwiver::vital::timestamp::frame_t frame_number,
-                           uint32_t timeout = 0 ) override;
+  bool seek_frame(
+    kwiver::vital::timestamp& ts,
+    kwiver::vital::timestamp::frame_t frame_number,
+    uint32_t timeout = 0 ) override;
 
   kwiver::vital::timestamp frame_timestamp() const override;
   kwiver::vital::image_container_sptr frame_image() override;
   kwiver::vital::metadata_vector frame_metadata() override;
   kwiver::vital::metadata_map_sptr metadata_map() override;
+
 protected:
   void initialize() override;
+
 private:
   /// private implementation class
   class priv;
-  KWIVER_UNIQUE_PTR(priv,d);
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
-} } } // end namespace
+} // namespace core
+
+} // namespace arrows
+
+}     // end namespace
 
 #endif // ARROWS_CORE_VIDEO_INPUT_POS_H

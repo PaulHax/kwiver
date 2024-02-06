@@ -14,16 +14,19 @@
 
 #include <vital/types/activity_type.h>
 
-#include <vital/bindings/c/types/activity_type.h>
 #include <vital/bindings/c/helpers/c_utils.h>
+#include <vital/bindings/c/types/activity_type.h>
 
 namespace kwiver {
+
 namespace vital_c {
 
 /// Declaration of C interface shared_ptr cache of vital::activity_type
 extern SharedPointerCache< kwiver::vital::activity_type,
-                           vital_activity_type_t > AT_SPTR_CACHE;
+  vital_activity_type_t > AT_SPTR_CACHE;
 
-} }
+} // namespace vital_c
 
-#endif //VITAL_C_HELPERS_ACTIVTY_TYPE_H_
+} // namespace kwiver
+
+#endif // VITAL_C_HELPERS_ACTIVTY_TYPE_H_

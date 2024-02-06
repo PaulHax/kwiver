@@ -61,7 +61,7 @@ DEFINE_STRUCT_CMP(
   &klv_1010_sdcc_flp::members,
   &klv_1010_sdcc_flp::sigma,
   &klv_1010_sdcc_flp::rho
-  )
+)
 
 // ----------------------------------------------------------------------------
 klv_1010_sdcc_flp_format
@@ -108,12 +108,14 @@ klv_1010_sdcc_flp_format
 
   if( m_preceding_keys.size() < matrix_size )
   {
-    VITAL_THROW( kv::metadata_exception,
-                 "SDCC-FLP: insufficient preceding keys" );
+    VITAL_THROW(
+      kv::metadata_exception,
+      "SDCC-FLP: insufficient preceding keys" );
   }
-  std::copy( m_preceding_keys.end() - matrix_size,
-             m_preceding_keys.end(),
-             result.members.begin() );
+  std::copy(
+    m_preceding_keys.end() - matrix_size,
+    m_preceding_keys.end(),
+    result.members.begin() );
 
   // Read parse control bytes
   auto const parse_control_begin = data;
@@ -187,8 +189,9 @@ klv_1010_sdcc_flp_format
       }
       else if( result.rho_uses_imap )
       {
-        value = klv_read_imap( { -1.0, 1.0 }, data,
-                               tracker.verify( result.rho_length ) );
+        value = klv_read_imap(
+          { -1.0, 1.0 }, data,
+          tracker.verify( result.rho_length ) );
       }
       else
       {
@@ -204,8 +207,9 @@ klv_1010_sdcc_flp_format
 // ----------------------------------------------------------------------------
 void
 klv_1010_sdcc_flp_format
-::write_typed( klv_1010_sdcc_flp const& value_source,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_1010_sdcc_flp const& value_source,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto tracker = track_it( data, length );
   auto value = value_source;
@@ -274,13 +278,15 @@ klv_1010_sdcc_flp_format
       if( value.sigma_uses_imap )
       {
         auto const format = m_sigma_imap( *it, value.sigma_length );
-        format.write_( sigma_value, data,
-                       tracker.verify( value.sigma_length ) );
+        format.write_(
+          sigma_value, data,
+          tracker.verify( value.sigma_length ) );
       }
       else
       {
-        klv_write_float( sigma_value, data,
-                         tracker.verify( value.sigma_length ) );
+        klv_write_float(
+          sigma_value, data,
+          tracker.verify( value.sigma_length ) );
       }
       ++it;
     }
@@ -297,8 +303,9 @@ klv_1010_sdcc_flp_format
       }
       else if( value.rho_uses_imap )
       {
-        klv_write_imap( rho_value, { -1.0, 1.0 }, data,
-                        tracker.verify( value.rho_length ) );
+        klv_write_imap(
+          rho_value, { -1.0, 1.0 }, data,
+          tracker.verify( value.rho_length ) );
       }
       else
       {
@@ -317,10 +324,11 @@ klv_1010_sdcc_flp_format
   auto const rho_count =
     matrix_size * ( matrix_size - 1 ) / 2;
   auto const rho_sparse_count =
-    std::accumulate( value.rho.begin(), value.rho.end(), size_t{ 0 },
-                     []( size_t count, double element ){
-                       return count + static_cast< bool >( element );
-                     } );
+    std::accumulate(
+      value.rho.begin(), value.rho.end(), size_t{ 0 },
+      []( size_t count, double element ){
+        return count + static_cast< bool >( element );
+      } );
   auto const length_of_matrix_size = klv_ber_oid_length( matrix_size );
   auto const length_of_parse_control = size_t{ 1 } + value.long_parse_control;
   auto const length_of_bit_vector =

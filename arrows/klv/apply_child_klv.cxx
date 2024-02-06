@@ -36,13 +36,15 @@ klv_0601_child_policy( klv_lds_key tag )
 
 // ----------------------------------------------------------------------------
 void
-apply_amend( klv_value& value ) {
+apply_amend( klv_value& value )
+{
   // Extract the local set
   auto const set_ptr = value.get_ptr< klv_local_set >();
   if( !set_ptr )
   {
     return;
   }
+
   auto& set = *set_ptr;
 
   // Find amend set(s)
@@ -85,6 +87,7 @@ apply_amend( klv_value& value ) {
     {
       auto& amend_value = amend_range.begin()->second;
       apply_amend( amend_value );
+
       auto const amend_ptr = amend_value.get_ptr< klv_local_set >();
       if( amend_ptr )
       {
@@ -114,13 +117,14 @@ apply_segment(
   {
     return { std::next( packet_it ), std::next( packet_it ) };
   }
+
   auto& set = *set_ptr;
 
   // Find segment set(s) and remove them
   std::vector< klv_local_set > segment_sets;
   auto const segment_range = set.all_at( KLV_0601_SEGMENT_LOCAL_SET );
   for( auto it = segment_range.begin();
-        it != set.end() && it->first == KLV_0601_SEGMENT_LOCAL_SET; )
+       it != set.end() && it->first == KLV_0601_SEGMENT_LOCAL_SET; )
   {
     auto const segment_ptr = it->second.get_ptr< klv_local_set >();
     if( segment_ptr )
@@ -148,6 +152,7 @@ apply_segment(
     klv_1607_apply_child(
       packet_it->value.get< klv_local_set >(), segment_set );
   }
+
   auto const begin_it = std::next( original_packet_it );
   auto const end_it = std::next( packet_it );
   packets.erase( original_packet_it );
@@ -155,13 +160,10 @@ apply_segment(
   return { begin_it, end_it };
 }
 
-
 // ----------------------------------------------------------------------------
 apply_child_klv
 ::~apply_child_klv()
 {}
-
-
 
 // ----------------------------------------------------------------------------
 bool

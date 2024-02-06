@@ -15,26 +15,27 @@
 #include <vital/plugin_management/plugin_manager.h>
 #include <vital/vital_config.h>
 
-#include <memory>
-#include <string>
 #include <fstream>
 #include <iostream>
+#include <memory>
+#include <string>
 
 kwiver::vital::path_t g_data_dir;
 
 namespace algo = kwiver::vital::algo;
 namespace kac = kwiver::arrows::core;
+
 static std::string source_list_file_name = "video_as_images/source_list.txt";
 static std::string frame_list_file_name = "video_as_images/frame_list.txt";
 
 // ----------------------------------------------------------------------------
 int
-main(int argc, char* argv[])
+main( int argc, char* argv[] )
 {
   ::testing::InitGoogleTest( &argc, argv );
   TEST_LOAD_PLUGINS();
 
-  GET_ARG(1, g_data_dir);
+  GET_ARG( 1, g_data_dir );
 
   return RUN_ALL_TESTS();
 }
@@ -42,37 +43,39 @@ main(int argc, char* argv[])
 // ----------------------------------------------------------------------------
 class video_input_splice : public ::testing::Test
 {
-  TEST_ARG(data_dir);
+  TEST_ARG( data_dir );
 };
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_splice, create)
+TEST_F ( video_input_splice, create )
 {
-  EXPECT_NE( nullptr, algo::video_input::create("splice") );
+  EXPECT_NE( nullptr, algo::video_input::create( "splice" ) );
 }
 
 // ----------------------------------------------------------------------------
 static
 bool
-set_config(kwiver::vital::config_block_sptr config,
-           VITAL_UNUSED std::string const& data_dir)
+set_config(
+  kwiver::vital::config_block_sptr config,
+  VITAL_UNUSED std::string const& data_dir )
 {
-  for ( int n = 1; n < 4; ++n )
+  for( int n = 1; n < 4; ++n )
   {
     std::string block_name = "video_source_" + std::to_string( n ) + ":";
 
     config->set_value( block_name + "type", "image_list" );
-    if ( kwiver::vital::has_algorithm_impl_name( "image_io", "ocv" ) )
+    if( kwiver::vital::has_algorithm_impl_name( "image_io", "ocv" ) )
     {
       config->set_value( block_name + "image_list:image_reader:type", "ocv" );
     }
-    else if ( kwiver::vital::has_algorithm_impl_name( "image_io", "vxl" ) )
+    else if( kwiver::vital::has_algorithm_impl_name( "image_io", "vxl" ) )
     {
       config->set_value( block_name + "image_list:image_reader:type", "vxl" );
     }
     else
     {
-      std::cout << "Skipping tests since there is no image reader." << std::endl;
+      std::cout << "Skipping tests since there is no image reader." <<
+        std::endl;
       return false;
     }
   }
@@ -81,12 +84,12 @@ set_config(kwiver::vital::config_block_sptr config,
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_splice, is_good)
+TEST_F ( video_input_splice, is_good )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -119,7 +122,7 @@ TEST_F(video_input_splice, is_good)
   vis.open( list_file );
 
   int num_frames = 0;
-  while ( vis.next_frame( ts ) )
+  while( vis.next_frame( ts ) )
   {
     ++num_frames;
     EXPECT_TRUE( vis.good() )
@@ -131,12 +134,12 @@ TEST_F(video_input_splice, is_good)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_splice, next_frame)
+TEST_F ( video_input_splice, next_frame )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -152,37 +155,37 @@ TEST_F(video_input_splice, next_frame)
   kwiver::vital::timestamp ts;
 
   int num_frames = 0;
-  while ( vis.next_frame( ts ) )
+  while( vis.next_frame( ts ) )
   {
     auto img = vis.frame_image();
     auto md = vis.frame_metadata();
 
-    if (md.size() > 0)
+    if( md.size() > 0 )
     {
       std::cout << "-----------------------------------\n" << std::endl;
-      kwiver::vital::print_metadata( std::cout, *md[0] );
+      kwiver::vital::print_metadata( std::cout, *md[ 0 ] );
     }
 
     ++num_frames;
     EXPECT_EQ( num_frames, ts.get_frame() )
       << "Frame numbers should be sequential";
-    EXPECT_EQ( ts.get_frame(), decode_barcode(*img) )
+    EXPECT_EQ( ts.get_frame(), decode_barcode( *img ) )
       << "Frame number should match barcode in frame image";
   }
 
-  EXPECT_FALSE (vis.next_frame(ts) );
+  EXPECT_FALSE( vis.next_frame( ts ) );
   EXPECT_TRUE( vis.end_of_video() );
   EXPECT_EQ( num_expected_frames, num_frames );
   EXPECT_EQ( num_expected_frames, vis.num_frames() );
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_splice, seek_frame)
+TEST_F ( video_input_splice, seek_frame )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -203,12 +206,12 @@ TEST_F(video_input_splice, seek_frame)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_splice, seek_then_next_frame)
+TEST_F ( video_input_splice, seek_then_next_frame )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -229,12 +232,12 @@ TEST_F(video_input_splice, seek_then_next_frame)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_splice, next_then_seek_frame)
+TEST_F ( video_input_splice, next_then_seek_frame )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -255,12 +258,12 @@ TEST_F(video_input_splice, next_then_seek_frame)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_splice, next_then_seek_then_next)
+TEST_F ( video_input_splice, next_then_seek_then_next )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -281,12 +284,12 @@ TEST_F(video_input_splice, next_then_seek_then_next)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_splice, metadata_map)
+TEST_F ( video_input_splice, metadata_map )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -311,10 +314,10 @@ TEST_F(video_input_splice, metadata_map)
   std::ifstream list_file_stream( data_dir + "/" + frame_list_file_name );
   int frame_number = 1;
   std::string file_name;
-  while ( std::getline( list_file_stream, file_name ) )
+  while( std::getline( list_file_stream, file_name ) )
   {
-    auto md_file_name = md_map[frame_number][0]->find(
-        kwiver::vital::VITAL_META_IMAGE_URI).as_string();
+    auto md_file_name = md_map[ frame_number ][ 0 ]->find(
+      kwiver::vital::VITAL_META_IMAGE_URI ).as_string();
     EXPECT_TRUE( md_file_name.find( file_name ) != std::string::npos )
       << "File path in metadata should contain " << file_name;
     frame_number++;
@@ -325,14 +328,14 @@ TEST_F(video_input_splice, metadata_map)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_splice, next_frame_nth_frame_output)
+TEST_F ( video_input_splice, next_frame_nth_frame_output )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
   config->set_value( "output_nth_frame", nth_frame_output );
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -351,14 +354,14 @@ TEST_F(video_input_splice, next_frame_nth_frame_output)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_splice, seek_frame_nth_frame_output)
+TEST_F ( video_input_splice, seek_frame_nth_frame_output )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
   config->set_value( "output_nth_frame", nth_frame_output );
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -377,12 +380,12 @@ TEST_F(video_input_splice, seek_frame_nth_frame_output)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_splice, test_capabilities)
+TEST_F ( video_input_splice, test_capabilities )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }

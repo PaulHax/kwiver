@@ -4,25 +4,26 @@
 
 #include "file_md5.h"
 
-#include <kwiversys/MD5.h>
-#include <iostream>
 #include <cstdlib>
 #include <fstream>
-#include <sstream>
 #include <iomanip>
+#include <iostream>
+#include <kwiversys/MD5.h>
+#include <sstream>
 
 using std::string;
 using std::ifstream;
 using std::ostringstream;
 
 namespace kwiver {
+
 namespace vital {
 
 string
 file_md5( const string& fn )
 {
   ifstream is( fn.c_str(), ifstream::binary );
-  if ( !is )
+  if( !is )
   {
     return "";
   }
@@ -36,12 +37,12 @@ file_md5( const string& fn )
     kwiversysMD5* md5 = kwiversysMD5_New();
     kwiversysMD5_Initialize( md5 );
 
-    while ( is )
+    while( is )
     {
       is.read( reinterpret_cast< char* >( buf ), bufsize );
-      //gcount() should never be negative, but fortify does not seem to
-      //know that.  And read never fills in a /0 value at the end.
-      if ( is.gcount() > 0)
+      // gcount() should never be negative, but fortify does not seem to
+      // know that.  And read never fills in a /0 value at the end.
+      if( is.gcount() > 0 )
       {
         kwiversysMD5_Append( md5, buf, is.gcount() );
       }
@@ -53,7 +54,7 @@ file_md5( const string& fn )
 
   ostringstream oss;
   {
-    for ( size_t i = 0; i < digest_size; ++i )
+    for( size_t i = 0; i < digest_size; ++i )
     {
       oss << std::hex << std::setw( 2 ) << std::setfill( '0' )
           << static_cast< unsigned int >( digest[ i ] );
@@ -63,4 +64,5 @@ file_md5( const string& fn )
 }
 
 } // ...vital
+
 } // ...kwiver

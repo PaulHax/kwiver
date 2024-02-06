@@ -117,8 +117,9 @@ klv_read_packet( klv_read_iter_t& data, size_t max_length );
 /// length bytes.
 KWIVER_ALGO_KLV_EXPORT
 void
-klv_write_packet( klv_packet const& packet,
-                  klv_write_iter_t& data, size_t max_length );
+klv_write_packet(
+  klv_packet const& packet,
+  klv_write_iter_t& data, size_t max_length );
 
 // ----------------------------------------------------------------------------
 /// Return the number of bytes required to store the given \p packet.

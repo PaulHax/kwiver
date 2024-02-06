@@ -94,8 +94,9 @@ klv_0806_user_defined_data_type_id_format
 // ----------------------------------------------------------------------------
 void
 klv_0806_user_defined_data_type_id_format
-::write_typed( klv_0806_user_defined_data_type_id const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_0806_user_defined_data_type_id const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto int_value =
     static_cast< uint8_t >( ( value.id & 0x3F ) | ( value.type << 6 ) );
@@ -135,16 +136,16 @@ operator<<( std::ostream& os, klv_0806_user_defined_data_type value )
     "Experimental",
     "Unknown Data Type" };
 
-  os << strings[ std::min( value,
-                           KLV_0806_USER_DEFINED_SET_DATA_TYPE_ENUM_END ) ];
+  os << strings[ std::min(
+    value,
+    KLV_0806_USER_DEFINED_SET_DATA_TYPE_ENUM_END ) ];
   return os;
 }
 
 // ----------------------------------------------------------------------------
 klv_0806_user_defined_data_format
 ::klv_0806_user_defined_data_format()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 std::string
@@ -167,8 +168,9 @@ klv_0806_user_defined_data_format
 // ----------------------------------------------------------------------------
 void
 klv_0806_user_defined_data_format
-::write_typed( klv_0806_user_defined_data const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_0806_user_defined_data const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   klv_write_blob( value.bytes, data, length );
 }

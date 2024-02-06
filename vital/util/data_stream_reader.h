@@ -9,11 +9,12 @@
 
 #include <vital/util/string_editor.h>
 
+#include <istream>
 #include <string>
 #include <vector>
-#include <istream>
 
 namespace kwiver {
+
 namespace vital {
 
 class string_editor;
@@ -57,7 +58,6 @@ class string_editor;
 class VITAL_UTIL_EXPORT data_stream_reader
 {
 public:
-
   /// @brief Create new reader on input stream.
   ///
   /// The supplied stream is used to source the data. It is up to the
@@ -119,6 +119,8 @@ private:
   string_editor m_string_editor;
 }; // end class file_reader
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // VITAL_UTIL_STREAM_DATA_READER_H

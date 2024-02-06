@@ -9,6 +9,6 @@
 
 namespace py = pybind11;
 
-void transfer_bbox_with_depth_map(py::module &m);
+void transfer_bbox_with_depth_map( py::module& m );
 
 #endif

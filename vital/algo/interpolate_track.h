@@ -26,7 +26,7 @@ class VITAL_ALGO_EXPORT interpolate_track
 public:
   /// Return the name of this algorithm.
   interpolate_track();
-  PLUGGABLE_INTERFACE(interpolate_track);
+  PLUGGABLE_INTERFACE( interpolate_track );
   /// Supply video input algorithm
   ///
   /// This method supplies the video input algorithm to use for getting

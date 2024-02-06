@@ -25,7 +25,7 @@ class VITAL_ALGO_EXPORT dynamic_configuration
 {
 public:
   dynamic_configuration();
-  PLUGGABLE_INTERFACE(dynamic_configuration);
+  PLUGGABLE_INTERFACE( dynamic_configuration );
   virtual void set_configuration( config_block_sptr config ) = 0;
   virtual bool check_configuration( config_block_sptr config ) const = 0;
 
@@ -34,7 +34,6 @@ public:
   /// \brief This method returns dynamic configuration values. a valid config
   ///        block is returned even if there are not values being returned.
   virtual config_block_sptr get_dynamic_configuration() = 0;
-
 };
 
 /// Shared pointer for generic dynamic_configuration definition type.

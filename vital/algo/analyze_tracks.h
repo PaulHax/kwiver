@@ -33,15 +33,15 @@ public:
   typedef std::ostream stream_t;
 
   analyze_tracks();
-  PLUGGABLE_INTERFACE(analyze_tracks);
+  PLUGGABLE_INTERFACE( analyze_tracks );
   /// Output various information about the tracks stored in the input set.
   ///
   /// \param [in] track_set the tracks to analyze
   /// \param [in] stream an output stream to write data onto
   virtual void
-  print_info( kwiver::vital::track_set_sptr track_set,
-              stream_t& stream = std::cout ) const = 0;
-
+  print_info(
+    kwiver::vital::track_set_sptr track_set,
+    stream_t& stream = std::cout ) const = 0;
 };
 
 typedef std::shared_ptr< analyze_tracks > analyze_tracks_sptr;

@@ -10,13 +10,15 @@
 
 #include <string>
 
-#include <vital/vital_config.h>
 #include <vital/algo/close_loops.h>
+#include <vital/vital_config.h>
 
 #include <arrows/core/kwiver_algo_core_export.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 /// Loop closure algorithm that using appearance indexing for fast matching
@@ -24,9 +26,9 @@ class KWIVER_ALGO_CORE_EXPORT close_loops_appearance_indexed
   : public kwiver::vital::algo::close_loops
 {
 public:
-
-  PLUGIN_INFO( "appearance_indexed",
-               "Uses bag of words index to close loops." )
+  PLUGIN_INFO(
+    "appearance_indexed",
+    "Uses bag of words index to close loops." )
 
   /// Default constructor
   close_loops_appearance_indexed();
@@ -42,12 +44,15 @@ public:
   ///                 regions to consider in the input image.
   /// \returns an updated set of feature tracks after the stitching operation
   virtual kwiver::vital::feature_track_set_sptr
-    stitch(kwiver::vital::frame_id_t frame_number,
-      kwiver::vital::feature_track_set_sptr input,
-      kwiver::vital::image_container_sptr image,
-      kwiver::vital::image_container_sptr mask = kwiver::vital::image_container_sptr()) const;
+  stitch(
+    kwiver::vital::frame_id_t frame_number,
+    kwiver::vital::feature_track_set_sptr input,
+    kwiver::vital::image_container_sptr image,
+    kwiver::vital::image_container_sptr mask = kwiver::vital::
+    image_container_sptr() ) const;
 
-  /// Get this algorithm's \link vital::config_block configuration block \endlink
+  /// Get this algorithm's \link vital::config_block configuration block
+  /// \endlink
   ///
   /// This base virtual function implementation returns an empty configuration
   /// block whose name is set to \c this->type_name.
@@ -66,7 +71,7 @@ public:
   ///
   /// \param config  The \c config_block instance containing the configuration
   ///               parameters for this algorithm
-  virtual void set_configuration(vital::config_block_sptr config);
+  virtual void set_configuration( vital::config_block_sptr config );
 
   /// Check that the algorithm's currently configuration is valid
   ///
@@ -77,16 +82,19 @@ public:
   /// \param config  The config block to check configuration of.
   ///
   /// \returns true if the configuration check passed and false if it didn't.
-  virtual bool check_configuration(vital::config_block_sptr config) const;
+  virtual bool check_configuration( vital::config_block_sptr config ) const;
 
 protected:
   /// the feature m_detector algorithm
   class priv;
-  std::shared_ptr<priv> d_;
+
+  std::shared_ptr< priv > d_;
 };
 
 } // end namespace core
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif

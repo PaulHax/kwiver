@@ -45,7 +45,7 @@ public:
   static const algorithm_capabilities::capability_name_t HAS_TIME;
 
   image_io();
-  PLUGGABLE_INTERFACE(image_io);
+  PLUGGABLE_INTERFACE( image_io );
   /// Load image from the file
   ///
   /// \throws kwiver::vital::path_not_exists Thrown when the given path does not
@@ -72,8 +72,9 @@ public:
   ///
   /// \param filename the path to the file to save
   /// \param data the image container refering to the image to write
-  void save( std::string const& filename,
-             kwiver::vital::image_container_sptr data ) const;
+  void save(
+    std::string const& filename,
+    kwiver::vital::image_container_sptr data ) const;
 
   /// Get the image metadata
   ///
@@ -96,8 +97,9 @@ public:
   algorithm_capabilities const& get_implementation_capabilities() const;
 
 protected:
-  void set_capability( algorithm_capabilities::capability_name_t const& name,
-                       bool val );
+  void set_capability(
+    algorithm_capabilities::capability_name_t const& name,
+    bool val );
 
 private:
   /// Implementation specific load functionality.
@@ -117,8 +119,9 @@ private:
   ///
   /// \param filename the path to the file to save
   /// \param data the image container refering to the image to write
-  virtual void save_( std::string const& filename,
-                      kwiver::vital::image_container_sptr data ) const = 0;
+  virtual void save_(
+    std::string const& filename,
+    kwiver::vital::image_container_sptr data ) const = 0;
 
   /// Implementation specific metadata functionality.
   ///

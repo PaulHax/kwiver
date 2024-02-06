@@ -4,9 +4,9 @@
 
 #include "burnout_track_descriptors.h"
 
-#include <string>
-#include <sstream>
 #include <exception>
+#include <sstream>
+#include <string>
 
 #include <arrows/vxl/image_container.h>
 
@@ -15,7 +15,9 @@
 #include <descriptors/online_descriptor_computer_process.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace burnout {
 
 // ----------------------------------------------------------------------------
@@ -23,8 +25,8 @@ class burnout_track_descriptors::priv
 {
 public:
   priv()
-    : m_config_file( "burnout_descriptors.conf" )
-    , m_process( "descriptor_computer" )
+    : m_config_file( "burnout_descriptors.conf" ),
+      m_process( "descriptor_computer" )
   {}
 
   ~priv()
@@ -41,9 +43,7 @@ public:
 burnout_track_descriptors
 ::burnout_track_descriptors()
   : d( new priv() )
-{
-
-}
+{}
 
 burnout_track_descriptors
 ::~burnout_track_descriptors()
@@ -82,13 +82,17 @@ burnout_track_descriptors
   if( !d->m_process.set_params( vidtk_config ) )
   {
     std::string reason = "Failed to set pipeline parameters";
-    VITAL_THROW( vital::algorithm_configuration_exception, type_name(), impl_name(), reason );
+    VITAL_THROW(
+      vital::algorithm_configuration_exception, type_name(),
+      impl_name(), reason );
   }
 
   if( !d->m_process.initialize() )
   {
     std::string reason = "Failed to initialize pipeline";
-    VITAL_THROW( vital::algorithm_configuration_exception, type_name(), impl_name(), reason );
+    VITAL_THROW(
+      vital::algorithm_configuration_exception, type_name(),
+      impl_name(), reason );
   }
 #endif
 }
@@ -161,12 +165,12 @@ vidtk_to_vital( vidtk::timestamp ts )
 // ----------------------------------------------------------------------------
 vital::track_descriptor_set_sptr
 burnout_track_descriptors
-::compute( vital::timestamp ts,
-           vital::image_container_sptr image_data,
-           vital::object_track_set_sptr tracks )
+::compute(
+  vital::timestamp ts,
+  vital::image_container_sptr image_data,
+  vital::object_track_set_sptr tracks )
 {
 #ifndef DUMMY_OUTPUT
-
   // Convert inputs to burnout style inputs
   vidtk::timestamp input_ts = vital_to_vidtk( ts );
   vil_image_view< vxl_byte > input_image;
@@ -232,7 +236,7 @@ burnout_track_descriptors
 
     vital::track_descriptor::descriptor_data_sptr vital_rd(
       new vital::track_descriptor::descriptor_data_t(
-        vidtk_rd.size(), &vidtk_rd[0] ) );
+        vidtk_rd.size(), &vidtk_rd[ 0 ] ) );
 
     vital_d->set_descriptor( vital_rd );
 
@@ -268,12 +272,13 @@ burnout_track_descriptors
 
   for( unsigned i = 0; i < 100; i++ )
   {
-    (data->raw_data())[i] = static_cast<double>( i );
+    ( data->raw_data() )[ i ] = static_cast< double >( i );
   }
 
   new_desc->set_descriptor( data );
 
-  td::history_entry::image_bbox_t region( 0, 0, image_data->width(), image_data->height() );
+  td::history_entry::image_bbox_t region( 0, 0, image_data->width(),
+    image_data->height() );
   td::history_entry hist_entry( vital::timestamp( 0, 0 ), region );
   new_desc->add_history_entry( hist_entry );
 
@@ -286,9 +291,14 @@ vital::track_descriptor_set_sptr
 burnout_track_descriptors
 ::flush()
 {
-  return compute( vital::timestamp(),
+  return compute(
+    vital::timestamp(),
     vital::image_container_sptr(),
     vital::object_track_set_sptr() );
 }
 
-} } } // end namespace
+} // namespace burnout
+
+} // namespace arrows
+
+}     // end namespace

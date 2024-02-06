@@ -5,20 +5,21 @@
 #ifndef INCL_TRACK_VATIC_H
 #define INCL_TRACK_VATIC_H
 
-#include <vital/vital_config.h>
-#include <track_oracle/file_formats/track_vatic/track_vatic_export.h>
 #include <track_oracle/data_terms/data_terms.h>
+#include <track_oracle/file_formats/track_vatic/track_vatic_export.h>
+#include <vital/vital_config.h>
 
+#include <set>
 #include <track_oracle/core/track_base.h>
 #include <track_oracle/core/track_field.h>
 #include <vgl/vgl_box_2d.h>
 #include <vgl/vgl_point_2d.h>
-#include <set>
 
 namespace kwiver {
+
 namespace track_oracle {
 
-struct TRACK_VATIC_EXPORT track_vatic_type: public track_base< track_vatic_type >
+struct TRACK_VATIC_EXPORT track_vatic_type : public track_base< track_vatic_type >
 {
   // track level data
   track_field< dt::tracking::external_id > external_id;
@@ -32,12 +33,13 @@ struct TRACK_VATIC_EXPORT track_vatic_type: public track_base< track_vatic_type 
   track_field< std::string >& label;
   track_field< std::set< std::string > >& attributes;
 
-  track_vatic_type():
-    lost( Frame.add_field< bool > ("lost" )),
-    occluded( Frame.add_field< bool > ("occluded" )),
-    generated( Frame.add_field< bool > ("generated" )),
-    label( Frame.add_field< std::string > ("label" )),
-    attributes( Frame.add_field< std::set< std::string > > ("vatic_attributes" ))
+  track_vatic_type()
+    : lost( Frame.add_field< bool >( "lost" ) ),
+      occluded( Frame.add_field< bool >( "occluded" ) ),
+      generated( Frame.add_field< bool >( "generated" ) ),
+      label( Frame.add_field< std::string >( "label" ) ),
+      attributes( Frame.add_field< std::set< std::string > >(
+        "vatic_attributes" ) )
   {
     Track.add_field( external_id );
     Frame.add_field( bounding_box );
@@ -46,6 +48,7 @@ struct TRACK_VATIC_EXPORT track_vatic_type: public track_base< track_vatic_type 
 };
 
 } // ...track_oracle
+
 } // ...kwiver
 
 #endif

@@ -7,9 +7,12 @@
 
 #include <track_oracle/core/element_store.txx>
 
-#define ELEMENT_STORE_INSTANCES(T) \
-  template ELEMENT_STORE_EXPORT void ::kwiver::track_oracle::element_store<T>::set_io_handler( ::kwiver::track_oracle::kwiver_io_base<T>* ); \
-  template ELEMENT_STORE_EXPORT ::kwiver::track_oracle::kwiver_io_base<T>* ::kwiver::track_oracle::element_store<T>::get_io_handler() const; \
-  template ELEMENT_STORE_EXPORT void ::kwiver::track_oracle::element_store<T>::set_default_value(const T&);
+#define ELEMENT_STORE_INSTANCES( T )                                            \
+template ELEMENT_STORE_EXPORT void ::kwiver::track_oracle::element_store< T >:: \
+set_io_handler( ::kwiver::track_oracle::kwiver_io_base< T >* );                 \
+template ELEMENT_STORE_EXPORT::kwiver::track_oracle::kwiver_io_base< T >* ::    \
+kwiver::track_oracle::element_store< T >::get_io_handler() const;               \
+template ELEMENT_STORE_EXPORT void ::kwiver::track_oracle::element_store< T >:: \
+set_default_value( const T& );
 
 #endif

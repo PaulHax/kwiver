@@ -29,10 +29,9 @@ class VITAL_ALGO_EXPORT activity_detector
 {
 public:
   activity_detector();
-  PLUGGABLE_INTERFACE(activity_detector);
+  PLUGGABLE_INTERFACE( activity_detector );
   virtual std::vector< kwiver::vital::activity >
   detect( image_container_sptr image ) const = 0;
-
 };
 
 /// Shared pointer for generic activity_detector definition type.

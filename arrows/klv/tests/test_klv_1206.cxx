@@ -20,8 +20,9 @@ main( int argc, char** argv )
 
 // ----------------------------------------------------------------------------
 void
-test_read_write( klv_value const& expected_result,
-                 klv_bytes_t const& input_bytes )
+test_read_write(
+  klv_value const& expected_result,
+  klv_bytes_t const& input_bytes )
 {
   using format_t = klv_1206_local_set_format;
   test_read_write_format< format_t >( expected_result, input_bytes );
@@ -29,6 +30,7 @@ test_read_write( klv_value const& expected_result,
 
 // ----------------------------------------------------------------------------
 using kld = klv_lengthy< double >;
+
 auto const expected_result = klv_local_set{
   { KLV_1206_GRAZING_ANGLE, kld{ 64.0 } },
   { KLV_1206_GROUND_PLANE_SQUINT_ANGLE, kld{ -26.0 } },

@@ -8,9 +8,9 @@
 #ifndef KWIVER_VITAL_UTIL_VISIT_H_
 #define KWIVER_VITAL_UTIL_VISIT_H_
 
-#include <vital/vital_config.h>
-#include <vital/util/demangle.h>
 #include <vital/exceptions.h>
+#include <vital/util/demangle.h>
+#include <vital/vital_config.h>
 
 #include <map>
 #include <stdexcept>
@@ -74,8 +74,9 @@ invoke_visitor_return( Visitor&& visitor )
 // ----------------------------------------------------------------------------
 template < class Visitor, class... Types >
 void
-visit_variant_types( Visitor&& visitor, std::type_info const& type,
-                     [[maybe_unused]] std::variant< Types... > const* )
+visit_variant_types(
+  Visitor&& visitor, std::type_info const& type,
+  [[maybe_unused]] std::variant< Types... > const* )
 {
   return visit_types< Visitor, Types... >(
     std::forward< Visitor >( visitor ), type );
@@ -84,8 +85,9 @@ visit_variant_types( Visitor&& visitor, std::type_info const& type,
 // ----------------------------------------------------------------------------
 template < class ReturnT, class Visitor, class... Types >
 ReturnT
-visit_variant_types_return( Visitor&& visitor, std::type_info const& type,
-                            [[maybe_unused]] std::variant< Types... > const* )
+visit_variant_types_return(
+  Visitor&& visitor, std::type_info const& type,
+  [[maybe_unused]] std::variant< Types... > const* )
 {
   return visit_types_return< ReturnT, Visitor, Types... >(
     std::forward< Visitor >( visitor ), type );
@@ -106,9 +108,10 @@ visit_types( Visitor&& visitor, std::type_info const& type )
   auto const it = map.find( type.name() );
   if( it == map.cend() )
   {
-    throw std::out_of_range( "`" + kwiver::vital::demangle( type.name() ) +
-                             "` not found in types provided to "
-                             "visit_types()" );
+    throw std::out_of_range(
+      "`" + kwiver::vital::demangle( type.name() ) +
+      "` not found in types provided to "
+      "visit_types()" );
   }
   it->second( std::forward< Visitor >( visitor ) );
 }
@@ -126,9 +129,10 @@ visit_types_return( Visitor&& visitor, std::type_info const& type )
   auto const it = map.find( type.name() );
   if( it == map.cend() )
   {
-    throw std::out_of_range( "`" + kwiver::vital::demangle( type.name() ) +
-                             "` not found in types provided to "
-                             "visit_types_return()" );
+    throw std::out_of_range(
+      "`" + kwiver::vital::demangle( type.name() ) +
+      "` not found in types provided to "
+      "visit_types_return()" );
   }
   return it->second( std::forward< Visitor >( visitor ) );
 }
@@ -170,8 +174,9 @@ visit_variant_types( Visitor&& visitor, std::type_info const& type )
 /// converted to \c ReturnT.
 template < class ReturnT, class Variant, class Visitor >
 ReturnT
-visit_variant_types_return( Visitor&& visitor,
-                            std::type_info const& type )
+visit_variant_types_return(
+  Visitor&& visitor,
+  std::type_info const& type )
 {
   return visit_detail::visit_variant_types_return< ReturnT >(
     std::forward< Visitor >( visitor ), type,

@@ -16,6 +16,7 @@
 #include <memory>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -41,28 +42,32 @@ typedef std::shared_ptr< landmark_map > landmark_map_sptr;
 
 // ----------------------------------------------------------------------------
 /// A concrete landmark_map that simply wraps a std::map.
-class simple_landmark_map :
-  public landmark_map
+class simple_landmark_map
+  : public landmark_map
 {
 public:
   /// Default Constructor
-  simple_landmark_map() { }
+  simple_landmark_map() {}
 
   /// Constructor from a std::map of landmarks
   explicit simple_landmark_map( const map_landmark_t& landmarks )
-    : data_( landmarks ) { }
+    : data_( landmarks ) {}
 
   /// Return the number of landmarks in the map
-  virtual size_t size() const { return data_.size(); }
+  virtual size_t
+  size() const { return data_.size(); }
 
   /// Return a map from integer IDs to landmark shared pointers
-  virtual map_landmark_t landmarks() const { return data_; }
+  virtual map_landmark_t
+  landmarks() const { return data_; }
 
 protected:
   /// The map from integer IDs to landmark shared pointers
   map_landmark_t data_;
 };
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital
 
 #endif // VITAL_LANDMARK_MAP_H_

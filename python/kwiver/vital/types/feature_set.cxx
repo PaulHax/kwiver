@@ -9,8 +9,8 @@
 
 #include <memory>
 
-namespace py=pybind11;
-namespace kv=kwiver::vital;
+namespace py = pybind11;
+namespace kv = kwiver::vital;
 
 class feature_set_trampoline
   : public kv::feature_set
@@ -24,20 +24,20 @@ public:
 PYBIND11_MODULE( feature_set, m )
 {
   py::class_< kv::feature_set,
-              std::shared_ptr< kv::feature_set >,
-              feature_set_trampoline >( m, "FeatureSet" )
-  .def( py::init<>() )
-  .def( "size", &kv::feature_set::size )
-  .def( "features", &kv::feature_set::features )
+    std::shared_ptr< kv::feature_set >,
+    feature_set_trampoline >( m, "FeatureSet" )
+    .def( py::init<>() )
+    .def( "size", &kv::feature_set::size )
+    .def( "features", &kv::feature_set::features )
   ;
 
   py::class_< kv::simple_feature_set,
-              std::shared_ptr< kv::simple_feature_set >,
-              kv::feature_set >( m, "SimpleFeatureSet" )
-  .def( py::init<>() )
-  .def( py::init< const std::vector< kv::feature_sptr >& >() )
-  .def( "size", &kv::simple_feature_set::size )
-  .def( "features", &kv::simple_feature_set::features )
+    std::shared_ptr< kv::simple_feature_set >,
+    kv::feature_set >( m, "SimpleFeatureSet" )
+    .def( py::init<>() )
+    .def( py::init< const std::vector< kv::feature_sptr >& >() )
+    .def( "size", &kv::simple_feature_set::size )
+    .def( "features", &kv::simple_feature_set::features )
   ;
 }
 

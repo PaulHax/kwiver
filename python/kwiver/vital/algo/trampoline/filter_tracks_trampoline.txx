@@ -18,50 +18,56 @@
 #include <pybind11/pybind11.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
-template< class algorithm_def_ft_base=
-           kwiver::vital::algorithm_def<
-               kwiver::vital::algo::filter_tracks > >
-class algorithm_def_ft_trampoline :
-      public algorithm_trampoline< algorithm_def_ft_base >
-{
-  public:
-    using algorithm_trampoline< algorithm_def_ft_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def< kwiver::vital::algo::filter_tracks >,
-        type_name,
-      );
-    }
+template < class algorithm_def_ft_base =
+    kwiver::vital::algorithm_def<
+      kwiver::vital::algo::filter_tracks > >
+class algorithm_def_ft_trampoline
+  : public algorithm_trampoline< algorithm_def_ft_base >
+{
+public:
+  using algorithm_trampoline< algorithm_def_ft_base >::algorithm_trampoline;
+
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::filter_tracks >,
+      type_name,
+    );
+  }
 };
 
-template< class filter_tracks_base =
-                  kwiver::vital::algo::filter_tracks >
-class filter_tracks_trampoline :
-      public algorithm_def_ft_trampoline< filter_tracks_base >
+template < class filter_tracks_base =
+    kwiver::vital::algo::filter_tracks >
+class filter_tracks_trampoline
+  : public algorithm_def_ft_trampoline< filter_tracks_base >
 {
-  public:
-    using algorithm_def_ft_trampoline< filter_tracks_base >::
-              algorithm_def_ft_trampoline;
+public:
+  using algorithm_def_ft_trampoline< filter_tracks_base >::
+  algorithm_def_ft_trampoline;
 
-    kwiver::vital::track_set_sptr
-    filter( kwiver::vital::track_set_sptr input ) const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        kwiver::vital::track_set_sptr,
-        kwiver::vital::algo::filter_tracks,
-        filter,
-        input
-      );
-    }
+  kwiver::vital::track_set_sptr
+  filter( kwiver::vital::track_set_sptr input ) const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      kwiver::vital::track_set_sptr,
+      kwiver::vital::algo::filter_tracks,
+      filter,
+      input
+    );
+  }
 };
 
-}
-}
-}
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
 
 #endif

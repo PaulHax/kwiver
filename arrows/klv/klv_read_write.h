@@ -233,8 +233,9 @@ klv_ber_oid_length( T value );
 /// \throws metadata_type_overflow When the read value is too large for \c T.
 template < class T >
 double
-klv_read_flint( vital::interval< double > const& interval,
-                klv_read_iter_t& data, size_t length );
+klv_read_flint(
+  vital::interval< double > const& interval,
+  klv_read_iter_t& data, size_t length );
 
 // ----------------------------------------------------------------------------
 /// Map a floating-point number within a range to an integer and write it to a
@@ -257,8 +258,9 @@ klv_read_flint( vital::interval< double > const& interval,
 /// \c T is signed and the range is not symmetrical around zero.
 template < class T >
 void
-klv_write_flint( double value, vital::interval< double > const& interval,
-                 klv_write_iter_t& data, size_t length );
+klv_write_flint(
+  double value, vital::interval< double > const& interval,
+  klv_write_iter_t& data, size_t length );
 
 // ----------------------------------------------------------------------------
 /// Return the number of bytes required for the given flint specification.
@@ -361,8 +363,9 @@ klv_read_imap(
 /// for a \c double to hold.
 KWIVER_ALGO_KLV_EXPORT
 void
-klv_write_imap( double value, vital::interval< double > const& interval,
-                klv_write_iter_t& data, size_t length );
+klv_write_imap(
+  double value, vital::interval< double > const& interval,
+  klv_write_iter_t& data, size_t length );
 
 // ----------------------------------------------------------------------------
 /// Return the number of bytes required for the given IMAP specification.
@@ -432,8 +435,9 @@ klv_read_string( klv_read_iter_t& data, size_t length );
 /// \throws metadata_type_overflow When \p value is a single null character.
 KWIVER_ALGO_KLV_EXPORT
 void
-klv_write_string( std::string const& value, klv_write_iter_t& data,
-                  size_t max_length );
+klv_write_string(
+  std::string const& value, klv_write_iter_t& data,
+  size_t max_length );
 
 // ----------------------------------------------------------------------------
 /// Return the number of bytes required to store the given string.

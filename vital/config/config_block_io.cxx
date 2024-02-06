@@ -5,8 +5,8 @@
 /// \file
 /// \brief config_block IO operations implementation
 
-#include "config_block_io.h"
 #include "config_block_exception.h"
+#include "config_block_io.h"
 #include "config_parser.h"
 
 #include <vital/logger/logger.h>
@@ -22,31 +22,34 @@
 #include <fstream>
 #include <iostream>
 
-#if defined(_WIN32)
+#if defined( _WIN32 )
 #include <shlobj.h>
 #endif
 
 namespace kwiver {
+
 namespace vital {
 
 namespace {
 
 // ----------------------------------------------------------------------------
-std::string guess_install_prefix()
+std::string
+guess_install_prefix()
 {
   auto const& exe_path = get_executable_path();
-  auto const& last = kwiversys::SystemTools::GetFilenameName(exe_path);
+  auto const& last = kwiversys::SystemTools::GetFilenameName( exe_path );
 
-  return (last == "bin" ? exe_path + "/.." : exe_path);
+  return ( last == "bin" ? exe_path + "/.." : exe_path );
 }
 
-#if defined(_WIN32)
+#if defined( _WIN32 )
 // ----------------------------------------------------------------------------
 // Helper method to add known special paths to a path list
-void add_windows_path( config_path_list_t & paths, int which )
+void
+add_windows_path( config_path_list_t& paths, int which )
 {
-  char buffer[MAX_PATH];
-  if ( SHGetFolderPath ( 0, which, 0, 0, buffer ) )
+  char buffer[ MAX_PATH ];
+  if( SHGetFolderPath( 0, which, 0, 0, buffer ) )
   {
     auto path = config_path_t{ buffer };
     kwiversys::SystemTools::ConvertToUnixSlashes( path );
@@ -58,16 +61,17 @@ void add_windows_path( config_path_list_t & paths, int which )
 // ----------------------------------------------------------------------------
 // Helper method to get application specific paths from generic paths
 config_path_list_t
-application_paths( config_path_list_t const& paths,
-                   std::string const& application_name,
-                   std::string const& application_version )
+application_paths(
+  config_path_list_t const& paths,
+  std::string const& application_name,
+  std::string const& application_version )
 {
   auto result = config_path_list_t{};
-  for ( auto const& path : paths )
+  for( auto const& path : paths )
   {
     auto const& app_path = path + "/" + application_name;
 
-    if ( ! application_version.empty() )
+    if( !application_version.empty() )
     {
       result.push_back( app_path + "/" + application_version );
     }
@@ -85,49 +89,48 @@ application_paths( config_path_list_t const& paths,
 /// given vector.
 ///
 /// \param path_vector The vector to append to
-void append_kwiver_config_paths( config_path_list_t &path_vector )
+void
+append_kwiver_config_paths( config_path_list_t& path_vector )
 {
   // Current working directory always takes precedence
-  path_vector.push_back(".");
+  path_vector.push_back( "." );
   kwiversys::SystemTools::GetPath( path_vector, "KWIVER_CONFIG_PATH" );
 }
 
 // ----------------------------------------------------------------------------
 // Helper method to get all possible locations of application config files
 config_path_list_t
-application_config_file_paths_helper(std::string const& application_name,
-                                     std::string const& application_version,
-                                     config_path_t const& install_prefix)
+application_config_file_paths_helper(
+  std::string const& application_name,
+  std::string const& application_version,
+  config_path_t const& install_prefix )
 {
   auto paths = config_path_list_t{};
 
   // Platform specific directories
   auto data_paths = config_path_list_t{};
 
-#if defined(_WIN32)
-
+#if defined( _WIN32 )
   // Add the application data directories
   add_windows_path( data_paths, CSIDL_LOCAL_APPDATA );
   add_windows_path( data_paths, CSIDL_APPDATA );
   add_windows_path( data_paths, CSIDL_COMMON_APPDATA );
-
 #else
-
   auto const home = kwiversys::SystemTools::GetEnv( "HOME" );
 
-# if defined(__APPLE__)
-  if ( home && *home )
+#if defined( __APPLE__ )
+  if( home && *home )
   {
     data_paths.push_back(
       config_path_t( home ) + "/Library/Application Support" );
   }
   data_paths.push_back( "/Library/Application Support" );
-# endif
+#endif
 
   // Get the list of configuration data paths
   auto config_paths = config_path_list_t{};
   kwiversys::SystemTools::GetPath( config_paths, "XDG_CONFIG_HOME" );
-  if ( home && *home )
+  if( home && *home )
   {
     config_paths.push_back( config_path_t( home ) + "/.config" );
   }
@@ -136,13 +139,12 @@ application_config_file_paths_helper(std::string const& application_name,
 
   // Add application information to config paths and append to paths
   config_paths = application_paths(
-                   config_paths, application_name, application_version );
+    config_paths, application_name, application_version );
   paths.insert( paths.end(), config_paths.begin(), config_paths.end() );
 
   // Get the list of application data paths
   data_paths.push_back( "/usr/local/share" );
   data_paths.push_back( "/usr/share" );
-
 #endif
 
   // Add install-local data path if install prefix is not a standard prefix
@@ -150,27 +152,27 @@ application_config_file_paths_helper(std::string const& application_name,
     !install_prefix.empty() &&
     install_prefix != "/usr" &&
     install_prefix != "/usr/local";
-  if ( nonstandard_prefix )
+  if( nonstandard_prefix )
   {
     data_paths.push_back( install_prefix + "/share" );
   }
 
   // Turn the generic FHS data paths into application data paths...
   data_paths = application_paths(
-                 data_paths, application_name, application_version );
+    data_paths, application_name, application_version );
 
   // ...then into config paths and add to final list
-  for ( auto const& path : data_paths )
+  for( auto const& path : data_paths )
   {
     paths.push_back( path + "/config" );
   }
 
   // Add install-local config paths if install prefix is not a standard prefix
-  if ( nonstandard_prefix )
+  if( nonstandard_prefix )
   {
     paths.push_back( install_prefix + "/share/config" );
     paths.push_back( install_prefix + "/config" );
-#if defined(__APPLE__)
+#if defined( __APPLE__ )
     paths.push_back( install_prefix + "/Resources/config" );
 #endif
   }
@@ -178,29 +180,32 @@ application_config_file_paths_helper(std::string const& application_name,
   return paths;
 }
 
-} //end anonymous namespace
+} // end anonymous namespace
 
 // ----------------------------------------------------------------------------
 /// Get additional application configuration file paths
 config_path_list_t
-application_config_file_paths(std::string const& application_name,
-                              std::string const& application_version,
-                              config_path_t const& install_prefix)
+application_config_file_paths(
+  std::string const& application_name,
+  std::string const& application_version,
+  config_path_t const& install_prefix )
 {
   auto const& guessed_prefix =
-    (install_prefix.empty() ? guess_install_prefix() : install_prefix);
+    ( install_prefix.empty() ? guess_install_prefix() : install_prefix );
 
-  return application_config_file_paths(application_name, application_version,
-                                       guessed_prefix, guessed_prefix);
+  return application_config_file_paths(
+    application_name, application_version,
+    guessed_prefix, guessed_prefix );
 }
 
 // ----------------------------------------------------------------------------
 /// Get additional application configuration file paths
 config_path_list_t
-application_config_file_paths(std::string const& application_name,
-                              std::string const& application_version,
-                              config_path_t const& app_install_prefix,
-                              config_path_t const& kwiver_install_prefix)
+application_config_file_paths(
+  std::string const& application_name,
+  std::string const& application_version,
+  config_path_t const& app_install_prefix,
+  config_path_t const& kwiver_install_prefix )
 {
   // First, add any paths specified by our local environment variable
   auto paths = config_path_list_t{};
@@ -212,8 +217,9 @@ application_config_file_paths(std::string const& application_name,
       application_config_file_paths_helper(
         application_name, application_version, app_install_prefix );
 
-    std::copy( app_paths.begin(), app_paths.end(),
-               std::back_inserter( paths ) );
+    std::copy(
+      app_paths.begin(), app_paths.end(),
+      std::back_inserter( paths ) );
   }
 
   auto* const env =
@@ -224,16 +230,18 @@ application_config_file_paths(std::string const& application_name,
       application_config_file_paths_helper(
         "kwiver", KWIVER_VERSION, env );
 
-    std::copy( kwiver_env_paths.begin(), kwiver_env_paths.end(),
-               std::back_inserter( paths ) );
+    std::copy(
+      kwiver_env_paths.begin(), kwiver_env_paths.end(),
+      std::back_inserter( paths ) );
   }
 
   auto const& kwiver_paths =
     application_config_file_paths_helper(
       "kwiver", KWIVER_VERSION, kwiver_install_prefix );
 
-  std::copy( kwiver_paths.begin(), kwiver_paths.end(),
-             std::back_inserter( paths ) );
+  std::copy(
+    kwiver_paths.begin(), kwiver_paths.end(),
+    std::back_inserter( paths ) );
 
   return paths;
 }
@@ -241,20 +249,20 @@ application_config_file_paths(std::string const& application_name,
 // ----------------------------------------------------------------------------
 /// Get KWIVER configuration file paths
 config_path_list_t
-kwiver_config_file_paths(config_path_t const& install_prefix)
+kwiver_config_file_paths( config_path_t const& install_prefix )
 {
   // First, add any paths specified by our local environment variable
   auto paths = config_path_list_t{};
-  append_kwiver_config_paths(paths);
+  append_kwiver_config_paths( paths );
 
   auto kwiver_paths =
     application_config_file_paths_helper(
       "kwiver", KWIVER_VERSION,
-      (install_prefix.empty() ? guess_install_prefix() : install_prefix));
+      ( install_prefix.empty() ? guess_install_prefix() : install_prefix ) );
 
-  for (auto const& path : kwiver_paths)
+  for( auto const& path : kwiver_paths )
   {
-    paths.push_back(path);
+    paths.push_back( path );
   }
 
   return paths;
@@ -262,21 +270,24 @@ kwiver_config_file_paths(config_path_t const& install_prefix)
 
 // ----------------------------------------------------------------------------
 config_block_sptr
-read_config_file( config_path_t const&     file_path,
-                  config_path_list_t const& search_paths,
-                  bool use_system_paths )
+read_config_file(
+  config_path_t const&     file_path,
+  config_path_list_t const& search_paths,
+  bool use_system_paths )
 {
   // The file specified really must be a file.
-  if ( ! kwiversys::SystemTools::FileExists( file_path ) )
+  if( !kwiversys::SystemTools::FileExists( file_path ) )
   {
-    VITAL_THROW( config_file_not_found_exception, file_path,
-          "File does not exist." );
+    VITAL_THROW(
+      config_file_not_found_exception, file_path,
+      "File does not exist." );
   }
 
-  if ( kwiversys::SystemTools::FileIsDirectory( file_path ) )
+  if( kwiversys::SystemTools::FileIsDirectory( file_path ) )
   {
-    VITAL_THROW( config_file_not_found_exception, file_path,
-          "Path given doesn't point to a regular file." );
+    VITAL_THROW(
+      config_file_not_found_exception, file_path,
+      "Path given doesn't point to a regular file." );
   }
 
   kwiver::vital::config_parser the_parser;
@@ -294,22 +305,24 @@ read_config_file( config_path_t const&     file_path,
 
 // ----------------------------------------------------------------------------
 config_block_sptr
-read_config_file( std::string const& file_name,
-                  std::string const& application_name,
-                  std::string const& application_version,
-                  config_path_t const& install_prefix,
-                  bool merge )
+read_config_file(
+  std::string const& file_name,
+  std::string const& application_name,
+  std::string const& application_version,
+  config_path_t const& install_prefix,
+  bool merge )
 {
   auto logger = logger_handle_t{ get_logger( "read_config_file" ) };
 
   auto result = config_block_sptr{};
 
   auto const search_paths =
-    application_config_file_paths( application_name, application_version,
-                                   install_prefix );
+    application_config_file_paths(
+      application_name, application_version,
+      install_prefix );
 
   // See if file name is an absolute path. If so, then just process the file.
-  if ( kwiversys::SystemTools::FileIsFullPath( file_name ) )
+  if( kwiversys::SystemTools::FileIsFullPath( file_name ) )
   {
     // The file is on a absolute path.
     auto const& config = read_config_file( file_name, search_paths, true );
@@ -331,8 +344,8 @@ read_config_file( std::string const& file_name,
     // Cant use the parsers exception as an indication of a bad file
     // because the parser will throw the same exception if an include
     // file is not found.
-    if ( ! kwiversys::SystemTools::FileExists( config_path ) ||
-         kwiversys::SystemTools::FileIsDirectory( config_path ) )
+    if( !kwiversys::SystemTools::FileExists( config_path ) ||
+        kwiversys::SystemTools::FileIsDirectory( config_path ) )
     {
       continue;
     }
@@ -341,11 +354,11 @@ read_config_file( std::string const& file_name,
 
     LOG_DEBUG( logger, "Read config file \"" << config_path << "\"" );
 
-    if ( ! merge )
+    if( !merge )
     {
       return config;
     }
-    else if ( result )
+    else if( result )
     {
       // Merge under current configuration
       config->merge_config( result );
@@ -356,9 +369,10 @@ read_config_file( std::string const& file_name,
   } // end foreach
 
   // Throw file-not-found if we ran out of paths without finding anything
-  if ( ! result )
+  if( !result )
   {
-    VITAL_THROW( config_file_not_found_exception,
+    VITAL_THROW(
+      config_file_not_found_exception,
       file_name, "No matching file found in the search paths." );
   }
 
@@ -366,7 +380,8 @@ read_config_file( std::string const& file_name,
 }
 
 // ----------------------------------------------------------------------------
-std::vector< config_path_t > find_config_file(
+std::vector< config_path_t >
+find_config_file(
   std::string const& file_name,
   std::string const& application_name,
   std::string const& application_version,
@@ -374,14 +389,15 @@ std::vector< config_path_t > find_config_file(
   bool find_all )
 {
   // If the file name is an absolute path, just return it
-  if ( kwiversys::SystemTools::FileIsFullPath( file_name ) )
+  if( kwiversys::SystemTools::FileIsFullPath( file_name ) )
   {
     return { file_name };
   }
 
   auto const search_paths =
-    application_config_file_paths( application_name, application_version,
-                                   install_prefix );
+    application_config_file_paths(
+      application_name, application_version,
+      install_prefix );
 
   // File name is relative, so go through the search process
   auto out = std::vector< config_path_t >{};
@@ -406,39 +422,43 @@ std::vector< config_path_t > find_config_file(
 // ----------------------------------------------------------------------------
 // Output to file the given \c config_block object to the specified file path
 void
-write_config_file( config_block_sptr const& config,
-                   config_path_t const&     file_path )
+write_config_file(
+  config_block_sptr const& config,
+  config_path_t const&     file_path )
 {
   using std::cerr;
   using std::endl;
 
   // If the given path is a directory, we obviously can't write to it.
-  if ( kwiversys::SystemTools::FileIsDirectory( file_path ) )
+  if( kwiversys::SystemTools::FileIsDirectory( file_path ) )
   {
-    VITAL_THROW( config_file_write_exception, file_path,
-          "Path given is a directory, to which we clearly can't write." );
+    VITAL_THROW(
+      config_file_write_exception, file_path,
+      "Path given is a directory, to which we clearly can't write." );
   }
 
   // Check that the directory of the given filepath exists, creating necessary
   // directories where needed.
   config_path_t parent_dir = kwiversys::SystemTools::GetFilenamePath(
     kwiversys::SystemTools::CollapseFullPath( file_path ) );
-  if ( ! kwiversys::SystemTools::FileIsDirectory( parent_dir ) )
+  if( !kwiversys::SystemTools::FileIsDirectory( parent_dir ) )
   {
-    if ( ! kwiversys::SystemTools::MakeDirectory( parent_dir ) )
+    if( !kwiversys::SystemTools::MakeDirectory( parent_dir ) )
     {
-      VITAL_THROW( config_file_write_exception, parent_dir,
-            "Attempted directory creation, but no directory created! No idea what happened here..." );
+      VITAL_THROW(
+        config_file_write_exception, parent_dir,
+        "Attempted directory creation, but no directory created! No idea what happened here..." );
     }
   }
 
   // open output file and write each key/value to a line.
   std::ofstream ofile( file_path.c_str() );
 
-  if ( ! ofile )
+  if( !ofile )
   {
-    VITAL_THROW( config_file_write_exception, file_path,
-                 "Could not open config file for writing" );
+    VITAL_THROW(
+      config_file_write_exception, file_path,
+      "Could not open config file for writing" );
   }
 
   write_config( config, ofile );
@@ -446,14 +466,17 @@ write_config_file( config_block_sptr const& config,
 }
 
 // ----------------------------------------------------------------------------
-void write_config( config_block_sptr const& config,
-                   std::ostream&            ofile )
+void
+write_config(
+  config_block_sptr const& config,
+  std::ostream&            ofile )
 {
   // If there are no config parameters in the given config_block, throw
-  if ( ! config->available_values().size() )
+  if( !config->available_values().size() )
   {
-    VITAL_THROW( config_file_write_exception, "<stream>",
-          "No parameters in the given config_block!" );
+    VITAL_THROW(
+      config_file_write_exception, "<stream>",
+      "No parameters in the given config_block!" );
   }
 
   // Gather available keys and sort them alphanumerically for a sensibly layout
@@ -476,7 +499,7 @@ void write_config( config_block_sptr const& config,
 
     config_block_description_t descr = config->get_description( key );
 
-    if ( descr != config_block_description_t() )
+    if( descr != config_block_description_t() )
     {
       // Add a leading new-line to separate comment block from previous config
       // entry.
@@ -484,7 +507,7 @@ void write_config( config_block_sptr const& config,
 
       prev_had_descr = true;
     }
-    else if ( prev_had_descr )
+    else if( prev_had_descr )
     {
       // Add a spacer line after a k/v with a description
       ofile << "\n";
@@ -492,16 +515,18 @@ void write_config( config_block_sptr const& config,
     }
 
     std::string ro;
-    if ( config->is_read_only( key ) )
+    if( config->is_read_only( key ) )
     {
       ro = "[RO]";
     }
 
-    ofile << key << ro << " = " << config->get_value< config_block_value_t > ( key ) << "\n";
-
+    ofile << key << ro << " = " <<
+      config->get_value< config_block_value_t >( key ) << "\n";
   } // end for
 
   ofile.flush();
 } // write_config_file
 
-} }   // end namespace
+} // namespace vital
+
+}     // end namespace

@@ -33,7 +33,7 @@ class VITAL_ALGO_EXPORT match_descriptor_sets
 {
 public:
   match_descriptor_sets();
-  PLUGGABLE_INTERFACE(match_descriptor_sets);
+  PLUGGABLE_INTERFACE( match_descriptor_sets );
   /// Add a descriptor set to the inverted file system.
   ///
   /// Add a descriptor set and frame number to the inverted file system.
@@ -44,8 +44,9 @@ public:
   /// \returns None
   virtual
   void
-  append_to_index( const vital::descriptor_set_sptr desc,
-                   vital::frame_id_t frame ) = 0;
+  append_to_index(
+    const vital::descriptor_set_sptr desc,
+    vital::frame_id_t frame ) = 0;
 
   /// Query the inverted file system for similar sets of descriptors.
   ///
@@ -70,8 +71,9 @@ public:
   /// \returns vector of possibly matching frames found by the query
   virtual
   std::vector< vital::frame_id_t >
-  query_and_append( const vital::descriptor_set_sptr desc,
-                    frame_id_t frame );
+  query_and_append(
+    const vital::descriptor_set_sptr desc,
+    frame_id_t frame );
 };
 
 /// Shared pointer type for generic image_io definition type.

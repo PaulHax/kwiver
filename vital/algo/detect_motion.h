@@ -26,7 +26,7 @@ class VITAL_ALGO_EXPORT detect_motion
 public:
   /// Return the name of this algorithm.
   detect_motion();
-  PLUGGABLE_INTERFACE(detect_motion);
+  PLUGGABLE_INTERFACE( detect_motion );
   /// Detect motion from a sequence of images
   ///
   /// This method detects motion of foreground objects within a
@@ -45,10 +45,10 @@ public:
   /// that motion occurred at each pixel. Heat map image is single channel
   /// and has the same width and height dimensions as the input image.
   virtual image_container_sptr
-  process_image( const timestamp& ts,
-                 const image_container_sptr image,
-                 bool reset_model ) = 0;
-
+  process_image(
+    const timestamp& ts,
+    const image_container_sptr image,
+    bool reset_model ) = 0;
 };
 
 /// type definition for shared pointer to a detect_motion algorithm

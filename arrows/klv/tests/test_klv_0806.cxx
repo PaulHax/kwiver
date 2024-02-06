@@ -23,8 +23,9 @@ main( int argc, char** argv )
 
 // ----------------------------------------------------------------------------
 void
-test_read_write( klv_value const& expected_result,
-                 klv_bytes_t const& input_bytes )
+test_read_write(
+  klv_value const& expected_result,
+  klv_bytes_t const& input_bytes )
 {
   using format_t = klv_0806_local_set_format;
   test_read_write_format< format_t >( expected_result, input_bytes );
@@ -32,6 +33,7 @@ test_read_write( klv_value const& expected_result,
 
 // ----------------------------------------------------------------------------
 using kld = klv_lengthy< double >;
+
 auto const expected_result = klv_local_set{
   { KLV_0806_TIMESTAMP,
     uint64_t{ 256 } },
@@ -141,12 +143,12 @@ auto const input_bytes = klv_bytes_t{
   'M', 'P', 'E', 'G', '2',
 
   KLV_0806_USER_DEFINED_LOCAL_SET, 9,
-    KLV_0806_USER_DEFINED_SET_DATA_TYPE_ID, 1,
-    KLV_0806_USER_DEFINED_SET_DATA_TYPE_STRING << 6 | 1,
+  KLV_0806_USER_DEFINED_SET_DATA_TYPE_ID, 1,
+  KLV_0806_USER_DEFINED_SET_DATA_TYPE_STRING << 6 | 1,
     KLV_0806_USER_DEFINED_SET_DATA, 4,
     'T', 'E', 'S', 'T',
 
-  KLV_0806_POI_LOCAL_SET, 64,
+    KLV_0806_POI_LOCAL_SET, 64,
     KLV_0806_POI_SET_NUMBER, 2,
     0x00, 0x02,
     KLV_0806_POI_SET_LATITUDE, 4,
@@ -169,7 +171,7 @@ auto const input_bytes = klv_bytes_t{
     KLV_0806_POI_SET_OPERATION_ID, 4,
     'T', 'e', 's', 't',
 
-  KLV_0806_AOI_LOCAL_SET, 58,
+    KLV_0806_AOI_LOCAL_SET, 58,
     KLV_0806_AOI_SET_NUMBER, 2,
     0x00, 0x03,
     KLV_0806_AOI_SET_CORNER_LATITUDE_POINT_1, 4,
@@ -192,22 +194,22 @@ auto const input_bytes = klv_bytes_t{
     KLV_0806_AOI_SET_OPERATION_ID, 1,
     '4',
 
-  KLV_0806_MGRS_ZONE, 1,
-  5,
-  KLV_0806_MGRS_LATITUDE_BAND_GRID_SQUARE, 3,
-  'A', 'B', 'C',
-  KLV_0806_MGRS_EASTING, 3,
-  0x00, 0x04, 0x00,
-  KLV_0806_MGRS_NORTHING, 3,
-  0x00, 0x08, 0x00,
-  KLV_0806_FRAME_CENTER_MGRS_ZONE, 1,
-  6,
-  KLV_0806_FRAME_CENTER_MGRS_LATITUDE_BAND_GRID_SQUARE, 3,
-  'X', 'Y', 'Z',
-  KLV_0806_FRAME_CENTER_MGRS_EASTING, 3,
-  0x00, 0x00, 0x64,
-  KLV_0806_FRAME_CENTER_MGRS_NORTHING, 3,
-  0x00, 0x00, 0xC8, };
+    KLV_0806_MGRS_ZONE, 1,
+    5,
+    KLV_0806_MGRS_LATITUDE_BAND_GRID_SQUARE, 3,
+    'A', 'B', 'C',
+    KLV_0806_MGRS_EASTING, 3,
+    0x00, 0x04, 0x00,
+    KLV_0806_MGRS_NORTHING, 3,
+    0x00, 0x08, 0x00,
+    KLV_0806_FRAME_CENTER_MGRS_ZONE, 1,
+    6,
+    KLV_0806_FRAME_CENTER_MGRS_LATITUDE_BAND_GRID_SQUARE, 3,
+    'X', 'Y', 'Z',
+    KLV_0806_FRAME_CENTER_MGRS_EASTING, 3,
+    0x00, 0x00, 0x64,
+    KLV_0806_FRAME_CENTER_MGRS_NORTHING, 3,
+    0x00, 0x00, 0xC8, };
 
 // ----------------------------------------------------------------------------
 TEST ( klv, read_write_0806 )

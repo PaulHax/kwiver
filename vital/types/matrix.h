@@ -11,6 +11,7 @@
 #include <Eigen/Core>
 
 namespace kwiver {
+
 namespace vital {
 
 /// \cond DoxygenSuppress
@@ -33,6 +34,8 @@ typedef Eigen::Matrix< double, 4, 4 > matrix_4x4d;
 typedef Eigen::Matrix< float, 4, 4 >  matrix_4x4f;
 /// \endcond
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital
 
 #endif // VITAL_MATRIX_H_

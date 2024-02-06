@@ -14,7 +14,9 @@
 #include <vital/types/vector.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace vxl {
 
 /// VXL implementation of similarity transform estimation
@@ -22,14 +24,21 @@ class KWIVER_ALGO_VXL_EXPORT estimate_similarity_transform
   : public vital::algo::estimate_similarity_transform
 {
 public:
-  PLUGIN_INFO( "vxl",
-               "Use VXL (vpgl) to estimate a 3D similarity transformation "
-               "between corresponding landmarks." )
+  PLUGIN_INFO(
+    "vxl",
+    "Use VXL (vpgl) to estimate a 3D similarity transformation "
+    "between corresponding landmarks." )
 
   // No custom configuration at this time
   /// \cond Doxygen Suppress
-  virtual void set_configuration(vital::config_block_sptr /*config*/) { };
-  virtual bool check_configuration(vital::config_block_sptr /*config*/) const { return true; }
+  virtual void set_configuration( vital::config_block_sptr /*config*/ ) {}
+
+  virtual bool
+  check_configuration( vital::config_block_sptr /*config*/ ) const
+  {
+    return true;
+  }
+
   /// \endcond
 
   /// Estimate the similarity transform between two corresponding point sets
@@ -42,14 +51,16 @@ public:
   ///          \c from space to points in the \c to space (i.e. transforms
   ///          \c from into \c to).
   virtual vital::similarity_d
-  estimate_transform(std::vector<vital::vector_3d> const& from,
-                     std::vector<vital::vector_3d> const& to) const;
+  estimate_transform(
+    std::vector< vital::vector_3d > const& from,
+    std::vector< vital::vector_3d > const& to ) const;
   using vital::algo::estimate_similarity_transform::estimate_transform;
-
 };
 
 } // end namespace vxl
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif

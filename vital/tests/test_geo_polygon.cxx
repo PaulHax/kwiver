@@ -33,23 +33,25 @@ auto const loc_rt = vector_2d{ 0.123456789012345678, -0.987654321098765432 };
 auto constexpr crs_ll = SRID::lat_lon_WGS84;
 auto constexpr crs_utm_6s = SRID::UTM_WGS84_south + 6;
 
-}
+} // namespace
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
-bool operator==( polygon const& a, polygon const& b )
+bool
+operator==( polygon const& a, polygon const& b )
 {
   auto const k = a.num_vertices();
-  if ( b.num_vertices() != k )
+  if( b.num_vertices() != k )
   {
     return false;
   }
 
-  for ( auto i = decltype(k){ 0 }; i < k; ++i )
+  for( auto i = decltype( k ) { 0 }; i < k; ++i )
   {
-    if ( a.at( i ) != b.at( i ) )
+    if( a.at( i ) != b.at( i ) )
     {
       return false;
     }
@@ -59,17 +61,20 @@ bool operator==( polygon const& a, polygon const& b )
 }
 
 // ----------------------------------------------------------------------------
-void PrintTo( polygon const& v, ::std::ostream* os )
+void
+PrintTo( polygon const& v, ::std::ostream* os )
 {
   auto const k = v.num_vertices();
-  (*os) << "(polygon with " << k << " vertices)";
-  for ( auto i = decltype(k){ 0 }; i < k; ++i )
+  ( *os ) << "(polygon with " << k << " vertices)";
+  for( auto i = decltype( k ) { 0 }; i < k; ++i )
   {
-    (*os) << "\n  " << i << ": " << ::testing::PrintToString( v.at( i ) );
+    ( *os ) << "\n  " << i << ": " << ::testing::PrintToString( v.at( i ) );
   }
 }
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 // ----------------------------------------------------------------------------
 int
@@ -80,21 +85,21 @@ main( int argc, char* argv[] )
 }
 
 // ----------------------------------------------------------------------------
-TEST(geo_polygon, default_constructor)
+TEST ( geo_polygon, default_constructor )
 {
   geo_polygon p;
   EXPECT_TRUE( p.is_empty() );
 }
 
 // ----------------------------------------------------------------------------
-TEST(geo_polygon, constructor_polygon)
+TEST ( geo_polygon, constructor_polygon )
 {
   geo_polygon p{ { loc_ll }, crs_ll };
   EXPECT_FALSE( p.is_empty() );
 }
 
 // ----------------------------------------------------------------------------
-TEST(geo_polygon, assignment)
+TEST ( geo_polygon, assignment )
 {
   geo_polygon p;
   geo_polygon const p1{ { loc_ll }, crs_ll };
@@ -117,12 +122,12 @@ TEST(geo_polygon, assignment)
 }
 
 // ----------------------------------------------------------------------------
-TEST(geo_polygon, api)
+TEST ( geo_polygon, api )
 {
   geo_polygon p{ { loc_ll }, crs_ll };
 
   // Test values of the point as originally constructed
-  [=]() {
+  [=](){
     ASSERT_EQ( 1, p.polygon().num_vertices() );
     EXPECT_EQ( crs_ll, p.crs() );
     EXPECT_EQ( loc_ll, p.polygon().at( 0 ) );
@@ -132,7 +137,7 @@ TEST(geo_polygon, api)
   // Modify the location and test the new values
   p.set_polygon( { loc2_ll }, crs_ll );
 
-  [=]() {
+  [=](){
     ASSERT_EQ( 1, p.polygon().num_vertices() );
     EXPECT_EQ( crs_ll, p.crs() );
     EXPECT_EQ( loc2_ll, p.polygon().at( 0 ) );
@@ -142,7 +147,7 @@ TEST(geo_polygon, api)
   // Modify the location again and test the new values
   p.set_polygon( { loc_utm }, crs_utm_6s );
 
-  [=]() {
+  [=](){
     ASSERT_EQ( 1, p.polygon().num_vertices() );
     EXPECT_EQ( crs_utm_6s, p.crs() );
     EXPECT_EQ( loc_utm, p.polygon().at( 0 ) );
@@ -155,7 +160,7 @@ TEST(geo_polygon, api)
     EXPECT_NE( loc2_ll, p.polygon( crs_ll ).at( 0 ) )
       << "Changing the location did not clear the location cache";
   }
-  catch (...)
+  catch( ... )
   {
     // If no conversion functor is registered, the conversion will fail; that
     // is okay, since we are only checking here that the point isn't still
@@ -165,7 +170,7 @@ TEST(geo_polygon, api)
 }
 
 // ----------------------------------------------------------------------------
-TEST(geo_polygon, conversion)
+TEST ( geo_polygon, conversion )
 {
   kwiver::vital::plugin_manager::instance().load_all_plugins();
 
@@ -188,7 +193,7 @@ TEST(geo_polygon, conversion)
 }
 
 // ----------------------------------------------------------------------------
-TEST(geo_polygon, config_block_io)
+TEST ( geo_polygon, config_block_io )
 {
   static auto constexpr crs = SRID::lat_lon_NAD83;
   static auto const loc1 = vector_2d{ -77.397577, 38.179969 };
@@ -204,11 +209,11 @@ TEST(geo_polygon, config_block_io)
 
   config->set_value( key, value_in );
 
-  EXPECT_EQ( loc, config->get_value<geo_polygon>( key ).polygon( crs ) );
+  EXPECT_EQ( loc, config->get_value< geo_polygon >( key ).polygon( crs ) );
 }
 
 // ----------------------------------------------------------------------------
-TEST(geo_polygon, insert_operator_empty)
+TEST ( geo_polygon, insert_operator_empty )
 {
   geo_polygon p_empty;
 
@@ -230,16 +235,15 @@ struct roundtrip_test
 void
 PrintTo( roundtrip_test const& v, ::std::ostream* os )
 {
-  (*os) << v.text;
+  ( *os ) << v.text;
 }
 
 // ----------------------------------------------------------------------------
-class geo_polygon_roundtrip : public ::testing::TestWithParam<roundtrip_test>
-{
-};
+class geo_polygon_roundtrip : public ::testing::TestWithParam< roundtrip_test >
+{};
 
 // ----------------------------------------------------------------------------
-TEST_P(geo_polygon_roundtrip, insert_operator)
+TEST_P ( geo_polygon_roundtrip, insert_operator )
 {
   auto const expected_loc = GetParam().loc;
   auto const expected_crs = GetParam().crs;
@@ -264,13 +268,13 @@ TEST_P(geo_polygon_roundtrip, insert_operator)
   s >> crs;
 
   // Successful round-trip?
-  EXPECT_EQ( expected_loc[0], easting );
-  EXPECT_EQ( expected_loc[1], northing );
+  EXPECT_EQ( expected_loc[ 0 ], easting );
+  EXPECT_EQ( expected_loc[ 1 ], northing );
   EXPECT_EQ( expected_crs, crs );
 }
 
 // ----------------------------------------------------------------------------
-TEST_P(geo_polygon_roundtrip, config_block)
+TEST_P ( geo_polygon_roundtrip, config_block )
 {
   auto const expected_loc = GetParam().loc;
   auto const expected_crs = GetParam().crs;
@@ -280,14 +284,14 @@ TEST_P(geo_polygon_roundtrip, config_block)
 
   config->set_value( key, geo_polygon{ { expected_loc }, expected_crs } );
 
-  auto const value = config->get_value<geo_polygon>( key );
+  auto const value = config->get_value< geo_polygon >( key );
   ASSERT_EQ( expected_crs, value.crs() );
 
-  auto const actual_loc = value.polygon( expected_crs ).get_vertices()[0];
+  auto const actual_loc = value.polygon( expected_crs ).get_vertices()[ 0 ];
 
   // Successful round-trip?
-  EXPECT_EQ( expected_loc[0], actual_loc[0] );
-  EXPECT_EQ( expected_loc[1], actual_loc[1] );
+  EXPECT_EQ( expected_loc[ 0 ], actual_loc[ 0 ] );
+  EXPECT_EQ( expected_loc[ 1 ], actual_loc[ 1 ] );
 }
 
 // ----------------------------------------------------------------------------
@@ -295,8 +299,9 @@ INSTANTIATE_TEST_CASE_P(
   ,
   geo_polygon_roundtrip,
   ::testing::Values(
-      ( roundtrip_test{ "ll", loc_ll, crs_ll } ),
-      ( roundtrip_test{ "utm", loc_utm, crs_utm_6s } ),
-      ( roundtrip_test{ "2", loc2_ll, crs_ll } ),
-      ( roundtrip_test{ "rt", loc2_ll, 12345 } )
-  ) );
+    ( roundtrip_test{ "ll", loc_ll, crs_ll } ),
+    ( roundtrip_test{ "utm", loc_utm, crs_utm_6s } ),
+    ( roundtrip_test{ "2", loc2_ll, crs_ll } ),
+    ( roundtrip_test{ "rt", loc2_ll, 12345 } )
+  )
+);

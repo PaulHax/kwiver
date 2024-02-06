@@ -10,14 +10,15 @@
 #include <gtest/gtest.h>
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
 }
 
 // ----------------------------------------------------------------------------
-TEST(attribute_set, api)
+TEST ( attribute_set, api )
 {
   kwiver::vital::attribute_set set;
 
@@ -29,7 +30,7 @@ TEST(attribute_set, api)
   EXPECT_FALSE( set.empty() );
 
   // Replace entry
-  set.add( "first", (double) 3.14159 );
+  set.add( "first", ( double ) 3.14159 );
   EXPECT_EQ( 1, set.size() );
   EXPECT_FALSE( set.empty() );
   EXPECT_TRUE( set.has( "first" ) );
@@ -41,12 +42,12 @@ TEST(attribute_set, api)
   EXPECT_TRUE( set.has( "first" ) );
   EXPECT_TRUE( set.has( "second" ) );
 
-  EXPECT_EQ( 42, set.get<int>( "second" ) );
-  EXPECT_TRUE( set.is_type<int>( "second") );
+  EXPECT_EQ( 42, set.get< int >( "second" ) );
+  EXPECT_TRUE( set.is_type< int >( "second" ) );
 
   // Test returning wrong type, exception
   EXPECT_THROW(
-    set.get<double>( "second" ),
+    set.get< double >( "second" ),
     kwiver::vital::bad_any_cast );
 
   // Test data() accessor
@@ -55,7 +56,7 @@ TEST(attribute_set, api)
     kwiver::vital::attribute_set_exception );
 
   // Test iterators
-  for ( auto it = set.begin(); it != set.end(); ++it )
+  for( auto it = set.begin(); it != set.end(); ++it )
   {
     std::cout << it->first << std::endl;
   }

@@ -11,6 +11,7 @@
 #include <vital/types/attribute_set.h>
 
 namespace kwiver {
+
 namespace vital {
 
 // When types moved to a separate library, attribute_set needed to move
@@ -20,6 +21,8 @@ using attribute_set = vital::types::attribute_set;
 using attribute_set_exception = vital::types::attribute_set_exception;
 using attribute_set_sptr = vital::types::attribute_set_sptr;
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // KWIVER_VITAL_ATTRIBUTE_SET_ROOT_H

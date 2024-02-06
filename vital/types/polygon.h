@@ -8,15 +8,16 @@
 #ifndef VITAL_TYPES_POLYGON_H
 #define VITAL_TYPES_POLYGON_H
 
+#include <vital/types/vector.h>
 #include <vital/vital_config.h>
 #include <vital/vital_export.h>
-#include <vital/types/vector.h>
 
 #include <initializer_list>
 #include <memory>
 #include <vector>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -125,6 +126,8 @@ bool operator==( polygon const& lhs, polygon const& rhs );
 VITAL_EXPORT
 bool operator!=( polygon const& lhs, polygon const& rhs );
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // VITAL_TYPES_POLYGON_H

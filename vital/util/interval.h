@@ -52,7 +52,8 @@ public:
   }
 
   /// Return the difference between the lower and upper bounds.
-  T span() const
+  T
+  span() const
   {
     return m_upper - m_lower;
   }
@@ -68,8 +69,8 @@ public:
     if( new_lower > m_upper )
     {
       throw std::invalid_argument(
-              "interval.truncate_lower(): "
-              "new_lower cannot be greater than current upper" );
+        "interval.truncate_lower(): "
+        "new_lower cannot be greater than current upper" );
     }
     m_lower = std::max( m_lower, new_lower );
   }
@@ -85,8 +86,8 @@ public:
     if( new_upper < m_lower )
     {
       throw std::invalid_argument(
-              "interval.truncate_upper(): "
-              "new_upper cannot be less than current lower" );
+        "interval.truncate_upper(): "
+        "new_upper cannot be less than current lower" );
     }
     m_upper = std::min( m_upper, new_upper );
   }

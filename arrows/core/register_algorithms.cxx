@@ -11,20 +11,22 @@
 #include <vital/plugin_management/plugin_manager.h>
 
 // interface
+#include <vital/algo/metadata_map_io.h>
 #include <vital/algo/uv_unwrap_mesh.h>
 #include <vital/algo/video_input.h>
-#include <vital/algo/metadata_map_io.h>
 
 // implementation
+#include <arrows/core/metadata_map_io_csv.h>
 #include <arrows/core/uv_unwrap_mesh.h>
 #include <arrows/core/video_input_filter.h>
 #include <arrows/core/video_input_image_list.h>
-#include <arrows/core/video_input_split.h>
 #include <arrows/core/video_input_pos.h>
-#include <arrows/core/metadata_map_io_csv.h>
+#include <arrows/core/video_input_split.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 // ----------------------------------------------------------------------------
@@ -36,26 +38,31 @@ register_factories( kwiver::vital::plugin_loader& vpl )
   using kvpf = ::kwiver::vital::plugin_factory;
 
   auto fact =
-    vpl.add_factory< vital::algo::video_input , video_input_filter >( "filter" );
+    vpl.add_factory< vital::algo::video_input, video_input_filter >( "filter" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 
-  fact = vpl.add_factory< vital::algo::uv_unwrap_mesh , uv_unwrap_mesh >( "core" );
+  fact = vpl.add_factory< vital::algo::uv_unwrap_mesh,
+    uv_unwrap_mesh >( "core" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 
-  fact =  vpl.add_factory< vital::algo::video_input , video_input_split >( "split" );
+  fact = vpl.add_factory< vital::algo::video_input,
+    video_input_split >( "split" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 
-  fact =  vpl.add_factory< vital::algo::video_input , video_input_image_list >( "image_list" );
+  fact = vpl.add_factory< vital::algo::video_input,
+    video_input_image_list >( "image_list" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 
-  fact =  vpl.add_factory< vital::algo::video_input , video_input_pos >( "pos" );
+  fact = vpl.add_factory< vital::algo::video_input, video_input_pos >( "pos" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 
-  fact = vpl.add_factory< vital::algo::metadata_map_io , metadata_map_io_csv >( "csv" );
+  fact = vpl.add_factory< vital::algo::metadata_map_io,
+    metadata_map_io_csv >( "csv" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
-
 }
 
 } // end namespace core
+
 } // end namespace arrows
+
 } // end namespace kwiver

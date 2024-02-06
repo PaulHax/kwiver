@@ -14,16 +14,19 @@
 
 #include <vital/types/detected_object_set.h>
 
-#include <vital/bindings/c/types/detected_object_set.h>
 #include <vital/bindings/c/helpers/c_utils.h>
+#include <vital/bindings/c/types/detected_object_set.h>
 
 namespace kwiver {
+
 namespace vital_c {
 
 /// Declaration of C interface shared_ptr cache of vital::detected_object_set
 extern SharedPointerCache< kwiver::vital::detected_object_set,
-                           vital_detected_object_set_t > DOBJ_SET_SPTR_CACHE;
+  vital_detected_object_set_t > DOBJ_SET_SPTR_CACHE;
 
-} }
+} // namespace vital_c
+
+} // namespace kwiver
 
 #endif // VITAL_C_HELPERS_DETECTED_OBJECT_SET_H_

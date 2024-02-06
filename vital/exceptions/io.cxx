@@ -9,6 +9,7 @@
 #include <sstream>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -20,8 +21,7 @@ io_exception
 
 io_exception
 ::~io_exception() noexcept
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 path_not_exists
@@ -35,8 +35,7 @@ path_not_exists
 
 path_not_exists
 ::~path_not_exists() noexcept
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 path_not_a_file
@@ -47,8 +46,7 @@ path_not_a_file
 
 path_not_a_file
 ::~path_not_a_file() noexcept
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 path_not_a_directory
@@ -59,8 +57,7 @@ path_not_a_directory
 
 path_not_a_directory
 ::~path_not_a_directory() noexcept
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 invalid_file
@@ -74,8 +71,7 @@ invalid_file
 
 invalid_file
 ::~invalid_file() noexcept
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 invalid_data
@@ -86,55 +82,59 @@ invalid_data
 
 invalid_data
 ::~invalid_data() noexcept
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 file_not_found_exception
-::file_not_found_exception( path_t const& file_path, std::string const& reason ) noexcept
+::file_not_found_exception(
+  path_t const& file_path,
+  std::string const& reason ) noexcept
 {
   std::ostringstream sstr;
 
-  sstr  << "Could not find file at location \'" << file_path << "\': "
-        << reason;
+  sstr << "Could not find file at location \'" << file_path << "\': "
+       << reason;
   m_what = sstr.str();
 }
 
 file_not_found_exception
 ::~file_not_found_exception() noexcept
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 file_not_read_exception
-::file_not_read_exception( path_t const& file_path, std::string const& reason ) noexcept
+::file_not_read_exception(
+  path_t const& file_path,
+  std::string const& reason ) noexcept
 {
   std::ostringstream sstr;
 
-  sstr  << "Failed to read from file \'" << file_path << "\': "
-        << reason;
+  sstr << "Failed to read from file \'" << file_path << "\': "
+       << reason;
   m_what = sstr.str();
 }
 
 file_not_read_exception
 ::~file_not_read_exception() noexcept
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 file_write_exception
-::file_write_exception( path_t const& file_path, std::string const& reason ) noexcept
+::file_write_exception(
+  path_t const& file_path,
+  std::string const& reason ) noexcept
 {
   std::ostringstream sstr;
 
-  sstr  << "Failed to write to file \'" << file_path << "\': "
-        << reason;
+  sstr << "Failed to write to file \'" << file_path << "\': "
+       << reason;
   m_what = sstr.str();
 }
 
 file_write_exception
 ::~file_write_exception() noexcept
-{
-}
+{}
 
-} }   // end vital namespace
+} // namespace vital
+
+}     // end vital namespace

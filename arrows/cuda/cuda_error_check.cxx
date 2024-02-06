@@ -7,30 +7,38 @@
 
 #include "cuda_error_check.h"
 
+#include <cuda_runtime.h>
+#include <kwiversys/SystemTools.hxx>
 #include <vital/exceptions/gpu.h>
 #include <vital/logger/logger.h>
-#include <kwiversys/SystemTools.hxx>
-#include <cuda_runtime.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace cuda {
 
-void cuda_throw(cudaError_t code, const char *file, int line)
+void
+cuda_throw( cudaError_t code, const char* file, int line )
 {
-  if (code != cudaSuccess)
+  if( code != cudaSuccess )
   {
-    auto filename = kwiversys::SystemTools::GetFilenameName(file);
-    auto basename = kwiversys::SystemTools::GetFilenameWithoutExtension(filename);
-    auto logger = vital::get_logger("arrows.cuda."+basename);
-    LOG_ERROR(logger, "GPU Error: " << cudaGetErrorString(code)
-      << "\n  in " << filename << ":" << line);
-    auto e = vital::gpu_memory_exception(cudaGetErrorString(code));
-    e.set_location(filename.c_str(), line);
+    auto filename = kwiversys::SystemTools::GetFilenameName( file );
+    auto basename =
+      kwiversys::SystemTools::GetFilenameWithoutExtension( filename );
+    auto logger = vital::get_logger( "arrows.cuda." + basename );
+    LOG_ERROR(
+      logger, "GPU Error: " << cudaGetErrorString( code )
+                            << "\n  in " << filename << ":" << line);
+
+    auto e = vital::gpu_memory_exception( cudaGetErrorString( code ) );
+    e.set_location( filename.c_str(), line );
     throw e;
   }
 }
 
 }  // end namespace cuda
+
 }  // end namespace arrows
+
 }  // end namespace kwiver

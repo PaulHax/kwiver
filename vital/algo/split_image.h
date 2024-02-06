@@ -24,11 +24,10 @@ class VITAL_ALGO_EXPORT split_image
 {
 public:
   split_image();
-  PLUGGABLE_INTERFACE(split_image);
+  PLUGGABLE_INTERFACE( split_image );
   /// Split image
   virtual std::vector< kwiver::vital::image_container_sptr >
   split( kwiver::vital::image_container_sptr img ) const = 0;
-
 };
 
 typedef std::shared_ptr< split_image > split_image_sptr;

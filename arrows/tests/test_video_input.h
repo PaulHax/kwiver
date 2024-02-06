@@ -24,40 +24,41 @@ constexpr int bc_buffer = 8;
 constexpr int bc_width = 2;
 constexpr int bc_height = 4;
 constexpr int bit_depth = 256;
-constexpr int bc_area = bc_width*bc_height;
+constexpr int bc_area = bc_width * bc_height;
 
 // Color test pixel location
 constexpr int color_test_pos = 17;
 
 // Test colors
-static kwiver::vital::rgb_color red(255, 0, 0);
-static kwiver::vital::rgb_color green(0, 255, 0);
-static kwiver::vital::rgb_color blue(0, 0, 255);
+static kwiver::vital::rgb_color red( 255, 0, 0 );
+static kwiver::vital::rgb_color green( 0, 255, 0 );
+static kwiver::vital::rgb_color blue( 0, 0, 255 );
 
 // Decode barcodes from test frame images
-uint32_t decode_barcode(kwiver::vital::image_container& img_ct)
+uint32_t
+decode_barcode( kwiver::vital::image_container& img_ct )
 {
   auto img = img_ct.get_image();
-  kwiver::vital::image_of<uint8_t> frame_img(img);
+  kwiver::vital::image_of< uint8_t > frame_img( img );
 
   uint32_t retVal = 0;
   uint32_t bit_shift = 0;
-  int width = static_cast<int>(img.width());
+  int width = static_cast< int >( img.width() );
   // Start at the back
-  for (int i=width-bc_buffer-1; i > bc_buffer; i-=bc_width)
+  for( int i = width - bc_buffer - 1; i > bc_buffer; i -= bc_width )
   {
     uint16_t bc_sum = 0;
-    for (int j=0; j < bc_width; ++j)
+    for( int j = 0; j < bc_width; ++j )
     {
-      for (int k=0; k < bc_height; ++k)
+      for( int k = 0; k < bc_height; ++k )
       {
-        bc_sum += frame_img(i-j, k);
+        bc_sum += frame_img( i - j, k );
       }
     }
 
-    if (bc_sum/bc_area < bit_depth/2)
+    if( bc_sum / bc_area < bit_depth / 2 )
     {
-      retVal += (1 << bit_shift);
+      retVal += ( 1 << bit_shift );
     }
     bit_shift++;
   }
@@ -65,23 +66,25 @@ uint32_t decode_barcode(kwiver::vital::image_container& img_ct)
   return retVal;
 }
 
-kwiver::vital::rgb_color test_color_pixel(
-  int color, kwiver::vital::image_container& img_ct)
+kwiver::vital::rgb_color
+test_color_pixel(
+  int color, kwiver::vital::image_container& img_ct )
 {
   auto img = img_ct.get_image();
-  kwiver::vital::image_of<uint8_t> frame_img(img);
+  kwiver::vital::image_of< uint8_t > frame_img( img );
 
-  return frame_img.at(2*color + 1, color_test_pos);
+  return frame_img.at( 2 * color + 1, color_test_pos );
 }
 
 // ----------------------------------------------------------------------------
-void test_read_video_sublist( kwiver::vital::algo::video_input& vi )
+void
+test_read_video_sublist( kwiver::vital::algo::video_input& vi )
 {
   kwiver::vital::timestamp ts;
 
   int num_frames = 0;
   int frame_idx = 10;
-  while ( vi.next_frame( ts ) )
+  while( vi.next_frame( ts ) )
   {
     auto img = vi.frame_image();
     auto md = vi.frame_metadata();
@@ -90,7 +93,7 @@ void test_read_video_sublist( kwiver::vital::algo::video_input& vi )
     ++frame_idx;
     EXPECT_EQ( frame_idx, ts.get_frame() )
       << "Frame numbers should be sequential";
-    EXPECT_EQ( ts.get_frame(), decode_barcode(*img) )
+    EXPECT_EQ( ts.get_frame(), decode_barcode( *img ) )
       << "Frame number should match barcode in frame image";
   }
   EXPECT_EQ( num_expected_frames_subset, num_frames );
@@ -98,13 +101,14 @@ void test_read_video_sublist( kwiver::vital::algo::video_input& vi )
 }
 
 // ----------------------------------------------------------------------------
-void test_read_video_sublist_nth_frame( kwiver::vital::algo::video_input& vi )
+void
+test_read_video_sublist_nth_frame( kwiver::vital::algo::video_input& vi )
 {
   kwiver::vital::timestamp ts;
 
   int num_frames = 2;
   int frame_idx = 10;
-  while ( vi.next_frame( ts ) )
+  while( vi.next_frame( ts ) )
   {
     auto img = vi.frame_image();
     auto md = vi.frame_metadata();
@@ -113,7 +117,7 @@ void test_read_video_sublist_nth_frame( kwiver::vital::algo::video_input& vi )
     frame_idx += nth_frame_output;
     EXPECT_EQ( frame_idx, ts.get_frame() )
       << "Frame numbers should be sequential";
-    EXPECT_EQ( frame_idx, decode_barcode(*img) )
+    EXPECT_EQ( frame_idx, decode_barcode( *img ) )
       << "Frame number should match barcode in frame image";
   }
   EXPECT_EQ( num_expected_frames_subset, num_frames );
@@ -121,7 +125,8 @@ void test_read_video_sublist_nth_frame( kwiver::vital::algo::video_input& vi )
 }
 
 // ----------------------------------------------------------------------------
-void test_seek_frame( kwiver::vital::algo::video_input& vi )
+void
+test_seek_frame( kwiver::vital::algo::video_input& vi )
 {
   kwiver::vital::timestamp ts;
 
@@ -129,16 +134,18 @@ void test_seek_frame( kwiver::vital::algo::video_input& vi )
   ASSERT_TRUE( vi.seekable() );
 
   // Test various valid seeks
-  std::vector<kwiver::vital::timestamp::frame_t> valid_seeks =
-    {3, 15, 23, 30, 46, 34, 25, 50, 1};
-  for (auto requested_frame : valid_seeks)
+  std::vector< kwiver::vital::timestamp::frame_t > valid_seeks = { 3, 15, 23,
+                                                                   30, 46, 34,
+                                                                   25, 50, 1 };
+  for( auto requested_frame : valid_seeks )
   {
     EXPECT_TRUE( vi.seek_frame( ts, requested_frame ) )
-      << "seek_frame should return true for requested_frame " << requested_frame;
+      << "seek_frame should return true for requested_frame " <<
+      requested_frame;
 
     auto img = vi.frame_image();
 
-    ASSERT_TRUE( !! img );
+    ASSERT_TRUE( !!img );
 
     EXPECT_EQ( requested_frame, ts.get_frame() )
       << "Frame number should match seek request";
@@ -147,25 +154,26 @@ void test_seek_frame( kwiver::vital::algo::video_input& vi )
   }
 
   // Test various invalid seeks past end of video
-  std::vector<kwiver::vital::timestamp::frame_t> in_valid_seeks =
-    {-3, -1, 0, 51, 55};
-  for (auto requested_frame : in_valid_seeks)
+  std::vector< kwiver::vital::timestamp::frame_t > in_valid_seeks = { -3, -1, 0,
+                                                                      51, 55 };
+  for( auto requested_frame : in_valid_seeks )
   {
-    EXPECT_FALSE( vi.seek_frame( ts, requested_frame) );
+    EXPECT_FALSE( vi.seek_frame( ts, requested_frame ) );
     EXPECT_NE( requested_frame, ts.get_frame() );
   }
 
   // Test valid seeks after invalid seeks
-  valid_seeks = {11, 32, 21, 43};
+  valid_seeks = { 11, 32, 21, 43 };
 
-  for (auto requested_frame : valid_seeks)
+  for( auto requested_frame : valid_seeks )
   {
     EXPECT_TRUE( vi.seek_frame( ts, requested_frame ) )
-      << "seek_frame should return true for requested_frame " << requested_frame;
+      << "seek_frame should return true for requested_frame " <<
+      requested_frame;
 
     auto img = vi.frame_image();
 
-    ASSERT_TRUE( !! img );
+    ASSERT_TRUE( !!img );
 
     EXPECT_EQ( requested_frame, ts.get_frame() )
       << "Frame number should match seek request";
@@ -177,7 +185,8 @@ void test_seek_frame( kwiver::vital::algo::video_input& vi )
 }
 
 // ----------------------------------------------------------------------------
-void test_seek_frame_sublist( kwiver::vital::algo::video_input& vi )
+void
+test_seek_frame_sublist( kwiver::vital::algo::video_input& vi )
 {
   kwiver::vital::timestamp ts;
 
@@ -185,11 +194,11 @@ void test_seek_frame_sublist( kwiver::vital::algo::video_input& vi )
   ASSERT_TRUE( vi.seekable() );
 
   // Test various valid seeks
-  std::vector<kwiver::vital::timestamp::frame_t> valid_seeks =
-    {11, 17, 28, 21, 30};
-  for (auto requested_frame : valid_seeks)
+  std::vector< kwiver::vital::timestamp::frame_t > valid_seeks = { 11, 17, 28,
+                                                                   21, 30 };
+  for( auto requested_frame : valid_seeks )
   {
-    EXPECT_TRUE( vi.seek_frame( ts, requested_frame) );
+    EXPECT_TRUE( vi.seek_frame( ts, requested_frame ) );
 
     auto img = vi.frame_image();
 
@@ -200,17 +209,20 @@ void test_seek_frame_sublist( kwiver::vital::algo::video_input& vi )
   }
 
   // Test various invalid seeks past end of video
-  std::vector<kwiver::vital::timestamp::frame_t> in_valid_seeks =
-    {-3, -1, 5, 10, 31, 42, 51, 55};
-  for (auto requested_frame : in_valid_seeks)
+  std::vector< kwiver::vital::timestamp::frame_t > in_valid_seeks = { -3, -1, 5,
+                                                                      10, 31,
+                                                                      42, 51,
+                                                                      55 };
+  for( auto requested_frame : in_valid_seeks )
   {
-    EXPECT_FALSE( vi.seek_frame( ts, requested_frame) );
+    EXPECT_FALSE( vi.seek_frame( ts, requested_frame ) );
     EXPECT_NE( requested_frame, ts.get_frame() );
   }
 }
 
 // ----------------------------------------------------------------------------
-void test_seek_then_next( kwiver::vital::algo::video_input& vi )
+void
+test_seek_then_next( kwiver::vital::algo::video_input& vi )
 {
   kwiver::vital::timestamp ts;
 
@@ -230,7 +242,7 @@ void test_seek_then_next( kwiver::vital::algo::video_input& vi )
     << "Frame number should match barcode in frame image";
 
   int num_frames = requested_frame;
-  while ( vi.next_frame( ts ) )
+  while( vi.next_frame( ts ) )
   {
     img = vi.frame_image();
 
@@ -243,7 +255,8 @@ void test_seek_then_next( kwiver::vital::algo::video_input& vi )
 }
 
 // ----------------------------------------------------------------------------
-void test_read_video_nth_frame( kwiver::vital::algo::video_input& vi )
+void
+test_read_video_nth_frame( kwiver::vital::algo::video_input& vi )
 {
   kwiver::vital::timestamp ts;
 
@@ -253,7 +266,7 @@ void test_read_video_nth_frame( kwiver::vital::algo::video_input& vi )
 
   int num_frames = 0;
   int expected_frame_num = 1;
-  while ( vi.next_frame( ts ) )
+  while( vi.next_frame( ts ) )
   {
     auto img = vi.frame_image();
     auto md = vi.frame_metadata();
@@ -261,7 +274,7 @@ void test_read_video_nth_frame( kwiver::vital::algo::video_input& vi )
     ++num_frames;
     EXPECT_EQ( expected_frame_num, ts.get_frame() )
       << "Frame numbers should be sequential";
-    EXPECT_EQ( expected_frame_num, decode_barcode(*img) )
+    EXPECT_EQ( expected_frame_num, decode_barcode( *img ) )
       << "Frame number should match barcode in frame image";
     expected_frame_num += nth_frame_output;
   }
@@ -274,7 +287,8 @@ void test_read_video_nth_frame( kwiver::vital::algo::video_input& vi )
 }
 
 // ----------------------------------------------------------------------------
-void test_seek_nth_frame( kwiver::vital::algo::video_input& vi )
+void
+test_seek_nth_frame( kwiver::vital::algo::video_input& vi )
 {
   kwiver::vital::timestamp ts;
 
@@ -282,34 +296,37 @@ void test_seek_nth_frame( kwiver::vital::algo::video_input& vi )
   ASSERT_TRUE( vi.seekable() );
 
   // Test various valid seeks
-  std::vector<kwiver::vital::timestamp::frame_t> valid_seeks =
-    {4, 10, 13, 22, 49};
-  for (auto requested_frame : valid_seeks)
+  std::vector< kwiver::vital::timestamp::frame_t > valid_seeks = { 4, 10, 13,
+                                                                   22, 49 };
+  for( auto requested_frame : valid_seeks )
   {
-    EXPECT_TRUE( vi.seek_frame( ts, requested_frame) );
+    EXPECT_TRUE( vi.seek_frame( ts, requested_frame ) );
 
     auto img = vi.frame_image();
 
-    ASSERT_TRUE( !! img );
+    ASSERT_TRUE( !!img );
 
     EXPECT_EQ( requested_frame, ts.get_frame() )
       << "Frame number should match seek request";
-    EXPECT_EQ( ts.get_frame(), decode_barcode(*img) )
+    EXPECT_EQ( ts.get_frame(), decode_barcode( *img ) )
       << "Frame number should match barcode in frame image";
   }
 
   // Test various invalid seeks past end of video
-  std::vector<kwiver::vital::timestamp::frame_t> in_valid_seeks =
-    {-3, -1, 0, 2, 12, 11, 21, 24, 51, 55};
-  for (auto requested_frame : in_valid_seeks)
+  std::vector< kwiver::vital::timestamp::frame_t > in_valid_seeks = { -3, -1, 0,
+                                                                      2, 12, 11,
+                                                                      21, 24,
+                                                                      51, 55 };
+  for( auto requested_frame : in_valid_seeks )
   {
-    EXPECT_FALSE( vi.seek_frame( ts, requested_frame) );
+    EXPECT_FALSE( vi.seek_frame( ts, requested_frame ) );
     EXPECT_NE( requested_frame, ts.get_frame() );
   }
 }
 
 // ----------------------------------------------------------------------------
-void test_next_then_seek( kwiver::vital::algo::video_input& vi )
+void
+test_next_then_seek( kwiver::vital::algo::video_input& vi )
 {
   kwiver::vital::timestamp ts;
 
@@ -322,7 +339,7 @@ void test_next_then_seek( kwiver::vital::algo::video_input& vi )
   kwiver::vital::timestamp::frame_t requested_frame = 12;
 
   int num_frames = 0;
-  while ( vi.next_frame( ts ) && ++num_frames < stop_frame )
+  while( vi.next_frame( ts ) && ++num_frames < stop_frame )
   {
     auto img = vi.frame_image();
 
@@ -343,7 +360,8 @@ void test_next_then_seek( kwiver::vital::algo::video_input& vi )
 }
 
 // ----------------------------------------------------------------------------
-void test_next_then_seek_then_next( kwiver::vital::algo::video_input& vi )
+void
+test_next_then_seek_then_next( kwiver::vital::algo::video_input& vi )
 {
   kwiver::vital::timestamp ts;
 
@@ -358,7 +376,7 @@ void test_next_then_seek_then_next( kwiver::vital::algo::video_input& vi )
   kwiver::vital::timestamp::frame_t end_frame = 20;
 
   kwiver::vital::frame_id_t num_frames = 0;
-  while ( vi.next_frame( ts ) && ++num_frames < stop_frame )
+  while( vi.next_frame( ts ) && ++num_frames < stop_frame )
   {
     auto img = vi.frame_image();
 
@@ -369,6 +387,7 @@ void test_next_then_seek_then_next( kwiver::vital::algo::video_input& vi )
   }
 
   ASSERT_TRUE( vi.seek_frame( ts, requested_frame ) );
+
   auto seek_img = vi.frame_image();
 
   EXPECT_EQ( requested_frame, ts.get_frame() )
@@ -377,7 +396,7 @@ void test_next_then_seek_then_next( kwiver::vital::algo::video_input& vi )
     << "Frame number should match barcode in frame image";
 
   num_frames = requested_frame;
-  while ( vi.next_frame( ts ) && ++num_frames < end_frame )
+  while( vi.next_frame( ts ) && ++num_frames < end_frame )
   {
     auto img = vi.frame_image();
 
@@ -396,7 +415,8 @@ void test_next_then_seek_then_next( kwiver::vital::algo::video_input& vi )
 }
 
 // ----------------------------------------------------------------------------
-void test_seek_sublist_nth_frame( kwiver::vital::algo::video_input& vi )
+void
+test_seek_sublist_nth_frame( kwiver::vital::algo::video_input& vi )
 {
   kwiver::vital::timestamp ts;
 
@@ -404,26 +424,29 @@ void test_seek_sublist_nth_frame( kwiver::vital::algo::video_input& vi )
   ASSERT_TRUE( vi.seekable() );
 
   // Test various valid seeks
-  std::vector<kwiver::vital::timestamp::frame_t> valid_seeks =
-    {13, 16, 19, 22, 25, 28};
-  for (auto requested_frame : valid_seeks)
+  std::vector< kwiver::vital::timestamp::frame_t > valid_seeks = { 13, 16, 19,
+                                                                   22, 25, 28 };
+  for( auto requested_frame : valid_seeks )
   {
-    EXPECT_TRUE( vi.seek_frame( ts, requested_frame) );
+    EXPECT_TRUE( vi.seek_frame( ts, requested_frame ) );
 
     auto img = vi.frame_image();
 
     EXPECT_EQ( requested_frame, ts.get_frame() )
       << "Frame number should match seek request";
-    EXPECT_EQ( ts.get_frame(), decode_barcode(*img) )
+    EXPECT_EQ( ts.get_frame(), decode_barcode( *img ) )
       << "Frame number should match barcode in frame image";
   }
 
   // Test various invalid seeks past end of video
-  std::vector<kwiver::vital::timestamp::frame_t> in_valid_seeks =
-    {-1, 0, 2, 7, 10, 11, 12, 21, 24, 31, 51, 55};
-  for (auto requested_frame : in_valid_seeks)
+  std::vector< kwiver::vital::timestamp::frame_t > in_valid_seeks = { -1, 0, 2,
+                                                                      7, 10, 11,
+                                                                      12, 21,
+                                                                      24, 31,
+                                                                      51, 55 };
+  for( auto requested_frame : in_valid_seeks )
   {
-    EXPECT_FALSE( vi.seek_frame( ts, requested_frame) );
+    EXPECT_FALSE( vi.seek_frame( ts, requested_frame ) );
     EXPECT_NE( requested_frame, ts.get_frame() );
   }
 }

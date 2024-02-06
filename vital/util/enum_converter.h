@@ -5,14 +5,15 @@
 #ifndef VITAL_UTIL_ENUM_CONVERTER_H
 #define VITAL_UTIL_ENUM_CONVERTER_H
 
-#include <vector>
-#include <utility>
-#include <string>
+#include <exception>
 #include <iostream>
 #include <sstream>
-#include <exception>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -116,7 +117,7 @@ struct enum_converter
   ///
   enum_converter( const table_t& table )
     : m_table( table )
-  { }
+  {}
 
   /// Convert from element name to value.
   ///
@@ -126,11 +127,12 @@ struct enum_converter
   ///
   /// @return Enum value
   /// @throws std::runtime_error if the string name is not in the table.
-  T from_string( const std::string& name )
+  T
+  from_string( const std::string& name )
   {
     for( const auto& elem : m_table )
     {
-      if ( elem.first == name ) return elem.second;
+      if( elem.first == name ) { return elem.second; }
     }
 
     std::stringstream str;
@@ -148,11 +150,12 @@ struct enum_converter
   ///
   /// @return String name of element
   /// @throws std::runtime_error if the value is not in the table.
-  std::string to_string( T val )
+  std::string
+  to_string( T val )
   {
     for( const auto& elem : m_table )
     {
-      if ( elem.second == val ) return elem.first;
+      if( elem.second == val ) { return elem.first; }
     }
 
     throw std::runtime_error( "Could not convert enum value to string" );
@@ -165,14 +168,15 @@ struct enum_converter
   /// and commas are added as appropriate.
   ///
   /// @return String of element names.
-  std::string element_name_string() const
+  std::string
+  element_name_string() const
   {
-    bool first(true);
+    bool first( true );
     std::stringstream str;
 
     for( const auto& elem : m_table )
     {
-      if ( ! first )
+      if( !first )
       {
         str << ", ";
       }
@@ -184,15 +188,17 @@ struct enum_converter
       str << "\"" << elem.first << "\"";
     }
 
-    str <<".";
+    str << ".";
     return str.str();
   }
 
 private:
-  table_t  m_table;
+  table_t m_table;
 };
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 /// Shorthand method of creating enum converter classes.
 ///
@@ -202,13 +208,13 @@ private:
 /// @param CN Converter class name
 /// @param T Enum type
 /// @param ... list of initialization pairs in the form { "name", value }, ...
-#define ENUM_CONVERTER(CN, T, ...)                      \
-struct CN : kwiver::vital::enum_converter < T > {       \
-  CN()                                                  \
-      : enum_converter( {                               \
-        __VA_ARGS__                                     \
-          } ) {}                                        \
-  typedef T enum_type;                                  \
+#define ENUM_CONVERTER( CN, T, ... )           \
+struct CN : kwiver::vital::enum_converter< T > \
+{                                              \
+  CN()                                         \
+    : enum_converter( {                        \
+      __VA_ARGS__ } ) {}                       \
+  typedef T enum_type;                         \
 };
 
 #endif // VITAL_UTIL_ENUM_CONVERTER_H

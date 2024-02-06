@@ -27,10 +27,10 @@ operator<<( std::ostream& os, klv_0903_vmask_set_tag tag )
 std::ostream&
 operator<<( std::ostream& os, klv_0903_pixel_run const& value )
 {
-  os    << "{ "
-        << "index: " << value.index << ", "
-        << "length: " << value.length
-        << " }";
+  os << "{ "
+     << "index: " << value.index << ", "
+     << "length: " << value.length
+     << " }";
   return os;
 }
 
@@ -39,7 +39,7 @@ DEFINE_STRUCT_CMP(
   klv_0903_pixel_run,
   &klv_0903_pixel_run::index,
   &klv_0903_pixel_run::length
-  )
+)
 
 // ----------------------------------------------------------------------------
 klv_0903_pixel_run_format
@@ -72,8 +72,9 @@ klv_0903_pixel_run_format
 // ----------------------------------------------------------------------------
 void
 klv_0903_pixel_run_format
-::write_typed( klv_0903_pixel_run const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_0903_pixel_run const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
   auto const length_of_index = klv_int_length( value.index );

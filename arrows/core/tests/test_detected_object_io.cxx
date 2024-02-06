@@ -11,15 +11,16 @@
 #include <gtest/gtest.h>
 
 #include <iostream>
-#include <sstream>
 #include <memory>
+#include <sstream>
 #include <string>
 
 namespace algo = kwiver::vital::algo;
 namespace kac = kwiver::arrows::core;
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
@@ -34,20 +35,22 @@ create_dot( const char* n[], const double s[] )
   std::vector< std::string > names;
   std::vector< double > scores;
 
-  for ( size_t i = 0; n[i] != 0; ++i )
+  for( size_t i = 0; n[ i ] != 0; ++i )
   {
-    names.push_back( std::string( n[i] ) );
-    scores.push_back( s[i] );
+    names.push_back( std::string( n[ i ] ) );
+    scores.push_back( s[ i ] );
   } // end for
 
-  return  std::make_shared< kwiver::vital::detected_object_type >( names, scores );
+  return std::make_shared< kwiver::vital::detected_object_type >(
+    names,
+    scores );
 }
 
 // ----------------------------------------------------------------------------
 kwiver::vital::detected_object_set_sptr
 make_dos()
 {
-  kwiver::vital::detected_object_set_sptr do_set = std::make_shared<kwiver::vital::detected_object_set>();
+  kwiver::vital::detected_object_set_sptr do_set = std::make_shared< kwiver::vital::detected_object_set >();
 
   kwiver::vital::bounding_box_d bb1( 10, 20, 30, 40 );
 
@@ -60,22 +63,30 @@ make_dos()
   auto detection = std::make_shared< kwiver::vital::detected_object >( bb1 );
   do_set->add( detection );
 
-  detection = std::make_shared< kwiver::vital::detected_object >( bb1, 0.65, dot  );
+  detection = std::make_shared< kwiver::vital::detected_object >(
+    bb1, 0.65,
+    dot  );
   do_set->add( detection );
 
   double s1[] = {   .0065,      .006,       .005,    .775,     .605,     0 };
   dot = create_dot( n, s1 );
-  detection = std::make_shared< kwiver::vital::detected_object >( bb1, 0.75, dot  );
+  detection = std::make_shared< kwiver::vital::detected_object >(
+    bb1, 0.75,
+    dot  );
   do_set->add( detection );
 
   double s2[] = {   .0065,      .006,       .005,    .605,     .775,     0 };
   dot = create_dot( n, s2 );
-  detection = std::make_shared< kwiver::vital::detected_object >( bb1, 0.78, dot  );
+  detection = std::make_shared< kwiver::vital::detected_object >(
+    bb1, 0.78,
+    dot  );
   do_set->add( detection );
 
   double s3[] = {   .5065,      .006,       .005,    .775,     .605,     0 };
   dot = create_dot( n, s3 );
-  detection = std::make_shared< kwiver::vital::detected_object >( bb1, 0.70, dot  );
+  detection = std::make_shared< kwiver::vital::detected_object >(
+    bb1, 0.70,
+    dot  );
   do_set->add( detection );
 
   return do_set;
@@ -84,9 +95,8 @@ make_dos()
 } // end namespace
 
 // ----------------------------------------------------------------------------
-TEST(detected_object_io, stream_io)
+TEST ( detected_object_io, stream_io )
 {
-
   kac::detected_object_set_input_csv reader;
   kac::detected_object_set_output_csv writer;
 
@@ -105,12 +115,13 @@ TEST(detected_object_io, stream_io)
   std::cout << str.str() << std::endl;
 
   reader.use_stream( &str );
+
   kwiver::vital::detected_object_set_sptr idos;
   std::string name;
   EXPECT_TRUE( reader.read_set( idos, name ) );
-  EXPECT_EQ( "image_name_1" , name );
+  EXPECT_EQ( "image_name_1", name );
 
-  EXPECT_EQ( false , reader.at_eof() );
+  EXPECT_EQ( false, reader.at_eof() );
 
   EXPECT_TRUE( reader.read_set( idos, name ) );
   EXPECT_EQ( "image_name_2", name );

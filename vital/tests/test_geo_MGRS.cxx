@@ -14,14 +14,15 @@
 using namespace kwiver::vital;
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
 }
 
 // ----------------------------------------------------------------------------
-TEST(geo_MGRS, default_constructor)
+TEST ( geo_MGRS, default_constructor )
 {
   geo_MGRS gm;
   EXPECT_TRUE(  gm.is_empty() );
@@ -29,7 +30,7 @@ TEST(geo_MGRS, default_constructor)
 }
 
 // ----------------------------------------------------------------------------
-TEST(geo_MGRS, constructor_str)
+TEST ( geo_MGRS, constructor_str )
 {
   geo_MGRS gm( "test_str12345" );
   EXPECT_FALSE( gm.is_empty() );
@@ -37,7 +38,7 @@ TEST(geo_MGRS, constructor_str)
 }
 
 // ----------------------------------------------------------------------------
-TEST(geo_MGRS, coord)
+TEST ( geo_MGRS, coord )
 {
   geo_MGRS gm;
   geo_MGRS gm_cpy = gm.set_coord( "test_str12345" );
@@ -68,7 +69,7 @@ TEST(geo_MGRS, coord)
 }
 
 // ----------------------------------------------------------------------------
-TEST(geo_MGRS, comparisons)
+TEST ( geo_MGRS, comparisons )
 {
   geo_MGRS gm1, gm2;
   EXPECT_TRUE(  gm1 == gm2 );
@@ -93,7 +94,7 @@ TEST(geo_MGRS, comparisons)
 }
 
 // ----------------------------------------------------------------------------
-TEST(geo_MGRS, insert_operator_empty)
+TEST ( geo_MGRS, insert_operator_empty )
 {
   geo_MGRS gm;
   std::stringstream s;
@@ -102,7 +103,7 @@ TEST(geo_MGRS, insert_operator_empty)
 }
 
 // ----------------------------------------------------------------------------
-TEST(geo_MGRS, insert_operator)
+TEST ( geo_MGRS, insert_operator )
 {
   geo_MGRS gm( "test_str12345" );
   std::stringstream s;

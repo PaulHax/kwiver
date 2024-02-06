@@ -11,36 +11,35 @@
 #include <vital/vital_types.h>
 
 namespace kwiver {
+
 namespace vital {
 
 /// Construct an identity homography for the given frame
 f2f_homography
 ::f2f_homography( frame_id_t const frame_id )
-  : h_( homography_sptr( new homography_<double>() ) ),
+  : h_( homography_sptr( new homography_< double >( ) ) ),
     from_id_( frame_id ),
     to_id_( frame_id )
-{
-}
+{}
 
 /// Construct a frame to frame homography given an existing transform
 f2f_homography
-::f2f_homography( homography_sptr const &h,
-                  frame_id_t const from_id,
-                  frame_id_t const to_id )
+::f2f_homography(
+  homography_sptr const& h,
+  frame_id_t const from_id,
+  frame_id_t const to_id )
   : h_( std::static_pointer_cast< vital::homography >( h->clone() ) ),
     from_id_( from_id ),
     to_id_( to_id )
-{
-}
+{}
 
 /// Copy constructor
 f2f_homography
-::f2f_homography( f2f_homography const &h )
+::f2f_homography( f2f_homography const& h )
   : h_( std::static_pointer_cast< vital::homography >( h.h_->clone() ) ),
     from_id_( h.from_id_ ),
     to_id_( h.to_id_ )
-{
-}
+{}
 
 /// Get the homography transformation
 homography_sptr
@@ -77,25 +76,28 @@ f2f_homography
 /// Custom f2f_homography multiplication operator for \p f2f_homography
 f2f_homography
 f2f_homography
-::operator*( f2f_homography const &rhs )
+::operator*( f2f_homography const& rhs )
 {
   if( this->from_id() != rhs.to_id() )
   {
-    VITAL_THROW( invalid_matrix_operation,
-                 "Homography frame identifiers do not match up" );
+    VITAL_THROW(
+      invalid_matrix_operation,
+      "Homography frame identifiers do not match up" );
   }
 
-  Eigen::Matrix<double,3,3> new_h = this->h_->matrix() * rhs.h_->matrix();
+  Eigen::Matrix< double, 3, 3 > new_h = this->h_->matrix() * rhs.h_->matrix();
   return f2f_homography( new_h, rhs.from_id(), this->to_id() );
 }
 
 /// \p f2f_homography output stream operator
 std::ostream&
-operator<<( std::ostream &s, f2f_homography const &h )
+operator<<( std::ostream& s, f2f_homography const& h )
 {
   s << h.from_id() << " -> " << h.to_id() << "\n"
     << *h.homography();
   return s;
 }
 
-} } // end vital namespace
+} // namespace vital
+
+}   // end vital namespace

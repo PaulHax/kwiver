@@ -13,7 +13,9 @@
 #include <vital/algo/dynamic_configuration.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 /// A class for bypassing image conversion
@@ -21,15 +23,17 @@ class KWIVER_ALGO_CORE_EXPORT dynamic_config_none
   : public vital::algo::dynamic_configuration
 {
 public:
-  PLUGIN_INFO( "none",
-               "Null implementation of dynamic_configuration.\n\n"
-               "This algorithm always returns an empty configuration block." )
+  PLUGIN_INFO(
+    "none",
+    "Null implementation of dynamic_configuration.\n\n"
+    "This algorithm always returns an empty configuration block." )
 
   /// Default constructor
   dynamic_config_none();
 
   virtual void set_configuration( kwiver::vital::config_block_sptr config );
-  virtual bool check_configuration( kwiver::vital::config_block_sptr config ) const;
+  virtual bool check_configuration(
+    kwiver::vital::config_block_sptr config ) const;
 
   /// Return dynamic configuration values
   ///
@@ -38,6 +42,10 @@ public:
   virtual kwiver::vital::config_block_sptr get_dynamic_configuration();
 };
 
-} } } // end namespace
+} // namespace core
+
+} // namespace arrows
+
+}     // end namespace
 
 #endif // ARROWS_CORE_DYNAMIC_CONFIG_NONE_H

@@ -40,7 +40,8 @@ public:
   ~context();
 
 private:
-  template < typename... Args > friend class signal;
+  template < typename... Args >
+  friend class signal;
 
   void connect( signal_base* signal );
   void disconnect( signal_base* signal );

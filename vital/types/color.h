@@ -25,7 +25,9 @@ struct rgb_color
 
   /// Construct with specified component values.
   rgb_color( uint8_t cr, uint8_t cg, uint8_t cb )
-    : r{ cr }, g{ cg }, b{ cb } {}
+    : r{ cr },
+      g{ cg },
+      b{ cb } {}
 
   rgb_color( rgb_color const& ) = default;
 

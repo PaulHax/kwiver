@@ -9,6 +9,7 @@
 #include <vital/io/eigen_io.h>
 
 namespace kwiver {
+
 namespace vital {
 
 /// output stream operator for a feature base class
@@ -27,45 +28,49 @@ operator<<( std::ostream& s, feature const& f )
 /// Default Constructor
 template < typename T >
 feature_< T >
+
 ::feature_()
   : loc_( 0, 0 ),
-  magnitude_( 0 ),
-  scale_( 1 ),
-  angle_( 0 )
-{
-}
+    magnitude_( 0 ),
+    scale_( 1 ),
+    angle_( 0 )
+{}
 
 /// Constructor for a feature
 template < typename T >
 feature_< T >
-::feature_( Eigen::Matrix< T, 2, 1 > const& loc,
-            T mag, T scale, T angle,
-            rgb_color const& color)
+
+::feature_(
+  Eigen::Matrix< T, 2, 1 > const& loc,
+  T mag, T scale, T angle,
+  rgb_color const& color )
   : loc_( loc ),
-  magnitude_( mag ),
-  scale_( scale ),
-  angle_( angle ),
-  color_( color )
-{
-}
+    magnitude_( mag ),
+    scale_( scale ),
+    angle_( angle ),
+    color_( color )
+{}
 
 /// Constructor for a feature_ from a feature
 template < typename T >
 feature_< T >
+
 ::feature_( feature const& f )
-  : loc_( f.loc().cast< T > () ),
-  magnitude_( static_cast< T > ( f.magnitude() ) ),
-  scale_( static_cast< T > ( f.scale() ) ),
-  angle_( static_cast< T > ( f.angle() ) ),
-  color_( f.color() )
-{
-}
+  : loc_( f.loc().cast< T >() ),
+    magnitude_( static_cast< T >( f.magnitude() ) ),
+    scale_( static_cast< T >( f.scale() ) ),
+    angle_( static_cast< T >( f.angle() ) ),
+    color_( f.color() )
+{}
 
 template < typename T >
 feature_sptr
 feature_< T >
-::clone() const {
-  return std::make_shared<feature_<T>>(this->loc_, this->magnitude_, this->scale_, this->angle_, this->color_);
+::clone() const
+{
+  return std::make_shared< feature_< T > >(
+    this->loc_, this->magnitude_,
+    this->scale_, this->angle_, this->color_ );
 }
 
 /// output stream operator for a feature
@@ -95,10 +100,10 @@ operator>>( std::istream& s, feature_< T >& f )
   rgb_color color;
 
   s >> loc
-    >> magnitude
-    >> scale
-    >> angle
-    >> color;
+  >> magnitude
+  >> scale
+  >> angle
+  >> color;
   f.set_loc( loc );
   f.set_magnitude( magnitude );
   f.set_scale( scale );
@@ -108,12 +113,12 @@ operator>>( std::istream& s, feature_< T >& f )
 }
 
 /// \cond DoxygenSuppress
-#define INSTANTIATE_FEATURE( T )                     \
-  template class VITAL_EXPORT feature_< T >;         \
-  template VITAL_EXPORT std::ostream&                    \
-  operator<<( std::ostream& s, feature_< T > const& f ); \
-  template VITAL_EXPORT std::istream&                    \
-  operator>>( std::istream& s, feature_< T >& f )
+#define INSTANTIATE_FEATURE( T )                       \
+template class VITAL_EXPORT feature_< T >;             \
+template VITAL_EXPORT std::ostream&                    \
+operator<<( std::ostream& s, feature_< T > const& f ); \
+template VITAL_EXPORT std::istream&                    \
+operator>>( std::istream& s, feature_< T >& f )
 
 INSTANTIATE_FEATURE( double );
 INSTANTIATE_FEATURE( float );
@@ -121,4 +126,6 @@ INSTANTIATE_FEATURE( float );
 #undef INSTANTIATE_FEATURE
 /// \endcond
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital

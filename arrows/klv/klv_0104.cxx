@@ -15,6 +15,7 @@
 #include <ctime>
 
 namespace kv = kwiver::vital;
+
 namespace kwiver {
 
 namespace arrows {
@@ -302,29 +303,30 @@ klv_0104_datetime_to_unix_timestamp( std::string const& value )
     {
       VITAL_THROW( kv::metadata_exception, "invalid length" );
     }
+
     auto const tless = value.size() == tless_length;
 
     // Check datetime format
-    for ( size_t i = 0; i < value.size(); ++i )
+    for( size_t i = 0; i < value.size(); ++i )
     {
       auto const c = value[ i ];
       if( ( !tless && i == 8 && c != 'T' ) ||
           ( ( tless || i != 8 ) && !std::isdigit( c ) ) )
       {
-          VITAL_THROW( kv::metadata_exception, "invalid format" );
+        VITAL_THROW( kv::metadata_exception, "invalid format" );
       }
     }
 
     // Parse datetime fields
     std::tm datetime = {};
-    datetime.tm_year =  std::stoi( value.substr( 0, 4 ) ) - 1900;
-    datetime.tm_mon =   std::stoi( value.substr( 4, 2 ) ) - 1;
-    datetime.tm_mday =  std::stoi( value.substr( 6, 2 ) );
-    datetime.tm_hour =  std::stoi( value.substr( 9 - tless, 2 ) );
-    datetime.tm_min =   std::stoi( value.substr( 11 - tless, 2 ) );
-    datetime.tm_sec =   std::stoi( value.substr( 13 - tless, 2 ) );
-    datetime.tm_wday =  -1;
-    datetime.tm_yday =  -1;
+    datetime.tm_year = std::stoi( value.substr( 0, 4 ) ) - 1900;
+    datetime.tm_mon = std::stoi( value.substr( 4, 2 ) ) - 1;
+    datetime.tm_mday = std::stoi( value.substr( 6, 2 ) );
+    datetime.tm_hour = std::stoi( value.substr( 9 - tless, 2 ) );
+    datetime.tm_min = std::stoi( value.substr( 11 - tless, 2 ) );
+    datetime.tm_sec = std::stoi( value.substr( 13 - tless, 2 ) );
+    datetime.tm_wday = -1;
+    datetime.tm_yday = -1;
     datetime.tm_isdst = -1;
 
     auto const record = datetime;
@@ -365,8 +367,9 @@ klv_0104_datetime_to_unix_timestamp( std::string const& value )
   }
   catch( std::exception const& e )
   {
-    VITAL_THROW( kv::metadata_exception,
-                 std::string() + "invalid 0104 timestamp: " + e.what() );
+    VITAL_THROW(
+      kv::metadata_exception,
+      std::string() + "invalid 0104 timestamp: " + e.what() );
   }
 }
 

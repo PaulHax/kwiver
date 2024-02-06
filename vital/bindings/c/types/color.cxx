@@ -17,13 +17,14 @@ using namespace kwiver;
 
 /// Create a new rgb_color instance
 vital_rgb_color_t*
-vital_rgb_color_new( unsigned char cr, unsigned char cg, unsigned char cb,
-                     vital_error_handle_t *eh )
+vital_rgb_color_new(
+  unsigned char cr, unsigned char cg, unsigned char cb,
+  vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_rgb_color_new", eh,
     return reinterpret_cast< vital_rgb_color_t* >(
-      new vital::rgb_color(cr, cg, cb)
+      new vital::rgb_color( cr, cg, cb )
     );
   );
   return 0;
@@ -31,7 +32,7 @@ vital_rgb_color_new( unsigned char cr, unsigned char cg, unsigned char cb,
 
 /// Create a new default (white) rgb_color instance
 vital_rgb_color_t*
-vital_rgb_color_new_default( vital_error_handle_t *eh )
+vital_rgb_color_new_default( vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_rgb_color_new_default", eh,
@@ -44,7 +45,7 @@ vital_rgb_color_new_default( vital_error_handle_t *eh )
 
 /// Destroy an rgb_color instance
 void
-vital_rgb_color_destroy( vital_rgb_color_t *c, vital_error_handle_t *eh )
+vital_rgb_color_destroy( vital_rgb_color_t* c, vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_rgb_color_destroy", eh,
@@ -55,7 +56,7 @@ vital_rgb_color_destroy( vital_rgb_color_t *c, vital_error_handle_t *eh )
 
 /// Get the red value
 unsigned char
-vital_rgb_color_r( vital_rgb_color_t *c, vital_error_handle_t *eh )
+vital_rgb_color_r( vital_rgb_color_t* c, vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_rgb_color_r", eh,
@@ -67,7 +68,7 @@ vital_rgb_color_r( vital_rgb_color_t *c, vital_error_handle_t *eh )
 
 /// Get the green value
 unsigned char
-vital_rgb_color_g( vital_rgb_color_t *c, vital_error_handle_t *eh )
+vital_rgb_color_g( vital_rgb_color_t* c, vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_rgb_color_g", eh,
@@ -79,7 +80,7 @@ vital_rgb_color_g( vital_rgb_color_t *c, vital_error_handle_t *eh )
 
 /// Get the blue value
 unsigned char
-vital_rgb_color_b( vital_rgb_color_t *c, vital_error_handle_t *eh )
+vital_rgb_color_b( vital_rgb_color_t* c, vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_rgb_color_b", eh,
@@ -91,14 +92,15 @@ vital_rgb_color_b( vital_rgb_color_t *c, vital_error_handle_t *eh )
 
 /// Test equality between two rgb_color instances
 bool
-vital_rgb_color_is_equal( vital_rgb_color_t *a, vital_rgb_color_t *b,
-                          vital_error_handle_t *eh )
+vital_rgb_color_is_equal(
+  vital_rgb_color_t* a, vital_rgb_color_t* b,
+  vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_rgb_color_is_equal", eh,
     REINTERP_TYPE( vital::rgb_color, a, aptr );
     REINTERP_TYPE( vital::rgb_color, b, bptr );
-    return ((*aptr) == (*bptr));
+    return ( ( *aptr ) == ( *bptr ) );
   );
   return false;
 }

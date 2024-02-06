@@ -6,11 +6,19 @@
 #define KWIVER_VITAL_PYTHON_DETECTED_OBJECT_SET_OUTPUT_H_
 
 #include <pybind11/pybind11.h>
+
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
-void detected_object_set_output(pybind11::module &m);
-}
-}
-}
+
+void detected_object_set_output( pybind11::module& m );
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
+
 #endif

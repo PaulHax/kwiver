@@ -11,6 +11,7 @@
 #include <Eigen/Core>
 
 namespace kwiver {
+
 namespace vital {
 
 /// \cond DoxygenSuppress
@@ -23,6 +24,8 @@ typedef Eigen::Vector4d vector_4d;
 typedef Eigen::Vector4f vector_4f;
 /// \endcond
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital
 
 #endif // VITAL_VECTOR_H_

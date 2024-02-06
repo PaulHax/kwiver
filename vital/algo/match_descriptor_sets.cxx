@@ -25,8 +25,9 @@ match_descriptor_sets
 
 std::vector< vital::frame_id_t >
 match_descriptor_sets
-::query_and_append( const vital::descriptor_set_sptr desc,
-                    frame_id_t frame )
+::query_and_append(
+  const vital::descriptor_set_sptr desc,
+  frame_id_t frame )
 {
   auto putative_matching_frames = this->query( desc );
   this->append_to_index( desc, frame );

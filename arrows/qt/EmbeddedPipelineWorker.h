@@ -57,8 +57,9 @@ public:
 
   Q_DECLARE_FLAGS( RequiredEndcaps, RequiredEndcap )
 
-  EmbeddedPipelineWorker( RequiredEndcaps = RequiresInputAndOutput,
-                          QObject* parent = nullptr );
+  EmbeddedPipelineWorker(
+    RequiredEndcaps = RequiresInputAndOutput,
+    QObject* parent = nullptr );
   ~EmbeddedPipelineWorker();
 
   /// Initialize pipeline from file.

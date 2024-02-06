@@ -10,14 +10,15 @@
 #include <gtest/gtest.h>
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
 }
 
 // ----------------------------------------------------------------------------
-TEST(vector, construct_2d)
+TEST ( vector, construct_2d )
 {
   kwiver::vital::vector_2d v2d{ 10.0, 33.3 };
   EXPECT_EQ( 10.0, v2d.x() );
@@ -29,7 +30,7 @@ TEST(vector, construct_2d)
 }
 
 // ----------------------------------------------------------------------------
-TEST(vector, construct_3d)
+TEST ( vector, construct_3d )
 {
   kwiver::vital::vector_3d v3d{ 10.0, 33.3, 12.1 };
   EXPECT_EQ( 10.0, v3d.x() );
@@ -43,7 +44,7 @@ TEST(vector, construct_3d)
 }
 
 // ----------------------------------------------------------------------------
-TEST(vector, construct_4d)
+TEST ( vector, construct_4d )
 {
   kwiver::vital::vector_4d v4d{ 10.0, 33.3, 12.1, 0.0 };
   EXPECT_EQ( 10.0, v4d.x() );

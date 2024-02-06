@@ -5,18 +5,17 @@
 #include "track_field_host.h"
 
 namespace kwiver {
+
 namespace track_oracle {
 
 track_field_host
 ::track_field_host()
   : cursor( INVALID_ROW_HANDLE )
-{
-}
+{}
 
 track_field_host
 ::~track_field_host()
-{
-}
+{}
 
 oracle_entry_handle_type
 track_field_host
@@ -33,4 +32,5 @@ track_field_host
 }
 
 } // ...track_oracle
+
 } // ...kwiver

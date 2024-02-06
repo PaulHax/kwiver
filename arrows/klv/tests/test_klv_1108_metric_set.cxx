@@ -29,6 +29,7 @@ test_read( klv_value const& expected_result, klv_bytes_t const& input_bytes )
 TEST ( klv, read_1108_metric_set )
 {
   using kld = klv_lengthy< double >;
+
   auto const input_bytes = klv_bytes_t{
     KLV_1108_METRIC_SET_NAME,        3, 'G', 'S', 'D',
     KLV_1108_METRIC_SET_VERSION,     5, 'H', 'u', 'm', 'a', 'n',
@@ -65,6 +66,7 @@ test_write( klv_value const& value )
 TEST ( klv, write_1108_metric_set )
 {
   using kld = klv_lengthy< double >;
+
   auto const test_data = klv_local_set{
     { KLV_1108_METRIC_SET_NAME,        std::string{ "METRIC" } },
     { KLV_1108_METRIC_SET_VERSION,     std::string{ "13 and a half" } },

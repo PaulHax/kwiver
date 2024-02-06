@@ -16,6 +16,7 @@
 #include <string>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -31,23 +32,24 @@ namespace vital {
 ///
 /// \see https://en.wikipedia.org/wiki/Spatial_reference_system,
 ///      http://www.epsg.org/, https://epsg-registry.org/
-namespace SRID
-{
-  constexpr int lat_lon_NAD83 = 4269;
-  constexpr int lat_lon_WGS84 = 4326;
+namespace SRID {
 
-  constexpr int UPS_WGS84_north = 32661;
-  constexpr int UPS_WGS84_south = 32761;
+constexpr int lat_lon_NAD83 = 4269;
+constexpr int lat_lon_WGS84 = 4326;
 
-  // Add zone number to get zoned SRID
-  constexpr int UTM_WGS84_north = 32600;
-  constexpr int UTM_WGS84_south = 32700;
+constexpr int UPS_WGS84_north = 32661;
+constexpr int UPS_WGS84_south = 32761;
 
-  // Add zone number to get zoned SRID (59N - 60N)
-  constexpr int UTM_NAD83_northeast = 3313;
-  // Add zone number to get zoned SRID (1N - 23N)
-  constexpr int UTM_NAD83_northwest = 26900;
-};
+// Add zone number to get zoned SRID
+constexpr int UTM_WGS84_north = 32600;
+constexpr int UTM_WGS84_south = 32700;
+
+// Add zone number to get zoned SRID (59N - 60N)
+constexpr int UTM_NAD83_northeast = 3313;
+// Add zone number to get zoned SRID (1N - 23N)
+constexpr int UTM_NAD83_northwest = 26900;
+
+} // namespace SRID
 
 using geo_crs_description_t = std::map< std::string, std::string >;
 
@@ -125,6 +127,8 @@ VITAL_EXPORT utm_ups_zone_t utm_ups_zone( vector_2d const& lon_lat );
 VITAL_EXPORT utm_ups_zone_t utm_ups_zone( vector_3d const& lon_lat_alt );
 //@}
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif

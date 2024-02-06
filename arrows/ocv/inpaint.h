@@ -23,8 +23,9 @@ class KWIVER_ALGO_OCV_EXPORT inpaint
   : public vital::algo::merge_images
 {
 public:
-  PLUGIN_INFO( "ocv_inpainting",
-               "Inpaint pixels specified by non-zero mask values." )
+  PLUGIN_INFO(
+    "ocv_inpainting",
+    "Inpaint pixels specified by non-zero mask values." )
 
   inpaint();
   virtual ~inpaint();

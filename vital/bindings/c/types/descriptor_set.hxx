@@ -10,8 +10,8 @@
 #ifndef VITAL_C_DESCRIPTOR_SET_HXX_
 #define VITAL_C_DESCRIPTOR_SET_HXX_
 
-#include <vital/bindings/c/vital_c_export.h>
 #include <vital/bindings/c/types/descriptor_set.h>
+#include <vital/bindings/c/vital_c_export.h>
 #include <vital/types/descriptor_set.h>
 
 // -----------------------------------------------------------------------------
@@ -20,6 +20,7 @@
 // -----------------------------------------------------------------------------
 
 /// Create a vital_descriptor_set_t around an existing shared pointer.
+
 /**
  * If an error occurs, a NULL pointer is returned.
  *
@@ -28,10 +29,12 @@
  */
 VITAL_C_EXPORT
 vital_descriptor_set_t*
-vital_descriptor_set_new_from_sptr( kwiver::vital::descriptor_set_sptr ds_sptr,
-                                    vital_error_handle_t* eh );
+vital_descriptor_set_new_from_sptr(
+  kwiver::vital::descriptor_set_sptr ds_sptr,
+  vital_error_handle_t* eh );
 
 /// Get the vital::descriptor_set shared pointer for a handle.
+
 /**
  * If an error occurs, an empty shared pointer is returned.
  *
@@ -41,7 +44,8 @@ vital_descriptor_set_new_from_sptr( kwiver::vital::descriptor_set_sptr ds_sptr,
  */
 VITAL_C_EXPORT
 kwiver::vital::descriptor_set_sptr
-vital_descriptor_set_to_sptr( vital_descriptor_set_t* ds,
-                              vital_error_handle_t* eh );
+vital_descriptor_set_to_sptr(
+  vital_descriptor_set_t* ds,
+  vital_error_handle_t* eh );
 
 #endif // VITAL_C_DESCRIPTOR_SET_HXX_

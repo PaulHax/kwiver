@@ -98,19 +98,20 @@ public:
       {
         if( summary.iteration == 0 )
         {
-          LOG_DEBUG( ba.logger(),
-                     "iter         cost  cost_change   |gradient|       "
-                     "|step|  iter_time total_time" );
+          LOG_DEBUG(
+            ba.logger(),
+            "iter         cost  cost_change   |gradient|       "
+            "|step|  iter_time total_time" );
         }
         LOG_DEBUG(
           ba.logger(),
-	     std::setw( 4 ) << summary.iteration << " " <<
-	     std::setw( 12 ) << summary.cost << " " <<
-	     std::setw( 12 ) << summary.cost_change << " " <<
-	     std::setw( 12 ) << summary.gradient_max_norm << " " <<
-	     std::setw( 12 ) << summary.step_norm << " " <<
-	     std::setw( 10 ) << summary.iteration_time_in_seconds << " " <<
-	     std::setw( 10 ) << summary.cumulative_time_in_seconds );
+          std::setw( 4 ) << summary.iteration << " " <<
+            std::setw( 12 ) << summary.cost << " " <<
+            std::setw( 12 ) << summary.cost_change << " " <<
+            std::setw( 12 ) << summary.gradient_max_norm << " " <<
+            std::setw( 12 ) << summary.step_norm << " " <<
+            std::setw( 10 ) << summary.iteration_time_in_seconds << " " <<
+            std::setw( 10 ) << summary.cumulative_time_in_seconds );
       }
       return ( ba.trigger_callback() )
              ? ::ceres::SOLVER_CONTINUE
@@ -134,8 +135,7 @@ bundle_adjust
 
 bundle_adjust
 ::~bundle_adjust()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 // Get this algorithm's \link vital::config_block configuration block \endlink
@@ -145,17 +145,21 @@ bundle_adjust
 {
   // get base config from base class
   config_block_sptr config = vital::algo::bundle_adjust::get_configuration();
-  config->set_value( "verbose", d_->verbose,
-                     "If true, write status messages to the terminal showing "
-                     "optimization progress at each iteration." );
-  config->set_value( "log_full_report", d_->log_full_report,
-                     "If true, log a full report of optimization stats at "
-                     "the end of optimization." );
-  config->set_value( "loss_function_type", d_->loss_function_type,
-                     "Robust loss function type to use." +
-                     ceres_options< ceres::LossFunctionType >() );
-  config->set_value( "loss_function_scale", d_->loss_function_scale,
-                     "Robust loss function scale factor." );
+  config->set_value(
+    "verbose", d_->verbose,
+    "If true, write status messages to the terminal showing "
+    "optimization progress at each iteration." );
+  config->set_value(
+    "log_full_report", d_->log_full_report,
+    "If true, log a full report of optimization stats at "
+    "the end of optimization." );
+  config->set_value(
+    "loss_function_type", d_->loss_function_type,
+    "Robust loss function type to use." +
+    ceres_options< ceres::LossFunctionType >() );
+  config->set_value(
+    "loss_function_scale", d_->loss_function_scale,
+    "Robust loss function scale factor." );
 
   // get the solver options
   d_->solver_options::get_configuration( config );
@@ -179,17 +183,21 @@ bundle_adjust
   config_block_sptr config = this->get_configuration();
   config->merge_config( in_config );
 
-  d_->verbose = config->get_value< bool >( "verbose",
-                                           d_->verbose );
-  d_->log_full_report = config->get_value< bool >( "log_full_report",
-                                                   d_->log_full_report );
+  d_->verbose = config->get_value< bool >(
+    "verbose",
+    d_->verbose );
+  d_->log_full_report = config->get_value< bool >(
+    "log_full_report",
+    d_->log_full_report );
   o.minimizer_progress_to_stdout = false;
   o.logging_type = ::ceres::SILENT;
   typedef ceres::LossFunctionType clf_t;
-  d_->loss_function_type = config->get_value< clf_t >( "loss_function_type",
-                                                       d_->loss_function_type );
-  d_->loss_function_scale = config->get_value< double >( "loss_function_scale",
-                                                         d_->loss_function_scale );
+  d_->loss_function_type = config->get_value< clf_t >(
+    "loss_function_type",
+    d_->loss_function_type );
+  d_->loss_function_scale = config->get_value< double >(
+    "loss_function_scale",
+    d_->loss_function_scale );
 
   // set the camera configuration options
   d_->solver_options::set_configuration( config );
@@ -220,7 +228,8 @@ public:
   distance_constraint( const double distance_squared )
     : distance_squared_( distance_squared ) {}
 
-  template < typename T > bool
+  template < typename T >
+  bool
   operator()(
     const T* const pose_0,
     const T* const pose_1,
@@ -245,7 +254,7 @@ public:
   {
     typedef distance_constraint Self;
     return new ::ceres::AutoDiffCostFunction< Self, 1, 6,
-                                              6 >( new Self( distance ) );
+      6 >( new Self( distance ) );
   }
 
   double distance_squared_;
@@ -254,10 +263,11 @@ public:
 /// Optimize the camera and landmark parameters given a set of tracks
 void
 bundle_adjust
-::optimize( camera_map_sptr& cameras,
-            landmark_map_sptr& landmarks,
-            feature_track_set_sptr tracks,
-            sfm_constraints_sptr constraints ) const
+::optimize(
+  camera_map_sptr& cameras,
+  landmark_map_sptr& landmarks,
+  feature_track_set_sptr tracks,
+  sfm_constraints_sptr constraints ) const
 {
   simple_camera_perspective_map cams;
   for( auto p : cameras->cameras() )
@@ -280,12 +290,13 @@ bundle_adjust
 // Optimize the camera and landmark parameters given a set of tracks
 void
 bundle_adjust
-::optimize( kwiver::vital::simple_camera_perspective_map& cameras,
-            kwiver::vital::landmark_map::map_landmark_t& landmarks,
-            vital::feature_track_set_sptr tracks,
-            const std::set< vital::frame_id_t >& to_fix_cameras_in,
-            const std::set< vital::landmark_id_t >& to_fix_landmarks_in,
-            kwiver::vital::sfm_constraints_sptr constraints ) const
+::optimize(
+  kwiver::vital::simple_camera_perspective_map& cameras,
+  kwiver::vital::landmark_map::map_landmark_t& landmarks,
+  vital::feature_track_set_sptr tracks,
+  const std::set< vital::frame_id_t >& to_fix_cameras_in,
+  const std::set< vital::landmark_id_t >& to_fix_landmarks_in,
+  kwiver::vital::sfm_constraints_sptr constraints ) const
 {
   if( !tracks )
   {
@@ -333,10 +344,11 @@ bundle_adjust
   d_->frame_to_intr_map.clear();
 
   // Extract the raw camera parameter into the provided maps
-  d_->extract_camera_parameters( d_->cams,
-                                 d_->camera_params,
-                                 d_->camera_intr_params,
-                                 d_->frame_to_intr_map );
+  d_->extract_camera_parameters(
+    d_->cams,
+    d_->camera_params,
+    d_->camera_intr_params,
+    d_->frame_to_intr_map );
 
   // the Ceres solver problem
   ::ceres::Problem problem;
@@ -346,8 +358,9 @@ bundle_adjust
 
   // Create the loss function to use
   ::ceres::LossFunction* loss_func =
-    LossFunctionFactory( d_->loss_function_type,
-                         d_->loss_function_scale );
+    LossFunctionFactory(
+      d_->loss_function_type,
+      d_->loss_function_scale );
   bool loss_func_used = false;
 
   // Add the residuals for each relevant observation
@@ -425,12 +438,14 @@ bundle_adjust
       used_intrinsics.insert( intr_idx );
 
       vector_2d pt = fts->feature->loc();
-      problem.AddResidualBlock( create_cost_func( d_->lens_distortion_type,
-                                                  pt.x(), pt.y() ),
-                                loss_func,
-                                intr_params_ptr,
-                                &cam_itr->second[ 0 ],
-                                &lm_itr->second[ 0 ] );
+      problem.AddResidualBlock(
+        create_cost_func(
+          d_->lens_distortion_type,
+          pt.x(), pt.y() ),
+        loss_func,
+        intr_params_ptr,
+        &cam_itr->second[ 0 ],
+        &lm_itr->second[ 0 ] );
 
       loss_func_used = true;
     }
@@ -443,8 +458,10 @@ bundle_adjust
     std::vector< std::pair< vital::frame_id_t, double* > > ordered_params;
     for( auto& item : d_->camera_params )
     {
-      ordered_params.push_back( std::make_pair( item.first,
-                                                &item.second[ 0 ] ) );
+      ordered_params.push_back(
+        std::make_pair(
+          item.first,
+          &item.second[ 0 ] ) );
     }
     std::sort( ordered_params.begin(), ordered_params.end() );
 
@@ -452,8 +469,9 @@ bundle_adjust
     d_->add_camera_path_smoothness_cost( problem, ordered_params );
 
     // Add forward motion regularization residuals
-    d_->add_forward_motion_damping_cost( problem, ordered_params,
-                                         d_->frame_to_intr_map );
+    d_->add_forward_motion_damping_cost(
+      problem, ordered_params,
+      d_->frame_to_intr_map );
   }
 
   // fix all the cameras in the to_fix_cameras list
@@ -556,11 +574,13 @@ bundle_adjust
         double scale = problem.NumResiduals() / distance_squared;
 
         auto dist_loss =
-          new ::ceres::ScaledLoss( NULL, scale,
-                                   ::ceres::Ownership::TAKE_OWNERSHIP );
-        problem.AddResidualBlock( distance_constraint::create(
-                                    distance_squared ),
-                                  dist_loss, param0, param1 );
+          new ::ceres::ScaledLoss(
+            NULL, scale,
+            ::ceres::Ownership::TAKE_OWNERSHIP );
+        problem.AddResidualBlock(
+          distance_constraint::create(
+            distance_squared ),
+          dist_loss, param0, param1 );
       }
     }
   }
@@ -579,10 +599,12 @@ bundle_adjust
     else if( !constant_intrinsics.empty() )
     {
       // set a subset of parameters in the block constant
-      problem.SetParameterization( &cip[ 0 ],
-                                   new ::ceres::SubsetParameterization( 5 +
-                                                                        ndp,
-                                                                        constant_intrinsics ) );
+      problem.SetParameterization(
+        &cip[ 0 ],
+        new ::ceres::SubsetParameterization(
+          5 +
+          ndp,
+          constant_intrinsics ) );
     }
   }
 
@@ -608,9 +630,10 @@ bundle_adjust
   }
 
   // Update the cameras with the optimized values
-  d_->update_camera_parameters( d_->cams, d_->camera_params,
-                                d_->camera_intr_params,
-                                d_->frame_to_intr_map );
+  d_->update_camera_parameters(
+    d_->cams, d_->camera_params,
+    d_->camera_intr_params,
+    d_->frame_to_intr_map );
   cameras.set_from_base_camera_map( d_->cams );
 }
 
@@ -648,9 +671,10 @@ bundle_adjust
       d_->lms );
 
     // Update the cameras with the optimized values
-    d_->update_camera_parameters( d_->cams, d_->camera_params,
-                                  d_->camera_intr_params,
-                                  d_->frame_to_intr_map );
+    d_->update_camera_parameters(
+      d_->cams, d_->camera_params,
+      d_->camera_intr_params,
+      d_->frame_to_intr_map );
 
     camera_map_sptr cameras =
       std::make_shared< simple_camera_map >( d_->cams );

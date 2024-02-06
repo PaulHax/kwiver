@@ -11,7 +11,9 @@
 #include <array>
 
 namespace kwiver {
+
 namespace vital {
+
 namespace range {
 
 // ----------------------------------------------------------------------------
@@ -73,11 +75,12 @@ public:
     struct dereference_helper
     {
       template < size_t... Indices >
-      static value_t dereference(
+      static value_t
+      dereference(
         std::array< range_iterator_t, Size > const& iters,
         integer_sequence_t< size_t, Indices... > )
       {
-        return {{ *( iters[ Indices ] )... }};
+        return { { *( iters[ Indices ] )... } };
       }
     };
 
@@ -86,10 +89,12 @@ public:
 
   sliding_view( Range&& range ) : m_range( std::forward< Range >( range ) ) {}
 
-  iterator begin() const
+  iterator
+  begin() const
   { return { m_range.begin(), m_range.end() }; }
 
-  iterator end() const
+  iterator
+  end() const
   { return { m_range.end(), m_range.end() }; }
 
 protected:
@@ -99,12 +104,13 @@ protected:
 // ----------------------------------------------------------------------------
 template < size_t Size, typename Range >
 sliding_view< Size, Range >::iterator
+
 ::iterator( range_iterator_t iter, range_iterator_t const& end )
 {
-  for ( size_t i = 0; i < Size; ++i )
+  for( size_t i = 0; i < Size; ++i )
   {
     m_iter[ i ] = iter;
-    if ( iter != end ) ++iter;
+    if( iter != end ) { ++iter; }
   }
 }
 
@@ -133,7 +139,7 @@ typename sliding_view< Size, Range >::iterator&
 sliding_view< Size, Range >::iterator
 ::operator++()
 {
-  for ( size_t i = 0; i < Size - 1; ++i )
+  for( size_t i = 0; i < Size - 1; ++i )
   {
     m_iter[ i ] = m_iter[ i + 1 ];
   }
@@ -147,7 +153,9 @@ sliding_view< Size, Range >::iterator
 KWIVER_RANGE_ADAPTER_TEMPLATE( sliding, ( size_t Size ), ( Size ) )
 
 } // namespace range
+
 } // namespace vital
+
 } // namespace kwiver
 
 #endif

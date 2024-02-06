@@ -12,12 +12,13 @@
 #include <vital/plugin_management/pluggable.h>
 #include <vital/plugin_management/pluggable_macro_magic.h>
 
-#include <ostream>
 #include <memory>
-#include <vector>
+#include <ostream>
 #include <string>
+#include <vector>
 
 namespace kwiver {
+
 namespace tools {
 
 // forward type definition
@@ -50,7 +51,7 @@ public:
   /// executable location.
   static
   kwiver::vital::config_block_sptr
-    find_configuration(std::string const& file_name );
+  find_configuration( std::string const& file_name );
 
   /// @brief Add command line options to parser.
   ///
@@ -130,7 +131,6 @@ public:
   virtual vital::config_block_sptr get_configuration() const;
 
 protected:
-
   /// @brief Get applet name
   ///
   /// This method returns the name of the applit as it was specified on
@@ -154,7 +154,7 @@ protected:
   /// The vector of original applet args is returned.
   ///
   /// @return Read only vector of args
-  const std::vector<std::string>& applet_args() const;
+  const std::vector< std::string >& applet_args() const;
 
   // \brief Initialize the internals of the applet.
   //
@@ -174,18 +174,21 @@ protected:
 
 private:
   /// Context provided by the applet runner.
-  kwiver::tools::applet_context* m_context {nullptr};
-
+  kwiver::tools::applet_context* m_context { nullptr };
 };
 
-typedef std::shared_ptr<kwiver_applet> kwiver_applet_sptr;
+typedef std::shared_ptr< kwiver_applet > kwiver_applet_sptr;
 
-} } // end namespace
+} // namespace tools
+
+}   // end namespace
 
 // ----------------------------------------------------------------------------
 // Support for adding factories
 
-#define ADD_APPLET( applet_T)                               \
-  add_factory( new kwiver::vital::plugin_factory_0< applet_T >( typeid( kwiver::tools::kwiver_applet ).name() ) )
+#define ADD_APPLET( applet_T )                     \
+add_factory(                                       \
+  new kwiver::vital::plugin_factory_0< applet_T >( \
+  typeid( kwiver::tools::kwiver_applet ).name() ) )
 
 #endif // KWIVER_TOOLS_KWIVER_APPLET_H

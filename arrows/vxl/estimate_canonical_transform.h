@@ -13,7 +13,9 @@
 /// \brief Header defining the VXL estimate_canonical_transform algorithm
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace vxl {
 
 /// Algorithm for estimating a canonical transform for cameras and landmarks
@@ -33,8 +35,9 @@ class KWIVER_ALGO_VXL_EXPORT estimate_canonical_transform
   : public vital::algo::estimate_canonical_transform
 {
 public:
-  PLUGIN_INFO( "vxl_plane",
-               "Use VXL (rrel) to robustly estimate a ground plane for a canonical transform." )
+  PLUGIN_INFO(
+    "vxl_plane",
+    "Use VXL (rrel) to robustly estimate a ground plane for a canonical transform." )
 
   /// Constructor
   estimate_canonical_transform();
@@ -42,12 +45,13 @@ public:
   /// Destructor
   virtual ~estimate_canonical_transform();
 
-  /// Get this algorithm's \link vital::config_block configuration block \endlink
+  /// Get this algorithm's \link vital::config_block configuration block
+  /// \endlink
   virtual vital::config_block_sptr get_configuration() const;
   /// Set this algorithm's properties via a config block
-  virtual void set_configuration(vital::config_block_sptr config);
+  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's configuration config_block is valid
-  virtual bool check_configuration(vital::config_block_sptr config) const;
+  virtual bool check_configuration( vital::config_block_sptr config ) const;
 
   /// Estimate a canonical similarity transform for cameras and points
   ///
@@ -56,19 +60,24 @@ public:
   /// \throws algorithm_exception When the data is insufficient or degenerate.
   /// \returns An estimated similarity transform mapping the data to the
   ///          canonical space.
-  /// \note This algorithm does not apply the transformation, it only estimates it.
+  /// \note This algorithm does not apply the transformation, it only estimates
+  /// it.
   virtual kwiver::vital::similarity_d
-  estimate_transform(kwiver::vital::camera_map_sptr const cameras,
-                     kwiver::vital::landmark_map_sptr const landmarks) const;
+  estimate_transform(
+    kwiver::vital::camera_map_sptr const cameras,
+    kwiver::vital::landmark_map_sptr const landmarks ) const;
 
 private:
   /// private implementation class
   class priv;
-  const std::unique_ptr<priv> d_;
+
+  const std::unique_ptr< priv > d_;
 };
 
 } // end namespace vxl
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif

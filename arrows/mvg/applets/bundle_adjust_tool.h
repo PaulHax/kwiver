@@ -5,11 +5,13 @@
 #ifndef KWIVER_ARROWS_MVG_APPLETS_BUNDLE_ADJUST_TOOL_H
 #define KWIVER_ARROWS_MVG_APPLETS_BUNDLE_ADJUST_TOOL_H
 
-#include <vital/applets/kwiver_applet.h>
 #include <arrows/mvg/applets/kwiver_algo_mvg_applets_export.h>
+#include <vital/applets/kwiver_applet.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace mvg {
 
 class KWIVER_ALGO_MVG_APPLETS_EXPORT bundle_adjust_tool
@@ -29,12 +31,13 @@ public:
 
 private:
   struct priv;
-  std::unique_ptr<priv> d;
-
+  std::unique_ptr< priv > d;
 }; // bundle_adjust_tool
 
 } // mvg
+
 } // arrows
+
 } // kwiver
 
 #endif

@@ -14,14 +14,17 @@ namespace vital {
 // ----------------------------------------------------------------------------
 text_transcoder
 ::text_transcoder( text_codec const& src_codec, text_codec const& dst_codec )
-  : m_src_codec{ &src_codec }, m_dst_codec{ &dst_codec },
-    m_buffer_begin{ m_buffer }, m_buffer_end{ m_buffer }
+  : m_src_codec{ &src_codec },
+    m_dst_codec{ &dst_codec },
+    m_buffer_begin{ m_buffer },
+    m_buffer_end{ m_buffer }
 {}
 
 // ----------------------------------------------------------------------------
 text_transcoder
 ::text_transcoder( text_transcoder const& other )
-  : m_src_codec{ other.m_src_codec }, m_dst_codec{ other.m_dst_codec },
+  : m_src_codec{ other.m_src_codec },
+    m_dst_codec{ other.m_dst_codec },
     m_buffer_begin{ m_buffer + ( other.m_buffer_begin - other.m_buffer ) },
     m_buffer_end{ m_buffer + ( other.m_buffer_end - other.m_buffer ) }
 {
@@ -31,7 +34,8 @@ text_transcoder
 // ----------------------------------------------------------------------------
 text_transcoder
 ::text_transcoder( text_transcoder&& other )
-  : m_src_codec{ other.m_src_codec }, m_dst_codec{ other.m_dst_codec },
+  : m_src_codec{ other.m_src_codec },
+    m_dst_codec{ other.m_dst_codec },
     m_buffer_begin{ m_buffer + ( other.m_buffer_begin - other.m_buffer ) },
     m_buffer_end{ m_buffer + ( other.m_buffer_end - other.m_buffer ) }
 {
@@ -92,9 +96,10 @@ text_transcoder
     }
 
     // Encode data from the buffer to the output
-    std::tie( encode_code,
-              const_cast< char32_t const*& >( m_buffer_begin ),
-              dst_begin ) =
+    std::tie(
+      encode_code,
+      const_cast< char32_t const*& >( m_buffer_begin ),
+      dst_begin ) =
       m_dst_codec->encode(
         m_buffer_begin, m_buffer_end, dst_begin, dst_end );
   } while( decode_code == text_codec::OUT_OF_SPACE &&

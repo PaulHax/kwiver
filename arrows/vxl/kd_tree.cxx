@@ -46,8 +46,7 @@ kd_tree
 // Destructor
 kd_tree
 ::~kd_tree()
-{
-}
+{}
 
 // ------------------------------------------------------------------
 vital::config_block_sptr
@@ -65,8 +64,7 @@ kd_tree
 void
 kd_tree
 ::set_configuration( vital::config_block_sptr in_config )
-{
-}
+{}
 
 // ------------------------------------------------------------------
 bool

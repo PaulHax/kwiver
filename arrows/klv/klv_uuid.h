@@ -49,8 +49,9 @@ klv_read_uuid( klv_read_iter_t& data, size_t max_length );
 // ----------------------------------------------------------------------------
 KWIVER_ALGO_KLV_EXPORT
 void
-klv_write_uuid( klv_uuid const& value, klv_write_iter_t& data,
-                size_t max_length );
+klv_write_uuid(
+  klv_uuid const& value, klv_write_iter_t& data,
+  size_t max_length );
 
 // ----------------------------------------------------------------------------
 KWIVER_ALGO_KLV_EXPORT

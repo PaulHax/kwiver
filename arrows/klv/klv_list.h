@@ -36,15 +36,17 @@ private:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( std::vector< element_t > const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    std::vector< element_t > const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( std::vector< element_t > const& value ) const override;
 
   std::ostream&
-  print_typed( std::ostream& os,
-               std::vector< element_t > const& value ) const override;
+  print_typed(
+    std::ostream& os,
+    std::vector< element_t > const& value ) const override;
 
   Format m_format;
 };

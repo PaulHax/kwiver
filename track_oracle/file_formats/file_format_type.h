@@ -5,8 +5,8 @@
 #ifndef INCL_FILE_FORMAT_TYPE_H
 #define INCL_FILE_FORMAT_TYPE_H
 
-#include <vital/vital_config.h>
 #include <track_oracle/file_formats/track_oracle_format_base_export.h>
+#include <vital/vital_config.h>
 
 #include <string>
 
@@ -34,6 +34,7 @@
 ///
 
 namespace kwiver {
+
 namespace track_oracle {
 
 enum file_format_enum
@@ -55,7 +56,7 @@ enum file_format_enum
   TF_KWIVER,
   TF_KPF_GEOM,
   TF_KPF_ACT,
-  TF_INVALID_TYPE   // must always be last entry
+  TF_INVALID_TYPE, // must always be last entry
 };
 
 struct TRACK_ORACLE_FORMAT_BASE_EXPORT file_format_type
@@ -65,6 +66,7 @@ struct TRACK_ORACLE_FORMAT_BASE_EXPORT file_format_type
 };
 
 } // ...track_oracle
+
 } // ...kwiver
 
 #endif

@@ -8,12 +8,14 @@
 #ifndef KWIVER_VITAL_MATLAB_EXCEPTION_H
 #define KWIVER_VITAL_MATLAB_EXCEPTION_H
 
-#include <vital/vital_config.h>
 #include <arrows/matlab/kwiver_algo_matlab_export.h>
 #include <vital/exceptions/base.h>
+#include <vital/vital_config.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace matlab {
 
 // ----------------------------------------------------------------------------
@@ -25,9 +27,12 @@ public:
   matlab_exception( const std::string& msg ) noexcept;
 
   virtual ~matlab_exception() noexcept;
-
 }; // end class matlab_exception
 
-} } } // end namespace
+} // namespace matlab
+
+} // namespace arrows
+
+}     // end namespace
 
 #endif // KWIVER_VITAL_MATLAB_EXCEPTION_H

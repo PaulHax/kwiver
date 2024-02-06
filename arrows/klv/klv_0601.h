@@ -14,9 +14,9 @@
 #include "klv_checksum.h"
 #include "klv_list.h"
 #include "klv_packet.h"
+#include "klv_series.h"
 #include "klv_set.h"
 #include "klv_util.h"
-#include "klv_series.h"
 
 #include <optional>
 #include <ostream>
@@ -135,8 +135,8 @@ enum klv_0601_tag : klv_lds_key
   KLV_0601_SDCC_FLP                            = 102,
   KLV_0601_DENSITY_ALTITUDE_EXTENDED           = 103,
   KLV_0601_SENSOR_ELLIPSOID_HEIGHT_EXTENDED    = 104,
-  KLV_0601_ALTERNATE_PLATFORM_ELLIPSOID_HEIGHT_EXTENDED
-                                               = 105,
+  KLV_0601_ALTERNATE_PLATFORM_ELLIPSOID_HEIGHT_EXTENDED =
+    105,
   KLV_0601_STREAM_DESIGNATOR                   = 106,
   KLV_0601_OPERATIONAL_BASE                    = 107,
   KLV_0601_BROADCAST_SOURCE                    = 108,
@@ -335,8 +335,9 @@ private:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_0601_image_horizon_locations const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    klv_0601_image_horizon_locations const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed(
@@ -376,8 +377,9 @@ private:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_0601_image_horizon_pixel_pack const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    klv_0601_image_horizon_pixel_pack const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed(
@@ -471,8 +473,9 @@ private:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_0601_control_command const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    klv_0601_control_command const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( klv_0601_control_command const& value ) const override;
@@ -481,7 +484,7 @@ private:
 // ---------------------------------------------------------------------------
 /// Interprets data as a ST0601 control command verification list.
 using klv_0601_control_command_verify_list_format =
-        klv_list_format< klv_ber_oid_format >;
+  klv_list_format< klv_ber_oid_format >;
 
 // ----------------------------------------------------------------------------
 /// Frame rate expressed as a ratio of integers.
@@ -515,8 +518,9 @@ private:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_0601_frame_rate const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    klv_0601_frame_rate const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( klv_0601_frame_rate const& value ) const override;
@@ -556,8 +560,9 @@ private:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_0601_country_codes const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    klv_0601_country_codes const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( klv_0601_country_codes const& value ) const override;
@@ -595,8 +600,9 @@ private:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_0601_location_dlp const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    klv_0601_location_dlp const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( klv_0601_location_dlp const& value ) const override;
@@ -634,8 +640,9 @@ private:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_0601_airbase_locations const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    klv_0601_airbase_locations const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( klv_0601_airbase_locations const& value ) const override;
@@ -674,8 +681,9 @@ private:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_0601_view_domain_interval const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    klv_0601_view_domain_interval const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( klv_0601_view_domain_interval const& value ) const override;
@@ -718,8 +726,9 @@ private:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_0601_view_domain const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    klv_0601_view_domain const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( klv_0601_view_domain const& value ) const override;
@@ -783,8 +792,9 @@ private:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_0601_waypoint_record const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    klv_0601_waypoint_record const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( klv_0601_waypoint_record const& value ) const override;
@@ -880,8 +890,9 @@ private:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_0601_weapons_store const& value,
-               klv_write_iter_t&data, size_t length ) const override;
+  write_typed(
+    klv_0601_weapons_store const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( klv_0601_weapons_store const& vaue ) const override;
@@ -899,7 +910,7 @@ enum KWIVER_ALGO_KLV_EXPORT klv_0601_payload_type
   KLV_0601_PAYLOAD_TYPE_LIDAR,
   KLV_0601_PAYLOAD_TYPE_RADAR,
   KLV_0601_PAYLOAD_TYPE_SIGINT,
-  KLV_0601_PAYLOAD_TYPE_ENUM_END
+  KLV_0601_PAYLOAD_TYPE_ENUM_END,
 };
 
 // ---------------------------------------------------------------------------
@@ -934,22 +945,23 @@ DECLARE_CMP( klv_0601_payload_record )
 class KWIVER_ALGO_KLV_EXPORT klv_0601_payload_record_format
   : public klv_data_format_< klv_0601_payload_record >
 {
-  public:
-    klv_0601_payload_record_format();
+public:
+  klv_0601_payload_record_format();
 
-    std::string
-    description_() const override;
+  std::string
+  description_() const override;
 
-  private:
-     klv_0601_payload_record
-    read_typed( klv_read_iter_t& data, size_t length ) const override;
+private:
+  klv_0601_payload_record
+  read_typed( klv_read_iter_t& data, size_t length ) const override;
 
-    void
-    write_typed( klv_0601_payload_record const& value,
-                 klv_write_iter_t& data, size_t length ) const override;
+  void
+  write_typed(
+    klv_0601_payload_record const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
-    size_t
-    length_of_typed( klv_0601_payload_record const& value ) const;
+  size_t
+  length_of_typed( klv_0601_payload_record const& value ) const;
 };
 
 // ---------------------------------------------------------------------------
@@ -957,23 +969,24 @@ class KWIVER_ALGO_KLV_EXPORT klv_0601_payload_record_format
 class KWIVER_ALGO_KLV_EXPORT klv_0601_payload_list_format
   : public klv_data_format_< std::vector< klv_0601_payload_record > >
 {
-  public:
-    klv_0601_payload_list_format();
+public:
+  klv_0601_payload_list_format();
 
-    std::string
-    description_() const override;
+  std::string
+  description_() const override;
 
-  private:
-    std::vector< klv_0601_payload_record >
-    read_typed( klv_read_iter_t& data, size_t length ) const override;
+private:
+  std::vector< klv_0601_payload_record >
+  read_typed( klv_read_iter_t& data, size_t length ) const override;
 
-    void
-    write_typed( std::vector< klv_0601_payload_record > const& value,
-                 klv_write_iter_t& data, size_t length ) const override;
+  void
+  write_typed(
+    std::vector< klv_0601_payload_record > const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
-    size_t
-    length_of_typed(
-      std::vector< klv_0601_payload_record > const& value ) const override;
+  size_t
+  length_of_typed(
+    std::vector< klv_0601_payload_record > const& value ) const override;
 };
 
 // ----------------------------------------------------------------------------
@@ -1014,8 +1027,9 @@ private:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_0601_wavelength_record const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    klv_0601_wavelength_record const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( klv_0601_wavelength_record const& value ) const override;

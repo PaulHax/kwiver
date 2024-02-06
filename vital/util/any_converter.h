@@ -7,14 +7,15 @@
 #ifndef KWIVER_VITAL_UTIL_ANY_CONVERTER_H
 #define KWIVER_VITAL_UTIL_ANY_CONVERTER_H
 
-#include <vital/vital_config.h>
 #include <vital/any.h>
+#include <vital/vital_config.h>
 
-#include <vector>
 #include <memory>
 #include <sstream>
+#include <vector>
 
 namespace kwiver {
+
 namespace vital {
 
 namespace any_convert {
@@ -42,31 +43,35 @@ struct converter
   converter() = default;
   virtual ~converter() = default;
 
-  virtual bool can_convert( kwiver::vital::any const& data ) const override
+  virtual bool
+  can_convert( kwiver::vital::any const& data ) const override
   {
     return data.type() == typeid( SRC );
   }
 
-  virtual DEST convert( kwiver::vital::any const& data ) const override
+  virtual DEST
+  convert( kwiver::vital::any const& data ) const override
   {
-    return static_cast< DEST > ( kwiver::vital::any_cast< SRC > ( data ) );
+    return static_cast< DEST >( kwiver::vital::any_cast< SRC >( data ) );
   }
 };
 
 // ----------------------------------------------------------------------------
 template < typename SRC >
-struct converter<std::string, SRC>
+struct converter< std::string, SRC >
   : public convert_base< std::string >
 {
-  virtual bool can_convert( kwiver::vital::any const& data ) const override
+  virtual bool
+  can_convert( kwiver::vital::any const& data ) const override
   {
     return data.type() == typeid( SRC );
   }
 
-  virtual std::string convert( kwiver::vital::any const& data ) const override
+  virtual std::string
+  convert( kwiver::vital::any const& data ) const override
   {
     std::stringstream str;
-    str << kwiver::vital::any_cast< SRC > ( data );
+    str << kwiver::vital::any_cast< SRC >( data );
     return str.str();
   }
 };
@@ -75,17 +80,19 @@ struct converter<std::string, SRC>
 /// This specialization is not strictly needed, but resolves compiler
 /// warning C4800 (forcing value to bool) in Visual Studio.
 template < typename SRC >
-struct converter<bool, SRC>
+struct converter< bool, SRC >
   : public convert_base< bool >
 {
-  virtual bool can_convert(kwiver::vital::any const& data) const override
+  virtual bool
+  can_convert( kwiver::vital::any const& data ) const override
   {
-    return data.type() == typeid(SRC);
+    return data.type() == typeid( SRC );
   }
 
-  virtual bool convert(kwiver::vital::any const& data) const override
+  virtual bool
+  convert( kwiver::vital::any const& data ) const override
   {
-    return kwiver::vital::any_cast< SRC > (data) != SRC(0);
+    return kwiver::vital::any_cast< SRC >( data ) != SRC( 0 );
   }
 };
 
@@ -107,7 +114,8 @@ struct converter<bool, SRC>
 /// any_to_int.add_converter<int>();      // self type needs to be added too
 ///
 /// kwiver::vital::any some_data = ....;  // Get value in *any* object
-/// int ival = any_to_int.convert( some_data ); // convert reasonable types to int
+/// int ival = any_to_int.convert( some_data ); // convert reasonable types to
+/// int
 /// \endcode
 ///
 /// A more complicated conversion could be implemented for converting
@@ -151,17 +159,20 @@ struct converter<bool, SRC>
 /// virtual bool can_convert( kwiver::vital::any const & data ) const
 /// {
 ///  return ( data.type() == typeid( std::string ) ) &&
-///         convert_map.find( kwiver::vital::any_cast< std::string > ( data ) ) != convert_map.end();
+///         convert_map.find( kwiver::vital::any_cast< std::string > ( data ) )
+/// != convert_map.end();
 /// }
 ///
 /// virtual bool convert( kwiver::vital::any const& data ) const
 /// {
-///  auto it = convert_map.find( kwiver::vital::any_cast< std::string > ( data ) );
+///  auto it = convert_map.find( kwiver::vital::any_cast< std::string > ( data )
+/// );
 ///  if ( it != convert_map.end() )
 ///  {
 ///    return it->second;
 ///  }
-///  throw kwiver::vital::bad_any_cast( typeid( bool ).name(), typeid( std::string ).name() );
+///  throw kwiver::vital::bad_any_cast( typeid( bool ).name(), typeid(
+/// std::string ).name() );
 /// }
 ///
 /// private:
@@ -174,9 +185,11 @@ struct converter<bool, SRC>
 /// kwiver::vital::any_converter< bool > convert_to_bool;
 ///
 /// // Add converters for specific types
-/// convert_to_bool.add_converter< bool > ();      // self type needs to be added too
+/// convert_to_bool.add_converter< bool > ();      // self type needs to be
+/// added too
 /// convert_to_bool.add_converter< int > ();
-/// convert_to_bool.add_converter< std::string > ();      // Use custom converter
+/// convert_to_bool.add_converter< std::string > ();      // Use custom
+/// converter
 ///
 /// std::string input;
 /// std::getline( std::cin, input );
@@ -192,11 +205,10 @@ struct converter<bool, SRC>
 /// }
 /// \endcode
 ///
-template <typename T>
+template < typename T >
 class any_converter
 {
 public:
-
 #ifdef VITAL_STD_MAP_UNIQUE_PTR_ALLOWED
   typedef std::unique_ptr< any_convert::convert_base< T > > converter_ptr;
 #else
@@ -222,19 +234,20 @@ public:
   /// @return Value from parameter converted to desired type.
   ///
   /// @throws bad_any_cast if the conversion is not successful.
-  T convert( kwiver::vital::any const& data ) const
+  T
+  convert( kwiver::vital::any const& data ) const
   {
     const auto eix = m_converter_list.end();
-    for (auto ix = m_converter_list.begin(); ix != eix; ix++)
+    for( auto ix = m_converter_list.begin(); ix != eix; ix++ )
     {
-      if ( (*ix)->can_convert( data ) )
+      if( ( *ix )->can_convert( data ) )
       {
-        return (*ix)->convert( data );
+        return ( *ix )->convert( data );
       }
     } // end for
 
     // Throw exception
-    throw kwiver::vital::bad_any_cast( data.type().name(), typeid(T).name() );
+    throw kwiver::vital::bad_any_cast( data.type().name(), typeid( T ).name() );
   }
 
   /// Test to see if conversion can be done.
@@ -244,12 +257,13 @@ public:
   /// @param data The any object to be converted.
   ///
   /// @return \b true if value can be converted, \b false otherwise.
-  bool can_convert( kwiver::vital::any const& data ) const
+  bool
+  can_convert( kwiver::vital::any const& data ) const
   {
     const auto eix = m_converter_list.end();
-    for (auto ix = m_converter_list.begin(); ix != eix; ix++)
+    for( auto ix = m_converter_list.begin(); ix != eix; ix++ )
     {
-      if ( (*ix)->can_convert( data ) )
+      if( ( *ix )->can_convert( data ) )
       {
         return true;
       }
@@ -265,10 +279,14 @@ public:
   /// explicitly) for this to work
   ///
   /// tparam SRC Type from any to be converted.
-  template <typename SRC>
-  void add_converter()
+  template < typename SRC >
+  void
+  add_converter()
   {
-    m_converter_list.push_back( converter_ptr( new any_convert::converter< T, SRC >() ) );
+    m_converter_list.push_back(
+      converter_ptr(
+        new any_convert::converter< T,
+          SRC >() ) );
   }
 
   /// Add converter object.
@@ -277,17 +295,19 @@ public:
   /// the heap and ownership of the object is assumed by the converter.
   ///
   /// @param conv Converter object.
-  template<typename SRC>
-  void add_converter( any_convert::convert_base< SRC >* conv )
+  template < typename SRC >
+  void
+  add_converter( any_convert::convert_base< SRC >* conv )
   {
     m_converter_list.push_back( converter_ptr( conv ) );
   }
 
 private:
   std::vector< converter_ptr > m_converter_list;
-
 }; // end class any_converter
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // KWIVER_VITAL_UTIL_ANY_CONVERTER_H

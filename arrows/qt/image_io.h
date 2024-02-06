@@ -13,7 +13,9 @@
 #include <vital/algo/image_io.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace qt {
 
 /// A class for using Qt to read and write images.
@@ -32,8 +34,9 @@ public:
   /// Destructor
   virtual ~image_io();
 
-  PLUGIN_INFO( "qt",
-               "Use Qt to load and save image files." )
+  PLUGIN_INFO(
+    "qt",
+    "Use Qt to load and save image files." )
 
   /// \copydoc vital::algo::image_io::set_configuration
   virtual void set_configuration(
@@ -48,12 +51,15 @@ private:
     std::string const& filename ) const override;
 
   /// \copydoc vital::algo::image_io::save_
-  virtual void save_( std::string const& filename,
-                      vital::image_container_sptr data ) const override;
+  virtual void save_(
+    std::string const& filename,
+    vital::image_container_sptr data ) const override;
 };
 
 } // end namespace qt
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif

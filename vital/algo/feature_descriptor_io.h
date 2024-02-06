@@ -33,7 +33,7 @@ class VITAL_ALGO_EXPORT feature_descriptor_io
 {
 public:
   feature_descriptor_io();
-  PLUGGABLE_INTERFACE(feature_descriptor_io);
+  PLUGGABLE_INTERFACE( feature_descriptor_io );
   /// Load features and descriptors from a file
   ///
   /// \throws kwiver::vital::path_not_exists Thrown when the given path does not
@@ -45,9 +45,10 @@ public:
   /// \param filename the path to the file the load
   /// \param feat the set of features to load from the file
   /// \param desc the set of descriptors to load from the file
-  void load( std::string const& filename,
-             feature_set_sptr& feat,
-             descriptor_set_sptr& desc ) const;
+  void load(
+    std::string const& filename,
+    feature_set_sptr& feat,
+    descriptor_set_sptr& desc ) const;
 
   /// Save features and descriptors to a file
   ///
@@ -65,10 +66,10 @@ public:
   /// \param filename the path to the file to save
   /// \param feat the set of features to write to the file
   /// \param desc the set of descriptors to write to the file
-  void save( std::string const& filename,
-             feature_set_sptr feat,
-             descriptor_set_sptr desc ) const;
-
+  void save(
+    std::string const& filename,
+    feature_set_sptr feat,
+    descriptor_set_sptr desc ) const;
 
 private:
   /// Implementation specific load functionality.
@@ -79,9 +80,10 @@ private:
   /// \param filename the path to the file the load
   /// \param feat the set of features to load from the file
   /// \param desc the set of descriptors to load from the file
-  virtual void load_( std::string const& filename,
-                      feature_set_sptr& feat,
-                      descriptor_set_sptr& desc ) const = 0;
+  virtual void load_(
+    std::string const& filename,
+    feature_set_sptr& feat,
+    descriptor_set_sptr& desc ) const = 0;
 
   /// Implementation specific save functionality.
   ///
@@ -91,9 +93,10 @@ private:
   /// \param filename the path to the file to save
   /// \param feat the set of features to write to the file
   /// \param desc the set of descriptors to write to the file
-  virtual void save_( std::string const& filename,
-                      feature_set_sptr feat,
-                      descriptor_set_sptr desc ) const = 0;
+  virtual void save_(
+    std::string const& filename,
+    feature_set_sptr feat,
+    descriptor_set_sptr desc ) const = 0;
 };
 
 /// Shared pointer type for generic feature_descriptor_io definition type.

@@ -10,20 +10,21 @@
 #include <iomanip>
 
 namespace kwiver {
+
 namespace vital {
 
 geo_MGRS
 ::geo_MGRS()
-{ }
+{}
 
 geo_MGRS
-::geo_MGRS(std::string const& coord)
-: mgrs_coord_(coord)
-{ }
+::geo_MGRS( std::string const& coord )
+  : mgrs_coord_( coord )
+{}
 
 geo_MGRS
 ::~geo_MGRS()
-{ }
+{}
 
 bool
 geo_MGRS
@@ -36,7 +37,7 @@ bool
 geo_MGRS
 ::is_valid() const
 {
-  if (is_empty())
+  if( is_empty() )
   {
     return false;
   }
@@ -45,11 +46,11 @@ geo_MGRS
   return true;
 }
 
-geo_MGRS &
+geo_MGRS&
 geo_MGRS
-::set_coord( std::string const& coord)
+::set_coord( std::string const& coord )
 {
-  this-> mgrs_coord_ = coord;
+  this->mgrs_coord_ = coord;
   return *this;
 }
 
@@ -62,7 +63,7 @@ geo_MGRS
 
 bool
 geo_MGRS
-::operator == ( const geo_MGRS &rhs ) const
+::operator==( const geo_MGRS& rhs ) const
 {
   // May want to take into precision of operands.
   return ( rhs.coord() == this->coord() );
@@ -70,16 +71,16 @@ geo_MGRS
 
 bool
 geo_MGRS
-::operator != ( const geo_MGRS &rhs ) const
+::operator!=( const geo_MGRS& rhs ) const
 {
-  return ( !( this->operator == ( rhs ) ) );
+  return ( !( this->operator==( rhs ) ) );
 }
 
 geo_MGRS
 geo_MGRS
 ::operator=( const geo_MGRS& m )
 {
-  if ( this != & m )
+  if( this != &m )
   {
     this->mgrs_coord_ = m.coord();
   }
@@ -87,7 +88,8 @@ geo_MGRS
   return *this;
 }
 
-std::ostream & operator<< (std::ostream & str, const kwiver::vital::geo_MGRS & obj)
+std::ostream&
+operator<<( std::ostream& str, const kwiver::vital::geo_MGRS& obj )
 {
   str << "[MGRS: " << obj.coord() << "]";
 
@@ -95,4 +97,5 @@ std::ostream & operator<< (std::ostream & str, const kwiver::vital::geo_MGRS & o
 }
 
 } // end namespace
+
 } // end namespace

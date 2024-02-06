@@ -5,21 +5,21 @@
 #include "convert_protobuf.h"
 #include "convert_protobuf_point.h"
 
+#include <vital/exceptions.h>
 #include <vital/logger/logger.h>
 #include <vital/types/activity_type.h>
 #include <vital/types/detected_object.h>
 #include <vital/types/detected_object_set.h>
 #include <vital/types/detected_object_type.h>
 #include <vital/types/geo_polygon.h>
-#include <vital/types/polygon.h>
-#include <vital/types/timestamp.h>
 #include <vital/types/metadata.h>
 #include <vital/types/metadata_traits.h>
+#include <vital/types/object_track_set.h>
+#include <vital/types/polygon.h>
+#include <vital/types/timestamp.h>
 #include <vital/types/track.h>
 #include <vital/types/track_set.h>
-#include <vital/types/object_track_set.h>
 #include <vital/util/hex_dump.h>
-#include <vital/exceptions.h>
 #include <vital/vital_types.h>
 
 #include <vital/types/protobuf/activity.pb.h>
@@ -28,35 +28,40 @@
 #include <vital/types/protobuf/detected_object.pb.h>
 #include <vital/types/protobuf/detected_object_set.pb.h>
 #include <vital/types/protobuf/detected_object_type.pb.h>
-#include <vital/types/protobuf/geo_polygon.pb.h>
 #include <vital/types/protobuf/geo_point.pb.h>
-#include <vital/types/protobuf/metadata.pb.h>
-#include <vital/types/protobuf/polygon.pb.h>
-#include <vital/types/protobuf/timestamp.pb.h>
-#include <vital/types/protobuf/metadata.pb.h>
-#include <vital/types/protobuf/string.pb.h>
+#include <vital/types/protobuf/geo_polygon.pb.h>
 #include <vital/types/protobuf/image.pb.h>
+#include <vital/types/protobuf/metadata.pb.h>
+#include <vital/types/protobuf/metadata.pb.h>
+#include <vital/types/protobuf/object_track_set.pb.h>
+#include <vital/types/protobuf/object_track_state.pb.h>
+#include <vital/types/protobuf/polygon.pb.h>
+#include <vital/types/protobuf/string.pb.h>
+#include <vital/types/protobuf/timestamp.pb.h>
 #include <vital/types/protobuf/track.pb.h>
 #include <vital/types/protobuf/track_set.pb.h>
 #include <vital/types/protobuf/track_state.pb.h>
-#include <vital/types/protobuf/object_track_state.pb.h>
-#include <vital/types/protobuf/object_track_set.pb.h>
 
-#include <zlib.h>
 #include <cstddef>
 #include <cstring>
 #include <memory>
 #include <sstream>
+#include <zlib.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace serialize {
+
 namespace protobuf {
 
 // ----------------------------------------------------------------------------
 KWIVER_SERIALIZE_PROTOBUF_EXPORT
-void convert_protobuf( const ::kwiver::protobuf::activity& proto_act,
-                       ::kwiver::vital::activity&          act )
+void
+convert_protobuf(
+  const ::kwiver::protobuf::activity& proto_act,
+  ::kwiver::vital::activity&          act )
 {
   act = ::kwiver::vital::activity();
 
@@ -75,14 +80,14 @@ void convert_protobuf( const ::kwiver::protobuf::activity& proto_act,
   act.set_end( end_frame );
 
   // Now get the optional params, if they exist, and set
-  if ( proto_act.has_classifications() )
+  if( proto_act.has_classifications() )
   {
     auto at_sptr = std::make_shared< ::kwiver::vital::activity_type >();
     convert_protobuf( proto_act.classifications(), *at_sptr );
     act.set_type( at_sptr );
   }
 
-  if ( proto_act.has_participants() )
+  if( proto_act.has_participants() )
   {
     auto obj_trk_set_sptr = std::make_shared< ::kwiver::vital::object_track_set >();
     convert_protobuf( proto_act.participants(), obj_trk_set_sptr );
@@ -92,8 +97,10 @@ void convert_protobuf( const ::kwiver::protobuf::activity& proto_act,
 
 // ----------------------------------------------------------------------------
 KWIVER_SERIALIZE_PROTOBUF_EXPORT
-void convert_protobuf( const ::kwiver::vital::activity& act,
-                       ::kwiver::protobuf::activity&    proto_act )
+void
+convert_protobuf(
+  const ::kwiver::vital::activity& act,
+  ::kwiver::protobuf::activity&    proto_act )
 {
   // Again retrieve required params and convert to protobuf
   ::kwiver::protobuf::timestamp proto_start_frame;
@@ -110,14 +117,14 @@ void convert_protobuf( const ::kwiver::vital::activity& act,
   *proto_act.mutable_end_frame() = proto_end_frame;
 
   // Now check if optional fields can be set
-  if ( auto at_sptr = act.type() )
+  if( auto at_sptr = act.type() )
   {
     ::kwiver::protobuf::activity_type proto_at;
     convert_protobuf( *at_sptr, proto_at );
     *proto_act.mutable_classifications() = proto_at;
   }
 
-  if ( auto obj_trk_set_sptr = act.participants() )
+  if( auto obj_trk_set_sptr = act.participants() )
   {
     ::kwiver::protobuf::object_track_set proto_obj_trk_set;
     convert_protobuf( obj_trk_set_sptr, proto_obj_trk_set );
@@ -126,18 +133,23 @@ void convert_protobuf( const ::kwiver::vital::activity& act,
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::protobuf::bounding_box& proto_bbox,
-                  ::kwiver::vital::bounding_box_d& bbox )
- {
-   bbox = ::kwiver::vital::bounding_box_d( proto_bbox.xmin(),
-                                         proto_bbox.ymin(),
-                                         proto_bbox.xmax(),
-                                         proto_bbox.ymax());
- }
+void
+convert_protobuf(
+  const ::kwiver::protobuf::bounding_box& proto_bbox,
+  ::kwiver::vital::bounding_box_d& bbox )
+{
+  bbox = ::kwiver::vital::bounding_box_d(
+    proto_bbox.xmin(),
+    proto_bbox.ymin(),
+    proto_bbox.xmax(),
+    proto_bbox.ymax() );
+}
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::vital::bounding_box_d& bbox,
-                  ::kwiver::protobuf::bounding_box&  proto_bbox )
+void
+convert_protobuf(
+  const ::kwiver::vital::bounding_box_d& bbox,
+  ::kwiver::protobuf::bounding_box&  proto_bbox )
 {
   proto_bbox.set_xmin( bbox.min_x() );
   proto_bbox.set_ymin( bbox.min_y() );
@@ -146,8 +158,10 @@ void convert_protobuf( const ::kwiver::vital::bounding_box_d& bbox,
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::protobuf::detected_object&  proto_det_object,
-                  ::kwiver::vital::detected_object& det_object )
+void
+convert_protobuf(
+  const ::kwiver::protobuf::detected_object&  proto_det_object,
+  ::kwiver::vital::detected_object& det_object )
 {
   det_object.set_confidence( proto_det_object.confidence() );
 
@@ -156,35 +170,37 @@ void convert_protobuf( const ::kwiver::protobuf::detected_object&  proto_det_obj
   convert_protobuf( proto_bbox, bbox );
   det_object.set_bounding_box( bbox );
 
-  if ( proto_det_object.has_classifications() )
+  if( proto_det_object.has_classifications() )
   {
     auto new_dot = std::make_shared< ::kwiver::vital::detected_object_type >();
-    ::kwiver::protobuf::detected_object_type proto_dot = proto_det_object.classifications();
+    ::kwiver::protobuf::detected_object_type proto_dot =
+      proto_det_object.classifications();
     convert_protobuf( proto_dot, *new_dot );
     det_object.set_type( new_dot );
   }
 
-  if ( proto_det_object.has_index() )
+  if( proto_det_object.has_index() )
   {
-    det_object.set_index( proto_det_object.index() ) ;
+    det_object.set_index( proto_det_object.index() );
   }
 
-  if ( proto_det_object.has_detector_name() )
+  if( proto_det_object.has_detector_name() )
   {
     det_object.set_detector_name( proto_det_object.detector_name() );
   }
 
   // Notes
   det_object.clear_notes();
-  for ( int i = 0; i < proto_det_object.notes_size(); ++i )
+  for( int i = 0; i < proto_det_object.notes_size(); ++i )
   {
-    det_object.add_note( proto_det_object.notes(i) );
+    det_object.add_note( proto_det_object.notes( i ) );
   } // end for
 
   // keypoints
   det_object.clear_keypoints();
+
   auto keypoint_map = proto_det_object.keypoints();
-  for ( const auto & entry : keypoint_map )
+  for( const auto& entry : keypoint_map )
   {
     ::kwiver::vital::point_2d pt;
     convert_protobuf( entry.second, pt );
@@ -198,8 +214,10 @@ void convert_protobuf( const ::kwiver::protobuf::detected_object&  proto_det_obj
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::vital::detected_object& det_object,
-                  ::kwiver::protobuf::detected_object&  proto_det_object )
+void
+convert_protobuf(
+  const ::kwiver::vital::detected_object& det_object,
+  ::kwiver::protobuf::detected_object&  proto_det_object )
 {
   proto_det_object.set_confidence( det_object.confidence() );
 
@@ -208,13 +226,16 @@ void convert_protobuf( const ::kwiver::vital::detected_object& det_object,
 
   // We're using type() in "const" (read only) way here.  There's utility
   // in having the source object parameter be const, but type() isn't because
-  // its a pointer into the det_object.  Using const_cast here is a middle ground
+  // its a pointer into the det_object.  Using const_cast here is a middle
+  // ground
   // though somewhat ugly
-  if ( const_cast<::kwiver::vital::detected_object&>(det_object).type() != NULL )
+  if( const_cast< ::kwiver::vital::detected_object& >( det_object ).type() !=
+      NULL )
   {
     auto* proto_dot = proto_det_object.mutable_classifications();
-    convert_protobuf( * const_cast<::kwiver::vital::detected_object&>(det_object).type(), *proto_dot );
-
+    convert_protobuf(
+      *const_cast< ::kwiver::vital::detected_object& >( det_object ).type(),
+      *proto_dot );
   }
 
   proto_det_object.set_index( det_object.index() );
@@ -223,9 +244,9 @@ void convert_protobuf( const ::kwiver::vital::detected_object& det_object,
 
   // Notes
   auto l_notes = det_object.notes();
-  if ( ! l_notes.empty() )
+  if( !l_notes.empty() )
   {
-    for ( auto& n : l_notes )
+    for( auto& n : l_notes )
     {
       proto_det_object.add_notes( n );
     } // end for
@@ -233,169 +254,192 @@ void convert_protobuf( const ::kwiver::vital::detected_object& det_object,
 
   // keypoints
   auto l_keyp = det_object.keypoints();
-  if ( ! l_keyp.empty() )
+  if( !l_keyp.empty() )
   {
     auto* mkp = proto_det_object.mutable_keypoints();
 
-    for ( auto it : l_keyp )
+    for( auto it : l_keyp )
     {
       ::kwiver::protobuf::point_d proto_pt;
       convert_protobuf( it.second, proto_pt );
 
-      (*mkp)[it.first] = proto_pt;
-
+      ( *mkp )[ it.first ] = proto_pt;
     } // end for
   }
 
   // geopoint
   auto proto_geop = proto_det_object.mutable_geopoint();
   convert_protobuf( det_object.geo_point(), *proto_geop );
-
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::protobuf::detected_object_set&  proto_dos,
-                  ::kwiver::vital::detected_object_set& dos )
+void
+convert_protobuf(
+  const ::kwiver::protobuf::detected_object_set&  proto_dos,
+  ::kwiver::vital::detected_object_set& dos )
 {
   const size_t count( proto_dos.detected_objects_size() );
-  for (size_t i = 0; i < count; ++i )
+  for( size_t i = 0; i < count; ++i )
   {
     auto det_object_sptr = std::make_shared< ::kwiver::vital::detected_object >(
-      ::kwiver::vital::bounding_box_d { 0, 0, 0, 0 } );
+      ::kwiver::vital::bounding_box_d{ 0, 0, 0, 0 } );
     auto proto_det_object = proto_dos.detected_objects( i );
 
-    convert_protobuf(proto_det_object,*det_object_sptr);
+    convert_protobuf( proto_det_object, *det_object_sptr );
 
     dos.add( det_object_sptr );
   }
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::vital::detected_object_set& dos,
-                  ::kwiver::protobuf::detected_object_set&  proto_dos )
+void
+convert_protobuf(
+  const ::kwiver::vital::detected_object_set& dos,
+  ::kwiver::protobuf::detected_object_set&  proto_dos )
 {
   // We're using type() in "const" (read only) way here.  There's utility
   // in having the source object parameter be const, but type() isn't because
-  // its a pointer into the det_object.  Using const_cast here is a middle ground
+  // its a pointer into the det_object.  Using const_cast here is a middle
+  // ground
   // though somewhat ugly
-  for ( const auto it: const_cast< ::kwiver::vital::detected_object_set& >( dos ) )
+  for( const auto it :
+       const_cast< ::kwiver::vital::detected_object_set& >( dos ) )
   {
-    ::kwiver::protobuf::detected_object *proto_det_object_ptr = proto_dos.add_detected_objects();
+    ::kwiver::protobuf::detected_object* proto_det_object_ptr =
+      proto_dos.add_detected_objects();
 
     convert_protobuf( *it, *proto_det_object_ptr );
   }
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::protobuf::detected_object_type&  proto_dot,
-                       ::kwiver::vital::detected_object_type& dot )
- {
-   const size_t count( proto_dot.name_size() );
-   for (size_t i = 0; i < count; ++i )
-   {
-     dot.set_score( proto_dot.name(i), proto_dot.score(i) );
-   }
- }
-
-// ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::vital::detected_object_type& dot,
-                       ::kwiver::protobuf::detected_object_type&  proto_dot )
+void
+convert_protobuf(
+  const ::kwiver::protobuf::detected_object_type&  proto_dot,
+  ::kwiver::vital::detected_object_type& dot )
 {
-  for ( const auto it : dot )
+  const size_t count( proto_dot.name_size() );
+  for( size_t i = 0; i < count; ++i )
   {
-    proto_dot.add_name( *(it.first) );
-    proto_dot.add_score( it.second);
+    dot.set_score( proto_dot.name( i ), proto_dot.score( i ) );
   }
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::protobuf::activity_type&  proto_at,
-                       ::kwiver::vital::activity_type& at )
- {
-   const size_t count( proto_at.name_size() );
-   for (size_t i = 0; i < count; ++i )
-   {
-     at.set_score( proto_at.name(i), proto_at.score(i) );
-   }
- }
-
-// ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::vital::activity_type& at,
-                       ::kwiver::protobuf::activity_type&  proto_at )
+void
+convert_protobuf(
+  const ::kwiver::vital::detected_object_type& dot,
+  ::kwiver::protobuf::detected_object_type&  proto_dot )
 {
-  for ( const auto it : at )
+  for( const auto it : dot )
   {
-    proto_at.add_name( *(it.first) );
-    proto_at.add_score( it.second);
+    proto_dot.add_name( *( it.first ) );
+    proto_dot.add_score( it.second );
   }
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::protobuf::image&      proto_img,
-                       ::kwiver::vital::image_container_sptr& img )
+void
+convert_protobuf(
+  const ::kwiver::protobuf::activity_type&  proto_at,
+  ::kwiver::vital::activity_type& at )
+{
+  const size_t count( proto_at.name_size() );
+  for( size_t i = 0; i < count; ++i )
+  {
+    at.set_score( proto_at.name( i ), proto_at.score( i ) );
+  }
+}
+
+// ----------------------------------------------------------------------------
+void
+convert_protobuf(
+  const ::kwiver::vital::activity_type& at,
+  ::kwiver::protobuf::activity_type&  proto_at )
+{
+  for( const auto it : at )
+  {
+    proto_at.add_name( *( it.first ) );
+    proto_at.add_score( it.second );
+  }
+}
+
+// ----------------------------------------------------------------------------
+void
+convert_protobuf(
+  const ::kwiver::protobuf::image&      proto_img,
+  ::kwiver::vital::image_container_sptr& img )
 {
   const size_t img_size( proto_img.size() );
-  auto mem_sptr = std::make_shared<vital::image_memory>( img_size );
+  auto mem_sptr = std::make_shared< vital::image_memory >( img_size );
 
   // decompress the data
   uLongf out_size( img_size );
   Bytef* out_buf = reinterpret_cast< Bytef* >( mem_sptr->data() );
-  Bytef const *in_buf = reinterpret_cast< Bytef const* >( proto_img.data().data() );
+  Bytef const* in_buf =
+    reinterpret_cast< Bytef const* >( proto_img.data().data() );
   uLongf in_size = proto_img.data().size(); // compressed size
 
-  int z_rc = uncompress(out_buf, &out_size, // outputs
-                        in_buf, in_size);   // inputs
-  if (Z_OK != z_rc )
+  int z_rc = uncompress(
+    out_buf, &out_size,                     // outputs
+    in_buf, in_size );                      // inputs
+  if( Z_OK != z_rc )
   {
-    switch (z_rc)
+    switch( z_rc )
     {
-    case Z_MEM_ERROR:
-      LOG_ERROR( ::kwiver::vital::get_logger( "data_serializer" ),
-                 "Error decompressing image data. Not enough memory." );
-      break;
+      case Z_MEM_ERROR:
+        LOG_ERROR(
+          ::kwiver::vital::get_logger( "data_serializer" ),
+          "Error decompressing image data. Not enough memory." );
+        break;
 
-    case Z_BUF_ERROR:
-      LOG_ERROR( ::kwiver::vital::get_logger( "data_serializer" ),
-                 "Error decompressing image data. Not enough room in output buffer." );
-      break;
+      case Z_BUF_ERROR:
+        LOG_ERROR(
+          ::kwiver::vital::get_logger( "data_serializer" ),
+          "Error decompressing image data. Not enough room in output buffer." );
+        break;
 
-    default:
-      LOG_ERROR( ::kwiver::vital::get_logger( "data_serializer" ),
-                 "Error decompressing image data." );
-      break;
+      default:
+        LOG_ERROR(
+          ::kwiver::vital::get_logger( "data_serializer" ),
+          "Error decompressing image data." );
+        break;
     } // end switch
     return;
   }
 
-  if (static_cast<uLongf>( img_size ) != out_size)
+  if( static_cast< uLongf >( img_size ) != out_size )
   {
-    LOG_ERROR( ::kwiver::vital::get_logger( "image_container" ),
-               "Uncompressed data not expected size. Possible data corruption.");
+    LOG_ERROR(
+      ::kwiver::vital::get_logger( "image_container" ),
+      "Uncompressed data not expected size. Possible data corruption." );
     return;
   }
 
   // create pixel trait
   const ::kwiver::vital::image_pixel_traits pix_trait(
-    static_cast<::kwiver::vital::image_pixel_traits::pixel_type>(proto_img.trait_type() ),
+    static_cast< ::kwiver::vital::image_pixel_traits::pixel_type >( proto_img.
+                                                                    trait_type() ),
     proto_img.trait_num_bytes() );
 
   // create the image
   auto vital_image = ::kwiver::vital::image(
     mem_sptr, mem_sptr->data(),
-    static_cast< std::size_t > ( proto_img.width() ),
-    static_cast< std::size_t > ( proto_img.height() ),
-    static_cast< std::size_t > ( proto_img.depth() ),
-    static_cast< std::ptrdiff_t > ( proto_img.w_step() ),
-    static_cast< std::ptrdiff_t > ( proto_img.h_step() ),
-    static_cast< std::ptrdiff_t > ( proto_img.d_step() ),
+    static_cast< std::size_t >( proto_img.width() ),
+    static_cast< std::size_t >( proto_img.height() ),
+    static_cast< std::size_t >( proto_img.depth() ),
+    static_cast< std::ptrdiff_t >( proto_img.w_step() ),
+    static_cast< std::ptrdiff_t >( proto_img.h_step() ),
+    static_cast< std::ptrdiff_t >( proto_img.d_step() ),
     pix_trait
-    );
+  );
 
   // return newly constructed image container
-  img = std::make_shared< ::kwiver::vital::simple_image_container >( vital_image );
+  img =
+    std::make_shared< ::kwiver::vital::simple_image_container >( vital_image );
 
   // convert metadata if there is any
-  if ( proto_img.has_image_metadata() )
+  if( proto_img.has_image_metadata() )
   {
     auto meta_ptr = std::make_shared< ::kwiver::vital::metadata >();
     convert_protobuf( proto_img.image_metadata(), *meta_ptr );
@@ -404,13 +448,15 @@ void convert_protobuf( const ::kwiver::protobuf::image&      proto_img,
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::vital::image_container_sptr img,
-                       ::kwiver::protobuf::image&                  proto_img )
+void
+convert_protobuf(
+  const ::kwiver::vital::image_container_sptr img,
+  ::kwiver::protobuf::image&                  proto_img )
 {
   ::kwiver::vital::image vital_image = img->get_image();
   ::kwiver::vital::image local_image;
 
-  if ( vital_image.memory() == nullptr || ! vital_image.is_contiguous() )
+  if( vital_image.memory() == nullptr || !vital_image.is_contiguous() )
   {
     // Either we do not own the memory or it is not contiguous.  We
     // need to consolidate the input image into a contiguous memory
@@ -424,47 +470,52 @@ void convert_protobuf( const ::kwiver::vital::image_container_sptr img,
 
   // Compress raw pixel data
   const uLongf size = compressBound( local_image.size() );
-  uLongf out_size(size);
-  std::vector<uint8_t> image_data( size );
-  Bytef *out_buf = new Bytef[size];
-  Bytef const* in_buf = reinterpret_cast< Bytef * >(local_image.memory()->data());
+  uLongf out_size( size );
+  std::vector< uint8_t > image_data( size );
+  Bytef* out_buf = new Bytef[ size ];
+  Bytef const* in_buf =
+    reinterpret_cast< Bytef* >( local_image.memory()->data() );
 
   // Since the image is contiguous, we can calculate the size
-  size_t local_size = local_image.width() * local_image.height()
-    * local_image.depth() * local_image.pixel_traits().num_bytes;
+  size_t local_size = local_image.width() * local_image.height() *
+                      local_image.depth() *
+                      local_image.pixel_traits().num_bytes;
 
-  int z_rc = compress( out_buf, &out_size, // outputs
-                       in_buf, local_size ); // inputs
-  if (Z_OK != z_rc )
+  int z_rc = compress(
+    out_buf, &out_size,                    // outputs
+    in_buf, local_size );                    // inputs
+  if( Z_OK != z_rc )
   {
-    switch (z_rc)
+    switch( z_rc )
     {
-    case Z_MEM_ERROR:
-      LOG_ERROR( ::kwiver::vital::get_logger( "image_container" ),
-                 "Error compressing image data. Not enough memory." );
-      break;
+      case Z_MEM_ERROR:
+        LOG_ERROR(
+          ::kwiver::vital::get_logger( "image_container" ),
+          "Error compressing image data. Not enough memory." );
+        break;
 
-    case Z_BUF_ERROR:
-      LOG_ERROR( ::kwiver::vital::get_logger( "image_container" ),
-                 "Error compressing image data. Not enough room in output buffer." );
-      break;
+      case Z_BUF_ERROR:
+        LOG_ERROR(
+          ::kwiver::vital::get_logger( "image_container" ),
+          "Error compressing image data. Not enough room in output buffer." );
+        break;
 
-    default:
-      LOG_ERROR( ::kwiver::vital::get_logger( "image_container" ),
-                 "Error compressing image data." );
-      break;
+      default:
+        LOG_ERROR(
+          ::kwiver::vital::get_logger( "image_container" ),
+          "Error compressing image data." );
+        break;
     } // end switch
   }
   else
   {
+    proto_img.set_width( static_cast< int64_t >( local_image.width() ) );
+    proto_img.set_height( static_cast< int64_t >( local_image.height() ) );
+    proto_img.set_depth( static_cast< int64_t >( local_image.depth() ) );
 
-    proto_img.set_width( static_cast< int64_t > ( local_image.width() ) );
-    proto_img.set_height( static_cast< int64_t > ( local_image.height() ) );
-    proto_img.set_depth( static_cast< int64_t > ( local_image.depth() ) );
-
-    proto_img.set_w_step( static_cast< int64_t > ( local_image.w_step() ) );
-    proto_img.set_h_step( static_cast< int64_t > ( local_image.h_step() ) );
-    proto_img.set_d_step( static_cast< int64_t > ( local_image.d_step() ) );
+    proto_img.set_w_step( static_cast< int64_t >( local_image.w_step() ) );
+    proto_img.set_h_step( static_cast< int64_t >( local_image.h_step() ) );
+    proto_img.set_d_step( static_cast< int64_t >( local_image.d_step() ) );
 
     // Get pixel trait
     auto pixel_trait = local_image.pixel_traits();
@@ -475,38 +526,43 @@ void convert_protobuf( const ::kwiver::vital::image_container_sptr img,
     proto_img.set_data( out_buf, size );
 
     // serialize the metadata if there is any.
-    if ( img->get_metadata() )
+    if( img->get_metadata() )
     {
       auto* proto_meta = proto_img.mutable_image_metadata();
       convert_protobuf( *img->get_metadata(), *proto_meta );
     }
   }
-  delete []out_buf;
+  delete[] out_buf;
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::protobuf::timestamp& proto_tstamp,
-                       ::kwiver::vital::timestamp&          tstamp )
+void
+convert_protobuf(
+  const ::kwiver::protobuf::timestamp& proto_tstamp,
+  ::kwiver::vital::timestamp&          tstamp )
 {
   tstamp = ::kwiver::vital::timestamp(
-    static_cast< ::kwiver::vital::time_usec_t > ( proto_tstamp.time() ),
-    static_cast< ::kwiver::vital::frame_id_t > ( proto_tstamp.frame() ) );
+    static_cast< ::kwiver::vital::time_usec_t >( proto_tstamp.time() ),
+    static_cast< ::kwiver::vital::frame_id_t >( proto_tstamp.frame() ) );
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::vital::timestamp&  tstamp,
-                       ::kwiver::protobuf::timestamp&     proto_tstamp )
+void
+convert_protobuf(
+  const ::kwiver::vital::timestamp&  tstamp,
+  ::kwiver::protobuf::timestamp&     proto_tstamp )
 {
-  proto_tstamp.set_time( static_cast< int64_t > ( tstamp.get_time_usec() ) );
-  proto_tstamp.set_frame( static_cast< int64_t > ( tstamp.get_frame() ) );
+  proto_tstamp.set_time( static_cast< int64_t >( tstamp.get_time_usec() ) );
+  proto_tstamp.set_frame( static_cast< int64_t >( tstamp.get_frame() ) );
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::protobuf::metadata_vector&  proto_mvec,
-                  ::kwiver::vital::metadata_vector& mvec )
-
+void
+convert_protobuf(
+  const ::kwiver::protobuf::metadata_vector&  proto_mvec,
+  ::kwiver::vital::metadata_vector& mvec )
 {
-  for ( const auto& meta : proto_mvec.collection() )
+  for( const auto& meta : proto_mvec.collection() )
   {
     auto meta_ptr = std::make_shared< ::kwiver::vital::metadata >();
     convert_protobuf( meta, *meta_ptr );
@@ -515,11 +571,13 @@ void convert_protobuf( const ::kwiver::protobuf::metadata_vector&  proto_mvec,
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::vital::metadata_vector& mvec,
-                  ::kwiver::protobuf::metadata_vector&  proto_mvec )
+void
+convert_protobuf(
+  const ::kwiver::vital::metadata_vector& mvec,
+  ::kwiver::protobuf::metadata_vector&  proto_mvec )
 {
   // convert to proto
-  for ( const auto& meta : mvec )
+  for( const auto& meta : mvec )
   {
     auto* proto_meta = proto_mvec.add_collection();
     convert_protobuf( *meta, *proto_meta );
@@ -527,36 +585,39 @@ void convert_protobuf( const ::kwiver::vital::metadata_vector& mvec,
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::protobuf::metadata&  proto,
-                  ::kwiver::vital::metadata& metadata )
+void
+convert_protobuf(
+  const ::kwiver::protobuf::metadata&  proto,
+  ::kwiver::vital::metadata& metadata )
 {
   // deserialize one metadata collection
-  for ( const auto& mi : proto.items() )
+  for( const auto& mi : proto.items() )
   {
-    const auto tag = static_cast< ::kwiver::vital::vital_metadata_tag >( mi.metadata_tag() );
+    const auto tag =
+      static_cast< ::kwiver::vital::vital_metadata_tag >( mi.metadata_tag() );
     const auto& trait = ::kwiver::vital::tag_traits_by_tag( tag );
     ::kwiver::vital::any data;
 
-    if ( trait.type() == typeid( double ) )
+    if( trait.type() == typeid( double ) )
     {
       data = ::kwiver::vital::any( mi.double_value() );
     }
-    else if ( trait.type() == typeid( uint64_t ) )
+    else if( trait.type() == typeid( uint64_t ) )
     {
-      data = ::kwiver::vital::any( static_cast<uint64_t>(mi.int_value()) );
+      data = ::kwiver::vital::any( static_cast< uint64_t >( mi.int_value() ) );
     }
-    else if ( trait.type() == typeid(std::string) )
+    else if( trait.type() == typeid( std::string ) )
     {
       // is natively a string
       data = ::kwiver::vital::any( mi.string_value() );
     }
-    else if ( trait.type() == typeid(::kwiver::vital::geo_point) )
+    else if( trait.type() == typeid( ::kwiver::vital::geo_point ) )
     {
       ::kwiver::vital::geo_point pt;
       convert_protobuf( mi.geo_point_value(), pt );
       data = ::kwiver::vital::any( pt );
     }
-    else if ( trait.type() == typeid(::kwiver::vital::geo_polygon) )
+    else if( trait.type() == typeid( ::kwiver::vital::geo_polygon ) )
     {
       ::kwiver::vital::geo_polygon poly;
       convert_protobuf( mi.geo_polygon_value(), poly );
@@ -572,16 +633,17 @@ void convert_protobuf( const ::kwiver::protobuf::metadata&  proto,
     }
 
     metadata.add_any( tag, data );
-
   } // end for
 }
 
 namespace {
 
 // ----------------------------------------------------------------------------
-struct convert_visitor {
-  template< class T >
-  void operator()( T const& data ) const
+struct convert_visitor
+{
+  template < class T >
+  void
+  operator()( T const& data ) const
   {
     std::stringstream ss;
     ss << data;
@@ -592,32 +654,28 @@ struct convert_visitor {
 };
 
 // ----------------------------------------------------------------------------
-template<>
-void
+template <> void
 convert_visitor::operator()< uint64_t >( uint64_t const& data ) const
 {
   proto_item.set_int_value( data );
 }
 
 // ----------------------------------------------------------------------------
-template<>
-void
+template <> void
 convert_visitor::operator()< std::string >( std::string const& data ) const
 {
   proto_item.set_string_value( data );
 }
 
 // ----------------------------------------------------------------------------
-template<>
-void
+template <> void
 convert_visitor::operator()< double >( double const& data ) const
 {
   proto_item.set_double_value( data );
 }
 
 // ----------------------------------------------------------------------------
-template<>
-void
+template <> void
 convert_visitor::operator()< kwiver::vital::geo_point >(
   kwiver::vital::geo_point const& data ) const
 {
@@ -625,8 +683,7 @@ convert_visitor::operator()< kwiver::vital::geo_point >(
 }
 
 // ----------------------------------------------------------------------------
-template<>
-void
+template <> void
 convert_visitor::operator()< kwiver::vital::geo_polygon >(
   kwiver::vital::geo_polygon const& data ) const
 {
@@ -636,11 +693,13 @@ convert_visitor::operator()< kwiver::vital::geo_polygon >(
 } // namespace <anonymous>
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::vital::metadata& metadata,
-                       ::kwiver::protobuf::metadata& proto_meta )
+void
+convert_protobuf(
+  const ::kwiver::vital::metadata& metadata,
+  ::kwiver::protobuf::metadata& proto_meta )
 {
   // Serialize one metadata collection
-  for ( const auto& mi : metadata )
+  for( const auto& mi : metadata )
   {
     auto* proto_item = proto_meta.add_items();
 
@@ -651,12 +710,14 @@ void convert_protobuf( const ::kwiver::vital::metadata& metadata,
     proto_item->set_metadata_tag( tag );
 
     ::std::visit( convert_visitor{ *proto_item }, metap->data() );
-  } //end for
+  } // end for
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::protobuf::geo_polygon&  proto_poly,
-                       ::kwiver::vital::geo_polygon& poly )
+void
+convert_protobuf(
+  const ::kwiver::protobuf::geo_polygon&  proto_poly,
+  ::kwiver::vital::geo_polygon& poly )
 {
   ::kwiver::vital::polygon raw_poly;
   convert_protobuf( proto_poly.point_list(), raw_poly );
@@ -664,194 +725,238 @@ void convert_protobuf( const ::kwiver::protobuf::geo_polygon&  proto_poly,
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::vital::geo_polygon& poly,
-                       ::kwiver::protobuf::geo_polygon&  proto_poly )
+void
+convert_protobuf(
+  const ::kwiver::vital::geo_polygon& poly,
+  ::kwiver::protobuf::geo_polygon&  proto_poly )
 {
   proto_poly.set_crs( poly.crs() );
   convert_protobuf( poly.polygon(), *proto_poly.mutable_point_list() );
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::protobuf::geo_point&  proto_point,
-                       ::kwiver::vital::geo_point& point )
+void
+convert_protobuf(
+  const ::kwiver::protobuf::geo_point&  proto_point,
+  ::kwiver::vital::geo_point& point )
 {
-  if ( proto_point.has_crs() )
+  if( proto_point.has_crs() )
   {
     ::kwiver::vital::geo_point::geo_3d_point_t pt;
-    pt[0] = proto_point.x();
-    pt[1] = proto_point.y();
-    pt[2] = proto_point.z();
+    pt[ 0 ] = proto_point.x();
+    pt[ 1 ] = proto_point.y();
+    pt[ 2 ] = proto_point.z();
     point.set_location( pt, proto_point.crs() );
   }
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::vital::geo_point& point,
-                       ::kwiver::protobuf::geo_point&  proto_point )
+void
+convert_protobuf(
+  const ::kwiver::vital::geo_point& point,
+  ::kwiver::protobuf::geo_point&  proto_point )
 {
   // test for empty
-  if ( ! point.is_empty() )
+  if( !point.is_empty() )
   {
     proto_point.set_crs( point.crs() );
+
     const auto loc = point.location( point.crs() );
-    proto_point.set_x( loc[0] );
-    proto_point.set_y( loc[1] );
-    proto_point.set_z( loc[2] );
+    proto_point.set_x( loc[ 0 ] );
+    proto_point.set_y( loc[ 1 ] );
+    proto_point.set_z( loc[ 2 ] );
   }
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::protobuf::polygon&  proto_poly,
-                       ::kwiver::vital::polygon& poly )
+void
+convert_protobuf(
+  const ::kwiver::protobuf::polygon&  proto_poly,
+  ::kwiver::vital::polygon& poly )
 {
-  for ( auto const& vert : proto_poly.point_list() )
+  for( auto const& vert : proto_poly.point_list() )
   {
     poly.push_back( vert.x(), vert.y() );
   }
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::vital::polygon& poly,
-                       ::kwiver::protobuf::polygon&  proto_poly )
+void
+convert_protobuf(
+  const ::kwiver::vital::polygon& poly,
+  ::kwiver::protobuf::polygon&  proto_poly )
 {
   const auto vertices = poly.get_vertices();
-  for ( auto const& vert : vertices )
+  for( auto const& vert : vertices )
   {
     auto* proto_item = proto_poly.add_point_list();
-    proto_item->set_x( vert[0] );
-    proto_item->set_y( vert[1] );
+    proto_item->set_x( vert[ 0 ] );
+    proto_item->set_y( vert[ 1 ] );
   }
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::protobuf::string& proto_string,
-                       std::string& str )
+void
+convert_protobuf(
+  const ::kwiver::protobuf::string& proto_string,
+  std::string& str )
 {
-  str = std::string(proto_string.data());
+  str = std::string( proto_string.data() );
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const std::string& str,
-                       ::kwiver::protobuf::string& proto_string )
+void
+convert_protobuf(
+  const std::string& str,
+  ::kwiver::protobuf::string& proto_string )
 {
-  proto_string.set_data(str);
+  proto_string.set_data( str );
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::protobuf::track_state& proto_trk_state,
-                       ::kwiver::vital::track_state& trk_state )
+void
+convert_protobuf(
+  const ::kwiver::protobuf::track_state& proto_trk_state,
+  ::kwiver::vital::track_state& trk_state )
 {
   trk_state.set_frame( proto_trk_state.frame_id() );
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::vital::track_state& trk_state,
-                        ::kwiver::protobuf::track_state& proto_trk_state)
+void
+convert_protobuf(
+  const ::kwiver::vital::track_state& trk_state,
+  ::kwiver::protobuf::track_state& proto_trk_state )
 {
   proto_trk_state.set_frame_id( static_cast< int64_t >( trk_state.frame() ) );
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::vital::track_sptr& trk_sptr,
-                        ::kwiver::protobuf::track& proto_trk )
+void
+convert_protobuf(
+  const ::kwiver::vital::track_sptr& trk_sptr,
+  ::kwiver::protobuf::track& proto_trk )
 {
   proto_trk.set_track_id( trk_sptr->id() );
-  for ( auto trk_state_itr=trk_sptr->begin(); trk_state_itr!=trk_sptr->end();
-        ++trk_state_itr ){
+  for( auto trk_state_itr = trk_sptr->begin(); trk_state_itr != trk_sptr->end();
+       ++trk_state_itr )
+  {
     auto trk_state = *trk_state_itr;
     auto obj_trk_state_sptr = std::dynamic_pointer_cast<
-                              ::kwiver::vital::object_track_state>( trk_state );
+      ::kwiver::vital::object_track_state >( trk_state );
     // Check if the track state is Object Track State
-    if (obj_trk_state_sptr){
-      ::kwiver::protobuf::object_track_state *proto_obj_trk_state =
-                                          proto_trk.add_object_track_states();
+    if( obj_trk_state_sptr )
+    {
+      ::kwiver::protobuf::object_track_state* proto_obj_trk_state =
+        proto_trk.add_object_track_states();
       convert_protobuf( *obj_trk_state_sptr, *proto_obj_trk_state );
     }
     else
     {
-      ::kwiver::protobuf::track_state *proto_trk_state = proto_trk.add_track_states();
+      ::kwiver::protobuf::track_state* proto_trk_state =
+        proto_trk.add_track_states();
       convert_protobuf( *trk_state, *proto_trk_state );
     }
   }
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::protobuf::track& proto_trk,
-                        ::kwiver::vital::track_sptr& trk_sptr )
+void
+convert_protobuf(
+  const ::kwiver::protobuf::track& proto_trk,
+  ::kwiver::vital::track_sptr& trk_sptr )
 {
   trk_sptr->set_id( proto_trk.track_id() );
 
   // Supports single type of track states
-  if ( proto_trk.track_states_size() > 0 )
+  if( proto_trk.track_states_size() > 0 )
   {
     const size_t count( proto_trk.track_states_size() );
-    for (size_t index = 0; index < count; ++index )
+    for( size_t index = 0; index < count; ++index )
     {
       auto trk_state = std::make_shared< ::kwiver::vital::track_state >();
       convert_protobuf( proto_trk.track_states( index ), *trk_state );
+
       bool trk_inserted = trk_sptr->insert( trk_state );
-      if ( !trk_inserted )
+      if( !trk_inserted )
       {
-        LOG_ERROR( ::kwiver::vital::get_logger( "track" ),
-                 "Failed to insert track state in track." );
+        LOG_ERROR(
+          ::kwiver::vital::get_logger( "track" ),
+          "Failed to insert track state in track." );
       }
     }
-  } else if ( proto_trk.object_track_states_size() > 0 )
+  }
+  else if( proto_trk.object_track_states_size() > 0 )
   {
     const size_t count( proto_trk.object_track_states_size() );
-    for (size_t index = 0; index < count; ++index )
+    for( size_t index = 0; index < count; ++index )
     {
       auto object_trk_state = std::make_shared< ::kwiver::vital::object_track_state >();
-      convert_protobuf( proto_trk.object_track_states( index ), *object_trk_state );
+      convert_protobuf(
+        proto_trk.object_track_states( index ),
+        *object_trk_state );
+
       bool trk_inserted = trk_sptr->insert( object_trk_state );
-      if ( !trk_inserted )
+      if( !trk_inserted )
       {
-        LOG_ERROR( ::kwiver::vital::get_logger( "track" ),
-                 "Failed to insert object track state in track." );
+        LOG_ERROR(
+          ::kwiver::vital::get_logger( "track" ),
+          "Failed to insert object track state in track." );
       }
     }
   }
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::vital::track_set_sptr& trk_set_sptr,
-                        ::kwiver::protobuf::track_set& proto_trk_set )
+void
+convert_protobuf(
+  const ::kwiver::vital::track_set_sptr& trk_set_sptr,
+  ::kwiver::protobuf::track_set& proto_trk_set )
 {
-  for (::kwiver::vital::track_id_t trk_id : trk_set_sptr->all_track_ids())
+  for( ::kwiver::vital::track_id_t trk_id : trk_set_sptr->all_track_ids() )
   {
-    ::kwiver::protobuf::track *trk = proto_trk_set.add_tracks();
-    convert_protobuf( trk_set_sptr->get_track(trk_id ), *trk);
+    ::kwiver::protobuf::track* trk = proto_trk_set.add_tracks();
+    convert_protobuf( trk_set_sptr->get_track( trk_id ), *trk );
   }
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::protobuf::track_set& proto_trk_set,
-                        ::kwiver::vital::track_set_sptr& trk_set_sptr )
+void
+convert_protobuf(
+  const ::kwiver::protobuf::track_set& proto_trk_set,
+  ::kwiver::vital::track_set_sptr& trk_set_sptr )
 {
   const size_t count( proto_trk_set.tracks_size() );
-  for ( size_t index = 0; index < count; ++index )
+  for( size_t index = 0; index < count; ++index )
   {
-      auto trk = ::kwiver::vital::track::create();
-      convert_protobuf( proto_trk_set.tracks( index ), trk );
-      trk_set_sptr->insert( trk );
+    auto trk = ::kwiver::vital::track::create();
+    convert_protobuf( proto_trk_set.tracks( index ), trk );
+    trk_set_sptr->insert( trk );
   }
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::protobuf::object_track_state& proto_obj_trk_state,
-                       ::kwiver::vital::object_track_state& obj_trk_state )
+void
+convert_protobuf(
+  const ::kwiver::protobuf::object_track_state& proto_obj_trk_state,
+  ::kwiver::vital::object_track_state& obj_trk_state )
 {
-  ::kwiver::vital::frame_id_t frame_id =  static_cast< ::kwiver::vital::frame_id_t >(
-                        proto_obj_trk_state.track_state().frame_id() );
-  ::kwiver::vital::time_usec_t time =  static_cast< ::kwiver::vital::time_usec_t >(
-                        proto_obj_trk_state.time() );
+  ::kwiver::vital::frame_id_t frame_id =
+    static_cast< ::kwiver::vital::frame_id_t >(
+      proto_obj_trk_state.track_state().frame_id() );
+  ::kwiver::vital::time_usec_t time =
+    static_cast< ::kwiver::vital::time_usec_t >(
+      proto_obj_trk_state.time() );
   // object track state detection might be nullptr
-  if ( !obj_trk_state.detection() )
+  if( !obj_trk_state.detection() )
   {
-    obj_trk_state.set_detection( std::make_shared<::kwiver::vital::detected_object>(
-                      ::kwiver::vital::bounding_box_d{0, 0, 0, 0} ) );
+    obj_trk_state.set_detection(
+      std::make_shared< ::kwiver::vital::detected_object >(
+        ::kwiver::vital::bounding_box_d{ 0, 0, 0, 0 } ) );
   }
-  convert_protobuf( proto_obj_trk_state.detection(), *obj_trk_state.detection() );
+  convert_protobuf(
+    proto_obj_trk_state.detection(),
+    *obj_trk_state.detection() );
 
   obj_trk_state.set_frame( frame_id );
   obj_trk_state.set_time( time );
@@ -868,13 +973,15 @@ void convert_protobuf( const ::kwiver::protobuf::object_track_state& proto_obj_t
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::vital::object_track_state& obj_trk_state,
-                        ::kwiver::protobuf::object_track_state& proto_obj_trk_state )
+void
+convert_protobuf(
+  const ::kwiver::vital::object_track_state& obj_trk_state,
+  ::kwiver::protobuf::object_track_state& proto_obj_trk_state )
 {
   proto_obj_trk_state.set_time( obj_trk_state.time() );
 
   const ::kwiver::vital::track_state trk_state =
-                              ::kwiver::vital::track_state( obj_trk_state.frame() );
+    ::kwiver::vital::track_state( obj_trk_state.frame() );
 
   auto* proto_trk_state = proto_obj_trk_state.mutable_track_state();
   convert_protobuf( trk_state, *proto_trk_state );
@@ -892,27 +999,37 @@ void convert_protobuf( const ::kwiver::vital::object_track_state& obj_trk_state,
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::vital::object_track_set_sptr& obj_trk_set_sptr,
-                        ::kwiver::protobuf::object_track_set& proto_obj_trk_set )
+void
+convert_protobuf(
+  const ::kwiver::vital::object_track_set_sptr& obj_trk_set_sptr,
+  ::kwiver::protobuf::object_track_set& proto_obj_trk_set )
 {
-  for (::kwiver::vital::track_id_t trk_id : obj_trk_set_sptr->all_track_ids())
+  for( ::kwiver::vital::track_id_t trk_id : obj_trk_set_sptr->all_track_ids() )
   {
-    ::kwiver::protobuf::track *trk = proto_obj_trk_set.add_tracks();
-    convert_protobuf( obj_trk_set_sptr->get_track(trk_id ), *trk);
+    ::kwiver::protobuf::track* trk = proto_obj_trk_set.add_tracks();
+    convert_protobuf( obj_trk_set_sptr->get_track( trk_id ), *trk );
   }
 }
 
 // ----------------------------------------------------------------------------
-void convert_protobuf( const ::kwiver::protobuf::object_track_set& proto_obj_trk_set,
-                        ::kwiver::vital::object_track_set_sptr& obj_trk_set_sptr )
+void
+convert_protobuf(
+  const ::kwiver::protobuf::object_track_set& proto_obj_trk_set,
+  ::kwiver::vital::object_track_set_sptr& obj_trk_set_sptr )
 {
   const size_t count( proto_obj_trk_set.tracks_size() );
-  for ( size_t index = 0; index < count; ++index )
+  for( size_t index = 0; index < count; ++index )
   {
-      auto trk = ::kwiver::vital::track::create();
-      convert_protobuf( proto_obj_trk_set.tracks( index ), trk );
-      obj_trk_set_sptr->insert( trk );
+    auto trk = ::kwiver::vital::track::create();
+    convert_protobuf( proto_obj_trk_set.tracks( index ), trk );
+    obj_trk_set_sptr->insert( trk );
   }
 }
 
-} } } } // end namespace
+} // namespace protobuf
+
+} // namespace serialize
+
+} // namespace arrows
+
+}       // end namespace

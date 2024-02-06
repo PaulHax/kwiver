@@ -19,6 +19,7 @@
 #include <memory>
 
 namespace kwiver {
+
 namespace vital {
 
 template < unsigned N, typename T >
@@ -31,42 +32,49 @@ public:
 
   point() {}
   explicit point( vector_type const& v, covariance_type const& c = {} )
-    : m_value{ v }, m_covariance{ c } {}
+    : m_value{ v },
+      m_covariance{ c } {}
 
   template < unsigned K = N,
-             typename std::enable_if< K == 2, bool >::type = true >
+    typename std::enable_if< K == 2, bool >::type = true >
   point( T x, T y ) : m_value{ x, y } {}
 
   template < unsigned K = N,
-             typename std::enable_if< K == 3, bool >::type = true >
+    typename std::enable_if< K == 3, bool >::type = true >
   point( T x, T y, T z ) : m_value{ x, y, z } {}
 
   template < unsigned K = N,
-             typename std::enable_if< K == 4, bool >::type = true >
+    typename std::enable_if< K == 4, bool >::type = true >
   point( T x, T y, T z, T w ) : m_value{ x, y, z, w } {}
 
   virtual ~point() = default;
 
-  vector_type value() const { return m_value; }
+  vector_type
+  value() const { return m_value; }
   void set_value( vector_type v ) { m_value = v; }
 
-  covariance_type covariance() const { return m_covariance; }
+  covariance_type
+  covariance() const { return m_covariance; }
   void set_covariance( covariance_type const& v ) { m_covariance = v; }
 
   /// Equality operator
-  bool operator==( point< N, T > const& other ) const
+  bool
+  operator==( point< N, T > const& other ) const
   {
     return this->value() == other.value();
   }
 
   /// Inequality operator
-  bool operator!=( point< N, T > const& other ) const
+  bool
+  operator!=( point< N, T > const& other ) const
   {
-    return ! operator==(other);
+    return !operator==( other );
   }
 
-  T operator[]( size_t i ) { return m_value[i]; }
-  const T operator[]( size_t i ) const { return m_value[i]; }
+  T
+  operator[]( size_t i ) { return m_value[ i ]; }
+  const T
+  operator[]( size_t i ) const { return m_value[ i ]; }
 
 protected:
   vector_type m_value = vector_type::Zero();
@@ -82,15 +90,16 @@ using point_3f = point< 3, float >;
 using point_4d = point< 4, double >;
 using point_4f = point< 4, float >;
 
-VITAL_EXPORT ::std::ostream& operator<<( ::std::ostream&, point_2i const& );
-VITAL_EXPORT ::std::ostream& operator<<( ::std::ostream&, point_2d const& );
-VITAL_EXPORT ::std::ostream& operator<<( ::std::ostream&, point_2f const& );
-VITAL_EXPORT ::std::ostream& operator<<( ::std::ostream&, point_3d const& );
-VITAL_EXPORT ::std::ostream& operator<<( ::std::ostream&, point_3f const& );
-VITAL_EXPORT ::std::ostream& operator<<( ::std::ostream&, point_4d const& );
-VITAL_EXPORT ::std::ostream& operator<<( ::std::ostream&, point_4f const& );
+VITAL_EXPORT::std::ostream& operator<<( ::std::ostream&, point_2i const& );
+VITAL_EXPORT::std::ostream& operator<<( ::std::ostream&, point_2d const& );
+VITAL_EXPORT::std::ostream& operator<<( ::std::ostream&, point_2f const& );
+VITAL_EXPORT::std::ostream& operator<<( ::std::ostream&, point_3d const& );
+VITAL_EXPORT::std::ostream& operator<<( ::std::ostream&, point_3f const& );
+VITAL_EXPORT::std::ostream& operator<<( ::std::ostream&, point_4d const& );
+VITAL_EXPORT::std::ostream& operator<<( ::std::ostream&, point_4f const& );
 
 } // namespace vital
+
 } // namespace kwiver
 
 #endif

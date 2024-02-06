@@ -11,20 +11,23 @@
 #include <vector>
 
 namespace kwiver {
+
 namespace tools {
 
 class pipeline_viewer : public kwiver_applet
 {
 public:
-  PLUGIN_INFO( "pipe-gui",
-               "Run pipelines in a simple GUI.\n\n"
-               "This program provides a simple Qt-based front-end "
-               "for executing pipelines and viewing images produced by the same." );
+  PLUGIN_INFO(
+    "pipe-gui",
+    "Run pipelines in a simple GUI.\n\n"
+    "This program provides a simple Qt-based front-end "
+    "for executing pipelines and viewing images produced by the same." );
 
   int run() override;
 };
 
 } // namespace tools
+
 } // namespace kwiver
 
 #endif

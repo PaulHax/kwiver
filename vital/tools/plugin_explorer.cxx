@@ -2,8 +2,8 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include "explorer_plugin.h"
 #include "explorer_context_priv.h"
+#include "explorer_plugin.h"
 
 #include <vital/kwiver-include-paths.h>
 
@@ -24,23 +24,29 @@
 #include <kwiversys/SystemTools.hxx>
 
 #include <iostream>
-#include <vector>
-#include <string>
-#include <sstream>
 #include <iterator>
-#include <memory>
 #include <map>
+#include <memory>
+#include <sstream>
+#include <string>
+#include <vector>
 
 using ST = kwiversys::SystemTools;
 using kvpf = kwiver::vital::plugin_factory;
 
 // -- forward definitions --
-static void display_attributes( kwiver::vital::plugin_factory_handle_t const fact );
-static void display_by_category( const kwiver::vital::plugin_map_t& plugin_map, const std::string& category );
-static kwiver::vital::category_explorer_sptr get_category_handler( const std::string& cat );
+static void display_attributes(
+  kwiver::vital::plugin_factory_handle_t const fact );
+static void display_by_category(
+  const kwiver::vital::plugin_map_t& plugin_map,
+  const std::string& category );
+static kwiver::vital::category_explorer_sptr get_category_handler(
+  const std::string& cat );
+
 
 // Cluster default path.
-static std::string const cluster_default_include_dirs = std::string(DEFAULT_CLUSTER_PATHS);
+static std::string const cluster_default_include_dirs =
+  std::string( DEFAULT_CLUSTER_PATHS );
 
 // ----------------------------------------------------------------------------
 // Define global program data
@@ -53,49 +59,53 @@ static kwiversys::RegularExpression filter_regex;
 static kwiversys::RegularExpression fact_regex;
 static kwiversys::RegularExpression type_regex;
 
+
 #ifndef PLUGIN_EXPLORER_VERSION
-  #define PLUGIN_EXPLORER_VERSION "undefined"
+#define PLUGIN_EXPLORER_VERSION "undefined"
 #endif
 
-static bool opt_version(false);
+static bool opt_version( false );
 static std::string version_string( PLUGIN_EXPLORER_VERSION );
 
-static std::map< const std::string, kwiver::vital::category_explorer_sptr> category_map;
+static std::map< const std::string,
+  kwiver::vital::category_explorer_sptr > category_map;
 
 // ----------------------------------------------------------------------------
 
 static std::string const hidden_prefix = "_";
 
 // Accessor for output stream.
-inline std::ostream& pe_out()
+inline std::ostream&
+pe_out()
 {
   return *G_context.m_out_stream;
 }
+
 
 // ----------------------------------------------------------------------------
 //  Functor to print an attribute
 struct print_functor
 {
-  print_functor( std::ostream& str)
+  print_functor( std::ostream& str )
     : m_str( str )
-  { }
+  {}
 
-  void operator() ( std::string const& key, std::string const& val ) const
+  void
+  operator()( std::string const& key, std::string const& val ) const
   {
     // Skip canonical names and other attributes that are displayed elsewhere
-    if ( ( kvpf::PLUGIN_NAME != key)
-         && ( kvpf::CONCRETE_TYPE != key )
-         && ( kvpf::INTERFACE_TYPE != key )
-         && ( kvpf::PLUGIN_DESCRIPTION != key )
-         && ( kvpf::PLUGIN_FILE_NAME != key )
-         && ( kvpf::PLUGIN_VERSION != key )
-         && ( kvpf::PLUGIN_MODULE_NAME != key )
-      )
+    if( ( kvpf::PLUGIN_NAME != key ) &&
+        ( kvpf::CONCRETE_TYPE != key ) &&
+        ( kvpf::INTERFACE_TYPE != key ) &&
+        ( kvpf::PLUGIN_DESCRIPTION != key ) &&
+        ( kvpf::PLUGIN_FILE_NAME != key ) &&
+        ( kvpf::PLUGIN_VERSION != key ) &&
+        ( kvpf::PLUGIN_MODULE_NAME != key ) )
     {
-      std::string value(val);
+      std::string value( val );
 
       size_t pos = value.find( '\004' );
-      if ( std::string::npos != pos)
+      if( std::string::npos != pos )
       {
         value.replace( pos, 1, "\"  ::  \"" );
       }
@@ -113,22 +123,22 @@ void
 display_attributes( kwiver::vital::plugin_factory_handle_t const fact )
 {
   // See if this factory is selected
-  if ( G_context.opt_attr_filter )
+  if( G_context.opt_attr_filter )
   {
     std::string val;
-    if ( ! fact->get_attribute( G_context.opt_filter_attr, val ) )
+    if( !fact->get_attribute( G_context.opt_filter_attr, val ) )
     {
       // attribute has not been found.
       return;
     }
 
-    if ( ! filter_regex.find( val ) )
+    if( !filter_regex.find( val ) )
     {
       // The attr value does not match the regex.
       return;
     }
-
   } // end attr filter
+
 
   // Print the required fields first
   std::string buf;
@@ -136,36 +146,37 @@ display_attributes( kwiver::vital::plugin_factory_handle_t const fact )
   buf = "-- Not Set --";
   fact->get_attribute( kvpf::PLUGIN_NAME, buf );
 
+
   std::string version( "" );
   fact->get_attribute( kvpf::PLUGIN_VERSION, version );
 
   pe_out() << "  Plugin name: " << buf;
 
-  if ( G_context.opt_brief )
+  if( G_context.opt_brief )
   {
-    pe_out()  << std::endl;
+    pe_out() << std::endl;
     return;
   }
 
-  if ( ! version.empty() )
+  if( !version.empty() )
   {
     pe_out() << "      Version: " << version;
   }
 
-  pe_out()  << std::endl;
+  pe_out() << std::endl;
 
   buf = "-- Not Set --";
   fact->get_attribute( kvpf::PLUGIN_DESCRIPTION, buf );
   pe_out() << G_context.m_wtb.wrap_text( buf );
 
   // Stop here if attributes not enabled
-  if ( ! G_context.opt_attrs )
+  if( !G_context.opt_attrs )
   {
     return;
   }
 
   buf = "-- Not Set --";
-  if ( fact->get_attribute( kvpf::CONCRETE_TYPE, buf ) )
+  if( fact->get_attribute( kvpf::CONCRETE_TYPE, buf ) )
   {
     buf = kwiver::vital::demangle( buf );
   }
@@ -178,6 +189,7 @@ display_attributes( kwiver::vital::plugin_factory_handle_t const fact )
   buf = "-- Not Set --";
   fact->get_attribute( kvpf::PLUGIN_MODULE_NAME, buf );
   pe_out() << "      Plugin module name: " << buf << std::endl;
+
 
   // print all the rest of the attributes
   print_functor pf( pe_out() );
@@ -194,42 +206,43 @@ void
 display_factory( kwiver::vital::plugin_factory_handle_t const fact )
 {
   // See if this factory is selected
-  if ( G_context.opt_attr_filter )
+  if( G_context.opt_attr_filter )
   {
     std::string val;
-    if ( ! fact->get_attribute( G_context.opt_filter_attr, val ) )
+    if( !fact->get_attribute( G_context.opt_filter_attr, val ) )
     {
       // attribute has not been found.
       return;
     }
 
-    if ( ! filter_regex.find( val ) )
+    if( !filter_regex.find( val ) )
     {
       // The attr value does not match the regex.
       return;
     }
-
   } // end attr filter
 
   display_attributes( fact );
 }
 
 // ----------------------------------------------------------------------------
-void display_by_category( const kwiver::vital::plugin_map_t& plugin_map,
-                          const std::string& category )
+void
+display_by_category(
+  const kwiver::vital::plugin_map_t& plugin_map,
+  const std::string& category )
 {
   for( auto const& it : plugin_map )
   {
     std::string ds = kwiver::vital::demangle( it.first );
 
     kwiver::vital::plugin_factory_vector_t const& facts = it.second;
-    if (facts.size() == 0)
+    if( facts.size() == 0 )
     {
       continue;
     }
 
     // If regexp matching is enabled, and this does not match, skip it
-    if ( G_context.opt_fact_filt && ( ! fact_regex.find( ds ) ) )
+    if( G_context.opt_fact_filt && ( !fact_regex.find( ds ) ) )
     {
       continue;
     }
@@ -238,25 +251,27 @@ void display_by_category( const kwiver::vital::plugin_map_t& plugin_map,
     for( auto const& fact : facts )
     {
       std::string cat;
-      if ( ! fact->get_attribute( kvpf::PLUGIN_CATEGORY, cat )
-           || cat != category )
+      if( !fact->get_attribute( kvpf::PLUGIN_CATEGORY, cat ) ||
+          cat != category )
       {
         continue;
       }
 
       // If regexp matching is enabled, and this does not match, skip it
-      if ( G_context.opt_type_filt )
+      if( G_context.opt_type_filt )
       {
         std::string type_name = "-- Not Set --";
-        if ( ! fact->get_attribute( kvpf::PLUGIN_NAME, type_name )
-             || ( ! type_regex.find( type_name ) ) )
+        if( !fact->get_attribute( kvpf::PLUGIN_NAME, type_name ) ||
+            ( !type_regex.find( type_name ) ) )
         {
           continue;
         }
       }
 
-      kwiver::vital::category_explorer_sptr cat_handler = get_category_handler( cat );
-      if ( cat_handler )
+
+      kwiver::vital::category_explorer_sptr cat_handler =
+        get_category_handler( cat );
+      if( cat_handler )
       {
         cat_handler->explore( fact );
         continue;
@@ -264,7 +279,6 @@ void display_by_category( const kwiver::vital::plugin_map_t& plugin_map,
 
       // Default display for factory
       display_factory( fact );
-
     } // end foreach factory
   } // end interface type
 
@@ -278,18 +292,20 @@ get_category_handler( const std::string& cat )
   std::string handler_name = cat;
 
   // See if special formatting is requested
-  if ( ! G_context.formatting_type.empty() )
+  if( !G_context.formatting_type.empty() )
   {
     handler_name += "-" + G_context.formatting_type;
   }
 
-  if ( category_map.count( handler_name ) )
+  if( category_map.count( handler_name ) )
   {
-    return category_map[handler_name];
+    return category_map[ handler_name ];
   }
 
-  LOG_WARN( G_logger, "Formatting type \"" << G_context.formatting_type
-            << "\" for category \"" << cat << "\" not available." );
+  LOG_WARN(
+    G_logger, "Formatting type \"" << G_context.formatting_type
+                                   << "\" for category \"" << cat <<
+      "\" not available." );
   return nullptr;
 }
 
@@ -299,25 +315,35 @@ get_category_handler( const std::string& cat )
 /// Since these plugins are part of the tool, they are loaded separately.
 ///
 /// @param path Directory of where to look for these plugins.
-void load_explorer_plugins()
+void
+load_explorer_plugins()
 {
   // need a dedicated loader to just load the explorer_context files.
-  kwiver::vital::plugin_loader pl( "register_explorer_plugin", SHARED_LIB_SUFFIX );
+  kwiver::vital::plugin_loader pl( "register_explorer_plugin",
+    SHARED_LIB_SUFFIX );
 
   kwiver::vital::path_list_t pathl;
   const std::string& default_module_paths( DEFAULT_MODULE_PATHS );
-  LOG_DEBUG( G_logger, "Loading explorer plugins from: " << DEFAULT_MODULE_PATHS );
+  LOG_DEBUG(
+    G_logger,
+    "Loading explorer plugins from: " << DEFAULT_MODULE_PATHS );
 
   ST::Split( default_module_paths, pathl, PATH_SEPARATOR_CHAR );
 
-  // Check env variable for path specification
-  const char * env_ptr = ST::GetEnv( "KWIVER_PLUGIN_PATH" );
-  if ( 0 != env_ptr )
-  {
-    LOG_DEBUG( G_logger, "Adding path(s) \"" << env_ptr << "\" from environment" );
-    std::string const extra_module_dirs(env_ptr);
 
-    // Split supplied path into separate items using PATH_SEPARATOR_CHAR as delimiter
+  // Check env variable for path specification
+  const char* env_ptr = ST::GetEnv( "KWIVER_PLUGIN_PATH" );
+  if( 0 != env_ptr )
+  {
+    LOG_DEBUG(
+      G_logger,
+      "Adding path(s) \"" << env_ptr << "\" from environment" );
+
+
+    std::string const extra_module_dirs( env_ptr );
+
+    // Split supplied path into separate items using PATH_SEPARATOR_CHAR as
+    // delimiter
     ST::Split( extra_module_dirs, pathl, PATH_SEPARATOR_CHAR );
   }
 
@@ -331,41 +357,53 @@ void load_explorer_plugins()
   // Load explorer plugins
   pl.load_plugins( pathl );
 
-  auto fact_list = pl.get_factories( typeid( kwiver::vital::category_explorer ).name() );
+
+  auto fact_list =
+    pl.get_factories( typeid( kwiver::vital::category_explorer ).name() );
 
   // Scan all implementations loaded and build map from plugin
   // category to formatting plugin
   for( auto fact : fact_list )
   {
     std::string name;
-    if ( fact->get_attribute( kvpf::PLUGIN_NAME, name ) )
+    if( fact->get_attribute( kvpf::PLUGIN_NAME, name ) )
     {
-      auto cat_ex = kwiver::vital::category_explorer_sptr(fact->create_object<kwiver::vital::category_explorer>());
-      if ( cat_ex )
+      auto cat_ex =
+        kwiver::vital::category_explorer_sptr(
+          fact->create_object< kwiver::vital::category_explorer >() );
+      if( cat_ex )
       {
-        if ( cat_ex->initialize( G_explorer_context ) )
+        if( cat_ex->initialize( G_explorer_context ) )
         {
-          category_map[name] = cat_ex;
+          category_map[ name ] = cat_ex;
           LOG_DEBUG( G_logger, "Adding category handler for: " << name );
         }
         else
         {
-          LOG_DEBUG( G_logger, "Category handler for :" << name << " did not initialize." );
+          LOG_DEBUG(
+            G_logger,
+            "Category handler for :" << name << " did not initialize." );
         }
       }
       else
       {
-        LOG_WARN( G_logger, "Could not create explorer plugin \"" << name << "\"" );
+        LOG_WARN(
+          G_logger,
+          "Could not create explorer plugin \"" << name << "\"" );
       }
     }
   }
 }
 
 // ----------------------------------------------------------------------------
+
 //                   _
+
 //    _ __ ___   __ _(_)_ __
+
 //   | '_ ` _ \ / _` | | '_ \
 //   | | | | | | (_| | | | | |
+
 //   |_| |_| |_|\__,_|_|_| |_|
 //
 int
@@ -381,74 +419,84 @@ main( int argc, char* argv[] )
   // Set formatting string for description formatting
   G_context.m_wtb.set_indent_string( "      " );
 
-  G_context.m_cmd_options.reset( new cxxopts::Options( "plugin_explorer",
-                                                       "This program display information about plugins." ) );
+  G_context.m_cmd_options.reset(
+    new cxxopts::Options(
+      "plugin_explorer",
+      "This program display information about plugins." ) );
 
   G_context.m_cmd_options->add_options()
-    ( "h,help", "Display applet usage" )
-    ( "v,version", "Display version information" )
-    ;
+  ( "h,help", "Display applet usage" )
+  ( "v,version", "Display version information" )
+  ;
 
   G_context.m_cmd_options->add_options("Selector")
-    ( "p,proc", "Display only sprokit process type plugins. "
-      "If type is specified as \"all\", then all processes are listed. Otherwise, the type "
-      "will be treated as a regexp and only processes names that match the regexp will be displayed.",
-      cxxopts::value<std::string>() )
+  ( "p,proc", "Display only sprokit process type plugins. "
+              "If type is specified as \"all\", then all processes are listed. Otherwise, the type "
+              "will be treated as a regexp and only processes names that match the regexp will be displayed.",
+    cxxopts::value< std::string > () )
 
-    ( "i,interface", "Only display plugins whose interface type matches specified regexp",
-      cxxopts::value<std::string>() )
+  ( "i,interface",
+    "Only display plugins whose interface type matches specified regexp",
+    cxxopts::value< std::string > () )
 
-    ( "t,type", "Only display factories whose instance name matches the specified regexp. "
-              "The plugins are selected from all available interfaces.",
-      cxxopts::value<std::string>() )
+  ( "t,type",
+    "Only display factories whose instance name matches the specified regexp. "
+    "The plugins are selected from all available interfaces.",
+    cxxopts::value< std::string > () )
 
-    ( "a,algo", "Display only algorithm type plugins. "
-      "If type is specified as \"all\", then all algorithms are listed. Otherwise, the type "
-      "will be treated as a regexp and only algorithm types that match the regexp will be displayed.",
-      cxxopts::value<std::string>() )
+  ( "a,algo", "Display only algorithm type plugins. "
+              "If type is specified as \"all\", then all algorithms are listed. Otherwise, the type "
+              "will be treated as a regexp and only algorithm types that match the regexp will be displayed.",
+    cxxopts::value< std::string > () )
 
-    ( "cluster", "Display only cluster type plugins. "
-      "If type is specified as \"all\", then all clusters are listed. Otherwise, the type "
-      "will be treated as a regexp and only cluster types that match the regexp will be displayed.",
-      cxxopts::value<std::string>() )
+  ( "cluster", "Display only cluster type plugins. "
+               "If type is specified as \"all\", then all clusters are listed. Otherwise, the type "
+               "will be treated as a regexp and only cluster types that match the regexp will be displayed.",
+    cxxopts::value< std::string > () )
 
-    ( "scheduler", "Display scheduler type plugins" )
+  ( "scheduler", "Display scheduler type plugins" )
 
-    ( "filter", "Filter based on <attr-name> <attr-value>",
-      cxxopts::value<std::vector<std::string>>())
+  ( "filter", "Filter based on <attr-name> <attr-value>",
+    cxxopts::value< std::vector< std::string > > () )
 
-    ( "all", "Display all plugin types" )
-    ;
+  ( "all", "Display all plugin types" )
+  ;
 
   G_context.m_cmd_options->add_options("Display modifiers")
-    ( "d,detail", "Display detailed information about the plugins" )
-    ( "b,brief", "Generate a brief display" )
-    ( "attrs", "Display raw attributes for plugins without calling any category specific formatting" )
-    ( "fmt", "Generate display using alternative format, such as 'rst' or 'pipe'",
-      cxxopts::value<std::string>() )
-    ;
+  ( "d,detail", "Display detailed information about the plugins" )
+  ( "b,brief", "Generate a brief display" )
+  ( "attrs",
+    "Display raw attributes for plugins without calling any category specific formatting"
+  )
+  ( "fmt", "Generate display using alternative format, such as 'rst' or 'pipe'",
+    cxxopts::value< std::string > () )
+  ;
 
   G_context.m_cmd_options->add_options("File related")
-    ( "skip-relative", "Skip built-in plugin paths that are relative to the executable location")
-    ( "I", "Add directory to search path", cxxopts::value<std::vector<std::string>>() )
-    ( "C", "Add directory to cluster search path", cxxopts::value<std::vector<std::string>>() )
-    ( "load", "Load only specified plugin file for inspection. No other plugins are loaded.",
-      cxxopts::value<std::string>() )
-    ;
+  ( "skip-relative",
+    "Skip built-in plugin paths that are relative to the executable location")
+  ( "I", "Add directory to search path",
+    cxxopts::value< std::vector< std::string > > () )
+  ( "C", "Add directory to cluster search path",
+    cxxopts::value< std::vector< std::string > > () )
+  ( "load",
+    "Load only specified plugin file for inspection. No other plugins are loaded.",
+    cxxopts::value< std::string > () )
+  ;
 
   G_context.m_cmd_options->add_options("Meta")
-    ( "path", "Display plugin search path" )
-    ( "files", "Display list of loaded files" )
-    ( "mod", "Display list of modules loaded" )
-    ( "summary", "Display a summary of all loadable modules" )
-    ;
+  ( "path", "Display plugin search path" )
+  ( "files", "Display list of loaded files" )
+  ( "mod", "Display list of modules loaded" )
+  ( "summary", "Display a summary of all loadable modules" )
+  ;
 
   // Need to load plugins before we display help since they can add
   // command line options.
   load_explorer_plugins();
 
   // See if there are no args specified. If so, then default to full listing
-  if ( argc == 1 )
+  if( argc == 1 )
   {
     G_context.opt_all = true;
   }
@@ -458,32 +506,35 @@ main( int argc, char* argv[] )
   // No default CTOR, copy CTOR or copy operation.
   try
   {
-    static cxxopts::ParseResult local_result = G_context.m_cmd_options->parse( argc, argv );
+    static cxxopts::ParseResult local_result =
+      G_context.m_cmd_options->parse( argc, argv );
     G_context.m_result = &local_result; // this is the best we can do
   }
-  catch ( std::exception & e )
+  catch( std::exception& e )
   {
-    std::cerr << "Exception while processing command line parameters.\n" << e.what() << std::endl;
-    exit(1);
+    std::cerr << "Exception while processing command line parameters.\n" <<
+      e.what() << std::endl;
+    exit( 1 );
   }
+
 
   auto& cmd_args = *G_context.m_result;  // for shorthand access
 
-  G_context.opt_detail = cmd_args["detail"].as<bool>();
-  G_context.opt_help = cmd_args["help"].as<bool>();
-  G_context.opt_path_list = cmd_args["path"].as<bool>();
-  G_context.opt_brief = cmd_args["brief"].as<bool>();
-  G_context.opt_modules = cmd_args["mod"].as<bool>();
-  G_context.opt_files = cmd_args["files"].as<bool>();
-  G_context.opt_all = cmd_args["all"].as<bool>();
-  G_context.opt_scheduler = cmd_args["scheduler"].as<bool>();
-  G_context.opt_summary = cmd_args["summary"].as<bool>();
-  G_context.opt_attrs = cmd_args["attrs"].as<bool>();
-  G_context.opt_skip_relative = cmd_args["skip-relative"].as<bool>();
+  G_context.opt_detail = cmd_args[ "detail" ].as< bool >();
+  G_context.opt_help = cmd_args[ "help" ].as< bool >();
+  G_context.opt_path_list = cmd_args[ "path" ].as< bool >();
+  G_context.opt_brief = cmd_args[ "brief" ].as< bool >();
+  G_context.opt_modules = cmd_args[ "mod" ].as< bool >();
+  G_context.opt_files = cmd_args[ "files" ].as< bool >();
+  G_context.opt_all = cmd_args[ "all" ].as< bool >();
+  G_context.opt_scheduler = cmd_args[ "scheduler" ].as< bool >();
+  G_context.opt_summary = cmd_args[ "summary" ].as< bool >();
+  G_context.opt_attrs = cmd_args[ "attrs" ].as< bool >();
+  G_context.opt_skip_relative = cmd_args[ "skip-relative" ].as< bool >();
 
-  if ( G_context.opt_help )
+  if( G_context.opt_help )
   {
-    pe_out() << "Usage for " << argv[0] << std::endl
+    pe_out() << "Usage for " << argv[ 0 ] << std::endl
              << "   Version: " << version_string << std::endl
              << G_context.m_cmd_options->help() << std::endl;
 
@@ -491,35 +542,40 @@ main( int argc, char* argv[] )
   }
 
   // Handle extra include path directories
-  if ( cmd_args.count( "I" ) )
+  if( cmd_args.count( "I" ) )
   {
-    G_context.opt_path = cmd_args["I"].as<std::vector< std::string > >();
+    G_context.opt_path = cmd_args[ "I" ].as< std::vector< std::string > >();
   }
 
   // Handle extra cluster path directories
-  if ( cmd_args.count( "C" ) )
+  if( cmd_args.count( "C" ) )
   {
-    G_context.opt_cluster_path = cmd_args["C"].as<std::vector< std::string > >();
+    G_context.opt_cluster_path = cmd_args[ "C" ].as< std::vector< std::string > >();
 
-    std::string paths = ::kwiver::vital::join( G_context.opt_cluster_path, ":" );
 
-    const char * env_ptr = ST::GetEnv( "SPROKIT_CLUSTER_PATH" );
-    if ( 0 != env_ptr )
+    std::string paths = ::kwiver::vital::join(
+      G_context.opt_cluster_path,
+      ":" );
+
+    const char* env_ptr = ST::GetEnv( "SPROKIT_CLUSTER_PATH" );
+    if( 0 != env_ptr )
     {
       paths += ":" + std::string( env_ptr );
     }
 
     LOG_DEBUG( G_logger, "Updated cluster include path \"" << paths );
+
+
     std::string new_env = "SPROKIT_CLUSTER_PATH=" + paths;
     ST::PutEnv( new_env );
   }
 
-  if ( cmd_args.count( "fmt" ) )
+  if( cmd_args.count( "fmt" ) )
   {
-    G_context.formatting_type = cmd_args["fmt"].as<std::string>();
+    G_context.formatting_type = cmd_args[ "fmt" ].as< std::string >();
   }
 
-  if (opt_version)
+  if( opt_version )
   {
     pe_out() << "Version: " << version_string << std::endl;
     // Could also use build date, ...
@@ -527,17 +583,19 @@ main( int argc, char* argv[] )
   }
 
   // Handle process type parameter
-  if ( cmd_args.count("proc") )
+  if( cmd_args.count( "proc" ) )
   {
     G_context.opt_process = true;
-    std::string const regex_arg{ cmd_args["proc"].as<std::string>() };
+
+
+    std::string const regex_arg{ cmd_args[ "proc" ].as< std::string >() };
 
     // Handle process type string
-    if ( regex_arg != "all" )
+    if( regex_arg != "all" )
     {
       // if not all, then use as type selector regexp
       G_context.opt_type_filt = true; // do type filtering
-      if ( ! type_regex.compile( regex_arg) )
+      if( !type_regex.compile( regex_arg ) )
       {
         std::cerr << "Invalid regular expression for type filter \""
                   << regex_arg << "\"" << std::endl;
@@ -546,18 +604,20 @@ main( int argc, char* argv[] )
     }
   }
 
-  if ( cmd_args.count("algo") )
+  if( cmd_args.count( "algo" ) )
   {
     G_context.opt_algo = true;
-    std::string const regex_arg{ cmd_args["algo"].as<std::string>() };
+
+
+    std::string const regex_arg{ cmd_args[ "algo" ].as< std::string >() };
 
     // Handle algorithm type string
-    if ( regex_arg != "all" )
+    if( regex_arg != "all" )
     {
       // if not all, then use as type selector regexp
       // Note algo's use factory filtering
       G_context.opt_fact_filt = true; // do factory filtering
-      if ( ! fact_regex.compile( regex_arg) )
+      if( !fact_regex.compile( regex_arg ) )
       {
         std::cerr << "Invalid regular expression for type filter \""
                   << regex_arg << "\"" << std::endl;
@@ -566,17 +626,19 @@ main( int argc, char* argv[] )
     }
   }
 
-  if ( cmd_args.count("cluster") )
+  if( cmd_args.count( "cluster" ) )
   {
     G_context.opt_cluster = true;
-    std::string const regex_arg{ cmd_args["cluster"].as<std::string>() };
+
+
+    std::string const regex_arg{ cmd_args[ "cluster" ].as< std::string >() };
 
     // Handle algorithm type string
-    if ( regex_arg != "all" )
+    if( regex_arg != "all" )
     {
       // if not all, then use as type selector regexp
       G_context.opt_type_filt = true; // do factory filtering
-      if ( ! type_regex.compile( regex_arg) )
+      if( !type_regex.compile( regex_arg ) )
       {
         std::cerr << "Invalid regular expression for type filter \""
                   << regex_arg << "\"" << std::endl;
@@ -586,12 +648,14 @@ main( int argc, char* argv[] )
   }
 
   // If a factory filtering regex specified, then compile it.
-  if ( cmd_args.count("interface") )
+  if( cmd_args.count( "interface" ) )
   {
     G_context.opt_fact_filt = true;
-    std::string const regex_arg{ cmd_args["interface"].as<std::string>() };
 
-    if ( ! fact_regex.compile( regex_arg) )
+
+    std::string const regex_arg{ cmd_args[ "interface" ].as< std::string >() };
+
+    if( !fact_regex.compile( regex_arg ) )
     {
       std::cerr << "Invalid regular expression for factory filter \""
                 << regex_arg << "\"" << std::endl;
@@ -600,12 +664,14 @@ main( int argc, char* argv[] )
   }
 
   // If a instance type filtering regex specified, then compile it.
-  if ( cmd_args.count("type") )
+  if( cmd_args.count( "type" ) )
   {
     G_context.opt_type_filt = true;
-    std::string const regex_arg{ cmd_args["type"].as<std::string>() };
 
-    if ( ! type_regex.compile( regex_arg ) )
+
+    std::string const regex_arg{ cmd_args[ "type" ].as< std::string >() };
+
+    if( !type_regex.compile( regex_arg ) )
     {
       std::cerr << "Invalid regular expression for type filter \""
                 << regex_arg << "\"" << std::endl;
@@ -613,18 +679,18 @@ main( int argc, char* argv[] )
     }
   }
 
-  if ( cmd_args.count("filter") )
+  if( cmd_args.count( "filter" ) )
   {
     // check for attribute based filtering
-    if ( cmd_args.count("filter") == 2 )
+    if( cmd_args.count( "filter" ) == 2 )
     {
-      std::vector< std::string > const filter_args{ cmd_args["filter"].as<std::vector<std::string>>() };
+      std::vector< std::string > const filter_args{ cmd_args[ "filter" ].as< std::vector< std::string > >() };
 
       G_context.opt_attr_filter = true;
-      G_context.opt_filter_attr = filter_args[0];
-      G_context.opt_filter_regex = filter_args[1];
+      G_context.opt_filter_attr = filter_args[ 0 ];
+      G_context.opt_filter_regex = filter_args[ 1 ];
 
-      if ( ! filter_regex.compile( G_context.opt_filter_regex ) )
+      if( !filter_regex.compile( G_context.opt_filter_regex ) )
       {
         std::cerr << "Invalid regular expression for attribute filter \""
                   << G_context.opt_filter_regex << "\"" << std::endl;
@@ -633,37 +699,45 @@ main( int argc, char* argv[] )
     }
     else
     {
-      std::cerr << "Invalid attribute filtering specification. Two parameters are required." << std::endl;
+      std::cerr <<
+        "Invalid attribute filtering specification. Two parameters are required."
+                << std::endl;
       return 1;
     }
   }
 
   // --------------------------------------------------------------------------
   // Test for incompatible option sets.
-  if ( G_context.opt_fact_filt && G_context.opt_attr_filter )
+  if( G_context.opt_fact_filt && G_context.opt_attr_filter )
   {
     std::cerr << "Only one of --fact and --filter allowed." << std::endl;
     return 1;
   }
 
   // test for one of --algorithm or --process allowed
-  if ( ( G_context.opt_algo + G_context.opt_process + G_context.opt_cluster ) > 1 )
+  if( ( G_context.opt_algo + G_context.opt_process + G_context.opt_cluster ) >
+      1 )
   {
-    std::cerr << "Only one of --process, --cluster or --algorithm allowed" << std::endl;
+    std::cerr << "Only one of --process, --cluster or --algorithm allowed" <<
+      std::endl;
     return 1;
   }
 
-  // --------------------------------------------------------------------------
-  kwiver::vital::plugin_manager_internal& vpm = kwiver::vital::plugin_manager_internal::instance();
 
-  if ( ! G_context.opt_skip_relative)
+  // --------------------------------------------------------------------------
+  kwiver::vital::plugin_manager_internal& vpm =
+    kwiver::vital::plugin_manager_internal::instance();
+
+  if( !G_context.opt_skip_relative )
   {
     // Add path relative to the current executable/binary directory
-    vpm.add_search_path(kwiver::vital::get_executable_path() + "/../lib/kwiver/plugins");
+    vpm.add_search_path(
+      kwiver::vital::get_executable_path() +
+      "/../lib/kwiver/plugins" );
   }
 
   // Look for plugin file name from command line
-  if ( ! G_context.opt_load_module.empty() )
+  if( !G_context.opt_load_module.empty() )
   {
     // Load file on command line
     auto loader = vpm.get_loader();
@@ -681,9 +755,10 @@ main( int argc, char* argv[] )
   }
 
   // Display search paths
-  if ( G_context.opt_path_list )
+  if( G_context.opt_path_list )
   {
     pe_out() << "---- Plugin search path\n";
+
 
     std::vector< kwiver::vital::path_t > const search_path( vpm.search_path() );
     for( auto const& module_dir : search_path )
@@ -694,63 +769,65 @@ main( int argc, char* argv[] )
 
     pe_out() << "---- Cluster search path\n";
 
+
     kwiver::vital::path_list_t cluster_path;
     ST::GetPath( cluster_path, "SPROKIT_CLUSTER_PATH" );
-    ST::Split( cluster_default_include_dirs, cluster_path, PATH_SEPARATOR_CHAR );
+    ST::Split(
+      cluster_default_include_dirs, cluster_path,
+      PATH_SEPARATOR_CHAR );
 
-    for ( auto const& p : cluster_path )
+    for( auto const& p : cluster_path )
     {
       pe_out() << "    " << p << std::endl;
     }
   }
 
   // Display list of modules loaded.
-  if ( G_context.opt_modules )
+  if( G_context.opt_modules )
   {
     pe_out() << "---- Registered module names:\n";
+
+
     auto module_list = vpm.module_map();
     for( auto const& name : module_list )
     {
-      pe_out() << "   " << name.first << "  loaded from: " << name.second << std::endl;
+      pe_out() << "   " << name.first << "  loaded from: " << name.second <<
+        std::endl;
     }
     pe_out() << std::endl;
   }
 
   // --------------------------------------------------------------------------
   // See if specific category is selected
-  if ( G_context.opt_algo )
+  if( G_context.opt_algo )
   {
     auto plugin_map = vpm.plugin_map();
     display_by_category( plugin_map, "algorithm" );
   }
-
-  else if ( G_context.opt_process )
+  else if( G_context.opt_process )
   {
     auto plugin_map = vpm.plugin_map();
     display_by_category( plugin_map, "process" );
   }
-
-  else if ( G_context.opt_cluster )
+  else if( G_context.opt_cluster )
   {
     auto plugin_map = vpm.plugin_map();
     display_by_category( plugin_map, "cluster" );
   }
-
-  else if ( G_context.opt_scheduler )
+  else if( G_context.opt_scheduler )
   {
     auto plugin_map = vpm.plugin_map();
     display_by_category( plugin_map, "scheduler" );
   }
-
   // --------------------------------------------------------------------------
   // Generate list of factories of any of these options are selected
-  else if ( G_context.opt_all
-            || G_context.opt_fact_filt
-            || G_context.opt_type_filt
-            || G_context.opt_detail
-            || G_context.opt_brief
-            || G_context.opt_attrs
-            || G_context.opt_attr_filter )
+  else if( G_context.opt_all ||
+           G_context.opt_fact_filt ||
+           G_context.opt_type_filt ||
+           G_context.opt_detail ||
+           G_context.opt_brief ||
+           G_context.opt_attrs ||
+           G_context.opt_attr_filter )
   {
     auto plugin_map = vpm.plugin_map();
 
@@ -762,47 +839,51 @@ main( int argc, char* argv[] )
       bool first_fact( true );
 
       // If regexp matching is enabled, and this does not match, skip it
-      if ( G_context.opt_fact_filt && ( ! fact_regex.find( ds ) ) )
+      if( G_context.opt_fact_filt && ( !fact_regex.find( ds ) ) )
       {
         continue;
       }
+
 
       // Get vector of factories
       kwiver::vital::plugin_factory_vector_t const& facts = it.second;
       for( auto const& fact : facts )
       {
         // If regexp matching is enabled, and this does not match, skip it
-        if ( G_context.opt_type_filt )
+        if( G_context.opt_type_filt )
         {
           std::string type_name = "-- Not Set --";
-          if ( ! fact->get_attribute( kvpf::PLUGIN_NAME, type_name )
-               || ( ! type_regex.find( type_name ) ) )
+          if( !fact->get_attribute( kvpf::PLUGIN_NAME, type_name ) ||
+              ( !type_regex.find( type_name ) ) )
           {
             continue;
           }
         }
 
+
         // See if there is a category handler for this plugin
         std::string category;
-        if ( ! G_context.opt_attrs && fact->get_attribute( kvpf::PLUGIN_CATEGORY, category ) )
+        if( !G_context.opt_attrs && fact->get_attribute(
+          kvpf::PLUGIN_CATEGORY,
+          category ) )
         {
-          if ( category_map.count( category ) )
+          if( category_map.count( category ) )
           {
-            auto cat_handler = category_map[category];
+            auto cat_handler = category_map[ category ];
             cat_handler->explore( fact );
             continue;
           }
         }
 
-        if ( first_fact )
+        if( first_fact )
         {
-          pe_out() << "\nPlugins that create type \"" << ds << "\"" << std::endl;
+          pe_out() << "\nPlugins that create type \"" << ds << "\"" <<
+            std::endl;
           first_fact = false;
         }
 
         // Default display for factory
         display_factory( fact );
-
       } // end foreach factory
     } // end interface type
 
@@ -812,13 +893,16 @@ main( int argc, char* argv[] )
   //
   // display summary
   //
-  if (G_context.opt_summary )
+  if( G_context.opt_summary )
   {
     pe_out() << "\n----Summary of plugin types" << std::endl;
-    size_t count(0);
+
+
+    size_t count( 0 );
 
     auto plugin_map = vpm.plugin_map();
-    pe_out() << "    " << plugin_map.size() << " types of plugins registered." << std::endl;
+    pe_out() << "    " << plugin_map.size() <<
+      " types of plugins registered." << std::endl;
 
     for( auto it : plugin_map )
     {
@@ -829,7 +913,7 @@ main( int argc, char* argv[] )
       count += facts.size();
 
       pe_out() << "        " << facts.size() << " plugin(s) that implement \""
-               << ds << "\"" <<std::endl;
+               << ds << "\"" << std::endl;
     } // end interface type
 
     pe_out() << "    " << count << " total plugins" << std::endl;
@@ -838,7 +922,7 @@ main( int argc, char* argv[] )
   //
   // list files loaded if specified
   //
-  if ( G_context.opt_files )
+  if( G_context.opt_files )
   {
     const auto file_list = vpm.file_list();
 

@@ -3,7 +3,8 @@
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
 /// \file
-/// \brief Header file for \link kwiver::vital::feature_track_set feature_track_set
+/// \brief Header file for \link kwiver::vital::feature_track_set
+/// feature_track_set
 ///        \endlink
 
 #ifndef VITAL_FEATURE_TRACK_SET_H_
@@ -13,8 +14,8 @@
 #include "feature_set.h"
 #include "track_set.h"
 
-#include <vital/vital_export.h>
 #include <vital/vital_config.h>
+#include <vital/vital_export.h>
 #include <vital/vital_types.h>
 
 #include <vital/range/transform.h>
@@ -24,6 +25,7 @@
 #include <vector>
 
 namespace kwiver {
+
 namespace vital {
 
 class feature_track_set_frame_data;
@@ -37,24 +39,26 @@ class VITAL_EXPORT feature_track_state : public track_state
 public:
   //@{
   /// Constructor
-  explicit feature_track_state( frame_id_t p_frame,
-                                feature_sptr const& p_feature = nullptr,
-                                descriptor_sptr const& p_descriptor = nullptr,
-                                bool p_inlier = false )
-    : track_state{ p_frame }
-    , feature{ p_feature }
-    , descriptor{ p_descriptor }
-    , inlier{ p_inlier }
+  explicit feature_track_state(
+    frame_id_t p_frame,
+    feature_sptr const& p_feature = nullptr,
+    descriptor_sptr const& p_descriptor = nullptr,
+    bool p_inlier = false )
+    : track_state{ p_frame },
+      feature{ p_feature },
+      descriptor{ p_descriptor },
+      inlier{ p_inlier }
   {}
 
-  explicit feature_track_state( frame_id_t p_frame,
-                                feature_sptr&& p_feature,
-                                descriptor_sptr&& p_descriptor,
-                                bool p_inlier = false )
-    : track_state{ p_frame }
-    , feature{ std::move( p_feature ) }
-    , descriptor{ std::move( p_descriptor ) }
-    , inlier{ p_inlier }
+  explicit feature_track_state(
+    frame_id_t p_frame,
+    feature_sptr&& p_feature,
+    descriptor_sptr&& p_descriptor,
+    bool p_inlier = false )
+    : track_state{ p_frame },
+      feature{ std::move( p_feature ) },
+      descriptor{ std::move( p_descriptor ) },
+      inlier{ p_inlier }
   {}
   //@}
 
@@ -65,9 +69,10 @@ public:
   feature_track_state( feature_track_state&& ) = default;
 
   /// Clone the track state (polymorphic copy constructor)
-  track_state_sptr clone( clone_type ct = clone_type::DEEP ) const override
+  track_state_sptr
+  clone( clone_type ct = clone_type::DEEP ) const override
   {
-    if ( ct == clone_type::DEEP )
+    if( ct == clone_type::DEEP )
     {
       auto new_feature =
         ( this->feature ? this->feature->clone() : nullptr );
@@ -83,7 +88,8 @@ public:
     }
   }
 
-  static std::shared_ptr< feature_track_state > downcast(
+  static std::shared_ptr< feature_track_state >
+  downcast(
     track_state_sptr const& sp )
   {
     return std::dynamic_pointer_cast< feature_track_state >( sp );
@@ -102,26 +108,28 @@ using feature_track_state_sptr = std::shared_ptr< feature_track_state >;
 // ----------------------------------------------------------------------------
 /// A derived track_state_frame_data for feature tracks
 class VITAL_EXPORT feature_track_set_frame_data
- : public track_set_frame_data
+  : public track_set_frame_data
 {
 public:
   // Dynamic copy constructor
-  track_set_frame_data_sptr clone() const override
+  track_set_frame_data_sptr
+  clone() const override
   {
-    return std::make_shared<feature_track_set_frame_data>(*this);
+    return std::make_shared< feature_track_set_frame_data >( *this );
   }
 
   bool is_keyframe;
 };
 
-class feature_info {
+class feature_info
+{
 public:
   feature_set_sptr features;
   descriptor_set_sptr descriptors;
-  std::vector<track_sptr> corresponding_tracks;
+  std::vector< track_sptr > corresponding_tracks;
 };
 
-typedef std::shared_ptr< feature_info> feature_info_sptr;
+typedef std::shared_ptr< feature_info > feature_info_sptr;
 
 /// A collection of 2D feature point tracks
 class VITAL_EXPORT feature_track_set : public track_set
@@ -133,12 +141,12 @@ public:
   feature_track_set();
 
   /// Constructor specifying the implementation
-  feature_track_set(std::unique_ptr<track_set_implementation> impl);
+  feature_track_set( std::unique_ptr< track_set_implementation > impl );
 
   /// Constructor from a vector of tracks
   ///
   /// \note implementation defaults to simple_track_set_implementation
-  feature_track_set(std::vector< track_sptr > const& tracks);
+  feature_track_set( std::vector< track_sptr > const& tracks );
 
   /// Destructor
   virtual ~feature_track_set() = default;
@@ -174,7 +182,8 @@ public:
   /// \returns a descriptor_set_sptr for all features on the give frame.
   virtual descriptor_set_sptr frame_descriptors( frame_id_t offset = -1 ) const;
 
-  /// Return a vector of feature track states corresponding to the tracks on the given frame.
+  /// Return a vector of feature track states corresponding to the tracks on the
+  /// given frame.
   ///
   /// \param [in] offset the frame offset for selecting the target frame.
   ///                   Positive number are absolute frame numbers while
@@ -183,8 +192,8 @@ public:
   ///                   the default.
   ///
   /// \returns a vector for all feature tracks states on the given frame.
-  virtual std::vector<feature_track_state_sptr>
-    frame_feature_track_states(frame_id_t offset = -1) const;
+  virtual std::vector< feature_track_state_sptr >
+  frame_feature_track_states( frame_id_t offset = -1 ) const;
 
   /// Return a map of all feature_track_set_frame_data
   ///
@@ -192,20 +201,23 @@ public:
   /// the type of the frame data and dynamically casts it to the specialized
   /// frame data for feature_track_set.  Any frame data of a different type
   /// is not included in this ouput.
-  virtual std::map<frame_id_t, feature_track_set_frame_data_sptr>
-    all_feature_frame_data() const;
+  virtual std::map< frame_id_t, feature_track_set_frame_data_sptr >
+  all_feature_frame_data() const;
 
   /// Return the set of all keyframes in the track set
   ///
   /// Keyframes are designated as frames which have an associated
   /// feature_track_set_frame_data marked with is_keyframe == true
-  virtual std::set<frame_id_t> keyframes() const;
+  virtual std::set< frame_id_t > keyframes() const;
 
-  virtual feature_info_sptr frame_feature_info(frame_id_t offset = -1,
-    bool only_features_with_descriptors = true) const;
+  virtual feature_info_sptr frame_feature_info(
+    frame_id_t offset = -1,
+    bool only_features_with_descriptors = true ) const;
 
-  /// Return the additional data associated with all feature tracks on the given frame
-  feature_track_set_frame_data_sptr feature_frame_data(frame_id_t offset = -1) const;
+  /// Return the additional data associated with all feature tracks on the given
+  /// frame
+  feature_track_set_frame_data_sptr feature_frame_data(
+    frame_id_t offset = -1 ) const;
 };
 
 /// Shared pointer for feature_track_set type
@@ -232,41 +244,50 @@ static constexpr auto as_feature_track =
   feature_track_state::downcast_transform;
 
 class feature_track_set_changes;
-typedef std::shared_ptr<feature_track_set_changes> feature_track_set_changes_sptr;
+typedef std::shared_ptr< feature_track_set_changes >
+  feature_track_set_changes_sptr;
 
 class VITAL_EXPORT feature_track_set_changes
 {
 public:
-  struct state_data {
-    state_data(frame_id_t fid, track_id_t tid, bool inlier) :
-      frame_id_(fid), track_id_(tid), inlier_(inlier) { }
+  struct state_data
+  {
+    state_data( frame_id_t fid, track_id_t tid, bool inlier )
+      : frame_id_( fid ),
+        track_id_( tid ),
+        inlier_( inlier ) {}
 
     frame_id_t frame_id_;
     track_id_t track_id_;
     bool inlier_;
   };
 
-  feature_track_set_changes() {};
+  feature_track_set_changes() {}
 
-  feature_track_set_changes(std::vector<state_data> const& changes) {
+  feature_track_set_changes( std::vector< state_data > const& changes )
+  {
     m_changes = changes;
-  };
+  }
 
   void clear() { m_changes.clear(); }
 
-  void add_change(frame_id_t fid, track_id_t tid, bool inlier)
+  void
+  add_change( frame_id_t fid, track_id_t tid, bool inlier )
   {
-    m_changes.push_back(state_data(fid, tid, inlier));
+    m_changes.push_back( state_data( fid, tid, inlier ) );
   }
 
-  feature_track_set_changes_sptr clone()
+  feature_track_set_changes_sptr
+  clone()
   {
-    return std::make_shared<feature_track_set_changes>(this->m_changes);
+    return std::make_shared< feature_track_set_changes >( this->m_changes );
   }
 
-  std::vector<state_data> m_changes;
+  std::vector< state_data > m_changes;
 };
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital
 
 #endif // VITAL_FEATURE_TRACK_SET_H_

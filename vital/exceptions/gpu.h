@@ -13,6 +13,7 @@
 #include <vital/exceptions/base.h>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -42,6 +43,8 @@ public:
   virtual ~gpu_memory_exception() noexcept;
 };
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // VITAL_CORE_EXCEPTIONS_GPU_H

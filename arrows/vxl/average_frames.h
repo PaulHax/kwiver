@@ -23,8 +23,9 @@ class KWIVER_ALGO_VXL_EXPORT average_frames
   : public vital::algo::image_filter
 {
 public:
-  PLUGIN_INFO( "vxl_average",
-               "Use VXL to average frames together." )
+  PLUGIN_INFO(
+    "vxl_average",
+    "Use VXL to average frames together." )
 
   average_frames();
   virtual ~average_frames();

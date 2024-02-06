@@ -12,15 +12,16 @@
 #include "covariance.h"
 #include "vector.h"
 
-#include <vital/vital_export.h>
-#include <vital/vital_config.h>
 #include <vital/io/eigen_io.h>
+#include <vital/vital_config.h>
+#include <vital/vital_export.h>
 
 #include <iostream>
-#include <typeinfo>
 #include <memory>
+#include <typeinfo>
 
 namespace kwiver {
+
 namespace vital {
 
 /// A representation of a 2D image feature point.
@@ -58,7 +59,8 @@ public:
   virtual feature_sptr clone() const = 0;
 
   /// Equality operator
-  bool operator==( feature const& other ) const
+  bool
+  operator==( feature const& other ) const
   {
     return this->data_type() == other.data_type() &&
            this->loc() == other.loc() &&
@@ -69,7 +71,8 @@ public:
            this->covar() == other.covar();
   }
 
-  bool equal_except_for_angle(feature const& other) const
+  bool
+  equal_except_for_angle( feature const& other ) const
   {
     return this->data_type() == other.data_type() &&
            this->loc() == other.loc() &&
@@ -80,9 +83,10 @@ public:
   }
 
   /// Inequality operator
-  bool operator!=( feature const& other ) const
+  bool
+  operator!=( feature const& other ) const
   {
-    return ! operator==(other);
+    return !operator==( other );
   }
 };
 
@@ -97,62 +101,76 @@ VITAL_EXPORT std::ostream& operator<<( std::ostream& s, feature const& f );
 ///
 /// Templated over real number type (double or float).
 template < typename T >
-class VITAL_EXPORT feature_ :
-  public feature
+class VITAL_EXPORT feature_
+  : public feature
 {
 public:
   /// Default Constructor
-  feature_< T > ( );
+  feature_< T >();
 
   /// Constructor for a feature
-  feature_< T > ( Eigen::Matrix< T, 2, 1 > const& loc, T mag = 0.0,
-                  T scale = 1.0, T angle = 0.0,
-                  rgb_color const& color = rgb_color());
+  feature_< T >(
+    Eigen::Matrix< T, 2, 1 > const& loc, T mag = 0.0,
+    T scale = 1.0, T angle = 0.0,
+    rgb_color const& color = rgb_color() );
 
   /// Constructor for a feature_ from a base class feature
-  explicit feature_< T > ( feature const& f );
+  explicit feature_< T >( feature const& f );
 
   /// Access statically available type of underlying data (double or float)
   static std::type_info const& static_data_type() { return typeid( T ); }
 
   /// Access the type info of the underlying data (double or float)
-  std::type_info const& data_type() const override { return typeid( T ); }
+  std::type_info const&
+  data_type() const override { return typeid( T ); }
 
   /// Accessor for the image coordinates using underlying data type
-  Eigen::Matrix< T, 2, 1 > const& get_loc() const { return loc_; }
+  Eigen::Matrix< T, 2, 1 > const&
+  get_loc() const { return loc_; }
 
   /// Accessor for the image coordinates
-  vector_2d loc() const override { return loc_.template cast< double > (); }
+  vector_2d
+  loc() const override { return loc_.template cast< double >(); }
 
   /// Accessor for the feature magnitude using underlying data type
-  T get_magnitude() const { return magnitude_; }
+  T
+  get_magnitude() const { return magnitude_; }
 
   /// Accessor for the feature magnitude
-  double magnitude() const override { return static_cast< double > ( magnitude_ ); }
+  double
+  magnitude() const override { return static_cast< double >( magnitude_ ); }
 
   /// Accessor for the feature scale using underlying data type
-  T get_scale() const { return scale_; }
+  T
+  get_scale() const { return scale_; }
 
   /// Accessor for the feature scale
-  double scale() const override { return static_cast< double > ( scale_ ); }
+  double
+  scale() const override { return static_cast< double >( scale_ ); }
 
   /// Accessor for the feature angle using underlying data type
-  T get_angle() const { return angle_; }
+  T
+  get_angle() const { return angle_; }
 
   /// Accessor for the feature angle
-  double angle() const override { return static_cast< double > ( angle_ ); }
+  double
+  angle() const override { return static_cast< double >( angle_ ); }
 
   /// Accessor for the covariance using underlying data type
-  covariance_< 2, T > const& get_covar() const { return covar_; }
+  covariance_< 2, T > const&
+  get_covar() const { return covar_; }
 
   /// Accessor for the covariance
-  covariance_2d covar() const override { return static_cast< covariance_2d > ( covar_ ); }
+  covariance_2d
+  covar() const override { return static_cast< covariance_2d >( covar_ ); }
 
   /// Accessor for a const reference to the RGB color
-  rgb_color const& get_color() const { return color_; }
+  rgb_color const&
+  get_color() const { return color_; }
 
   /// Accessor for the RGB color
-  rgb_color color() const override { return color_; }
+  rgb_color
+  color() const override { return color_; }
 
   /// Set the feature position in image space
   void set_loc( Eigen::Matrix< T, 2, 1 > const& loc ) { loc_ = loc; }
@@ -173,8 +191,9 @@ public:
   void set_color( rgb_color const& color ) { color_ = color; }
 
   /// Serialization of the class data
-  template<class Archive>
-  void serialize(Archive & archive)
+  template < class Archive >
+  void
+  serialize( Archive& archive )
   {
     archive( loc_, magnitude_, scale_, angle_, covar_, color_ );
   }
@@ -204,12 +223,16 @@ typedef feature_< float > feature_f;
 
 /// output stream operator for a feature
 template < typename T >
-VITAL_EXPORT std::ostream& operator<<( std::ostream& s, feature_< T > const& f );
+VITAL_EXPORT std::ostream& operator<<(
+  std::ostream& s,
+  feature_< T > const& f );
 
 /// input stream operator for a feature
 template < typename T >
 VITAL_EXPORT std::istream& operator>>( std::istream& s, feature_< T >& f );
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital
 
 #endif // VITAL_FEATURE_H_

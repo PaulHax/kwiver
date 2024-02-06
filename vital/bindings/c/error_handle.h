@@ -18,6 +18,7 @@ extern "C"
 #include <vital/bindings/c/vital_c_export.h>
 
 /// Common error handle structure
+
 /**
  * When an instance of this structure is passed into a Vital API and an error
  * occurs a new string (char*) is allocated for ``message`` and the error_code
@@ -29,12 +30,14 @@ extern "C"
  * should check the status between calls and copy the message string before
  * reusing the error handle to avoid losing the message.
  */
-typedef struct vital_error_handle_s {
+typedef struct vital_error_handle_s
+{
   int error_code;
-  char *message;
+  char* message;
 } vital_error_handle_t;
 
 /// Return a new, empty error handle object.
+
 /**
  * \returns New error handle whose error code is set to 0 and message to NULL.
  */
@@ -42,13 +45,14 @@ VITAL_C_EXPORT
 vital_error_handle_t* vital_eh_new();
 
 /// Destroy the given error handle structure pointer
+
 /**
  * This function does nothing if passed a NULL pointer.
  *
  * \param eh Pointer to the error handle instance to destroy.
  */
 VITAL_C_EXPORT
-void vital_eh_destroy( vital_error_handle_t *eh );
+void vital_eh_destroy( vital_error_handle_t* eh );
 
 #ifdef __cplusplus
 }

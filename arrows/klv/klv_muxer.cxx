@@ -36,26 +36,28 @@ bool
 klv_1108_cmp( klv_local_set const& lhs, klv_local_set const& rhs )
 {
   return
-    std::make_tuple( lhs.at( KLV_1108_ASSESSMENT_POINT ),
-                     lhs.count( KLV_1108_WINDOW_CORNERS_PACK )
-                     ? lhs.at( KLV_1108_WINDOW_CORNERS_PACK )
-                     : klv_value{},
-                     lhs.at( KLV_1108_COMPRESSION_TYPE ),
-                     lhs.at( KLV_1108_COMPRESSION_PROFILE ),
-                     lhs.at( KLV_1108_COMPRESSION_LEVEL ),
-                     lhs.at( KLV_1108_COMPRESSION_RATIO ),
-                     lhs.at( KLV_1108_STREAM_BITRATE ),
-                     lhs.at( KLV_1108_DOCUMENT_VERSION ) ) <
-    std::make_tuple( rhs.at( KLV_1108_ASSESSMENT_POINT ),
-                     rhs.count( KLV_1108_WINDOW_CORNERS_PACK )
-                     ? rhs.at( KLV_1108_WINDOW_CORNERS_PACK )
-                     : klv_value{},
-                     rhs.at( KLV_1108_COMPRESSION_TYPE ),
-                     rhs.at( KLV_1108_COMPRESSION_PROFILE ),
-                     rhs.at( KLV_1108_COMPRESSION_LEVEL ),
-                     rhs.at( KLV_1108_COMPRESSION_RATIO ),
-                     rhs.at( KLV_1108_STREAM_BITRATE ),
-                     rhs.at( KLV_1108_DOCUMENT_VERSION ) );
+    std::make_tuple(
+    lhs.at( KLV_1108_ASSESSMENT_POINT ),
+    lhs.count( KLV_1108_WINDOW_CORNERS_PACK )
+    ? lhs.at( KLV_1108_WINDOW_CORNERS_PACK )
+    : klv_value{},
+    lhs.at( KLV_1108_COMPRESSION_TYPE ),
+    lhs.at( KLV_1108_COMPRESSION_PROFILE ),
+    lhs.at( KLV_1108_COMPRESSION_LEVEL ),
+    lhs.at( KLV_1108_COMPRESSION_RATIO ),
+    lhs.at( KLV_1108_STREAM_BITRATE ),
+    lhs.at( KLV_1108_DOCUMENT_VERSION ) ) <
+    std::make_tuple(
+    rhs.at( KLV_1108_ASSESSMENT_POINT ),
+    rhs.count( KLV_1108_WINDOW_CORNERS_PACK )
+    ? rhs.at( KLV_1108_WINDOW_CORNERS_PACK )
+    : klv_value{},
+    rhs.at( KLV_1108_COMPRESSION_TYPE ),
+    rhs.at( KLV_1108_COMPRESSION_PROFILE ),
+    rhs.at( KLV_1108_COMPRESSION_LEVEL ),
+    rhs.at( KLV_1108_COMPRESSION_RATIO ),
+    rhs.at( KLV_1108_STREAM_BITRATE ),
+    rhs.at( KLV_1108_DOCUMENT_VERSION ) );
 }
 
 // ----------------------------------------------------------------------------
@@ -72,7 +74,7 @@ klv_1108_timed_cmp( klv_local_set const& lhs, klv_local_set const& rhs )
     return false;
   }
   return lhs.at( KLV_1108_METRIC_PERIOD_PACK ) < rhs.at(
-           KLV_1108_METRIC_PERIOD_PACK );
+    KLV_1108_METRIC_PERIOD_PACK );
 }
 
 // ----------------------------------------------------------------------------
@@ -106,17 +108,22 @@ klv_muxer
 
   send_frame_unknown( timestamp );
   send_frame_local_set( KLV_PACKET_MISB_0102_LOCAL_SET, timestamp );
-  send_frame_universal_set( KLV_PACKET_MISB_0104_UNIVERSAL_SET, timestamp,
-                            KLV_0104_USER_DEFINED_TIMESTAMP );
+  send_frame_universal_set(
+    KLV_PACKET_MISB_0104_UNIVERSAL_SET, timestamp,
+    KLV_0104_USER_DEFINED_TIMESTAMP );
   send_frame_0601( timestamp );
-  send_frame_local_set( KLV_PACKET_MISB_0806_LOCAL_SET, timestamp,
-                        KLV_0806_TIMESTAMP );
-  send_frame_local_set( KLV_PACKET_MISB_0903_LOCAL_SET, timestamp,
-                        KLV_0903_PRECISION_TIMESTAMP );
-  send_frame_local_set( KLV_PACKET_MISB_1002_LOCAL_SET, timestamp,
-                        KLV_1002_PRECISION_TIMESTAMP );
-  send_frame_local_set( KLV_PACKET_MISB_1107_LOCAL_SET, timestamp,
-                        KLV_1107_PRECISION_TIMESTAMP );
+  send_frame_local_set(
+    KLV_PACKET_MISB_0806_LOCAL_SET, timestamp,
+    KLV_0806_TIMESTAMP );
+  send_frame_local_set(
+    KLV_PACKET_MISB_0903_LOCAL_SET, timestamp,
+    KLV_0903_PRECISION_TIMESTAMP );
+  send_frame_local_set(
+    KLV_PACKET_MISB_1002_LOCAL_SET, timestamp,
+    KLV_1002_PRECISION_TIMESTAMP );
+  send_frame_local_set(
+    KLV_PACKET_MISB_1107_LOCAL_SET, timestamp,
+    KLV_1107_PRECISION_TIMESTAMP );
   send_frame_1108( timestamp );
   send_frame_local_set( KLV_PACKET_MISB_1202_LOCAL_SET, timestamp );
   send_frame_1204( timestamp );
@@ -152,8 +159,8 @@ klv_muxer
   using iterator_t = typename decltype( m_packets )::iterator;
   using iterator_range_t = kvr::iterator_range< iterator_t >;
 
-  iterator_range_t const range =
-  { m_packets.begin(), m_packets.upper_bound( frame ) };
+  iterator_range_t const range = { m_packets.begin(),
+                                   m_packets.upper_bound( frame ) };
   std::vector< klv_packet > result;
   for( auto const& entry : range )
   {
@@ -349,8 +356,9 @@ klv_muxer
   }
   if( !control_command_verify_list.empty() )
   {
-    set.add( KLV_0601_CONTROL_COMMAND_VERIFICATION_LIST,
-             control_command_verify_list );
+    set.add(
+      KLV_0601_CONTROL_COMMAND_VERIFICATION_LIST,
+      control_command_verify_list );
   }
 
   // If any tags were present, put the set into a packet and ship it
@@ -358,8 +366,9 @@ klv_muxer
   {
     set.add( KLV_0601_PRECISION_TIMESTAMP, timestamp );
     m_lds_update_tracker.prune( set, m_update_intervals, standard, timestamp );
-    m_packets.emplace( timestamp,
-                       klv_packet{ klv_0601_key(), std::move( set ) } );
+    m_packets.emplace(
+      timestamp,
+      klv_packet{ klv_0601_key(), std::move( set ) } );
   }
 }
 
@@ -371,8 +380,9 @@ klv_muxer
   constexpr auto standard = KLV_PACKET_MISB_1108_LOCAL_SET;
 
   auto const update_interval =
-    std::max( m_update_intervals.at( KLV_PACKET_MISB_1108_LOCAL_SET ),
-              timestamp - m_prev_frame );
+    std::max(
+      m_update_intervals.at( KLV_PACKET_MISB_1108_LOCAL_SET ),
+      timestamp - m_prev_frame );
 
   // Find each metric
   std::vector< klv_local_set > sets;
@@ -383,7 +393,7 @@ klv_muxer
 
     // Find each change to that metric within the span of this frame
     for( auto start_timestamp = m_prev_frame;
-         start_timestamp < timestamp;)
+         start_timestamp < timestamp; )
     {
       auto next_timestamp = timestamp;
 
@@ -442,7 +452,7 @@ klv_muxer
             next_timestamp =
               std::min( next_timestamp, range.begin()->key_interval.upper() );
             time_interval.truncate_upper(
-                range.begin()->key_interval.upper() );
+              range.begin()->key_interval.upper() );
           }
         }
       }
@@ -450,13 +460,15 @@ klv_muxer
       // If a set could be assembled, keep it
       if( is_valid_set )
       {
-        set.add( KLV_1108_METRIC_PERIOD_PACK,
-                 klv_1108_metric_period_pack{
+        set.add(
+          KLV_1108_METRIC_PERIOD_PACK,
+          klv_1108_metric_period_pack{
                 time_interval.lower(),
                 static_cast< uint32_t >(
                   time_interval.upper() - time_interval.lower() ) } );
-        set.add( KLV_1108_METRIC_LOCAL_SET,
-                 *entry.second.at( start_timestamp ) );
+        set.add(
+          KLV_1108_METRIC_LOCAL_SET,
+          *entry.second.at( start_timestamp ) );
         sets.emplace_back( std::move( set ) );
       }
 
@@ -467,7 +479,7 @@ klv_muxer
 
   // Sort sets, guaranteeing compatible ones end up next to each other
   std::sort( sets.begin(), sets.end(), klv_1108_timed_cmp );
-  for( auto it = sets.begin(); it != sets.end();)
+  for( auto it = sets.begin(); it != sets.end(); )
   {
     // Copy set
     auto set = *it;
@@ -477,8 +489,9 @@ klv_muxer
     auto jt = std::next( it );
     for(; jt != sets.end() && klv_1108_timed_eq( *it, *jt ); ++jt )
     {
-      set.add( KLV_1108_METRIC_LOCAL_SET,
-               jt->at( KLV_1108_METRIC_LOCAL_SET ) );
+      set.add(
+        KLV_1108_METRIC_LOCAL_SET,
+        jt->at( KLV_1108_METRIC_LOCAL_SET ) );
     }
     it = jt;
 
@@ -490,7 +503,7 @@ klv_muxer
     set.erase( KLV_1108_METRIC_PERIOD_PACK );
 
     auto const range = m_cached_1108.equal_range( set );
-    for( auto kt = range.first; kt != range.second;)
+    for( auto kt = range.first; kt != range.second; )
     {
       auto const next_kt = std::next( kt );
 
@@ -503,8 +516,8 @@ klv_muxer
         .get< klv_1108_metric_period_pack >();
       cached_set.erase( KLV_1108_METRIC_PERIOD_PACK );
       cached_period.offset =
-          static_cast< uint32_t >(
-            period.timestamp + period.offset - cached_period.timestamp );
+        static_cast< uint32_t >(
+          period.timestamp + period.offset - cached_period.timestamp );
       if( period.timestamp <= cached_period.timestamp + cached_period.offset &&
           cached_period.offset <= update_interval &&
           set == cached_set )
@@ -535,9 +548,9 @@ klv_muxer
   for( auto& set : m_cached_1108 )
   {
     m_packets.emplace(
-        set.at( KLV_1108_METRIC_PERIOD_PACK )
-          .get< klv_1108_metric_period_pack >().timestamp,
-        klv_packet{ klv_1108_key(), set } );
+      set.at( KLV_1108_METRIC_PERIOD_PACK )
+        .get< klv_1108_metric_period_pack >().timestamp,
+      klv_packet{ klv_1108_key(), set } );
   }
   m_cached_1108.clear();
 }
@@ -562,8 +575,9 @@ klv_muxer
 // ----------------------------------------------------------------------------
 void
 klv_muxer
-::send_frame_local_set( klv_top_level_tag standard, uint64_t timestamp,
-                        klv_lds_key timestamp_tag )
+::send_frame_local_set(
+  klv_top_level_tag standard, uint64_t timestamp,
+  klv_lds_key timestamp_tag )
 {
   auto const key =
     klv_lookup_packet_traits().by_tag( standard ).uds_key();
@@ -601,8 +615,9 @@ klv_muxer
 // ----------------------------------------------------------------------------
 void
 klv_muxer
-::send_frame_universal_set( klv_top_level_tag standard, uint64_t timestamp,
-                            klv_lds_key timestamp_tag )
+::send_frame_universal_set(
+  klv_top_level_tag standard, uint64_t timestamp,
+  klv_lds_key timestamp_tag )
 {
   auto const key = klv_lookup_packet_traits().by_tag( standard ).uds_key();
   auto const lookup =
@@ -645,10 +660,11 @@ klv_muxer
   auto const result = timestamp >= m_prev_frame;
   if( !result )
   {
-    LOG_WARN( kv::get_logger( "klv" ),
-              "muxer: refusing to emit packets out-of-order "
-               << "( " << timestamp << " less than "
-               << m_prev_frame << " )" );
+    LOG_WARN(
+      kv::get_logger( "klv" ),
+      "muxer: refusing to emit packets out-of-order "
+        << "( " << timestamp << " less than "
+        << m_prev_frame << " )" );
   }
   return result;
 }

@@ -11,6 +11,7 @@
 #include <vital/types/homography.h>
 
 namespace kwiver {
+
 namespace vital {
 
 class VITAL_EXPORT f2f_homography
@@ -27,14 +28,14 @@ public:
   /// \param from_id
   /// \param to_id
   /// \tparam T Data type for the underlying homography transformation
-  template < typename T >
-  explicit f2f_homography( Eigen::Matrix< T, 3, 3 > const& h,
-                           frame_id_t const from_id,
-                           frame_id_t const to_id )
-    : h_( homography_sptr( new homography_< T > ( h ) ) ),
+  template < typename T > explicit f2f_homography(
+    Eigen::Matrix< T, 3, 3 > const& h,
+    frame_id_t const from_id,
+    frame_id_t const to_id )
+    : h_( homography_sptr( new homography_< T >( h ) ) ),
       from_id_( from_id ),
       to_id_( to_id )
-  { }
+  {}
 
   /// Construct a frame to frame homography given an existing transform
   ///
@@ -44,9 +45,10 @@ public:
   /// \param h
   /// \param from_id
   /// \param to_id
-  explicit f2f_homography( homography_sptr const& h,
-                           frame_id_t const       from_id,
-                           frame_id_t const       to_id );
+  explicit f2f_homography(
+    homography_sptr const& h,
+    frame_id_t const from_id,
+    frame_id_t const to_id );
 
   /// Copy constructor
   f2f_homography( f2f_homography const& h );
@@ -95,8 +97,12 @@ protected:
 typedef std::shared_ptr< f2f_homography > f2f_homography_sptr;
 
 /// \p f2f_homography output stream operator
-VITAL_EXPORT std::ostream& operator<<( std::ostream& s, f2f_homography const& h );
+VITAL_EXPORT std::ostream& operator<<(
+  std::ostream& s,
+  f2f_homography const& h );
 
-} } // end vital namespace
+} // namespace vital
+
+}   // end vital namespace
 
 #endif // VITAL_HOMOGRAPHY_F2F_H

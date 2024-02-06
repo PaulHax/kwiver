@@ -13,11 +13,12 @@
 
 #include <vital/vital_export.h>
 
-#include <vital/types/matrix.h>
 #include "vector.h"
 #include <Eigen/Geometry>
+#include <vital/types/matrix.h>
 
 namespace kwiver {
+
 namespace vital {
 
 /// A representation of 3D rotation.
@@ -28,29 +29,30 @@ class VITAL_EXPORT rotation_
 {
 public:
   /// Default Constructor
-  rotation_< T > ( ) : q_( 1, 0, 0, 0 ) { }
+  rotation_< T >() : q_( 1, 0, 0, 0 ) {}
 
   /// Constructor - from an Eigen Quaternion
-  rotation_< T > ( const Eigen::Quaternion< T > &quaternion )
-  : q_( quaternion ) { }
+  rotation_< T >( const Eigen::Quaternion< T >& quaternion )
+    : q_( quaternion ) {}
 
   /// Copy Constructor from another type
-  template < typename U >
-  explicit rotation_< T > ( const rotation_< U > &other )
-  : q_( static_cast< Eigen::Quaternion< T > > ( other.quaternion() ) ) { }
+  template < typename U > explicit rotation_< T >( const rotation_< U >& other )
+    : q_( static_cast< Eigen::Quaternion< T > >( other.quaternion() ) ) {}
 
   /// Constructor - from a 4D quaternion vector (x,y,z,w)
   ///
-  /// Note that the constructor for an Eigen:Quaternion from four scalars assumes
+  /// Note that the constructor for an Eigen:Quaternion from four scalars
+  /// assumes
   /// the order (w,x,y,z). However, internally it is stored in the following
   /// order (x,y,z,w). Likewise, the constructor for an Eigen:Quaternion from an
   /// array assumes the order (x,y,z,w).
-  //TODO: normalize quaternion. If the user provides a non-normalized quaterion,
-  //It will remain so. This can cause problems when converting to other types.
-  //Might want to consider using the actual Eigen::Quaternion constructor. This
-  //will also resolve the strange order of the coefficients.
-  explicit rotation_< T > ( const Eigen::Matrix< T, 4, 1 > &quaternion )
-  : q_( quaternion ) { }
+  // TODO: normalize quaternion. If the user provides a non-normalized
+  // quaterion,
+  // It will remain so. This can cause problems when converting to other types.
+  // Might want to consider using the actual Eigen::Quaternion constructor. This
+  // will also resolve the strange order of the coefficients.
+  explicit rotation_< T >( const Eigen::Matrix< T, 4, 1 >& quaternion )
+    : q_( quaternion ) {}
 
   /// Constructor - from a Rodrigues vector
   ///
@@ -60,10 +62,10 @@ public:
   /// This representation is closely related to the tangent space on
   /// the manifold of the group of rotations.
   /// \param rvec Rodrigues vector to construct from.
-  explicit rotation_< T > ( const Eigen::Matrix< T, 3, 1 > &rvec );
+  explicit rotation_< T >( const Eigen::Matrix< T, 3, 1 >& rvec );
 
   /// Constructor - from rotation angle and axis
-  rotation_< T > ( T angle, const Eigen::Matrix< T, 3, 1 > &axis );
+  rotation_< T >( T angle, const Eigen::Matrix< T, 3, 1 >& axis );
 
   /// Constructor - from yaw, pitch, and roll (radians)
   ///
@@ -75,13 +77,13 @@ public:
   /// North-East-Down coordinate system to one in which x, y, and z are facing
   /// east, north, and up, respectively, call the \link ned_to_enu() \endlink
   /// utility function on the constructed object.
-  rotation_< T > ( const T &yaw, const T &pitch, const T &roll );
+  rotation_< T >( const T& yaw, const T& pitch, const T& roll );
 
   /// Constructor - from a matrix
   ///
   /// requires orthonormal matrix with +1 determinant
   /// \param rot orthonormal matrix to construct from
-  explicit rotation_< T > ( const Eigen::Matrix< T, 3, 3 > &rot );
+  explicit rotation_< T >( const Eigen::Matrix< T, 3, 3 >& rot );
 
   /// Convert to a 3x3 matrix
   Eigen::Matrix< T, 3, 3 > matrix() const;
@@ -101,7 +103,8 @@ public:
   /// Access the quaternion as a 4-vector
   ///
   /// The first component is real, the last 3 are imaginary (i,j,k)
-  Eigen::Quaternion< T > quaternion() const { return q_; }
+  Eigen::Quaternion< T >
+  quaternion() const { return q_; }
 
   /// Return the rotation as a Rodrigues vector
   Eigen::Matrix< T, 3, 1 > rodrigues() const;
@@ -116,9 +119,10 @@ public:
   void get_yaw_pitch_roll( T& yaw, T& pitch, T& roll ) const;
 
   /// Compute the inverse rotation
-  rotation_< T > inverse() const
+  rotation_< T >
+  inverse() const
   {
-    return rotation_< T > ( q_.inverse() );
+    return rotation_< T >( q_.inverse() );
   }
 
   /// Compose two rotations
@@ -129,24 +133,29 @@ public:
   /// \note for a large number of vectors, it is more efficient to
   ///       create a rotation matrix and use matrix multiplication
   /// \param rhs right-hand side vector to operate against
-  Eigen::Matrix< T, 3, 1 > operator*( const Eigen::Matrix< T, 3, 1 >& rhs ) const;
+  Eigen::Matrix< T, 3,
+    1 > operator*( const Eigen::Matrix< T, 3, 1 >& rhs ) const;
 
   /// Equality operator
   ///
   /// TODO: two quaternions can represent the same rotation but have different
-  /// components. The test is to calculate the product of the first rotation with
-  /// the inverse of the second to calculate the difference rotation. Convert the
+  /// components. The test is to calculate the product of the first rotation
+  /// with
+  /// the inverse of the second to calculate the difference rotation. Convert
+  /// the
   /// difference rotation to axis and angle form, and if the angle is greater
   /// than some threshold, they should not be considered equal.
-  inline bool operator==( const rotation_< T >& rhs ) const
+  inline bool
+  operator==( const rotation_< T >& rhs ) const
   {
     return this->q_.coeffs() == rhs.q_.coeffs();
   }
 
   /// Inequality operator
-  inline bool operator!=( const rotation_< T >& rhs ) const
+  inline bool
+  operator!=( const rotation_< T >& rhs ) const
   {
-    return ! ( *this == rhs );
+    return !( *this == rhs );
   }
 
 protected:
@@ -161,7 +170,9 @@ typedef rotation_< float > rotation_f;
 
 /// output stream operator for a rotation
 template < typename T >
-VITAL_EXPORT std::ostream&  operator<<( std::ostream& s, const rotation_< T >& r );
+VITAL_EXPORT std::ostream&  operator<<(
+  std::ostream& s,
+  const rotation_< T >& r );
 
 /// input stream operator for a rotation
 template < typename T >
@@ -174,7 +185,8 @@ VITAL_EXPORT std::istream&  operator>>( std::istream& s, rotation_< T >& r );
 ///
 /// \param A Rotation we are interpolating from.
 /// \param B Rotation we are interpolating towards.
-/// \param f Fractional value describing the interpolation point between A and B.
+/// \param f Fractional value describing the interpolation point between A and
+/// B.
 /// \returns A rotation in between A and B to a degree proportional to the given
 ///          fraction.
 template < typename T >
@@ -188,7 +200,8 @@ interpolate_rotation( rotation_< T > const& A, rotation_< T > const& B, T f );
 ///
 /// \param[in]   A           Rotation we are interpolating from.
 /// \param[in]   B           Rotation we are interpolating towards,
-/// \param[in]   n           Number of even interpolations in between A and B to generate.
+/// \param[in]   n           Number of even interpolations in between A and B to
+/// generate.
 /// \param[out]  interp_rots Interpolated rotations are added to this vector in
 ///                          in order of generation in the A -> B direction.
 ///
@@ -196,8 +209,9 @@ interpolate_rotation( rotation_< T > const& A, rotation_< T > const& B, T f );
 ///          and B.
 template < typename T >
 VITAL_EXPORT
-void interpolated_rotations( rotation_< T > const& A, rotation_< T > const& B,
-                             size_t n, std::vector< rotation_< T > >& interp_rots );
+void interpolated_rotations(
+  rotation_< T > const& A, rotation_< T > const& B,
+  size_t n, std::vector< rotation_< T > >& interp_rots );
 
 /// Convert rotation \c r from ENU coordinate system to NED.
 ///
@@ -254,9 +268,12 @@ ned_to_enu( rotation_< T > const& r );
 template < typename T >
 VITAL_EXPORT
 rotation_< T >
-uas_ypr_to_rotation( T platform_yaw, T platform_pitch, T platform_roll,
-                     T sensor_yaw,   T sensor_pitch,   T sensor_roll );
+uas_ypr_to_rotation(
+  T platform_yaw, T platform_pitch, T platform_roll,
+  T sensor_yaw,   T sensor_pitch,   T sensor_roll );
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital
 
 #endif // VITAL_ROTATION_H_

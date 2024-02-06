@@ -11,17 +11,17 @@
  *
  */
 
+#include <arrows/kpf/yaml/kpf_canonical_io_adapter.h>
 #include <arrows/kpf/yaml/kpf_reader.h>
 #include <arrows/kpf/yaml/kpf_yaml_parser.h>
-#include <arrows/kpf/yaml/kpf_canonical_io_adapter.h>
 #include <arrows/kpf/yaml/kpf_yaml_writer.h>
+#include <cctype>
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
-#include <cctype>
-#include <stdexcept>
 
 using std::string;
 using std::vector;
@@ -34,7 +34,7 @@ using std::ostream;
 using std::stod;
 using std::logic_error;
 
-namespace KPF=kwiver::vital::kpf;
+namespace KPF = kwiver::vital::kpf;
 
 //
 // Our user-defined activity object.
@@ -46,15 +46,27 @@ struct user_activity_t
   int id;
   unsigned start, stop; // in frame numbers
   string name;
-  vector<size_t> actor_ids;
+  vector< size_t > actor_ids;
   double confidence;
   string source; // an aribtrary "source" string to exercise KV I/O
   user_activity_t()
-    : id(0), start(0), stop(0), name("invalid"), confidence(-1.0), source("invalid")
+    : id( 0 ),
+      start( 0 ),
+      stop( 0 ),
+      name( "invalid" ),
+      confidence( -1.0 ),
+      source( "invalid" )
   {}
-  user_activity_t( int i, unsigned start_, unsigned stop_, const string& n,
-                   const vector<size_t>& a, double c, const string& s)
-    : id(i), start(start_), stop(stop_), name(n), actor_ids(a), confidence(c), source(s)
+  user_activity_t(
+    int i, unsigned start_, unsigned stop_, const string& n,
+    const vector< size_t >& a, double c, const string& s )
+    : id( i ),
+      start( start_ ),
+      stop( stop_ ),
+      name( n ),
+      actor_ids( a ),
+      confidence( c ),
+      source( s )
   {}
 };
 
@@ -62,11 +74,13 @@ struct user_activity_t
 // pretty-print
 //
 
-ostream& operator<<( ostream& os, const user_activity_t& a )
+ostream&
+operator<<( ostream& os, const user_activity_t& a )
 {
-  os << "activity " << a.id << " is '" << a.name << "'; start/stop " << a.start << " / " << a.stop;
+  os << "activity " << a.id << " is '" << a.name << "'; start/stop " <<
+    a.start << " / " << a.stop;
   os << "; actors: ";
-  for (auto i: a.actor_ids )
+  for( auto i : a.actor_ids )
   {
     os << i << ", ";
   }
@@ -83,10 +97,9 @@ vector< user_activity_t >
 make_sample_activities()
 {
   return {
-    { 100, 1001, 1010, "walking", {15}, 0.3, "EO"},
-    { 102, 1500, 1600, "crowding", {16,17,18}, 0.5, "IR"},
-    { 104, 0, 100, "juggling", {19,20,21,22}, 0.4, "IR"}
-  };
+    { 100, 1001, 1010, "walking", { 15 }, 0.3, "EO" },
+    { 102, 1500, 1600, "crowding", { 16, 17, 18 }, 0.5, "IR" },
+    { 104, 0, 100, "juggling", { 19, 20, 21, 22 }, 0.4, "IR" } };
 }
 
 //
@@ -95,78 +108,81 @@ make_sample_activities()
 // have on the project.
 //
 
-const int DETECTOR_DOMAIN=17;
-const int ACTOR_DOMAIN=15;
+const int DETECTOR_DOMAIN = 17;
+const int ACTOR_DOMAIN = 15;
 
 //
 // The KPF activity object is complex, and requires an adapter.
 //
 
-struct user_act_adapter_t: public KPF::kpf_act_adapter< user_activity_t >
+struct user_act_adapter_t : public KPF::kpf_act_adapter< user_activity_t >
 {
-  user_act_adapter_t():
-    kpf_act_adapter< user_activity_t >(
-      // reads the canonical activity "a" into the user_activity "u"
-      []( const KPF::canonical::activity_t& a, user_activity_t& u ) {
-        if (a.timespan.size() != 1)
-        {
-          throw logic_error( "KPF activity did not have exactly one timespan" );
-        }
-        // load the activity ID, name, and start and stop frames
-        u.id = a.activity_id.t.d;
-
-        // there should only be one name in the activity labels map,
-        const KPF::canonical::cset_t& al = a.activity_labels;
-        if ((al.d.size() != 1))
-        {
-          throw logic_error( "KPF activity label not a single value" );
-        }
-        u.name = al.d.begin()->first;
-        u.confidence = al.d.begin()->second;
-
-        u.start = a.timespan[0].t.start;
-        u.stop = a.timespan[0].t.stop;
-        // load in our actor IDs
-        for (const auto& actor: a.actors)
-        {
-          u.actor_ids.push_back( actor.actor_id.t.d );
-        }
-        // look for our source in the key/value pairs
-        for (const auto& kv: a.attributes)
-        {
-          if (kv.key == "source")
+  user_act_adapter_t()
+    : kpf_act_adapter< user_activity_t >(
+        // reads the canonical activity "a" into the user_activity "u"
+        []( const KPF::canonical::activity_t& a, user_activity_t& u ){
+          if( a.timespan.size() != 1 )
           {
-            u.source = kv.val;
+            throw logic_error(
+              "KPF activity did not have exactly one timespan" );
           }
-        }
-      },
+          // load the activity ID, name, and start and stop frames
+          u.id = a.activity_id.t.d;
 
-      // converts a user_activity "a" into a canonical activity and returns it
-      []( const user_activity_t& u ) {
-        KPF::canonical::activity_t a;
-        // set the name, ID, and domain
-        a.activity_labels.d[ u.name ] = u.confidence;
-        a.activity_id.t.d = u.id;
-        a.activity_id.domain = DETECTOR_DOMAIN;
+          // there should only be one name in the activity labels map,
+          const KPF::canonical::cset_t& al = a.activity_labels;
+          if( ( al.d.size() != 1 ) )
+          {
+            throw logic_error( "KPF activity label not a single value" );
+          }
+          u.name = al.d.begin()->first;
+          u.confidence = al.d.begin()->second;
 
-        // set our source as a key/value pair
-        a.attributes.push_back( KPF::canonical::kv_t( "source", u.source ));
+          u.start = a.timespan[ 0 ].t.start;
+          u.stop = a.timespan[ 0 ].t.stop;
+          // load in our actor IDs
+          for( const auto& actor : a.actors )
+          {
+            u.actor_ids.push_back( actor.actor_id.t.d );
+          }
+          // look for our source in the key/value pairs
+          for( const auto& kv : a.attributes )
+          {
+            if( kv.key == "source" )
+            {
+              u.source = kv.val;
+            }
+          }
+        },
 
-        // set the start / stop time (as frame numbers)
-        KPF::canonical::scoped< KPF::canonical::timestamp_range_t > tsr;
-        tsr.domain = KPF::canonical::timestamp_t::FRAME_NUMBER;
-        tsr.t.start = u.start;
-        tsr.t.stop = u.stop;
-        a.timespan.push_back( tsr );
+        // converts a user_activity "a" into a canonical activity and returns it
+        []( const user_activity_t& u ){
+          KPF::canonical::activity_t a;
+          // set the name, ID, and domain
+          a.activity_labels.d[ u.name ] = u.confidence;
+          a.activity_id.t.d = u.id;
+          a.activity_id.domain = DETECTOR_DOMAIN;
 
-        // also use the activity start/stop time for each actor
-        for (auto actor:u.actor_ids)
-        {
-          a.actors.push_back( { {KPF::canonical::id_t(actor), ACTOR_DOMAIN}, {a.timespan} });
-        }
+          // set our source as a key/value pair
+          a.attributes.push_back( KPF::canonical::kv_t( "source", u.source ) );
 
-        return a;
-      } )
+          // set the start / stop time (as frame numbers)
+          KPF::canonical::scoped< KPF::canonical::timestamp_range_t > tsr;
+          tsr.domain = KPF::canonical::timestamp_t::FRAME_NUMBER;
+          tsr.t.start = u.start;
+          tsr.t.stop = u.stop;
+          a.timespan.push_back( tsr );
+
+          // also use the activity start/stop time for each actor
+          for( auto actor : u.actor_ids )
+          {
+            a.actors.push_back(
+              { { KPF::canonical::id_t( actor ),
+                ACTOR_DOMAIN }, { a.timespan } } );
+          }
+
+          return a;
+        } )
   {}
 };
 
@@ -180,15 +196,16 @@ vector< user_activity_t >
 read_activities_from_stream( std::istream& is )
 {
   namespace KPFC = KPF::canonical;
+
   vector< user_activity_t > acts;
   user_act_adapter_t act;
   KPF::kpf_yaml_parser_t parser( is );
   KPF::kpf_reader_t reader( parser );
   user_activity_t buffer;
 
-  while (reader
+  while( reader
          >> KPF::reader< KPFC::activity_t >( act, DETECTOR_DOMAIN )
-    )
+  )
   {
     act.get( buffer );
     acts.push_back( buffer );
@@ -203,13 +220,15 @@ read_activities_from_stream( std::istream& is )
 //
 
 void
-write_activities_to_stream( ostream& os,
-                            const vector< user_activity_t >& acts )
+write_activities_to_stream(
+  ostream& os,
+  const vector< user_activity_t >& acts )
 {
   namespace KPFC = KPF::canonical;
+
   user_act_adapter_t act_adapter;
   KPF::record_yaml_writer w( os );
-  for (const auto& act: acts )
+  for( const auto& act : acts )
   {
     w.set_schema( KPF::schema_style::ACT )
       << KPF::writer< KPFC::activity_t >( act_adapter( act ), DETECTOR_DOMAIN )
@@ -217,13 +236,13 @@ write_activities_to_stream( ostream& os,
   }
 }
 
-int main()
+int
+main()
 {
-
   vector< user_activity_t > src = make_sample_activities();
-  for (size_t i=0; i<src.size(); ++i)
+  for( size_t i = 0; i < src.size(); ++i )
   {
-    std::cout << "Source act " << i << ": " << src[i] << "\n";
+    std::cout << "Source act " << i << ": " << src[ i ] << "\n";
   }
 
   stringstream ss;
@@ -233,22 +252,26 @@ int main()
   std::cout << "Done\n";
 
   std::cout << "\nAbout to read KPF:\n";
-  vector< user_activity_t> new_acts = read_activities_from_stream( ss );
-  for (size_t i=0; i<new_acts.size(); ++i)
+
+  vector< user_activity_t > new_acts = read_activities_from_stream( ss );
+  for( size_t i = 0; i < new_acts.size(); ++i )
   {
-    std::cout << "Converted act " << i << ": " << new_acts[i] << "\n";
+    std::cout << "Converted act " << i << ": " << new_acts[ i ] << "\n";
   }
 
   {
     stringstream shuffle;
-    shuffle << "- { act: { timespan: [{ tsr0: [1001 , 1010],  }], conf17: 0.3, actors: [{ id15: 15, timespan: [{ tsr0: [1001 , 1010],  }], }], act17: {walking: 1.0} , id17: 100, source: SHUFFLE }}";
+    shuffle <<
+      "- { act: { timespan: [{ tsr0: [1001 , 1010],  }], conf17: 0.3, actors: [{ id15: 15, timespan: [{ tsr0: [1001 , 1010],  }], }], act17: {walking: 1.0} , id17: 100, source: SHUFFLE }}";
 
-    std::cout << "\nAbout to convert a shuffled V3 activity:\n" << shuffle.str() << "\n";
-    vector< user_activity_t> shuffle_acts = read_activities_from_stream( shuffle );
-    for (size_t i=0; i<shuffle_acts.size(); ++i)
+    std::cout << "\nAbout to convert a shuffled V3 activity:\n" <<
+      shuffle.str() << "\n";
+
+    vector< user_activity_t > shuffle_acts =
+      read_activities_from_stream( shuffle );
+    for( size_t i = 0; i < shuffle_acts.size(); ++i )
     {
-      std::cout << "Converted act " << i << ": " << shuffle_acts[i] << "\n";
+      std::cout << "Converted act " << i << ": " << shuffle_acts[ i ] << "\n";
     }
   }
-
 }

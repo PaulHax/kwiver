@@ -5,14 +5,15 @@
 #ifndef _TOKEN_EXPANDER_H_
 #define _TOKEN_EXPANDER_H_
 
-#include <vital/util/vital_util_export.h>
 #include <vital/logger/logger.h>
+#include <vital/util/vital_util_export.h>
 
 #include <map>
-#include <string>
 #include <memory>
+#include <string>
 
 namespace kwiver {
+
 namespace vital {
 
 class token_type;
@@ -37,10 +38,12 @@ class token_type;
 /// exp->add_token_type( new kwiver::vital::token_type_sysenv() );
 ///
 /// // Create a symtab expander
-/// kwiver::vital::token_type_symtab* sym = new kwiver::vital::token_type_symtab();
+/// kwiver::vital::token_type_symtab* sym = new
+/// kwiver::vital::token_type_symtab();
 /// sym.add_entry( "foo", "bar" );  // add some entries to the symbol table
 /// sym.add_entry( "home", "on the range" );
-/// sym.add_entry( "pi", "3.14159265358979323846264338327950288419716939937510" );
+/// sym.add_entry( "pi", "3.14159265358979323846264338327950288419716939937510"
+/// );
 ///
 /// exp->add_token_type( sym );  // add to expander
 ///
@@ -80,14 +83,15 @@ public:
   /// with desired token types.
   ///
 /// @code
-/// kwiver::vital::token_expander * exp = new kwiver::vital::token_expander::instance();
+/// kwiver::vital::token_expander * exp = new
+/// kwiver::vital::token_expander::instance();
 /// exp->add_token_type( new kwiver::vital::token_type_env() );
 /// exp->add_token_type( new kwiver::vital::token_type_sysenv() );
 /// @endcode
-  ///
-  /// The token expander can be easily referenced anywhere in the code
-  /// without having to explicitly pass a pointer to the object.
-  ///
+///
+/// The token expander can be easily referenced anywhere in the code
+/// without having to explicitly pass a pointer to the object.
+///
 /// @code
 /// std::string text = get_raw_text();
 /// text = kwiver::vital::token_expander::instance()->expand_token( text );
@@ -104,7 +108,7 @@ public:
   /// @param[in] tt - token type handler to add
   ///
   /// @return True indicates the handler has been added.
-  bool add_token_type( kwiver::vital::token_type * tt );
+  bool add_token_type( kwiver::vital::token_type* tt );
 
   /// @brief Expand tokens over a string.
   ///
@@ -128,7 +132,9 @@ protected:
   /// @return \b true inserts the original text leaving the unresolved
   /// entry in the expanded string. \b false inserts empty string,
   /// removing the unresolved entry from the output.
-  virtual bool handle_missing_entry( const std::string& provider, const std::string& entry );
+  virtual bool handle_missing_entry(
+    const std::string& provider,
+    const std::string& entry );
 
   /// @brief Handle missing provider.
   ///
@@ -141,18 +147,22 @@ protected:
   /// @return \b true inserts the original text leaving the unresolved
   /// entry in the expanded string. \b false inserts empty string,
   /// removing the unresolved entry from the output.
-  virtual bool handle_missing_provider( const std::string& provider, const std::string& entry );
+  virtual bool handle_missing_provider(
+    const std::string& provider,
+    const std::string& entry );
 
 private:
-  typedef std::map < std::string, std::shared_ptr< kwiver::vital::token_type > > map_t;
+  typedef std::map< std::string,
+    std::shared_ptr< kwiver::vital::token_type > > map_t;
   typedef map_t::iterator iterator_t;
 
   map_t m_typeList;
 
   logger_handle_t m_logger;
-
 }; // end class token_expander
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // _TOKEN_EXPANDER_H_

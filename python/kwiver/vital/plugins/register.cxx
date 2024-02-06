@@ -6,7 +6,7 @@
  * @file
  * @brief Factory registration function for exposing python-defined
  * implementations.
-*/
+ */
 
 #include <pybind11/pybind11.h>
 
@@ -17,7 +17,6 @@
 #include <python/kwiver/internal/python_plugin_factory.h>
 
 #include <python/kwiver/vital/plugins/plugins_from_python_export.h>
-
 
 namespace kv = ::kwiver::vital;
 namespace py = pybind11;
@@ -32,12 +31,13 @@ namespace py = pybind11;
  */
 static void check_and_initialize_python_interpreter();
 
-
 // ----------------------------------------------------------------------------
 // Registration Function
 extern "C"
 [[maybe_unused]] PLUGINS_FROM_PYTHON_EXPORT
-void register_factories( ::kv::plugin_loader & vpl )
+
+void
+register_factories( ::kv::plugin_loader& vpl )
 {
   ::kv::logger_handle_t log = ::kv::get_logger(
     "python.kwiver.vital.plugins.register_factories"
@@ -70,21 +70,23 @@ void register_factories( ::kv::plugin_loader & vpl )
 
   py::list python_concrete_vec =
     mod_discovery.attr( "_get_concrete_pluggable_types" )();
-  for( size_t i=0; i < python_concrete_vec.size(); ++i )
+  for( size_t i = 0; i < python_concrete_vec.size(); ++i )
   {
-    py::object o = python_concrete_vec[i];
+    py::object o = python_concrete_vec[ i ];
     LOG_DEBUG( log,
-               "Registering factory for python impl for interface \"" <<
-               o.attr("interface_name")().cast< std::string >() << "\": \"" <<
-               o.attr("__name__").cast<std::string>() << "\"");
-    auto *fact = new kv::python::python_plugin_factory( o );
-    vpl.add_factory( fact );
+      "Registering factory for python impl for interface \"" <<
+        o.attr("interface_name")().cast< std::string > () << "\": \"" <<
+        o.attr("__name__").cast< std::string > () << "\"");
+
+      auto* fact = new kv::python::python_plugin_factory( o );
+      vpl.add_factory( fact );
   }
 }
 
 // ----------------------------------------------------------------------------
 // Helper function implementations
-void check_and_initialize_python_interpreter()
+void
+check_and_initialize_python_interpreter()
 {
   ::kv::logger_handle_t log = ::kv::get_logger(
     "python.kwiver.vital.plugins.check_and_initialize_python_interpreter"
@@ -92,7 +94,7 @@ void check_and_initialize_python_interpreter()
 
   // Check if a python interpreter already exists, so we don't clobber sys.argv
   // (e.g. if sprokit is initialized from python)
-  if (!Py_IsInitialized())
+  if( !Py_IsInitialized() )
   {
     LOG_DEBUG( log, "Initializing python interpreter" );
     // Embed a python interpreter if one does not exist
@@ -100,15 +102,16 @@ void check_and_initialize_python_interpreter()
 
     // Set Python interpreter attribute: sys.argv = []
     // parameters are: (argc, argv, update-path)
-    PySys_SetArgvEx(0, nullptr, 0);
+    PySys_SetArgvEx( 0, nullptr, 0 );
   }
 
   // Let pybind11 initialize threads and set up its internal data structures if
   // not already done so.
-  if (!PyEval_ThreadsInitialized())
+  if( !PyEval_ThreadsInitialized() )
   {
-    LOG_DEBUG( log, "Python threads not initialized yet, letting pybind11 do "
-                    "it's thing." );
+    LOG_DEBUG(
+      log, "Python threads not initialized yet, letting pybind11 do "
+           "it's thing." );
     {
       pybind11::detail::get_internals();
     }

@@ -28,7 +28,7 @@ class VITAL_ALGO_EXPORT initialize_object_tracks
 {
 public:
   initialize_object_tracks();
-  PLUGGABLE_INTERFACE(initialize_object_tracks);
+  PLUGGABLE_INTERFACE( initialize_object_tracks );
   /// Initialize new object tracks given detections.
   ///
   /// \param ts frame ID
@@ -36,10 +36,10 @@ public:
   /// \param detections detected object sets from the current frame
   /// \returns newly initialized tracks
   virtual kwiver::vital::object_track_set_sptr
-  initialize( kwiver::vital::timestamp ts,
-              kwiver::vital::image_container_sptr image,
-              kwiver::vital::detected_object_set_sptr detections ) const = 0;
-
+  initialize(
+    kwiver::vital::timestamp ts,
+    kwiver::vital::image_container_sptr image,
+    kwiver::vital::detected_object_set_sptr detections ) const = 0;
 };
 
 /// Shared pointer for initialize_object_tracks algorithm definition class

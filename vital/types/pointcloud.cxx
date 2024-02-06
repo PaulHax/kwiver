@@ -10,14 +10,15 @@
 #include <vital/io/eigen_io.h>
 
 namespace kwiver {
+
 namespace vital {
+
 /// Default Constructor
 template < typename T >
 pointcloud_< T >
 
 ::pointcloud_()
-{
-}
+{}
 
 /// Constructor for a pointcloud
 template < typename T >
@@ -25,8 +26,7 @@ pointcloud_< T >
 
 ::pointcloud_( std::vector< Eigen::Matrix< T, 3, 1 > > const& pos )
   : pos_( pos )
-{
-}
+{}
 
 /// Constructor for a pointcloud_ from a pointcloud
 template < typename T >
@@ -45,7 +45,6 @@ pointcloud_< T >
 template < typename T >
 std::vector< vector_3d >
 pointcloud_< T >
-
 ::positions() const
 {
   std::vector< vector_3d > retval;
@@ -58,10 +57,8 @@ pointcloud_< T >
 
 /// Set the point cloud positions
 template < typename T >
-
 void
 pointcloud_< T >
-
 ::set_positions( std::vector< Eigen::Matrix< T, 3, 1 > > const& pos )
 {
   pos_.assign( pos.begin(), pos.end() );
@@ -71,7 +68,6 @@ pointcloud_< T >
 template < typename T >
 void
 pointcloud_< T >
-
 ::set_color( std::vector< rgb_color > const& colors )
 {
   colors_.assign( colors.begin(), colors.end() );
@@ -81,19 +77,21 @@ pointcloud_< T >
 template < typename T >
 void
 pointcloud_< T >
-
 ::set_intensities( std::vector< uint8_t > const& inten )
 {
   inten_.assign( inten.begin(), inten.end() );
 }
 
 /// \cond DoxygenSuppress
-#define INSTANTIATE_POINTCLOUD( T ) template class VITAL_EXPORT pointcloud_< T >;
+#define INSTANTIATE_POINTCLOUD( \
+  T ) template class VITAL_EXPORT pointcloud_< T >;
 
 INSTANTIATE_POINTCLOUD( double );
 INSTANTIATE_POINTCLOUD( float );
 
 #undef INSTANTIATE_POINTCLOUD
 /// \endcond
+
 } // namespace vital
+
 }   // end namespace vital

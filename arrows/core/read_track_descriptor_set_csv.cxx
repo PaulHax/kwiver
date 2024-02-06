@@ -7,30 +7,32 @@
 
 #include "read_track_descriptor_set_csv.h"
 
-#include <vital/util/tokenize.h>
 #include <vital/util/data_stream_reader.h>
+#include <vital/util/tokenize.h>
 #include <vital/vital_config.h>
 
 #include <string>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 // ----------------------------------------------------------------------------
 class read_track_descriptor_set_csv::priv
 {
 public:
-  priv( read_track_descriptor_set_csv* parent)
-    : m_parent( parent )
-    , m_logger( kwiver::vital::get_logger( "read_track_descriptor_set_csv" ) )
-    , m_first( true )
-    , m_batch_load( true )
-    , m_read_raw_descriptor( true )
-    , m_delim( "," )
-    , m_sub_delim( " " )
-    , m_current_idx( 0 )
-    , m_last_idx( 1 )
+  priv( read_track_descriptor_set_csv* parent )
+    : m_parent( parent ),
+      m_logger( kwiver::vital::get_logger( "read_track_descriptor_set_csv" ) ),
+      m_first( true ),
+      m_batch_load( true ),
+      m_read_raw_descriptor( true ),
+      m_delim( "," ),
+      m_sub_delim( " " ),
+      m_current_idx( 0 ),
+      m_last_idx( 1 )
   {}
 
   ~priv() {}
@@ -51,9 +53,11 @@ public:
 
   void read_all();
 
-  // Map of track descriptors indexed by frame number. Each set contains all descs
+  // Map of track descriptors indexed by frame number. Each set contains all
+  // descs
   // referenced (active) on that individual frame.
-  std::map< int, std::vector< vital::track_descriptor_sptr > > m_descs_by_frame_id;
+  std::map< int,
+    std::vector< vital::track_descriptor_sptr > > m_descs_by_frame_id;
 
   // Compilation of all loaded descriptors, track id -> track sptr mapping
   std::vector< vital::track_descriptor_sptr > m_all_descs;
@@ -63,23 +67,21 @@ public:
 read_track_descriptor_set_csv
 ::read_track_descriptor_set_csv()
   : d( new read_track_descriptor_set_csv::priv( this ) )
-{
-}
+{}
 
 read_track_descriptor_set_csv
 ::~read_track_descriptor_set_csv()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 void
 read_track_descriptor_set_csv
-::set_configuration(vital::config_block_sptr config)
+::set_configuration( vital::config_block_sptr config )
 {
   d->m_batch_load =
-    config->get_value<bool>( "batch_load", d->m_batch_load );
+    config->get_value< bool >( "batch_load", d->m_batch_load );
   d->m_read_raw_descriptor =
-    config->get_value<bool>( "read_raw_descriptor", d->m_batch_load );
+    config->get_value< bool >( "read_raw_descriptor", d->m_batch_load );
 }
 
 // ----------------------------------------------------------------------------
@@ -143,7 +145,7 @@ read_track_descriptor_set_csv::priv
 
   while( stream_reader.getline( line ) )
   {
-    if( !line.empty() && line[0] == '#' )
+    if( !line.empty() && line[ 0 ] == '#' )
     {
       continue;
     }
@@ -161,23 +163,24 @@ read_track_descriptor_set_csv::priv
       VITAL_THROW( vital::invalid_data, str.str() );
     }
 
-    vital::track_descriptor_sptr desc = vital::track_descriptor::create( tokens[1] );
+    vital::track_descriptor_sptr desc =
+      vital::track_descriptor::create( tokens[ 1 ] );
 
-    desc->set_uid( vital::uid( tokens[0] ) );
+    desc->set_uid( vital::uid( tokens[ 0 ] ) );
 
     std::vector< std::string > tid_tokens, raw_tokens, hist_tokens;
 
-    vital::tokenize( tokens[3], tid_tokens, m_sub_delim, true );
-    vital::tokenize( tokens[7], hist_tokens, m_sub_delim, true );
+    vital::tokenize( tokens[ 3 ], tid_tokens, m_sub_delim, true );
+    vital::tokenize( tokens[ 7 ], hist_tokens, m_sub_delim, true );
 
     if( m_read_raw_descriptor )
     {
-      vital::tokenize( tokens[5], raw_tokens, m_sub_delim, true );
+      vital::tokenize( tokens[ 5 ], raw_tokens, m_sub_delim, true );
     }
 
-    unsigned tid_size = std::stoi( tokens[2] );
-    unsigned desc_size = std::stoi( tokens[4] );
-    unsigned hist_size = std::stoi( tokens[6] );
+    unsigned tid_size = std::stoi( tokens[ 2 ] );
+    unsigned desc_size = std::stoi( tokens[ 4 ] );
+    unsigned hist_size = std::stoi( tokens[ 6 ] );
 
     bool contains_world_info = ( hist_size == hist_tokens.size() / 10 );
 
@@ -185,7 +188,9 @@ read_track_descriptor_set_csv::priv
         ( m_read_raw_descriptor && desc_size != raw_tokens.size() ) ||
         ( !contains_world_info && hist_size != hist_tokens.size() / 6 ) )
     {
-      VITAL_THROW( vital::invalid_data, "Track descriptor reading size checksum failed" );
+      VITAL_THROW(
+        vital::invalid_data,
+        "Track descriptor reading size checksum failed" );
     }
 
     for( auto id : tid_tokens )
@@ -199,7 +204,7 @@ read_track_descriptor_set_csv::priv
 
       for( unsigned i = 0; i < desc_size; ++i )
       {
-        desc->at( i ) = std::stod( raw_tokens[i] );
+        desc->at( i ) = std::stod( raw_tokens[ i ] );
       }
     }
 
@@ -249,4 +254,8 @@ read_track_descriptor_set_csv::priv
   }
 }
 
-} } } // end namespace
+} // namespace core
+
+} // namespace arrows
+
+}     // end namespace

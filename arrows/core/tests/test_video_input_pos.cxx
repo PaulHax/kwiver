@@ -11,27 +11,28 @@
 #include <vital/io/metadata_io.h>
 #include <vital/plugin_management/plugin_manager.h>
 
-#include <memory>
-#include <string>
 #include <fstream>
 #include <iostream>
+#include <memory>
+#include <string>
 
 kwiver::vital::path_t g_data_dir;
 
 namespace algo = kwiver::vital::algo;
 namespace kac = kwiver::arrows::core;
+
 static int num_expected_frames = 50;
 static std::string list_file_name = "video_as_images/frame_list.txt";
 static std::string pos_folder_location = "video_as_images/pos";
 
 // ----------------------------------------------------------------------------
 int
-main(int argc, char* argv[])
+main( int argc, char* argv[] )
 {
   ::testing::InitGoogleTest( &argc, argv );
   TEST_LOAD_PLUGINS();
 
-  GET_ARG(1, g_data_dir);
+  GET_ARG( 1, g_data_dir );
 
   return RUN_ALL_TESTS();
 }
@@ -39,21 +40,23 @@ main(int argc, char* argv[])
 // ----------------------------------------------------------------------------
 class video_input_pos : public ::testing::Test
 {
-  TEST_ARG(data_dir);
+  TEST_ARG( data_dir );
 };
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_pos, create)
+TEST_F ( video_input_pos, create )
 {
-  EXPECT_NE( nullptr, algo::video_input::create("pos") );
+  EXPECT_NE( nullptr, algo::video_input::create( "pos" ) );
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_pos, read_list)
+TEST_F ( video_input_pos, read_list )
 {
   // make config block
   auto config = kwiver::vital::config_block::empty_config();
-  config->set_value( "metadata_directory", data_dir + "/" + pos_folder_location );
+  config->set_value(
+    "metadata_directory",
+    data_dir + "/" + pos_folder_location );
 
   kwiver::arrows::core::video_input_pos vip;
 
@@ -66,14 +69,14 @@ TEST_F(video_input_pos, read_list)
   kwiver::vital::timestamp ts;
 
   int num_frames = 0;
-  while ( vip.next_frame( ts ) )
+  while( vip.next_frame( ts ) )
   {
     auto md = vip.frame_metadata();
 
-    if (md.size() > 0)
+    if( md.size() > 0 )
     {
       std::cout << "-----------------------------------\n" << std::endl;
-      kwiver::vital::print_metadata( std::cout, *md[0] );
+      kwiver::vital::print_metadata( std::cout, *md[ 0 ] );
     }
     ++num_frames;
     EXPECT_EQ( num_frames, ts.get_frame() )
@@ -87,11 +90,13 @@ TEST_F(video_input_pos, read_list)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_pos, is_good)
+TEST_F ( video_input_pos, is_good )
 {
   // make config block
   auto config = kwiver::vital::config_block::empty_config();
-  config->set_value( "metadata_directory", data_dir + "/" + pos_folder_location );
+  config->set_value(
+    "metadata_directory",
+    data_dir + "/" + pos_folder_location );
 
   kwiver::arrows::core::video_input_pos vip;
 
@@ -123,7 +128,7 @@ TEST_F(video_input_pos, is_good)
   vip.open( list_file );
 
   int num_frames = 0;
-  while ( vip.next_frame( ts ) )
+  while( vip.next_frame( ts ) )
   {
     ++num_frames;
     EXPECT_TRUE( vip.good() )
@@ -132,11 +137,13 @@ TEST_F(video_input_pos, is_good)
   EXPECT_EQ( num_expected_frames, num_frames );
 }
 
-TEST_F(video_input_pos, seek_frame)
+TEST_F ( video_input_pos, seek_frame )
 {
   // make config block
   auto config = kwiver::vital::config_block::empty_config();
-  config->set_value( "metadata_directory", data_dir + "/" + pos_folder_location );
+  config->set_value(
+    "metadata_directory",
+    data_dir + "/" + pos_folder_location );
 
   kwiver::arrows::core::video_input_pos vip;
 
@@ -153,31 +160,33 @@ TEST_F(video_input_pos, seek_frame)
   ASSERT_TRUE( vip.seekable() );
 
   // Test various valid seeks
-  std::vector<kwiver::vital::timestamp::frame_t> valid_seeks =
-    {3, 23, 46, 34, 50, 1};
-  for (auto requested_frame : valid_seeks)
+  std::vector< kwiver::vital::timestamp::frame_t > valid_seeks = { 3, 23, 46,
+                                                                   34, 50, 1 };
+  for( auto requested_frame : valid_seeks )
   {
-    EXPECT_TRUE( vip.seek_frame( ts, requested_frame) );
+    EXPECT_TRUE( vip.seek_frame( ts, requested_frame ) );
     EXPECT_EQ( requested_frame, ts.get_frame() );
   }
 
   // Test various invalid seeks past end of video
-  std::vector<kwiver::vital::timestamp::frame_t> in_valid_seeks =
-    {-3, -1, 51, 55};
-  for (auto requested_frame : in_valid_seeks)
+  std::vector< kwiver::vital::timestamp::frame_t > in_valid_seeks = { -3, -1,
+                                                                      51, 55 };
+  for( auto requested_frame : in_valid_seeks )
   {
-    EXPECT_FALSE( vip.seek_frame( ts, requested_frame) );
+    EXPECT_FALSE( vip.seek_frame( ts, requested_frame ) );
     EXPECT_NE( requested_frame, ts.get_frame() );
   }
 
   vip.close();
 }
 
-TEST_F(video_input_pos, metadata_map)
+TEST_F ( video_input_pos, metadata_map )
 {
   // make config block
   auto config = kwiver::vital::config_block::empty_config();
-  config->set_value( "metadata_directory", data_dir + "/" + pos_folder_location );
+  config->set_value(
+    "metadata_directory",
+    data_dir + "/" + pos_folder_location );
 
   kwiver::arrows::core::video_input_pos vip;
 
@@ -200,18 +209,18 @@ TEST_F(video_input_pos, metadata_map)
   std::ifstream list_file_stream( list_file );
   int frame_number = 1;
   std::string file_name;
-  while ( std::getline( list_file_stream, file_name ) )
+  while( std::getline( list_file_stream, file_name ) )
   {
-    file_name.replace(0, 6, pos_folder_location);
-    file_name.replace(file_name.length() - 3, 3, "pos");
+    file_name.replace( 0, 6, pos_folder_location );
+    file_name.replace( file_name.length() - 3, 3, "pos" );
 
     auto md_test = kwiver::vital::read_pos_file( data_dir + "/" + file_name );
-    auto md = md_map[frame_number][0];
+    auto md = md_map[ frame_number ][ 0 ];
 
     // Loop over metadata items and compare
-    for (auto iter = md_test->begin(); iter != md_test->end(); ++iter)
+    for( auto iter = md_test->begin(); iter != md_test->end(); ++iter )
     {
-      EXPECT_TRUE( md->has( iter->first ))
+      EXPECT_TRUE( md->has( iter->first ) )
         << "Metadata should have item " << iter->second->name();
     }
 

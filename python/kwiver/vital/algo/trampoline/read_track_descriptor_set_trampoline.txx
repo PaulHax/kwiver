@@ -17,71 +17,78 @@
 #include <vital/algo/read_track_descriptor_set.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
-template < class algorithm_def_rtds_base=
-            kwiver::vital::algorithm_def<
-              kwiver::vital::algo::read_track_descriptor_set > >
-class algorithm_def_rtds_trampoline :
-      public algorithm_trampoline<algorithm_def_rtds_base>
+template < class algorithm_def_rtds_base =
+    kwiver::vital::algorithm_def<
+      kwiver::vital::algo::read_track_descriptor_set > >
+class algorithm_def_rtds_trampoline
+  : public algorithm_trampoline< algorithm_def_rtds_base >
 {
-  public:
-    using algorithm_trampoline<algorithm_def_rtds_base>::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_rtds_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<kwiver::vital::algo::read_track_descriptor_set>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::
+        read_track_descriptor_set >,
+      type_name,
+    );
+  }
 };
 
-template< class read_track_descriptor_set_base=
-                kwiver::vital::algo::read_track_descriptor_set >
-class read_track_descriptor_set_trampoline :
-      public algorithm_def_rtds_trampoline< read_track_descriptor_set_base >
+template < class read_track_descriptor_set_base =
+    kwiver::vital::algo::read_track_descriptor_set >
+class read_track_descriptor_set_trampoline
+  : public algorithm_def_rtds_trampoline< read_track_descriptor_set_base >
 {
-  public:
-    using algorithm_def_rtds_trampoline< read_track_descriptor_set_base>::
-              algorithm_def_rtds_trampoline;
-    void
-    open( std::string const& filename ) override
-    {
-      PYBIND11_OVERLOAD(
-        void,
-        kwiver::vital::algo::read_track_descriptor_set,
-        open,
-        filename
-      );
-    }
+public:
+  using algorithm_def_rtds_trampoline< read_track_descriptor_set_base >::
+  algorithm_def_rtds_trampoline;
 
-    void
-    close() override
-    {
-      PYBIND11_OVERLOAD(
-        void,
-        kwiver::vital::algo::read_track_descriptor_set,
-        close,
-      );
-    }
+  void
+  open( std::string const& filename ) override
+  {
+    PYBIND11_OVERLOAD(
+      void,
+      kwiver::vital::algo::read_track_descriptor_set,
+      open,
+      filename
+    );
+  }
 
-    bool
-    read_set( kwiver::vital::track_descriptor_set_sptr& descriptor_set ) override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        bool,
-        kwiver::vital::algo::read_track_descriptor_set,
-        read_set,
-        descriptor_set
-      );
-    }
+  void
+  close() override
+  {
+    PYBIND11_OVERLOAD(
+      void,
+      kwiver::vital::algo::read_track_descriptor_set,
+      close,
+    );
+  }
+
+  bool
+  read_set( kwiver::vital::track_descriptor_set_sptr& descriptor_set ) override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      bool,
+      kwiver::vital::algo::read_track_descriptor_set,
+      read_set,
+      descriptor_set
+    );
+  }
 };
 
-}
-}
-}
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
 
 #endif

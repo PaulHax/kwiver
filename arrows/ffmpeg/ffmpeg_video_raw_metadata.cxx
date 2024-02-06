@@ -20,7 +20,8 @@ ffmpeg_video_raw_metadata
 
 // ----------------------------------------------------------------------------
 ffmpeg_video_raw_metadata::packet_info
-::packet_info() : packet{}, stream_settings{}
+::packet_info() : packet{},
+                  stream_settings{}
 {}
 
 } // namespace ffmpeg

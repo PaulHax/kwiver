@@ -13,6 +13,7 @@
 #include <vital/vital_types.h>
 
 namespace kwiver {
+
 namespace vital {
 
 /// VITAL Generic math exception
@@ -56,7 +57,7 @@ class VITAL_EXCEPTIONS_EXPORT invalid_matrix_operation
 public:
   /// Constructor
   //  \param reason  The reason for invalidity.
-  invalid_matrix_operation(std::string reason) noexcept;
+  invalid_matrix_operation( std::string reason ) noexcept;
   /// Destructor
   virtual ~invalid_matrix_operation() noexcept;
 
@@ -64,6 +65,8 @@ public:
   std::string m_reason;
 };
 
-} } // end vital namespace
+} // namespace vital
+
+}   // end vital namespace
 
 #endif // VITAL_CORE_EXCEPTIONS_MATH_H

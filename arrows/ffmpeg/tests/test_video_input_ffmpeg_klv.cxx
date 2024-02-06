@@ -38,7 +38,8 @@ main( int argc, char* argv[] )
 class ffmpeg_video_input_klv : public ::testing::Test
 {
 protected:
-  void SetUp() override
+  void
+  SetUp() override
   {
     // TODO(C++17): Replace with std::filesystem
     using st = kwiversys::SystemTools;
@@ -68,7 +69,8 @@ protected:
   }
 
   // Loads expected KLV for standard videos from JSON
-  void load_stream_klv()
+  void
+  load_stream_klv()
   {
     if( !expected_stream_klv.empty() )
     {
@@ -86,7 +88,8 @@ protected:
   }
 
   // Loads expected KLV for "tricky stream" video from JSON
-  void load_tricky_stream_klv()
+  void
+  load_tricky_stream_klv()
   {
     if( !expected_tricky_stream_klv.empty() )
     {
@@ -108,7 +111,8 @@ protected:
 
   // Corners of each frame are set to specific colors
   void
-  verify_rgb_sentinel(kv::image const &image) {
+  verify_rgb_sentinel( kv::image const& image )
+  {
     auto const x = image.width() - 1;
     auto const y = image.height() - 1;
 
@@ -131,7 +135,8 @@ protected:
 
   // Corners of each frame are set to specific values
   void
-  verify_gray_sentinel(kv::image const &image) {
+  verify_gray_sentinel( kv::image const& image )
+  {
     auto const x = image.width() - 1;
     auto const y = image.height() - 1;
 
@@ -155,7 +160,7 @@ protected:
   // Frame number encoded as 32-bit binary number in top row of pixels.
   // Light grey = 1, dark grey = 0
   uint32_t
-  read_frame_number_sentinel(kv::image const& image)
+  read_frame_number_sentinel( kv::image const& image )
   {
     uint32_t result = 0;
     for( size_t i = 0; i < 32; ++i )
@@ -201,7 +206,8 @@ protected:
       EXPECT_EQ(
         "misp",
         input_klv_md->find( kv::VITAL_META_UNIX_TIMESTAMP_SOURCE )
-          .as_string() );
+        .as_string() );
+
       auto const expected_timestamp =
         0x000459F4A6AA4AA8ull +
         static_cast< uint64_t >( ( entry.first - 1 ) * 1000000.0 / 30.0 );
@@ -313,6 +319,7 @@ TEST_F ( ffmpeg_video_input_klv, h265_tricky_klv_verify )
   load_tricky_stream_klv();
 
   input.open( tricky_streams_path );
+
   kv::timestamp ts;
   for( size_t i = 0; i < expected_frame_count; ++i )
   {
@@ -351,6 +358,7 @@ TEST_F ( ffmpeg_video_input_klv, h265_tricky_klv_verify )
         auto const index_entry =
           it->second.find( kv::VITAL_META_VIDEO_DATA_STREAM_INDEX );
         ASSERT_TRUE( index_entry.is_valid() );
+
         auto const this_stream_index = index_entry.get< int >();
         if( this_stream_index == stream_index )
         {
@@ -374,7 +382,8 @@ TEST_F ( ffmpeg_video_input_klv, h265_tricky_klv_verify )
       EXPECT_EQ(
         "misp",
         input_klv_md->find( kv::VITAL_META_UNIX_TIMESTAMP_SOURCE )
-          .as_string() );
+        .as_string() );
+
       auto const expected_timestamp =
         0x000459F4A6AA4AA8ull +
         static_cast< uint64_t >( i * 1000000.0 / 30.0 );

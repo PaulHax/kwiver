@@ -6,7 +6,8 @@
  * \file read_track_descriptor_set_trampoline.txx
  *
  * \brief trampoline for overriding virtual functions of
- *        algorithm_def<write_track_descriptor_set> and write_track_descriptor_set
+ *        algorithm_def<write_track_descriptor_set> and
+ * write_track_descriptor_set
  */
 
 #ifndef WRITE_TRACK_DESCRIPTOR_SET_TRAMPOLINE_TXX
@@ -17,70 +18,78 @@
 #include <vital/algo/write_track_descriptor_set.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
-template < class algorithm_def_wtds_base=
-            kwiver::vital::algorithm_def<
-              kwiver::vital::algo::write_track_descriptor_set > >
-class algorithm_def_wtds_trampoline :
-      public algorithm_trampoline<algorithm_def_wtds_base>
+template < class algorithm_def_wtds_base =
+    kwiver::vital::algorithm_def<
+      kwiver::vital::algo::write_track_descriptor_set > >
+class algorithm_def_wtds_trampoline
+  : public algorithm_trampoline< algorithm_def_wtds_base >
 {
-  public:
-    using algorithm_trampoline<algorithm_def_wtds_base>::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_wtds_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<kwiver::vital::algo::write_track_descriptor_set>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::
+        write_track_descriptor_set >,
+      type_name,
+    );
+  }
 };
 
-template< class write_track_descriptor_set_base=
-                kwiver::vital::algo::write_track_descriptor_set >
-class write_track_descriptor_set_trampoline :
-      public algorithm_def_wtds_trampoline< write_track_descriptor_set_base >
+template < class write_track_descriptor_set_base =
+    kwiver::vital::algo::write_track_descriptor_set >
+class write_track_descriptor_set_trampoline
+  : public algorithm_def_wtds_trampoline< write_track_descriptor_set_base >
 {
-  public:
-    using algorithm_def_wtds_trampoline< write_track_descriptor_set_base>::
-              algorithm_def_wtds_trampoline;
+public:
+  using algorithm_def_wtds_trampoline< write_track_descriptor_set_base >::
+  algorithm_def_wtds_trampoline;
 
-    void open( std::string const& filename ) override
-    {
-      PYBIND11_OVERLOAD(
-        void,
-        kwiver::vital::algo::write_track_descriptor_set,
-        open,
-        filename
-      );
-    }
+  void
+  open( std::string const& filename ) override
+  {
+    PYBIND11_OVERLOAD(
+      void,
+      kwiver::vital::algo::write_track_descriptor_set,
+      open,
+      filename
+    );
+  }
 
-    void close() override
-    {
-      PYBIND11_OVERLOAD(
-        void,
-        kwiver::vital::algo::write_track_descriptor_set,
-        close,
-      );
-    }
+  void
+  close() override
+  {
+    PYBIND11_OVERLOAD(
+      void,
+      kwiver::vital::algo::write_track_descriptor_set,
+      close,
+    );
+  }
 
-    void
-    write_set( const kwiver::vital::track_descriptor_set_sptr set ) override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        void,
-        kwiver::vital::algo::write_track_descriptor_set,
-        write_set,
-        set
-      );
-    }
+  void
+  write_set( const kwiver::vital::track_descriptor_set_sptr set ) override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      void,
+      kwiver::vital::algo::write_track_descriptor_set,
+      write_set,
+      set
+    );
+  }
 };
 
-}
-}
-}
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
 
 #endif

@@ -25,14 +25,15 @@ namespace klv {
 
 // ----------------------------------------------------------------------------
 klv_bad_value_cast
-::klv_bad_value_cast( std::type_info const& requested_type,
-                      std::type_info const& actual_type )
+::klv_bad_value_cast(
+  std::type_info const& requested_type,
+  std::type_info const& actual_type )
 {
   std::stringstream ss;
-  ss    << "klv_value: type "
-        << kwiver::vital::demangle( requested_type.name() )
-        << " was requested, but the object holds type "
-        << kwiver::vital::demangle( actual_type.name() );
+  ss << "klv_value: type "
+     << kwiver::vital::demangle( requested_type.name() )
+     << " was requested, but the object holds type "
+     << kwiver::vital::demangle( actual_type.name() );
   m_message = ss.str();
 }
 
@@ -50,7 +51,7 @@ class klv_value::internal_base
 public:
   virtual ~internal_base() = default;
 
-  virtual std::type_info const& type() const noexcept = 0;
+  virtual std::type_info const& type() const noexcept= 0;
   virtual bool less_than( internal_base const& rhs ) const = 0;
   virtual bool equal_to( internal_base const& rhs ) const = 0;
   virtual std::ostream& print( std::ostream& os ) const = 0;
@@ -141,8 +142,9 @@ klv_value
 template < class T, typename > klv_value
 ::klv_value( T&& value )
 {
-  m_item.reset( new internal_< typename std::decay< T >::type >{
-                  std::forward< T >( value ) } );
+  m_item.reset(
+    new internal_< typename std::decay< T >::type >{
+          std::forward< T >( value ) } );
 }
 
 // ----------------------------------------------------------------------------
@@ -354,26 +356,26 @@ operator<<( std::ostream& os, klv_value const& rhs )
 }
 
 // ----------------------------------------------------------------------------
-#define KLV_INSTANTIATE( T )                                 \
-  template KWIVER_ALGO_KLV_EXPORT                            \
-  klv_value::klv_value( T&& );                               \
-  template KWIVER_ALGO_KLV_EXPORT                            \
-  klv_value::klv_value( T& );                                \
-  template KWIVER_ALGO_KLV_EXPORT                            \
-  klv_value::klv_value( T const& );                          \
-  template KWIVER_ALGO_KLV_EXPORT                            \
-  klv_value & klv_value::operator= < T >( T && );            \
-  template KWIVER_ALGO_KLV_EXPORT                            \
-  klv_value & klv_value::operator= < T const& >( T const& ); \
-  template KWIVER_ALGO_KLV_EXPORT                            \
-  T & klv_value::get< T >();                                 \
-  template KWIVER_ALGO_KLV_EXPORT                            \
-  T const& klv_value::get< T >() const;                      \
-  template KWIVER_ALGO_KLV_EXPORT                            \
-  T * klv_value::get_ptr< T >() noexcept;                    \
-  template KWIVER_ALGO_KLV_EXPORT                            \
-  T const* klv_value::get_ptr< T >() const noexcept;         \
-  template class KWIVER_ALGO_KLV_EXPORT                      \
+#define KLV_INSTANTIATE( T )                              \
+template KWIVER_ALGO_KLV_EXPORT                           \
+klv_value::klv_value( T && );                             \
+template KWIVER_ALGO_KLV_EXPORT                           \
+klv_value::klv_value( T& );                               \
+template KWIVER_ALGO_KLV_EXPORT                           \
+klv_value::klv_value( T const& );                         \
+template KWIVER_ALGO_KLV_EXPORT                           \
+klv_value & klv_value::operator=< T >( T && );            \
+template KWIVER_ALGO_KLV_EXPORT                           \
+klv_value & klv_value::operator=< T const& >( T const& ); \
+template KWIVER_ALGO_KLV_EXPORT                           \
+T & klv_value::get< T >();                                \
+template KWIVER_ALGO_KLV_EXPORT                           \
+T const& klv_value::get< T >() const;                     \
+template KWIVER_ALGO_KLV_EXPORT                           \
+T * klv_value::get_ptr< T >() noexcept;                   \
+template KWIVER_ALGO_KLV_EXPORT                           \
+T const* klv_value::get_ptr< T >() const noexcept;        \
+template   class KWIVER_ALGO_KLV_EXPORT                   \
   klv_value::internal_< T >;
 
 KLV_INSTANTIATE( bool );
@@ -460,10 +462,14 @@ KLV_INSTANTIATE( std::vector< uint64_t > );
 KLV_INSTANTIATE( uint64_t );
 
 namespace detail {
+
 // commas confuse the macro parser so we use a temporary type
-using map_long_klv_value = kwiver::vital::interval_map_entry_t< unsigned long, kwiver::arrows::klv::klv_value >;
-}
-KLV_INSTANTIATE(detail::map_long_klv_value);
+using map_long_klv_value = kwiver::vital::interval_map_entry_t< unsigned long,
+  kwiver::arrows::klv::klv_value >;
+
+} // namespace detail
+
+KLV_INSTANTIATE( detail::map_long_klv_value );
 
 } // namespace klv
 

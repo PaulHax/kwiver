@@ -16,8 +16,8 @@ extern "C"
 #endif
 
 #include <vital/bindings/c/algorithm.h>
-#include <vital/bindings/c/vital_c_export.h>
 #include <vital/bindings/c/error_handle.h>
+#include <vital/bindings/c/vital_c_export.h>
 
 #include <vital/bindings/c/types/camera_map.h>
 #include <vital/bindings/c/types/landmark_map.h>
@@ -27,6 +27,7 @@ extern "C"
 DECLARE_COMMON_ALGO_API( bundle_adjust )
 
 /// Optimize the camera and landmark parameters given a set of tracks
+
 /**
  * \param [in] algo bundle adjust algorithm instance
  * \param [in,out] cameras the cameras to optimize
@@ -36,14 +37,15 @@ DECLARE_COMMON_ALGO_API( bundle_adjust )
  */
 VITAL_C_EXPORT
 void
-vital_algorithm_bundle_adjust_optimize( vital_algorithm_t *algo,
-                                        vital_camera_map_t **cmap,
-                                        vital_landmark_map_t **lmap,
-                                        vital_trackset_t *tset,
-                                        vital_error_handle_t *eh );
+vital_algorithm_bundle_adjust_optimize(
+  vital_algorithm_t* algo,
+  vital_camera_map_t** cmap,
+  vital_landmark_map_t** lmap,
+  vital_trackset_t* tset,
+  vital_error_handle_t* eh );
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif //VITAL_C_ALGO_BUNDLE_ADJUST_H_
+#endif // VITAL_C_ALGO_BUNDLE_ADJUST_H_

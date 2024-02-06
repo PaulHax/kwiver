@@ -57,8 +57,9 @@ public:
 
   /// Write \c klv_value (holding proper type) to raw bytes.
   virtual void
-  write( klv_value const& value, klv_write_iter_t& data,
-         size_t length ) const = 0;
+  write(
+    klv_value const& value, klv_write_iter_t& data,
+    size_t length ) const = 0;
 
   /// Return number of bytes required to write \p value.
   ///
@@ -153,11 +154,12 @@ public:
       // Try to parse using this data format
       return read_( data, length );
     }
-    catch ( std::exception const& e )
+    catch( std::exception const& e )
     {
       // Return blob if parsing failed
-      LOG_ERROR( kwiver::vital::get_logger( "klv" ),
-                "error occurred during parsing: " << e.what() );
+      LOG_ERROR(
+        kwiver::vital::get_logger( "klv" ),
+        "error occurred during parsing: " << e.what() );
       return klv_read_blob( ( data = begin ), length );
     }
   }
@@ -185,8 +187,9 @@ public:
   }
 
   void
-  write( klv_value const& value, klv_write_iter_t& data,
-         size_t max_length ) const override final
+  write(
+    klv_value const& value, klv_write_iter_t& data,
+    size_t max_length ) const override final
   {
     if( value.empty() )
     {
@@ -281,8 +284,8 @@ public:
   print( std::ostream& os, klv_value const& value ) const override final
   {
     return !value.valid()
-          ? ( os << value )
-          : print_( os, value.get< T >() );
+           ? ( os << value )
+           : print_( os, value.get< T >() );
   }
 
   std::ostream&
@@ -300,8 +303,9 @@ protected:
   read_typed( klv_read_iter_t& data, size_t length ) const = 0;
 
   virtual void
-  write_typed( T const& value, klv_write_iter_t& data,
-               size_t length ) const = 0;
+  write_typed(
+    T const& value, klv_write_iter_t& data,
+    size_t length ) const = 0;
 
   virtual size_t
   length_of_typed( T const& value ) const = 0;
@@ -339,8 +343,9 @@ protected:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_blob const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    klv_blob const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( klv_blob const& value ) const override;
@@ -362,8 +367,9 @@ protected:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_uuid const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    klv_uuid const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( klv_uuid const& value ) const override;
@@ -385,8 +391,9 @@ protected:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( bool const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    bool const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( bool const& value ) const override;
@@ -411,8 +418,9 @@ protected:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( uint64_t const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    uint64_t const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( uint64_t const& value ) const override;
@@ -437,8 +445,9 @@ protected:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( int64_t const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    int64_t const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( int64_t const& value ) const override;
@@ -476,8 +485,9 @@ protected:
   }
 
   void
-  write_typed( data_type const& value,
-               klv_write_iter_t& data, size_t length ) const override
+  write_typed(
+    data_type const& value,
+    klv_write_iter_t& data, size_t length ) const override
   {
     klv_write_int( static_cast< uint64_t >( value ), data, length );
   }
@@ -511,8 +521,9 @@ protected:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( uint64_t const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    uint64_t const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( uint64_t const& value ) const override;
@@ -537,8 +548,9 @@ protected:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( uint64_t const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    uint64_t const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( uint64_t const& value ) const override;
@@ -563,15 +575,17 @@ protected:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_lengthy< double > const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    klv_lengthy< double > const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( klv_lengthy< double > const& value ) const override;
 
   std::ostream&
-  print_typed( std::ostream& os,
-               klv_lengthy< double > const& value ) const override;
+  print_typed(
+    std::ostream& os,
+    klv_lengthy< double > const& value ) const override;
 };
 
 // ----------------------------------------------------------------------------
@@ -599,15 +613,17 @@ protected:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_lengthy< double > const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    klv_lengthy< double > const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( klv_lengthy< double > const& value ) const override;
 
   std::ostream&
-  print_typed( std::ostream& os,
-               klv_lengthy< double > const& value ) const override;
+  print_typed(
+    std::ostream& os,
+    klv_lengthy< double > const& value ) const override;
 
   vital::interval< double > m_interval;
 };
@@ -637,15 +653,17 @@ protected:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_lengthy< double > const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    klv_lengthy< double > const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( klv_lengthy< double > const& value ) const override;
 
   std::ostream&
-  print_typed( std::ostream& os,
-               klv_lengthy< double > const& value ) const override;
+  print_typed(
+    std::ostream& os,
+    klv_lengthy< double > const& value ) const override;
 
   vital::interval< double > m_interval;
 };
@@ -671,30 +689,33 @@ protected:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_lengthy< double > const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    klv_lengthy< double > const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( klv_lengthy< double > const& value ) const override;
 
   std::ostream&
-  print_typed( std::ostream& os,
-               klv_lengthy< double > const& value ) const override;
+  print_typed(
+    std::ostream& os,
+    klv_lengthy< double > const& value ) const override;
 
   vital::interval< double > m_interval;
 };
 
 // ----------------------------------------------------------------------------
-template< class Format >
+template < class Format >
 class KWIVER_ALGO_KLV_EXPORT klv_lengthless_format
   : public klv_data_format_< typename Format::data_type::value_type >
 {
 public:
   using data_type = typename Format::data_type::value_type;
 
-  template< class... Args >
+  template < class... Args >
   klv_lengthless_format( Args&&... args )
-    : m_format{ args... } {
+    : m_format{ args... }
+  {
     if( !m_format.length_constraints().fixed() )
     {
       throw std::logic_error( "klv_lengthless_format requires fixed length" );
@@ -717,8 +738,9 @@ protected:
   }
 
   void
-  write_typed( data_type const& value,
-               klv_write_iter_t& data, size_t length ) const
+  write_typed(
+    data_type const& value,
+    klv_write_iter_t& data, size_t length ) const
   {
     m_format.write_(
       { value, *this->m_length_constraints.fixed() }, data, length );
@@ -743,11 +765,12 @@ using klv_lengthless_float_format = klv_lengthless_format< klv_float_format >;
 using klv_lengthless_imap_format = klv_lengthless_format< klv_imap_format >;
 
 // ----------------------------------------------------------------------------
-template< class Enum, class Int >
+template < class Enum, class Int >
 std::set< Enum >
 bitfield_to_enums( Int bitfield )
 {
   static_assert( std::is_unsigned< Int >::value, "bitfield must be unsigned" );
+
   std::set< Enum > result;
   for( size_t i = 0; bitfield; ++i, bitfield >>= 1 )
   {
@@ -760,11 +783,12 @@ bitfield_to_enums( Int bitfield )
 }
 
 // ----------------------------------------------------------------------------
-template< class Enum, class Int = uint64_t >
+template < class Enum, class Int = uint64_t >
 Int
 enums_to_bitfield( std::set< Enum > const& enums )
 {
   static_assert( std::is_unsigned< Int >::value, "bitfield must be unsigned" );
+
   Int result = 0;
   for( auto const& element : enums )
   {
@@ -774,14 +798,15 @@ enums_to_bitfield( std::set< Enum > const& enums )
 }
 
 // ----------------------------------------------------------------------------
-template< class Enum, class Format = klv_uint_format >
+template < class Enum, class Format = klv_uint_format >
 class KWIVER_ALGO_KLV_EXPORT klv_enum_bitfield_format
   : public klv_data_format_< std::set< Enum > >
 {
 public:
-  template< class... Args >
+  template < class... Args >
   klv_enum_bitfield_format( Args&&... args )
-    : m_format{ args... } {
+    : m_format{ args... }
+  {
     this->m_length_constraints = m_format.length_constraints();
     m_format.set_length_constraints( {} );
   }
@@ -800,8 +825,9 @@ protected:
   }
 
   void
-  write_typed( std::set< Enum > const& value,
-               klv_write_iter_t& data, size_t length ) const
+  write_typed(
+    std::set< Enum > const& value,
+    klv_write_iter_t& data, size_t length ) const
   {
     m_format.write_( enums_to_bitfield( value ), data, length );
   }

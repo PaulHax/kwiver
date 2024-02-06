@@ -2,13 +2,14 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include "detected_object_set.h"
 #include "bounding_box.h"
+#include "detected_object_set.h"
 
 #include <algorithm>
 #include <stdexcept>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -16,7 +17,10 @@ namespace {
 
 struct descending_confidence
 {
-  bool operator()( detected_object_sptr const& a, detected_object_sptr const& b ) const
+  bool
+  operator()(
+    detected_object_sptr const& a,
+    detected_object_sptr const& b ) const
   {
     if( a && !b )
     {
@@ -34,7 +38,8 @@ template < typename T1, typename T2 >
 struct more_first
 {
   typedef std::pair< T1, T2 > type;
-  bool operator()( type const& a, type const& b ) const
+  bool
+  operator()( type const& a, type const& b ) const
   {
     return a.first > b.first;
   }
@@ -43,33 +48,32 @@ struct more_first
 } // end namespace
 
 // ----------------------------------------------------------------------------
-detected_object_set::
-detected_object_set()
-{ }
+detected_object_set
+::detected_object_set()
+{}
 
 // ----------------------------------------------------------------------------
-detected_object_set::
-detected_object_set( std::vector< detected_object_sptr > const& objs )
+detected_object_set
+::detected_object_set( std::vector< detected_object_sptr > const& objs )
   : m_detected_objects( objs )
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 detected_object_set_sptr
-detected_object_set::
-clone() const
+detected_object_set
+::clone() const
 {
-  auto new_obj = std::make_shared<detected_object_set>();
+  auto new_obj = std::make_shared< detected_object_set >();
 
   auto ie = cend();
-  for ( auto ix = cbegin(); ix != ie; ++ix )
+  for( auto ix = cbegin(); ix != ie; ++ix )
   {
     // copy detection
-    new_obj->add( (*ix)->clone() );
+    new_obj->add( ( *ix )->clone() );
   }
 
   // duplicate attributes
-  if ( this->m_attrs )
+  if( this->m_attrs )
   {
     new_obj->m_attrs = this->m_attrs->clone();
   }
@@ -79,12 +83,13 @@ clone() const
 
 // ----------------------------------------------------------------------------
 void
-detected_object_set::
-add( detected_object_sptr object )
+detected_object_set
+::add( detected_object_sptr object )
 {
-  if ( ! object )
+  if( !object )
   {
-    throw std::runtime_error( "Passing null pointer to detected_object_set::add()" );
+    throw std::runtime_error(
+      "Passing null pointer to detected_object_set::add()" );
   }
 
   m_detected_objects.push_back( object );
@@ -92,10 +97,10 @@ add( detected_object_sptr object )
 
 // ----------------------------------------------------------------------------
 void
-detected_object_set::
-add( detected_object_set_sptr detections )
+detected_object_set
+::add( detected_object_set_sptr detections )
 {
-  for ( auto dptr : *detections )
+  for( auto dptr : *detections )
   {
     this->add( dptr );
   }
@@ -103,84 +108,86 @@ add( detected_object_set_sptr detections )
 
 // ----------------------------------------------------------------------------
 size_t
-detected_object_set::
-size() const
+detected_object_set
+::size() const
 {
   return m_detected_objects.size();
 }
 
 // ----------------------------------------------------------------------------
 bool
-detected_object_set::
-empty() const
+detected_object_set
+::empty() const
 {
   return m_detected_objects.empty();
 }
 
 // ----------------------------------------------------------------------------
 detected_object_set_sptr
-detected_object_set::
-select( double threshold ) const
+detected_object_set
+::select( double threshold ) const
 {
   // The main list can get out of order if somebody updates the
   // confidence value of a detection directly
-  std::vector< detected_object_sptr> vect;
+  std::vector< detected_object_sptr > vect;
 
-  auto ie =  cend();
-  for ( auto ix = cbegin(); ix != ie; ++ix )
+  auto ie = cend();
+  for( auto ix = cbegin(); ix != ie; ++ix )
   {
-    if ( (*ix)->confidence() >= threshold )
+    if( ( *ix )->confidence() >= threshold )
     {
       vect.push_back( *ix );
     }
   }
 
   std::sort( vect.begin(), vect.end(), descending_confidence() );
-  return std::make_shared< detected_object_set > (vect);
+  return std::make_shared< detected_object_set >( vect );
 }
 
 // ----------------------------------------------------------------------------
 detected_object_set_sptr
-detected_object_set::
-select( const std::string& class_name, double threshold )const
+detected_object_set
+::select( const std::string& class_name, double threshold )const
 {
   // Intermediate sortable data structure
   std::vector< std::pair< double, detected_object_sptr > > data;
 
   // Create a sortable list by selecting
   auto ie = cend();
-  for ( auto ix = cbegin(); ix != ie; ++ix )
+  for( auto ix = cbegin(); ix != ie; ++ix )
   {
-    auto obj_type = (*ix)->type();
-    if ( ! obj_type )
+    auto obj_type = ( *ix )->type();
+    if( !obj_type )
     {
       continue;  // Must have a type assigned
     }
 
-    double score(0);
+    double score( 0 );
     try
     {
       score = obj_type->score( class_name );
     }
-    catch (const std::runtime_error& )
+    catch( const std::runtime_error& )
     {
       // Object did not have the desired class_name. This not fatal,
       // but since we are looking for that name, there is some
       // expectation that it is present.
 
-      //+ maybe log something?
+      // + maybe log something?
       continue;
     }
 
     // Select those not below threshold
-    if ( score >= threshold )
+    if( score >= threshold )
     {
       data.push_back( std::pair< double, detected_object_sptr >( score, *ix ) );
     }
   } // end foreach
 
   // Sort on score
-  std::sort( data.begin(), data.end(), more_first< double,  detected_object_sptr >() );
+  std::sort(
+    data.begin(), data.end(),
+    more_first< double,  detected_object_sptr >() );
 
   // Create new vector for return
   std::vector< detected_object_sptr > vect;
@@ -190,13 +197,13 @@ select( const std::string& class_name, double threshold )const
     vect.push_back( i.second );
   }
 
-  return std::make_shared< detected_object_set > (vect);
+  return std::make_shared< detected_object_set >( vect );
 }
 
 // ----------------------------------------------------------------------------
 void
-detected_object_set::
-scale( double scale_factor )
+detected_object_set
+::scale( double scale_factor )
 {
   if( scale_factor == 1.0 )
   {
@@ -213,8 +220,8 @@ scale( double scale_factor )
 
 // ----------------------------------------------------------------------------
 void
-detected_object_set::
-shift( double col_shift, double row_shift )
+detected_object_set
+::shift( double col_shift, double row_shift )
 {
   if( col_shift == 0.0 && row_shift == 0.0 )
   {
@@ -224,7 +231,8 @@ shift( double col_shift, double row_shift )
   for( auto detection : m_detected_objects )
   {
     auto bbox = detection->bounding_box();
-    bbox = kwiver::vital::translate( bbox,
+    bbox = kwiver::vital::translate(
+      bbox,
       bounding_box_d::vector_type( col_shift, row_shift ) );
     detection->set_bounding_box( bbox );
   }
@@ -232,32 +240,32 @@ shift( double col_shift, double row_shift )
 
 // ----------------------------------------------------------------------------
 kwiver::vital::attribute_set_sptr
-detected_object_set::
-attributes() const
+detected_object_set
+::attributes() const
 {
   return m_attrs;
 }
 
 // ----------------------------------------------------------------------------
 void
-detected_object_set::
-set_attributes( attribute_set_sptr attrs )
+detected_object_set
+::set_attributes( attribute_set_sptr attrs )
 {
   m_attrs = attrs;
 }
 
 // ----------------------------------------------------------------------------
 detected_object_sptr
-detected_object_set::
-at( size_t pos )
+detected_object_set
+::at( size_t pos )
 {
   return m_detected_objects.at( pos );
 }
 
 // ----------------------------------------------------------------------------
 const detected_object_sptr
-detected_object_set::
-at( size_t pos ) const
+detected_object_set
+::at( size_t pos ) const
 {
   return m_detected_objects.at( pos );
 }
@@ -271,13 +279,13 @@ detected_object_set
 ::get_iter_next_func()
 {
   vec_t::iterator it = m_detected_objects.begin();
-  return [=] () mutable ->iterator::reference {
-    if( it == m_detected_objects.end() )
-    {
-      VITAL_THROW( stop_iteration_exception, "detected_object_set" );
-    }
-    return *(it++);
-  };
+  return [=]() mutable ->iterator::reference {
+           if( it == m_detected_objects.end() )
+           {
+             VITAL_THROW( stop_iteration_exception, "detected_object_set" );
+           }
+           return *( it++ );
+         };
 }
 
 // ----------------------------------------------------------------------------
@@ -287,13 +295,15 @@ detected_object_set
 ::get_const_iter_next_func() const
 {
   vec_t::const_iterator cit = m_detected_objects.begin();
-  return [=] () mutable ->const_iterator::reference {
-    if( cit == m_detected_objects.end() )
-    {
-      VITAL_THROW( stop_iteration_exception, "detected_object_set" );
-    }
-    return *(cit++);
-  };
+  return [=]() mutable ->const_iterator::reference {
+           if( cit == m_detected_objects.end() )
+           {
+             VITAL_THROW( stop_iteration_exception, "detected_object_set" );
+           }
+           return *( cit++ );
+         };
 }
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace

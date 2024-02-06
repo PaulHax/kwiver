@@ -10,6 +10,7 @@
 #include <string>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -54,9 +55,10 @@ public:
 private:
   std::string m_indent;
   size_t m_line_length;
-
 }; // end class wrap_text_block
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // VITAL_UTIL_WRAP_TEXT_BLOCK_H

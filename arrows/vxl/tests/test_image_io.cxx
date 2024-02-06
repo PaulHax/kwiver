@@ -24,8 +24,10 @@ namespace ka = kwiver::arrows;
 using ST = kwiversys::SystemTools;
 
 kv::path_t g_data_dir;
-static std::string test_color_image_name = "images/kitware_logos/small_color_logo.png";
-static std::string test_plane_image_name = "images/kitware_logos/planes_logo.png";
+static std::string test_color_image_name =
+  "images/kitware_logos/small_color_logo.png";
+static std::string test_plane_image_name =
+  "images/kitware_logos/planes_logo.png";
 
 // ----------------------------------------------------------------------------
 int
@@ -46,7 +48,7 @@ class image_io : public ::testing::Test
 };
 
 // ----------------------------------------------------------------------------
-TEST_F(image_io, save_plane)
+TEST_F ( image_io, save_plane )
 {
   // Create an image to output
   auto const vil_image = vil_image_view< vxl_byte >{ 150, 150, 3 };
@@ -66,8 +68,10 @@ TEST_F(image_io, save_plane)
 
   auto const reread_image_ptr = io.load( output_filename );
 
-  EXPECT_TRUE( equal_content( image_ptr->get_image(),
-                              reread_image_ptr->get_image() ) );
+  EXPECT_TRUE(
+    equal_content(
+      image_ptr->get_image(),
+      reread_image_ptr->get_image() ) );
 
   auto const saved_filenames = io.plane_filenames( output_filename );
 
@@ -81,7 +85,7 @@ TEST_F(image_io, save_plane)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(image_io, load_plane)
+TEST_F ( image_io, load_plane )
 {
   auto const color_filename = data_dir + "/" + test_color_image_name;
   auto const plane_filename = data_dir + "/" + test_plane_image_name;
@@ -94,6 +98,8 @@ TEST_F(image_io, load_plane)
   reader.set_configuration( config );
 
   auto const plane_image_ptr = reader.load( plane_filename );
-  EXPECT_TRUE( equal_content( color_image_ptr->get_image(),
-                              plane_image_ptr->get_image() ) );
+  EXPECT_TRUE(
+    equal_content(
+      color_image_ptr->get_image(),
+      plane_image_ptr->get_image() ) );
 }

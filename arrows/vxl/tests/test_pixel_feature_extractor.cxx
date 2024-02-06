@@ -4,9 +4,9 @@
 
 #include <test_gtest.h>
 
-#include <arrows/vxl/pixel_feature_extractor.h>
 #include <arrows/vxl/image_container.h>
 #include <arrows/vxl/image_io.h>
+#include <arrows/vxl/pixel_feature_extractor.h>
 
 #include <vital/plugin_management/plugin_manager.h>
 
@@ -20,7 +20,8 @@ namespace kv = kwiver::vital;
 namespace ka = kwiver::arrows;
 
 kv::path_t g_data_dir;
-static std::string test_color_image_name = "images/kitware_logos/small_color_logo.png";
+static std::string test_color_image_name =
+  "images/kitware_logos/small_color_logo.png";
 static std::string expected_name = "images/kitware_logos/features_expected.png";
 
 // ----------------------------------------------------------------------------
@@ -42,7 +43,7 @@ class pixel_feature_extractor : public ::testing::Test
 };
 
 // ----------------------------------------------------------------------------
-TEST_F(pixel_feature_extractor, compute_all)
+TEST_F ( pixel_feature_extractor, compute_all )
 {
   std::string input_filename = data_dir + "/" + test_color_image_name;
   std::string expected_filename = data_dir + "/" + expected_name;
@@ -59,6 +60,8 @@ TEST_F(pixel_feature_extractor, compute_all)
   io.set_configuration( io_config );
 
   auto const expected = io.load( expected_filename );
-  EXPECT_TRUE( equal_content( filtered->get_image(),
-                              expected->get_image() ) );
+  EXPECT_TRUE(
+    equal_content(
+      filtered->get_image(),
+      expected->get_image() ) );
 }

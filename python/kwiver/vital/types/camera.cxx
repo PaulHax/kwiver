@@ -11,8 +11,11 @@
 
 namespace py = pybind11;
 namespace kv = kwiver::vital;
+
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
 class camera_trampoline
@@ -22,46 +25,54 @@ class camera_trampoline
 
   kv::camera_sptr clone() const override;
   kv::vector_2d project( const kv::vector_3d& pt ) const override;
+
   unsigned int image_width() const override;
   unsigned int image_height() const override;
 };
-}
-}
-}
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
+
 using namespace kwiver::vital::python;
 PYBIND11_MODULE( camera, m )
 {
   py::class_< kv::camera,
-              std::shared_ptr< kv::camera >,
-              camera_trampoline>( m, "Camera" )
-  .def( py::init<>() )
-  .def( "project",      &kv::camera::project )
-  .def( "image_width",  &kv::camera::image_width )
-  .def( "image_height", &kv::camera::image_height )
+    std::shared_ptr< kv::camera >,
+    camera_trampoline >( m, "Camera" )
+    .def( py::init<>() )
+    .def( "project",      &kv::camera::project )
+    .def( "image_width",  &kv::camera::image_width )
+    .def( "image_height", &kv::camera::image_height )
   ;
 }
 // We are excluding clone in the base's binding code to follow the pattern
 // described in this pybind issue:
 // https://github.com/pybind/pybind11/issues/1049#issuecomment-326688270
 // Subclasses will still be able to override it, however.
-// Pybind automatically downcasts pointers returned by clone() to the lowest possible
-// subtype, but under certain circumstances, the returned pointer can get sliced.
-// The above link has a solution to this issue. The trampoline's implementation of
+// Pybind automatically downcasts pointers returned by clone() to the lowest
+// possible
+// subtype, but under certain circumstances, the returned pointer can get
+// sliced.
+// The above link has a solution to this issue. The trampoline's implementation
+// of
 // clone() also was modified to follow this pattern
-
 
 kv::camera_sptr
 camera_trampoline
 ::clone() const
 {
-  auto self = py::cast(this);
+  auto self = py::cast( this );
   auto cloned = self.attr("clone")();
 
-  auto keep_python_state_alive = std::make_shared<py::object>(cloned);
-  auto ptr = cloned.cast<camera_trampoline*>();
+  auto keep_python_state_alive = std::make_shared< py::object >( cloned );
+  auto ptr = cloned.cast< camera_trampoline* >();
 
-  // aliasing shared_ptr: points to `camera_trampoline* ptr` but refcounts the Python object
-  return std::shared_ptr<kv::camera>(keep_python_state_alive, ptr);
+  // aliasing shared_ptr: points to `camera_trampoline* ptr` but refcounts the
+  // Python object
+  return std::shared_ptr< kv::camera >( keep_python_state_alive, ptr );
 }
 
 kv::vector_2d

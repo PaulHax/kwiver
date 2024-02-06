@@ -24,7 +24,7 @@ main( int argc, char* argv[] )
 }
 
 // ----------------------------------------------------------------------------
-TEST(signal, basic)
+TEST ( signal, basic )
 {
   kv::signal< int > signal;
   kv::context ctx;
@@ -41,7 +41,7 @@ TEST(signal, basic)
 }
 
 // ----------------------------------------------------------------------------
-TEST(signal, multiple_slots)
+TEST ( signal, multiple_slots )
 {
   kv::signal< int > signal;
 
@@ -77,7 +77,7 @@ TEST(signal, multiple_slots)
 }
 
 // ----------------------------------------------------------------------------
-TEST(signal, races)
+TEST ( signal, races )
 {
   // This test merits some explanation. The goal of this test is to verify that
   // a context can be destroyed without racing the emission or destruction of a
@@ -115,21 +115,21 @@ TEST(signal, races)
           // the context; note that this slot is executing in the original/main
           // thread, since that is where the signal is raised
           std::this_thread::sleep_for( std::chrono::milliseconds{ 250 } );
-        });
+        } );
 
       // Notify that we are ready for the signal to be raised, then wait
       cond = true;
-      while ( cond.load() )
+      while( cond.load() )
       {
         std::this_thread::yield();
       }
 
       // Destroy our context
       ctx.reset();
-    }};
+    } };
 
   // Wait until thread is executing
-  while ( !cond.load() )
+  while( !cond.load() )
   {
     std::this_thread::yield();
   }

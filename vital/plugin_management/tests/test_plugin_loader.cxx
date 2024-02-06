@@ -9,14 +9,15 @@
 using namespace kwiver::vital;
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
 }
 
 // ----------------------------------------------------------------------------
-TEST(plugin_loader, module_marking)
+TEST ( plugin_loader, module_marking )
 {
   const auto module = plugin_manager::module_t{ "module" };
   plugin_manager& vpm = plugin_manager::instance();

@@ -30,15 +30,15 @@ test_read_format( klv_value const& expected_result, klv_bytes_t const& bytes )
   auto const result = format.read( it, bytes.size() );
   ASSERT_EQ( &*bytes.cend(), it );
   ASSERT_EQ( expected_result.type(), result.type() )
-        << "\n  --type difference--\n  "
-        << kv::demangle( expected_result.type().name() )
-        << "\n  --versus--\n  "
-        << kv::demangle( result.type().name() );
+    << "\n  --type difference--\n  "
+    << kv::demangle( expected_result.type().name() )
+    << "\n  --versus--\n  "
+    << kv::demangle( result.type().name() );
   EXPECT_EQ( expected_result, result )
-        << "\n  --value difference--\n  "
-        << format.to_string( expected_result )
-        << "\n  --versus--\n  "
-        << format.to_string( result );
+    << "\n  --value difference--\n  "
+    << format.to_string( expected_result )
+    << "\n  --versus--\n  "
+    << format.to_string( result );
 }
 
 // ----------------------------------------------------------------------------
@@ -55,36 +55,37 @@ test_write_format( klv_value const& value )
   auto read_it = &*bytes.cbegin();
   auto const result = format.read( read_it, bytes.size() );
   ASSERT_EQ( value.type(), result.type() )
-        << "\n  --type difference--\n  "
-        << kv::demangle( value.type().name() )
-        << "\n  --versus--\n  "
-        << kv::demangle( result.type().name() );
+    << "\n  --type difference--\n  "
+    << kv::demangle( value.type().name() )
+    << "\n  --versus--\n  "
+    << kv::demangle( result.type().name() );
   EXPECT_EQ( value, result )
-        << "\n  --value difference--\n  "
-        << format.to_string( value )
-        << format.to_string( result );
+    << "\n  --value difference--\n  "
+    << format.to_string( value )
+    << format.to_string( result );
 }
 
 // ----------------------------------------------------------------------------
 template < class Format >
 void
-test_read_write_format( klv_value const& expected_result,
-                        klv_bytes_t const& bytes,
-                        Format const& format = Format{} )
+test_read_write_format(
+  klv_value const& expected_result,
+  klv_bytes_t const& bytes,
+  Format const& format = Format{} )
 {
   auto it = &*bytes.cbegin();
   auto result = format.read( it, bytes.size() );
   ASSERT_EQ( &*bytes.cend(), it );
   ASSERT_EQ( expected_result.type(), result.type() )
-        << "\n  --type difference--\n  "
-        << kv::demangle( expected_result.type().name() )
-        << "\n  --versus--\n  "
-        << kv::demangle( result.type().name() );
+    << "\n  --type difference--\n  "
+    << kv::demangle( expected_result.type().name() )
+    << "\n  --versus--\n  "
+    << kv::demangle( result.type().name() );
   EXPECT_EQ( expected_result, result )
-        << "\n  --value difference--\n  "
-        << format.to_string( expected_result )
-        << "\n  --versus--\n  "
-        << format.to_string( result );
+    << "\n  --value difference--\n  "
+    << format.to_string( expected_result )
+    << "\n  --versus--\n  "
+    << format.to_string( result );
 
   klv_bytes_t buffer( format.length_of( result ) );
   auto write_it = &*buffer.begin();
@@ -94,39 +95,45 @@ test_read_write_format( klv_value const& expected_result,
   auto read_it = &*buffer.cbegin();
   result = format.read( read_it, buffer.size() );
   ASSERT_EQ( expected_result.type(), result.type() )
-        << "\n  --type difference--\n  "
-        << kv::demangle( expected_result.type().name() )
-        << "\n  --versus--\n  "
-        << kv::demangle( result.type().name() );
+    << "\n  --type difference--\n  "
+    << kv::demangle( expected_result.type().name() )
+    << "\n  --versus--\n  "
+    << kv::demangle( result.type().name() );
   EXPECT_EQ( expected_result, result )
-        << "\n  --value difference--\n  "
-        << format.to_string( expected_result )
-        << "\n  --versus--\n  "
-        << format.to_string( result );
+    << "\n  --value difference--\n  "
+    << format.to_string( expected_result )
+    << "\n  --versus--\n  "
+    << format.to_string( result );
 }
 
 // ----------------------------------------------------------------------------
 void
-test_read_write_packet( klv_value const& expected_result,
-                        klv_bytes_t const& payload_bytes,
-                        klv_bytes_t const& footer_bytes,
-                        klv_uds_key const& key )
+test_read_write_packet(
+  klv_value const& expected_result,
+  klv_bytes_t const& payload_bytes,
+  klv_bytes_t const& footer_bytes,
+  klv_uds_key const& key )
 {
   // Assemble the target packet's serialized form
   auto packet_bytes =
-    klv_bytes_t( klv_uds_key::length +
-                 klv_ber_length( payload_bytes.size() + footer_bytes.size() ) +
-                 payload_bytes.size() +
-                 footer_bytes.size() );
+    klv_bytes_t(
+      klv_uds_key::length +
+      klv_ber_length( payload_bytes.size() + footer_bytes.size() ) +
+      payload_bytes.size() +
+      footer_bytes.size() );
   auto bytes_it = &*packet_bytes.begin();
-  bytes_it = std::copy( key.cbegin(), key.cend(),
-                        bytes_it );
-  klv_write_ber( payload_bytes.size() + footer_bytes.size(), bytes_it,
-                 std::distance( bytes_it, &*packet_bytes.end() ) );
-  bytes_it = std::copy( payload_bytes.cbegin(), payload_bytes.cend(),
-                        bytes_it );
-  bytes_it = std::copy( footer_bytes.cbegin(), footer_bytes.cend(),
-                        bytes_it );
+  bytes_it = std::copy(
+    key.cbegin(), key.cend(),
+    bytes_it );
+  klv_write_ber(
+    payload_bytes.size() + footer_bytes.size(), bytes_it,
+    std::distance( bytes_it, &*packet_bytes.end() ) );
+  bytes_it = std::copy(
+    payload_bytes.cbegin(), payload_bytes.cend(),
+    bytes_it );
+  bytes_it = std::copy(
+    footer_bytes.cbegin(), footer_bytes.cend(),
+    bytes_it );
 
   // Assemble the target packet's unserialized form
   auto const test_packet = klv_packet{ key, expected_result };

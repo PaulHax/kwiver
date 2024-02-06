@@ -32,7 +32,7 @@ class VITAL_ALGO_EXPORT estimate_essential_matrix
 {
 public:
   estimate_essential_matrix();
-  PLUGGABLE_INTERFACE(estimate_essential_matrix);
+  PLUGGABLE_INTERFACE( estimate_essential_matrix );
 
   /// Estimate an essential matrix from corresponding features
   ///
@@ -48,13 +48,14 @@ public:
   /// inliers
   virtual
   kwiver::vital::essential_matrix_sptr
-  estimate( const kwiver::vital::feature_set_sptr feat1,
-            const kwiver::vital::feature_set_sptr feat2,
-            const kwiver::vital::match_set_sptr matches,
-            const kwiver::vital::camera_intrinsics_sptr cal1,
-            const kwiver::vital::camera_intrinsics_sptr cal2,
-            std::vector< bool >& inliers,
-            double inlier_scale = 1.0 ) const;
+  estimate(
+    const kwiver::vital::feature_set_sptr feat1,
+    const kwiver::vital::feature_set_sptr feat2,
+    const kwiver::vital::match_set_sptr matches,
+    const kwiver::vital::camera_intrinsics_sptr cal1,
+    const kwiver::vital::camera_intrinsics_sptr cal2,
+    std::vector< bool >& inliers,
+    double inlier_scale = 1.0 ) const;
 
   /// Estimate an essential matrix from corresponding features
   ///
@@ -69,12 +70,13 @@ public:
   /// inliers
   virtual
   kwiver::vital::essential_matrix_sptr
-  estimate( const kwiver::vital::feature_set_sptr feat1,
-            const kwiver::vital::feature_set_sptr feat2,
-            const kwiver::vital::match_set_sptr matches,
-            const kwiver::vital::camera_intrinsics_sptr cal,
-            std::vector< bool >& inliers,
-            double inlier_scale = 1.0 ) const;
+  estimate(
+    const kwiver::vital::feature_set_sptr feat1,
+    const kwiver::vital::feature_set_sptr feat2,
+    const kwiver::vital::match_set_sptr matches,
+    const kwiver::vital::camera_intrinsics_sptr cal,
+    std::vector< bool >& inliers,
+    double inlier_scale = 1.0 ) const;
 
   /// Estimate an essential matrix from corresponding points
   ///
@@ -87,11 +89,12 @@ public:
   /// inliers
   virtual
   kwiver::vital::essential_matrix_sptr
-  estimate( const std::vector< kwiver::vital::vector_2d >& pts1,
-            const std::vector< kwiver::vital::vector_2d >& pts2,
-            const kwiver::vital::camera_intrinsics_sptr cal,
-            std::vector< bool >& inliers,
-            double inlier_scale = 1.0 ) const;
+  estimate(
+    const std::vector< kwiver::vital::vector_2d >& pts1,
+    const std::vector< kwiver::vital::vector_2d >& pts2,
+    const kwiver::vital::camera_intrinsics_sptr cal,
+    std::vector< bool >& inliers,
+    double inlier_scale = 1.0 ) const;
 
   /// Estimate an essential matrix from corresponding points
   ///
@@ -105,13 +108,13 @@ public:
   /// inliers
   virtual
   kwiver::vital::essential_matrix_sptr
-  estimate( const std::vector< kwiver::vital::vector_2d >& pts1,
-            const std::vector< kwiver::vital::vector_2d >& pts2,
-            const kwiver::vital::camera_intrinsics_sptr cal1,
-            const kwiver::vital::camera_intrinsics_sptr cal2,
-            std::vector< bool >& inliers,
-            double inlier_scale = 1.0 ) const = 0;
-
+  estimate(
+    const std::vector< kwiver::vital::vector_2d >& pts1,
+    const std::vector< kwiver::vital::vector_2d >& pts2,
+    const kwiver::vital::camera_intrinsics_sptr cal1,
+    const kwiver::vital::camera_intrinsics_sptr cal2,
+    std::vector< bool >& inliers,
+    double inlier_scale = 1.0 ) const = 0;
 };
 
 /// Shared pointer type of base estimate_homography algorithm definition class

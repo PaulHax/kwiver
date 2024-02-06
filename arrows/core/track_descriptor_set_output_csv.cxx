@@ -10,21 +10,23 @@
 #include <time.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 // ----------------------------------------------------------------------------
 class track_descriptor_set_output_csv::priv
 {
 public:
-  priv( track_descriptor_set_output_csv* parent)
-    : m_parent( parent )
-    , m_first( true )
-    , m_frame_number( 1 )
-    , m_delim( "," )
-  { }
+  priv( track_descriptor_set_output_csv* parent )
+    : m_parent( parent ),
+      m_first( true ),
+      m_frame_number( 1 ),
+      m_delim( "," )
+  {}
 
-  ~priv() { }
+  ~priv() {}
 
   track_descriptor_set_output_csv* m_parent;
   bool m_first;
@@ -33,8 +35,8 @@ public:
 };
 
 // ----------------------------------------------------------------------------
-track_descriptor_set_output_csv::
-track_descriptor_set_output_csv()
+track_descriptor_set_output_csv
+::track_descriptor_set_output_csv()
   : d( new track_descriptor_set_output_csv::priv( this ) )
 {
   attach_logger( "arrows.core.track_descriptor_set_output_csv" );
@@ -42,32 +44,31 @@ track_descriptor_set_output_csv()
 
 track_descriptor_set_output_csv::
 ~track_descriptor_set_output_csv()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 void
-track_descriptor_set_output_csv::
-set_configuration(vital::config_block_sptr config)
+track_descriptor_set_output_csv
+::set_configuration( vital::config_block_sptr config )
 {
-  d->m_delim = config->get_value<std::string>( "delimiter", d->m_delim );
+  d->m_delim = config->get_value< std::string >( "delimiter", d->m_delim );
 }
 
 // ----------------------------------------------------------------------------
 bool
-track_descriptor_set_output_csv::
-check_configuration(vital::config_block_sptr config) const
+track_descriptor_set_output_csv
+::check_configuration( vital::config_block_sptr config ) const
 {
   return true;
 }
 
 // ----------------------------------------------------------------------------
 void
-track_descriptor_set_output_csv::
-write_set( const kwiver::vital::track_descriptor_set_sptr set,
+track_descriptor_set_output_csv
+::write_set(
+  const kwiver::vital::track_descriptor_set_sptr set,
   std::string const& image_name )
 {
-
   if( d->m_first )
   {
     // Write file header(s)
@@ -107,4 +108,8 @@ write_set( const kwiver::vital::track_descriptor_set_sptr set,
   ++d->m_frame_number;
 }
 
-} } } // end namespace
+} // namespace core
+
+} // namespace arrows
+
+}     // end namespace

@@ -13,36 +13,39 @@
 using namespace kwiver::vital;
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace gdal {
 
 // ----------------------------------------------------------------------------
-void add_rpc_metadata(char* raw_md, vital::metadata_sptr md)
+void
+add_rpc_metadata( char* raw_md, vital::metadata_sptr md )
 {
-  std::istringstream md_string(raw_md);
+  std::istringstream md_string( raw_md );
 
   // Get the key
   std::string key;
-  if ( !std::getline( md_string, key, '=') )
+  if( !std::getline( md_string, key, '=' ) )
   {
     return;
   }
 
   // Get the value
   std::string value;
-  if ( !std::getline( md_string, value, '=') )
+  if( !std::getline( md_string, value, '=' ) )
   {
     return;
   }
 
-#define MAP_METADATA_SCALAR( GN, KN )                             \
-if ( key == #GN )                                                 \
-{                                                                 \
-  md->add< vital::VITAL_META_RPC_ ## KN >( std::stod( value ) );  \
+#define MAP_METADATA_SCALAR( GN, KN )                            \
+if( key == #GN )                                                 \
+{                                                                \
+  md->add< vital::VITAL_META_RPC_ ## KN >( std::stod( value ) ); \
 }
 
 #define MAP_METADATA_COEFF( GN, KN )                \
-if ( key == #GN )                                   \
+if( key == #GN )                                    \
 {                                                   \
   md->add< vital::VITAL_META_RPC_ ## KN >( value ); \
 }
@@ -67,28 +70,29 @@ if ( key == #GN )                                   \
 #undef MAP_METADATA_COEFF
 }
 
-void add_nitf_metadata(char* raw_md, vital::metadata_sptr md)
+void
+add_nitf_metadata( char* raw_md, vital::metadata_sptr md )
 {
-  std::istringstream md_string(raw_md);
+  std::istringstream md_string( raw_md );
 
   // Get the key
   std::string key;
-  if ( !std::getline( md_string, key, '=') )
+  if( !std::getline( md_string, key, '=' ) )
   {
     return;
   }
 
   // Get the value
   std::string value;
-  if ( !std::getline( md_string, value, '=') )
+  if( !std::getline( md_string, value, '=' ) )
   {
     return;
   }
 
-#define MAP_METADATA_COEFF( GN, KN )                  \
-if ( key == #GN )                                     \
-{                                                     \
-  md->add< vital::VITAL_META_NITF_ ## KN >( value );  \
+#define MAP_METADATA_COEFF( GN, KN )                 \
+if( key == #GN )                                     \
+{                                                    \
+  md->add< vital::VITAL_META_NITF_ ## KN >( value ); \
 }
 
   MAP_METADATA_COEFF( NITF_IDATIM, IDATIM )
@@ -102,66 +106,67 @@ if ( key == #GN )                                     \
 #undef MAP_METADATA_COEFF
 }
 
-vital::polygon::point_t apply_geo_transform(double gt[], double x, double y)
+vital::polygon::point_t
+apply_geo_transform( double gt[], double x, double y )
 {
   vital::polygon::point_t retVal;
-  retVal[0] = gt[0] + gt[1]*x + gt[2]*y;
-  retVal[1] = gt[3] + gt[4]*x + gt[5]*y;
+  retVal[ 0 ] = gt[ 0 ] + gt[ 1 ] * x + gt[ 2 ] * y;
+  retVal[ 1 ] = gt[ 3 ] + gt[ 4 ] * x + gt[ 5 ] * y;
   return retVal;
 }
 
 // ----------------------------------------------------------------------------
 image_container
-::image_container(const std::string& filename)
+::image_container( const std::string& filename )
 {
   GDALAllRegister();
 
   gdal_dataset_.reset(
-    static_cast<GDALDataset*>(GDALOpen( filename.c_str(), GA_ReadOnly ) ) );
+    static_cast< GDALDataset* >( GDALOpen( filename.c_str(), GA_ReadOnly ) ) );
 
-  if ( !gdal_dataset_ )
+  if( !gdal_dataset_ )
   {
-    VITAL_THROW( vital::invalid_file, filename, "GDAL could not load file.");
+    VITAL_THROW( vital::invalid_file, filename, "GDAL could not load file." );
   }
 
   // Get image pixel traits based on the GDAL raster type.
   // TODO: deal or provide warning if bands have different types.
-  auto bandType = gdal_dataset_->GetRasterBand(1)->GetRasterDataType();
-  switch (bandType)
+  auto bandType = gdal_dataset_->GetRasterBand( 1 )->GetRasterDataType();
+  switch( bandType )
   {
-    case (GDT_Byte):
+    case ( GDT_Byte ):
     {
-      pixel_traits_ = vital::image_pixel_traits_of<uint8_t>();
+      pixel_traits_ = vital::image_pixel_traits_of< uint8_t >();
       break;
     }
-    case (GDT_UInt16):
+    case ( GDT_UInt16 ):
     {
-      pixel_traits_ = vital::image_pixel_traits_of<uint16_t>();
+      pixel_traits_ = vital::image_pixel_traits_of< uint16_t >();
       break;
     }
-    case (GDT_Int16):
+    case ( GDT_Int16 ):
     {
-      pixel_traits_ = vital::image_pixel_traits_of<int16_t>();
+      pixel_traits_ = vital::image_pixel_traits_of< int16_t >();
       break;
     }
-    case (GDT_UInt32):
+    case ( GDT_UInt32 ):
     {
-      pixel_traits_ = vital::image_pixel_traits_of<uint32_t>();
+      pixel_traits_ = vital::image_pixel_traits_of< uint32_t >();
       break;
     }
-    case (GDT_Int32):
+    case ( GDT_Int32 ):
     {
-      pixel_traits_ = vital::image_pixel_traits_of<int32_t>();
+      pixel_traits_ = vital::image_pixel_traits_of< int32_t >();
       break;
     }
-    case (GDT_Float32):
+    case ( GDT_Float32 ):
     {
-      pixel_traits_ = vital::image_pixel_traits_of<float>();
+      pixel_traits_ = vital::image_pixel_traits_of< float >();
       break;
     }
-    case (GDT_Float64):
+    case ( GDT_Float64 ):
     {
-      pixel_traits_ = vital::image_pixel_traits_of<double>();
+      pixel_traits_ = vital::image_pixel_traits_of< double >();
       break;
     }
     default:
@@ -169,55 +174,55 @@ image_container
       std::stringstream ss;
       ss << "kwiver::arrows::gdal::image_io::load(): "
          << "Unknown or unsupported pixal type: "
-         << GDALGetDataTypeName(bandType);
+         << GDALGetDataTypeName( bandType );
       VITAL_THROW( vital::image_type_mismatch_exception, ss.str() );
       break;
     }
   }
 
-  vital::metadata_sptr md = std::make_shared<vital::metadata>();
+  vital::metadata_sptr md = std::make_shared< vital::metadata >();
 
   md->add< kwiver::vital::VITAL_META_IMAGE_URI >( filename );
 
   // Get geotransform and calculate corner points
-  double geo_transform[6];
-  gdal_dataset_->GetGeoTransform(geo_transform);
+  double geo_transform[ 6 ];
+  gdal_dataset_->GetGeoTransform( geo_transform );
 
   OGRSpatialReference osrs;
   osrs.importFromWkt( gdal_dataset_->GetProjectionRef() );
 
   // If coordinate system available - calculate corner points.
-  if ( osrs.GetAuthorityCode("GEOGCS") )
+  if( osrs.GetAuthorityCode( "GEOGCS" ) )
   {
     vital::polygon points;
-    const double h = static_cast<double>(this->height());
-    const double w = static_cast<double>(this->width());
-    points.push_back( apply_geo_transform(geo_transform, 0, 0) );
-    points.push_back( apply_geo_transform(geo_transform, 0, h ) );
-    points.push_back( apply_geo_transform(geo_transform, w, 0) );
-    points.push_back( apply_geo_transform(geo_transform, w, h ) );
+    const double h = static_cast< double >( this->height() );
+    const double w = static_cast< double >( this->width() );
+    points.push_back( apply_geo_transform( geo_transform, 0, 0 ) );
+    points.push_back( apply_geo_transform( geo_transform, 0, h ) );
+    points.push_back( apply_geo_transform( geo_transform, w, 0 ) );
+    points.push_back( apply_geo_transform( geo_transform, w, h ) );
 
     md->add< vital::VITAL_META_CORNER_POINTS >(
-      vital::geo_polygon( points, atoi( osrs.GetAuthorityCode("GEOGCS") ) ) );
+      vital::geo_polygon( points, atoi( osrs.GetAuthorityCode( "GEOGCS" ) ) ) );
   }
 
   // Get RPC metadata
-  char** rpc_metadata = gdal_dataset_->GetMetadata("RPC");
-  if (CSLCount(rpc_metadata) > 0)
+  char** rpc_metadata = gdal_dataset_->GetMetadata( "RPC" );
+  if( CSLCount( rpc_metadata ) > 0 )
   {
-    for (int i = 0; rpc_metadata[i] != NULL; ++i)
+    for( int i = 0; rpc_metadata[ i ] != NULL; ++i )
     {
-      add_rpc_metadata( rpc_metadata[i] , md );
+      add_rpc_metadata( rpc_metadata[ i ], md );
     }
   }
 
   // Get NITF metadata
-  char** nitf_metadata = gdal_dataset_->GetMetadata("");
-  if (CSLCount(nitf_metadata) > 0)
+  char** nitf_metadata = gdal_dataset_->GetMetadata( "" );
+  if( CSLCount( nitf_metadata ) > 0 )
   {
-    for (int i = 0; nitf_metadata[i] != NULL; ++i)
+    for( int i = 0; nitf_metadata[ i ] != NULL; ++i )
     {
-      add_nitf_metadata( nitf_metadata[i] , md );
+      add_nitf_metadata( nitf_metadata[ i ], md );
     }
   }
 
@@ -225,9 +230,10 @@ image_container
 }
 
 char**
-image_container::get_raw_metadata_for_domain(const char *domain)
+image_container
+::get_raw_metadata_for_domain( const char* domain )
 {
-  return this->gdal_dataset_->GetMetadata(domain);
+  return this->gdal_dataset_->GetMetadata( domain );
 }
 
 // ----------------------------------------------------------------------------
@@ -249,50 +255,59 @@ image_container
 
   // Loop over bands and copy data
   CPLErr err;
-  for (size_t i = 1; i <= depth(); ++i)
+  for( size_t i = 1; i <= depth(); ++i )
   {
-    GDALRasterBand* band = gdal_dataset_->GetRasterBand(static_cast<int>(i));
+    GDALRasterBand* band =
+      gdal_dataset_->GetRasterBand( static_cast< int >( i ) );
     auto bandType = band->GetRasterDataType();
-    const int h = static_cast<int>(this->height());
-    const int w = static_cast<int>(this->width());
-    err = band->RasterIO(GF_Read, 0, 0, w, h,
-      static_cast<void*>(reinterpret_cast<GByte*>(
-        img.first_pixel()) + (i-1)*img.d_step()*img.pixel_traits().num_bytes),
-      w, h, bandType, 0, 0);
+    const int h = static_cast< int >( this->height() );
+    const int w = static_cast< int >( this->width() );
+    err = band->RasterIO(
+      GF_Read, 0, 0, w, h,
+      static_cast< void* >( reinterpret_cast< GByte* >(
+                              img.first_pixel() ) + ( i - 1 ) * img.d_step() *
+                            img.pixel_traits().num_bytes ),
+      w, h, bandType, 0, 0 );
     // TODO Error checking on return value
     // this line silences unused variable warnings
-    (void) err;
+    ( void ) err;
   }
 
   return img;
 }
 
 // ----------------------------------------------------------------------------
-/// Get cropped view of image. Unlike other image containers must allocate memory
+/// Get cropped view of image. Unlike other image containers must allocate
+/// memory
 vital::image
 image_container
-::get_image(unsigned x_offset, unsigned y_offset,
-            unsigned width, unsigned height) const
+::get_image(
+  unsigned x_offset, unsigned y_offset,
+  unsigned width, unsigned height ) const
 {
   vital::image img( width, height, depth(), false, pixel_traits_ );
 
   // Loop over bands and copy data
   CPLErr err;
-  for (size_t i = 1; i <= depth(); ++i)
+  for( size_t i = 1; i <= depth(); ++i )
   {
-    GDALRasterBand* band = gdal_dataset_->GetRasterBand(i);
+    GDALRasterBand* band = gdal_dataset_->GetRasterBand( i );
     auto bandType = band->GetRasterDataType();
-    err = band->RasterIO(GF_Read, x_offset, y_offset, width, height,
-      static_cast<void*>(reinterpret_cast<GByte*>(
-        img.first_pixel()) + (i-1)*img.d_step()*img.pixel_traits().num_bytes),
-      width, height, bandType, 0, 0);
+    err = band->RasterIO(
+      GF_Read, x_offset, y_offset, width, height,
+      static_cast< void* >( reinterpret_cast< GByte* >(
+                              img.first_pixel() ) + ( i - 1 ) * img.d_step() *
+                            img.pixel_traits().num_bytes ),
+      width, height, bandType, 0, 0 );
 
-    (void) err;
+    ( void ) err;
   }
 
   return img;
 }
 
 } // end namespace gdal
+
 } // end namespace arrows
+
 } // end namespace kwiver

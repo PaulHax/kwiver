@@ -19,7 +19,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
-template< class Key >
+template < class Key >
 bool
 klv_update_tracker< Key >::key_t
 ::operator<( klv_update_tracker< Key >::key_t const& other ) const
@@ -28,7 +28,7 @@ klv_update_tracker< Key >::key_t
 }
 
 // ----------------------------------------------------------------------------
-template< class Key >
+template < class Key >
 bool
 klv_update_tracker< Key >::value_t
 ::operator<( klv_update_tracker< Key >::value_t const& other ) const
@@ -38,14 +38,16 @@ klv_update_tracker< Key >::value_t
 }
 
 // ----------------------------------------------------------------------------
-template< class Key >
+template < class Key >
 klv_update_tracker< Key >
+
 ::klv_update_tracker() : m_map{}
 {}
 
 // ----------------------------------------------------------------------------
-template< class Key >
+template < class Key >
 typename klv_update_tracker< Key >::value_t const*
+
 klv_update_tracker< Key >
 ::at( key_t const& key ) const
 {
@@ -54,7 +56,7 @@ klv_update_tracker< Key >
 }
 
 // ----------------------------------------------------------------------------
-template< class Key >
+template < class Key >
 bool
 klv_update_tracker< Key >
 ::has_changed( klv_set< Key > const& set, key_t const& key ) const
@@ -74,7 +76,7 @@ klv_update_tracker< Key >
 }
 
 // ----------------------------------------------------------------------------
-template< class Key >
+template < class Key >
 bool
 klv_update_tracker< Key >
 ::update( klv_set< Key > const& set, key_t const& key, uint64_t timestamp )
@@ -116,13 +118,15 @@ klv_update_tracker< Key >
 }
 
 // ----------------------------------------------------------------------------
-template< class Key >
+template < class Key >
 void
 klv_update_tracker< Key >
-::prune( klv_set< Key >& set, klv_update_intervals const& intervals,
-         klv_top_level_tag standard, uint64_t timestamp )
+::prune(
+  klv_set< Key >& set, klv_update_intervals const& intervals,
+  klv_top_level_tag standard, uint64_t timestamp )
 {
   using kt = key_traits< Key >;
+
   auto const traits =
     klv_lookup_packet_traits().by_tag( standard ).subtag_lookup();
   if( !traits )
@@ -130,7 +134,7 @@ klv_update_tracker< Key >
     VITAL_THROW(
       kv::invalid_value, "Standard does not have tag traits implemented" );
   }
-  for( auto it = set.begin(); it != set.end();)
+  for( auto it = set.begin(); it != set.end(); )
   {
     auto const next_it = std::next( it );
     auto const update_interval =

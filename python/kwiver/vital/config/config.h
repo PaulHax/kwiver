@@ -24,20 +24,23 @@ config_block_set_value_cast( py::object const& value );
 
 /// Set a value in configuration block using key and value
 void
-config_set_value( kwiver::vital::config_block_sptr self,
-                  kwiver::vital::config_block_key_t const& key,
-                  kwiver::vital::config_block_key_t const& value );
+config_set_value(
+  kwiver::vital::config_block_sptr self,
+  kwiver::vital::config_block_key_t const& key,
+  kwiver::vital::config_block_key_t const& value );
 
 /// Get a value in a configuration block using key
 kwiver::vital::config_block_value_t
-config_get_value( kwiver::vital::config_block_sptr self,
-                  kwiver::vital::config_block_key_t const& key );
+config_get_value(
+  kwiver::vital::config_block_sptr self,
+  kwiver::vital::config_block_key_t const& key );
 
 /// Get a value in a configuration block using key and a default value
 kwiver::vital::config_block_value_t
-config_get_value_with_default( kwiver::vital::config_block_sptr self,
-                               kwiver::vital::config_block_key_t const& key,
-                               kwiver::vital::config_block_value_t const& def );
+config_get_value_with_default(
+  kwiver::vital::config_block_sptr self,
+  kwiver::vital::config_block_key_t const& key,
+  kwiver::vital::config_block_value_t const& def );
 
 /// Determine the number of elements in config block
 py::size_t
@@ -45,19 +48,22 @@ config_len( kwiver::vital::config_block_sptr self );
 
 /// Get a value in a configuration block using key
 kwiver::vital::config_block_value_t
-config_getitem( kwiver::vital::config_block_sptr self,
-                kwiver::vital::config_block_key_t const& key );
+config_getitem(
+  kwiver::vital::config_block_sptr self,
+  kwiver::vital::config_block_key_t const& key );
 
 /// Set a value in a configuration block using key and value
 void
-config_setitem( kwiver::vital::config_block_sptr self,
-                kwiver::vital::config_block_key_t const& key,
-                py::object const& value );
+config_setitem(
+  kwiver::vital::config_block_sptr self,
+  kwiver::vital::config_block_key_t const& key,
+  py::object const& value );
 
 /// Delete value in a configuration block using a key
 void
-config_delitem( kwiver::vital::config_block_sptr self,
-                kwiver::vital::config_block_key_t const& key );
+config_delitem(
+  kwiver::vital::config_block_sptr self,
+  kwiver::vital::config_block_key_t const& key );
 
 /// pybind11 module for config
 void

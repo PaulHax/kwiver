@@ -18,11 +18,14 @@
 #include <vital/bindings/c/helpers/c_utils.h>
 
 namespace kwiver {
+
 namespace vital_c {
 
-  extern SharedPointerCache< kwiver::vital::config_block,
-                           vital_config_block_t > CONFIG_BLOCK_SPTR_CACHE;
+extern SharedPointerCache< kwiver::vital::config_block,
+  vital_config_block_t > CONFIG_BLOCK_SPTR_CACHE;
 
-} }
+} // namespace vital_c
 
-#endif //VITAL_C_HELPERS_CONFIG_BLOCK_H_
+} // namespace kwiver
+
+#endif // VITAL_C_HELPERS_CONFIG_BLOCK_H_

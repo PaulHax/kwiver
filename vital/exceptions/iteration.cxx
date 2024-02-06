@@ -10,11 +10,12 @@
 #include <sstream>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
-stop_iteration_exception::
-stop_iteration_exception( std::string const& container ) noexcept
+stop_iteration_exception
+::stop_iteration_exception( std::string const& container ) noexcept
 {
   std::ostringstream ss;
 
@@ -24,4 +25,6 @@ stop_iteration_exception( std::string const& container ) noexcept
   m_what = ss.str();
 }
 
-} } // end namespaces
+} // namespace vital
+
+}   // end namespaces

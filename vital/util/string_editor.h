@@ -5,14 +5,15 @@
 #ifndef VITAL_STRING_EDITOR_H
 #define VITAL_STRING_EDITOR_H
 
-#include <vital/util/vital_util_export.h>
 #include <vital/util/string.h>
+#include <vital/util/vital_util_export.h>
 
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -24,8 +25,8 @@ namespace vital {
 class VITAL_UTIL_EXPORT string_edit_operation
 {
 public:
-  string_edit_operation() { }
-  virtual ~string_edit_operation() { }
+  string_edit_operation() {}
+  virtual ~string_edit_operation() {}
 
   /// @brief Edit the string.
   ///
@@ -70,7 +71,8 @@ public:
   ///
   /// @param str The string to be edited.
   ///
-  /// @return \b true if the line has been edited. \b false if the line has been absorbed.
+  /// @return \b true if the line has been edited. \b false if the line has been
+  /// absorbed.
   bool edit( std::string& str );
 
 private:
@@ -91,11 +93,12 @@ namespace edit_operation {
 class shell_comment : public string_edit_operation
 {
 public:
-  virtual bool process( std::string& line )
+  virtual bool
+  process( std::string& line )
   {
     auto pos = line.find_first_of( "#" );
 
-    if ( pos != std::string::npos )
+    if( pos != std::string::npos )
     {
       line.erase( pos );
     }
@@ -113,9 +116,10 @@ public:
 class remove_blank_string : public string_edit_operation
 {
 public:
-  virtual bool process( std::string& str )
+  virtual bool
+  process( std::string& str )
   {
-    if ( str.find_first_not_of( " \t\n\r\f\v" ) != std::string::npos )
+    if( str.find_first_not_of( " \t\n\r\f\v" ) != std::string::npos )
     {
       return true;
     }
@@ -132,9 +136,10 @@ public:
 class left_trim : public string_edit_operation
 {
 public:
-  virtual bool process( std::string& s )
+  virtual bool
+  process( std::string& s )
   {
-    kwiver::vital::left_trim(s);
+    kwiver::vital::left_trim( s );
     return true;
   }
 };   // end class left_trim
@@ -147,15 +152,18 @@ public:
 class right_trim : public string_edit_operation
 {
 public:
-  virtual bool process( std::string& s )
+  virtual bool
+  process( std::string& s )
   {
-    kwiver::vital::right_trim(s);
+    kwiver::vital::right_trim( s );
     return true;
   }
 }; // end class right_trim
 
 } // end namespace edit_operation
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // VITAL_STRING_EDITOR_H

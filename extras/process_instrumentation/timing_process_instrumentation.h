@@ -14,15 +14,16 @@
 
 #include <sprokit/pipeline/process_instrumentation.h>
 #include <vital/logger/logger.h>
-#include <vital/util/wall_timer.h>
 #include <vital/util/cpu_timer.h>
 #include <vital/util/simple_stats.h>
+#include <vital/util/wall_timer.h>
 
 #include <memory>
 
 namespace sprokit {
 
 // -----------------------------------------------------------------
+
 /**
  * \brief Process instrumentation using the logger.
  *
@@ -35,12 +36,12 @@ namespace sprokit {
  * this process instrumentation provider. The provider is configured
  * in the pipe file as shown below:
  *
-\code
-process motion :: detect_motion
-    block _instrumentation
-       type = timing
-    endblock
-\endcode
+ *  \code
+ *  process motion :: detect_motion
+ *   block _instrumentation
+ *      type = timing
+ *   endblock
+ *  \endcode
  */
 class INSTRUMENTATION_PLUGIN_NO_EXPORT timing_process_instrumentation
   : public process_instrumentation
@@ -77,7 +78,7 @@ private:
   void write_interval( const std::string& tag, double interval );
 
   // The configured timer is allocated and stored here.
-  std::shared_ptr<kwiver::vital::timer> m_timer;
+  std::shared_ptr< kwiver::vital::timer > m_timer;
 
   // The output file
   std::ofstream* m_output_file;
@@ -86,7 +87,6 @@ private:
 
   // Statistics for step, since it is called frequently.
   kwiver::vital::simple_stats m_step_stats;
-
 }; // end class timing_process_instrumentation
 
 } // end namespace

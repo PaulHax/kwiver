@@ -8,22 +8,31 @@
 #include <pybind11/pybind11.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
+
 namespace py = pybind11;
 
-void filter_tracks(py::module &m)
+void
+filter_tracks( py::module& m )
 {
   py::class_< kwiver::vital::algo::filter_tracks,
-              std::shared_ptr<kwiver::vital::algo::filter_tracks>,
-              kwiver::vital::algorithm_def<kwiver::vital::algo::filter_tracks>,
-              filter_tracks_trampoline<> >( m, "FilterTracks" )
-    .def(py::init())
-    .def_static("static_type_name",
-                &kwiver::vital::algo::filter_tracks::static_type_name)
-    .def("filter",
-         &kwiver::vital::algo::filter_tracks::filter);
+    std::shared_ptr< kwiver::vital::algo::filter_tracks >,
+    kwiver::vital::algorithm_def< kwiver::vital::algo::filter_tracks >,
+    filter_tracks_trampoline<> >( m, "FilterTracks" )
+    .def( py::init() )
+    .def_static(
+      "static_type_name",
+      &kwiver::vital::algo::filter_tracks::static_type_name )
+    .def(
+      "filter",
+      &kwiver::vital::algo::filter_tracks::filter );
 }
-}
-}
-}
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver

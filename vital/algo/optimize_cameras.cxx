@@ -25,10 +25,11 @@ optimize_cameras
 /// Optimize camera parameters given sets of landmarks and feature tracks
 void
 optimize_cameras
-::optimize( camera_map_sptr& cameras,
-            feature_track_set_sptr tracks,
-            landmark_map_sptr landmarks,
-            sfm_constraints_sptr constraints ) const
+::optimize(
+  camera_map_sptr& cameras,
+  feature_track_set_sptr tracks,
+  landmark_map_sptr landmarks,
+  sfm_constraints_sptr constraints ) const
 {
   if( !cameras || !tracks || !landmarks )
   {

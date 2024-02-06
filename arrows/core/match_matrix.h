@@ -8,15 +8,16 @@
 #ifndef KWIVER_ARROWS_CORE_MATCH_MATRIX_H_
 #define KWIVER_ARROWS_CORE_MATCH_MATRIX_H_
 
-#include <vital/vital_config.h>
 #include <arrows/core/kwiver_algo_core_export.h>
+#include <vital/vital_config.h>
 
-#include <vital/types/track_set.h>
 #include <Eigen/Sparse>
+#include <vital/types/track_set.h>
 
 #include <map>
 
 namespace kwiver {
+
 namespace arrows {
 
 /// Compute the match matrix from a track set
@@ -33,9 +34,10 @@ namespace arrows {
 ///                         frame ids in the track set.
 ///  \return an NxN symmetric match matrix
 KWIVER_ALGO_CORE_EXPORT
-Eigen::SparseMatrix<unsigned int>
-match_matrix(vital::track_set_sptr tracks,
-             std::vector<vital::frame_id_t>& frames);
+Eigen::SparseMatrix< unsigned int >
+match_matrix(
+  vital::track_set_sptr tracks,
+  std::vector< vital::frame_id_t >& frames );
 
 /// Compute a score for each track based on its importance to the match matrix.
 ///
@@ -47,11 +49,14 @@ match_matrix(vital::track_set_sptr tracks,
 /// is the match matrix entry at (i,j) for every frame i and j in the track.
 ///
 KWIVER_ALGO_CORE_EXPORT
-std::map<vital::track_id_t, double>
-match_matrix_track_importance(vital::track_set_sptr tracks,
-                              std::vector<vital::frame_id_t> const& frames,
-                              Eigen::SparseMatrix<unsigned int> const& mm);
+std::map< vital::track_id_t, double >
+match_matrix_track_importance(
+  vital::track_set_sptr tracks,
+  std::vector< vital::frame_id_t > const& frames,
+  Eigen::SparseMatrix< unsigned int > const& mm );
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif

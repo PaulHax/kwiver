@@ -8,11 +8,19 @@
 #include <pybind11/pybind11.h>
 
 namespace py = pybind11;
+
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
-void detect_features(py::module &m);
-}
-}
-}
+
+void detect_features( py::module& m );
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
+
 #endif

@@ -16,36 +16,40 @@
 using namespace kwiver::vital;
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
 }
 
 // ----------------------------------------------------------------------------
-template <typename T>
+template < typename T >
 static
-vpgl_perspective_camera<T> sample_vpgl_camera()
+vpgl_perspective_camera< T >
+sample_vpgl_camera()
 {
   using namespace kwiver::arrows;
-  vpgl_calibration_matrix<T> vk(T(4000), vgl_point_2d<T>(300,400),
-                                T(1.0), T(0.75), T(0.0001));
-  vgl_rotation_3d<T> vr(T(0.7), T(0.1), T(1.3));
-  vgl_point_3d<T> vc(T(100.0), T(0.0), T(20.0));
-  return vpgl_perspective_camera<T>(vk, vc, vr);
+
+  vpgl_calibration_matrix< T > vk( T( 4000 ), vgl_point_2d< T >( 300, 400 ),
+    T( 1.0 ), T( 0.75 ), T( 0.0001 ) );
+  vgl_rotation_3d< T > vr( T( 0.7 ), T( 0.1 ), T( 1.3 ) );
+  vgl_point_3d< T > vc( T( 100.0 ), T( 0.0 ), T( 20.0 ) );
+  return vpgl_perspective_camera< T >( vk, vc, vr );
 }
 
 // ----------------------------------------------------------------------------
-template <typename T, unsigned U, unsigned V>
+template < typename T, unsigned U, unsigned V >
 static
-Eigen::Matrix<T, U, V> as_eigen( vnl_matrix_fixed<T, U, V> const& in )
+Eigen::Matrix< T, U, V >
+as_eigen( vnl_matrix_fixed< T, U, V > const& in )
 {
-  Eigen::Matrix<T, U, V> out;
-  for ( unsigned u = 0; u < U; ++u )
+  Eigen::Matrix< T, U, V > out;
+  for( unsigned u = 0; u < U; ++u )
   {
-    for ( unsigned v = 0; v < V; ++v )
+    for( unsigned v = 0; v < V; ++v )
     {
-      out(u, v) = in(u, v);
+      out( u, v ) = in( u, v );
     }
   }
 
@@ -53,48 +57,54 @@ Eigen::Matrix<T, U, V> as_eigen( vnl_matrix_fixed<T, U, V> const& in )
 }
 
 // ----------------------------------------------------------------------------
-template <typename T>
+template < typename T >
 static
-Eigen::Quaternion<T> as_eigen( vnl_quaternion<T> const& in )
+Eigen::Quaternion< T >
+as_eigen( vnl_quaternion< T > const& in )
 {
   return { in.r(), in.x(), in.y(), in.z() };
 }
 
 // ----------------------------------------------------------------------------
-template <typename T>
-Eigen::Matrix<T, 3, 1> as_eigen( vgl_point_3d<T> const& in )
+template < typename T >
+Eigen::Matrix< T, 3, 1 >
+as_eigen( vgl_point_3d< T > const& in )
 {
   return { in.x(), in.y(), in.z() };
 }
 
 // ----------------------------------------------------------------------------
-TEST(camera, convert_camera_sptr)
+TEST ( camera, convert_camera_sptr )
 {
   using namespace kwiver::arrows;
-  vpgl_perspective_camera<double> vcd = sample_vpgl_camera<double>();
-  vpgl_perspective_camera<float> vcf = sample_vpgl_camera<float>();
 
-  EXPECT_NE( nullptr, vxl::vpgl_camera_to_vital(vcd) )
+  vpgl_perspective_camera< double > vcd = sample_vpgl_camera< double >();
+  vpgl_perspective_camera< float > vcf = sample_vpgl_camera< float >();
+
+  EXPECT_NE( nullptr, vxl::vpgl_camera_to_vital( vcd ) )
     << "Type conversion from double camera";
 
-  EXPECT_NE( nullptr, vxl::vpgl_camera_to_vital(vcf) )
+  EXPECT_NE( nullptr, vxl::vpgl_camera_to_vital( vcf ) )
     << "Type conversion from float camera";
 }
 
 // ----------------------------------------------------------------------------
-template <typename T>
-void test_convert_camera(T eps)
+template < typename T >
+void
+test_convert_camera( T eps )
 {
   using namespace kwiver::arrows;
-  vpgl_perspective_camera<T> vcam = sample_vpgl_camera<T>();
+
+  vpgl_perspective_camera< T > vcam = sample_vpgl_camera< T >();
 
   simple_camera_perspective mcam;
-  vxl::vpgl_camera_to_vital(vcam, mcam);
+  vxl::vpgl_camera_to_vital( vcam, mcam );
 
-  std::cerr << "rotation: " << mcam.rotation().quaternion().coeffs() << std::endl;
+  std::cerr << "rotation: " << mcam.rotation().quaternion().coeffs() <<
+    std::endl;
 
-  vpgl_perspective_camera<T> vcam2;
-  vxl::vital_to_vpgl_camera(mcam, vcam2);
+  vpgl_perspective_camera< T > vcam2;
+  vxl::vital_to_vpgl_camera( mcam, vcam2 );
 
   auto const& calibration = as_eigen( vcam.get_calibration().get_matrix() );
   auto const& calibration2 = as_eigen( vcam2.get_calibration().get_matrix() );
@@ -105,7 +115,8 @@ void test_convert_camera(T eps)
       vcam2.get_calibration().get_matrix() ).absolute_value_max();
   EXPECT_NEAR( 0.0, calibration_err, eps );
 
-  std::cerr << "rotation: " << mcam.rotation().quaternion().coeffs() << std::endl;
+  std::cerr << "rotation: " << mcam.rotation().quaternion().coeffs() <<
+    std::endl;
 
   auto const& rotation = as_eigen( vcam.get_rotation().as_quaternion() );
   auto const& rotation2 = as_eigen( vcam2.get_rotation().as_quaternion() );
@@ -127,13 +138,13 @@ void test_convert_camera(T eps)
 }
 
 // ----------------------------------------------------------------------------
-TEST(camera, convert_camera_double)
+TEST ( camera, convert_camera_double )
 {
-  test_convert_camera<double>(1e-15);
+  test_convert_camera< double >( 1e-15 );
 }
 
 // ----------------------------------------------------------------------------
-TEST(camera, convert_camera_float)
+TEST ( camera, convert_camera_float )
 {
-  test_convert_camera<float>(1e-7f);
+  test_convert_camera< float >( 1e-7f );
 }

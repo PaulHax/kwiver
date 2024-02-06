@@ -10,7 +10,9 @@
 #include <vital/algo/compute_track_descriptors.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace burnout {
 
 // ----------------------------------------------------------------------------
@@ -23,8 +25,9 @@ public:
   burnout_track_descriptors();
   virtual ~burnout_track_descriptors();
 
-  PLUGIN_INFO( "burnout",
-               "Track descriptors using burnout" )
+  PLUGIN_INFO(
+    "burnout",
+    "Track descriptors using burnout" )
 
   vital::config_block_sptr get_configuration() const override;
 
@@ -32,18 +35,23 @@ public:
   bool check_configuration( vital::config_block_sptr config ) const override;
 
   kwiver::vital::track_descriptor_set_sptr
-  compute( kwiver::vital::timestamp ts,
-           kwiver::vital::image_container_sptr image_data,
-           kwiver::vital::object_track_set_sptr tracks ) override;
+  compute(
+    kwiver::vital::timestamp ts,
+    kwiver::vital::image_container_sptr image_data,
+    kwiver::vital::object_track_set_sptr tracks ) override;
 
   kwiver::vital::track_descriptor_set_sptr flush() override;
 
 private:
-
   class priv;
-  const std::unique_ptr<priv> d;
+
+  const std::unique_ptr< priv > d;
 };
 
-} } }
+} // namespace burnout
+
+} // namespace arrows
+
+} // namespace kwiver
 
 #endif // KWIVER_ARROWS_BURNOUT_TRACK_DESCRIPTORS

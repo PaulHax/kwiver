@@ -51,7 +51,8 @@ ImageViewPrivate
 // ----------------------------------------------------------------------------
 ImageView
 ::ImageView( QWidget* parent )
-  : QGraphicsView{ parent }, d_ptr{ new ImageViewPrivate }
+  : QGraphicsView{ parent },
+    d_ptr{ new ImageViewPrivate }
 {
   KQ_D();
 
@@ -64,8 +65,7 @@ ImageView
 // ----------------------------------------------------------------------------
 ImageView
 ::~ImageView()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 bool

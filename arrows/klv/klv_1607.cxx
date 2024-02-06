@@ -58,8 +58,9 @@ klv_1607_apply_child(
 
     if( parent.count( entry.first ) > 1 )
     {
-      LOG_WARN( kv::get_logger( "klv" ), "apply_child: "
-                "modifying tag which has multiple values in parent set" );
+      LOG_WARN(
+        kv::get_logger( "klv" ), "apply_child: "
+                                 "modifying tag which has multiple values in parent set" );
     }
     parent.erase( entry.first );
   }
@@ -109,6 +110,7 @@ klv_1607_derive_child( klv_local_set const& lhs, klv_local_set const& rhs )
     // A few locally necessary utilities
     using range_t = typename klv_local_set::const_range;
     using iterator_t = typename klv_local_set::const_iterator;
+
     auto const entry_cmp =
       []( iterator_t lhs_it, iterator_t rhs_it ){
         return *lhs_it < *rhs_it;
@@ -132,8 +134,9 @@ klv_1607_derive_child( klv_local_set const& lhs, klv_local_set const& rhs )
     // across sets
     auto const lhs_entries = get_sorted_entries( lhs_range );
     auto const rhs_entries = get_sorted_entries( rhs_range );
-    if( std::equal( lhs_entries.begin(), lhs_entries.end(),
-                    rhs_entries.begin(), entry_eq ) )
+    if( std::equal(
+      lhs_entries.begin(), lhs_entries.end(),
+      rhs_entries.begin(), entry_eq ) )
     {
       result.erase( tag );
     }

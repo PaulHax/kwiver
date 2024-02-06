@@ -12,16 +12,19 @@
 #ifndef VITAL_C_HELPERS_CAMERA_MAP_H_
 #define VITAL_C_HELPERS_CAMERA_MAP_H_
 
-#include <vital/types/camera_map.h>
-#include <vital/bindings/c/types/camera_map.h>
 #include <vital/bindings/c/helpers/c_utils.h>
+#include <vital/bindings/c/types/camera_map.h>
+#include <vital/types/camera_map.h>
 
 namespace kwiver {
+
 namespace vital_c {
 
 extern SharedPointerCache< vital::camera_map,
-                           vital_camera_map_t > CAM_MAP_SPTR_CACHE;
+  vital_camera_map_t > CAM_MAP_SPTR_CACHE;
 
-} }
+} // namespace vital_c
+
+} // namespace kwiver
 
 #endif // VITAL_C_HELPERS_CAMERA_MAP_H_

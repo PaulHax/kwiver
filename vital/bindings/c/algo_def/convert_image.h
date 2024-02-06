@@ -16,13 +16,14 @@ extern "C"
 #endif
 
 #include <vital/bindings/c/algorithm.h>
-#include <vital/bindings/c/vital_c_export.h>
 #include <vital/bindings/c/types/image_container.h>
+#include <vital/bindings/c/vital_c_export.h>
 
 /// Declare common type-specific functions
 DECLARE_COMMON_ALGO_API( convert_image );
 
 /// Convert image base type
+
 /**
  * Returns new image container with a converted underlying representation
  * based on the implementation configured.
@@ -34,9 +35,10 @@ DECLARE_COMMON_ALGO_API( convert_image );
  */
 VITAL_C_EXPORT
 vital_image_container_t*
-vital_algorithm_convert_image_convert( vital_algorithm_t *algo,
-                                       vital_image_container_t *ic,
-                                       vital_error_handle_t *eh );
+vital_algorithm_convert_image_convert(
+  vital_algorithm_t* algo,
+  vital_image_container_t* ic,
+  vital_error_handle_t* eh );
 
 #ifdef __cplusplus
 }

@@ -5,7 +5,8 @@
 /**
  * \file image_object_detector_trampoline.txx
  *
- * \brief trampoline for overriding virtual functions of algorithm_def<image_object_detector> and image_object_detector
+ * \brief trampoline for overriding virtual functions of
+ * algorithm_def<image_object_detector> and image_object_detector
  */
 
 #ifndef ACTIVTY_DETECTOR_TRAMPOLINE_TXX
@@ -18,43 +19,53 @@
 #include <vital/types/image_container.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
-template <class algorithm_def_ad_base=kwiver::vital::algorithm_def<kwiver::vital::algo::activity_detector>>
-class algorithm_def_ad_trampoline :
-      public algorithm_trampoline<algorithm_def_ad_base>
-{
-  public:
-    using algorithm_trampoline<algorithm_def_ad_base>::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<kwiver::vital::algo::activity_detector>,
-        type_name,
-      );
-    }
+template < class algorithm_def_ad_base = kwiver::vital::algorithm_def< kwiver::vital::algo::activity_detector > >
+class algorithm_def_ad_trampoline
+  : public algorithm_trampoline< algorithm_def_ad_base >
+{
+public:
+  using algorithm_trampoline< algorithm_def_ad_base >::algorithm_trampoline;
+
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::activity_detector >,
+      type_name,
+    );
+  }
 };
 
-template <class activity_detector_base=kwiver::vital::algo::activity_detector>
-class activity_detector_trampoline :
-      public algorithm_def_ad_trampoline<activity_detector_base>
+template < class activity_detector_base = kwiver::vital::algo::activity_detector >
+class activity_detector_trampoline
+  : public algorithm_def_ad_trampoline< activity_detector_base >
 {
-  public:
-    using algorithm_def_ad_trampoline<activity_detector_base>::
-              algorithm_def_ad_trampoline;
-    std::vector<kwiver::vital::activity> detect(kwiver::vital::image_container_sptr image_data) const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        std::vector<kwiver::vital::activity>,
-        kwiver::vital::algo::activity_detector,
-        detect,
-        image_data
-      );
-    }
+public:
+  using algorithm_def_ad_trampoline< activity_detector_base >::
+  algorithm_def_ad_trampoline;
+
+  std::vector< kwiver::vital::activity >
+  detect( kwiver::vital::image_container_sptr image_data ) const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      std::vector< kwiver::vital::activity >,
+      kwiver::vital::algo::activity_detector,
+      detect,
+      image_data
+    );
+  }
 };
-}
-}
-}
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
+
 #endif

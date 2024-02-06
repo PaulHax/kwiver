@@ -15,6 +15,7 @@
 #include <vector>
 
 namespace kwiver {
+
 namespace vital {
 
 /// An abstract ordered collection of 2D image feature points.
@@ -40,28 +41,32 @@ public:
 typedef std::shared_ptr< feature_set > feature_set_sptr;
 
 /// A concrete feature set that simply wraps a vector of features.
-class simple_feature_set :
-  public feature_set
+class simple_feature_set
+  : public feature_set
 {
 public:
   /// Default Constructor
-  simple_feature_set() { }
+  simple_feature_set() {}
 
   /// Constructor from a vector of features
   explicit simple_feature_set( const std::vector< feature_sptr >& features )
-    : data_( features ) { }
+    : data_( features ) {}
 
   /// Return the number of feature in the set
-  virtual size_t size() const { return data_.size(); }
+  virtual size_t
+  size() const { return data_.size(); }
 
   /// Return a vector of feature shared pointers
-  virtual std::vector< feature_sptr > features() const { return data_; }
+  virtual std::vector< feature_sptr >
+  features() const { return data_; }
 
 protected:
   /// The vector of features
   std::vector< feature_sptr > data_;
 };
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital
 
 #endif // VITAL_FEATURE_SET_H_

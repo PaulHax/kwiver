@@ -17,47 +17,54 @@
 #include <vital/algo/convert_image.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
-template< class algorithm_def_ci_base=
-           kwiver::vital::algorithm_def< kwiver::vital::algo::convert_image > >
-class algorithm_def_ci_trampoline :
-      public algorithm_trampoline< algorithm_def_ci_base>
+template < class algorithm_def_ci_base =
+    kwiver::vital::algorithm_def< kwiver::vital::algo::convert_image > >
+class algorithm_def_ci_trampoline
+  : public algorithm_trampoline< algorithm_def_ci_base >
 {
-  public:
-    using algorithm_trampoline< algorithm_def_ci_base >::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_ci_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<kwiver::vital::algo::convert_image>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::convert_image >,
+      type_name,
+    );
+  }
 };
 
-template< class convert_image_base=kwiver::vital::algo::convert_image >
-class convert_image_trampoline :
-      public algorithm_def_ci_trampoline< convert_image_base >
+template < class convert_image_base = kwiver::vital::algo::convert_image >
+class convert_image_trampoline
+  : public algorithm_def_ci_trampoline< convert_image_base >
 {
-  public:
-    using algorithm_def_ci_trampoline< convert_image_base >::
-              algorithm_def_ci_trampoline;
+public:
+  using algorithm_def_ci_trampoline< convert_image_base >::
+  algorithm_def_ci_trampoline;
 
-    kwiver::vital::image_container_sptr
-    convert( kwiver::vital::image_container_sptr img ) const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        kwiver::vital::image_container_sptr,
-        kwiver::vital::algo::convert_image,
-        convert,
-        img
-      );
-    }
+  kwiver::vital::image_container_sptr
+  convert( kwiver::vital::image_container_sptr img ) const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      kwiver::vital::image_container_sptr,
+      kwiver::vital::algo::convert_image,
+      convert,
+      img
+    );
+  }
 };
-}
-}
-}
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
+
 #endif

@@ -19,13 +19,15 @@
 // ---------------------------------------------------------------------------
 
 namespace kwiver {
+
 namespace vital_c {
 
 /// Global cache for all algorithm instances ever.
 SharedPointerCache< kwiver::vital::algorithm,
-                    vital_algorithm_t > ALGORITHM_SPTR_CACHE( "algorithm" );
+  vital_algorithm_t > ALGORITHM_SPTR_CACHE( "algorithm" );
 
 } // end namespace vital_c
+
 } // end namespace kwiver
 
 // ===========================================================================
@@ -33,24 +35,30 @@ SharedPointerCache< kwiver::vital::algorithm,
 // ---------------------------------------------------------------------------
 
 char const*
-vital_algorithm_type_name( vital_algorithm_t *algo,
-                           vital_error_handle_t *eh )
+vital_algorithm_type_name(
+  vital_algorithm_t* algo,
+  vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "C::algorithm::type_name", eh,
-    std::string s( kwiver::vital_c::ALGORITHM_SPTR_CACHE.get( algo )->type_name() );
+    std::string s(
+      kwiver::vital_c::ALGORITHM_SPTR_CACHE.get(
+        algo )->type_name() );
     return s.c_str();
   );
   return 0;
 }
 
 char const*
-vital_algorithm_impl_name( vital_algorithm_t const *algo,
-                           vital_error_handle_t *eh )
+vital_algorithm_impl_name(
+  vital_algorithm_t const* algo,
+  vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "C::algorithm::impl_name", eh,
-    std::string s( kwiver::vital_c::ALGORITHM_SPTR_CACHE.get( algo )->impl_name() );
+    std::string s(
+      kwiver::vital_c::ALGORITHM_SPTR_CACHE.get(
+        algo )->impl_name() );
     return s.c_str();
   );
   return "";
@@ -58,24 +66,26 @@ vital_algorithm_impl_name( vital_algorithm_t const *algo,
 
 /// Get an algorithm implementation's configuration block
 vital_config_block_t*
-vital_algorithm_get_impl_configuration( vital_algorithm_t *algo,
-                                        vital_error_handle_t *eh )
+vital_algorithm_get_impl_configuration(
+  vital_algorithm_t* algo,
+  vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "C::algorithm::get_impl_configuration", eh,
     kwiver::vital::config_block_sptr cb_sptr =
       kwiver::vital_c::ALGORITHM_SPTR_CACHE.get( algo )->get_configuration();
     kwiver::vital_c::CONFIG_BLOCK_SPTR_CACHE.store( cb_sptr );
-    return reinterpret_cast<vital_config_block_t*>( cb_sptr.get() );
+    return reinterpret_cast< vital_config_block_t* >( cb_sptr.get() );
   );
   return 0;
 }
 
 /// Set this algorithm implementation's properties via a config block
 void
-vital_algorithm_set_impl_configuration( vital_algorithm_t *algo,
-                                        vital_config_block_t *cb,
-                                        vital_error_handle_t *eh )
+vital_algorithm_set_impl_configuration(
+  vital_algorithm_t* algo,
+  vital_config_block_t* cb,
+  vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "C::algorithm::set_impl_configuration", eh,
@@ -87,9 +97,10 @@ vital_algorithm_set_impl_configuration( vital_algorithm_t *algo,
 
 /// Check that the algorithm implementation's configuration is valid
 bool
-vital_algorithm_check_impl_configuration( vital_algorithm_t *algo,
-                                          vital_config_block_t *cb,
-                                          vital_error_handle_t *eh )
+vital_algorithm_check_impl_configuration(
+  vital_algorithm_t* algo,
+  vital_config_block_t* cb,
+  vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "C::algorithm::check_impl_configuration", eh,

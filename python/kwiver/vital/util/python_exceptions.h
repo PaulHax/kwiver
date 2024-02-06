@@ -18,45 +18,45 @@ namespace python {
 
 void VITAL_PYTHON_UTIL_EXPORT python_print_exception();
 
-#define VITAL_PYTHON_HANDLE_EXCEPTION( call )                       \
-  try                                                               \
-  {                                                                 \
-    call;                                                           \
-  }                                                                 \
-  catch ( pybind11::error_already_set const& e )                    \
-  {                                                                 \
-    auto logger = kwiver::vital::get_logger( "python_exceptions" ); \
-    LOG_WARN( logger, "Ignore Python Exception:\n" << e.what() );   \
-    kwiver::vital::python::python_print_exception();                \
-                                                                    \
-    throw;                                                          \
-  }
+#define VITAL_PYTHON_HANDLE_EXCEPTION( call )                     \
+try                                                               \
+{                                                                 \
+  call;                                                           \
+}                                                                 \
+catch( pybind11::error_already_set const& e )                     \
+{                                                                 \
+  auto logger = kwiver::vital::get_logger( "python_exceptions" ); \
+  LOG_WARN( logger, "Ignore Python Exception:\n" << e.what() );   \
+  kwiver::vital::python::python_print_exception();                \
+                                                                  \
+  throw;                                                          \
+}
 
-#define VITAL_PYTHON_IGNORE_EXCEPTION( call )                       \
-  try                                                               \
-  {                                                                 \
-    call;                                                           \
-  }                                                                 \
-  catch ( pybind11::error_already_set const& e )                    \
-  {                                                                 \
-    auto logger = kwiver::vital::get_logger( "python_exceptions" ); \
-    LOG_WARN( logger, "Ignore Python Exception:\n" << e.what() );   \
-    kwiver::vital::python::python_print_exception();                \
-  }
+#define VITAL_PYTHON_IGNORE_EXCEPTION( call )                     \
+try                                                               \
+{                                                                 \
+  call;                                                           \
+}                                                                 \
+catch( pybind11::error_already_set const& e )                     \
+{                                                                 \
+  auto logger = kwiver::vital::get_logger( "python_exceptions" ); \
+  LOG_WARN( logger, "Ignore Python Exception:\n" << e.what() );   \
+  kwiver::vital::python::python_print_exception();                \
+}
 
-#define VITAL_PYTHON_TRANSLATE_EXCEPTION( call )                    \
-  try                                                               \
-  {                                                                 \
-    call;                                                           \
-  }                                                                 \
-  catch ( std::exception const& e )                                 \
-  {                                                                 \
-    pybind11::gil_scoped_acquire acquire;                           \
-    (void) acquire;                                                 \
-    PyErr_SetString( PyExc_RuntimeError, e.what() );                \
-                                                                    \
-    throw;                                                          \
-  }
+#define VITAL_PYTHON_TRANSLATE_EXCEPTION( call )   \
+try                                                \
+{                                                  \
+  call;                                            \
+}                                                  \
+catch( std::exception const& e )                   \
+{                                                  \
+  pybind11::gil_scoped_acquire acquire;            \
+  ( void ) acquire;                                \
+  PyErr_SetString( PyExc_RuntimeError, e.what() ); \
+                                                   \
+  throw;                                           \
+}
 
 } // namespace python
 

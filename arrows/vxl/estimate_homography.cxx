@@ -18,50 +18,62 @@
 using namespace kwiver::vital;
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace vxl {
 
 /// Estimate a homography matrix from corresponding points
 homography_sptr
 estimate_homography
-::estimate(const std::vector<vector_2d>& pts1,
-           const std::vector<vector_2d>& pts2,
-           std::vector<bool>& inliers,
-           double inlier_scale) const
+::estimate(
+  const std::vector< vector_2d >& pts1,
+  const std::vector< vector_2d >& pts2,
+  std::vector< bool >& inliers,
+  double inlier_scale ) const
 {
-  if (pts1.size() < 4 || pts2.size() < 4)
+  if( pts1.size() < 4 || pts2.size() < 4 )
   {
-    vital::logger_handle_t logger( vital::get_logger( "arrows.vxl.estimate_homography" ));
-    LOG_ERROR(logger, "Not enough points to estimate a homography");
+    vital::logger_handle_t logger( vital::get_logger(
+      "arrows.vxl.estimate_homography" ) );
+    LOG_ERROR(logger, "Not enough points to estimate a homography" );
     return homography_sptr();
   }
 
-  std::vector< vnl_vector<double> > from_pts, to_pts;
-  for(const vector_2d& v : pts1)
+  std::vector< vnl_vector< double > > from_pts, to_pts;
+  for( const vector_2d& v : pts1 )
   {
-    from_pts.push_back(vnl_vector<double>(vnl_double_3(v.x(), v.y(), 1.0)));
+    from_pts.push_back(
+      vnl_vector< double >(
+        vnl_double_3(
+          v.x(), v.y(),
+          1.0 ) ) );
   }
-  for(const vector_2d& v : pts2)
+  for( const vector_2d& v : pts2 )
   {
-    to_pts.push_back(vnl_vector<double>(vnl_double_3(v.x(), v.y(), 1.0)));
+    to_pts.push_back(
+      vnl_vector< double >(
+        vnl_double_3(
+          v.x(), v.y(),
+          1.0 ) ) );
   }
 
   // Step 1: estimate the homography using sampling.  This will allow
   // a good rejection of outliers.
   rrel_homography2d_est hg( from_pts, to_pts );
-  hg.set_prior_scale(inlier_scale);
+  hg.set_prior_scale( inlier_scale );
 
   rrel_trunc_quad_obj msac;
   // TODO expose these parameters
   rrel_ran_sam_search ransam( 42 );
-  ransam.set_sampling_params(0.80);
-  ransam.set_trace_level(0);
+  ransam.set_sampling_params( 0.80 );
+  ransam.set_trace_level( 0 );
 
   bool result = ransam.estimate( &hg, &msac );
 
-  std::vector<double> residuals = ransam.residuals();
+  std::vector< double > residuals = ransam.residuals();
 
-  if ( ! result )
+  if( !result )
   {
     std::cerr << "MSAC failed!!" << std::endl;
     return homography_sptr();
@@ -74,12 +86,13 @@ estimate_homography
   // correct solution for IRLS to work.
   rrel_irls irls;
   irls.set_no_scale_est();
-  irls.initialize_scale(inlier_scale);
+  irls.initialize_scale( inlier_scale );
   irls.initialize_params( ransam.params() );
+
   bool result2 = irls.estimate( &hg, &msac );
 
   vnl_double_3x3 m;
-  if( ! result2 )
+  if( !result2 )
   {
     // if the IRLS fails, fall back to the ransam estimate.
     std::cerr << "IRLS failed" << std::endl;
@@ -88,20 +101,22 @@ estimate_homography
   else
   {
     hg.params_to_homog( irls.params(), m.as_ref().non_const() );
-    hg.compute_residuals(irls.params(), residuals);
+    hg.compute_residuals( irls.params(), residuals );
   }
 
   inliers.clear();
-  for(const double& r : residuals)
+  for( const double& r : residuals )
   {
-    inliers.push_back(r < inlier_scale);
+    inliers.push_back( r < inlier_scale );
   }
 
-  Eigen::Matrix<double,3,3> r_mat =
-    Eigen::Matrix<double,3,3>( m.data_block() ).transpose();
-  return homography_sptr( new homography_<double>( r_mat ) );
+  Eigen::Matrix< double, 3, 3 > r_mat =
+    Eigen::Matrix< double, 3, 3 >( m.data_block() ).transpose();
+  return homography_sptr( new homography_< double >( r_mat ) );
 }
 
 } // end namespace vxl
+
 } // end namespace arrows
+
 } // end namespace kwiver

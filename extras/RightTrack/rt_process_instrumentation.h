@@ -15,12 +15,13 @@
 namespace sprokit {
 
 // ----------------------------------------------------------------
+
 /**
  * @brief Process instrumentation using RightTrack tool.
  *
  */
 class RIGHTTRACK_PLUGIN_NO_EXPORT rt_process_instrumentation
-: public process_instrumentation
+  : public process_instrumentation
 {
 public:
   // -- CONSTRUCTORS --

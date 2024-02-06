@@ -44,8 +44,9 @@ NV_ENCODE_API_FUNCTION_LIST* nvenc_fn();
 std::string cuda_error_string( CUresult err );
 
 // ----------------------------------------------------------------------------
-template< class... Args >
-inline int throw_error_code_cuda( CUresult error_code, Args... args )
+template < class... Args >
+inline int
+throw_error_code_cuda( CUresult error_code, Args... args )
 {
   if( error_code != CUDA_SUCCESS )
   {

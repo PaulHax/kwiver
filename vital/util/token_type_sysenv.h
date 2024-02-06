@@ -12,6 +12,7 @@
 #include <kwiversys/SystemInformation.hxx>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -25,14 +26,16 @@ public:
   virtual ~token_type_sysenv();
 
   /// Lookup name in token type resolver.
-  virtual bool lookup_entry (std::string const& name, std::string& result) const;
+  virtual bool lookup_entry(
+    std::string const& name,
+    std::string& result ) const;
 
 private:
   kwiversys::SystemInformation m_sysinfo;
-
 }; // end class token_type_sysenv
 
 } // end namespace
+
 } // end namespace
 
 #endif // _TOKEN_TYPE_SYSENV_H_

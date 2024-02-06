@@ -5,7 +5,8 @@
 /**
  * \file detected_object_set_input_trampoline.txx
  *
- * \brief trampoline for overriding virtual functions of algorithm_def<detected_object_set_input> and detected_object_set_input
+ * \brief trampoline for overriding virtual functions of
+ * algorithm_def<detected_object_set_input> and detected_object_set_input
  */
 
 #ifndef DETECTED_OBJECT_SET_INPUT_TRAMPOLINE_TXX
@@ -14,80 +15,99 @@
 #include <tuple>
 
 #include <pybind11/pybind11.h>
+#include <python/kwiver/vital/algo/trampoline/algorithm_trampoline.txx>
 #include <vital/algo/detected_object_set_input.h>
 #include <vital/types/detected_object_set.h>
 #include <vital/types/image_container.h>
-#include <python/kwiver/vital/algo/trampoline/algorithm_trampoline.txx>
 
 using dosi = kwiver::vital::algo::detected_object_set_input;
 
 namespace kwiver {
+
 namespace vital {
+
 namespace python {
 
-template <class algorithm_def_dosi_base=kwiver::vital::algorithm_def<dosi>>
-class algorithm_def_dosi_trampoline :
-      public algorithm_trampoline<algorithm_def_dosi_base>
+template < class algorithm_def_dosi_base = kwiver::vital::algorithm_def< dosi > >
+class algorithm_def_dosi_trampoline
+  : public algorithm_trampoline< algorithm_def_dosi_base >
 {
-  public:
-    using algorithm_trampoline<algorithm_def_dosi_base>::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_dosi_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<dosi>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< dosi >,
+      type_name,
+    );
+  }
 };
 
-template <class detected_object_set_input_base=dosi>
-class detected_object_set_input_trampoline :
-      public algorithm_def_dosi_trampoline<detected_object_set_input_base>
+template < class detected_object_set_input_base = dosi >
+class detected_object_set_input_trampoline
+  : public algorithm_def_dosi_trampoline< detected_object_set_input_base >
 {
-  using super = algorithm_def_dosi_trampoline<detected_object_set_input_base>;
+  using super = algorithm_def_dosi_trampoline< detected_object_set_input_base >;
 
-  public:
-    using super::super;
+public:
+  using super::super;
 
-    bool read_set(kwiver::vital::detected_object_set_sptr& set, std::string& image_path) override
+  bool
+  read_set(
+    kwiver::vital::detected_object_set_sptr& set,
+    std::string& image_path ) override
+  {
+    pybind11::gil_scoped_acquire gil;
+    pybind11::function overload =
+      pybind11::get_overload( static_cast< dosi const* >( this ), "read_set" );
+    if( overload )
     {
-      pybind11::gil_scoped_acquire gil;
-      pybind11::function overload = pybind11::get_overload(static_cast<dosi const*>(this), "read_set");
-      if (overload) {
-        auto o = overload();
-        if (pybind11::isinstance<pybind11::none>(o)) {
-          return false;
-        }
-        std::tie(set, image_path) = o.cast<std::tuple<kwiver::vital::detected_object_set_sptr, std::string>>();
-        return true;
-      } else {
-        pybind11::pybind11_fail("Tried to call pure virtual function \"dosi::read_set\"");
+      auto o = overload();
+      if( pybind11::isinstance< pybind11::none >( o ) )
+      {
+        return false;
       }
+      std::tie(
+        set,
+        image_path ) = o.cast< std::tuple< kwiver::vital::detected_object_set_sptr, std::string > >();
+      return true;
     }
-
-    void open(std::string const& filename) override
+    else
     {
-      PYBIND11_OVERLOAD(
-        void,
-        dosi,
-        open,
-        filename
-      );
+      pybind11::pybind11_fail(
+        "Tried to call pure virtual function \"dosi::read_set\"" );
     }
+  }
 
-    void close() override
-    {
-      PYBIND11_OVERLOAD(
-        void,
-        dosi,
-        close,
-      );
-    }
+  void
+  open( std::string const& filename ) override
+  {
+    PYBIND11_OVERLOAD(
+      void,
+      dosi,
+      open,
+      filename
+    );
+  }
+
+  void
+  close() override
+  {
+    PYBIND11_OVERLOAD(
+      void,
+      dosi,
+      close,
+    );
+  }
 };
 
-}
-}
-}
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
+
 #endif

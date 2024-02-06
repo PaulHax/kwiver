@@ -17,65 +17,72 @@
 #include <vital/algo/compute_track_descriptors.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
-template< class algorithm_def_ctd_base=
-            kwiver::vital::algorithm_def<
-               kwiver::vital::algo::compute_track_descriptors > >
-class algorithm_def_ctd_trampoline :
-      public algorithm_trampoline<algorithm_def_ctd_base>
+template < class algorithm_def_ctd_base =
+    kwiver::vital::algorithm_def<
+      kwiver::vital::algo::compute_track_descriptors > >
+class algorithm_def_ctd_trampoline
+  : public algorithm_trampoline< algorithm_def_ctd_base >
 {
-  public:
-    using algorithm_trampoline< algorithm_def_ctd_base >::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_ctd_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        std::string,
-        kwiver::vital::algorithm_def<
-          kwiver::vital::algo::compute_track_descriptors>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      std::string,
+      kwiver::vital::algorithm_def<
+        kwiver::vital::algo::compute_track_descriptors >,
+      type_name,
+    );
+  }
 };
 
-template< class compute_track_descriptors_base=
-                  kwiver::vital::algo::compute_track_descriptors >
-class compute_track_descriptors_trampoline :
-      public algorithm_def_ctd_trampoline< compute_track_descriptors_base >
+template < class compute_track_descriptors_base =
+    kwiver::vital::algo::compute_track_descriptors >
+class compute_track_descriptors_trampoline
+  : public algorithm_def_ctd_trampoline< compute_track_descriptors_base >
 {
-  public:
-    using algorithm_def_ctd_trampoline< compute_track_descriptors_base >::
-              algorithm_def_ctd_trampoline;
+public:
+  using algorithm_def_ctd_trampoline< compute_track_descriptors_base >::
+  algorithm_def_ctd_trampoline;
 
-    kwiver::vital::track_descriptor_set_sptr
-    compute( kwiver::vital::timestamp ts,
-             kwiver::vital::image_container_sptr image_data,
-             kwiver::vital::object_track_set_sptr tracks ) override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        kwiver::vital::track_descriptor_set_sptr,
-        kwiver::vital::algo::compute_track_descriptors,
-        compute,
-        ts,
-        image_data,
-        tracks
-      );
-    }
+  kwiver::vital::track_descriptor_set_sptr
+  compute(
+    kwiver::vital::timestamp ts,
+    kwiver::vital::image_container_sptr image_data,
+    kwiver::vital::object_track_set_sptr tracks ) override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      kwiver::vital::track_descriptor_set_sptr,
+      kwiver::vital::algo::compute_track_descriptors,
+      compute,
+      ts,
+      image_data,
+      tracks
+    );
+  }
 
-    kwiver::vital::track_descriptor_set_sptr
-      flush() override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        kwiver::vital::track_descriptor_set_sptr,
-        kwiver::vital::algo::compute_track_descriptors,
-        flush,
-      );
-
-    }
+  kwiver::vital::track_descriptor_set_sptr
+  flush() override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      kwiver::vital::track_descriptor_set_sptr,
+      kwiver::vital::algo::compute_track_descriptors,
+      flush,
+    );
+  }
 };
-}
-}
-}
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
+
 #endif

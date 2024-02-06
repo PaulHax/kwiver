@@ -10,17 +10,19 @@
 #ifndef VITAL_C_HELPERS_FEATURE_H_
 #define VITAL_C_HELPERS_FEATURE_H_
 
-#include <vital/types/feature.h>
-#include <vital/bindings/c/types/feature.h>
 #include <vital/bindings/c/helpers/c_utils.h>
+#include <vital/bindings/c/types/feature.h>
+#include <vital/types/feature.h>
 
 namespace kwiver {
+
 namespace vital_c {
 
 extern SharedPointerCache< vital::feature, vital_feature_t >
-  FEATURE_SPTR_CACHE;
+FEATURE_SPTR_CACHE;
 
-}
-}
+} // namespace vital_c
 
-#endif //VITAL_C_HELPERS_FEATURE_H_
+} // namespace kwiver
+
+#endif // VITAL_C_HELPERS_FEATURE_H_

@@ -20,8 +20,9 @@ class KWIVER_ALGO_VXL_EXPORT aligned_edge_detection
   : public vital::algo::image_filter
 {
 public:
-  PLUGIN_INFO( "vxl_aligned_edge_detection",
-               "Compute axis-aligned edges in an image." )
+  PLUGIN_INFO(
+    "vxl_aligned_edge_detection",
+    "Compute axis-aligned edges in an image." )
 
   aligned_edge_detection();
   virtual ~aligned_edge_detection();
