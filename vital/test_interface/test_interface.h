@@ -47,7 +47,7 @@ public:
   PLUGGABLE_IMPL_BASIC(
     test_impl_simple,
     "This is a simple implementation with no parameters."
-    )
+  )
 
   PLUGGABLE_VARIABLES()
 
@@ -55,7 +55,7 @@ public:
 
   PLUGGABLE_STATIC_FROM_CONFIG(
     test_impl_simple,
-    )
+  )
 
   PLUGGABLE_STATIC_GET_DEFAULT()
 
@@ -90,7 +90,7 @@ public:
     // parameters
     PARAM( a, int, "some integer" ),
     PARAM_DEFAULT( b, std::string, "some string", "foo" )
-    )
+  )
 
   std::string
   test() override

@@ -72,9 +72,9 @@ check_config( kv::config_block_sptr config )
 
   bool config_valid = true;
 
-#define KWIVER_CONFIG_FAIL( msg ) \
-  LOG_ERROR( logger, "config check fail: " << msg ); \
-  config_valid = false
+#define KWIVER_CONFIG_FAIL( msg )                  \
+LOG_ERROR( logger, "config check fail: " << msg ); \
+config_valid = false
 
   config_valid =
     validate_required_input_file( "GCP_filename", *config, logger ) &&
@@ -85,8 +85,9 @@ check_config( kv::config_block_sptr config )
     config_valid;
 
   config_valid =
-    validate_required_output_dir( "output_cameras_directory", *config,
-                                  logger ) &&
+    validate_required_output_dir(
+      "output_cameras_directory", *config,
+      logger ) &&
     config_valid;
 
   config_valid =
@@ -98,8 +99,9 @@ check_config( kv::config_block_sptr config )
     config_valid;
 
   config_valid =
-    validate_required_output_file( "output_landmarks_filename", *config,
-                                   logger ) &&
+    validate_required_output_file(
+      "output_landmarks_filename", *config,
+      logger ) &&
     config_valid;
 
   config_valid =
@@ -111,8 +113,9 @@ check_config( kv::config_block_sptr config )
     KWIVER_CONFIG_FAIL( "video_reader configuration check failed" );
   }
 
-  if( !bundle_adjust::check_nested_algo_configuration( "bundle_adjust",
-                                                       config ) )
+  if( !bundle_adjust::check_nested_algo_configuration(
+    "bundle_adjust",
+    config ) )
   {
     KWIVER_CONFIG_FAIL( "bundle-adjust configuration check failed" );
   }
@@ -167,7 +170,6 @@ class GCP_helper
   }
 
 public:
-
   bool
   hasPoints() const
   {
@@ -238,7 +240,7 @@ extractGroundControlPoint(
       // (RFC 7946), the coordinates shall have been specified in WGS'84
       constexpr static auto gcs = kv::SRID::lat_lon_WGS84;
       kv::vector_3d loc( coords[ 0 ].GetDouble(),
-                         coords[ 1 ].GetDouble(), 0.0 );
+        coords[ 1 ].GetDouble(), 0.0 );
       if( size > 2 )
       {
         loc[ 2 ] = coords[ 2 ].GetDouble();
@@ -265,8 +267,9 @@ extractGroundControlPoint(
       auto const& lct = props[ TAG_LOCATION ].GetArray();
       if( lct.Size() == 3 && isDoubleArray( lct ) )
       {
-        gcp->set_loc( { lct[ 0 ].GetDouble(),
-                        lct[ 1 ].GetDouble(), lct[ 2 ].GetDouble() } );
+        gcp->set_loc(
+          { lct[ 0 ].GetDouble(),
+            lct[ 1 ].GetDouble(), lct[ 2 ].GetDouble() } );
       }
       else if( gcp->geo_loc().is_empty() )
       {
@@ -274,7 +277,8 @@ extractGroundControlPoint(
       }
       else if( props.HasMember( TAG_USER_REGISTERED ) )
       {
-        gcp->set_geo_loc_user_provided( props[ TAG_USER_REGISTERED ].GetBool() );
+        gcp->set_geo_loc_user_provided(
+          props[ TAG_USER_REGISTERED ].GetBool() );
       }
     }
 
@@ -302,12 +306,14 @@ extractGroundControlPoint(
                 auto const t =
                   static_cast< kv::frame_id_t >( frame.GetUint() );
                 auto feature = std::make_shared< kv::feature_d >();
-                feature->set_loc( { loc[ 0 ].GetDouble(),
-                                    loc[ 1 ].GetDouble() } );
+                feature->set_loc(
+                  { loc[ 0 ].GetDouble(),
+                    loc[ 1 ].GetDouble() } );
                 ft->insert(
-                  std::make_shared< kv::feature_track_state >( t,
-                                                               std::move(
-                                                                 feature ) ) );
+                  std::make_shared< kv::feature_track_state >(
+                    t,
+                    std::move(
+                      feature ) ) );
               }
             } // TAG_LOCATION
           }
@@ -322,8 +328,9 @@ extractGroundControlPoint(
     // Check if we read anything usable
     if( !gcp && !ft )
     {
-      LOG_DEBUG( logger, "ignoring point feature" <<
-                 " with no valid location information" );
+      LOG_DEBUG(
+        logger, "ignoring point feature" <<
+          " with no valid location information" );
       return {};
     }
   } // TAG_PROPERTIES
@@ -336,10 +343,11 @@ bool
 GCP_helper
 ::readGroundControlPoints( std::string const& path )
 {
-  auto fail = [ &path ]( char const* extra ) {
-                LOG_ERROR( logger,
-                    "failed to read ground control points from " <<
-                           path << ": " << extra );
+  auto fail = [ &path ]( char const* extra ){
+                LOG_ERROR(
+                  logger,
+                  "failed to read ground control points from " <<
+                    path << ": " << extra );
                 return false;
               };
 
@@ -385,8 +393,9 @@ GCP_helper
     auto fo = ftr.GetObject();
     if( fo[ TAG_TYPE ].GetString() != TAG_FEATURE )
     {
-      LOG_WARN( logger, "ignoring non-feature object" << ftr.GetString() <<
-                "in FeatureCollection" );
+      LOG_WARN(
+        logger, "ignoring non-feature object" << ftr.GetString() <<
+          "in FeatureCollection" );
       continue;
     }
 
@@ -485,7 +494,8 @@ struct bundle_adjust_tool::priv
   kv::path_t GCPFN = "gcps.json";
   bool ignore_metadata = false;
 
-  using mapID2FN = std::unordered_map<unsigned, kv::path_t>;
+  using mapID2FN = std::unordered_map< unsigned, kv::path_t >;
+
   mapID2FN camID2FN;
 
   enum commandline_mode { SUCCESS, HELP, WRITE, FAIL, };
@@ -498,7 +508,7 @@ struct bundle_adjust_tool::priv
     static std::string opt_config;
     static std::string opt_out_config;
 
-    if ( cmd_args["help"].as<bool>() )
+    if( cmd_args[ "help" ].as< bool >() )
     {
       return HELP;
     }
@@ -567,8 +577,9 @@ struct bundle_adjust_tool::priv
       write_config_file( config, opt_out_config );
       if( valid_config )
       {
-        LOG_INFO( logger,
-                  "configuration file is valid and may be used for running" );
+        LOG_INFO(
+          logger,
+          "configuration file is valid and may be used for running" );
       }
       else
       {
@@ -599,34 +610,41 @@ struct bundle_adjust_tool::priv
     config->subblock_view( "video_reader" )->merge_config(
       load_default_video_input_config( video_file ) );
 
-    config->set_value( "video_source", video_file,
-                       "(optional) Path to an input file to be opened as a video. "
-                       "This could be either a video file or a text file "
-                       "containing new-line separated paths to sequential "
-                       "image files. In this tool, video is only used to extract "
-                       "metadata such as geospatial tags." );
+    config->set_value(
+      "video_source", video_file,
+      "(optional) Path to an input file to be opened as a video. "
+      "This could be either a video file or a text file "
+      "containing new-line separated paths to sequential "
+      "image files. In this tool, video is only used to extract "
+      "metadata such as geospatial tags." );
 
-    config->set_value( "input_tracks_file", tracks_file,
-                       "(optional) Path to a file to input tracks from." );
+    config->set_value(
+      "input_tracks_file", tracks_file,
+      "(optional) Path to a file to input tracks from." );
 
-    config->set_value( "input_cameras", cam_in,
-                       "Path to a file to read camera models from." );
+    config->set_value(
+      "input_cameras", cam_in,
+      "Path to a file to read camera models from." );
 
-    config->set_value( "output_cameras_directory", cam_out_dir,
-                       "Directory to write camera models to." );
+    config->set_value(
+      "output_cameras_directory", cam_out_dir,
+      "Directory to write camera models to." );
 
-    config->set_value( "output_landmarks_filename", landmarks_file,
-                       "(optional) Path to a file to output landmarks to. "
-                       "If this file exists, it will be overwritten." );
+    config->set_value(
+      "output_landmarks_filename", landmarks_file,
+      "(optional) Path to a file to output landmarks to. "
+      "If this file exists, it will be overwritten." );
 
-    config->set_value( "geo_origin_filename", geo_origin_file,
-                       "(optional) Path to a file to write the geographic origin. "
-                       "This file is only written if the geospatial metadata is "
-                       "provided as input (e.g. in the input video). "
-                       "If this file exists, it will be overwritten." );
+    config->set_value(
+      "geo_origin_filename", geo_origin_file,
+      "(optional) Path to a file to write the geographic origin. "
+      "This file is only written if the geospatial metadata is "
+      "provided as input (e.g. in the input video). "
+      "If this file exists, it will be overwritten." );
 
-    config->set_value( "ignore_metadata", ignore_metadata,
-                       "Do not scan the video file for metadata." );
+    config->set_value(
+      "ignore_metadata", ignore_metadata,
+      "Do not scan the video file for metadata." );
 
     bundle_adjust::get_nested_algo_configuration(
       "bundle_adjust", config, nullptr );
@@ -635,7 +653,8 @@ struct bundle_adjust_tool::priv
     return config;
   }
 
-  void initialize()
+  void
+  initialize()
   {
     // Create algo_bundle_adjust from configuration
     bundle_adjust::set_nested_algo_configuration(
@@ -645,7 +664,8 @@ struct bundle_adjust_tool::priv
       "triangulator", config, algo_triangulate_landmarks );
   }
 
-  void clear_ptrs()
+  void
+  clear_ptrs()
   {
     camera_map_ptr = nullptr;
     landmark_map_ptr = nullptr;
@@ -659,19 +679,22 @@ struct bundle_adjust_tool::priv
 
   void load_sfm_constraint();
 
-  void load_GCP()
+  void
+  load_GCP()
   {
     gcp_helper.readGroundControlPoints( GCPFN );
   }
 
-  bool hasGCP() const
+  bool
+  hasGCP() const
   {
     return gcp_helper.hasPoints();
   }
 
   bool write_cameras();
 
-  bool write_landmarks()
+  bool
+  write_landmarks()
   {
     kv::path_t out_landmarks_path =
       config->get_value< kv::path_t >( "output_landmarks_filename" );
@@ -679,7 +702,8 @@ struct bundle_adjust_tool::priv
     return true;
   }
 
-  bool write_geo_origin()
+  bool
+  write_geo_origin()
   {
     if( sfm_constraint_ptr )
     {
@@ -696,7 +720,6 @@ struct bundle_adjust_tool::priv
   std::string get_filename( kv::frame_id_t frame_id );
 
   void run_algorithm();
-
 };
 
 // ----------------------------------------------------------------------------
@@ -706,7 +729,7 @@ bundle_adjust_tool::priv
 {
   if( !camID2FN.empty() )
   {
-    auto i = camID2FN.find(frame_id);
+    auto i = camID2FN.find( frame_id );
     if( i != camID2FN.end() )
     {
       return i->second;
@@ -721,6 +744,7 @@ bundle_adjust_tool::priv
       return basename_from_metadata( mdv, frame_id );
     }
   }
+
   auto dummy_md = std::make_shared< kv::metadata >();
   dummy_md->add< kv::VITAL_META_VIDEO_URI >( std::string( video_file ) );
   return basename_from_metadata( dummy_md, frame_id );
@@ -753,7 +777,7 @@ bundle_adjust_tool::priv
 {
   if( !config )
   {
-    LOG_WARN( logger, "no config to load cameras");
+    LOG_WARN( logger, "no config to load cameras" );
     return;
   }
   cam_in =
@@ -763,19 +787,20 @@ bundle_adjust_tool::priv
     LOG_WARN( logger, "no input cameras" );
     return;
   }
+
   std::ifstream f( cam_in );
   std::string FN;
   kv::camera_map::map_camera_t cameras; // keys expected to be 1-based
-  for( unsigned id=1 ; std::getline( f, FN ); ++id )
+  for( unsigned id = 1; std::getline( f, FN ); ++id )
   {
     LOG_INFO( logger, FN );
     try
     {
-      cameras[id] = kv::read_krtd_file( FN );
-      camID2FN[id] =
+      cameras[ id ] = kv::read_krtd_file( FN );
+      camID2FN[ id ] =
         kwiversys::SystemTools::GetFilenameWithoutLastExtension( FN );
     }
-    catch ( std::exception const & e )
+    catch( std::exception const& e )
     {
       LOG_WARN( logger, "no camera from " << FN << "; error: " << e.what() );
       continue;
@@ -800,6 +825,7 @@ bundle_adjust_tool::priv
       output_cameras_directory + "/" + FN + ".krtd";
     kv::path_t out_path( out_fname );
     LOG_DEBUG( logger, "output cam id=" << fid << " to " << out_path );
+
     auto cam_ptr = std::dynamic_pointer_cast< camera_perspective >( cam );
     if( !cam )
     {
@@ -841,26 +867,28 @@ bundle_adjust_tool::priv
 
       if( !landmark_map_ptr )
       {
-        if ( feature_track_set_ptr )
+        if( feature_track_set_ptr )
         {
           auto cp = camera_map_ptr;
           auto tp = feature_track_set_ptr;
 
           kwiver::vital::landmark_map::map_landmark_t init_lms;
-          std::set<kwiver::vital::track_id_t> track_ids = tp->all_track_ids();
+          std::set< kwiver::vital::track_id_t > track_ids = tp->all_track_ids();
 
           // Landmarks to triangulate must be created in the map.
           // These could be initialized to Null, but some versions of KWIVER may
           // crash, so it is safer to give them a value
-          kwiver::vital::vector_3d const init_loc(0, 0, 0);
-          for (auto const& id : track_ids)
+          kwiver::vital::vector_3d const init_loc( 0, 0, 0 );
+          for( auto const& id : track_ids )
           {
-            init_lms[id] = std::make_shared<kwiver::vital::landmark_d>(init_loc);
+            init_lms[ id ] =
+              std::make_shared< kwiver::vital::landmark_d >( init_loc );
           }
-          kwiver::vital::landmark_map_sptr lp =
-            std::make_shared<kwiver::vital::simple_landmark_map>(init_lms);
 
-          algo_triangulate_landmarks->triangulate(cp, tp, lp);
+          kwiver::vital::landmark_map_sptr lp =
+            std::make_shared< kwiver::vital::simple_landmark_map >( init_lms );
+
+          algo_triangulate_landmarks->triangulate( cp, tp, lp );
 
           landmark_map_ptr = lp;
           feature_track_set_ptr = tp;
@@ -873,7 +901,7 @@ bundle_adjust_tool::priv
     }
   }
 
-  //== handle manual annotation tracks and landmarks as trusted
+  // == handle manual annotation tracks and landmarks as trusted
   if( gcp_helper.hasPoints() )
   {
     auto reg_tracks = gcp_helper.registrationTracks();
@@ -968,16 +996,17 @@ bundle_adjust_tool::priv
     }
   }
 
-  //== optimize
+  // == optimize
   kv::simple_camera_perspective_map cams;
   unsigned min_frm_id = -1;
   for( auto const& p : camera_map_ptr->cameras() )
   {
     auto ID = p.first;
-    if ( min_frm_id > ID)
+    if( min_frm_id > ID )
     {
       min_frm_id = ID;
     }
+
     auto c =
       std::dynamic_pointer_cast< kv::simple_camera_perspective >( p.second );
     if( c )
@@ -1013,9 +1042,10 @@ bundle_adjust_tool::priv
   auto err = reprojection_rmse( cms, lms, trusted_tracks );
   LOG_DEBUG( logger, "initial re-projection RMSE: " << err );
 
-  algo_bundle_adjust->optimize( cams, lms, feature_track_set_ptr,
-                                fixed_cameras,
-                                fixed_landmarks, sfm_constraint_ptr );
+  algo_bundle_adjust->optimize(
+    cams, lms, feature_track_set_ptr,
+    fixed_cameras,
+    fixed_landmarks, sfm_constraint_ptr );
 
   err = reprojection_rmse( cms, lms, trusted_tracks );
   LOG_DEBUG( logger, "final re-projection RMSE: " << err );
@@ -1047,7 +1077,9 @@ bundle_adjust_tool::priv
 
   if( config->has_value( "input_cameras" ) )
   {
-    LOG_INFO( logger, "ignoring input video/images, using input camera priors" );
+    LOG_INFO(
+      logger,
+      "ignoring input video/images, using input camera priors" );
     return;
   }
 
@@ -1071,7 +1103,8 @@ bundle_adjust_tool::priv
     }
     else
     {
-      LOG_WARN( logger,
+      LOG_WARN(
+        logger,
         "no meta-data in video file/image list input" );
       return;
     }
@@ -1090,7 +1123,7 @@ bundle_adjust_tool::priv
   using kv::local_geo_cs;
 
 #define GET_K_CONFIG( type, name ) \
-  config->get_value< type >( bc + #name, K_def.name() )
+config->get_value< type >( bc + #name, K_def.name() )
 
   simple_camera_intrinsics K_def;
   const std::string bc = "video_reader:base_camera:";
@@ -1124,8 +1157,9 @@ bundle_adjust_tool::priv
       base_camera.set_intrinsics( K );
 
       bool init_intrinsics_with_metadata =
-        config->get_value< bool >( "initialize_intrinsics_with_metadata",
-                                   true );
+        config->get_value< bool >(
+          "initialize_intrinsics_with_metadata",
+          true );
       if( init_intrinsics_with_metadata )
       {
         // find the first metadata that gives valid intrinsics
@@ -1134,9 +1168,10 @@ bundle_adjust_tool::priv
         for( auto mdp : md_map )
         {
           auto md_K =
-            intrinsics_from_metadata( *mdp.second,
-                                      static_cast< unsigned >( im->width() ),
-                                      static_cast< unsigned >( im->height() ) );
+            intrinsics_from_metadata(
+              *mdp.second,
+              static_cast< unsigned >( im->width() ),
+              static_cast< unsigned >( im->height() ) );
           if( md_K != nullptr )
           {
             base_camera.set_intrinsics( md_K );
@@ -1147,8 +1182,9 @@ bundle_adjust_tool::priv
 
       local_geo_cs lgcs = sfm_constraint_ptr->get_local_geo_cs();
       kv::camera_map::map_camera_t cam_map =
-        initialize_cameras_with_metadata( md_map, base_camera, lgcs,
-                                          init_intrinsics_with_metadata );
+        initialize_cameras_with_metadata(
+          md_map, base_camera, lgcs,
+          init_intrinsics_with_metadata );
       camera_map_ptr =
         std::make_shared< kv::simple_camera_map >( cam_map );
       sfm_constraint_ptr->set_local_geo_cs( lgcs );
@@ -1225,12 +1261,12 @@ bundle_adjust_tool
 
     return EXIT_SUCCESS;
   }
-  catch ( std::exception const& e )
+  catch( std::exception const& e )
   {
     LOG_ERROR( logger, "exception: " << e.what() );
     return EXIT_FAILURE;
   }
-  catch ( ... )
+  catch( ... )
   {
     LOG_ERROR( logger, "unknown exception" );
     return EXIT_FAILURE;
@@ -1246,26 +1282,26 @@ bundle_adjust_tool
   m_cmd_options->add_options()
   ( "h,help",   "display applet usage" )
   ( "c,config", "configuration file for tool",
-                                cxxopts::value< std::string >() )
+    cxxopts::value< std::string > () )
   ( "o,output-config",
     "output a configuration, which may be seeded with "
     "a configuration file from -c/--config",
-    cxxopts::value< std::string >() )
+    cxxopts::value< std::string > () )
   ( "p,GCP",
     "input 3D Ground Control Points (GCP) with corresponding "
     "2D Camera Registration Points (CRP) as JSON file",
-    cxxopts :: value< std::string >() )
+    cxxopts::value< std::string > () )
   ( "v,video", "input video file or image.txt list",
-    cxxopts::value< std::string >() )
-  ( "t,tracks", "input tracks.txt", cxxopts::value< std::string >() )
+    cxxopts::value< std::string > () )
+  ( "t,tracks", "input tracks.txt", cxxopts::value< std::string > () )
   ( "i,cam_in", "input camera models.txt list",
-    cxxopts::value< std::string >() )
+    cxxopts::value< std::string > () )
   ( "k,cam_out", "output directory for camera models",
-    cxxopts::value< std::string >() )
+    cxxopts::value< std::string > () )
   ( "l,landmarks", "output landmarks.ply file",
-    cxxopts::value< std::string >() )
+    cxxopts::value< std::string > () )
   ( "g,geo-origin", "output geographic origin file",
-    cxxopts::value< std::string >() )
+    cxxopts::value< std::string > () )
   ;
   // to remove tracks reading from the config, add this
   // m_cmd_options->parse_positional("tracks");

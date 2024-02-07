@@ -22,20 +22,22 @@
 #include <arrows/vxl/high_pass_filter.h>
 #include <arrows/vxl/image_io.h>
 #include <arrows/vxl/kd_tree.h>
+#include <arrows/vxl/match_features_constrained.h>
+#include <arrows/vxl/morphology.h>
 #include <arrows/vxl/optimize_cameras.h>
 #include <arrows/vxl/pixel_feature_extractor.h>
 #include <arrows/vxl/split_image.h>
 #include <arrows/vxl/threshold.h>
 #include <arrows/vxl/triangulate_landmarks.h>
-#include <arrows/vxl/match_features_constrained.h>
-#include <arrows/vxl/morphology.h>
 
 #ifdef VXL_ENABLE_FFMPEG
 #include <arrows/vxl/vidl_ffmpeg_video_input.h>
 #endif
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace vxl {
 
 extern "C"
@@ -43,9 +45,9 @@ KWIVER_ALGO_VXL_PLUGIN_EXPORT
 void
 register_factories( kwiver::vital::plugin_loader& vpm )
 {
-    kwiver::vital::algorithm_registrar reg( vpm, "arrows.vxl" );
+  kwiver::vital::algorithm_registrar reg( vpm, "arrows.vxl" );
 
-  if (reg.is_module_loaded())
+  if( reg.is_module_loaded() )
   {
     return;
   }
@@ -82,5 +84,7 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 }
 
 } // end namespace vxl
+
 } // end namespace arrows
+
 } // end namespace kwiver

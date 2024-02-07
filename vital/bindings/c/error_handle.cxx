@@ -12,20 +12,23 @@
 #include <cstdlib>
 
 /// Return a new, empty error handle object.
-vital_error_handle_t* vital_eh_new()
+vital_error_handle_t*
+vital_eh_new()
 {
-  vital_error_handle_t* eh = (vital_error_handle_t*)std::malloc(sizeof(vital_error_handle_t));
+  vital_error_handle_t* eh =
+    ( vital_error_handle_t* ) std::malloc( sizeof( vital_error_handle_t ) );
   // Memory allocation may have failed.
   if( eh )
   {
     eh->error_code = 0;
-    eh->message = (char*)0;
+    eh->message = ( char* ) 0;
   }
   return eh;
 }
 
 /// Destroy the given non-null error handle structure pointer
-void vital_eh_destroy( vital_error_handle_t *eh )
+void
+vital_eh_destroy( vital_error_handle_t* eh )
 {
   if( eh )
   {

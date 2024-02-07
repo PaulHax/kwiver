@@ -27,7 +27,7 @@ class VITAL_ALGO_EXPORT handle_descriptor_request
 {
 public:
   handle_descriptor_request();
-  PLUGGABLE_INTERFACE(handle_descriptor_request);
+  PLUGGABLE_INTERFACE( handle_descriptor_request );
   /// Set this algorithm's properties via a config block
   virtual void set_configuration( kwiver::vital::config_block_sptr config );
   /// Check that the algorithm's currently configuration is valid
@@ -39,7 +39,6 @@ public:
     kwiver::vital::descriptor_request_sptr request,
     kwiver::vital::track_descriptor_set_sptr& desc,
     std::vector< kwiver::vital::image_container_sptr >& imgs ) = 0;
-
 };
 
 typedef std::shared_ptr< handle_descriptor_request >

@@ -13,37 +13,42 @@
 #include <memory>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace cuda {
 
 /// A CUDA delete functor to use with a unique_ptr
-template <typename T>
+template < typename T >
 struct cuda_deleter
 {
-  constexpr cuda_deleter() noexcept = default;
+  constexpr cuda_deleter() noexcept= default;
 
-  void operator() (T* ptr) const
+  void
+  operator()( T* ptr ) const
   {
-    cudaFree(ptr);
+    cudaFree( ptr );
   }
 };
 
 /// Provide a short name for the CUDA unique_ptr
-template <typename T>
-using cuda_ptr = std::unique_ptr<T[], cuda_deleter<T> >;
+template < typename T >
+using cuda_ptr = std::unique_ptr< T[], cuda_deleter< T > >;
 
 /// Construct a unique_ptr to CUDA memory
-template <typename T>
-cuda_ptr<T>
-make_cuda_mem(size_t size)
+template < typename T >
+cuda_ptr< T >
+make_cuda_mem( size_t size )
 {
   T* ptr;
-  CudaErrorCheck(cudaMalloc((void**)&ptr, size * sizeof(T)));
-  return cuda_ptr<T>(ptr);
+  CudaErrorCheck( cudaMalloc( ( void** ) &ptr, size * sizeof( T ) ) );
+  return cuda_ptr< T >( ptr );
 }
 
 }  // end namespace cuda
+
 }  // end namespace arrows
+
 }  // end namespace kwiver
 
 #endif

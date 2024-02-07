@@ -21,26 +21,30 @@ namespace klv {
 
 // ----------------------------------------------------------------------------
 klv_update_intervals::key_t
-::key_t( klv_top_level_tag standard ) : standard{ standard }, tag{}
+::key_t( klv_top_level_tag standard ) : standard{ standard },
+                                        tag{}
 {}
 
 // ----------------------------------------------------------------------------
 klv_update_intervals::key_t
 ::key_t(
   klv_top_level_tag standard, std::optional< klv_lds_key > tag )
-  : standard{ standard }, tag{ tag }
+  : standard{ standard },
+    tag{ tag }
 {}
 
 // ----------------------------------------------------------------------------
 klv_update_intervals
-::klv_update_intervals() : m_default{ KLV_UPDATE_INTERVAL_DEFAULT }, m_map{}
+::klv_update_intervals() : m_default{ KLV_UPDATE_INTERVAL_DEFAULT },
+                           m_map{}
 {}
 
 // ----------------------------------------------------------------------------
 klv_update_intervals
 ::klv_update_intervals(
   std::initializer_list< container_t::value_type > const& items )
-  : m_default{ KLV_UPDATE_INTERVAL_DEFAULT }, m_map{ items }
+  : m_default{ KLV_UPDATE_INTERVAL_DEFAULT },
+    m_map{ items }
 {}
 
 // ----------------------------------------------------------------------------
@@ -67,7 +71,8 @@ klv_update_intervals
     LOG_WARN(
       kv::get_logger( "klv" ),
       "Update interval of " << value
-      << " being truncated to maximum value of " << KLV_UPDATE_INTERVAL_MAX );
+                            << " being truncated to maximum value of " <<
+        KLV_UPDATE_INTERVAL_MAX );
     value = KLV_UPDATE_INTERVAL_MAX;
   }
   m_map.emplace( key, value ).first->second = value;

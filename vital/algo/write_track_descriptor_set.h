@@ -38,7 +38,7 @@ class VITAL_ALGO_EXPORT write_track_descriptor_set
 {
 public:
   write_track_descriptor_set();
-  PLUGGABLE_INTERFACE(write_track_descriptor_set);
+  PLUGGABLE_INTERFACE( write_track_descriptor_set );
   /// Open a file of track descriptor sets.
   ///
   /// This method opens a track descriptor set file for reading.

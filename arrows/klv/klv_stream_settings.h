@@ -18,16 +18,18 @@ namespace klv {
 
 // ----------------------------------------------------------------------------
 /// Synchronicity of a KLV stream.
-enum klv_stream_type {
+enum klv_stream_type
+{
   KLV_STREAM_TYPE_SYNC,
-  KLV_STREAM_TYPE_ASYNC
+  KLV_STREAM_TYPE_ASYNC,
 };
 
 // ----------------------------------------------------------------------------
 /// Parameters describing the general characteristics of a KLV stream.
 ///
 /// Members have been left public so users may modify them at their disgression.
-struct KWIVER_ALGO_KLV_EXPORT klv_stream_settings {
+struct KWIVER_ALGO_KLV_EXPORT klv_stream_settings
+{
   klv_stream_settings();
 
   /// Whether this stream is synchronous or asynchronous.
@@ -40,8 +42,9 @@ struct KWIVER_ALGO_KLV_EXPORT klv_stream_settings {
 
 // ----------------------------------------------------------------------------
 KWIVER_ALGO_KLV_EXPORT
-bool operator==( klv_stream_settings const& lhs,
-                 klv_stream_settings const& rhs );
+bool operator==(
+  klv_stream_settings const& lhs,
+  klv_stream_settings const& rhs );
 
 } // namespace klv
 

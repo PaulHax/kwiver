@@ -5,12 +5,14 @@
 #include "detected_object_set_util.h"
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
 void
-scale_detections( detected_object_set_sptr dos,
-       double scale_factor )
+scale_detections(
+  detected_object_set_sptr dos,
+  double scale_factor )
 {
   if( scale_factor == 1.0 )
   {
@@ -27,8 +29,9 @@ scale_detections( detected_object_set_sptr dos,
 
 // ----------------------------------------------------------------------------
 void
-shift_detections( detected_object_set_sptr dos,
-       double col_shift, double row_shift )
+shift_detections(
+  detected_object_set_sptr dos,
+  double col_shift, double row_shift )
 {
   if( col_shift == 0.0 && row_shift == 0.0 )
   {
@@ -38,10 +41,13 @@ shift_detections( detected_object_set_sptr dos,
   for( auto detection : *dos )
   {
     auto bbox = detection->bounding_box();
-    bbox = kwiver::vital::translate( bbox,
+    bbox = kwiver::vital::translate(
+      bbox,
       bounding_box_d::vector_type( col_shift, row_shift ) );
     detection->set_bounding_box( bbox );
   }
 }
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace

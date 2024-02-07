@@ -36,19 +36,21 @@ public:
   ///        participants
   ///
   /// @param id A numeric identifier associated with the activity
-  /// @param label A label associated with the activity (default=UNDEFINED_ACTIVITY)
+  /// @param label A label associated with the activity
+  /// (default=UNDEFINED_ACTIVITY)
   /// @param confidence Confidence in the activity (default=-1.0)
   /// @param classifications Optional activity classifications
   /// @param start Optional timestamp for starting frame of an activity
   /// @param end Optional timstamp for ending frame of an activity
   /// @param participants Optional participants in the activity
-  activity( activity_id_t id,
-            activity_label_t label=UNDEFINED_ACTIVITY,
-            double confidence=-1.0,
-            activity_type_sptr classifications=nullptr,
-            kwiver::vital::timestamp start=kwiver::vital::timestamp(-1, -1),
-            kwiver::vital::timestamp end=kwiver::vital::timestamp(-1, -1),
-            kwiver::vital::object_track_set_sptr participants=nullptr );
+  activity(
+    activity_id_t id,
+    activity_label_t label = UNDEFINED_ACTIVITY,
+    double confidence = -1.0,
+    activity_type_sptr classifications = nullptr,
+    kwiver::vital::timestamp start = kwiver::vital::timestamp( -1, -1 ),
+    kwiver::vital::timestamp end = kwiver::vital::timestamp( -1, -1 ),
+    kwiver::vital::object_track_set_sptr participants = nullptr );
 
   /// @brief Get activity id
   ///
@@ -112,8 +114,10 @@ public:
 
   /// @brief Get activity duration
   ///
-  /// @return pair of timestamp representing starting and ending timestamp for activity
-  std::pair<kwiver::vital::timestamp, kwiver::vital::timestamp> duration() const;
+  /// @return pair of timestamp representing starting and ending timestamp for
+  /// activity
+  std::pair< kwiver::vital::timestamp,
+    kwiver::vital::timestamp > duration() const;
 
   /// @brief Get participants
   ///
@@ -122,7 +126,8 @@ public:
 
   /// @brief Set participants for the activity
   ///
-  /// @param participants object track set representing trajectories of the participants
+  /// @param participants object track set representing trajectories of the
+  /// participants
   void set_participants( kwiver::vital::object_track_set_sptr participants );
 
 private:
@@ -134,6 +139,8 @@ private:
   kwiver::vital::timestamp m_start_frame, m_end_frame;
 };
 
-} }
+} // namespace vital
+
+} // namespace kwiver
 
 #endif

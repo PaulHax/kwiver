@@ -8,9 +8,9 @@
 #ifndef KWIVER_ARROWS_KLV_KLV_KEY_TRAITS_H_
 #define KWIVER_ARROWS_KLV_KLV_KEY_TRAITS_H_
 
+#include <arrows/klv/klv_read_write.txx>
 #include <arrows/klv/klv_tag_traits.h>
 #include <arrows/klv/klv_types.h>
-#include <arrows/klv/klv_read_write.txx>
 
 namespace kwiver {
 
@@ -35,8 +35,9 @@ public:
   }
 
   static void
-  write_key( klv_lds_key const& key,
-             klv_write_iter_t& data, size_t max_length )
+  write_key(
+    klv_lds_key const& key,
+    klv_write_iter_t& data, size_t max_length )
   {
     klv_write_lds_key( key, data, max_length );
   }
@@ -48,8 +49,9 @@ public:
   }
 
   static klv_tag_traits const&
-  tag_traits_from_key( klv_tag_traits_lookup const& lookup,
-                       klv_lds_key const& key )
+  tag_traits_from_key(
+    klv_tag_traits_lookup const& lookup,
+    klv_lds_key const& key )
   {
     return lookup.by_tag( key );
   }
@@ -73,8 +75,9 @@ public:
   }
 
   static void
-  write_key( klv_uds_key const& key,
-             klv_write_iter_t& data, size_t max_length )
+  write_key(
+    klv_uds_key const& key,
+    klv_write_iter_t& data, size_t max_length )
   {
     klv_write_uds_key( key, data, max_length );
   }
@@ -86,8 +89,9 @@ public:
   }
 
   static klv_tag_traits const&
-  tag_traits_from_key( klv_tag_traits_lookup const& lookup,
-                       klv_uds_key const& key )
+  tag_traits_from_key(
+    klv_tag_traits_lookup const& lookup,
+    klv_uds_key const& key )
   {
     return lookup.by_uds_key( key );
   }

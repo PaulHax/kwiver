@@ -14,7 +14,7 @@
 
 extern "C" {
 #include <libavcodec/avcodec.h>
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(58, 87, 100)
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 58, 87, 100 )
 #include <libavcodec/bsf.h>
 #endif
 #include <libavfilter/avfilter.h>
@@ -46,18 +46,22 @@ bool is_hardware_codec( AVCodec const* codec );
 std::string error_string( int error_code );
 
 // --------------------------------------------------------------------------
-template< class... Args >
-inline void throw_error( Args... args )
+template < class... Args >
+inline void
+throw_error( Args... args )
 {
   std::stringstream ss;
+  // UNCRUST-OFF
   bool dummy[] = { ( ss << args ).good()... };
-  ( void )dummy;
+  // UNCRUST-ON
+  ( void ) dummy;
   throw std::runtime_error( ss.str() );
 }
 
 // --------------------------------------------------------------------------
-template< class... Args >
-inline int throw_error_code( int error_code, Args... args )
+template < class... Args >
+inline int
+throw_error_code( int error_code, Args... args )
 {
   if( error_code < 0 )
   {
@@ -67,8 +71,9 @@ inline int throw_error_code( int error_code, Args... args )
 }
 
 // --------------------------------------------------------------------------
-template< class T, class... Args >
-inline T* throw_error_null( T* ptr, Args... args )
+template < class T, class... Args >
+inline T*
+throw_error_null( T* ptr, Args... args )
 {
   if( !ptr )
   {

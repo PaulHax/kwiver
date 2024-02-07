@@ -5,114 +5,126 @@
 #include "warp_image.h"
 
 #include <cassert>
-#include <vector>
 #include <limits>
-#include <vil/vil_bilin_interp.h>
-#include <vil/vil_bicub_interp.h>
-#include <vil/vil_nearest_interp.h>
-#include <vnl/vnl_inverse.h>
-#include <vnl/vnl_double_3.h>
+#include <vector>
 #include <vgl/vgl_box_2d.h>
 #include <vgl/vgl_intersection.h>
+#include <vil/vil_bicub_interp.h>
+#include <vil/vil_bilin_interp.h>
+#include <vil/vil_nearest_interp.h>
+#include <vnl/vnl_double_3.h>
+#include <vnl/vnl_inverse.h>
 
 #include <limits>
 
-#include <vital/vital_config.h>
 #include <vital/logger/logger.h>
+#include <vital/vital_config.h>
 
-namespace
-{
+namespace {
 
-template <typename T>
-bool fuzzy_cmp(T const& a, T const& b,
-               T const& epsilon = std::numeric_limits<T>::epsilon())
+template < typename T >
+bool
+fuzzy_cmp(
+  T const& a, T const& b,
+  T const& epsilon = std::numeric_limits< T >::epsilon() )
 {
-  T const diff = std::fabs(a - b);
-  return (diff <= epsilon);
+  T const diff = std::fabs( a - b );
+  return ( diff <= epsilon );
 }
 
-bool is_identity( vgl_h_matrix_2d<double> const& H )
+bool
+is_identity( vgl_h_matrix_2d< double > const& H )
 {
-  vnl_matrix_fixed<double,3,3> const& M = H.get_matrix();
-  return ( fuzzy_cmp(M(0,1), 0.0) && fuzzy_cmp(M(0,2), 0.0) &&
-           fuzzy_cmp(M(1,0), 0.0) && fuzzy_cmp(M(1,2), 0.0) &&
-           fuzzy_cmp(M(2,0), 0.0) && fuzzy_cmp(M(2,1), 0.0) &&
-           fuzzy_cmp(M(0,0), M(1,1)) && fuzzy_cmp(M(1,1), M(2,2)) );
+  vnl_matrix_fixed< double, 3, 3 > const& M = H.get_matrix();
+  return ( fuzzy_cmp( M( 0, 1 ), 0.0 ) && fuzzy_cmp( M( 0, 2 ), 0.0 ) &&
+           fuzzy_cmp( M( 1, 0 ), 0.0 ) && fuzzy_cmp( M( 1, 2 ), 0.0 ) &&
+           fuzzy_cmp( M( 2, 0 ), 0.0 ) && fuzzy_cmp( M( 2, 1 ), 0.0 ) &&
+           fuzzy_cmp( M( 0, 0 ), M( 1, 1 ) ) && fuzzy_cmp(
+             M( 1, 1 ),
+             M( 2, 2 ) ) );
 }
 
-}
+} // namespace
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace super3d {
 
 // Helper routine.  Defined in .cxx
 bool
-warp_image_is_identity( vgl_h_matrix_2d<double> const& H );
+warp_image_is_identity( vgl_h_matrix_2d< double > const& H );
 
-template<class T>
+template < class T >
 bool
-warp_image( vil_image_view<T> const& src,
-            vil_image_view<T>& dest,
-            vgl_h_matrix_2d<double> const& dest_to_src_homography,
-            vil_image_view< bool > * const unmapped_mask )
+warp_image(
+  vil_image_view< T > const& src,
+  vil_image_view< T >& dest,
+  vgl_h_matrix_2d< double > const& dest_to_src_homography,
+  vil_image_view< bool >* const unmapped_mask )
 {
   return warp_image( src, dest, dest_to_src_homography, 0, 0, unmapped_mask );
 }
 
-template<class T>
+template < class T >
 bool
-warp_image( vil_image_view<T> const& src,
-            vil_image_view<T>& dest,
-            vgl_h_matrix_2d<double> const& dest_to_src_homography,
-            int off_i, int off_j,
-            vil_image_view< bool > * const unmapped_mask )
+warp_image(
+  vil_image_view< T > const& src,
+  vil_image_view< T >& dest,
+  vgl_h_matrix_2d< double > const& dest_to_src_homography,
+  int off_i, int off_j,
+  vil_image_view< bool >* const unmapped_mask )
 {
-  return warp_image( src,
-                     dest,
-                     dest_to_src_homography,
-                     warp_image_parameters().set_offset( off_i, off_j ),
-                     unmapped_mask );
+  return warp_image(
+    src,
+    dest,
+    dest_to_src_homography,
+    warp_image_parameters().set_offset( off_i, off_j ),
+    unmapped_mask );
 }
 
-template <typename T, typename U>
-static T safe_cast(U const& value);
+template < typename T, typename U >
+static T safe_cast( U const& value );
 
-//casts return to type T to match vil_nearest_interp_unsafe func signature
-template <class T>
+// casts return to type T to match vil_nearest_interp_unsafe func signature
+template < class T >
 T
-bilinear_interp_wrapper(double x,
-                        double y,
-                        const T* data,
-                        int,
-                        int,
-                        std::ptrdiff_t xstep,
-                        std::ptrdiff_t ystep)
+bilinear_interp_wrapper(
+  double x,
+  double y,
+  const T* data,
+  int,
+  int,
+  std::ptrdiff_t xstep,
+  std::ptrdiff_t ystep )
 {
-  return safe_cast<T>(vil_bilin_interp_raw(x, y, data, xstep, ystep));
+  return safe_cast< T >( vil_bilin_interp_raw( x, y, data, xstep, ystep ) );
 }
 
-//casts return to type T to match vil_nearest_interp_unsafe func signature
-template <class T>
+// casts return to type T to match vil_nearest_interp_unsafe func signature
+template < class T >
 T
-bicubic_interp_wrapper(double x,
-                       double y,
-                       const T* data,
-                       int,
-                       int,
-                       std::ptrdiff_t xstep,
-                       std::ptrdiff_t ystep)
+bicubic_interp_wrapper(
+  double x,
+  double y,
+  const T* data,
+  int,
+  int,
+  std::ptrdiff_t xstep,
+  std::ptrdiff_t ystep )
 {
-  return safe_cast<T>(vil_bicub_interp_raw(x, y, data, xstep, ystep));
+  return safe_cast< T >( vil_bicub_interp_raw( x, y, data, xstep, ystep ) );
 }
 
-template<class T>
+template < class T >
 bool
-warp_image( vil_image_view<T> const& src,
-            vil_image_view<T>& dest,
-            vgl_h_matrix_2d<double> const& dest_to_src_homography,
-            warp_image_parameters const& param,
-            vil_image_view< bool > * const unmapped_mask_ptr )
+warp_image(
+  vil_image_view< T > const& src,
+  vil_image_view< T >& dest,
+  vgl_h_matrix_2d< double > const& dest_to_src_homography,
+  warp_image_parameters const& param,
+  vil_image_view< bool >* const unmapped_mask_ptr )
 {
   // Retrieve destination and source image properties
   unsigned const dni = dest.ni();
@@ -147,29 +159,29 @@ warp_image( vil_image_view<T> const& src,
     return true;
   }
 
-  typedef vgl_homg_point_2d<double> homog_type;
-  typedef vgl_point_2d<double> point_type;
-  typedef vgl_box_2d<double> box_type;
+  typedef vgl_homg_point_2d< double > homog_type;
+  typedef vgl_point_2d< double > point_type;
+  typedef vgl_box_2d< double > box_type;
 
   // First, figure out the bounding box of src projected into dest.
   // There may be considerable computation saving for the cases when
   // the output image is much larger that the projected source image,
   // which will often occur during mosaicing.
 
-  vgl_h_matrix_2d<double> const& src_to_dest_homography(
+  vgl_h_matrix_2d< double > const& src_to_dest_homography(
     vnl_inverse( dest_to_src_homography.get_matrix() ) );
 
   box_type src_on_dest_bounding_box;
 
-  homog_type cnrs[4] = { homog_type( 0, 0 ),
-                         homog_type( sni - 1, 0 ),
-                         homog_type( sni - 1, snj - 1 ),
-                         homog_type( 0, snj - 1 ) };
+  homog_type cnrs[ 4 ] = { homog_type( 0, 0 ),
+                           homog_type( sni - 1, 0 ),
+                           homog_type( sni - 1, snj - 1 ),
+                           homog_type( 0, snj - 1 ) };
 
   for( unsigned i = 0; i < 4; ++i )
   {
     // Shift the point to destination image pixel index coordinates
-    point_type p = src_to_dest_homography * cnrs[i];
+    point_type p = src_to_dest_homography * cnrs[ i ];
     p.x() -= param.off_i_;
     p.y() -= param.off_j_;
     src_on_dest_bounding_box.add( p );
@@ -177,8 +189,9 @@ warp_image( vil_image_view<T> const& src,
 
   // Calculate intersection with destination pixels we are looking to fill
   box_type dest_boundaries( 0, dni - 1, 0, dnj - 1 );
-  box_type intersection = vgl_intersection( src_on_dest_bounding_box,
-                                            dest_boundaries );
+  box_type intersection = vgl_intersection(
+    src_on_dest_bounding_box,
+    dest_boundaries );
 
   // Fill in unmapped mask and destination with default values. Maybe
   // implement a couple of loops to fill only the "boundary" regions with
@@ -208,7 +221,7 @@ warp_image( vil_image_view<T> const& src,
   // the other, or there is less than a 1 pixel overlap)
   if( intersection.width() == 0 &&
       intersection.height() == 0 &&
-      !point_intercept)
+      !point_intercept )
   {
     return false;
   }
@@ -228,46 +241,53 @@ warp_image( vil_image_view<T> const& src,
   // (we perform multiple checks against these values later in order to
   // determine spec cases)
   int src_ni_low_bound, src_nj_low_bound, src_ni_up_bound, src_nj_up_bound;
-  typedef T (*interpolator_func)(double, double, const T*, int, int,
-                                 std::ptrdiff_t, std::ptrdiff_t);
+  typedef T ( *interpolator_func )(
+    double, double, const T*, int, int,
+    std::ptrdiff_t, std::ptrdiff_t );
+
   interpolator_func interp;
-  switch (param.interpolator_)
+  switch( param.interpolator_ )
   {
-  case warp_image_parameters::NEAREST:
-    src_ni_low_bound = 0;
-    src_nj_low_bound = 0;
-    src_ni_up_bound = sni - 1;
-    src_nj_up_bound = snj - 1;
-    interp = &vil_nearest_interp_unsafe;
-    break;
-  case warp_image_parameters::LINEAR:
-    src_ni_low_bound = 0;
-    src_nj_low_bound = 0;
-    src_ni_up_bound = sni - 1;
-    src_nj_up_bound = snj - 1;
-    interp = &bilinear_interp_wrapper;
-    break;
-  case warp_image_parameters::CUBIC:
-    src_ni_low_bound = 1;
-    src_nj_low_bound = 1;
-    src_ni_up_bound = sni - 2;
-    src_nj_up_bound = snj - 2;
-    interp = &bicubic_interp_wrapper;
-    break;
-  default:
+    case warp_image_parameters::NEAREST:
+      src_ni_low_bound = 0;
+      src_nj_low_bound = 0;
+      src_ni_up_bound = sni - 1;
+      src_nj_up_bound = snj - 1;
+      interp = &vil_nearest_interp_unsafe;
+      break;
+    case warp_image_parameters::LINEAR:
+      src_ni_low_bound = 0;
+      src_nj_low_bound = 0;
+      src_ni_up_bound = sni - 1;
+      src_nj_up_bound = snj - 1;
+      interp = &bilinear_interp_wrapper;
+      break;
+    case warp_image_parameters::CUBIC:
+      src_ni_low_bound = 1;
+      src_nj_low_bound = 1;
+      src_ni_up_bound = sni - 2;
+      src_nj_up_bound = snj - 2;
+      interp = &bicubic_interp_wrapper;
+      break;
+    default:
     {
-      auto logger = vital::get_logger("arrows.super3d.warp_image");
-      LOG_ERROR(logger, "warp_image: Unrecognized interpolator: "
-                        << param.interpolator_);
+      auto logger = vital::get_logger( "arrows.super3d.warp_image" );
+      LOG_ERROR(
+        logger, "warp_image: Unrecognized interpolator: "
+          << param.interpolator_);
       return false;
     }
   }
 
   // Extract start and end, row/col scanning ranges [start..end-1]
-  const int start_j = static_cast<int>(std::floor(intersection.min_y()));
-  const int start_i = static_cast<int>(std::floor(intersection.min_x()));
-  const int end_j = static_cast<int>(std::floor(intersection.max_y()+1));
-  const int end_i = static_cast<int>(std::floor(intersection.max_x()+1));
+  const int start_j = static_cast< int >( std::floor( intersection.min_y() ) );
+  const int start_i = static_cast< int >( std::floor( intersection.min_x() ) );
+  const int end_j = static_cast< int >( std::floor(
+    intersection.max_y() +
+    1 ) );
+  const int end_i = static_cast< int >( std::floor(
+    intersection.max_x() +
+    1 ) );
 
   // Create adjusted start and end scanning values for supplied offset
   const int start_j_adj = start_j + param.off_j_;
@@ -292,7 +312,7 @@ warp_image( vil_image_view<T> const& src,
   // Precompute partial column homography values
   int factor_size = end_i_adj - start_i_adj;
 
-  vnl_matrix_fixed<double,3,3> homog = dest_to_src_homography.get_matrix();
+  vnl_matrix_fixed< double, 3, 3 > homog = dest_to_src_homography.get_matrix();
   vnl_double_3 homog_col_1 = homog.get_column( 0 );
   vnl_double_3 homog_col_2 = homog.get_column( 1 );
   vnl_double_3 homog_col_3 = homog.get_column( 2 );
@@ -309,53 +329,51 @@ warp_image( vil_image_view<T> const& src,
 #pragma omp parallel for
   for( int j = start_j_adj; j < end_j_adj; j++ )
   {
-
     // dest_col_ptr now points to the start of the BB region for this row
-    T* dest_col_ptr = row_start + (j - start_j_adj) * dest_j_step;
+    T* dest_col_ptr = row_start + ( j - start_j_adj ) * dest_j_step;
 
     // Precompute row homography partials for this row
-    const vnl_double_3 row_factor = homog_col_2 * static_cast<double>(j);
+    const vnl_double_3 row_factor = homog_col_2 * static_cast< double >( j );
 
     // Get pointer to start of precomputed column values
-    vnl_double_3* col_factor_ptr = &col_factors[0];
+    vnl_double_3* col_factor_ptr = &col_factors[ 0 ];
 
     // Iterate through each column in the BB
     for( int i = start_i_adj; i < end_i_adj;
          i++, col_factor_ptr++, dest_col_ptr += dest_i_step )
     {
-
       // Compute homography mapping for this point (dest->src)
-      vnl_double_3 pt = row_factor + (*col_factor_ptr);
+      vnl_double_3 pt = row_factor + ( *col_factor_ptr );
 
       // Normalize by dividing out third term
-      double& x = pt[0];
-      double& y = pt[1];
-      double& w = pt[2];
+      double& x = pt[ 0 ];
+      double& y = pt[ 1 ];
+      double& w = pt[ 2 ];
 
       x /= w;
       y /= w;
 
       // Check if we can perform interp at this point
-      if( !(x < src_ni_low_bound ||
-            y < src_nj_low_bound ||
-            x > src_ni_up_bound ||
-            y > src_nj_up_bound) )
+      if( !( x < src_ni_low_bound ||
+             y < src_nj_low_bound ||
+             x > src_ni_up_bound ||
+             y > src_nj_up_bound ) )
       {
-
         // For each channel interpolate from src
         const T* src_plane = src_start;
         T* dest_pixel_ptr = dest_col_ptr;
-        for( ; src_plane < src_p_end;
-            src_plane += src_p_step, dest_pixel_ptr += dest_p_step)
+        for(; src_plane < src_p_end;
+            src_plane += src_p_step, dest_pixel_ptr += dest_p_step )
         {
-          *dest_pixel_ptr = (*interp)( x, y, src_plane, sni, snj,
-                                       src_i_step, src_j_step );
+          *dest_pixel_ptr = ( *interp )(
+            x, y, src_plane, sni, snj,
+            src_i_step, src_j_step );
         }
 
         // If using an optional mask, mark corresp. value
         if( unmapped_mask_ptr )
         {
-          (*unmapped_mask_ptr)(i-param.off_i_, j-param.off_j_) = false;
+          ( *unmapped_mask_ptr )( i - param.off_i_, j - param.off_j_ ) = false;
         }
       }
     }
@@ -366,25 +384,28 @@ warp_image( vil_image_view<T> const& src,
 
 template <>
 bool
-VITAL_UNUSED safe_cast<bool, float>(float const& value)
+VITAL_UNUSED
+safe_cast< bool, float >( float const& value )
 {
-  return fuzzy_cmp(value, float(0));
+  return fuzzy_cmp( value, float( 0 ) );
 }
 
 template <>
 bool
-safe_cast<bool, double>(double const& value)
+safe_cast< bool, double >( double const& value )
 {
-  return fuzzy_cmp(value, double(0));
+  return fuzzy_cmp( value, double( 0 ) );
 }
 
-template <typename T, typename U>
+template < typename T, typename U >
 T
-safe_cast(U const& value)
+safe_cast( U const& value )
 {
-  return T(value);
+  return T( value );
 }
 
 } // end namespace super3d
+
 } // end namespace arrows
+
 } // end namespace kwiver

@@ -12,8 +12,8 @@
 
 #include <charconv>
 #include <iomanip>
-#include <type_traits>
 #include <limits>
+#include <type_traits>
 
 #include <cctype>
 #include <cfloat>
@@ -101,7 +101,7 @@ csv_writer
 }
 
 // ----------------------------------------------------------------------------
-template< class T >
+template < class T >
 csv_writer&
 csv_writer
 ::write( T const& value )
@@ -221,7 +221,7 @@ csv_writer
     for( auto const c : m_ss.str() )
     {
       for( auto const special_c :
-          { m_delim, m_quote_esc, m_quote, m_comment, '\n' } )
+           { m_delim, m_quote_esc, m_quote, m_comment, '\n' } )
       {
         if( c == special_c )
         {
@@ -277,7 +277,8 @@ csv_reader::parse_error
 ::parse_error( std::string const& string, std::type_info const& to_type )
   : std::runtime_error{
       "CSV reader failed to parse the string '" + string + "' "
-      "as type: " + vital::demangle( to_type.name() ) },
+                                                           "as type: " +
+      vital::demangle( to_type.name() ) },
     m_string{ string },
     m_to_type{ to_type }
 {}
@@ -321,67 +322,71 @@ namespace {
 // ----------------------------------------------------------------------------
 // Template to avoid having to do near-identical code for std::stoi, std::stol,
 // etc.
-template< bool is_signed >
-struct str_to_int64;
+template < bool is_signed > struct str_to_int64;
 
 // ----------------------------------------------------------------------------
-template<>
+template <>
 struct str_to_int64< false >
 {
   using type = uint64_t;
 
-  template< class... Args >
-  type operator()( Args&&... args ) const {
-    return std::stoull( std::forward< Args >( args )... ); };
+  template < class... Args >
+  type
+  operator()( Args&&... args ) const
+  {
+    return std::stoull( std::forward< Args >( args )... );
+  }
 };
 
-
 // ----------------------------------------------------------------------------
-template<>
+template <>
 struct str_to_int64< true >
 {
   using type = int64_t;
 
-  template< class... Args >
-  type operator()( Args&&... args ) const {
-    return std::stoll( std::forward< Args >( args )... ); };
+  template < class... Args >
+  type
+  operator()( Args&&... args ) const
+  {
+    return std::stoll( std::forward< Args >( args )... );
+  }
 };
 
 // ----------------------------------------------------------------------------
-template< class T >
+template < class T >
 struct is_optional : std::false_type
 {};
 
 // ----------------------------------------------------------------------------
-template< class T >
-struct is_optional< std::optional< T > > : std::true_type
+template < class T >
+struct is_optional< std::optional< T > >: std::true_type
 {};
 
 // ----------------------------------------------------------------------------
-template< class T >
-constexpr bool is_optional_v = is_optional< T >::value;
+template < class T > constexpr bool is_optional_v = is_optional< T >::value;
 
 // ----------------------------------------------------------------------------
-template< class T >
+template < class T >
 struct decay_optional
 {
   using type = T;
 };
 
 // ----------------------------------------------------------------------------
-template< class T >
+template < class T >
 struct decay_optional< std::optional< T > >
 {
   using type = T;
 };
 
 // ----------------------------------------------------------------------------
-template< class T >
+template < class T >
 using decay_optional_t = typename decay_optional< T >::type;
 
 // ----------------------------------------------------------------------------
-template< class T >
-T bad_parse( std::string const& s )
+template < class T >
+T
+bad_parse( std::string const& s )
 {
   if constexpr( is_optional_v< T > )
   {
@@ -393,10 +398,10 @@ T bad_parse( std::string const& s )
   }
 }
 
-}
+} // namespace
 
 // ----------------------------------------------------------------------------
-template< class T >
+template < class T >
 T
 csv_reader
 ::read()
@@ -468,6 +473,7 @@ csv_reader
         {
           // Look at the next character
           m_is.ignore();
+
           auto const next_c = m_is.peek();
 
           if( next_c == m_delim || next_c == '\n' || next_c == EOF )
@@ -507,7 +513,7 @@ csv_reader
           vital::get_logger( "csv" ),
           "CSV unquoted field contains escape character" );
       }
-      else if ( c == m_delim || c == '\n' ) // End of unquoted field
+      else if( c == m_delim || c == '\n' ) // End of unquoted field
       {
         break;
       }
@@ -606,8 +612,10 @@ csv_reader
     {
       // Parse into a 64-bit integer
       using parser_t = str_to_int64< std::is_signed_v< decayed_t > >;
+
       parser_t parser;
       typename parser_t::type value = 0;
+
       size_t offset = 0;
       try
       {
@@ -742,7 +750,6 @@ csv_reader
   }
 }
 
-
 // ----------------------------------------------------------------------------
 bool
 csv_reader
@@ -777,7 +784,7 @@ csv_reader
 
 // ----------------------------------------------------------------------------
 #define INSTANTIATE_READ( T ) \
-  template KWIVER_ALGO_CORE_EXPORT T csv_reader::read< T >();
+template KWIVER_ALGO_CORE_EXPORT T csv_reader::read< T >();
 
 INSTANTIATE_READ( std::string )
 INSTANTIATE_READ( std::optional< std::string > )

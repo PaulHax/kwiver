@@ -10,20 +10,21 @@
 #include <gtest/gtest.h>
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
 }
 
 // ----------------------------------------------------------------------------
-TEST(landmark, base_print)
+TEST ( landmark, base_print )
 {
   // TODO include covariance once stream operators are defined
   // (just uncomment the last EXPECT_EQ)
 
-  kwiver::vital::landmark_<double> original;
-  kwiver::vital::landmark_<double> from_output;
+  kwiver::vital::landmark_< double > original;
+  kwiver::vital::landmark_< double > from_output;
   kwiver::vital::landmark* original_ptr = &original;
 
   // Non-default values for all landmark_ variables
@@ -57,13 +58,13 @@ TEST(landmark, base_print)
 }
 
 // ----------------------------------------------------------------------------
-TEST(landmark, template_print)
+TEST ( landmark, template_print )
 {
   // TODO include covariance once stream operators are defined
   // (just uncomment the last EXPECT_EQ)
 
-  kwiver::vital::landmark_<double> original;
-  kwiver::vital::landmark_<double> from_output;
+  kwiver::vital::landmark_< double > original;
+  kwiver::vital::landmark_< double > from_output;
 
   // Non-default values for all landmark_ variables
   Eigen::Matrix< double, 3, 1 > loc( 1.2, 2.3, 3.4 );

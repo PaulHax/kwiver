@@ -52,15 +52,16 @@ public:
   using vector_t = std::vector< detected_object_sptr >;
   using descriptor_t = descriptor_dynamic< double >;
   using descriptor_scptr = std::shared_ptr< descriptor_t const >;
-  using notes_t = std::vector< std::string>;
+  using notes_t = std::vector< std::string >;
   using keypoints_t = std::map< std::string, vital::point_2d >;
 
   /// @brief Create default detected object.
   ///
   /// @param confidence Detectors confidence in this detection.
   /// @param classifications Optional object classification.
-  detected_object( double confidence = 1.0,
-                   detected_object_type_sptr classifications = nullptr );
+  detected_object(
+    double confidence = 1.0,
+    detected_object_type_sptr classifications = nullptr );
 
   /// @brief Create detected object with bounding box and other attributes.
   ///
@@ -68,18 +69,20 @@ public:
   ///             coordinates.
   /// @param confidence Detectors confidence in this detection.
   /// @param classifications Optional object classification.
-  detected_object( bounding_box_d const& bbox,
-                   double confidence = 1.0,
-                   detected_object_type_sptr classifications = nullptr );
+  detected_object(
+    bounding_box_d const& bbox,
+    double confidence = 1.0,
+    detected_object_type_sptr classifications = nullptr );
 
   /// @brief Create detected object with a geo_point and other attributes.
   ///
   /// @param geo_pt Geographic location of the detection, in world coordinates.
   /// @param confidence Detectors confidence in this detection.
   /// @param classifications Optional object classification.
-  detected_object( kwiver::vital::geo_point const& geo_pt,
-                   double confidence = 1.0,
-                   detected_object_type_sptr classifications = nullptr );
+  detected_object(
+    kwiver::vital::geo_point const& geo_pt,
+    double confidence = 1.0,
+    detected_object_type_sptr classifications = nullptr );
 
   virtual ~detected_object() = default;
 

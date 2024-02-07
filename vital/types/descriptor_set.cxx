@@ -11,23 +11,23 @@
 #include <sstream>
 
 namespace kwiver {
+
 namespace vital {
 
-  // --------------------------------------------------------------------------
+// --------------------------------------------------------------------------
 descriptor_set
 ::descriptor_set()
   : m_logger( kwiver::vital::get_logger( "vital.descriptor_set" ) )
-{
-}
+{}
 
 descriptor_set
 ::~descriptor_set()
-{ }
+{}
 
 // ----------------------------------------------------------------------------
 kwiver::vital::logger_handle_t
-descriptor_set::
-logger()
+descriptor_set
+::logger()
 {
   return m_logger;
 }
@@ -35,13 +35,13 @@ logger()
 // ----------------------------------------------------------------------------
 // Constructor from a vector of descriptors
 simple_descriptor_set
-::simple_descriptor_set( const std::vector< descriptor_sptr > & descriptors )
+::simple_descriptor_set( const std::vector< descriptor_sptr >& descriptors )
   : data_( descriptors )
 {}
 
 simple_descriptor_set
 ::~simple_descriptor_set()
-{ }
+{}
 
 // ----------------------------------------------------------------------------
 // Get the number of elements in this set.
@@ -73,7 +73,7 @@ simple_descriptor_set
     ss << index;
     throw std::out_of_range( ss.str() );
   }
-  return data_[index];
+  return data_[ index ];
 }
 
 // ----------------------------------------------------------------------------
@@ -88,7 +88,7 @@ simple_descriptor_set
     ss << index;
     throw std::out_of_range( ss.str() );
   }
-  return data_[index];
+  return data_[ index ];
 }
 
 // ----------------------------------------------------------------------------
@@ -98,13 +98,13 @@ simple_descriptor_set
 ::get_iter_next_func()
 {
   vec_t::iterator it = data_.begin();
-  return [=] () mutable ->iterator::reference {
-    if( it == data_.end() )
-    {
-      VITAL_THROW( stop_iteration_exception, "descriptor_set");
-    }
-    return *(it++);
-  };
+  return [=]() mutable ->iterator::reference {
+           if( it == data_.end() )
+           {
+             VITAL_THROW( stop_iteration_exception, "descriptor_set" );
+           }
+           return *( it++ );
+         };
 }
 
 // ----------------------------------------------------------------------------
@@ -114,14 +114,15 @@ simple_descriptor_set
 ::get_const_iter_next_func() const
 {
   vec_t::const_iterator cit = data_.begin();
-  return [=] () mutable ->const_iterator::reference {
-    if( cit == data_.end() )
-    {
-      VITAL_THROW( stop_iteration_exception, "descriptor_set" );
-    }
-    return *(cit++);
-  };
+  return [=]() mutable ->const_iterator::reference {
+           if( cit == data_.end() )
+           {
+             VITAL_THROW( stop_iteration_exception, "descriptor_set" );
+           }
+           return *( cit++ );
+         };
 }
 
 } // end namespace: vital
+
 } // end namespace: kwiver

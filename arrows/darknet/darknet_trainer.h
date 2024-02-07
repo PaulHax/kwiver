@@ -10,7 +10,9 @@
 #include <vital/algo/train_detector.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace darknet {
 
 // ----------------------------------------------------------------------------
@@ -22,19 +24,21 @@ public:
   darknet_trainer();
   virtual ~darknet_trainer();
 
-  PLUGIN_INFO( "darknet",
-               "Training utility for darknet." )
+  PLUGIN_INFO(
+    "darknet",
+    "Training utility for darknet." )
 
   vital::config_block_sptr get_configuration() const override;
 
   void set_configuration( vital::config_block_sptr config ) override;
   bool check_configuration( vital::config_block_sptr config ) const override;
 
-  void train_from_disk( vital::category_hierarchy_sptr object_labels,
-                        std::vector< std::string > train_image_names,
-                        std::vector< vital::detected_object_set_sptr > train_groundtruth,
-                        std::vector< std::string > test_image_names,
-                        std::vector< vital::detected_object_set_sptr > test_groundtruth ) override;
+  void train_from_disk(
+    vital::category_hierarchy_sptr object_labels,
+    std::vector< std::string > train_image_names,
+    std::vector< vital::detected_object_set_sptr > train_groundtruth,
+    std::vector< std::string > test_image_names,
+    std::vector< vital::detected_object_set_sptr > test_groundtruth ) override;
 
 private:
   class priv;
@@ -42,6 +46,10 @@ private:
   const std::unique_ptr< priv > d;
 };
 
-} } }
+} // namespace darknet
+
+} // namespace arrows
+
+} // namespace kwiver
 
 #endif // KWIVER_ARROWS_DARKNET_TRAINER

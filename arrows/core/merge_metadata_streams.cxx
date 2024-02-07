@@ -73,7 +73,7 @@ merge_metadata_streams
   // Synchronous streams are preferred first, then remaining streams
   // in order of index.
   auto const tuplize =
-    []( vital::metadata_sptr const& metadata ) {
+    []( vital::metadata_sptr const& metadata ){
       std::optional< bool > is_async;
       if( auto const entry =
             metadata->find( vital::VITAL_META_VIDEO_DATA_STREAM_SYNCHRONOUS );
@@ -97,7 +97,7 @@ merge_metadata_streams
 
   auto const cmp =
     [ &tuplize ]( vital::metadata_sptr const& lhs,
-                  vital::metadata_sptr const& rhs ) {
+                  vital::metadata_sptr const& rhs ){
       return tuplize( lhs ) < tuplize( rhs );
     };
 

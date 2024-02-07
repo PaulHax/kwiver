@@ -13,56 +13,53 @@
 
 using namespace kwiver::vital;
 
-#define CERES_ENUM_HELPERS( NS, ceres_type )                              \
-  namespace kwiver {                                                      \
-  namespace vital {                                                       \
-                                                                          \
-  template <>                                                             \
-  config_block_value_t                                                    \
-  config_block_set_value_cast( NS::ceres_type const & value )             \
-  {                                                                       \
-    return NS::ceres_type##ToString( value );                             \
-  }                                                                       \
-                                                                          \
-  template <>                                                             \
-  NS::ceres_type                                                          \
-  config_block_get_value_cast( config_block_value_t const & value )       \
-  {                                                                       \
-    NS::ceres_type cet;                                                   \
-    if( !NS::StringTo##ceres_type( value, &cet ) )                        \
-    {                                                                     \
-      VITAL_THROW( bad_config_block_cast, value );                        \
-    }                                                                     \
-    return cet;                                                           \
-  }                                                                       \
-                                                                          \
-  }                                                                       \
-                                                                          \
-  namespace arrows {                                                      \
-  namespace ceres {                                                       \
-                                                                          \
-  template <>                                                             \
-  std::string                                                             \
-  ceres_options< NS::ceres_type >()                                       \
-  {                                                                       \
-    typedef NS::ceres_type T;                                             \
-    std::string options_str = "\nMust be one of the following options:";  \
-    std::string opt;                                                      \
-    for( unsigned i = 0; i < 20; ++i )                                    \
-    {                                                                     \
-      opt = NS::ceres_type##ToString( static_cast< T >( i ) );            \
-      if( opt == "UNKNOWN" )                                              \
-      {                                                                   \
-        break;                                                            \
-      }                                                                   \
-      options_str += "\n  - " + opt;                                      \
-    }                                                                     \
-    return options_str;                                                   \
-  }                                                                       \
-                                                                          \
-  }                                                                       \
-  }                                                                       \
-  }
+#define CERES_ENUM_HELPERS( NS, ceres_type )                           \
+namespace kwiver {                                                     \
+  namespace vital {                                                    \
+                                                                       \
+  template <> config_block_value_t                                     \
+  config_block_set_value_cast( NS::ceres_type const& value )           \
+  {                                                                    \
+  return NS::ceres_type##ToString( value );                            \
+  }                                                                    \
+                                                                       \
+  template <> NS::ceres_type                                           \
+  config_block_get_value_cast( config_block_value_t const& value )     \
+  {                                                                    \
+  NS::ceres_type cet;                                                  \
+  if( !NS::StringTo##ceres_type( value, &cet ) )                       \
+  {                                                                    \
+    VITAL_THROW( bad_config_block_cast, value );                       \
+  }                                                                    \
+  return cet;                                                          \
+  }                                                                    \
+                                                                       \
+  }                                                                    \
+                                                                       \
+  namespace arrows {                                                   \
+  namespace ceres {                                                    \
+                                                                       \
+  template <> std::string                                              \
+  ceres_options< NS::ceres_type >()                                    \
+  {                                                                    \
+  typedef NS::ceres_type T;                                            \
+  std::string options_str = "\nMust be one of the following options:"; \
+  std::string opt;                                                     \
+  for( unsigned i = 0; i < 20; ++i )                                   \
+  {                                                                    \
+    opt = NS::ceres_type##ToString( static_cast< T >( i ) );           \
+    if( opt == "UNKNOWN" )                                             \
+    {                                                                  \
+      break;                                                           \
+    }                                                                  \
+    options_str += "\n  - " + opt;                                     \
+  }                                                                    \
+  return options_str;                                                  \
+  }                                                                    \
+                                                                       \
+  }                                                                    \
+  }                                                                    \
+}
 
 CERES_ENUM_HELPERS( ::ceres, LinearSolverType )
 CERES_ENUM_HELPERS( ::ceres, PreconditionerType )
@@ -96,12 +93,12 @@ LossFunctionTypeToString( LossFunctionType type )
 {
   switch( type )
   {
-    CASESTR( TRIVIAL_LOSS );
-    CASESTR( HUBER_LOSS );
-    CASESTR( SOFT_L_ONE_LOSS );
-    CASESTR( CAUCHY_LOSS );
-    CASESTR( ARCTAN_LOSS );
-    CASESTR( TUKEY_LOSS );
+  CASESTR( TRIVIAL_LOSS );
+  CASESTR( HUBER_LOSS );
+  CASESTR( SOFT_L_ONE_LOSS );
+  CASESTR( CAUCHY_LOSS );
+  CASESTR( ARCTAN_LOSS );
+  CASESTR( TUKEY_LOSS );
     default:
       return "UNKNOWN";
   }
@@ -127,9 +124,9 @@ CameraIntrinsicShareTypeToString( CameraIntrinsicShareType type )
 {
   switch( type )
   {
-    CASESTR( AUTO_SHARE_INTRINSICS );
-    CASESTR( FORCE_COMMON_INTRINSICS );
-    CASESTR( FORCE_UNIQUE_INTRINSICS );
+  CASESTR( AUTO_SHARE_INTRINSICS );
+  CASESTR( FORCE_COMMON_INTRINSICS );
+  CASESTR( FORCE_UNIQUE_INTRINSICS );
     default:
       return "UNKNOWN";
   }
@@ -137,8 +134,9 @@ CameraIntrinsicShareTypeToString( CameraIntrinsicShareType type )
 
 /// Parse a CameraIntrinsicShareType value from a string or return false
 bool
-StringToCameraIntrinsicShareType( std::string value,
-                                  CameraIntrinsicShareType* type )
+StringToCameraIntrinsicShareType(
+  std::string value,
+  CameraIntrinsicShareType* type )
 {
   UpperCase( &value );
   STRENUM( AUTO_SHARE_INTRINSICS );

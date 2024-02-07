@@ -13,6 +13,7 @@
 #include <vital/exceptions/base.h>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -67,9 +68,10 @@ public:
   /// \param correct_h   Correct image height
   /// \param given_w     Actual image width
   /// \param given_h     Actual image height
-  image_size_mismatch_exception( std::string const& message,
-                                 size_t correct_w, size_t correct_h,
-                                 size_t given_w, size_t given_h ) noexcept;
+  image_size_mismatch_exception(
+    std::string const& message,
+    size_t correct_w, size_t correct_h,
+    size_t given_w, size_t given_h ) noexcept;
   /// Destructor
   virtual ~image_size_mismatch_exception() noexcept;
 
@@ -83,6 +85,8 @@ public:
   size_t const m_given_h;
 };
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // VITAL_CORE_EXCEPTIONS_IMAGE_H

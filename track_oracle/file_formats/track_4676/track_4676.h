@@ -14,14 +14,12 @@
 
 #include <vital/types/uid.h>
 
-namespace vidtk
-{
+namespace vidtk {
 
 typedef viat::uid uuid_t;
 
-struct track_4676_type: public track_base< track_4676_type >
+struct track_4676_type : public track_base< track_4676_type >
 {
-
   // Track specific
   track_field< unsigned >& external_id;
   track_field< uuid_t >& unique_id;
@@ -37,21 +35,23 @@ struct track_4676_type: public track_base< track_4676_type >
   track_field< double >& world_y;
   track_field< double >& world_z;
 
-  track_4676_type():
-    external_id(Track.add_field< unsigned >("external_id")),
-    unique_id(Track.add_field< uuid_t >("unique_id")),
-    augmented_annotation(Track.add_field< std::string >("augmented_annotation")),
-
-    timestamp_usecs(Frame.add_field< unsigned long long >("timestamp_usecs")),
-    obj_location(Frame.add_field< vgl_point_2d< double > >("obj_location")),
-    world_location(Frame.add_field< vgl_point_3d< double > >("world_location")),
-    obj_x(Frame.add_field< double >("obj_x")),
-    obj_y(Frame.add_field< double >("obj_y")),
-    world_x(Frame.add_field< double >("world_x")),
-    world_y(Frame.add_field< double >("world_y")),
-    world_z(Frame.add_field< double >("world_z"))
-  {
-  }
+  track_4676_type()
+    : external_id( Track.add_field< unsigned >( "external_id" ) ),
+      unique_id( Track.add_field< uuid_t >( "unique_id" ) ),
+      augmented_annotation( Track.add_field< std::string >(
+        "augmented_annotation" ) ),
+      timestamp_usecs( Frame.add_field< unsigned long long >(
+        "timestamp_usecs" ) ),
+      obj_location( Frame.add_field< vgl_point_2d< double > >(
+        "obj_location" ) ),
+      world_location( Frame.add_field< vgl_point_3d< double > >(
+        "world_location" ) ),
+      obj_x( Frame.add_field< double >( "obj_x" ) ),
+      obj_y( Frame.add_field< double >( "obj_y" ) ),
+      world_x( Frame.add_field< double >( "world_x" ) ),
+      world_y( Frame.add_field< double >( "world_y" ) ),
+      world_z( Frame.add_field< double >( "world_z" ) )
+  {}
 };
 
 } // \namespace vidtk

@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 vital::descriptor_set interface tests
 
 """
+
 import unittest
 
 import numpy
@@ -40,7 +41,7 @@ import numpy
 from kwiver.vital.types import new_descriptor, DescriptorSet
 
 
-class TestDescriptorSet (unittest.TestCase):
+class TestDescriptorSet(unittest.TestCase):
 
     def test_new_empty(self):
         # Create an empty descriptor set, checking that no errors occur.

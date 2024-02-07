@@ -23,8 +23,8 @@ namespace arrows {
 
 namespace vxl {
 
-template < typename FeatureType, typename OutputType >
-class hashed_image_classifier;
+template < typename FeatureType,
+  typename OutputType > class hashed_image_classifier;
 
 /// Internal data required for the hashed_image_classifier class.
 ///
@@ -74,14 +74,16 @@ private:
 
 /// Stream operator declaration for the hashed_image_classifier model class.
 template < typename FloatType > std::ostream&
-operator<<( std::ostream& os,
-            hashed_image_classifier_model< FloatType > const& obj );
+operator<<(
+  std::ostream& os,
+  hashed_image_classifier_model< FloatType > const& obj );
 
 /// Stream operator declaration for the hashed_image_classifier class.
 template < typename FeatureType, typename OutputType >
 std::ostream&
-operator<<( std::ostream& os,
-            hashed_image_classifier< FeatureType, OutputType > const& obj );
+operator<<(
+  std::ostream& os,
+  hashed_image_classifier< FeatureType, OutputType > const& obj );
 
 /// A classifier designed to efficiently classify every pixel in an image.
 ///
@@ -135,25 +137,29 @@ public:
   virtual bool load_from_file( std::string const& file );
 
   /// Classify a feature array, in addition to adding offset to each pixel.
-  virtual void classify_images( input_image_t const& input_features,
-                                weight_image_t& output_image,
-                                weight_t const offset = 0.0 ) const;
+  virtual void classify_images(
+    input_image_t const& input_features,
+    weight_image_t& output_image,
+    weight_t const offset = 0.0 ) const;
 
   /// Classify a feature array, in addition to adding offset to each pixel.
-  virtual void classify_images( feature_vector_t const& input_features,
-                                weight_image_t& output_image,
-                                weight_t const offset = 0.0 ) const;
+  virtual void classify_images(
+    feature_vector_t const& input_features,
+    weight_image_t& output_image,
+    weight_t const offset = 0.0 ) const;
 
   /// Only classify certain pixels as given by a mask.
-  virtual void classify_images( feature_vector_t const& input_features,
-                                mask_image_t const& mask,
-                                weight_image_t& output_image,
-                                weight_t const offset = 0.0 ) const;
+  virtual void classify_images(
+    feature_vector_t const& input_features,
+    mask_image_t const& mask,
+    weight_image_t& output_image,
+    weight_t const offset = 0.0 ) const;
 
   /// Generate a weight image for some feature.
-  virtual void generate_weight_image( input_image_t const& src,
-                                      weight_image_t& dst,
-                                      unsigned const& feature_id ) const;
+  virtual void generate_weight_image(
+    input_image_t const& src,
+    weight_image_t& dst,
+    unsigned const& feature_id ) const;
 
   /// Returns the number of features the loaded model contains info for.
   virtual unsigned
@@ -167,7 +173,7 @@ public:
   virtual void set_model( model_sptr_t external_model );
 
   /// The stream operator function for writing out models.
-  friend std::ostream& operator<<<>( std::ostream& os, self_t const& obj );
+  friend std::ostream& operator<<<>( std::ostream & os, self_t const& obj );
 
 protected:
   // A pointer to our internal data

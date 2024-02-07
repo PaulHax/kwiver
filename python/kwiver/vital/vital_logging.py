@@ -16,31 +16,32 @@ def _configure_logging():
         kwiver/vital/logger: logic for the vital logger
     """
     # Use the C++ logging level by default, but allow python to be different
-    cxx_level = os.environ.get('KWIVER_DEFAULT_LOG_LEVEL', 'DEBUG')
+    cxx_level = os.environ.get("KWIVER_DEFAULT_LOG_LEVEL", "DEBUG")
 
     # C++ logging supports trace as it's lowest level but python doesn't
     if "KWIVER_PYTHON_DEFAULT_LOG_LEVEL" in os.environ:
-        py_level = os.environ.get('KWIVER_PYTHON_DEFAULT_LOG_LEVEL')
+        py_level = os.environ.get("KWIVER_PYTHON_DEFAULT_LOG_LEVEL")
     elif cxx_level.upper() == "TRACE":
         py_level = "DEBUG"
     else:
         py_level = cxx_level
 
     # Option to colorize the python logs (must pip install coloredlogs)
-    truthy_values = {'true', 'on', 'yes', '1'}
-    use_color_env = os.environ.get('KWIVER_PYTHON_COLOREDLOGS', 'false')
+    truthy_values = {"true", "on", "yes", "1"}
+    use_color_env = os.environ.get("KWIVER_PYTHON_COLOREDLOGS", "false")
 
     # Default options
     use_color = use_color_env.strip().lower() in truthy_values
     level = getattr(logging, py_level.upper())
     # Match KWIVER's log prefix: date time level file(lineno)
-    logfmt = '%(asctime)s.%(msecs)03d %(levelname)s %(name)s(%(lineno)d): %(message)s'
-    datefmt = '%Y-%m-%d %H:%M:%S'
+    logfmt = "%(asctime)s.%(msecs)03d %(levelname)s %(name)s(%(lineno)d): %(message)s"
+    datefmt = "%Y-%m-%d %H:%M:%S"
 
     # Maybe use file based configs in the future?
 
     if use_color:
         import coloredlogs
+
         # The colorscheme can be controlled by several environment variables
         # https://coloredlogs.readthedocs.io/en/latest/#environment-variables
         coloredlogs.install(level=level, fmt=logfmt, datefmt=datefmt)
@@ -64,20 +65,13 @@ def print_exc(exc_info=None):
         >>>     print_exc(exc_info)
     """
     import traceback
+
     if exc_info is None:
         exc_info = sys.exc_info()
-    tbtext = ''.join(traceback.format_exception(*exc_info))
+    tbtext = "".join(traceback.format_exception(*exc_info))
 
-    lines = [
-        '',
-        '┌───────────',
-        '│ EXCEPTION:',
-        '',
-        tbtext,
-        '└───────────',
-        ''
-    ]
-    text = '\n'.join(lines)
+    lines = ["", "┌───────────", "│ EXCEPTION:", "", tbtext, "└───────────", ""]
+    text = "\n".join(lines)
     print(text)
 
 
@@ -93,12 +87,14 @@ def exc_report(func):
     Args:
         func (callable): function to dectorate
     """
+
     def _exc_report_wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
         except Exception:
             print_exc()
             raise
+
     return _exc_report_wrapper
 
 

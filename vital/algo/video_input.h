@@ -20,8 +20,8 @@
 #include <vital/types/timestamp.h>
 #include <vital/types/video_raw_image.h>
 #include <vital/types/video_raw_metadata.h>
-#include <vital/types/video_uninterpreted_data.h>
 #include <vital/types/video_settings.h>
+#include <vital/types/video_uninterpreted_data.h>
 
 #include <string>
 #include <vector>
@@ -113,7 +113,9 @@ class VITAL_ALGO_EXPORT video_input
 public:
   // Common capabilities
   // -- basic capabilities --
-  static const algorithm_capabilities::capability_name_t HAS_EOV; // has end of video indication
+  static const algorithm_capabilities::capability_name_t HAS_EOV; // has end of
+                                                                  // video
+                                                                  // indication
   static const algorithm_capabilities::capability_name_t HAS_FRAME_NUMBERS;
   static const algorithm_capabilities::capability_name_t HAS_FRAME_TIME;
   static const algorithm_capabilities::capability_name_t HAS_FRAME_DATA;
@@ -127,7 +129,7 @@ public:
   static const algorithm_capabilities::capability_name_t HAS_UNINTERPRETED_DATA;
 
   video_input();
-  PLUGGABLE_INTERFACE(video_input);
+  PLUGGABLE_INTERFACE( video_input );
 
   /// \brief Open a video stream.
   ///
@@ -218,8 +220,9 @@ public:
   ///
   /// \throws video_input_timeout_exception when the timeout expires.
   /// \throws video_stream_exception when there is an error in the video stream.
-  virtual bool next_frame( kwiver::vital::timestamp& ts,
-                           uint32_t timeout = 0 ) = 0;
+  virtual bool next_frame(
+    kwiver::vital::timestamp& ts,
+    uint32_t timeout = 0 ) = 0;
 
   /// \brief Seek to the given frame number in video stream.
   ///
@@ -250,9 +253,10 @@ public:
   ///
   /// \throws video_input_timeout_exception when the timeout expires.
   /// \throws video_stream_exception when there is an error in the video stream.
-  virtual bool seek_frame( kwiver::vital::timestamp& ts,
-                           kwiver::vital::timestamp::frame_t frame_number,
-                           uint32_t timeout = 0 ) = 0;
+  virtual bool seek_frame(
+    kwiver::vital::timestamp& ts,
+    kwiver::vital::timestamp::frame_t frame_number,
+    uint32_t timeout = 0 ) = 0;
 
   /// \brief Obtain the time stamp of the current frame.
   ///
@@ -396,8 +400,9 @@ public:
   algorithm_capabilities const& get_implementation_capabilities() const;
 
 protected:
-  void set_capability( algorithm_capabilities::capability_name_t const& name,
-                       bool val );
+  void set_capability(
+    algorithm_capabilities::capability_name_t const& name,
+    bool val );
 
 private:
   algorithm_capabilities m_capabilities;

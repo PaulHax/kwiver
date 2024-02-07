@@ -57,8 +57,9 @@ has_algorithm_impl_name( std::string const& implementation_name )
 
   auto impl_names = vpm.impl_names< INTERFACE >();
 
-  return std::find( impl_names.begin(), impl_names.end(),
-                    implementation_name ) != impl_names.end();
+  return std::find(
+    impl_names.begin(), impl_names.end(),
+    implementation_name ) != impl_names.end();
 }
 
 //// ----------------------------------------------------------------------------
@@ -83,9 +84,10 @@ has_algorithm_impl_name( std::string const& implementation_name )
 /// \param[out] nested_algo The nested algorithm's sptr variable.
 template < typename INTERFACE >
 void
-set_nested_algo_configuration( std::string const& name,
-                               config_block_sptr config,
-                               std::shared_ptr< INTERFACE >&    nested_algo )
+set_nested_algo_configuration(
+  std::string const& name,
+  config_block_sptr config,
+  std::shared_ptr< INTERFACE >&    nested_algo )
 {
   static kwiver::vital::logger_handle_t logger = kwiver::vital::get_logger(
     "vital.algorithm" );
@@ -101,21 +103,21 @@ set_nested_algo_configuration( std::string const& name,
       nested_algo = create_algorithm< INTERFACE >( iname );
       nested_algo->set_configuration(
         config->subblock_view( name + config_block::block_sep() + iname )
-        );
+      );
     }
     else
     {
       std::stringstream msg;
-      msg       << "Could not find implementation \"" << iname
-                << "\" for \"" << type_name << "\"";
+      msg << "Could not find implementation \"" << iname
+          << "\" for \"" << type_name << "\"";
 
       // Add line number if known
       std::string file;
       int line( 0 );
       if( config->get_location( type_key, file, line ) )
       {
-        msg     << " as requested from "
-                << file << ":" << line;
+        msg << " as requested from "
+            << file << ":" << line;
       }
 
       LOG_WARN( logger, msg.str() );
@@ -123,9 +125,10 @@ set_nested_algo_configuration( std::string const& name,
   }
   else
   {
-    LOG_WARN( logger, "Config item \""  << type_key
-                                        << "\" not found for \""
-                                        << type_name << "\"." );
+    LOG_WARN(
+      logger, "Config item \"" << type_key
+                               << "\" not found for \""
+                               << type_name << "\"." );
   }
 }
 
@@ -147,9 +150,10 @@ set_nested_algo_configuration( std::string const& name,
 /// \param[in]       nested_algo The nested algorithm's sptr variable.
 template < typename INTERFACE >
 void
-get_nested_algo_configuration( std::string const& name,
-                               config_block_sptr config,
-                               std::shared_ptr< INTERFACE > nested_algo )
+get_nested_algo_configuration(
+  std::string const& name,
+  config_block_sptr config,
+  std::shared_ptr< INTERFACE > nested_algo )
 {
   config_block_description_t type_comment =
     "Algorithm to use for '" + name + "'.\n"
@@ -163,8 +167,9 @@ get_nested_algo_configuration( std::string const& name,
   for( kwiver::vital::plugin_factory_handle_t a_fact : fact_list )
   {
     std::string reg_name;
-    if( !a_fact->get_attribute( kwiver::vital::plugin_factory::PLUGIN_NAME,
-                                reg_name ) )
+    if( !a_fact->get_attribute(
+      kwiver::vital::plugin_factory::PLUGIN_NAME,
+      reg_name ) )
     {
       continue;
     }
@@ -172,8 +177,9 @@ get_nested_algo_configuration( std::string const& name,
     type_comment += "\n\t- " + reg_name;
 
     std::string tmp_d;
-    if( a_fact->get_attribute( kwiver::vital::plugin_factory::
-                               PLUGIN_DESCRIPTION, tmp_d ) )
+    if( a_fact->get_attribute(
+      kwiver::vital::plugin_factory::
+      PLUGIN_DESCRIPTION, tmp_d ) )
     {
       type_comment += " :: " + tmp_d;
     }
@@ -182,19 +188,22 @@ get_nested_algo_configuration( std::string const& name,
   if( nested_algo )
   {
     config_block_sptr cb = nested_algo->get_configuration();
-    config->set_value( name + config_block::block_sep() + "type",
-                       nested_algo->impl_name(),
-                       type_comment );
+    config->set_value(
+      name + config_block::block_sep() + "type",
+      nested_algo->impl_name(),
+      type_comment );
 
-    config->subblock_view( name + config_block::block_sep() +
-                           nested_algo->impl_name() )
+    config->subblock_view(
+      name + config_block::block_sep() +
+      nested_algo->impl_name() )
     ->merge_config( cb );
   }
   else if( !config->has_value( name + config_block::block_sep() + "type" ) )
   {
-    config->set_value( name + config_block::block_sep() + "type",
-                       "",
-                       type_comment );
+    config->set_value(
+      name + config_block::block_sep() + "type",
+      "",
+      type_comment );
   }
 }
 
@@ -213,8 +222,9 @@ get_nested_algo_configuration( std::string const& name,
 /// \param     config  The \c config_block to check.
 template < typename INTERFACE >
 bool
-check_nested_algo_configuration( std::string const& name,
-                                 config_block_sptr config )
+check_nested_algo_configuration(
+  std::string const& name,
+  config_block_sptr config )
 {
   static kwiver::vital::logger_handle_t logger = kwiver::vital::get_logger(
     "vital.algorithm" );
@@ -248,8 +258,9 @@ check_nested_algo_configuration( std::string const& name,
     {
       // Collect a list of all available implementations for this algorithm
       std::string reg_name;
-      if( a_fact->get_attribute( kwiver::vital::plugin_factory::PLUGIN_NAME,
-                                 reg_name ) )
+      if( a_fact->get_attribute(
+        kwiver::vital::plugin_factory::PLUGIN_NAME,
+        reg_name ) )
       {
         if( first )
         {
@@ -278,14 +289,15 @@ check_nested_algo_configuration( std::string const& name,
   try
   {
     if( !create_algorithm< INTERFACE >( instance_name )->check_configuration(
-          config->subblock_view( qualified_name ) ) )
+      config->subblock_view( qualified_name ) ) )
     {
-      LOG_WARN( logger,  "Configuration Failure Backtrace: "
-                << qualified_name );
+      LOG_WARN(
+        logger,  "Configuration Failure Backtrace: "
+          << qualified_name );
       return false;
     }
   }
-  catch ( const kwiver::vital::plugin_factory_not_found& e )
+  catch( const kwiver::vital::plugin_factory_not_found& e )
   {
     LOG_WARN( logger, e.what() );
   }
@@ -299,11 +311,14 @@ check_nested_algo_configuration( std::string const& name,
 // A helper for populating \p key in \p config based on the  configuration of
 // the algorithm given in \p value.
 template < typename ValueType,
-           typename std::enable_if_t< detail::is_shared_ptr< ValueType >::value, bool > = true,
-           typename std::enable_if_t< std::is_base_of_v< kwiver::vital::algorithm, typename ValueType::element_type >, bool > = true >
+  typename std::enable_if_t< detail::is_shared_ptr< ValueType >::value,
+    bool > = true,
+  typename std::enable_if_t< std::is_base_of_v< kwiver::vital::algorithm,
+    typename ValueType::element_type >, bool > = true >
 void
-set_config_helper( config_block_sptr config, const std::string& key,
-                   const ValueType& value )
+set_config_helper(
+  config_block_sptr config, const std::string& key,
+  const ValueType& value )
 {
   kwiver::vital::get_nested_algo_configuration< typename ValueType::element_type >( key, config, value );
 }
@@ -311,8 +326,10 @@ set_config_helper( config_block_sptr config, const std::string& key,
 // A helper for getting a value from a config block. This specialization is for
 // keys that correspond to nested algorithms.
 template < typename ValueType,
-           typename std::enable_if_t< detail::is_shared_ptr< ValueType >::value, bool > = true,
-           typename std::enable_if_t< std::is_base_of_v< kwiver::vital::algorithm, typename ValueType::element_type >, bool > = true >
+  typename std::enable_if_t< detail::is_shared_ptr< ValueType >::value,
+    bool > = true,
+  typename std::enable_if_t< std::is_base_of_v< kwiver::vital::algorithm,
+    typename ValueType::element_type >, bool > = true >
 ValueType
 get_config_helper( config_block_sptr config, config_block_key_t const& key )
 {

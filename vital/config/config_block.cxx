@@ -4,29 +4,33 @@
 
 /// \file
 ///
-/// \brief Implementation of \link kwiver::vital::config_block configuration \endlink object
+/// \brief Implementation of \link kwiver::vital::config_block configuration
+/// \endlink object
 
 #include "config_block.h"
 
 #include <vital/util/string.h>
 
 #include <algorithm>
-#include <iterator>
-#include <sstream>
-#include <functional>
 #include <cctype>
+#include <functional>
+#include <iterator>
 #include <locale>
+#include <sstream>
 
 namespace kwiver {
+
 namespace vital {
 
 /// private helper method for determining key path prefixes
-static bool does_not_begin_with( config_block_key_t const&  key,
-                                 config_block_key_t const&  name );
+static bool does_not_begin_with(
+  config_block_key_t const&  key,
+  config_block_key_t const&  name );
 
 /// private helper method to strip a block name from a key path
-static config_block_key_t strip_block_name( config_block_key_t const& subblock,
-                                            config_block_key_t const& key );
+static config_block_key_t strip_block_name(
+  config_block_key_t const& subblock,
+  config_block_key_t const& key );
 
 // Create an empty configuration.
 config_block_sptr
@@ -41,8 +45,7 @@ config_block
 // Destructor
 config_block
 ::~config_block()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 // Get the name of this \c config_block instance.
@@ -63,28 +66,31 @@ config_block
 
   for( config_block_key_t const& key_name : available_values() )
   {
-    if ( does_not_begin_with( key_name, key ) )
+    if( does_not_begin_with( key_name, key ) )
     {
       continue;
     }
 
-    config_block_key_t const stripped_key_name = strip_block_name( key, key_name );
+    config_block_key_t const stripped_key_name = strip_block_name(
+      key,
+      key_name );
 
-    conf->set_value( stripped_key_name,
-                     i_get_value( key_name ),
-                     get_description( key_name ) );
+    conf->set_value(
+      stripped_key_name,
+      i_get_value( key_name ),
+      get_description( key_name ) );
 
     // Copy RO status from this to other
-    if ( this->is_read_only( key_name ) )
+    if( this->is_read_only( key_name ) )
     {
       conf->mark_read_only( stripped_key_name );
     }
 
     // Copy location if there is one.
     auto i = m_def_store.find( key_name );
-    if ( i != m_def_store.end() )
+    if( i != m_def_store.end() )
     {
-      conf->m_def_store[stripped_key_name] = i->second;
+      conf->m_def_store[ stripped_key_name ] = i->second;
     }
   } // end for
 
@@ -105,13 +111,15 @@ config_block_description_t
 config_block
 ::get_description( config_block_key_t const& key ) const
 {
-  if ( m_parent )
+  if( m_parent )
   {
-    return m_parent->get_description( m_name + config_block::block_sep() + key );
+    return m_parent->get_description(
+      m_name + config_block::block_sep() +
+      key );
   }
 
   store_t::const_iterator i = m_descr_store.find( key );
-  if ( i == m_descr_store.end() )
+  if( i == m_descr_store.end() )
   {
     VITAL_THROW( no_such_configuration_value_exception, key );
   }
@@ -125,15 +133,15 @@ void
 config_block
 ::unset_value( config_block_key_t const& key )
 {
-  if ( m_parent )
+  if( m_parent )
   {
     m_parent->unset_value( m_name + config_block::block_sep() + key );
   }
   else
   {
-    if ( is_read_only( key ) )
+    if( is_read_only( key ) )
     {
-      config_block_value_t const current_value = get_value< config_block_value_t > ( key, config_block_value_t() );
+      config_block_value_t const current_value = get_value< config_block_value_t >( key, config_block_value_t() );
 
       VITAL_THROW( unset_on_read_only_value_exception, key, current_value );
     }
@@ -144,7 +152,7 @@ config_block
 
     // value and descr stores managed in parallel, so if key doesn't exist in
     // value store, there will be no parallel value in the descr store.
-    if ( i == m_store.end() )
+    if( i == m_store.end() )
     {
       VITAL_THROW( no_such_configuration_value_exception, key );
     }
@@ -152,7 +160,7 @@ config_block
     m_store.erase( i );
     m_descr_store.erase( j );
 
-    if ( k != m_def_store.end() )
+    if( k != m_def_store.end() )
     {
       m_def_store.erase( k );
     }
@@ -185,7 +193,7 @@ config_block
 {
   config_block_keys_t const keys = conf->available_values();
 
-  for( config_block_key_t const & key : keys )
+  for( config_block_key_t const& key : keys )
   {
     this->copy_entry( key, conf );
   } // end for
@@ -202,9 +210,9 @@ config_block
   // Iterate over this. If not in other, then add to output.
   config_block_keys_t const keys = this->available_values();
 
-  for( const auto & key : keys )
+  for( const auto& key : keys )
   {
-    if ( ! other->has_value( key ) )
+    if( !other->has_value( key ) )
     {
       ret_block->copy_entry( key, this );
     }
@@ -220,19 +228,22 @@ config_block
 ::available_values() const
 {
   using namespace std::placeholders;  // for _1, _2, _3...
+
   config_block_keys_t keys;
 
-  if ( m_parent )
+  if( m_parent )
   {
     config_block_keys_t parent_keys = m_parent->available_values();
 
-    config_block_keys_t::iterator const i = std::remove_if( parent_keys.begin(), parent_keys.end(),
-                                                            std::bind( does_not_begin_with, _1, m_name ) );
+    config_block_keys_t::iterator const i = std::remove_if(
+      parent_keys.begin(), parent_keys.end(),
+      std::bind( does_not_begin_with, _1, m_name ) );
 
     parent_keys.erase( i, parent_keys.end() );
 
-    std::transform( parent_keys.begin(), parent_keys.end(),
-                    std::back_inserter( keys ), std::bind( strip_block_name, m_name, _1 ) );
+    std::transform(
+      parent_keys.begin(), parent_keys.end(),
+      std::back_inserter( keys ), std::bind( strip_block_name, m_name, _1 ) );
   }
   else
   {
@@ -253,7 +264,7 @@ bool
 config_block
 ::has_value( config_block_key_t const& key ) const
 {
-  if ( m_parent )
+  if( m_parent )
   {
     return m_parent->has_value( m_name + config_block::block_sep() + key );
   }
@@ -271,8 +282,7 @@ config_block
     m_descr_store(),
     m_ro_list(),
     m_def_store()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 // private helper method to extract a value for a key
@@ -280,7 +290,7 @@ bool
 config_block
 ::find_value( config_block_key_t const& key, config_block_value_t& val ) const
 {
-  if ( ! has_value( key ) )
+  if( !has_value( key ) )
   {
     return false;
   }
@@ -295,14 +305,14 @@ config_block_value_t
 config_block
 ::i_get_value( config_block_key_t const& key ) const
 {
-  if ( m_parent )
+  if( m_parent )
   {
     return m_parent->i_get_value( m_name + config_block::block_sep() + key );
   }
 
   store_t::const_iterator i = m_store.find( key );
 
-  if ( i == m_store.end() )
+  if( i == m_store.end() )
   {
     return config_block_value_t();
   }
@@ -314,31 +324,37 @@ config_block
 // private key/value setter
 void
 config_block
-::i_set_value( config_block_key_t const&          key,
-               config_block_value_t const&        value,
-               config_block_description_t const&  descr )
+::i_set_value(
+  config_block_key_t const&          key,
+  config_block_value_t const&        value,
+  config_block_description_t const&  descr )
 {
-  if ( m_parent )
+  if( m_parent )
   {
-    m_parent->set_value( m_name + config_block::block_sep() + key, value, descr );
+    m_parent->set_value(
+      m_name + config_block::block_sep() + key, value,
+      descr );
   }
   else
   {
-    if ( is_read_only( key ) )
+    if( is_read_only( key ) )
     {
-      config_block_value_t const current_value = get_value< config_block_value_t > ( key, config_block_value_t() );
+      config_block_value_t const current_value = get_value< config_block_value_t >( key, config_block_value_t() );
 
-      VITAL_THROW( set_on_read_only_value_exception, key, current_value, value );
+      VITAL_THROW(
+        set_on_read_only_value_exception, key, current_value,
+        value );
     }
 
     config_block_value_t temp( value );
-    m_store[key] = string_trim( temp ); // trim value in place. Leading and trailing blanks are evil!
+    m_store[ key ] = string_trim( temp ); // trim value in place. Leading and
+                                          // trailing blanks are evil!
 
     // Only assign the description given if there is no stored description
     // for this key, or the given description is non-zero.
-    if ( ( m_descr_store.count( key ) == 0 ) || ( descr.size() > 0 ) )
+    if( ( m_descr_store.count( key ) == 0 ) || ( descr.size() > 0 ) )
     {
-      m_descr_store[key] = descr;
+      m_descr_store[ key ] = descr;
     }
   }
 }
@@ -346,8 +362,9 @@ config_block
 // ----------------------------------------------------------------------------
 void
 config_block
-::copy_entry( const config_block_key_t& key,
-              const config_block_sptr from )
+::copy_entry(
+  const config_block_key_t& key,
+  const config_block_sptr from )
 {
   copy_entry( key, from.get() );
 }
@@ -355,57 +372,65 @@ config_block
 // ----------------------------------------------------------------------------
 void
 config_block
-::copy_entry( const config_block_key_t& key,
-              const config_block* from )
+::copy_entry(
+  const config_block_key_t& key,
+  const config_block* from )
 {
-  config_block_value_t const& val = from->get_value< config_block_value_t > ( key );
+  config_block_value_t const& val =
+    from->get_value< config_block_value_t >( key );
   config_block_description_t const& descr = from->get_description( key );
 
   this->i_set_value( key, val, descr );
 
   // Copy RO status
-  if ( from->is_read_only( key ) )
+  if( from->is_read_only( key ) )
   {
     this->mark_read_only( key );
   }
 
   // Copy location if there is one.
   auto i = from->m_def_store.find( key );
-  if ( i != from->m_def_store.end() )
+  if( i != from->m_def_store.end() )
   {
-    this->m_def_store[key] = i->second;
+    this->m_def_store[ key ] = i->second;
   }
 }
 
 // ----------------------------------------------------------------------------
 void
 config_block
-::set_location( config_block_key_t const& key, std::shared_ptr< std::string > file, int line )
+::set_location(
+  config_block_key_t const& key,
+  std::shared_ptr< std::string > file, int line )
 {
-  m_def_store[key] = source_location( file, line );
+  m_def_store[ key ] = source_location( file, line );
 }
 
 // ----------------------------------------------------------------------------
 void
 config_block
-::set_location( config_block_key_t const& key, const kwiver::vital::source_location& sl )
+::set_location(
+  config_block_key_t const& key,
+  const kwiver::vital::source_location& sl )
 {
-  m_def_store[key] = sl;
+  m_def_store[ key ] = sl;
 }
 
 // ----------------------------------------------------------------------------
 bool
 config_block
-::get_location( config_block_key_t const& key,
-                std::string& f,
-                int& l) const
+::get_location(
+  config_block_key_t const& key,
+  std::string& f,
+  int& l ) const
 {
-  if (m_parent)
+  if( m_parent )
   {
-    location_t::const_iterator i = m_parent->m_def_store.find( m_name +
-                                            config_block::block_sep() +
-                                            key );
-    if ( i != m_parent->m_def_store.end() )
+    location_t::const_iterator i = m_parent->m_def_store.find(
+      m_name +
+      config_block::block_sep() +
+      key );
+    if( i != m_parent->m_def_store.end() )
     {
       f = i->second.file();
       l = i->second.line();
@@ -415,7 +440,7 @@ config_block
   }
 
   location_t::const_iterator i = this->m_def_store.find( key );
-  if ( i != this->m_def_store.end() )
+  if( i != this->m_def_store.end() )
   {
     f = i->second.file();
     l = i->second.line();
@@ -427,14 +452,17 @@ config_block
 // ----------------------------------------------------------------------------
 bool
 config_block
-::get_location( config_block_key_t const& key, kwiver::vital::source_location& loc ) const
+::get_location(
+  config_block_key_t const& key,
+  kwiver::vital::source_location& loc ) const
 {
-    if (m_parent)
+  if( m_parent )
   {
-    location_t::const_iterator i = m_parent->m_def_store.find( m_name +
-                                           config_block:: block_sep() +
-                                           key );
-    if ( i != m_parent->m_def_store.end() )
+    location_t::const_iterator i = m_parent->m_def_store.find(
+      m_name +
+      config_block::block_sep() +
+      key );
+    if( i != m_parent->m_def_store.end() )
     {
       loc = i->second;
       return true;
@@ -443,9 +471,9 @@ config_block
   }
 
   location_t::const_iterator i = m_def_store.find( key );
-  if ( i != m_def_store.end() )
+  if( i != m_def_store.end() )
   {
-    loc  = i->second;;
+    loc  = i->second;
     return true;
   }
   return false;
@@ -454,12 +482,14 @@ config_block
 // ----------------------------------------------------------------------------
 // Type-specific casting handling, bool specialization
 // cast value to bool
-template < >
+template <>
 bool
 config_block_get_value_cast( config_block_value_t const& value )
 {
-  static config_block_value_t const true_string = config_block_value_t( "true" );
-  static config_block_value_t const false_string = config_block_value_t( "false" );
+  static config_block_value_t const true_string =
+    config_block_value_t( "true" );
+  static config_block_value_t const false_string =
+    config_block_value_t( "false" );
   static config_block_value_t const yes_string = config_block_value_t( "yes" );
   static config_block_value_t const no_string = config_block_value_t( "no" );
   static config_block_value_t const one_string = config_block_value_t( "1" );
@@ -473,29 +503,32 @@ config_block_get_value_cast( config_block_value_t const& value )
   // "da" "net" (Да нет)
 
   config_block_value_t value_lower = value;
-  std::transform( value_lower.begin(), value_lower.end(), value_lower.begin(), ::tolower );
+  std::transform(
+    value_lower.begin(), value_lower.end(), value_lower.begin(),
+    ::tolower );
 
-  if ( ( value_lower == true_string )
-       || ( value_lower == yes_string )
-       || ( value_lower == one_string ) )
+  if( ( value_lower == true_string ) ||
+      ( value_lower == yes_string ) ||
+      ( value_lower == one_string ) )
   {
     return true;
   }
-  else if ( ( value_lower == false_string )
-            || ( value_lower == no_string )
-            || ( value_lower == zero_string ) )
+  else if( ( value_lower == false_string ) ||
+           ( value_lower == no_string ) ||
+           ( value_lower == zero_string ) )
   {
     return false;
   }
 
-  VITAL_THROW( bad_config_block_cast,
-               "failed to convert from string representation \""
-               + value + "\" to boolean" );
+  VITAL_THROW(
+    bad_config_block_cast,
+    "failed to convert from string representation \"" +
+    value + "\" to boolean" );
 }
 
 // ----------------------------------------------------------------------------
 //   Type specific get_value for string
-template < >
+template <>
 std::string
 config_block_get_value_cast( config_block_value_t const& value )
 {
@@ -503,25 +536,27 @@ config_block_get_value_cast( config_block_value_t const& value )
   return value;
 }
 
-template<>
-std::array<double, 3>
+template <>
+std::array< double, 3 >
 config_block_get_value_cast( config_block_value_t const& value )
 {
-  try 
+  try
   {
-    std::stringstream str(value);
+    std::stringstream str( value );
 
     // space delimited strings into vector of numbers.
-    std::vector<double> numbers((std::istream_iterator<double>(str)), {});
-    std::array<double, 3> result;
-    std::copy_n(numbers.begin(), 3, result.begin());
+    std::vector< double > numbers( ( std::istream_iterator< double >( str ) ),
+      {} );
+    std::array< double, 3 > result;
+    std::copy_n( numbers.begin(), 3, result.begin() );
     return result;
   }
-  catch ( std::exception& e )
+  catch( std::exception& e )
   {
-    VITAL_THROW( bad_config_block_cast,
-                "failed to convert from string representation \""
-                + value + "\" to std::array<double, 3>" );
+    VITAL_THROW(
+      bad_config_block_cast,
+      "failed to convert from string representation \"" +
+      value + "\" to std::array<double, 3>" );
   }
 }
 
@@ -533,13 +568,15 @@ config_block_get_value_cast( config_block_value_t const& value )
 /// \returns True if the given key does not begin with the given name and is
 ///          not a global variable.
 bool
-does_not_begin_with( config_block_key_t const& key, config_block_key_t const& name )
+does_not_begin_with(
+  config_block_key_t const& key,
+  config_block_key_t const& name )
 {
   static config_block_key_t const global_start = config_block::global_value() +
                                                  config_block::block_sep();
 
-  return ! starts_with( key, name + config_block::block_sep() ) &&
-         ! starts_with( key, global_start );
+  return !starts_with( key, name + config_block::block_sep() ) &&
+         !starts_with( key, global_start );
 }
 
 // ----------------------------------------------------------------------------
@@ -552,9 +589,11 @@ does_not_begin_with( config_block_key_t const& key, config_block_key_t const& na
 /// \param key       The key to conditionally strip from.
 /// \returns The stripped key name.
 config_block_key_t
-strip_block_name( config_block_key_t const& subblock, config_block_key_t const& key )
+strip_block_name(
+  config_block_key_t const& subblock,
+  config_block_key_t const& key )
 {
-  if ( ! starts_with( key, subblock + config_block::block_sep() ) )
+  if( !starts_with( key, subblock + config_block::block_sep() ) )
   {
     return key;
   }
@@ -562,4 +601,6 @@ strip_block_name( config_block_key_t const& subblock, config_block_key_t const& 
   return key.substr( subblock.size() + config_block::block_sep().size() );
 }
 
-} }   // end namespace
+} // namespace vital
+
+}     // end namespace

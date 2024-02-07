@@ -41,6 +41,7 @@ import nose.tools as nt
 import numpy as np
 import unittest
 
+
 class TestVitalLocalCartesian(unittest.TestCase):
     def setUp(self):
         self.wgs = geodesy.SRID.lat_lon_WGS84
@@ -59,10 +60,14 @@ class TestVitalLocalCartesian(unittest.TestCase):
 
     def test_initial_origin(self):
         lc = LocalCartesian(self.origA, 0)
-        np.testing.assert_array_almost_equal(lc.get_origin().location(), self.origA.location())
+        np.testing.assert_array_almost_equal(
+            lc.get_origin().location(), self.origA.location()
+        )
 
         lc = LocalCartesian(self.origA, 33)
-        np.testing.assert_array_almost_equal(lc.get_origin().location(), self.origA.location())
+        np.testing.assert_array_almost_equal(
+            lc.get_origin().location(), self.origA.location()
+        )
 
     def test_initial_orientation(self):
         lc = LocalCartesian(self.origA, 0)
@@ -72,7 +77,9 @@ class TestVitalLocalCartesian(unittest.TestCase):
         nt.assert_equal(lc.get_orientation(), 33)
 
     def check_origin_and_orient_equal(self, lc, origin, orient):
-        np.testing.assert_array_almost_equal(lc.get_origin().location(), origin.location())
+        np.testing.assert_array_almost_equal(
+            lc.get_origin().location(), origin.location()
+        )
         nt.assert_equal(lc.get_orientation(), orient)
 
     def test_api(self):

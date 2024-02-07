@@ -11,6 +11,7 @@
 #include <vital/iterator.h>
 
 namespace kwiver {
+
 namespace vital {
 
 /// @brief Mixin set interface for VITAL.
@@ -59,12 +60,15 @@ public:
   virtual T at( size_t index ) = 0;
   virtual T const at( size_t index ) const = 0;
 
-  T operator[]( size_t index ) { return this->at( index ); }
-  const T operator[]( size_t index ) const { return this->at( index ); }
+  T
+  operator[]( size_t index ) { return this->at( index ); }
+  const T
+  operator[]( size_t index ) const { return this->at( index ); }
   ///@}
 };
 
 } // end namespace: vital
+
 } // end namespace: kwiver
 
-#endif //KWIVER_VITAL_SET_H_
+#endif // KWIVER_VITAL_SET_H_

@@ -14,14 +14,15 @@ static auto const loc = kwiver::vital::vector_3d{ -73.759291, 42.849631, 50 };
 static auto constexpr crs = kwiver::vital::SRID::lat_lon_WGS84;
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
 }
 
 // ----------------------------------------------------------------------------
-TEST(detected_object, creation)
+TEST ( detected_object, creation )
 {
   kwiver::vital::bounding_box_d::vector_type tl{ 12, 23 };
   kwiver::vital::bounding_box_d bb{ tl, 100, 100 };
@@ -46,7 +47,7 @@ TEST(detected_object, creation)
 }
 
 // ----------------------------------------------------------------------------
-TEST(detected_object, modification)
+TEST ( detected_object, modification )
 {
   kwiver::vital::bounding_box_d::vector_type tl{ 12, 23 };
   kwiver::vital::bounding_box_d bb{ tl, 100, 100 };
@@ -67,16 +68,14 @@ TEST(detected_object, modification)
     "vehicle",
     "other",
     "clam",
-    "barnacle",
-  };
+    "barnacle", };
 
   auto const scores = std::vector< double >{
     0.65,
     0.6,
     0.07,
     0.0055,
-    0.005,
-  };
+    0.005, };
 
   auto const dot =
     std::make_shared< kwiver::vital::detected_object_type >( names, scores );
@@ -94,7 +93,7 @@ TEST(detected_object, modification)
 }
 
 // ----------------------------------------------------------------------------
-TEST(detected_object, keypoints)
+TEST ( detected_object, keypoints )
 {
   kwiver::vital::detected_object dobj;
 
@@ -110,7 +109,7 @@ TEST(detected_object, keypoints)
 }
 
 // ----------------------------------------------------------------------------
-TEST(detected_object, notes)
+TEST ( detected_object, notes )
 {
   kwiver::vital::detected_object dobj;
 

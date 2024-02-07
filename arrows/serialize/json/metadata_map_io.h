@@ -33,8 +33,9 @@ class KWIVER_SERIALIZE_JSON_EXPORT metadata_map_io
   : public vital::algo::metadata_map_io
 {
 public:
-  PLUGIN_INFO( "json",
-               "Perform IO on video metadata using JSON." )
+  PLUGIN_INFO(
+    "json",
+    "Perform IO on video metadata using JSON." )
 
   metadata_map_io();
 
@@ -59,8 +60,9 @@ public:
   ///
   /// \param filename The path to the file to save.
   /// \param data The metadata map for a video.
-  void save_( std::ostream& fout, kwiver::vital::metadata_map_sptr data,
-              std::string const& filename ) const override;
+  void save_(
+    std::ostream& fout, kwiver::vital::metadata_map_sptr data,
+    std::string const& filename ) const override;
 
 private:
   class priv;

@@ -2,18 +2,21 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <sprokit/processes/adapters/embedded_pipeline.h>
 #include <sprokit/pipeline_util/load_pipe_exception.h>
+#include <sprokit/processes/adapters/embedded_pipeline.h>
 
-#include <pybind11/stl.h>
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
-#include <memory>
 #include <fstream>
+#include <memory>
 
 using namespace pybind11;
+
 namespace kwiver {
+
 namespace sprokit {
+
 namespace python {
 
 // Publicist class to access protected methods
@@ -35,51 +38,71 @@ public:
 
   bool connect_input_adapter() override;
   bool connect_output_adapter() override;
-  void update_config(vital::config_block_sptr config) override;
+  void update_config( vital::config_block_sptr config ) override;
 };
 
-void build_pipeline(embedded_pipeline& self,
-                    vital::path_t const& desc_file,
-                    std::string const& def_dir = "");
+void build_pipeline(
+  embedded_pipeline& self,
+  vital::path_t const& desc_file,
+  std::string const& def_dir = "" );
 
-}
-}
-}
+} // namespace python
+
+} // namespace sprokit
+
+} // namespace kwiver
 
 namespace ksp = kwiver::sprokit::python;
 
-PYBIND11_MODULE(embedded_pipeline, m)
+PYBIND11_MODULE( embedded_pipeline, m )
 {
   class_< kwiver::embedded_pipeline,
-        std::shared_ptr<kwiver::embedded_pipeline>,
-        ksp::embedded_pipeline_trampoline> ep(m, "EmbeddedPipeline");
-  ep.def(init<>())
-  .def("build_pipeline", &ksp::build_pipeline,
-    arg("desc_file"),
-    arg("def_dir") = "")
-  .def("send", &kwiver::embedded_pipeline::send)
-  .def("send_end_of_input", &kwiver::embedded_pipeline::send_end_of_input)
-  .def("receive", &kwiver::embedded_pipeline::receive)
-  .def("full", &kwiver::embedded_pipeline::full)
-  .def("empty", &kwiver::embedded_pipeline::empty)
-  .def("at_end", &kwiver::embedded_pipeline::at_end)
-  .def("start", &kwiver::embedded_pipeline::start)
-  .def("wait", &kwiver::embedded_pipeline::wait)
-  .def("stop", &kwiver::embedded_pipeline::stop)
-  .def("input_port_names", &kwiver::embedded_pipeline::input_port_names)
-  .def("output_port_names", &kwiver::embedded_pipeline::output_port_names)
-  .def("input_adapter_connected",
-      &ksp::wrap_embedded_pipeline::input_adapter_connected)
-  .def("output_adapter_connected",
-      &ksp::wrap_embedded_pipeline::output_adapter_connected)
-  .def("connect_input_adapter",
-      static_cast<bool (kwiver::embedded_pipeline::*)()>(&ksp::wrap_embedded_pipeline::connect_input_adapter))
-  .def("connect_output_adapter",
-      static_cast<bool (kwiver::embedded_pipeline::*)()>(&ksp::wrap_embedded_pipeline::connect_output_adapter))
-  .def("update_config",
-      static_cast<void (kwiver::embedded_pipeline::*)(kwiver::vital::config_block_sptr)>(&ksp::wrap_embedded_pipeline::update_config))
+    std::shared_ptr< kwiver::embedded_pipeline >,
+    ksp::embedded_pipeline_trampoline > ep( m, "EmbeddedPipeline" );
+  ep.def( init<>() )
+    .def(
+      "build_pipeline", &ksp::build_pipeline,
+      arg( "desc_file" ),
+      arg( "def_dir" ) = "" )
+    .def( "send", &kwiver::embedded_pipeline::send )
+    .def( "send_end_of_input", &kwiver::embedded_pipeline::send_end_of_input )
+    .def( "receive", &kwiver::embedded_pipeline::receive )
+    .def( "full", &kwiver::embedded_pipeline::full )
+    .def( "empty", &kwiver::embedded_pipeline::empty )
+    .def( "at_end", &kwiver::embedded_pipeline::at_end )
+    .def( "start", &kwiver::embedded_pipeline::start )
+    .def( "wait", &kwiver::embedded_pipeline::wait )
+    .def( "stop", &kwiver::embedded_pipeline::stop )
+    .def( "input_port_names", &kwiver::embedded_pipeline::input_port_names )
+    .def( "output_port_names", &kwiver::embedded_pipeline::output_port_names )
+    .def(
+      "input_adapter_connected",
+      &ksp::wrap_embedded_pipeline::input_adapter_connected )
+    .def(
+      "output_adapter_connected",
+      &ksp::wrap_embedded_pipeline::output_adapter_connected )
+    .def(
+      "connect_input_adapter",
+      static_cast< bool ( kwiver::embedded_pipeline::* )() >( &ksp::
+                                                              wrap_embedded_pipeline
+                                                              ::
+                                                              connect_input_adapter )
+    )
+    .def(
+      "connect_output_adapter",
+      static_cast< bool ( kwiver::embedded_pipeline::* )() >( &ksp::
+                                                              wrap_embedded_pipeline
+                                                              ::
+                                                              connect_output_adapter )
+    )
+    .def(
+      "update_config",
+      static_cast< void ( kwiver::embedded_pipeline::* )(
+        kwiver::vital::config_block_sptr ) >( &ksp::wrap_embedded_pipeline::
+                                              update_config ) )
   ;
-  ep.doc() = R"(
+  ep.doc() =
+    R"(
         Python bindings for kwiver::embedded_pipeline
 
         Example:
@@ -118,7 +141,9 @@ PYBIND11_MODULE(embedded_pipeline, m)
 }
 
 namespace kwiver {
+
 namespace sprokit {
+
 namespace python {
 
 bool
@@ -145,7 +170,7 @@ embedded_pipeline_trampoline
 
 void
 embedded_pipeline_trampoline
-::update_config(vital::config_block_sptr config)
+::update_config( vital::config_block_sptr config )
 {
   PYBIND11_OVERLOAD(
     void,
@@ -155,17 +180,22 @@ embedded_pipeline_trampoline
   );
 }
 
-void build_pipeline(embedded_pipeline& self,
-                    vital::path_t const& desc_file,
-                    std::string const& def_dir)
+void
+build_pipeline(
+  embedded_pipeline& self,
+  vital::path_t const& desc_file,
+  std::string const& def_dir )
 {
-  std::ifstream desc_stream(desc_file);
-  if (! desc_stream )
+  std::ifstream desc_stream( desc_file );
+  if( !desc_stream )
   {
-    throw ::sprokit::file_no_exist_exception(desc_file);
+    throw ::sprokit::file_no_exist_exception( desc_file );
   }
-  self.build_pipeline(desc_stream, def_dir);
+  self.build_pipeline( desc_stream, def_dir );
 }
-}
-}
-}
+
+} // namespace python
+
+} // namespace sprokit
+
+} // namespace kwiver

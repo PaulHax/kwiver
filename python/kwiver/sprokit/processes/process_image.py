@@ -1,4 +1,4 @@
-#ckwg +28
+# ckwg +28
 # Copyright 2015 by Kitware, Inc.
 # All rights reserved.
 #
@@ -34,21 +34,24 @@ from kwiver.vital.types import Image
 from kwiver.vital.types import ImageContainer
 from kwiver.vital.util.VitalPIL import from_pil, get_pil_image
 
+
 class ProcessImage(KwiverProcess):
     """
     This process gets ain image as input, does some stuff to it and
     sends the modified version to the output port.
     """
+
     # ----------------------------------------------
     def __init__(self, conf):
         KwiverProcess.__init__(self, conf)
 
-        self.add_config_trait("output", "output", '.',
-                              'The path of the file to output to.')
+        self.add_config_trait(
+            "output", "output", ".", "The path of the file to output to."
+        )
 
-        self.declare_config_using_trait( 'output' )
+        self.declare_config_using_trait("output")
 
-        self.add_port_trait( 'out_image', 'image', 'Processed image' )
+        self.add_port_trait("out_image", "image", "Processed image")
 
         # set up required flags
         optional = process.PortFlags()
@@ -56,14 +59,14 @@ class ProcessImage(KwiverProcess):
         required.add(self.flag_required)
 
         #  declare our input port ( port-name,flags)
-        self.declare_input_port_using_trait('image', required)
+        self.declare_input_port_using_trait("image", required)
 
-        self.declare_output_port_using_trait('out_image', optional )
+        self.declare_output_port_using_trait("out_image", optional)
 
     # ----------------------------------------------
     def _configure(self):
         print("[DEBUG] ----- configure")
-        path = self.config_value('output')
+        path = self.config_value("output")
 
         self._base_configure()
 
@@ -71,7 +74,7 @@ class ProcessImage(KwiverProcess):
     def _step(self):
         print("[DEBUG] ----- start step")
         # grab image container from port using traits
-        in_img_c = self.grab_input_using_trait('image')
+        in_img_c = self.grab_input_using_trait("image")
 
         # Get image from container
         in_img = in_img_c.image()
@@ -82,30 +85,32 @@ class ProcessImage(KwiverProcess):
         # draw on the image to prove we can do it
         num = 37
         import PIL.ImageDraw
+
         draw = PIL.ImageDraw.Draw(pil_image)
         draw.line((0, 0) + pil_image.size, fill=128, width=5)
         draw.line((0, pil_image.size[1], pil_image.size[0], 0), fill=32768, width=5)
         #                 x0   y0   x1       y1
-        draw.rectangle( [num, num, num+100, num+100], outline=125 )
+        draw.rectangle([num, num, num + 100, num + 100], outline=125)
         del draw
 
-        new_image = from_pil( pil_image )  # get new image handle
-        new_ic = ImageContainer( new_image )
+        new_image = from_pil(pil_image)  # get new image handle
+        new_ic = ImageContainer(new_image)
 
         # push object to output port
-        self.push_to_port_using_trait( 'out_image', new_ic )
+        self.push_to_port_using_trait("out_image", new_ic)
 
         self._base_step()
+
 
 # ==================================================================
 def __sprokit_register__():
     from kwiver.sprokit.pipeline import process_factory
 
-    module_name = 'python:kwiver.ProcessImage'
+    module_name = "python:kwiver.ProcessImage"
 
     if process_factory.is_process_module_loaded(module_name):
         return
 
-    process_factory.add_process('ProcessImage', 'Process image test', ProcessImage)
+    process_factory.add_process("ProcessImage", "Process image test", ProcessImage)
 
     process_factory.mark_process_module_as_loaded(module_name)

@@ -5,12 +5,15 @@
 #ifndef KWIVER_PYTHON_ARROW_SERIALIZE_JSON_SERIALIZE_IMAGE_H_
 #define KWIVER_PYTHON_ARROW_SERIALIZE_JSON_SERIALIZE_IMAGE_H_
 
-#include <vital/types/image_container.h>
 #include <pybind11/pybind11.h>
+#include <vital/types/image_container.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace python {
+
 namespace py = pybind11;
 
 std::string
@@ -19,8 +22,12 @@ serialize_image_using_json( kwiver::vital::simple_image_container img );
 kwiver::vital::simple_image_container
 deserialize_image_using_json( const std::string& message );
 
-void serialize_image(py::module &m);
-}
-}
-}
+void serialize_image( py::module& m );
+
+} // namespace python
+
+} // namespace arrows
+
+} // namespace kwiver
+
 #endif

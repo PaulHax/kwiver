@@ -31,14 +31,13 @@ class VITAL_ALGO_EXPORT filter_tracks
 public:
   /// Return the name of this algorithm.
   filter_tracks();
-  PLUGGABLE_INTERFACE(filter_tracks);
+  PLUGGABLE_INTERFACE( filter_tracks );
   /// Filter a track set and return a subset of the tracks
   ///
   /// \param [in] input The track set to filter
   /// \returns a filtered version of the track set (simple_track_set)
   virtual kwiver::vital::track_set_sptr
   filter( kwiver::vital::track_set_sptr input ) const = 0;
-
 };
 
 /// type definition for shared pointer to a filter_tracks algorithm

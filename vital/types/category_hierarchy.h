@@ -10,12 +10,13 @@
 
 #include <vital/vital_export.h>
 
-#include <string>
-#include <vector>
 #include <map>
 #include <memory>
+#include <string>
+#include <vector>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -28,7 +29,6 @@ namespace vital {
 class VITAL_EXPORT category_hierarchy
 {
 public:
-
   using label_t = std::string;
   using label_id_t = int;
 
@@ -59,9 +59,10 @@ public:
   /// @param class_names List of labels for the possible classes.
   /// @param parent_names Optional list of parent labels for all classes.
   /// @param ids Optional list of numerical IDs for each class label.
-  category_hierarchy( const label_vec_t& class_names,
-                      const label_vec_t& parent_names = label_vec_t(),
-                      const label_id_vec_t& ids = label_id_vec_t() );
+  category_hierarchy(
+    const label_vec_t& class_names,
+    const label_vec_t& parent_names = label_vec_t(),
+    const label_id_vec_t& ids = label_id_vec_t() );
 
   /// @brief Default deconstructor
   ///
@@ -73,9 +74,10 @@ public:
   /// Parent name can be an empty string if this category has no parent.
   ///
   /// @param class_name Class name.
-  void add_class( const label_t& class_name,
-                  const label_t& parent_name = label_t(""),
-                  const label_id_t id = label_id_t(-1) );
+  void add_class(
+    const label_t& class_name,
+    const label_t& parent_name = label_t( "" ),
+    const label_id_t id = label_id_t( -1 ) );
 
   /// @brief Determine if class_name is present.
   ///
@@ -118,7 +120,9 @@ public:
   ///
   /// @param child_name Child name.
   /// @param parent_name Parent name.
-  void add_relationship( const label_t& child_name, const label_t& parent_name );
+  void add_relationship(
+    const label_t& child_name,
+    const label_t& parent_name );
 
   /// @brief Adds another synonym to some existing class
   ///
@@ -173,8 +177,8 @@ private:
     std::vector< category* > children;
 
     category()
-     : category_name(""),
-       category_id(-1)
+      : category_name( "" ),
+        category_id( -1 )
     {}
   };
 
@@ -192,6 +196,8 @@ private:
 // typedef for a category_hierarchy shared pointer
 typedef std::shared_ptr< category_hierarchy > category_hierarchy_sptr;
 
-} }
+} // namespace vital
+
+} // namespace kwiver
 
 #endif

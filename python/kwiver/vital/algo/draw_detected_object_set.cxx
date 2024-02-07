@@ -3,25 +3,36 @@
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
 #include <pybind11/pybind11.h>
-#include <python/kwiver/vital/algo/trampoline/draw_detected_object_set_trampoline.txx>
 #include <python/kwiver/vital/algo/draw_detected_object_set.h>
+#include \
+  <python/kwiver/vital/algo/trampoline/draw_detected_object_set_trampoline.txx>
 
 namespace py = pybind11;
+
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
-void draw_detected_object_set(py::module &m)
+
+void
+draw_detected_object_set( py::module& m )
 {
   py::class_< kwiver::vital::algo::draw_detected_object_set,
-              std::shared_ptr<kwiver::vital::algo::draw_detected_object_set>,
-              kwiver::vital::algorithm_def<kwiver::vital::algo::draw_detected_object_set>,
-              draw_detected_object_set_trampoline<> >( m, "DrawDetectedObjectSet" )
-    .def(py::init())
-    .def_static("static_type_name",
-                &kwiver::vital::algo::draw_detected_object_set::static_type_name)
-    .def("draw",
-         &kwiver::vital::algo::draw_detected_object_set::draw);
+    std::shared_ptr< kwiver::vital::algo::draw_detected_object_set >,
+    kwiver::vital::algorithm_def< kwiver::vital::algo::draw_detected_object_set >,
+    draw_detected_object_set_trampoline<> >( m, "DrawDetectedObjectSet" )
+    .def( py::init() )
+    .def_static(
+      "static_type_name",
+      &kwiver::vital::algo::draw_detected_object_set::static_type_name )
+    .def(
+      "draw",
+      &kwiver::vital::algo::draw_detected_object_set::draw );
 }
-}
-}
-}
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver

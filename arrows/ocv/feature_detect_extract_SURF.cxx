@@ -26,11 +26,12 @@ typedef cv::xfeatures2d::SURF cv_SURF_t;
 using namespace kwiver::vital;
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace ocv {
 
-namespace
-{
+namespace {
 
 /// Common ORB private implementation class
 class priv
@@ -38,31 +39,34 @@ class priv
 public:
   // Cosntructor
   priv()
-    : hessian_threshold( 100 )
-    , n_octaves( 4 )
-    , n_octave_layers( 3 )
-    , extended( false )
-    , upright( false )
-  {
-  }
+    : hessian_threshold( 100 ),
+      n_octaves( 4 ),
+      n_octave_layers( 3 ),
+      extended( false ),
+      upright( false )
+  {}
 
   // Create new algorithm instance from current parameters
-  cv::Ptr<cv_SURF_t> create() const
+  cv::Ptr< cv_SURF_t >
+  create() const
   {
 #if KWIVER_OPENCV_VERSION_MAJOR < 3
-    return cv::Ptr<cv_SURF_t>(
-      new cv_SURF_t( hessian_threshold, n_octaves, n_octave_layers,
-                     extended, upright  )
+    return cv::Ptr< cv_SURF_t >(
+      new cv_SURF_t(
+        hessian_threshold, n_octaves, n_octave_layers,
+        extended, upright  )
     );
 #else
-    return cv_SURF_t::create( hessian_threshold, n_octaves, n_octave_layers,
-                              extended, upright );
+    return cv_SURF_t::create(
+      hessian_threshold, n_octaves, n_octave_layers,
+      extended, upright );
 #endif
   }
 
 #if KWIVER_OPENCV_VERSION_MAJOR < 3
   // Update algorithm with current parameter
-  void update( cv::Ptr<cv_SURF_t> a ) const
+  void
+  update( cv::Ptr< cv_SURF_t > a ) const
   {
     a->set( "hessianThreshold", hessian_threshold );
     a->set( "nOctaves", n_octaves );
@@ -73,33 +77,40 @@ public:
 #endif
 
   // Update config block with current parameter values
-  void update_config( config_block_sptr config ) const
+  void
+  update_config( config_block_sptr config ) const
   {
-    config->set_value( "hessian_threshold", hessian_threshold,
-                       "Threshold for hessian keypoint detector used in SURF" );
-    config->set_value( "n_octaves", n_octaves,
-                       "Number of pyramid octaves the keypoint detector will "
-                       "use." );
-    config->set_value( "n_octave_layers", n_octave_layers,
-                       "Number of octave layers within each octave." );
-    config->set_value( "extended", extended,
-                       "Extended descriptor flag (true - use extended "
-                       "128-element descriptors; false - use 64-element "
-                       "descriptors)." );
-    config->set_value( "upright", upright,
-                       "Up-right or rotated features flag (true - do not "
-                       "compute orientation of features; false - "
-                       "compute orientation)." );
+    config->set_value(
+      "hessian_threshold", hessian_threshold,
+      "Threshold for hessian keypoint detector used in SURF" );
+    config->set_value(
+      "n_octaves", n_octaves,
+      "Number of pyramid octaves the keypoint detector will "
+      "use." );
+    config->set_value(
+      "n_octave_layers", n_octave_layers,
+      "Number of octave layers within each octave." );
+    config->set_value(
+      "extended", extended,
+      "Extended descriptor flag (true - use extended "
+      "128-element descriptors; false - use 64-element "
+      "descriptors)." );
+    config->set_value(
+      "upright", upright,
+      "Up-right or rotated features flag (true - do not "
+      "compute orientation of features; false - "
+      "compute orientation)." );
   }
 
   // Set current values based on config block
-  void set_config( config_block_sptr config )
+  void
+  set_config( config_block_sptr config )
   {
-    hessian_threshold = config->get_value<int>( "hessian_threshold" );
-    n_octaves = config->get_value<int>( "n_octaves");
-    n_octave_layers = config->get_value<int>( "n_octave_layers");
-    extended = config->get_value<bool>( "extended" );
-    upright = config->get_value<bool>( "upright" );
+    hessian_threshold = config->get_value< int >( "hessian_threshold" );
+    n_octaves = config->get_value< int >( "n_octaves" );
+    n_octave_layers = config->get_value< int >( "n_octave_layers" );
+    extended = config->get_value< bool >( "extended" );
+    upright = config->get_value< bool >( "upright" );
   }
 
   // Parameters
@@ -114,26 +125,23 @@ public:
 
 class detect_features_SURF::priv
   : public ocv::priv
-{
-};
+{};
 
 class extract_descriptors_SURF::priv
   : public ocv::priv
-{
-};
+{};
 
 detect_features_SURF
 ::detect_features_SURF()
   : p_( new priv )
 {
-  attach_logger("arrows.ocv.SURF");
+  attach_logger( "arrows.ocv.SURF" );
   detector = p_->create();
 }
 
 detect_features_SURF
 ::~detect_features_SURF()
-{
-}
+{}
 
 vital::config_block_sptr
 detect_features_SURF
@@ -146,7 +154,7 @@ detect_features_SURF
 
 void
 detect_features_SURF
-::set_configuration(vital::config_block_sptr config)
+::set_configuration( vital::config_block_sptr config )
 {
   config_block_sptr c = get_configuration();
   c->merge_config( config );
@@ -163,7 +171,7 @@ detect_features_SURF
 
 bool
 detect_features_SURF
-::check_configuration( VITAL_UNUSED vital::config_block_sptr config) const
+::check_configuration( VITAL_UNUSED vital::config_block_sptr config ) const
 {
   return true;
 }
@@ -172,14 +180,13 @@ extract_descriptors_SURF
 ::extract_descriptors_SURF()
   : p_( new priv )
 {
-  attach_logger("arrows.ocv.SURF");
+  attach_logger( "arrows.ocv.SURF" );
   extractor = p_->create();
 }
 
 extract_descriptors_SURF
 ::~extract_descriptors_SURF()
-{
-}
+{}
 
 vital::config_block_sptr
 extract_descriptors_SURF
@@ -192,7 +199,7 @@ extract_descriptors_SURF
 
 void
 extract_descriptors_SURF
-::set_configuration(vital::config_block_sptr config)
+::set_configuration( vital::config_block_sptr config )
 {
   config_block_sptr c = get_configuration();
   c->merge_config( config );
@@ -209,13 +216,15 @@ extract_descriptors_SURF
 
 bool
 extract_descriptors_SURF
-::check_configuration( VITAL_UNUSED vital::config_block_sptr config) const
+::check_configuration( VITAL_UNUSED vital::config_block_sptr config ) const
 {
   return true;
 }
 
 } // end namespace ocv
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif

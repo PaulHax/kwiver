@@ -40,8 +40,8 @@ video_input_metadata_filter::priv
 ::current_image_for_transform() const
 {
   return ( this->filter_uses_image
-    ? this->video_input->frame_image()
-    : nullptr );
+           ? this->video_input->frame_image()
+           : nullptr );
 }
 
 // ----------------------------------------------------------------------------
@@ -79,8 +79,7 @@ video_input_metadata_filter
 // ----------------------------------------------------------------------------
 video_input_metadata_filter
 ::~video_input_metadata_filter()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 vital::config_block_sptr
@@ -126,9 +125,9 @@ video_input_metadata_filter
 {
   return
     vital::algo::video_input::check_nested_algo_configuration(
-      "video_input", config ) &&
+    "video_input", config ) &&
     vital::algo::metadata_filter::check_nested_algo_configuration(
-      "metadata_filter", config );
+    "metadata_filter", config );
 }
 
 // ----------------------------------------------------------------------------
@@ -138,8 +137,9 @@ video_input_metadata_filter
 {
   if( !m_d->video_input )
   {
-    VITAL_THROW( kv::algorithm_configuration_exception,
-                 type_name(), impl_name(), "invalid video_input." );
+    VITAL_THROW(
+      kv::algorithm_configuration_exception,
+      type_name(), impl_name(), "invalid video_input." );
   }
   m_d->video_input->open( name );
 
@@ -336,16 +336,14 @@ video_input_metadata_filter
 }
 
 // ----------------------------------------------------------------------------
-#define FORWARD_OR( name, fallback ) \
-  auto video_input_metadata_filter::name() const \
-    -> decltype( m_d->video_input->name() ) \
-  { \
-    if( m_d->video_input ) \
-    { \
-      return m_d->video_input->name(); \
-    } \
-    return fallback; \
-  }
+#define FORWARD_OR( name, fallback )                        \
+auto video_input_metadata_filter::name() const              \
+                   ->decltype( m_d->video_input->name() ) { \
+  if( m_d->video_input )                                    \
+  {                                                         \
+    return m_d->video_input->name();                        \
+  }                                                         \
+  return fallback; }
 
 FORWARD_OR( end_of_video, true )
 FORWARD_OR( good, false )

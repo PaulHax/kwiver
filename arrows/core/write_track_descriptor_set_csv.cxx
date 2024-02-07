@@ -12,21 +12,23 @@
 #include <time.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 // ----------------------------------------------------------------------------
 class write_track_descriptor_set_csv::priv
 {
 public:
-  priv( write_track_descriptor_set_csv* parent)
-    : m_parent( parent )
-    , m_logger( kwiver::vital::get_logger( "write_track_descriptor_set_csv" ) )
-    , m_first( true )
-    , m_write_raw_descriptor( true )
-    , m_write_world_loc( false )
-    , m_delim( "," )
-    , m_sub_delim( " " )
+  priv( write_track_descriptor_set_csv* parent )
+    : m_parent( parent ),
+      m_logger( kwiver::vital::get_logger( "write_track_descriptor_set_csv" ) ),
+      m_first( true ),
+      m_write_raw_descriptor( true ),
+      m_write_world_loc( false ),
+      m_delim( "," ),
+      m_sub_delim( " " )
   {}
 
   ~priv() {}
@@ -44,13 +46,11 @@ public:
 write_track_descriptor_set_csv
 ::write_track_descriptor_set_csv()
   : d( new write_track_descriptor_set_csv::priv( this ) )
-{
-}
+{}
 
 write_track_descriptor_set_csv
 ::~write_track_descriptor_set_csv()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 void
@@ -58,8 +58,10 @@ write_track_descriptor_set_csv
 ::set_configuration( vital::config_block_sptr config )
 {
   d->m_write_raw_descriptor =
-    config->get_value<bool>( "write_raw_descriptor", d->m_write_raw_descriptor);
-    config->get_value<bool>( "write_world_loc", d->m_write_world_loc);
+    config->get_value< bool >(
+      "write_raw_descriptor",
+      d->m_write_raw_descriptor );
+  config->get_value< bool >( "write_world_loc", d->m_write_world_loc );
 }
 
 // ----------------------------------------------------------------------------
@@ -75,7 +77,6 @@ void
 write_track_descriptor_set_csv
 ::write_set( const kwiver::vital::track_descriptor_set_sptr set )
 {
-
   if( d->m_first )
   {
     // Write file header(s)
@@ -151,4 +152,8 @@ write_track_descriptor_set_csv
   }
 }
 
-} } } // end namespace
+} // namespace core
+
+} // namespace arrows
+
+}     // end namespace

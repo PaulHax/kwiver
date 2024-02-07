@@ -39,7 +39,7 @@ public:
   virtual ~detected_object_set_output();
 
   detected_object_set_output();
-  PLUGGABLE_INTERFACE_NO_DESTR(detected_object_set_output);
+  PLUGGABLE_INTERFACE_NO_DESTR( detected_object_set_output );
   /// Open a file of detection sets.
   ///
   /// This method opens a detection set file for writing.
@@ -75,8 +75,9 @@ public:
   ///
   /// \param set Detected object set
   /// \param image_path File path to image associated with the detections.
-  virtual void write_set( const kwiver::vital::detected_object_set_sptr set,
-                          std::string const& image_path ) = 0;
+  virtual void write_set(
+    const kwiver::vital::detected_object_set_sptr set,
+    std::string const& image_path ) = 0;
 
   /// Perform end-of-stream actions.
   ///
@@ -96,7 +97,8 @@ private:
 };
 
 /// Shared pointer type for generic detected_object_set_output definition type.
-typedef std::shared_ptr< detected_object_set_output > detected_object_set_output_sptr;
+typedef std::shared_ptr< detected_object_set_output >
+  detected_object_set_output_sptr;
 
 } // namespace algo
 

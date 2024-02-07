@@ -141,7 +141,7 @@ public:
       if( !empty( it->key_interval ) )
       {
         throw std::invalid_argument(
-                "interval_map: cannot construct from overlapping intervals" );
+          "interval_map: cannot construct from overlapping intervals" );
       }
       set( *it );
     }
@@ -154,7 +154,7 @@ public:
       if( !empty( entry.key_interval ) )
       {
         throw std::invalid_argument(
-                "interval_map: cannot construct from overlapping intervals" );
+          "interval_map: cannot construct from overlapping intervals" );
       }
       set( entry );
     }
@@ -251,7 +251,8 @@ public:
   at( KeyT key ) const
   {
     auto const it = find( key );
-    return ( it != cend() ) ? std::optional< ValueT >{ it->value } : std::nullopt;
+    return ( it !=
+             cend() ) ? std::optional< ValueT >{ it->value } : std::nullopt;
   }
 
   /// Set the value of the given interval to the given value.
@@ -334,9 +335,10 @@ public:
 
     // Find the first interval
     intervals.emplace_back(
-        entry.key_interval.lower(),
-        std::max( existing_entries.begin()->key_interval.lower(),
-                  entry.key_interval.lower() ) );
+      entry.key_interval.lower(),
+      std::max(
+        existing_entries.begin()->key_interval.lower(),
+        entry.key_interval.lower() ) );
 
     // Find the rest of the intervals
     for( auto it = existing_entries.begin();
@@ -405,13 +407,15 @@ public:
     // Re-insert what is left of edge entries
     if( lower_entry.key_interval.lower() < key_interval.lower() )
     {
-      insert( { { lower_entry.key_interval.lower(),
-                key_interval.lower() }, lower_entry.value } );
+      insert(
+        { { lower_entry.key_interval.lower(),
+          key_interval.lower() }, lower_entry.value } );
     }
     if( key_interval.upper() < upper_entry.key_interval.upper() )
     {
-      insert( { { key_interval.upper(),
-                upper_entry.key_interval.upper() }, upper_entry.value } );
+      insert(
+        { { key_interval.upper(),
+          upper_entry.key_interval.upper() }, upper_entry.value } );
     }
   }
 
@@ -434,7 +438,7 @@ private:
     if( !m_map.emplace( entry.key_interval.lower(), entry ).second )
     {
       throw std::logic_error(
-              "interval_map.insert(): inserting interval failed" );
+        "interval_map.insert(): inserting interval failed" );
     }
   }
 
@@ -444,7 +448,7 @@ private:
     if( !m_map.erase( entry.key_interval.lower() ) )
     {
       throw std::logic_error(
-              "interval_map.erase(): erasing interval failed" );
+        "interval_map.erase(): erasing interval failed" );
     }
   }
 
@@ -561,8 +565,9 @@ private:
 // ----------------------------------------------------------------------------
 template < class KeyT, class ValueT >
 bool
-operator==( interval_map_entry_t< KeyT, ValueT > const& lhs,
-            interval_map_entry_t< KeyT, ValueT > const& rhs )
+operator==(
+  interval_map_entry_t< KeyT, ValueT > const& lhs,
+  interval_map_entry_t< KeyT, ValueT > const& rhs )
 {
   return lhs.key_interval == rhs.key_interval && lhs.value == rhs.value;
 }
@@ -570,8 +575,9 @@ operator==( interval_map_entry_t< KeyT, ValueT > const& lhs,
 // ----------------------------------------------------------------------------
 template < class KeyT, class ValueT >
 bool
-operator!=( interval_map_entry_t< KeyT, ValueT > const& lhs,
-            interval_map_entry_t< KeyT, ValueT > const& rhs )
+operator!=(
+  interval_map_entry_t< KeyT, ValueT > const& lhs,
+  interval_map_entry_t< KeyT, ValueT > const& rhs )
 {
   return !( lhs == rhs );
 }
@@ -579,8 +585,9 @@ operator!=( interval_map_entry_t< KeyT, ValueT > const& lhs,
 // ----------------------------------------------------------------------------
 template < class KeyT, class ValueT >
 bool
-operator==( interval_map< KeyT, ValueT > const& lhs,
-            interval_map< KeyT, ValueT > const& rhs )
+operator==(
+  interval_map< KeyT, ValueT > const& lhs,
+  interval_map< KeyT, ValueT > const& rhs )
 {
   return lhs.size() == rhs.size() &&
          std::equal( lhs.cbegin(), lhs.cend(), rhs.cbegin() );
@@ -589,8 +596,9 @@ operator==( interval_map< KeyT, ValueT > const& lhs,
 // ----------------------------------------------------------------------------
 template < class KeyT, class ValueT >
 bool
-operator!=( interval_map< KeyT, ValueT > const& lhs,
-            interval_map< KeyT, ValueT > const& rhs )
+operator!=(
+  interval_map< KeyT, ValueT > const& lhs,
+  interval_map< KeyT, ValueT > const& rhs )
 {
   return !( lhs == rhs );
 }

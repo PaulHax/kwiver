@@ -15,9 +15,9 @@ extern "C"
 {
 #endif
 
-#include <vital/bindings/c/vital_c_export.h>
 #include <vital/bindings/c/types/detected_object.h>
 #include <vital/bindings/c/types/detected_object_set.h>
+#include <vital/bindings/c/vital_c_export.h>
 
 #include <stddef.h>
 
@@ -28,31 +28,35 @@ VITAL_C_EXPORT
 vital_detected_object_set_t* vital_detected_object_set_new();
 
 VITAL_C_EXPORT
-vital_detected_object_set_t* vital_detected_object_set_new_from_list( vital_detected_object_t** dobj,
-                                                                      size_t n);
+vital_detected_object_set_t* vital_detected_object_set_new_from_list(
+  vital_detected_object_t** dobj,
+  size_t n );
 
 VITAL_C_EXPORT
-void vital_detected_object_set_destroy( vital_detected_object_set_t* obj);
+void vital_detected_object_set_destroy( vital_detected_object_set_t* obj );
 
 VITAL_C_EXPORT
-void vital_detected_object_set_add( vital_detected_object_set_t* set,
-                                    vital_detected_object_t* obj );
+void vital_detected_object_set_add(
+  vital_detected_object_set_t* set,
+  vital_detected_object_t* obj );
 
 VITAL_C_EXPORT
-size_t vital_detected_object_set_size( vital_detected_object_set_t* obj);
+size_t vital_detected_object_set_size( vital_detected_object_set_t* obj );
 
 VITAL_C_EXPORT
-void vital_detected_object_set_select_threshold( vital_detected_object_set_t* obj,
-                                                 double thresh,
-                                                 vital_detected_object_t*** output,
-                                                 size_t* length );
+void vital_detected_object_set_select_threshold(
+  vital_detected_object_set_t* obj,
+  double thresh,
+  vital_detected_object_t*** output,
+  size_t* length );
 
 VITAL_C_EXPORT
-void vital_detected_object_set_select_class_threshold( vital_detected_object_set_t* obj,
-                                                       const char* class_name,
-                                                       double thresh,
-                                                       vital_detected_object_t*** output,
-                                                       size_t* length );
+void vital_detected_object_set_select_class_threshold(
+  vital_detected_object_set_t* obj,
+  const char* class_name,
+  double thresh,
+  vital_detected_object_t*** output,
+  size_t* length );
 
 #ifdef __cplusplus
 }

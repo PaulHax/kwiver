@@ -8,10 +8,11 @@
 #ifndef KWIVER_VITAL_EXCEPTIONS_ITERATION_H_
 #define KWIVER_VITAL_EXCEPTIONS_ITERATION_H_
 
-#include <vital/exceptions/base.h>
 #include <string>
+#include <vital/exceptions/base.h>
 
 namespace kwiver {
+
 namespace vital {
 
 /// Exception thrown from next value function to signify the end of iteration.
@@ -20,12 +21,14 @@ class VITAL_EXCEPTIONS_EXPORT stop_iteration_exception
 {
 public:
   /// Constructor
-  stop_iteration_exception( std::string const& container) noexcept;
+  stop_iteration_exception( std::string const& container ) noexcept;
 
   /// Destructor
-  virtual ~stop_iteration_exception() noexcept = default;
+  virtual ~stop_iteration_exception() noexcept= default;
 };
 
-} } //end namespaces
+} // namespace vital
 
-#endif //KWIVER_VITAL_EXCEPTIONS_ITERATION_H_
+}   // end namespaces
+
+#endif // KWIVER_VITAL_EXCEPTIONS_ITERATION_H_

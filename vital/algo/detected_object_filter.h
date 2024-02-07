@@ -32,7 +32,7 @@ class VITAL_ALGO_EXPORT detected_object_filter
 {
 public:
   detected_object_filter();
-  PLUGGABLE_INTERFACE(detected_object_filter);
+  PLUGGABLE_INTERFACE( detected_object_filter );
   /// Filter set of detected objects.
   ///
   /// This method applies a filter to the input set to create an output
@@ -42,7 +42,6 @@ public:
   /// \returns Filtered set of detections.
   virtual detected_object_set_sptr
   filter( const detected_object_set_sptr input_set ) const = 0;
-
 };
 
 /// Shared pointer for generic detected_object_filter definition type.

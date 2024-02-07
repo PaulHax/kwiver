@@ -39,8 +39,9 @@ public:
 
   /// Length must be one of supplied values.
   klv_length_constraints( std::set< size_t > const& allowed );
-  klv_length_constraints( std::set< size_t > const& allowed,
-                          size_t suggested );
+  klv_length_constraints(
+    std::set< size_t > const& allowed,
+    size_t suggested );
 
   /// Returns whether \p length is an allowable length.
   bool
@@ -81,7 +82,7 @@ public:
 private:
   std::variant<
     std::monostate, size_t, vital::interval< size_t >, std::set< size_t >
-    > m_impl;
+  > m_impl;
   std::optional< size_t > m_suggested;
 };
 

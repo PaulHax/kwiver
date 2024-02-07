@@ -35,7 +35,7 @@ class VITAL_ALGO_EXPORT estimate_similarity_transform
 {
 public:
   estimate_similarity_transform();
-  PLUGGABLE_INTERFACE(estimate_similarity_transform);
+  PLUGGABLE_INTERFACE( estimate_similarity_transform );
 
   /// Estimate the similarity transform between two corresponding point sets
   ///
@@ -46,8 +46,9 @@ public:
   /// \returns An estimated similarity transform mapping 3D points in the
   ///          \c from space to points in the \c to space.
   virtual kwiver::vital::similarity_d
-  estimate_transform( std::vector< kwiver::vital::vector_3d > const& from,
-                      std::vector< kwiver::vital::vector_3d > const& to ) const = 0;
+  estimate_transform(
+    std::vector< kwiver::vital::vector_3d > const& from,
+    std::vector< kwiver::vital::vector_3d > const& to ) const = 0;
 
   /// Estimate the similarity transform between two corresponding sets of
   /// cameras
@@ -73,8 +74,9 @@ public:
   /// \returns An estinated similarity transform mapping landmark locations in
   ///          the \c from space to located in the \c to space.
   virtual kwiver::vital::similarity_d
-  estimate_transform( std::vector< kwiver::vital::landmark_sptr > const& from,
-                      std::vector< kwiver::vital::landmark_sptr > const& to )
+  estimate_transform(
+    std::vector< kwiver::vital::landmark_sptr > const& from,
+    std::vector< kwiver::vital::landmark_sptr > const& to )
   const;
 
   /// Estimate the similarity transform between two corresponding camera maps
@@ -93,8 +95,9 @@ public:
   /// \returns An estimated similarity transform mapping camera centers in the
   ///          \c from space to camera centers in the \c to space.
   virtual kwiver::vital::similarity_d
-  estimate_transform( kwiver::vital::camera_map_sptr const from,
-                      kwiver::vital::camera_map_sptr const to ) const;
+  estimate_transform(
+    kwiver::vital::camera_map_sptr const from,
+    kwiver::vital::camera_map_sptr const to ) const;
 
   /// Estimate the similarity transform between two corresponding landmark maps
   ///
@@ -112,8 +115,9 @@ public:
   /// \returns An estimated similarity transform mapping landmark centers in the
   ///          \c from space to camera centers in the \c to space.
   virtual kwiver::vital::similarity_d
-  estimate_transform( kwiver::vital::landmark_map_sptr const from,
-                      kwiver::vital::landmark_map_sptr const to ) const;
+  estimate_transform(
+    kwiver::vital::landmark_map_sptr const from,
+    kwiver::vital::landmark_map_sptr const to ) const;
 };
 
 /// Shared pointer for similarity transformation algorithms

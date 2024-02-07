@@ -42,7 +42,7 @@ video_output
 ::add_image( [[maybe_unused]] video_raw_image const& image )
 {
   throw std::logic_error{
-    "video_output: This implementation does not support raw image data" };
+          "video_output: This implementation does not support raw image data" };
 }
 
 // ----------------------------------------------------------------------------
@@ -51,7 +51,7 @@ video_output
 ::add_metadata( [[maybe_unused]] video_raw_metadata const& md )
 {
   throw std::logic_error{
-    "video_output: This implementation does not support raw metadata" };
+          "video_output: This implementation does not support raw metadata" };
 }
 
 // ----------------------------------------------------------------------------
@@ -61,7 +61,7 @@ video_output
   [[maybe_unused]] video_uninterpreted_data const& misc_data )
 {
   throw std::logic_error{
-    "video_output: This implementation does not support uninterpreted data" };
+          "video_output: This implementation does not support uninterpreted data" };
 }
 
 // ----------------------------------------------------------------------------
@@ -75,8 +75,9 @@ video_output
 // ----------------------------------------------------------------------------
 void
 video_output
-::set_capability( algorithm_capabilities::capability_name_t const& name,
-                  bool val )
+::set_capability(
+  algorithm_capabilities::capability_name_t const& name,
+  bool val )
 {
   m_capabilities.set_capability( name, val );
 }

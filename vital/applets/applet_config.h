@@ -11,22 +11,25 @@
 #include <vital/config/config_block.h>
 
 namespace kwiver {
+
 namespace tools {
 
 /// Load and merge the appropriate default video configuration based on filename
 /// TODO: This needs a better location...
 inline kwiver::vital::config_block_sptr
-load_default_video_input_config(std::string const& video_file_name)
+load_default_video_input_config( std::string const& video_file_name )
 {
   typedef kwiversys::SystemTools ST;
   typedef kwiver::tools::kwiver_applet kvt;
-  if (ST::GetFilenameLastExtension(video_file_name) == ".txt")
+  if( ST::GetFilenameLastExtension( video_file_name ) == ".txt" )
   {
-    return kvt::find_configuration("core_image_list_video_input.conf");
+    return kvt::find_configuration( "core_image_list_video_input.conf" );
   }
-  return kvt::find_configuration("ffmpeg_video_input.conf");
+  return kvt::find_configuration( "ffmpeg_video_input.conf" );
 }
 
-} } // end namespace
+} // namespace tools
+
+}   // end namespace
 
 #endif

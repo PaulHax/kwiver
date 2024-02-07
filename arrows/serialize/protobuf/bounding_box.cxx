@@ -9,13 +9,16 @@
 #include <vital/types/protobuf/bounding_box.pb.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace serialize {
+
 namespace protobuf {
 
 // ----------------------------------------------------------------------------
-bounding_box::
-bounding_box()
+bounding_box
+::bounding_box()
 {
   // Verify that the version of the library that we linked against is
   // compatible with the version of the headers we compiled against.
@@ -24,15 +27,15 @@ bounding_box()
 
 bounding_box::
 ~bounding_box()
-{ }
+{}
 
 // ----------------------------------------------------------------------------
 std::shared_ptr< std::string >
-bounding_box::
-serialize( const vital::any& element )
+bounding_box
+::serialize( const vital::any& element )
 {
   kwiver::vital::bounding_box_d bbox =
-    kwiver::vital::any_cast< kwiver::vital::bounding_box_d > ( element );
+    kwiver::vital::any_cast< kwiver::vital::bounding_box_d >( element );
 
   std::ostringstream msg;
   msg << "bounding_box "; // add type tag
@@ -40,17 +43,18 @@ serialize( const vital::any& element )
   kwiver::protobuf::bounding_box proto_bbox;
   convert_protobuf( bbox, proto_bbox );
 
-  if ( ! proto_bbox.SerializeToOstream( &msg ) )
+  if( !proto_bbox.SerializeToOstream( &msg ) )
   {
     LOG_ERROR( logger(), "proto_bbox.SerializeToOStream failed" );
   }
 
-  return std::make_shared< std::string > ( msg.str() );
+  return std::make_shared< std::string >( msg.str() );
 }
 
 // ----------------------------------------------------------------------------
-vital::any bounding_box::
-deserialize( const std::string& message )
+vital::any
+bounding_box
+::deserialize( const std::string& message )
 {
   kwiver::vital::bounding_box_d bbox{ 0, 0, 0, 0 };
 
@@ -59,24 +63,34 @@ deserialize( const std::string& message )
   msg >> tag;
   msg.get();  // Eat the delimiter
 
-  if (tag != "bounding_box" )
+  if( tag != "bounding_box" )
   {
-    LOG_ERROR( logger(), "Invalid data type tag received. Expected \"bounding_box\", received \""
-               << tag << "\". Message dropped." );
+    LOG_ERROR(
+      logger(),
+      "Invalid data type tag received. Expected \"bounding_box\", received \""
+        << tag << "\". Message dropped." );
   }
   else
   {
     // define our protobuf
     kwiver::protobuf::bounding_box proto_bbox;
-    if ( ! proto_bbox.ParseFromIstream( &msg ) )
+    if( !proto_bbox.ParseFromIstream( &msg ) )
     {
-      LOG_ERROR( logger(), "Incoming protobuf stream did not parse correctly. ParseFromIstream failed." );
+      LOG_ERROR(
+        logger(),
+        "Incoming protobuf stream did not parse correctly. ParseFromIstream failed." );
     }
 
     convert_protobuf( proto_bbox, bbox );
   }
 
-  return kwiver::vital::any(bbox);
+  return kwiver::vital::any( bbox );
 }
 
-} } } } // end namespace
+} // namespace protobuf
+
+} // namespace serialize
+
+} // namespace arrows
+
+}       // end namespace

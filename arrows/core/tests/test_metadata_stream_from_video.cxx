@@ -18,7 +18,9 @@ class mock_video_input : public algo::video_input
 {
 public:
   mock_video_input( metadata_map::map_metadata_t const& map )
-    : m_metadata{ map }, m_it{ m_metadata.begin() }, m_good{ false }
+    : m_metadata{ map },
+      m_it{ m_metadata.begin() },
+      m_good{ false }
   {}
 
   void
@@ -98,7 +100,8 @@ public:
   set_configuration( config_block_sptr ) override {}
 
   config_block_sptr
-  get_configuration() const override {
+  get_configuration() const override
+  {
     auto cb = config_block::empty_config();
     return cb;
   }
@@ -129,6 +132,7 @@ TEST ( metadata_stream_from_video, istream_empty )
   metadata_map::map_metadata_t map;
   mock_video_input video{ map };
   video.open( "" );
+
   metadata_istream_from_video is{ video };
 
   CALL_TEST( test_istream_at_end, is );
@@ -139,11 +143,13 @@ TEST ( metadata_stream_from_video, istream )
 {
   auto const md = std::make_shared< metadata >();
   md->add< VITAL_META_UNIX_TIMESTAMP >( 5 );
+
   metadata_map::map_metadata_t map{
     { 1, { md } },
     { 4, { nullptr, md, md } } };
   mock_video_input video{ map };
   video.open( "" );
+
   metadata_istream_from_video is{ video };
 
   CALL_TEST( test_istream_frame, is, 1, { md } );

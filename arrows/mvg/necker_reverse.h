@@ -10,12 +10,14 @@
 
 #include <arrows/mvg/kwiver_algo_mvg_export.h>
 
-#include <vital/types/camera_perspective.h>
 #include <vital/types/camera_map.h>
+#include <vital/types/camera_perspective.h>
 #include <vital/types/landmark_map.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace mvg {
 
 /// Compute a plane passing through the landmarks
@@ -25,13 +27,14 @@ namespace mvg {
 /// [nx, ny, nz] is a unit normal and d is the offset.
 KWIVER_ALGO_MVG_EXPORT
 vital::vector_4d
-landmark_plane(const vital::landmark_map::map_landmark_t& landmarks);
+landmark_plane( const vital::landmark_map::map_landmark_t& landmarks );
 
 /// Mirror landmarks about the specified plane
 KWIVER_ALGO_MVG_EXPORT
 vital::landmark_map_sptr
-mirror_landmarks(vital::landmark_map const& landmarks,
-                 vital::vector_4d const& plane);
+mirror_landmarks(
+  vital::landmark_map const& landmarks,
+  vital::vector_4d const& plane );
 
 /// Compute the Necker reversal of a camera in place
 ///
@@ -43,8 +46,9 @@ mirror_landmarks(vital::landmark_map const& landmarks,
 /// near the specified plane, espcially for very long focal lengths.
 KWIVER_ALGO_MVG_EXPORT
 void
-necker_reverse_inplace(vital::simple_camera_perspective& camera,
-                       vital::vector_4d const& plane);
+necker_reverse_inplace(
+  vital::simple_camera_perspective& camera,
+  vital::vector_4d const& plane );
 
 /// Compute the Necker reversal of the cameras
 ///
@@ -56,8 +60,9 @@ necker_reverse_inplace(vital::simple_camera_perspective& camera,
 /// near the specified plane, espcially for very long focal lengths.
 KWIVER_ALGO_MVG_EXPORT
 vital::camera_map_sptr
-necker_reverse(vital::camera_map const& cameras,
-               vital::vector_4d const& plane);
+necker_reverse(
+  vital::camera_map const& cameras,
+  vital::vector_4d const& plane );
 
 /// Compute an approximate Necker reversal of cameras and landmarks
 ///
@@ -70,18 +75,22 @@ necker_reverse(vital::camera_map const& cameras,
 /// about this axis and also 180 degrees about each cameras own principal axis.
 /// The landmarks are mirrored about the plane passing through the
 /// mean landmark location and with a normal aligning with axis A.
-/// Setting reverse_landmarks to false, prevents this mirroring of the landmarks,
+/// Setting reverse_landmarks to false, prevents this mirroring of the
+/// landmarks,
 /// leaving them where they originally were.  Only the cameras are modified
 /// in this case.
 ///
 KWIVER_ALGO_MVG_EXPORT
 void
-necker_reverse(vital::camera_map_sptr& cameras,
-               vital::landmark_map_sptr& landmarks,
-               bool reverse_landmarks = true);
+necker_reverse(
+  vital::camera_map_sptr& cameras,
+  vital::landmark_map_sptr& landmarks,
+  bool reverse_landmarks = true );
 
 } // end namespace mvg
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif

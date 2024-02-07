@@ -34,25 +34,25 @@ TEST ( colmap, vital_to_bitmap )
   // convert vital to colmap
   colmap::Bitmap actual_img =
     kwiver::arrows::colmap_arrow::image_container::vital_to_bitmap(
-       vital_img->get_image() );
+      vital_img->get_image() );
 
   // compare vital and colmap images
   std::vector< uint8_t > expected_data = expected_img.ConvertToRowMajorArray();
   colmap::Bitmap col_vital_img;
-  col_vital_img.Allocate(2370, 1927, true);
+  col_vital_img.Allocate( 2370, 1927, true );
   actual_img.Write( "./logo2.png", FIF_PNG, PNG_DEFAULT );
-  col_vital_img.Read("./logo2.png");
-  for(int j = 0; j < 1927; j++)
+  col_vital_img.Read( "./logo2.png" );
+  for( int j = 0; j < 1927; j++ )
   {
-    for(int i = 0; i < 2370; i++)
+    for( int i = 0; i < 2370; i++ )
     {
       // Compare every pixel
-      colmap::BitmapColor<uint8_t> col_vital_pixel;
-      colmap::BitmapColor<uint8_t> actual_pixel;
-      col_vital_img.GetPixel(j, i, &col_vital_pixel);
-      actual_img.GetPixel(j, i, &actual_pixel);
+      colmap::BitmapColor< uint8_t > col_vital_pixel;
+      colmap::BitmapColor< uint8_t > actual_pixel;
+      col_vital_img.GetPixel( j, i, &col_vital_pixel );
+      actual_img.GetPixel( j, i, &actual_pixel );
 
-      EXPECT_EQ(col_vital_pixel, actual_pixel);
+      EXPECT_EQ( col_vital_pixel, actual_pixel );
     }
   }
 }

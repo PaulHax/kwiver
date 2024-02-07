@@ -17,9 +17,10 @@ namespace vital {
 
 /// compute the vector normal to the plane defined by 3 vertices
 vector_3d
-mesh_tri_normal( const vector_3d& a,
-                 const vector_3d& b,
-                 const vector_3d& c )
+mesh_tri_normal(
+  const vector_3d& a,
+  const vector_3d& b,
+  const vector_3d& c )
 {
   vector_3d ac( c - a );
   vector_3d ab( b - a );
@@ -85,7 +86,8 @@ mesh_vertex_array< d >
 // Mesh faces
 
 /// Equality operator
-template < unsigned s > template < unsigned U >
+template < unsigned s >
+template < unsigned U >
 bool
 mesh_regular_face< s >
 ::operator==( mesh_regular_face< U > const& other ) const
@@ -109,7 +111,7 @@ mesh_regular_face< s >
 /// Checks approximate equality
 bool
 mesh_face_array_base
-::approx_equal( mesh_face_array_base const& other, double epsilon) const
+::approx_equal( mesh_face_array_base const& other, double epsilon ) const
 {
   if( size() != other.size() )
   {
@@ -168,8 +170,7 @@ mesh_face_array_base
 
   unsigned int i = 0;
   for(; i < groups_.size() && groups_[ i ].second < f; ++i )
-  {
-  }
+  {}
 
   if( i >= groups_.size() )
   {
@@ -214,8 +215,10 @@ mesh_face_array_base
 
   if( start_idx < this->size() )
   {
-    groups_.push_back( std::pair< std::string, unsigned int >( name,
-                                                               this->size() ) );
+    groups_.push_back(
+      std::pair< std::string, unsigned int >(
+        name,
+        this->size() ) );
   }
 
   return this->size() - start_idx;
@@ -228,8 +231,9 @@ mesh_face_array_base
 {
   if( this->has_normals() && other.has_normals() )
   {
-    normals_.insert( normals_.end(), other.normals_.begin(),
-                     other.normals_.end() );
+    normals_.insert(
+      normals_.end(), other.normals_.begin(),
+      other.normals_.end() );
   }
   else
   {
@@ -352,9 +356,10 @@ mesh_regular_face_array< s >
 
 /// Merge the two face arrays
 std::unique_ptr< mesh_face_array_base >
-merge_face_arrays( const mesh_face_array_base& f1,
-                   const mesh_face_array_base& f2,
-                   unsigned int ind_shift )
+merge_face_arrays(
+  const mesh_face_array_base& f1,
+  const mesh_face_array_base& f2,
+  unsigned int ind_shift )
 {
   std::unique_ptr< mesh_face_array_base > f;
   // if both face sets are regular with the same number of vertices per face
@@ -426,10 +431,14 @@ mesh_half_edge_set
       {
         curr_e = static_cast< unsigned int >( half_edges_.size() );
         edge_map.insert( std::pair< vert_pair, unsigned int >( vp, curr_e ) );
-        half_edges_.push_back( mesh_half_edge( curr_e, mesh_invalid_idx, v,
-                                               f ) );
-        half_edges_.push_back( mesh_half_edge( curr_e + 1, mesh_invalid_idx,
-                                               nv, mesh_invalid_idx ) );
+        half_edges_.push_back(
+          mesh_half_edge(
+            curr_e, mesh_invalid_idx, v,
+            f ) );
+        half_edges_.push_back(
+          mesh_half_edge(
+            curr_e + 1, mesh_invalid_idx,
+            nv, mesh_invalid_idx ) );
       }
       else
       {
@@ -573,8 +582,7 @@ mesh
     tex_source_( other.tex_source_ ),
     valid_tex_faces_( other.valid_tex_faces_ ),
     tex_coord_status_( other.tex_coord_status_ )
-{
-}
+{}
 
 /// Assignment operator
 mesh&
@@ -583,10 +591,12 @@ mesh
 {
   if( this != &other )
   {
-    verts_ = std::unique_ptr< mesh_vertex_array_base >( ( other.verts_.get() )
-                                                        ? other.verts_->clone() : 0 );
-    faces_ = std::unique_ptr< mesh_face_array_base >( ( other.faces_.get() )
-                                                      ? other.faces_->clone() : 0 );
+    verts_ = std::unique_ptr< mesh_vertex_array_base >(
+      ( other.verts_.get() )
+      ? other.verts_->clone() : 0 );
+    faces_ = std::unique_ptr< mesh_face_array_base >(
+      ( other.faces_.get() )
+      ? other.faces_->clone() : 0 );
     half_edges_ = other.half_edges_;
     tex_coords_ = other.tex_coords_;
     valid_tex_faces_ = other.valid_tex_faces_;
@@ -688,15 +698,17 @@ mesh
       tex = std::vector< vector_2d >( nb_corners, vector_2d( 0, 0 ) );
     }
 
-    tex.insert( tex.end(), other.tex_coords().begin(),
-                other.tex_coords().end() );
+    tex.insert(
+      tex.end(), other.tex_coords().begin(),
+      other.tex_coords().end() );
     this->set_tex_coords( tex );
   }
   else if( this->has_tex_coords() == other.has_tex_coords() )
   {
-    this->tex_coords_.insert( this->tex_coords_.end(),
-                              other.tex_coords().begin(),
-                              other.tex_coords().end() );
+    this->tex_coords_.insert(
+      this->tex_coords_.end(),
+      other.tex_coords().begin(),
+      other.tex_coords().end() );
   }
 
   if( this->has_half_edges() && other.has_half_edges() )
@@ -854,9 +866,10 @@ mesh
     vector_3d& n = normals[ i ];
     for( unsigned int j = 2; j < num_v; ++j )
     {
-      n += mesh_tri_normal( verts[ faces( i, 0 ) ],
-                            verts[ faces( i, j - 1 ) ],
-                            verts[ faces( i, j ) ] );
+      n += mesh_tri_normal(
+        verts[ faces( i, 0 ) ],
+        verts[ faces( i, j - 1 ) ],
+        verts[ faces( i, j ) ] );
     }
     if( norm )
     {
@@ -936,8 +949,9 @@ mesh
     case TEX_COORD_ON_CORNER:
     {
       logger_handle_t logger( get_logger( "vital.mesh" ) );
-      LOG_ERROR( logger, "mesh::label_ccw_tex_faces_valid()"
-                         " not implemented for TEX_COORD_ON_CORNER" );
+      LOG_ERROR(
+        logger, "mesh::label_ccw_tex_faces_valid()"
+                " not implemented for TEX_COORD_ON_CORNER" );
       break;
     }
     default:

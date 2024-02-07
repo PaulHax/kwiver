@@ -11,11 +11,13 @@
 #include <string>
 
 namespace kwiver {
+
 namespace vital {
 
-enum {
+enum
+{
   TokenizeNoTrimEmpty = 0,
-  TokenizeTrimEmpty = 1
+  TokenizeTrimEmpty = 1,
 };
 
 /// @brief Split string into set of tokens.
@@ -35,37 +37,42 @@ enum {
 /// @tparam ContainerT Any container that supports push_back()
 template < class ContainerT >
 void
-tokenize( std::string const& str, // i: string to tokenize
-          ContainerT& tokens,     // o: list of tokens
-          std::string const& delimiters = " ",
-          bool trimEmpty = false )
+tokenize(
+  std::string const& str,         // i: string to tokenize
+  ContainerT& tokens,             // o: list of tokens
+  std::string const& delimiters = " ",
+  bool trimEmpty = false )
 {
   std::string::size_type pos, lastPos = 0;
 
   typedef typename ContainerT::size_type size_type;
   typedef typename ContainerT::value_type value_type;
 
-  while ( true )
+  while( true )
   {
     pos = str.find_first_of( delimiters, lastPos );
-    if ( pos == std::string::npos )
+    if( pos == std::string::npos )
     {
       pos = str.length();
 
-      if ( ( pos != lastPos ) || ! trimEmpty )
+      if( ( pos != lastPos ) || !trimEmpty )
       {
-        tokens.push_back( value_type( str.data() + lastPos,
-                                      (size_type)pos - lastPos ) );
+        tokens.push_back(
+          value_type(
+            str.data() + lastPos,
+            ( size_type ) pos - lastPos ) );
       }
 
       break;
     }
     else
     {
-      if ( ( pos != lastPos ) || ! trimEmpty )
+      if( ( pos != lastPos ) || !trimEmpty )
       {
-        tokens.push_back( value_type( str.data() + lastPos,
-                                      (size_type)pos - lastPos ) );
+        tokens.push_back(
+          value_type(
+            str.data() + lastPos,
+            ( size_type ) pos - lastPos ) );
       }
     }
 
@@ -73,6 +80,8 @@ tokenize( std::string const& str, // i: string to tokenize
   }
 }
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // VITAL_TOKENIZE_H

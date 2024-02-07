@@ -7,7 +7,6 @@
 
 #include <vital/algo/detect_motion.h>
 
-
 namespace kwiver {
 
 namespace vital {

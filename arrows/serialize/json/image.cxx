@@ -7,35 +7,38 @@
 
 #include <vital/types/image_container.h>
 
-#include <vital/internal/cereal/cereal.hpp>
 #include <vital/internal/cereal/archives/json.hpp>
+#include <vital/internal/cereal/cereal.hpp>
 
 #include <sstream>
 
 namespace kasj = kwiver::arrows::serialize::json;
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace serialize {
+
 namespace json {
 
 // ----------------------------------------------------------------------------
-image::
-image()
-{ }
+image
+::image()
+{}
 
 image::
 ~image()
-{ }
+{}
 
 // ----------------------------------------------------------------------------
 std::shared_ptr< std::string >
-image::
-serialize( const vital::any& element )
+image
+::serialize( const vital::any& element )
 {
   // Get native data type from any
   kwiver::vital::image_container_sptr obj =
-    kwiver::vital::any_cast< kwiver::vital::image_container_sptr > ( element );
+    kwiver::vital::any_cast< kwiver::vital::image_container_sptr >( element );
 
   std::stringstream msg;
   msg << "image ";
@@ -44,24 +47,26 @@ serialize( const vital::any& element )
     save( ar, obj );
   }
 
-  return std::make_shared< std::string > ( msg.str() );
+  return std::make_shared< std::string >( msg.str() );
 }
 
 // ----------------------------------------------------------------------------
 vital::any
-image::
-deserialize( const std::string& message )
+image
+::deserialize( const std::string& message )
 {
-  std::stringstream msg(message);
+  std::stringstream msg( message );
   kwiver::vital::image_container_sptr img_ctr_sptr;
 
   std::string tag;
   msg >> tag;
 
-  if (tag != "image" )
+  if( tag != "image" )
   {
-    LOG_ERROR( logger(), "Invalid data type tag received. Expected \"image\", received \""
-               << tag << "\". Message dropped." );
+    LOG_ERROR(
+      logger(),
+      "Invalid data type tag received. Expected \"image\", received \""
+        << tag << "\". Message dropped." );
   }
   else
   {
@@ -72,4 +77,10 @@ deserialize( const std::string& message )
   return kwiver::vital::any( img_ctr_sptr );
 }
 
-} } } }       // end namespace kwiver
+} // namespace json
+
+} // namespace serialize
+
+} // namespace arrows
+
+}             // end namespace kwiver

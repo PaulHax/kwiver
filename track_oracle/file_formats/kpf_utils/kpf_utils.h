@@ -18,8 +18,8 @@
 #ifndef INCL_KPF_UTILITIES_H
 #define INCL_KPF_UTILITIES_H
 
-#include <vital/vital_config.h>
 #include <track_oracle/file_formats/kpf_utils/kpf_utils_export.h>
+#include <vital/vital_config.h>
 
 #include <track_oracle/core/track_oracle_api_types.h>
 #include <track_oracle/utils/logging_map.h>
@@ -30,16 +30,19 @@
 #include <map>
 
 namespace kwiver {
+
 namespace track_oracle {
+
 namespace kpf_utils {
 
-namespace KPF=::kwiver::vital::kpf;
+namespace KPF = ::kwiver::vital::kpf;
 
 KPF_UTILS_EXPORT
 void
-add_to_row( kwiver::logging_map_type& log_map,
-            const oracle_entry_handle_type& row,
-            const KPF::packet_t& p );
+add_to_row(
+  kwiver::logging_map_type& log_map,
+  const oracle_entry_handle_type& row,
+  const KPF::packet_t& p );
 
 struct KPF_UTILS_EXPORT optional_field_state
 {
@@ -52,21 +55,25 @@ struct KPF_UTILS_EXPORT optional_field_state
 
 KPF_UTILS_EXPORT
 std::vector< KPF::packet_t >
-optional_fields_to_packets( optional_field_state& ofs,
-                            const oracle_entry_handle_type& row );
+optional_fields_to_packets(
+  optional_field_state& ofs,
+  const oracle_entry_handle_type& row );
 
 KPF_UTILS_EXPORT
 void
-write_optional_packets( const std::vector< KPF::packet_t>& packets,
-                        kwiver::logging_map_type& log_map,
-                        KPF::record_yaml_writer& w );
+write_optional_packets(
+  const std::vector< KPF::packet_t >& packets,
+  kwiver::logging_map_type& log_map,
+  KPF::record_yaml_writer& w );
 
 KPF_UTILS_EXPORT
 track_handle_list_type
 read_unstructured_yaml( const std::string& fn );
 
 } // ...kpf_utils
+
 } // ...track_oracle
+
 } // ...kwiver
 
 #endif

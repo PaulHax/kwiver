@@ -8,8 +8,8 @@
 #ifndef KWIVER_ARROWS_KLV_KLV_KEY_H_
 #define KWIVER_ARROWS_KLV_KLV_KEY_H_
 
-#include <arrows/klv/kwiver_algo_klv_export.h>
 #include <arrows/klv/klv_read_write.h>
+#include <arrows/klv/kwiver_algo_klv_export.h>
 
 #include <vital/exceptions/metadata.h>
 #include <vital/logger/logger.h>

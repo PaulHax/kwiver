@@ -9,6 +9,7 @@ using std::istream;
 using std::ios;
 
 namespace kwiver {
+
 namespace track_oracle {
 
 ostream&
@@ -24,4 +25,5 @@ operator>>( istream& is, descriptor_metadata_type& )
 }
 
 } // ...track_oracle
+
 } // ...kwiver

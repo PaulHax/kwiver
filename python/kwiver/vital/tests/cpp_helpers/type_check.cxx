@@ -4,17 +4,17 @@
 
 #include <vital/types/metadata_map.h>
 
+#include <memory>
 #include <pybind11/eigen.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include <memory>
 namespace py = pybind11;
 namespace kv = kwiver::vital;
 
-PYBIND11_MODULE(type_check, m)
+PYBIND11_MODULE( type_check, m )
 {
-    m.def("get_uint64_rep", []()
-    {
-        return kv::demangle(typeid(uint64_t).name());
-    });
+  m.def(
+    "get_uint64_rep", [](){
+      return kv::demangle( typeid( uint64_t ).name() );
+    } );
 }

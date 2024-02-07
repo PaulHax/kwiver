@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Tests for ObjectTrackSet
 
 """
+
 import unittest
 
 import nose.tools
@@ -40,11 +41,17 @@ import numpy
 
 from six.moves import range
 
-from kwiver.vital.types import ObjectTrackSet, ObjectTrackState, BoundingBoxD as bbD, \
-        DetectedObjectType as DOT, DetectedObject, Track
+from kwiver.vital.types import (
+    ObjectTrackSet,
+    ObjectTrackState,
+    BoundingBoxD as bbD,
+    DetectedObjectType as DOT,
+    DetectedObject,
+    Track,
+)
 
 
-class TestObjectTrackSet (unittest.TestCase):
+class TestObjectTrackSet(unittest.TestCase):
     def _create_track(self):
         """
         Helper function to create a track
@@ -53,7 +60,7 @@ class TestObjectTrackSet (unittest.TestCase):
                     [0, 10)
         """
         bbox = bbD(10, 10, 20, 20)
-        cm  = DOT("test", 0.4)
+        cm = DOT("test", 0.4)
         do = DetectedObject(bbox, 0.4, cm)
         track = Track()
         for i in range(10):

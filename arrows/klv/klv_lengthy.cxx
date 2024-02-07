@@ -22,7 +22,8 @@ template < class T >
 klv_lengthy< T >
 
 ::klv_lengthy( T const& value )
-  : value{ value }, length{ 0 }
+  : value{ value },
+    length{ 0 }
 {}
 
 // ----------------------------------------------------------------------------
@@ -30,7 +31,8 @@ template < class T >
 klv_lengthy< T >
 
 ::klv_lengthy( T&& value )
-  : value{ std::move( value ) }, length{ 0 }
+  : value{ std::move( value ) },
+    length{ 0 }
 {}
 
 // ----------------------------------------------------------------------------
@@ -38,7 +40,8 @@ template < class T >
 klv_lengthy< T >
 
 ::klv_lengthy( T const& value, size_t length )
-  : value{ value }, length{ length }
+  : value{ value },
+    length{ length }
 {}
 
 // ----------------------------------------------------------------------------
@@ -46,7 +49,8 @@ template < class T >
 klv_lengthy< T >
 
 ::klv_lengthy( T&& value, size_t length )
-  : value{ std::move( value ) }, length{ length }
+  : value{ std::move( value ) },
+    length{ length }
 {}
 
 // ----------------------------------------------------------------------------
@@ -61,15 +65,15 @@ operator<<( std::ostream& os, klv_lengthy< T > const& value )
 DEFINE_TEMPLATE_CMP( klv_lengthy< T >, &klv_lengthy< T >::value )
 
 // ----------------------------------------------------------------------------
-#define KLV_INSTANTIATE( T )                                                    \
-  template struct klv_lengthy< T >;                                             \
-  template std::ostream& operator<<( std::ostream&, klv_lengthy< T > const& );  \
-  template bool operator>( klv_lengthy< T > const&, klv_lengthy< T > const& );  \
-  template bool operator<( klv_lengthy< T > const&, klv_lengthy< T > const& );  \
-  template bool operator<=( klv_lengthy< T > const&, klv_lengthy< T > const& ); \
-  template bool operator>=( klv_lengthy< T > const&, klv_lengthy< T > const& ); \
-  template bool operator==( klv_lengthy< T > const&, klv_lengthy< T > const& ); \
-  template bool operator!=( klv_lengthy< T > const&, klv_lengthy< T > const& )
+#define KLV_INSTANTIATE( T )                                                  \
+template struct klv_lengthy< T >;                                             \
+template std::ostream& operator<<( std::ostream&, klv_lengthy< T > const& );  \
+template bool operator>( klv_lengthy< T > const&, klv_lengthy< T > const& );  \
+template bool operator<( klv_lengthy< T > const&, klv_lengthy< T > const& );  \
+template bool operator<=( klv_lengthy< T > const&, klv_lengthy< T > const& ); \
+template bool operator>=( klv_lengthy< T > const&, klv_lengthy< T > const& ); \
+template bool operator==( klv_lengthy< T > const&, klv_lengthy< T > const& ); \
+template bool operator!=( klv_lengthy< T > const&, klv_lengthy< T > const& )
 
 KLV_INSTANTIATE( double );
 KLV_INSTANTIATE( std::optional< double > );

@@ -19,9 +19,10 @@ main( int argc, char** argv )
 
 // ----------------------------------------------------------------------------
 void
-test_read_write_imap( klv_value const& expected_result,
-                      klv_bytes_t const& input_bytes,
-                      double minimum, double maximum, size_t fixed_length )
+test_read_write_imap(
+  klv_value const& expected_result,
+  klv_bytes_t const& input_bytes,
+  double minimum, double maximum, size_t fixed_length )
 {
   using format_t =
     klv_1303_mdap_format< klv_lengthless_format< klv_imap_format > >;
@@ -32,20 +33,23 @@ test_read_write_imap( klv_value const& expected_result,
 
 // ----------------------------------------------------------------------------
 void
-test_read_write_float( klv_value const& expected_result,
-                       klv_bytes_t const& input_bytes,
-                       size_t fixed_length )
+test_read_write_float(
+  klv_value const& expected_result,
+  klv_bytes_t const& input_bytes,
+  size_t fixed_length )
 {
   using format_t =
     klv_1303_mdap_format< klv_lengthless_format< klv_float_format > >;
-  test_read_write_format< format_t >( expected_result, input_bytes,
-                                      { fixed_length } );
+  test_read_write_format< format_t >(
+    expected_result, input_bytes,
+    { fixed_length } );
 }
 
 // ----------------------------------------------------------------------------
 void
-test_read_write_bool( klv_value const& expected_result,
-                      klv_bytes_t const& input_bytes )
+test_read_write_bool(
+  klv_value const& expected_result,
+  klv_bytes_t const& input_bytes )
 {
   using format_t = klv_1303_mdap_format< klv_bool_format >;
   test_read_write_format< format_t >( expected_result, input_bytes );
@@ -53,8 +57,9 @@ test_read_write_bool( klv_value const& expected_result,
 
 // ----------------------------------------------------------------------------
 void
-test_read_write_uint( klv_value const& expected_result,
-                      klv_bytes_t const& input_bytes )
+test_read_write_uint(
+  klv_value const& expected_result,
+  klv_bytes_t const& input_bytes )
 {
   using format_t = klv_1303_mdap_format< klv_uint_format >;
   test_read_write_format< format_t >( expected_result, input_bytes );
@@ -62,8 +67,9 @@ test_read_write_uint( klv_value const& expected_result,
 
 // ----------------------------------------------------------------------------
 void
-test_read_write_rle( klv_value const& expected_result,
-                     klv_bytes_t const& input_bytes )
+test_read_write_rle(
+  klv_value const& expected_result,
+  klv_bytes_t const& input_bytes )
 {
   using format_t = klv_1303_mdap_format< klv_sint_format >;
   test_read_write_format< format_t >( expected_result, input_bytes );

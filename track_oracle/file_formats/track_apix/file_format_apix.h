@@ -5,18 +5,20 @@
 #ifndef INCL_FILE_FORMAT_APIX_H
 #define INCL_FILE_FORMAT_APIX_H
 
-#include <vital/vital_config.h>
 #include <track_oracle/track_apix/track_apix_export.h>
+#include <vital/vital_config.h>
 
 #include <track_oracle/file_format_base.h>
 #include <track_oracle/track_apix/track_apix.h>
 
 namespace kwiver {
+
 namespace track_oracle {
 
-struct TRACK_APIX_EXPORT apix_reader_opts: public file_format_reader_opts_base
+struct TRACK_APIX_EXPORT apix_reader_opts : public file_format_reader_opts_base
 {
-  bool verbose;  // if true, reader will compare MGRS and lat/lon fields in shapefile
+  bool verbose;  // if true, reader will compare MGRS and lat/lon fields in
+                 // shapefile
 
   apix_reader_opts& set_verbose( bool v ) { this->verbose = v; return *this; }
   apix_reader_opts& operator=( const file_format_reader_opts_base& rhs );
@@ -24,20 +26,23 @@ struct TRACK_APIX_EXPORT apix_reader_opts: public file_format_reader_opts_base
   apix_reader_opts() { reset(); }
 };
 
-class TRACK_APIX_EXPORT file_format_apix: public file_format_base
+class TRACK_APIX_EXPORT file_format_apix : public file_format_base
 {
 public:
-  file_format_apix(): file_format_base( TF_APIX, "APIX-compatible shapefile" )
+  file_format_apix() : file_format_base( TF_APIX, "APIX-compatible shapefile" )
   {
     this->opts.reset();
     this->globs.push_back( "*.dbf" );
   }
+
   virtual ~file_format_apix() {}
 
-  virtual int supported_operations() const { return FF_READ_FILE; }
+  virtual int
+  supported_operations() const { return FF_READ_FILE; }
 
   // return a dynamically-allocated instance of the schema
-  virtual track_base_impl* schema_instance() const { return new track_apix_type(); }
+  virtual track_base_impl*
+  schema_instance() const { return new track_apix_type(); }
 
   apix_reader_opts& options() { return this->opts; }
 
@@ -46,15 +51,16 @@ public:
 
   using file_format_base::read;
   // read tracks from the file
-  virtual bool read( const std::string& fn,
-                     track_handle_list_type& tracks ) const;
+  virtual bool read(
+    const std::string& fn,
+    track_handle_list_type& tracks ) const;
 
 private:
   apix_reader_opts opts;
-
 };
 
 } // ...track_oracle
+
 } // ...kwiver
 
 #endif

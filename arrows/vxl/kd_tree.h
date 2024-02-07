@@ -25,8 +25,9 @@ class KWIVER_ALGO_VXL_EXPORT kd_tree
   : public kwiver::vital::algo::nearest_neighbors
 {
 public:
-  PLUGIN_INFO( "vxl_kd_tree",
-               "KD Tree search to find nearest points." )
+  PLUGIN_INFO(
+    "vxl_kd_tree",
+    "KD Tree search to find nearest points." )
 
   /// Constructor
   kd_tree();
@@ -87,7 +88,6 @@ public:
     std::vector< int >& indices ) const;
 
 private:
-
   /// private implementation class
   class priv;
 

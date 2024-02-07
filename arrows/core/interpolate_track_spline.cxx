@@ -9,7 +9,9 @@
 using namespace kwiver::vital;
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 /// Private implementation class
@@ -50,22 +52,19 @@ lerp( bounding_box_d const& a, bounding_box_d const& b, double k )
 // ----------------------------------------------------------------------------
 interpolate_track_spline
 ::interpolate_track_spline()
-: d_(new priv)
-{
-}
+  : d_( new priv )
+{}
 
 // ----------------------------------------------------------------------------
 interpolate_track_spline
 ::~interpolate_track_spline()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 void
 interpolate_track_spline
 ::set_configuration( vital::config_block_sptr /*in_config*/ )
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 bool
@@ -77,20 +76,20 @@ interpolate_track_spline
 
 // ----------------------------------------------------------------------------
 track_sptr
-interpolate_track_spline::
-interpolate( track_sptr input_track )
+interpolate_track_spline
+::interpolate( track_sptr input_track )
 {
-  if ( !input_track ) return nullptr;
+  if( !input_track ) { return nullptr; }
 
   // Extract states, for easier iteration over intervals to be filled
   std::map< frame_id_t, std::pair< time_usec_t, detected_object_sptr > > states;
-  for ( auto const& sp : *input_track )
+  for( auto const& sp : *input_track )
   {
     auto const osp = std::dynamic_pointer_cast< object_track_state >( sp );
-    if ( !osp ) continue;
+    if( !osp ) { continue; }
 
     auto const detection = osp->detection();
-    if ( !detection ) continue;
+    if( !detection ) { continue; }
 
     states.emplace( osp->frame(), std::make_pair( osp->time(), detection ) );
   }
@@ -99,17 +98,19 @@ interpolate( track_sptr input_track )
   auto new_track = track::create( input_track->data() );
   new_track->set_id( input_track->id() );
 
-  auto append = [&new_track]( frame_id_t frame, time_usec_t time,
-                              detected_object_sptr detection ){
-    new_track->append(
-      std::make_shared< object_track_state >( frame, time, detection ) );
-  };
+  auto append = [ &new_track ]( frame_id_t frame, time_usec_t time,
+                                detected_object_sptr detection ){
+                  new_track->append(
+                    std::make_shared< object_track_state >(
+                      frame, time,
+                      detection ) );
+                };
 
   // Iterate over intervals to be filled
-  for ( auto i = states.begin(), n = states.begin();; i = n )
+  for( auto i = states.begin(), n = states.begin();; i = n )
   {
     append( i->first, i->second.first, i->second.second );
-    if ( ( ++n ) == states.end() ) break;
+    if( ( ++n ) == states.end() ) { break; }
 
     // Get end points of interval
     auto const f0 = i->first;
@@ -122,7 +123,7 @@ interpolate( track_sptr input_track )
     auto const c1 = n->second.second->confidence();
 
     // Iterate over frame numbers in interval
-    for ( auto fn = f0 + 1; fn < f1; ++fn )
+    for( auto fn = f0 + 1; fn < f1; ++fn )
     {
       auto const x = static_cast< double >( fn - f0 ) * xk;
       auto const tn = lerp( i->second.first, n->second.first, x );
@@ -139,4 +140,8 @@ interpolate( track_sptr input_track )
   return new_track;
 }
 
-} } } // end namespace
+} // namespace core
+
+} // namespace arrows
+
+}     // end namespace

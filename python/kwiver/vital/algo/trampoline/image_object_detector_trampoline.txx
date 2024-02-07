@@ -5,7 +5,8 @@
 /**
  * \file image_object_detector_trampoline.txx
  *
- * \brief trampoline for overriding virtual functions of algorithm_def<image_object_detector> and image_object_detector
+ * \brief trampoline for overriding virtual functions of
+ * algorithm_def<image_object_detector> and image_object_detector
  */
 
 #ifndef IMAGE_OBJECT_DETECTOR_TRAMPOLINE_TXX
@@ -18,44 +19,53 @@
 #include <vital/types/image_container.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
-template <class algorithm_def_iod_base=kwiver::vital::algorithm_def<kwiver::vital::algo::image_object_detector>>
-class algorithm_def_iod_trampoline :
-      public algorithm_trampoline<algorithm_def_iod_base>
+template < class algorithm_def_iod_base = kwiver::vital::algorithm_def< kwiver::vital::algo::image_object_detector > >
+class algorithm_def_iod_trampoline
+  : public algorithm_trampoline< algorithm_def_iod_base >
 {
-  public:
-    using algorithm_trampoline<algorithm_def_iod_base>::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_iod_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<kwiver::vital::algo::image_object_detector>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::image_object_detector >,
+      type_name,
+    );
+  }
 };
 
-template <class image_object_detector_base=kwiver::vital::algo::image_object_detector>
-class image_object_detector_trampoline :
-      public algorithm_def_iod_trampoline<image_object_detector_base>
+template < class image_object_detector_base = kwiver::vital::algo::image_object_detector >
+class image_object_detector_trampoline
+  : public algorithm_def_iod_trampoline< image_object_detector_base >
 {
-  public:
-    using algorithm_def_iod_trampoline<image_object_detector_base>::
-              algorithm_def_iod_trampoline;
-    kwiver::vital::detected_object_set_sptr detect(kwiver::vital::image_container_sptr image_data) const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        kwiver::vital::detected_object_set_sptr,
-        kwiver::vital::algo::image_object_detector,
-        detect,
-        image_data
-      );
-    }
+public:
+  using algorithm_def_iod_trampoline< image_object_detector_base >::
+  algorithm_def_iod_trampoline;
+
+  kwiver::vital::detected_object_set_sptr
+  detect( kwiver::vital::image_container_sptr image_data ) const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      kwiver::vital::detected_object_set_sptr,
+      kwiver::vital::algo::image_object_detector,
+      detect,
+      image_data
+    );
+  }
 };
-}
-}
-}
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
+
 #endif

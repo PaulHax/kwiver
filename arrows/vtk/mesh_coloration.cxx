@@ -23,12 +23,12 @@
 #include "vtkPolyData.h"
 #include "vtkPolyDataMapper.h"
 #include "vtkPolyDataNormals.h"
+#include "vtkRemovePolyData.h"
 #include "vtkRenderer.h"
 #include "vtkRendererCollection.h"
 #include "vtkRenderWindow.h"
 #include "vtkSequencePass.h"
 #include "vtkSmartPointer.h"
-#include "vtkRemovePolyData.h"
 #include "vtkUnsignedCharArray.h"
 #include "vtkVector.h"
 #include "vtkWindowToImageFilter.h"
@@ -82,7 +82,7 @@ mesh_coloration
 ::mesh_coloration()
 {
   input_ = nullptr;
-  output_ = vtkSmartPointer<vtkPolyData>::New();
+  output_ = vtkSmartPointer< vtkPolyData >::New();
   frame_sampling_ = 1;
   frame_ = -1;
   all_frames_ = false;
@@ -126,17 +126,19 @@ mesh_coloration
 // ----------------------------------------------------------------------------
 void
 mesh_coloration
-::set_mask( kwiver::vital::config_block_sptr const& mask_config,
-            std::string const& mask_path )
+::set_mask(
+  kwiver::vital::config_block_sptr const& mask_config,
+  std::string const& mask_path )
 {
   mask_path_ = mask_path;
 
   auto const has_mask = !mask_path_.empty();
   if( has_mask && !video_input::check_nested_algo_configuration(
-        BLOCK_MR, mask_config ) )
+    BLOCK_MR, mask_config ) )
   {
-    LOG_ERROR( logger_,
-               "An error was found in the mask reader configuration." );
+    LOG_ERROR(
+      logger_,
+      "An error was found in the mask reader configuration." );
     return;
   }
   if( has_mask )
@@ -212,8 +214,7 @@ mesh_coloration
     LOG_INFO( logger_, "Done: frame " << frame_ );
     return false;
   }
-  output_->ShallowCopy(input_);
-
+  output_->ShallowCopy( input_ );
 
   vtkDataArray* normals = output_->GetPointData()->GetNormals();
 
@@ -227,6 +228,7 @@ mesh_coloration
     output_ = compute_normals->GetOutput();
     normals = output_->GetPointData()->GetNormals();
   }
+
   vtkPoints* meshPointList = output_->GetPoints();
 
   if( meshPointList == 0 )
@@ -235,6 +237,7 @@ mesh_coloration
     LOG_INFO( logger_, "Done: frame " << frame_ );
     return false;
   }
+
   vtkIdType nbMeshPoint = meshPointList->GetNumberOfPoints();
 
   // per frame colors
@@ -331,17 +334,20 @@ mesh_coloration
 
       std::ostringstream ostr;
       kwiver::vital::frame_id_t frame = data_list_[ i ].frame_;
-      cameraIndex->SetValue( static_cast< vtkIdType >( i ),
-                             static_cast< int >( frame ) );
+      cameraIndex->SetValue(
+        static_cast< vtkIdType >( i ),
+        static_cast< int >( frame ) );
       ostr << "frame_" << std::setfill( '0' ) << std::setw( 4 ) << frame;
       ( *it )->SetName( ostr.str().c_str() );
       output_->GetPointData()->AddArray( *it );
       ++i;
     }
   }
+
   auto const progress_step = nbMeshPoint / 100;
-  vtkNew<vtkIdTypeArray> removedPoints;
-  removedPoints->SetNumberOfTuples(nbMeshPoint);
+  vtkNew< vtkIdTypeArray > removedPoints;
+  removedPoints->SetNumberOfTuples( nbMeshPoint );
+
   vtkIdType removedPointsIndex = 0;
 
   for( auto const pointId : kvr::iota( nbMeshPoint ) )
@@ -365,6 +371,7 @@ mesh_coloration
 
     kwiver::vital::vector_3d pointNormal;
     normals->GetTuple( pointId, pointNormal.data() );
+
     int colorCount = 0;
     for( auto const frameId : kvr::iota( numFrames ) )
     {
@@ -433,7 +440,9 @@ mesh_coloration
             depthBuffer[ frameId ].Buffer->GetValue(
               static_cast< vtkIdType >( x + width * ( height - y - 1 ) ) );
           depthBufferValue =
-            2 * range[1] * range[0] / (range[1] + range[0] - (2 * depthBufferValueNorm - 1) * (range[1] - range[0]));
+            2 * range[ 1 ] * range[ 0 ] /
+            ( range[ 1 ] + range[ 0 ] - ( 2 * depthBufferValueNorm - 1 ) *
+              ( range[ 1 ] - range[ 0 ] ) );
         }
         if( ( color_occluded_ ||
               depthBufferValue + occlusion_threshold_ > depth ) &&
@@ -453,14 +462,14 @@ mesh_coloration
           ++colorCount;
         }
       }
-      catch ( std::out_of_range const& )
+      catch( std::out_of_range const& )
       {
         continue;
       }
     }
-    if (colorCount <= remove_color_count_less_equal_)
+    if( colorCount <= remove_color_count_less_equal_ )
     {
-      removedPoints->SetValue(removedPointsIndex++, pointId);
+      removedPoints->SetValue( removedPointsIndex++, pointId );
     }
 
     if( !all_frames_ )
@@ -488,7 +497,7 @@ mesh_coloration
       list2.clear();
     }
   }
-  removedPoints->Resize(removedPointsIndex);
+  removedPoints->Resize( removedPointsIndex );
   if( !all_frames_ )
   {
     output_->GetPointData()->AddArray( meanValues );
@@ -496,18 +505,19 @@ mesh_coloration
     output_->GetPointData()->AddArray( countValues );
   }
 
-  if (remove_color_count_less_equal_ >= 0 && removedPoints->GetNumberOfTuples() > 1)
+  if( remove_color_count_less_equal_ >= 0 &&
+      removedPoints->GetNumberOfTuples() > 1 )
   {
     // remove points and cells not colored
-    vtkNew<vtkRemovePolyData> removeNotColored;
-    removeNotColored->SetInputData(output_);
-    removeNotColored->SetPointIds(removedPoints);
+    vtkNew< vtkRemovePolyData > removeNotColored;
+    removeNotColored->SetInputData( output_ );
+    removeNotColored->SetPointIds( removedPoints );
 
-    vtkNew<vtkCleanPolyData> cleanPoly;
-    cleanPoly->SetInputConnection(removeNotColored->GetOutputPort());
+    vtkNew< vtkCleanPolyData > cleanPoly;
+    cleanPoly->SetInputConnection( removeNotColored->GetOutputPort() );
     cleanPoly->PointMergingOff();
     cleanPoly->Update();
-    output_ = vtkPolyData::SafeDownCast(cleanPoly->GetOutput());
+    output_ = vtkPolyData::SafeDownCast( cleanPoly->GetOutput() );
   }
 
   report_progress_changed( "Done", 100 );
@@ -545,9 +555,8 @@ mesh_coloration
           coloration_data( image, maskImage, cam_ptr, cam_itr.first ) );
       }
     }
-    catch ( kwiver::vital::image_type_mismatch_exception const& )
-    {
-    }
+    catch( kwiver::vital::image_type_mismatch_exception const& )
+    {}
   }
 }
 
@@ -571,7 +580,7 @@ mesh_coloration
     {
       mask_reader_->open( mask_path_ );
     }
-    catch ( std::exception const& )
+    catch( std::exception const& )
     {
       has_mask = false;
       LOG_ERROR( logger_, "Cannot open mask file: " << mask_path_ );
@@ -652,17 +661,18 @@ mesh_coloration
     { bounds[ 0 ], bounds[ 2 ], bounds[ 5 ] },
     { bounds[ 1 ], bounds[ 2 ], bounds[ 5 ] },
     { bounds[ 0 ], bounds[ 3 ], bounds[ 5 ] },
-    { bounds[ 1 ], bounds[ 3 ], bounds[ 5 ] },
-  };
+    { bounds[ 1 ], bounds[ 3 ], bounds[ 5 ] }, };
   depthRange[ 0 ] = std::numeric_limits< double >::max();
   depthRange[ 1 ] = std::numeric_limits< double >::lowest();
 
   for( int i : kvr::iota( 8 ) )
   {
     double depth =
-      camera_persp->depth( kwiver::vital::vector_3d( bb[ i ][ 0 ],
-                                                     bb[ i ][ 1 ],
-                                                     bb[ i ][ 2 ] ) );
+      camera_persp->depth(
+        kwiver::vital::vector_3d(
+          bb[ i ][ 0 ],
+          bb[ i ][ 1 ],
+          bb[ i ][ 2 ] ) );
     if( depth < depthRange[ 0 ] )
     {
       depthRange[ 0 ] = depth;
@@ -672,12 +682,14 @@ mesh_coloration
       depthRange[ 1 ] = depth;
     }
   }
+
   // we only render points in front of the camera
   double minDepth = depthRange[ 1 ] * 0.001;
-  if( depthRange[ 0 ] <  minDepth)
+  if( depthRange[ 0 ] <  minDepth )
   {
     depthRange[ 0 ] = minDepth;
   }
+
   vtkNew< vtkKwiverCamera > cam;
   int imageDimensions[ 2 ] = { width, height };
   cam->SetCamera( camera_persp );

@@ -20,7 +20,8 @@ namespace ka = kwiver::arrows;
 namespace kav = kwiver::arrows::vxl;
 
 kv::path_t g_data_dir;
-static std::string test_color_image_name = "images/kitware_logos/small_color_logo.png";
+static std::string test_color_image_name =
+  "images/kitware_logos/small_color_logo.png";
 static std::string expected_morphology_erode =
   "images/kitware_logos/morphology_erode.png";
 static std::string expected_morphology_dilate =
@@ -55,8 +56,9 @@ class morphology : public ::testing::Test
   vil_image_view< vxl_byte > vxl_byte_image;
 
 public:
-  void test_morphology_type( kv::config_block_sptr const& config,
-                             kv::path_t expected_basename );
+  void test_morphology_type(
+    kv::config_block_sptr const& config,
+    kv::path_t expected_basename );
 };
 
 // ----------------------------------------------------------------------------
@@ -80,8 +82,9 @@ morphology
 // ----------------------------------------------------------------------------
 void
 morphology
-::test_morphology_type( kv::config_block_sptr const& config,
-                        kv::path_t expected_basename )
+::test_morphology_type(
+  kv::config_block_sptr const& config,
+  kv::path_t expected_basename )
 {
   filter.set_configuration( config );
 
@@ -96,12 +99,14 @@ morphology
 
   auto expected_filename = data_dir + "/" + expected_basename;
   auto const expected_image_ptr = io.load( expected_filename );
-  EXPECT_TRUE( equal_content( filtered_byte_image_ptr->get_image(),
-                              expected_image_ptr->get_image() ) );
+  EXPECT_TRUE(
+    equal_content(
+      filtered_byte_image_ptr->get_image(),
+      expected_image_ptr->get_image() ) );
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(morphology, erode)
+TEST_F ( morphology, erode )
 {
   auto config = kv::config_block::empty_config();
   config->set_value( "morphology", "erode" );
@@ -110,7 +115,7 @@ TEST_F(morphology, erode)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(morphology, dilate)
+TEST_F ( morphology, dilate )
 {
   auto config = kv::config_block::empty_config();
   config->set_value( "morphology", "dilate" );
@@ -119,7 +124,7 @@ TEST_F(morphology, dilate)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(morphology, union)
+TEST_F ( morphology, union )
 {
   auto config = kv::config_block::empty_config();
   config->set_value( "channel_combination", "union" );
@@ -128,7 +133,7 @@ TEST_F(morphology, union)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(morphology, intersection)
+TEST_F ( morphology, intersection )
 {
   auto config = kv::config_block::empty_config();
   config->set_value( "channel_combination", "intersection" );

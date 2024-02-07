@@ -20,8 +20,9 @@ main( int argc, char** argv )
 
 // ----------------------------------------------------------------------------
 void
-test_read_write( klv_value const& expected_result,
-                 klv_bytes_t const& input_bytes )
+test_read_write(
+  klv_value const& expected_result,
+  klv_bytes_t const& input_bytes )
 {
   using format_t = klv_1107_local_set_format;
   test_read_write_format< format_t >( expected_result, input_bytes );
@@ -29,6 +30,7 @@ test_read_write( klv_value const& expected_result,
 
 // ----------------------------------------------------------------------------
 using kld = klv_lengthy< double >;
+
 auto const expected_result = klv_local_set{
   { KLV_1107_SENSOR_ECEF_POSITION_X,               kld{ -831506944.0 } },
   { KLV_1107_SENSOR_ECEF_POSITION_Y,               kld{ -831441408.0 } },
@@ -75,8 +77,7 @@ auto const expected_result = klv_local_set{
   { KLV_1107_PRECISION_TIMESTAMP, uint64_t{ 0x0001020304050607 } },
   { KLV_1107_DOCUMENT_VERSION,                     uint64_t{ 4 } },
   { KLV_1107_LEAP_SECONDS,                         int64_t{ 37 } },
-  { KLV_1107_EFFECTIVE_FOCAL_LENGTH_EXTENDED,      kld{ 1024.0 } }
-};
+  { KLV_1107_EFFECTIVE_FOCAL_LENGTH_EXTENDED,      kld{ 1024.0 } } };
 
 // ----------------------------------------------------------------------------
 auto const input_bytes = klv_bytes_t{
@@ -194,8 +195,7 @@ auto const input_bytes = klv_bytes_t{
   0x2E, 0x01, 0x25,
 
   // KLV_1107_EFFECTIVE_FOCAL_LENGTH_EXTENDED
-  0x2F, 0x02, 0x01, 0x00,
-};
+  0x2F, 0x02, 0x01, 0x00, };
 
 // ----------------------------------------------------------------------------
 TEST ( klv, read_write_1107 )
@@ -208,6 +208,7 @@ TEST ( klv, read_write_1107 )
 TEST ( klv, read_write_1107_packet )
 {
   auto const packet_footer = klv_bytes_t{ KLV_1107_CHECKSUM, 2, 0xA7, 0x5A };
-  CALL_TEST( test_read_write_packet,
-             expected_result, input_bytes, packet_footer, klv_1107_key() );
+  CALL_TEST(
+    test_read_write_packet,
+    expected_result, input_bytes, packet_footer, klv_1107_key() );
 }

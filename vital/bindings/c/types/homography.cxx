@@ -16,19 +16,21 @@
 #include <vital/bindings/c/helpers/homography.h>
 
 namespace kwiver {
+
 namespace vital_c {
 
 SharedPointerCache< kwiver::vital::homography, vital_homography_t >
-  HOMOGRAPHY_SPTR_CACHE( "homography" );
+HOMOGRAPHY_SPTR_CACHE( "homography" );
 
-}
-}
+} // namespace vital_c
+
+} // namespace kwiver
 
 using namespace kwiver;
 
 /// Destroy a homography instance
 void
-vital_homography_destroy( vital_homography_t *h, vital_error_handle_t *eh )
+vital_homography_destroy( vital_homography_t* h, vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_homography_destroy", eh,
@@ -38,8 +40,9 @@ vital_homography_destroy( vital_homography_t *h, vital_error_handle_t *eh )
 
 /// Get the name of the descriptor instance's underlying data type
 char const*
-vital_homography_type_name( vital_homography_t const *h,
-                            vital_error_handle_t *eh )
+vital_homography_type_name(
+  vital_homography_t const* h,
+  vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_homography_type_name", eh,
@@ -51,7 +54,7 @@ vital_homography_type_name( vital_homography_t const *h,
 
 /// Create a clone of a homography instance
 vital_homography_t*
-vital_homography_clone( vital_homography_t const *h, vital_error_handle_t *eh )
+vital_homography_clone( vital_homography_t const* h, vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_homography_clone", eh,
@@ -66,8 +69,9 @@ vital_homography_clone( vital_homography_t const *h, vital_error_handle_t *eh )
 
 /// Get a new homography instance that is normalized
 vital_homography_t*
-vital_homography_normalize( vital_homography_t const *h,
-                            vital_error_handle_t *eh )
+vital_homography_normalize(
+  vital_homography_t const* h,
+  vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_homography_normalize", eh,
@@ -80,8 +84,9 @@ vital_homography_normalize( vital_homography_t const *h,
 
 /// Get a new homography instance that has been inverted
 vital_homography_t*
-vital_homography_inverse( vital_homography_t const *h,
-                          vital_error_handle_t *eh )
+vital_homography_inverse(
+  vital_homography_t const* h,
+  vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_homography_inverse", eh,
@@ -95,111 +100,116 @@ vital_homography_inverse( vital_homography_t const *h,
 ////////////////////////////////////////////////////////////////////////////////
 // Type specific functions and constructors
 
-#define DEFINE_TYPED_OPERATIONS( T, S ) \
-\
-/* New identity homography */ \
-vital_homography_t* \
-vital_homography_##S##_new_identity( vital_error_handle_t *eh ) \
-{ \
-  typedef vital::homography_< T > homog_t; \
-  STANDARD_CATCH( \
-    "vital_homography_" #S "_new_identity", eh, \
-    auto h_sptr = std::make_shared< homog_t >(); \
-    vital_c::HOMOGRAPHY_SPTR_CACHE.store( h_sptr ); \
-    return reinterpret_cast< vital_homography_t* >( h_sptr.get() ); \
-  ); \
-  return 0; \
-} \
-\
-/* New homography from a provided transformation matrix */ \
-vital_homography_t* \
-vital_homography_##S##_new_from_matrix( vital_eigen_matrix3x3##S##_t const *m, \
-                                        vital_error_handle_t *eh ) \
-{ \
-  typedef vital::homography_< T > homog_t; \
-  STANDARD_CATCH( \
-    "vital_homography_" #S "_new_from_matrix", eh, \
-    REINTERP_TYPE( homog_t::matrix_t const, m, m_ptr ); \
-    auto h_sptr = std::make_shared< homog_t >( *m_ptr ); \
-    vital_c::HOMOGRAPHY_SPTR_CACHE.store( h_sptr ); \
-    return reinterpret_cast< vital_homography_t* >( h_sptr.get() ); \
-  ); \
-  return 0; \
-} \
-\
-/* Get a homography's transformation matrix */ \
-vital_eigen_matrix3x3##S##_t* \
-vital_homography_##S##_as_matrix( vital_homography_t const *h, \
-                                  vital_error_handle_t *eh ) \
-{ \
-  typedef vital::homography_< T > homog_t; \
-  STANDARD_CATCH( \
-    "vital_homography_" #S "_as_matrix", eh, \
-    auto h_sptr = vital_c::HOMOGRAPHY_SPTR_CACHE.get( h ); \
-    TRY_DYNAMIC_CAST( homog_t const, h_sptr.get(), h_ptr ) \
-    { \
-      throw "Failed to cast homography to '" #S "' type instance."; \
-    } \
-    homog_t::matrix_t *m = new homog_t::matrix_t( h_ptr->get_matrix() ); \
-    return reinterpret_cast< vital_eigen_matrix3x3##S##_t* >( m ); \
-  ); \
-  return 0; \
-} \
-\
-/* Map a 2D point using this homography */ \
-vital_eigen_matrix2x1##S##_t* \
-vital_homography_##S##_map_point( vital_homography_t const *h, \
-                                  vital_eigen_matrix2x1##S##_t const *p, \
-                                  vital_error_handle_t *eh ) \
-{ \
-  typedef vital::homography_< T > homog_t; \
-  typedef Eigen::Matrix< T, 2, 1 > point_t; \
-  STANDARD_CATCH( \
-    "vital_homography_" #S "_map_point", eh, \
-    auto h_sptr = vital_c::HOMOGRAPHY_SPTR_CACHE.get( h ); \
-    TRY_DYNAMIC_CAST( homog_t const, h_sptr.get(), h_ptr ) \
-    { \
-      throw "Failed to cast homography to '" #S "' type instance."; \
-    } \
-    REINTERP_TYPE( point_t const, p, p_ptr ); \
-    point_t *q_ptr = NULL; \
-    try \
-    { \
-      q_ptr = new point_t( h_ptr->map_point( *p_ptr ) ); \
-    } \
-    catch( vital::point_maps_to_infinity const&e ) \
-    { \
-      POPULATE_EH( eh, 1, e.what() ); \
-    } \
-    return reinterpret_cast< vital_eigen_matrix2x1##S##_t* >( q_ptr ); \
-  ); \
-  return 0; \
-} \
-\
-/* Multiply one homography against another, returning a new product homography */ \
-vital_homography_t* \
-vital_homography_##S##_multiply( vital_homography_t const *lhs, \
-                                 vital_homography_t const *rhs, \
-                                 vital_error_handle_t *eh ) \
-{ \
-  typedef vital::homography_< T > homog_t; \
-  STANDARD_CATCH( \
-    "vital_homography_" #S "_multiply", eh, \
-    auto lhs_sptr = vital_c::HOMOGRAPHY_SPTR_CACHE.get( lhs ); \
-    auto rhs_sptr = vital_c::HOMOGRAPHY_SPTR_CACHE.get( rhs ); \
-    TRY_DYNAMIC_CAST( homog_t const, lhs_sptr.get(), lhs_ptr ) \
-    { \
-      throw "Failed to cast left-hand homography to '" #S "' type instance."; \
-    } \
-    TRY_DYNAMIC_CAST( homog_t const, rhs_sptr.get(), rhs_ptr ) \
-    { \
+#define DEFINE_TYPED_OPERATIONS( T, S )                                \
+                                                                       \
+/* New identity homography */                                          \
+vital_homography_t*                                                    \
+vital_homography_##S##_new_identity( vital_error_handle_t * eh )       \
+{                                                                      \
+  typedef vital::homography_< T > homog_t;                             \
+  STANDARD_CATCH(                                                      \
+  "vital_homography_" #S "_new_identity", eh,                          \
+  auto h_sptr = std::make_shared< homog_t >();                         \
+  vital_c::HOMOGRAPHY_SPTR_CACHE.store( h_sptr );                      \
+  return reinterpret_cast< vital_homography_t* >( h_sptr.get() );      \
+  );                                                                   \
+  return 0;                                                            \
+}                                                                      \
+                                                                       \
+/* New homography from a provided transformation matrix */             \
+vital_homography_t*                                                    \
+vital_homography_##S##_new_from_matrix(                                \
+  vital_eigen_matrix3x3##S##_t const* m,                               \
+  vital_error_handle_t * eh )                                          \
+{                                                                      \
+  typedef vital::homography_< T > homog_t;                             \
+  STANDARD_CATCH(                                                      \
+  "vital_homography_" #S "_new_from_matrix", eh,                       \
+  REINTERP_TYPE( homog_t::matrix_t const, m, m_ptr );                  \
+  auto h_sptr = std::make_shared< homog_t >( *m_ptr );                 \
+  vital_c::HOMOGRAPHY_SPTR_CACHE.store( h_sptr );                      \
+  return reinterpret_cast< vital_homography_t* >( h_sptr.get() );      \
+  );                                                                   \
+  return 0;                                                            \
+}                                                                      \
+                                                                       \
+/* Get a homography's transformation matrix */                         \
+vital_eigen_matrix3x3##S##_t*                                          \
+vital_homography_##S##_as_matrix(                                      \
+  vital_homography_t const* h,                                         \
+  vital_error_handle_t * eh )                                          \
+{                                                                      \
+  typedef vital::homography_< T > homog_t;                             \
+  STANDARD_CATCH(                                                      \
+  "vital_homography_" #S "_as_matrix", eh,                             \
+  auto h_sptr = vital_c::HOMOGRAPHY_SPTR_CACHE.get( h );               \
+  TRY_DYNAMIC_CAST( homog_t const, h_sptr.get(), h_ptr )               \
+    {                                                                  \
+      throw "Failed to cast homography to '" #S "' type instance.";    \
+    }                                                                  \
+  homog_t::matrix_t* m = new homog_t::matrix_t( h_ptr->get_matrix() ); \
+  return reinterpret_cast< vital_eigen_matrix3x3##S##_t* >( m );       \
+  );                                                                   \
+  return 0;                                                            \
+}                                                                      \
+                                                                       \
+/* Map a 2D point using this homography */                             \
+vital_eigen_matrix2x1##S##_t*                                          \
+vital_homography_##S##_map_point(                                      \
+  vital_homography_t const* h,                                         \
+  vital_eigen_matrix2x1##S##_t const* p,                               \
+  vital_error_handle_t * eh )                                          \
+{                                                                      \
+  typedef vital::homography_< T > homog_t;                             \
+  typedef Eigen::Matrix< T, 2, 1 > point_t;                            \
+  STANDARD_CATCH(                                                      \
+  "vital_homography_" #S "_map_point", eh,                             \
+  auto h_sptr = vital_c::HOMOGRAPHY_SPTR_CACHE.get( h );               \
+  TRY_DYNAMIC_CAST( homog_t const, h_sptr.get(), h_ptr )               \
+    {                                                                  \
+      throw "Failed to cast homography to '" #S "' type instance.";    \
+    }                                                                  \
+  REINTERP_TYPE( point_t const, p, p_ptr );                            \
+  point_t* q_ptr = NULL;                                               \
+  try                                                                  \
+    {                                                                  \
+      q_ptr = new point_t( h_ptr->map_point( *p_ptr ) );               \
+    }                                                                  \
+  catch( vital::point_maps_to_infinity const& e )                      \
+    {                                                                  \
+      POPULATE_EH( eh, 1, e.what() );                                  \
+    }                                                                  \
+  return reinterpret_cast< vital_eigen_matrix2x1##S##_t* >( q_ptr );   \
+  );                                                                   \
+  return 0;                                                            \
+}                                                                      \
+                                                                       \
+/* Multiply one homography against another, returning a new product homography
+ */                                                                            \
+vital_homography_t*                                                            \
+vital_homography_##S##_multiply(                                               \
+  vital_homography_t const* lhs,                                               \
+  vital_homography_t const* rhs,                                               \
+  vital_error_handle_t * eh )                                                  \
+{                                                                              \
+  typedef vital::homography_< T > homog_t;                                     \
+  STANDARD_CATCH(                                                              \
+  "vital_homography_" #S "_multiply", eh,                                      \
+  auto lhs_sptr = vital_c::HOMOGRAPHY_SPTR_CACHE.get( lhs );                   \
+  auto rhs_sptr = vital_c::HOMOGRAPHY_SPTR_CACHE.get( rhs );                   \
+  TRY_DYNAMIC_CAST( homog_t const, lhs_sptr.get(), lhs_ptr )                   \
+    {                                                                          \
+      throw "Failed to cast left-hand homography to '" #S "' type instance.";  \
+    }                                                                          \
+  TRY_DYNAMIC_CAST( homog_t const, rhs_sptr.get(), rhs_ptr )                   \
+    {                                                                          \
       throw "Failed to cast right-hand homography to '" #S "' type instance."; \
-    } \
-    auto p_sptr = std::make_shared< homog_t >( (*lhs_ptr) * (*rhs_ptr) ); \
-    vital_c::HOMOGRAPHY_SPTR_CACHE.store( p_sptr ); \
-    return reinterpret_cast< vital_homography_t* >( p_sptr.get() ); \
-  ); \
-  return 0; \
+    }                                                                          \
+  auto p_sptr = std::make_shared< homog_t >( ( *lhs_ptr ) * ( *rhs_ptr ) );    \
+  vital_c::HOMOGRAPHY_SPTR_CACHE.store( p_sptr );                              \
+  return reinterpret_cast< vital_homography_t* >( p_sptr.get() );              \
+  );                                                                           \
+  return 0;                                                                    \
 }
 
 DEFINE_TYPED_OPERATIONS( double, d )

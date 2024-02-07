@@ -33,21 +33,25 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 VITAL config_block related exceptions
 
 """
+
 # -*- coding: utf-8 -*-
 
 from .base import VitalBaseException
 
 
-class VitalConfigBlockException (VitalBaseException):
-    """ Base exception for ConfigBlock related exceptions """
+class VitalConfigBlockException(VitalBaseException):
+    """Base exception for ConfigBlock related exceptions"""
+
     pass
 
 
-class VitalConfigBlockNoSuchValueException (VitalConfigBlockException):
-    """ For when a value is value is requested but does not exist """
+class VitalConfigBlockNoSuchValueException(VitalConfigBlockException):
+    """For when a value is value is requested but does not exist"""
+
     pass
 
 
-class VitalConfigBlockReadOnlyException (VitalConfigBlockException):
-    """ For when a value is set but is marked as read-only """
+class VitalConfigBlockReadOnlyException(VitalConfigBlockException):
+    """For when a value is set but is marked as read-only"""
+
     pass

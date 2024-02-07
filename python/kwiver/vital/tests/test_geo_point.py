@@ -153,8 +153,8 @@ class TestVitalGeoPoint(unittest.TestCase):
 
         np.testing.assert_array_almost_equal(p_ll.location(), conv_loc_ll, decimal=7)
         np.testing.assert_array_almost_equal(p_utm.location(), conv_loc_utm, decimal=2)
-        nt.ok_(epsilon_ll_to_utm < 10**(-2))
-        nt.ok_(epsilon_utm_to_ll < 10**(-7))
+        nt.ok_(epsilon_ll_to_utm < 10 ** (-2))
+        nt.ok_(epsilon_utm_to_ll < 10 ** (-7))
 
         print("LL->UTM epsilon:", epsilon_ll_to_utm)
         print("UTM->LL epsilon:", epsilon_utm_to_ll)
@@ -173,8 +173,8 @@ class TestVitalGeoPoint(unittest.TestCase):
         np.testing.assert_array_almost_equal(
             p_utma.location(), conv_loc_utma, decimal=2
         )
-        nt.ok_(epsilon_lla_to_utma < 10**(-2))
-        nt.ok_(epsilon_utma_to_lla < 10**(-7))
+        nt.ok_(epsilon_lla_to_utma < 10 ** (-2))
+        nt.ok_(epsilon_utma_to_lla < 10 ** (-7))
 
         print("LLa->UTMa epsilon:", epsilon_lla_to_utma)
         print("UTMa->LLa epsilon:", epsilon_utma_to_lla)
@@ -182,7 +182,7 @@ class TestVitalGeoPoint(unittest.TestCase):
     def test_to_str_empty(self):
         p1 = gp.GeoPoint()
         nt.assert_equals(str(p1), "geo_point\n[ empty ]")
-        print("empty geo_point to string:", str(p1), sep='\n')
+        print("empty geo_point to string:", str(p1), sep="\n")
 
     # Also make sure the doubles roundtrip
     def test_to_str(self):
@@ -214,4 +214,4 @@ class TestVitalGeoPoint(unittest.TestCase):
         nt.assert_equals(split_str[6], "@")
         nt.assert_equals(int(split_str[7]), self.crs_ll)
 
-        print("geo_point with data:", str(p1), sep='\n')
+        print("geo_point with data:", str(p1), sep="\n")

@@ -96,7 +96,7 @@ klv_timeline
       if( result )
       {
         throw std::logic_error(
-                "klv_timeline.at(): more than one entry found" );
+          "klv_timeline.at(): more than one entry found" );
       }
       result = &it->value;
     }
@@ -108,8 +108,9 @@ klv_timeline
 // ----------------------------------------------------------------------------
 klv_value
 klv_timeline
-::at( klv_top_level_tag standard, klv_lds_key tag, klv_value const& index,
-      uint64_t time ) const
+::at(
+  klv_top_level_tag standard, klv_lds_key tag, klv_value const& index,
+  uint64_t time ) const
 {
   auto const it = find( standard, tag, index );
   if( it == end() )
@@ -146,7 +147,9 @@ klv_timeline
 ::find_all( klv_top_level_tag standard )
 {
   return { m_map.lower_bound( { standard, 0, {} } ),
-           m_map.lower_bound( { static_cast< klv_top_level_tag >( standard + 1 ), 0, {} } ) };
+           m_map.lower_bound(
+             { static_cast< klv_top_level_tag >( standard +
+                                                 1 ), 0, {} } ) };
 }
 
 // ----------------------------------------------------------------------------
@@ -155,7 +158,9 @@ klv_timeline
 ::find_all( klv_top_level_tag standard ) const
 {
   return { m_map.lower_bound( { standard, 0, {} } ),
-           m_map.lower_bound( { static_cast< klv_top_level_tag >( standard + 1 ), 0, {} } ) };
+           m_map.lower_bound(
+             { static_cast< klv_top_level_tag >( standard +
+                                                 1 ), 0, {} } ) };
 }
 
 // ----------------------------------------------------------------------------
@@ -164,7 +169,9 @@ klv_timeline
 ::find_all( klv_top_level_tag standard, klv_lds_key tag )
 {
   return { m_map.lower_bound( { standard, tag, {} } ),
-           m_map.lower_bound( { standard, static_cast< klv_lds_key >( tag + 1 ), {} } ) };
+           m_map.lower_bound(
+             { standard, static_cast< klv_lds_key >( tag + 1 ),
+               {} } ) };
 }
 
 // ----------------------------------------------------------------------------
@@ -173,7 +180,9 @@ klv_timeline
 ::find_all( klv_top_level_tag standard, klv_lds_key tag ) const
 {
   return { m_map.lower_bound( { standard, tag, {} } ),
-           m_map.lower_bound( { standard, static_cast< klv_lds_key >( tag + 1 ), {} } ) };
+           m_map.lower_bound(
+             { standard, static_cast< klv_lds_key >( tag + 1 ),
+               {} } ) };
 }
 
 // ----------------------------------------------------------------------------
@@ -187,8 +196,9 @@ klv_timeline
 // ----------------------------------------------------------------------------
 klv_timeline::const_iterator
 klv_timeline
-::find( klv_top_level_tag standard, klv_lds_key tag,
-        klv_value const& index ) const
+::find(
+  klv_top_level_tag standard, klv_lds_key tag,
+  klv_value const& index ) const
 {
   return m_map.find( { standard, tag, index } );
 }
@@ -230,11 +240,13 @@ klv_timeline
 // ----------------------------------------------------------------------------
 klv_timeline::iterator
 klv_timeline
-::insert_or_find( klv_top_level_tag standard, klv_lds_key tag,
-                  klv_value const& index )
+::insert_or_find(
+  klv_top_level_tag standard, klv_lds_key tag,
+  klv_value const& index )
 {
-  return m_map.emplace( key_t{ standard, tag, index },
-                        interval_map_t{} ).first;
+  return m_map.emplace(
+    key_t{ standard, tag, index },
+    interval_map_t{} ).first;
 }
 
 // ----------------------------------------------------------------------------
@@ -278,8 +290,9 @@ operator!=( klv_timeline const& lhs, klv_timeline const& rhs )
 
 // ----------------------------------------------------------------------------
 std::ostream&
-operator<<( std::ostream& os,
-            typename klv_timeline::key_t const& rhs )
+operator<<(
+  std::ostream& os,
+  typename klv_timeline::key_t const& rhs )
 {
   auto const& trait = klv_lookup_packet_traits().by_tag( rhs.standard );
   auto const lookup = trait.subtag_lookup();

@@ -19,48 +19,57 @@
 #include <ostream>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
-template< class algorithm_def_at_base=
-           kwiver::vital::algorithm_def< kwiver::vital::algo::analyze_tracks > >
-class algorithm_def_at_trampoline :
-      public algorithm_trampoline< algorithm_def_at_base>
+template < class algorithm_def_at_base =
+    kwiver::vital::algorithm_def< kwiver::vital::algo::analyze_tracks > >
+class algorithm_def_at_trampoline
+  : public algorithm_trampoline< algorithm_def_at_base >
 {
-  public:
-    using algorithm_trampoline< algorithm_def_at_base >::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_at_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<kwiver::vital::algo::analyze_tracks>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::analyze_tracks >,
+      type_name,
+    );
+  }
 };
 
-template< class analyze_tracks_base=kwiver::vital::algo::analyze_tracks >
-class analyze_tracks_trampoline :
-      public algorithm_def_at_trampoline< analyze_tracks_base >
+template < class analyze_tracks_base = kwiver::vital::algo::analyze_tracks >
+class analyze_tracks_trampoline
+  : public algorithm_def_at_trampoline< analyze_tracks_base >
 {
-  public:
-    using algorithm_def_at_trampoline< analyze_tracks_base >::
-              algorithm_def_at_trampoline;
+public:
+  using algorithm_def_at_trampoline< analyze_tracks_base >::
+  algorithm_def_at_trampoline;
 
-    void print_info( kwiver::vital::track_set_sptr track_set,
-                     std::ostream& stream = std::cout ) const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        void,
-        kwiver::vital::algo::analyze_tracks,
-        print_info,
-        track_set,
-        stream
-      );
-    }
+  void
+  print_info(
+    kwiver::vital::track_set_sptr track_set,
+    std::ostream& stream = std::cout ) const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      void,
+      kwiver::vital::algo::analyze_tracks,
+      print_info,
+      track_set,
+      stream
+    );
+  }
 };
-}
-}
-}
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
+
 #endif

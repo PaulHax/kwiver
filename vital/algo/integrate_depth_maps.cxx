@@ -32,16 +32,18 @@ integrate_depth_maps
 /// \param [out]    spacing     the spacing between voxels in each dimension
 void
 integrate_depth_maps
-::integrate( vector_3d const& minpt_bound,
-             vector_3d const& maxpt_bound,
-             std::vector< image_container_sptr > const& depth_maps,
-             std::vector< camera_perspective_sptr > const& cameras,
-             image_container_sptr& volume,
-             vector_3d& spacing ) const
+::integrate(
+  vector_3d const& minpt_bound,
+  vector_3d const& maxpt_bound,
+  std::vector< image_container_sptr > const& depth_maps,
+  std::vector< camera_perspective_sptr > const& cameras,
+  image_container_sptr& volume,
+  vector_3d& spacing ) const
 {
   // call the weighted version, but leave the weights empty
-  this->integrate( minpt_bound, maxpt_bound, depth_maps, {},
-                   cameras, volume, spacing );
+  this->integrate(
+    minpt_bound, maxpt_bound, depth_maps, {},
+    cameras, volume, spacing );
 }
 
 } // namespace algo

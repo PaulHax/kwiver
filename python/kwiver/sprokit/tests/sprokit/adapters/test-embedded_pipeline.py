@@ -112,7 +112,7 @@ def test_api_calls(cpp_pipeline_dir, py_pipeline_dir):
             if not ep.at_end():
                 test_error("at_end() not set correctly")
             break
-        for (port, d) in ods:
+        for port, d in ods:
             print("   port:", port, " value:", d.get_int())
 
     ep.wait()
@@ -194,9 +194,7 @@ def test_cpp_conversion(cpp_pipeline_dir, py_pipeline_dir):
     # Create fresh objects. Make sure that this also works with adding datums directly
     ads_in = adapter_data_set.AdapterDataSet.create()
     ads_in["detected_object_set"] = datum.new(_create_detected_object_set())
-    print(
-        "Starting roundtrip pipeline with a datum containing a detected_object_set"
-    )
+    print("Starting roundtrip pipeline with a datum containing a detected_object_set")
     run_roundtrip_pipeline(py_pipeline_dir, ads_in)
 
 

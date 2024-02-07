@@ -17,59 +17,68 @@
 #include <vital/algo/compute_association_matrix.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
-template< class algorithm_def_cam_base=
-            kwiver::vital::algorithm_def<
-               kwiver::vital::algo::compute_association_matrix > >
-class algorithm_def_cam_trampoline :
-      public algorithm_trampoline<algorithm_def_cam_base>
+template < class algorithm_def_cam_base =
+    kwiver::vital::algorithm_def<
+      kwiver::vital::algo::compute_association_matrix > >
+class algorithm_def_cam_trampoline
+  : public algorithm_trampoline< algorithm_def_cam_base >
 {
-  public:
-    using algorithm_trampoline< algorithm_def_cam_base >::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_cam_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<
-          kwiver::vital::algo::compute_association_matrix>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def<
+        kwiver::vital::algo::compute_association_matrix >,
+      type_name,
+    );
+  }
 };
 
-template< class compute_association_matrix_base=
-                  kwiver::vital::algo::compute_association_matrix >
-class compute_association_matrix_trampoline :
-      public algorithm_def_cam_trampoline< compute_association_matrix_base >
+template < class compute_association_matrix_base =
+    kwiver::vital::algo::compute_association_matrix >
+class compute_association_matrix_trampoline
+  : public algorithm_def_cam_trampoline< compute_association_matrix_base >
 {
-  public:
-    using algorithm_def_cam_trampoline< compute_association_matrix_base >::
-              algorithm_def_cam_trampoline;
+public:
+  using algorithm_def_cam_trampoline< compute_association_matrix_base >::
+  algorithm_def_cam_trampoline;
 
-    bool compute( kwiver::vital::timestamp ts,
-                  kwiver::vital::image_container_sptr image,
-                  kwiver::vital::object_track_set_sptr tracks,
-                  kwiver::vital::detected_object_set_sptr detections,
-                  kwiver::vital::matrix_d& matrix,
-                  kwiver::vital::detected_object_set_sptr& considered ) const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        bool,
-        kwiver::vital::algo::compute_association_matrix,
-        compute,
-        ts,
-        image,
-        tracks,
-        detections,
-        matrix,
-        considered
-      );
-    }
+  bool
+  compute(
+    kwiver::vital::timestamp ts,
+    kwiver::vital::image_container_sptr image,
+    kwiver::vital::object_track_set_sptr tracks,
+    kwiver::vital::detected_object_set_sptr detections,
+    kwiver::vital::matrix_d& matrix,
+    kwiver::vital::detected_object_set_sptr& considered ) const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      bool,
+      kwiver::vital::algo::compute_association_matrix,
+      compute,
+      ts,
+      image,
+      tracks,
+      detections,
+      matrix,
+      considered
+    );
+  }
 };
-}
-}
-}
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
+
 #endif

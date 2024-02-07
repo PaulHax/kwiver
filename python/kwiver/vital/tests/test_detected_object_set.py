@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Tests for DetectedObjectSet interface class.
 
 """
+
 import unittest
 import nose.tools
 import numpy as np
@@ -47,10 +48,12 @@ from kwiver.vital.types import (
     ImageContainer,
     geodesy,
     GeoPoint,
-    Point2d
+    Point2d,
 )
+
+
 class SimpleDetectedSet(dos):
-    def __init__(self,do_):
+    def __init__(self, do_):
         dos.__init__(self)
         self.det_objs = do_
 
@@ -60,7 +63,7 @@ class SimpleDetectedSet(dos):
     def empty(self):
         return False
 
-    def at(self,loc):
+    def at(self, loc):
         return do(bb(10, 10, 20, 20))
 
 
@@ -84,10 +87,14 @@ class TestDetectedObjectSet(unittest.TestCase):
         self.mask3 = ImageContainer(Image(720, 1080))
 
         # Establish set of DO objects to pass to DOS constructor
-        self.set = np.array([do(self.bbox1, self.conf, self.cm, self.mask),
-                             do(self.bbox2, self.conf2, self.cm2, self.mask2),
-                             do(self.bbox3, self.conf3, self.cm3, self.mask3),
-                             do(self.bbox4)])
+        self.set = np.array(
+            [
+                do(self.bbox1, self.conf, self.cm, self.mask),
+                do(self.bbox2, self.conf2, self.cm2, self.mask2),
+                do(self.bbox3, self.conf3, self.cm3, self.mask3),
+                do(self.bbox4),
+            ]
+        )
 
     def test_Constructor(self):
         dos()
@@ -138,14 +145,14 @@ class TestDetectedObjectSet(unittest.TestCase):
         self.assertEqual(len(sel), 6)
         sel = d.select(0.41)
         self.assertEqual(len(sel), 4)
-        sel = d.select(class_name = "foo2")
-        self.assertEqual(len(sel), 1 )
+        sel = d.select(class_name="foo2")
+        self.assertEqual(len(sel), 1)
         sel = d.select(0, "foo3")
         self.assertEqual(len(sel), 2)
         sel = d.select(5.0, "example_class")
         self.assertEqual(len(sel), 0)
         self.assertIsInstance(sel, dos)
-        sel = d.select(class_name = "foo3")
+        sel = d.select(class_name="foo3")
         do_at = sel.at(0)
         self.assertIsInstance(do_at, do)
         self.assertEqual(do_at.__nice__(), "conf=0.75")
@@ -157,8 +164,8 @@ class TestDetectedObjectSet(unittest.TestCase):
         self.assertFalse(d_clone.empty())
         sel_clone = d_clone.select()
         self.assertEqual(len(sel_clone), 6)
-        sel_clone = d_clone.select(class_name = "foo3")
-        self.assertEqual(len(sel_clone),2)
+        sel_clone = d_clone.select(class_name="foo3")
+        self.assertEqual(len(sel_clone), 2)
         do_at_clone = sel_clone.at(0)
         self.assertIsInstance(do_at_clone, do)
         self.assertEqual(do_at_clone.__nice__(), "conf=0.75")
@@ -170,6 +177,6 @@ class TestDetectedObjectSet(unittest.TestCase):
         self.assertIsInstance(t.__repr__(), str)
         self.assertIsInstance(t.__nice__(), str)
         self.assertEqual(t.__nice__(), "size=4")
-        self.assertEqual(t.__getitem__(1),t.at(1))
+        self.assertEqual(t.__getitem__(1), t.at(1))
         itr = iter(t)
-        self.assertIsInstance(next(itr),do)
+        self.assertIsInstance(next(itr), do)

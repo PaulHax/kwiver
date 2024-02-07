@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#ckwg +28
+# ckwg +28
 # Copyright 2012-2020 by Kitware, Inc.
 # All rights reserved.
 #
@@ -30,6 +30,7 @@
 
 from kwiver.sprokit.util.test import expect_exception, find_tests, run_test, test_error
 
+
 # TEST_PROPERTY(WILL_FAIL, TRUE)
 def test_return_code():
     import sys
@@ -39,28 +40,28 @@ def test_return_code():
 
 # TEST_PROPERTY(WILL_FAIL, TRUE)
 def test_error_string():
-    test_error('an error')
+    test_error("an error")
 
 
 def test_error_string_mid():
     import sys
 
-    sys.stderr.write('Test')
-    test_error('an error')
+    sys.stderr.write("Test")
+    test_error("an error")
 
 
 # TEST_PROPERTY(WILL_FAIL, TRUE)
 def test_error_string_stdout():
     import sys
 
-    sys.stdout.write('Error: an error\n')
+    sys.stdout.write("Error: an error\n")
 
 
 # TEST_PROPERTY(WILL_FAIL, TRUE)
 def test_error_string_second_line():
     import sys
 
-    sys.stderr.write('Not an error\n')
+    sys.stderr.write("Not an error\n")
     test_error("an error")
 
 
@@ -69,34 +70,34 @@ def raise_exception():
 
 
 def test_expected_exception():
-    expect_exception('when throwing an exception', NotImplementedError,
-                     raise_exception)
+    expect_exception("when throwing an exception", NotImplementedError, raise_exception)
 
 
 # TEST_PROPERTY(WILL_FAIL, TRUE)
 def test_unexpected_exception():
-    expect_exception('when throwing an unexpected exception', SyntaxError,
-                     raise_exception)
+    expect_exception(
+        "when throwing an unexpected exception", SyntaxError, raise_exception
+    )
 
 
 # TEST_PROPERTY(ENVIRONMENT, TEST_ENVVAR=test_value)
 def test_environment():
     import os
 
-    envvar = 'TEST_ENVVAR'
+    envvar = "TEST_ENVVAR"
 
     if envvar not in os.environ:
-        test_error('failed to get environment from CTest')
+        test_error("failed to get environment from CTest")
     else:
-        expected = 'test_value'
+        expected = "test_value"
 
         envvalue = os.environ[envvar]
 
         if envvalue != expected:
-            test_error('did not get expected value')
+            test_error("did not get expected value")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
 
     if len(sys.argv) != 2:

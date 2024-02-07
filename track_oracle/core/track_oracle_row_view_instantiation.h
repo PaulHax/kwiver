@@ -7,7 +7,9 @@
 
 #include <track_oracle/core/track_oracle_row_view.txx>
 
-#define TRACK_ORACLE_ROW_VIEW_INSTANCES(T) \
-  template TRACK_ORACLE_ROW_VIEW_EXPORT kwiver::track_oracle::track_field< T >& kwiver::track_oracle::track_oracle_row_view::add_field< T >( const std::string& );
+#define TRACK_ORACLE_ROW_VIEW_INSTANCES( T )                                  \
+template TRACK_ORACLE_ROW_VIEW_EXPORT kwiver::track_oracle::track_field< T >& \
+kwiver::track_oracle::track_oracle_row_view::add_field< T >(                  \
+  const std::string& );
 
 #endif

@@ -8,9 +8,9 @@
 #ifndef KWIVER_ARROWS_KLV_KLV_1204_H_
 #define KWIVER_ARROWS_KLV_KLV_1204_H_
 
-#include <arrows/klv/kwiver_algo_klv_export.h>
 #include <arrows/klv/klv_packet.h>
 #include <arrows/klv/klv_uuid.h>
+#include <arrows/klv/kwiver_algo_klv_export.h>
 
 #include <array>
 #include <optional>
@@ -73,8 +73,9 @@ private:
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
-  write_typed( klv_1204_miis_id const& value,
-               klv_write_iter_t& data, size_t length ) const override;
+  write_typed(
+    klv_1204_miis_id const& value,
+    klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed( klv_1204_miis_id const& value ) const override;

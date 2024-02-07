@@ -18,13 +18,16 @@ namespace kv = kwiver::vital;
 namespace ka = kwiver::arrows;
 
 kv::path_t g_data_dir;
-static std::string test_image_name = "images/kitware_logos/small_color_logo.png";
+static std::string test_image_name =
+  "images/kitware_logos/small_color_logo.png";
 static std::string test_mask_name = "images/kitware_logos/small_logo_mask.png";
 
-static std::string expected_telea_result_file = "images/kitware_logos/inpaint_telea.png";
+static std::string expected_telea_result_file =
+  "images/kitware_logos/inpaint_telea.png";
 static std::string expected_navier_stokes_result_file =
   "images/kitware_logos/inpaint_navier_stokes.png";
-static std::string expected_mask_result_file = "images/kitware_logos/inpaint_mask.png";
+static std::string expected_mask_result_file =
+  "images/kitware_logos/inpaint_mask.png";
 
 // ----------------------------------------------------------------------------
 int
@@ -52,8 +55,9 @@ class inpaint : public ::testing::Test
   kv::config_block_sptr config;
 
 public:
-  void test_inpaint_type( kv::config_block_sptr const& config,
-                          kv::path_t expected_basename );
+  void test_inpaint_type(
+    kv::config_block_sptr const& config,
+    kv::path_t expected_basename );
 };
 
 // ----------------------------------------------------------------------------
@@ -73,8 +77,9 @@ inpaint
 // ----------------------------------------------------------------------------
 void
 inpaint
-::test_inpaint_type( kv::config_block_sptr const& config,
-                     kv::path_t expected_basename )
+::test_inpaint_type(
+  kv::config_block_sptr const& config,
+  kv::path_t expected_basename )
 {
   inpainter.set_configuration( config );
 
@@ -82,19 +87,21 @@ inpaint
 
   auto expected_filename = data_dir + "/" + expected_basename;
   auto const expected_image_ptr = io.load( expected_filename );
-  EXPECT_TRUE( equal_content( inpainted_image_ptr->get_image(),
-                              expected_image_ptr->get_image() ) );
+  EXPECT_TRUE(
+    equal_content(
+      inpainted_image_ptr->get_image(),
+      expected_image_ptr->get_image() ) );
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(inpaint, navier_stokes)
+TEST_F ( inpaint, navier_stokes )
 {
   config->set_value( "inpaint_method", "navier_stokes" );
   test_inpaint_type( config, expected_navier_stokes_result_file );
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(inpaint, mask)
+TEST_F ( inpaint, mask )
 {
   config->set_value( "inpaint_method", "mask" );
   test_inpaint_type( config, expected_mask_result_file );

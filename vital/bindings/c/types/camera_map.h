@@ -18,13 +18,14 @@ extern "C"
 #include <stddef.h>
 #include <stdint.h>
 
-#include <vital/bindings/c/types/camera.h>
 #include <vital/bindings/c/error_handle.h>
+#include <vital/bindings/c/types/camera.h>
 
 /// Opaque structure for vital::camera_map class
 typedef struct vital_camera_map_s vital_camera_map_t;
 
 /// New, simple camera map
+
 /**
  * Given a two parallel arrays of frame number and cameras, create a new
  * camera map.
@@ -44,28 +45,32 @@ typedef struct vital_camera_map_s vital_camera_map_t;
  *          frame numbers and cameras.
  */
 VITAL_C_EXPORT
-vital_camera_map_t* vital_camera_map_new( size_t length,
-                                          int64_t *frame_numbers,
-                                          vital_camera_t **cameras,
-                                          vital_error_handle_t *eh );
+vital_camera_map_t* vital_camera_map_new(
+  size_t length,
+  int64_t* frame_numbers,
+  vital_camera_t** cameras,
+  vital_error_handle_t* eh );
 
 /// Destroy the given camera_map
 VITAL_C_EXPORT
-void vital_camera_map_destroy( vital_camera_map_t *cam_map,
-                               vital_error_handle_t *eh );
+void vital_camera_map_destroy(
+  vital_camera_map_t* cam_map,
+  vital_error_handle_t* eh );
 
 /// Return the number of cameras in the map
 VITAL_C_EXPORT
-size_t vital_camera_map_size( vital_camera_map_t *cam_map,
-                              vital_error_handle_t *eh );
+size_t vital_camera_map_size(
+  vital_camera_map_t* cam_map,
+  vital_error_handle_t* eh );
 
 /// Set pointers to parallel arrays of frame numbers and camera instances
 VITAL_C_EXPORT
-void vital_camera_map_get_map( vital_camera_map_t *cam_map,
-                               size_t *length,
-                               int64_t **frame_numbers,
-                               vital_camera_t ***cameras,
-                               vital_error_handle_t *eh );
+void vital_camera_map_get_map(
+  vital_camera_map_t* cam_map,
+  size_t* length,
+  int64_t** frame_numbers,
+  vital_camera_t*** cameras,
+  vital_error_handle_t* eh );
 
 #ifdef __cplusplus
 }

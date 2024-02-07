@@ -18,76 +18,84 @@
 #include <vital/types/vector.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
-template< class algorithm_def_eh_base=
-           kwiver::vital::algorithm_def<
-               kwiver::vital::algo::estimate_homography > >
-class algorithm_def_eh_trampoline :
-      public algorithm_trampoline< algorithm_def_eh_base>
-{
-  public:
-    using algorithm_trampoline< algorithm_def_eh_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<
-         kwiver::vital::algo::estimate_homography >,
-        type_name,
-      );
-    }
+template < class algorithm_def_eh_base =
+    kwiver::vital::algorithm_def<
+      kwiver::vital::algo::estimate_homography > >
+class algorithm_def_eh_trampoline
+  : public algorithm_trampoline< algorithm_def_eh_base >
+{
+public:
+  using algorithm_trampoline< algorithm_def_eh_base >::algorithm_trampoline;
+
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def<
+        kwiver::vital::algo::estimate_homography >,
+      type_name,
+    );
+  }
 };
 
-template< class estimate_homography_base =
-                  kwiver::vital::algo::estimate_homography >
-class estimate_homography_trampoline :
-      public algorithm_def_eh_trampoline< estimate_homography_base >
+template < class estimate_homography_base =
+    kwiver::vital::algo::estimate_homography >
+class estimate_homography_trampoline
+  : public algorithm_def_eh_trampoline< estimate_homography_base >
 {
-  public:
-    using algorithm_def_eh_trampoline< estimate_homography_base >::
-              algorithm_def_eh_trampoline;
+public:
+  using algorithm_def_eh_trampoline< estimate_homography_base >::
+  algorithm_def_eh_trampoline;
 
-    kwiver::vital::homography_sptr
-      estimate(const kwiver::vital::feature_set_sptr feat1,
-               const kwiver::vital::feature_set_sptr feat2,
-               const kwiver::vital::match_set_sptr matches,
-               std::vector<bool>& inliers,
-               double inlier_scale)  const override
-    {
-      PYBIND11_OVERLOAD(
-        kwiver::vital::homography_sptr,
-        kwiver::vital::algo::estimate_homography,
-        estimate,
-        feat1,
-        feat2,
-        matches,
-        inliers,
-        inlier_scale
-      );
-    }
+  kwiver::vital::homography_sptr
+  estimate(
+    const kwiver::vital::feature_set_sptr feat1,
+    const kwiver::vital::feature_set_sptr feat2,
+    const kwiver::vital::match_set_sptr matches,
+    std::vector< bool >& inliers,
+    double inlier_scale )  const override
+  {
+    PYBIND11_OVERLOAD(
+      kwiver::vital::homography_sptr,
+      kwiver::vital::algo::estimate_homography,
+      estimate,
+      feat1,
+      feat2,
+      matches,
+      inliers,
+      inlier_scale
+    );
+  }
 
-    kwiver::vital::homography_sptr
-      estimate(const std::vector<kwiver::vital::vector_2d>& pts1,
-               const std::vector<kwiver::vital::vector_2d>& pts2,
-               std::vector<bool>& inliers,
-               double inlier_scale)  const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        kwiver::vital::homography_sptr,
-        kwiver::vital::algo::estimate_homography,
-        estimate,
-        pts1,
-        pts2,
-        inliers,
-        inlier_scale
-      );
-    }
-
+  kwiver::vital::homography_sptr
+  estimate(
+    const std::vector< kwiver::vital::vector_2d >& pts1,
+    const std::vector< kwiver::vital::vector_2d >& pts2,
+    std::vector< bool >& inliers,
+    double inlier_scale )  const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      kwiver::vital::homography_sptr,
+      kwiver::vital::algo::estimate_homography,
+      estimate,
+      pts1,
+      pts2,
+      inliers,
+      inlier_scale
+    );
+  }
 };
-}
-}
-}
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
 
 #endif

@@ -232,7 +232,7 @@ klv_1206_traits_lookup()
       std::make_shared<
         klv_1303_mdap_format<
           klv_lengthless_format< klv_imap_format > > >(
-            vital::interval< double >{ 0.0, 1.0e6 }, 4 ),
+        vital::interval< double >{ 0.0, 1.0e6 }, 4 ),
       "Radar Cross Section Scale Factor Polynomial",
       "Two-dimensional array of polynomial coefficients used to determine the "
       "radar cross-section for a pixel. See MISB ST1206 for an explanation of "

@@ -9,11 +9,12 @@
 #define VITAL_DESCRIPTOR_SET_H_
 
 #include "descriptor.h"
-#include <vital/set.h>
 #include <vital/logger/logger.h>
+#include <vital/set.h>
 #include <vital/vital_export.h>
 
 namespace kwiver {
+
 namespace vital {
 
 /// An abstract ordered collection of feature descriptors.
@@ -50,8 +51,8 @@ typedef std::shared_ptr< descriptor_set > descriptor_set_sptr;
 
 // ----------------------------------------------------------------------------
 /// A concrete descriptor set that simply wraps a vector of descriptors.
-class VITAL_EXPORT simple_descriptor_set :
-  public descriptor_set
+class VITAL_EXPORT simple_descriptor_set
+  : public descriptor_set
 {
 public:
   /// Default Constructor
@@ -59,7 +60,8 @@ public:
   ~simple_descriptor_set();
 
   /// Constructor from a vector of descriptors
-  explicit simple_descriptor_set( const std::vector< descriptor_sptr >& descriptors );
+  explicit simple_descriptor_set(
+    const std::vector< descriptor_sptr >& descriptors );
 
   /// Get the number of elements in this set.
   ///
@@ -82,7 +84,8 @@ public:
   //@}
 
   /// Return a vector of descriptor shared pointers
-  virtual std::vector< descriptor_sptr > descriptors() const { return data_; }
+  virtual std::vector< descriptor_sptr >
+  descriptors() const { return data_; }
 
 protected:
   using vec_t = std::vector< descriptor_sptr >;
@@ -97,6 +100,8 @@ protected:
   const_iterator::next_value_func_t get_const_iter_next_func() const;
 };
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital
 
 #endif // VITAL_DESCRIPTOR_SET_H_

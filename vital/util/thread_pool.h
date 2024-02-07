@@ -23,6 +23,7 @@
 #include <vector>
 
 namespace kwiver {
+
 namespace vital {
 
 /// A thread pool class to distribute tasks across a fixed pool of threads
@@ -44,7 +45,8 @@ namespace vital {
 ///
 ///  // enqueue function calls (non-blocking)
 ///  std::future<double> val1 = thread_pool::instance().enqueue( my_func1, 10 );
-///  std::future<float> val2 = thread_pool::instance().enqueue( my_func2, 2.1, 3 );
+///  std::future<float> val2 = thread_pool::instance().enqueue( my_func2, 2.1, 3
+/// );
 ///
 ///  // get the results (blocks until each task is running)
 ///  std::cout << "results " << val1.get() << ", " << val2.get() << std::endl;
@@ -66,19 +68,19 @@ public:
   const char* active_backend() const;
 
   /// Return the names of the available backends
-  static std::vector<std::string> available_backends();
+  static std::vector< std::string > available_backends();
 
   /// Set the backend
   ///
   /// Destroys the current backend and replaces it with a new
   /// one of the specified type.  The \p backend_name must match
   /// one of the names provided by available_backend().
-  void set_backend(std::string const& backend_name);
+  void set_backend( std::string const& backend_name );
 
   /// Enqueue an arbitrary function as a task to run
-  template<class F, class... Args>
-  auto enqueue(F&& f, Args&&... args)
-    -> std::future<typename std::result_of<F(Args...)>::type>;
+  template < class F, class... Args >
+  auto enqueue( F&& f, Args&&... args )
+  -> std::future< typename std::result_of< F( Args... ) >::type >;
 
   /// A base class for thread pool backend implementations
   class VITAL_UTIL_EXPORT backend
@@ -98,47 +100,51 @@ public:
     virtual const char* name() const = 0;
 
     /// Enqueue a void() task
-    virtual void enqueue_task(std::function<void()> func) = 0;
+    virtual void enqueue_task( std::function< void() > func ) = 0;
   };
 
 private:
-
-   /// Constructor - private for signleton
+  /// Constructor - private for signleton
   thread_pool();
 
   /// Destructor
   ~thread_pool() = default;
 
   /// Enqueue a void function in the thread pool
-  void enqueue_task(std::function<void()> task);
+  void enqueue_task( std::function< void() > task );
 
   /// private implementation class
   class priv;
-  const std::unique_ptr<priv> d_;
+
+  const std::unique_ptr< priv > d_;
 };
 
 /// Enqueue an arbitrary function as a task to run
-template<class F, class... Args>
-auto thread_pool::enqueue(F&& f, Args&&... args)
-  -> std::future<typename std::result_of<F(Args...)>::type>
+template < class F, class... Args >
+auto
+thread_pool
+::enqueue( F&& f, Args&&... args )
+-> std::future< typename std::result_of< F ( Args... ) >::type >
 {
   // get the return type of the function to be run
-  using return_type = typename std::result_of<F(Args...)>::type;
+  using return_type = typename std::result_of< F ( Args... ) >::type;
 
   // package up the task
-  auto task = std::make_shared< std::packaged_task<return_type()> >(
-      std::bind(std::forward<F>(f), std::forward<Args>(args)...)
-    );
+  auto task = std::make_shared< std::packaged_task< return_type() > >(
+    std::bind( std::forward< F >( f ), std::forward< Args >( args )... )
+  );
 
   // get a future to the function result to return to the caller
-  std::future<return_type> res = task->get_future();
+  std::future< return_type > res = task->get_future();
 
   // add the task to the queue using a lambda function to ignore return type
-  this->enqueue_task([task](){ (*task)(); });
+  this->enqueue_task( [ task ](){ ( *task )(); } );
 
   return res;
 }
 
-} }   // end namespace
+} // namespace vital
+
+}     // end namespace
 
 #endif

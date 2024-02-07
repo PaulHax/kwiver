@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Tests for vital::descriptor_request interface
 
 """
+
 import nose.tools as nt
 import numpy.testing as npt
 import numpy as np
@@ -90,7 +91,7 @@ class TestVitalDescriptorRequest(object):
             (Timestamp(300, 5), Timestamp(400, 6)),
         ]
 
-        for (t1, t2) in test_bounds:
+        for t1, t2 in test_bounds:
             dr.set_temporal_bounds(t1, t2)
             nt.assert_equals(dr.temporal_lower_bound(), t1)
             nt.assert_equals(dr.temporal_upper_bound(), t2)

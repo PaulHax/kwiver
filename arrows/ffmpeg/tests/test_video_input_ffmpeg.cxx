@@ -11,17 +11,16 @@
 #include <arrows/ffmpeg/ffmpeg_video_input.h>
 #include <arrows/tests/test_video_input.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/exceptions/io.h>
 #include <vital/exceptions/video.h>
 #include <vital/plugin_management/plugin_manager.h>
-#include <vital/algo/algorithm.txx>
 
 #include <kwiversys/SystemTools.hxx>
 
 #include <iostream>
 #include <memory>
 #include <string>
-
 
 namespace ffmpeg = kwiver::arrows::ffmpeg;
 namespace core = kwiver::arrows::core;
@@ -48,7 +47,8 @@ main( int argc, char* argv[] )
 class ffmpeg_video_input : public ::testing::Test
 {
 public:
-  void SetUp() override
+  void
+  SetUp() override
   {
     // TODO(C++17): Replace with std::filesystem
     using st = kwiversys::SystemTools;
@@ -66,7 +66,9 @@ public:
 // ----------------------------------------------------------------------------
 TEST_F ( ffmpeg_video_input, create )
 {
-  EXPECT_NE( nullptr, kv::create_algorithm<kv::algo::video_input>( "ffmpeg" ) );
+  EXPECT_NE(
+    nullptr,
+    kv::create_algorithm< kv::algo::video_input >( "ffmpeg" ) );
 }
 
 // ----------------------------------------------------------------------------
@@ -152,7 +154,7 @@ TEST_F ( ffmpeg_video_input, frame_image )
 // ----------------------------------------------------------------------------
 // Verify that disabling KLV processing acts as expected and doesn't break
 // anything else.
-TEST_F( ffmpeg_video_input, klv_disabled )
+TEST_F ( ffmpeg_video_input, klv_disabled )
 {
   ffmpeg::ffmpeg_video_input input;
 
@@ -451,12 +453,13 @@ TEST_F ( ffmpeg_video_input, metadata_map )
 // ----------------------------------------------------------------------------
 TEST_F ( ffmpeg_video_input, sync_metadata )
 {
-  static std::map< size_t, std::set< uint64_t > > const expected_md =
-    { { 0, { 1221515219356000, 1221515219396000 } },
-      { 1, { 1221515219426000 } },
-      { 2, { 1221515219456000 } },
-      { 3, { 1221515219486000 } },
-      { 4, { 1221515219516000 } } };
+  static std::map< size_t,
+    std::set< uint64_t > > const expected_md = { { 0,
+    { 1221515219356000, 1221515219396000 } },
+    { 1, { 1221515219426000 } },
+    { 2, { 1221515219456000 } },
+    { 3, { 1221515219486000 } },
+    { 4, { 1221515219516000 } } };
 
   ffmpeg::ffmpeg_video_input input;
 
@@ -507,7 +510,7 @@ TEST_F ( ffmpeg_video_input, sync_metadata )
 TEST_F ( ffmpeg_video_input, empty_filter_desc )
 {
   ffmpeg::ffmpeg_video_input input;
-  
+
   auto config = input.get_configuration();
   // make the avfilter pipeline empty
   config->set_value( "filter_desc", "" );

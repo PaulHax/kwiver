@@ -12,7 +12,8 @@
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  *
- *  * Neither name of Kitware, Inc. nor the names of any contributors may be used
+ *  * Neither name of Kitware, Inc. nor the names of any contributors may be
+ * used
  *    to endorse or promote products derived from this software without specific
  *    prior written permission.
  *
@@ -44,7 +45,9 @@
 #include <arrows/dbow2/match_descriptor_sets.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace dbow2 {
 
 extern "C"
@@ -54,20 +57,22 @@ register_factories( ::kwiver::vital::plugin_loader& vpm )
 {
   ::kwiver::vital::algorithm_registrar reg( vpm, "arrows.dbow2" );
 
-  if (reg.is_module_loaded())
+  if( reg.is_module_loaded() )
   {
     return;
   }
 
-#if defined(HAVE_OPENCV_NONFREE)
+#if defined( HAVE_OPENCV_NONFREE )
   cv::initModule_nonfree();
 #endif
 
   reg.register_algorithm< ::kwiver::arrows::dbow2::match_descriptor_sets >();
 
-    reg.mark_module_as_loaded();
+  reg.mark_module_as_loaded();
 }
 
 } // end namespace dbow2
+
 } // end namespace arrows
+
 } // end namespace kwiver

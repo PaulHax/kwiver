@@ -17,55 +17,62 @@
 #include <vital/algo/initialize_object_tracks.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
-template < class algorithm_def_iot_base=
-            kwiver::vital::algorithm_def<
-              kwiver::vital::algo::initialize_object_tracks > >
-class algorithm_def_iot_trampoline :
-      public algorithm_trampoline<algorithm_def_iot_base>
+template < class algorithm_def_iot_base =
+    kwiver::vital::algorithm_def<
+      kwiver::vital::algo::initialize_object_tracks > >
+class algorithm_def_iot_trampoline
+  : public algorithm_trampoline< algorithm_def_iot_base >
 {
-  public:
-    using algorithm_trampoline<algorithm_def_iot_base>::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_iot_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<kwiver::vital::algo::initialize_object_tracks>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::
+        initialize_object_tracks >,
+      type_name,
+    );
+  }
 };
 
-template< class initialize_object_tracks_base=
-                kwiver::vital::algo::initialize_object_tracks >
-class initialize_object_tracks_trampoline :
-      public algorithm_def_iot_trampoline< initialize_object_tracks_base >
+template < class initialize_object_tracks_base =
+    kwiver::vital::algo::initialize_object_tracks >
+class initialize_object_tracks_trampoline
+  : public algorithm_def_iot_trampoline< initialize_object_tracks_base >
 {
-  public:
-    using algorithm_def_iot_trampoline< initialize_object_tracks_base>::
-              algorithm_def_iot_trampoline;
+public:
+  using algorithm_def_iot_trampoline< initialize_object_tracks_base >::
+  algorithm_def_iot_trampoline;
 
-    kwiver::vital::object_track_set_sptr
-    initialize( kwiver::vital::timestamp ts,
-                kwiver::vital::image_container_sptr image,
-                kwiver::vital::detected_object_set_sptr detections ) const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        kwiver::vital::object_track_set_sptr,
-        kwiver::vital::algo::initialize_object_tracks,
-        initialize,
-        ts,
-        image,
-        detections
-      );
-    }
+  kwiver::vital::object_track_set_sptr
+  initialize(
+    kwiver::vital::timestamp ts,
+    kwiver::vital::image_container_sptr image,
+    kwiver::vital::detected_object_set_sptr detections ) const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      kwiver::vital::object_track_set_sptr,
+      kwiver::vital::algo::initialize_object_tracks,
+      initialize,
+      ts,
+      image,
+      detections
+    );
+  }
 };
 
-}
-}
-}
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
 
 #endif

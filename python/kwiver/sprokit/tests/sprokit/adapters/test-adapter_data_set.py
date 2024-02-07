@@ -32,6 +32,7 @@ from kwiver.sprokit.util.test import expect_exception, find_tests, run_test, tes
 
 from kwiver.sprokit.pipeline import datum
 
+
 def test_import():
     try:
         import kwiver.sprokit.adapters.adapter_data_set
@@ -118,7 +119,11 @@ def check_same_type(retrieved_val, val, portname):
 # once with the add/get function that automatically casts,
 # once with the index operator
 def add_get_helper(
-    instance, instance_add_fxn, instance_get_fxn, val, data_type_str,
+    instance,
+    instance_add_fxn,
+    instance_get_fxn,
+    val,
+    data_type_str,
 ):
     from kwiver.sprokit.adapters import adapter_data_set
 

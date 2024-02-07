@@ -13,20 +13,21 @@ using namespace kwiver::vital;
 
 namespace {
 
-std::vector<unsigned> const positive_samples  = { 2, 5, 6, 7, 8 };
-std::vector<unsigned> const negative_samples  = { 1, 3, 4 };
+std::vector< unsigned > const positive_samples  = { 2, 5, 6, 7, 8 };
+std::vector< unsigned > const negative_samples  = { 1, 3, 4 };
 
-}
+} // namespace
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
 }
 
 // ----------------------------------------------------------------------------
-TEST(iqr_feedback, ensure_values)
+TEST ( iqr_feedback, ensure_values )
 {
   iqr_feedback feedback;
 

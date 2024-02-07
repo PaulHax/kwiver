@@ -3,26 +3,36 @@
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
 #include <pybind11/pybind11.h>
-#include <python/kwiver/vital/algo/trampoline/extract_descriptors_trampoline.txx>
 #include <python/kwiver/vital/algo/extract_descriptors.h>
+#include \
+  <python/kwiver/vital/algo/trampoline/extract_descriptors_trampoline.txx>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
+
 namespace py = pybind11;
 
-void extract_descriptors(py::module &m)
+void
+extract_descriptors( py::module& m )
 {
   py::class_< kwiver::vital::algo::extract_descriptors,
-              std::shared_ptr<kwiver::vital::algo::extract_descriptors>,
-              kwiver::vital::algorithm_def<kwiver::vital::algo::extract_descriptors>,
-              extract_descriptors_trampoline<> >( m, "ExtractDescriptors" )
-    .def(py::init())
-    .def_static("static_type_name",
-                &kwiver::vital::algo::extract_descriptors::static_type_name)
-    .def("extract",
-         &kwiver::vital::algo::extract_descriptors::extract);
+    std::shared_ptr< kwiver::vital::algo::extract_descriptors >,
+    kwiver::vital::algorithm_def< kwiver::vital::algo::extract_descriptors >,
+    extract_descriptors_trampoline<> >( m, "ExtractDescriptors" )
+    .def( py::init() )
+    .def_static(
+      "static_type_name",
+      &kwiver::vital::algo::extract_descriptors::static_type_name )
+    .def(
+      "extract",
+      &kwiver::vital::algo::extract_descriptors::extract );
 }
-}
-}
-}
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver

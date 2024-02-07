@@ -20,12 +20,14 @@ namespace ka = kwiver::arrows;
 
 kv::path_t g_data_dir;
 static std::string test_image_name = "images/kitware_logos/small_grey_logo.png";
-static std::string test_color_image_name = "images/kitware_logos/small_color_logo.png";
+static std::string test_color_image_name =
+  "images/kitware_logos/small_color_logo.png";
 static std::string expected_box = "images/kitware_logos/box.png";
 static std::string expected_box_wide = "images/kitware_logos/box_wide.png";
 static std::string expected_bidir = "images/kitware_logos/bidir.png";
 static std::string expected_bidir_wide = "images/kitware_logos/bidir_wide.png";
-static std::string expected_bidir_color = "images/kitware_logos/bidir_color.png";
+static std::string expected_bidir_color =
+  "images/kitware_logos/bidir_color.png";
 
 // ----------------------------------------------------------------------------
 int
@@ -46,7 +48,7 @@ class high_pass_filter : public ::testing::Test
 };
 
 // ----------------------------------------------------------------------------
-TEST_F(high_pass_filter, color)
+TEST_F ( high_pass_filter, color )
 {
   ka::vxl::image_io io;
 
@@ -61,12 +63,14 @@ TEST_F(high_pass_filter, color)
   auto const filtered_image_ptr = filter.filter( image_ptr );
   kv::path_t expected = data_dir + "/" + expected_bidir_color;
   auto const& expected_image_ptr = io.load( expected );
-  EXPECT_TRUE( equal_content( filtered_image_ptr->get_image(),
-                              expected_image_ptr->get_image() ) );
+  EXPECT_TRUE(
+    equal_content(
+      filtered_image_ptr->get_image(),
+      expected_image_ptr->get_image() ) );
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(high_pass_filter, box)
+TEST_F ( high_pass_filter, box )
 {
   ka::vxl::image_io io;
 
@@ -81,12 +85,14 @@ TEST_F(high_pass_filter, box)
   auto const filtered_image_ptr = filter.filter( image_ptr );
   kv::path_t expected = data_dir + "/" + expected_box;
   auto const& expected_image_ptr = io.load( expected );
-  EXPECT_TRUE( equal_content( filtered_image_ptr->get_image(),
-                              expected_image_ptr->get_image() ) );
+  EXPECT_TRUE(
+    equal_content(
+      filtered_image_ptr->get_image(),
+      expected_image_ptr->get_image() ) );
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(high_pass_filter, box_wide)
+TEST_F ( high_pass_filter, box_wide )
 {
   ka::vxl::image_io io;
 
@@ -103,12 +109,14 @@ TEST_F(high_pass_filter, box_wide)
   auto const filtered_image_ptr = filter.filter( image_ptr );
   kv::path_t expected = data_dir + "/" + expected_box_wide;
   auto const& expected_image_ptr = io.load( expected );
-  EXPECT_TRUE( equal_content( filtered_image_ptr->get_image(),
-                              expected_image_ptr->get_image() ) );
+  EXPECT_TRUE(
+    equal_content(
+      filtered_image_ptr->get_image(),
+      expected_image_ptr->get_image() ) );
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(high_pass_filter, bidir)
+TEST_F ( high_pass_filter, bidir )
 {
   ka::vxl::image_io io;
 
@@ -123,12 +131,14 @@ TEST_F(high_pass_filter, bidir)
   auto const filtered_image_ptr = filter.filter( image_ptr );
   kv::path_t expected = data_dir + "/" + expected_bidir;
   auto const& expected_image_ptr = io.load( expected );
-  EXPECT_TRUE( equal_content( filtered_image_ptr->get_image(),
-                              expected_image_ptr->get_image() ) );
+  EXPECT_TRUE(
+    equal_content(
+      filtered_image_ptr->get_image(),
+      expected_image_ptr->get_image() ) );
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(high_pass_filter, bidir_wide)
+TEST_F ( high_pass_filter, bidir_wide )
 {
   ka::vxl::image_io io;
 
@@ -145,6 +155,8 @@ TEST_F(high_pass_filter, bidir_wide)
   kv::image_container_sptr filtered_image_ptr = filter.filter( image_ptr );
   kv::path_t expected = data_dir + "/" + expected_bidir_wide;
   auto const expected_image_ptr = io.load( expected );
-  EXPECT_TRUE( equal_content( filtered_image_ptr->get_image(),
-                              expected_image_ptr->get_image() ) );
+  EXPECT_TRUE(
+    equal_content(
+      filtered_image_ptr->get_image(),
+      expected_image_ptr->get_image() ) );
 }

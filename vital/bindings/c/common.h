@@ -20,26 +20,27 @@ extern "C"
 #include <vital/bindings/c/vital_c_export.h>
 
 /// Simple string structure
-typedef struct {
+typedef struct
+{
   size_t length;
-  char *str;
+  char* str;
 } vital_string_t;
 
 /// Allocate a new vital string structure
 VITAL_C_EXPORT
-vital_string_t* vital_string_new(size_t length, char const* s);
+vital_string_t* vital_string_new( size_t length, char const* s );
 
 /// Free an allocated string structure
 VITAL_C_EXPORT
-void vital_string_free( vital_string_t *s );
+void vital_string_free( vital_string_t* s );
 
 /// Common function for freeing string lists
 VITAL_C_EXPORT
-void vital_common_free_string_list( size_t length, char **keys );
+void vital_common_free_string_list( size_t length, char** keys );
 
 /// Other free functions
-VITAL_C_EXPORT void vital_free_pointer( void *thing );
-VITAL_C_EXPORT void vital_free_double_pointer( size_t length, void **things );
+VITAL_C_EXPORT void vital_free_pointer( void* thing );
+VITAL_C_EXPORT void vital_free_double_pointer( size_t length, void** things );
 
 #ifdef __cplusplus
 }

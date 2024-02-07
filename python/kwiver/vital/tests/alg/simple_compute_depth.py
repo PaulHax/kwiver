@@ -32,26 +32,28 @@ from kwiver.vital.algo import ComputeDepth
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
 from unittest.mock import Mock
 
+
 class SimpleComputeDepth(CommonConfigurationMixin, ComputeDepth):
     """
     Implementation of ComputeDepth to test it
 
     Examples:
     """
+
     def __init__(self):
         ComputeDepth.__init__(self)
 
 
-
 def __vital_algorithm_register__():
     from kwiver.vital.algo import algorithm_factory
+
     # Register Algorithm
-    implementation_name  = "SimpleComputeDepth"
+    implementation_name = "SimpleComputeDepth"
     if algorithm_factory.has_algorithm_impl_name(
-                            SimpleComputeDepth.static_type_name(),
-                            implementation_name):
+        SimpleComputeDepth.static_type_name(), implementation_name
+    ):
         return
-    algorithm_factory.add_algorithm( implementation_name,
-                                "Test kwiver.vital.algo.ComputeDepth",
-                                 SimpleComputeDepth )
-    algorithm_factory.mark_algorithm_as_loaded( implementation_name )
+    algorithm_factory.add_algorithm(
+        implementation_name, "Test kwiver.vital.algo.ComputeDepth", SimpleComputeDepth
+    )
+    algorithm_factory.mark_algorithm_as_loaded(implementation_name)

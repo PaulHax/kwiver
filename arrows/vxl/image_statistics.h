@@ -6,7 +6,6 @@
 #include <vital/range/iota.h>
 
 #include <vil/algo/vil_threshold.h>
-#include <vil/vil_image_view.h>
 #include <vil/vil_plane.h>
 
 #include <algorithm>
@@ -17,9 +16,10 @@
 // Calculate the values of our image percentiles from x sampling points
 template < typename PixType >
 std::vector< PixType >
-sample_and_sort_image( vil_image_view< PixType > const& src,
-                       unsigned int sampling_points,
-                       bool remove_extremes )
+sample_and_sort_image(
+  vil_image_view< PixType > const& src,
+  unsigned int sampling_points,
+  bool remove_extremes )
 {
   if( src.ni() * src.nj() < sampling_points )
   {
@@ -116,8 +116,9 @@ percentile_threshold_above(
 {
   // Calculate thresholds
   auto thresholds = get_image_percentiles( src, percentiles, sampling_points );
-  dst.set_size( src.ni(), src.nj(),
-                static_cast< unsigned >( percentiles.size() ) );
+  dst.set_size(
+    src.ni(), src.nj(),
+    static_cast< unsigned >( percentiles.size() ) );
 
   // Perform thresholding
   for( unsigned i = 0; i < thresholds.size(); i++ )

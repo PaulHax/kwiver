@@ -10,17 +10,19 @@
 #ifndef VITAL_C_HELPERS_DESCRIPTOR_H_
 #define VITAL_C_HELPERS_DESCRIPTOR_H_
 
-#include <vital/types/descriptor.h>
-#include <vital/bindings/c/types/descriptor.h>
 #include <vital/bindings/c/helpers/c_utils.h>
+#include <vital/bindings/c/types/descriptor.h>
+#include <vital/types/descriptor.h>
 
 namespace kwiver {
+
 namespace vital_c {
 
 extern SharedPointerCache< kwiver::vital::descriptor, vital_descriptor_t >
-  DESCRIPTOR_SPTR_CACHE;
+DESCRIPTOR_SPTR_CACHE;
 
-}
-}
+} // namespace vital_c
 
-#endif //VITAL_C_HELPERS_DESCRIPTOR_H_
+} // namespace kwiver
+
+#endif // VITAL_C_HELPERS_DESCRIPTOR_H_

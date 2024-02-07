@@ -28,39 +28,50 @@ solver_options
 ::get_configuration( config_block_sptr config ) const
 {
   ::ceres::Solver::Options const& o = this->options;
-  config->set_value( "num_threads", o.num_threads,
-                     "Number of threads to use" );
-  config->set_value( "num_linear_solver_threads", o.num_linear_solver_threads,
-                     "Number of threads to use in the linear solver" );
-  config->set_value( "max_num_iterations", o.max_num_iterations,
-                     "Maximum number of iteration of allow" );
-  config->set_value( "function_tolerance", o.function_tolerance,
-                     "Solver terminates if relative cost change is below this "
-                     "tolerance" );
-  config->set_value( "gradient_tolerance", o.gradient_tolerance,
-                     "Solver terminates if the maximum gradient is below this "
-                     "tolerance" );
-  config->set_value( "parameter_tolerance", o.parameter_tolerance,
-                     "Solver terminates if the relative change in parameters "
-                     "is below this tolerance" );
-  config->set_value( "linear_solver_type", o.linear_solver_type,
-                     "Linear solver to use." +
-                     ceres_options< ::ceres::LinearSolverType >() );
-  config->set_value( "preconditioner_type", o.preconditioner_type,
-                     "Preconditioner to use." +
-                     ceres_options< ::ceres::PreconditionerType >() );
-  config->set_value( "trust_region_strategy_type",
-                     o.trust_region_strategy_type,
-                     "Trust region step compution algorithm used by Ceres." +
-                     ceres_options< ::ceres::TrustRegionStrategyType >() );
-  config->set_value( "dogleg_type", o.dogleg_type,
-                     "Dogleg strategy to use." +
-                     ceres_options< ::ceres::DoglegType >() );
-  config->set_value( "update_state_every_iteration",
-                     o.update_state_every_iteration,
-                     "If true, the updated state is computed and provided in "
-                     "the callback on every iteration.  This slows down "
-                     "optimization but can be useful for debugging." );
+  config->set_value(
+    "num_threads", o.num_threads,
+    "Number of threads to use" );
+  config->set_value(
+    "num_linear_solver_threads", o.num_linear_solver_threads,
+    "Number of threads to use in the linear solver" );
+  config->set_value(
+    "max_num_iterations", o.max_num_iterations,
+    "Maximum number of iteration of allow" );
+  config->set_value(
+    "function_tolerance", o.function_tolerance,
+    "Solver terminates if relative cost change is below this "
+    "tolerance" );
+  config->set_value(
+    "gradient_tolerance", o.gradient_tolerance,
+    "Solver terminates if the maximum gradient is below this "
+    "tolerance" );
+  config->set_value(
+    "parameter_tolerance", o.parameter_tolerance,
+    "Solver terminates if the relative change in parameters "
+    "is below this tolerance" );
+  config->set_value(
+    "linear_solver_type", o.linear_solver_type,
+    "Linear solver to use." +
+    ceres_options< ::ceres::LinearSolverType >() );
+  config->set_value(
+    "preconditioner_type", o.preconditioner_type,
+    "Preconditioner to use." +
+    ceres_options< ::ceres::PreconditionerType >() );
+  config->set_value(
+    "trust_region_strategy_type",
+    o.trust_region_strategy_type,
+    "Trust region step compution algorithm used by Ceres." +
+    ceres_options< ::ceres::TrustRegionStrategyType >() );
+  config->set_value(
+    "dogleg_type", o.dogleg_type,
+    "Dogleg strategy to use." +
+    ceres_options< ::ceres::DoglegType >() );
+  config->set_value(
+    "update_state_every_iteration",
+    o.update_state_every_iteration,
+    "If true, the updated state is computed and provided in "
+    "the callback on every iteration.  This slows down "
+    "optimization but can be useful for debugging." );
 }
 
 void
@@ -68,7 +79,7 @@ solver_options
 ::set_configuration( config_block_sptr config )
 {
 #define GET_VALUE( vtype, vname ) \
-  options.vname = config->get_value< vtype >(#vname, options.vname );
+options.vname = config->get_value< vtype >(#vname, options.vname );
 
   GET_VALUE( int,    num_threads );
   GET_VALUE( int,    num_linear_solver_threads );
@@ -92,31 +103,33 @@ camera_options
     camera_intrinsic_share_type( other.camera_intrinsic_share_type ),
     camera_path_smoothness( other.camera_path_smoothness ),
     camera_forward_motion_damping( other.camera_forward_motion_damping )
-{
-}
+{}
 
 void
 camera_options
 ::get_configuration( config_block_sptr config ) const
 {
   mvg::camera_options::get_configuration( config );
-  config->set_value( "camera_intrinsic_share_type",
-                     this->camera_intrinsic_share_type,
-                     "Determines how to share intrinsics across cameras.\n"
-                     "AUTO shares intrinsics between cameras with a common camera_intrinsic_sptr\n"
-                     "COMMON enforces that all cameras share common intrinsics\n"
-                     "UNIQUE enforces that each camera has its own intrinsics parameters." +
-                     ceres_options< CameraIntrinsicShareType >() );
-  config->set_value( "camera_path_smoothness", this->camera_path_smoothness,
-                     "Controls the amount a regularization to apply to the camera path. "
-                     "If set to zero the path regularization is disabled." );
-  config->set_value( "camera_forward_motion_damping",
-                     this->camera_forward_motion_damping,
-                     "Controls the amount a regularization to apply to limit camera "
-                     "forward motion.  This option is useful for zoom lenses at long "
-                     "distances.  It causes the algorithm to prefer focal length change "
-                     "over fast motion along the principal ray. "
-                     "If set to zero the regularization is disabled." );
+  config->set_value(
+    "camera_intrinsic_share_type",
+    this->camera_intrinsic_share_type,
+    "Determines how to share intrinsics across cameras.\n"
+    "AUTO shares intrinsics between cameras with a common camera_intrinsic_sptr\n"
+    "COMMON enforces that all cameras share common intrinsics\n"
+    "UNIQUE enforces that each camera has its own intrinsics parameters." +
+    ceres_options< CameraIntrinsicShareType >() );
+  config->set_value(
+    "camera_path_smoothness", this->camera_path_smoothness,
+    "Controls the amount a regularization to apply to the camera path. "
+    "If set to zero the path regularization is disabled." );
+  config->set_value(
+    "camera_forward_motion_damping",
+    this->camera_forward_motion_damping,
+    "Controls the amount a regularization to apply to limit camera "
+    "forward motion.  This option is useful for zoom lenses at long "
+    "distances.  It causes the algorithm to prefer focal length change "
+    "over fast motion along the principal ray. "
+    "If set to zero the regularization is disabled." );
 }
 
 void
@@ -125,7 +138,7 @@ camera_options
 {
   mvg::camera_options::set_configuration( config );
 #define GET_VALUE( vtype, vname ) \
-  this->vname = config->get_value< vtype >(#vname, this->vname );
+this->vname = config->get_value< vtype >(#vname, this->vname );
   GET_VALUE( CameraIntrinsicShareType, camera_intrinsic_share_type );
   GET_VALUE( double, camera_path_smoothness );
   GET_VALUE( double, camera_forward_motion_damping );
@@ -167,8 +180,9 @@ camera_options
   {
     auto fid = ext_par.first;
     vector_3d position_prior_local;
-    if( !constraints->get_camera_position_prior_local( fid,
-                                                       position_prior_local ) )
+    if( !constraints->get_camera_position_prior_local(
+      fid,
+      position_prior_local ) )
     {
       continue;
     }
@@ -186,9 +200,10 @@ camera_options
     auto position_prior_cost =
       camera_position::create( position_prior_local );
 
-    problem.AddResidualBlock( position_prior_cost,
-                              loss,
-                              cam_state );
+    problem.AddResidualBlock(
+      position_prior_cost,
+      loss,
+      cam_state );
     ++num_priors_applied;
   }
   return num_priors_applied;
@@ -208,8 +223,9 @@ camera_options
   // scaling balances the response based on the number of other residuals.
   double scale =
     static_cast< double >( std::max( 1, problem.NumResiduals() ) );
-  auto scaled_loss = new ::ceres::ScaledLoss( NULL, scale,
-                                              ::ceres::Ownership::TAKE_OWNERSHIP );
+  auto scaled_loss = new ::ceres::ScaledLoss(
+    NULL, scale,
+    ::ceres::Ownership::TAKE_OWNERSHIP );
   for( auto& int_par : int_params )
   {
     // assume image width is twice the principal point X coordinate
@@ -221,16 +237,18 @@ camera_options
 
     double max_focal_len = width /
                            ( 2.0 *
-                             std::tan( this->minimum_hfov * deg_to_rad /
-                                       2.0 ) );
+                             std::tan(
+                               this->minimum_hfov * deg_to_rad /
+                               2.0 ) );
     auto cam_intrin_prior_cost =
       camera_intrinsic_prior::create( max_focal_len, int_par.size() );
 
     double* foc_len = &int_par[ 0 ];
     // add the loss with squared error
-    problem.AddResidualBlock( cam_intrin_prior_cost,
-                              scaled_loss,
-                              foc_len );
+    problem.AddResidualBlock(
+      cam_intrin_prior_cost,
+      scaled_loss,
+      foc_len );
   }
 }
 
@@ -253,7 +271,7 @@ camera_options
     next_cam++;
 
     std::vector< std::tuple< decltype( curr_cam ), double,
-                             double > > constraints;
+      double > > constraints;
     for(; next_cam != ordered_params.end();
         prev_cam = curr_cam, curr_cam = next_cam, next_cam++ )
     {
@@ -272,19 +290,21 @@ camera_options
     const double weight = this->camera_path_smoothness *
                           problem.NumResiduals();
     const double scale = constraints.size() / sum_dist;
-    auto scaled_loss = new ::ceres::ScaledLoss( NULL, weight,
-                                                ::ceres::Ownership::TAKE_OWNERSHIP );
+    auto scaled_loss = new ::ceres::ScaledLoss(
+      NULL, weight,
+      ::ceres::Ownership::TAKE_OWNERSHIP );
     for( auto const& t : constraints )
     {
       auto cam_itr = std::get< 0 >( t );
       const double s = scale * std::get< 1 >( t );
       ::ceres::CostFunction* smoothness_cost  =
         camera_position_smoothness::create( s, std::get< 2 >( t ) );
-      problem.AddResidualBlock( smoothness_cost,
-                                scaled_loss,
-                                ( cam_itr - 1 )->second,
-                                cam_itr->second,
-                                ( cam_itr + 1 )->second );
+      problem.AddResidualBlock(
+        smoothness_cost,
+        scaled_loss,
+        ( cam_itr - 1 )->second,
+        cam_itr->second,
+        ( cam_itr + 1 )->second );
     }
   }
 }
@@ -326,8 +346,9 @@ camera_options
     const double weight = this->camera_forward_motion_damping *
                           problem.NumResiduals();
     const double scale = constraints.size() / sum_dist;
-    auto scaled_loss = new ::ceres::ScaledLoss( NULL, weight,
-                                                ::ceres::Ownership::TAKE_OWNERSHIP );
+    auto scaled_loss = new ::ceres::ScaledLoss(
+      NULL, weight,
+      ::ceres::Ownership::TAKE_OWNERSHIP );
     for( auto curr_constraint : constraints )
     {
       auto prev_constraint = curr_constraint - 1;
@@ -335,18 +356,20 @@ camera_options
                                                      prev_constraint->first );
       ::ceres::CostFunction* fwd_mo_cost =
         camera_limit_forward_motion::create( scale * inv_dist );
-      problem.AddResidualBlock( fwd_mo_cost,
-                                scaled_loss,
-                                prev_constraint->second,
-                                curr_constraint->second );
+      problem.AddResidualBlock(
+        fwd_mo_cost,
+        scaled_loss,
+        prev_constraint->second,
+        curr_constraint->second );
     }
   }
 }
 
 void
 camera_options
-::extract_camera_extrinsics( const camera_perspective_sptr camera,
-                             double* params ) const
+::extract_camera_extrinsics(
+  const camera_perspective_sptr camera,
+  double* params ) const
 {
   vector_3d rot = camera->rotation().rodrigues();
   vector_3d center = camera->center();
@@ -356,10 +379,11 @@ camera_options
 
 void
 camera_options
-::extract_camera_parameters( camera_map::map_camera_t const& cameras,
-                             cam_param_map_t& ext_params,
-                             std::vector< std::vector< double > >& int_params,
-                             cam_intrinsic_id_map_t& int_map ) const
+::extract_camera_parameters(
+  camera_map::map_camera_t const& cameras,
+  cam_param_map_t& ext_params,
+  std::vector< std::vector< double > >& int_params,
+  cam_intrinsic_id_map_t& int_map ) const
 {
   // We need another map from intrinsics instances to parameter index to
   // detect when the same intrinsics are shared between cameras
@@ -382,10 +406,10 @@ camera_options
     // - we are forcing common intrinsics and this is the first frame
     // - we are auto detecting shared intrinsics and this is a new sptr
     if( this->camera_intrinsic_share_type == FORCE_UNIQUE_INTRINSICS ||
-      ( this->camera_intrinsic_share_type == FORCE_COMMON_INTRINSICS &&
-        int_params.empty() ) ||
-      ( this->camera_intrinsic_share_type == AUTO_SHARE_INTRINSICS &&
-        camera_intr_map.find( K ) == camera_intr_map.end() ) )
+        ( this->camera_intrinsic_share_type == FORCE_COMMON_INTRINSICS &&
+          int_params.empty() ) ||
+        ( this->camera_intrinsic_share_type == AUTO_SHARE_INTRINSICS &&
+          camera_intr_map.find( K ) == camera_intr_map.end() ) )
     {
       this->extract_camera_intrinsics( K, &intrinsic_params[ 0 ] );
       // update the maps with the index of this new parameter vector
@@ -409,10 +433,11 @@ camera_options
 
 void
 camera_options
-::update_camera_parameters( camera_map::map_camera_t& cameras,
-                            cam_param_map_t const& ext_params,
-                            std::vector< std::vector< double > > const& int_params,
-                            cam_intrinsic_id_map_t const& int_map ) const
+::update_camera_parameters(
+  camera_map::map_camera_t& cameras,
+  cam_param_map_t const& ext_params,
+  std::vector< std::vector< double > > const& int_params,
+  cam_intrinsic_id_map_t const& int_map ) const
 {
   std::vector< camera_intrinsics_sptr > updated_intr;
   if( this->optimize_intrinsics() )
@@ -545,15 +570,19 @@ camera_options
   std::shared_ptr< simple_camera_perspective > camera,
   double const* params ) const
 {
-  camera->set_rotation( rotation_d( vector_3d( Eigen::Map< const vector_3d >(
-                                                 params ) ) ) );
+  camera->set_rotation(
+    rotation_d(
+      vector_3d(
+        Eigen::Map< const vector_3d >(
+          params ) ) ) );
   camera->set_center( Eigen::Map< const vector_3d >( &params[ 3 ] ) );
 }
 
 void
 camera_options
-::extract_camera_intrinsics( const camera_intrinsics_sptr K,
-                             double* params ) const
+::extract_camera_intrinsics(
+  const camera_intrinsics_sptr K,
+  double* params ) const
 {
   params[ 0 ] = K->focal_length();
   params[ 1 ] = K->principal_point().x();
@@ -565,8 +594,9 @@ camera_options
   // copy the intersection of parameters provided in K
   // and those that are supported by the requested model type
   const unsigned int num_dp =
-    std::min( num_distortion_params( this->lens_distortion_type ),
-              static_cast< unsigned int >( d.size() ) );
+    std::min(
+      num_distortion_params( this->lens_distortion_type ),
+      static_cast< unsigned int >( d.size() ) );
   if( num_dp > 0 )
   {
     std::copy( d.begin(), d.begin() + num_dp, &params[ 5 ] );
@@ -575,8 +605,9 @@ camera_options
 
 void
 camera_options
-::update_camera_intrinsics( std::shared_ptr< simple_camera_intrinsics > K,
-                            const double* params ) const
+::update_camera_intrinsics(
+  std::shared_ptr< simple_camera_intrinsics > K,
+  const double* params ) const
 {
   K->set_focal_length( params[ 0 ] );
 

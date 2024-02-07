@@ -37,6 +37,7 @@ Helper functions for dealing with PIL
 from kwiver.vital.types import Image
 import six
 
+
 def _pil_image_to_bytes(p_img):
     """
     Get the component bytes from the given PIL Image.
@@ -47,14 +48,14 @@ def _pil_image_to_bytes(p_img):
     :returns: Byte string.
     :rtype: bytes
     """
-    if hasattr(p_img, 'tobytes'):
+    if hasattr(p_img, "tobytes"):
         return p_img.tobytes()
     else:
         # Older version of the function.
         return p_img.tostring()
 
 
-def _pil_image_from_bytes(mode, size, data, decoder_name='raw', *args):
+def _pil_image_from_bytes(mode, size, data, decoder_name="raw", *args):
     """
     Creates a copy of an image memory from pixel data in a buffer.
     In recent versionf of PIL, the frombytes function is the correct thing to
@@ -68,10 +69,12 @@ def _pil_image_from_bytes(mode, size, data, decoder_name='raw', *args):
     :returns: An :py:class:`~PIL.Image.Image` object.
     """
     import PIL.Image
-    if hasattr(PIL.Image, 'frombytes'):
+
+    if hasattr(PIL.Image, "frombytes"):
         return PIL.Image.frombytes(mode, size, data, decoder_name, *args)
     else:
         return PIL.Image.fromstring(mode, size, data, decoder_name, *args)
+
 
 def from_pil(pil_image):
     """
@@ -101,7 +104,7 @@ def from_pil(pil_image):
         img_d_step = 0
         img_pix_num_bytes = 1
         img_pix_type = Image.PIXEL_UNSIGNED
-    elif mode == "RGB": # 8-bit RGB
+    elif mode == "RGB":  # 8-bit RGB
         img_depth = 3
         img_w_step = 3
         img_h_step = img_width * 3
@@ -133,18 +136,27 @@ def from_pil(pil_image):
         raise RuntimeError("Unsupported image format.")
 
     img_data = _pil_image_to_bytes(pil_image)
-    vital_img = Image(img_data,
-                      img_width, img_height, img_depth,
-                      img_w_step, img_h_step, img_d_step,
-                      img_pix_type, img_pix_num_bytes)
+    vital_img = Image(
+        img_data,
+        img_width,
+        img_height,
+        img_depth,
+        img_w_step,
+        img_h_step,
+        img_d_step,
+        img_pix_type,
+        img_pix_num_bytes,
+    )
     return vital_img
 
+
 def get_pil_image(img):
-    """ Get image in python friendly format
+    """Get image in python friendly format
     Assumptions are that the image has byte pixels.
     :return: array containing image
     :rtype: pil image
     """
+
     def pil_mode_from_image(img):
         """
         Determine image format from pixel properties
@@ -171,8 +183,14 @@ def get_pil_image(img):
 
     if not mode:
         # make a copy of this image using contiguous memory with interleaved channels
-        new_img = Image(img.width(), img.height(), img.depth(),
-                        True, img.pixel_type(), img.pixel_num_bytes())
+        new_img = Image(
+            img.width(),
+            img.height(),
+            img.depth(),
+            True,
+            img.pixel_type(),
+            img.pixel_num_bytes(),
+        )
         new_img.copy_from(img)
         img = new_img
         mode = pil_mode_from_image(img)
@@ -186,7 +204,13 @@ def get_pil_image(img):
     else:
         img_pixels = memoryview(bytearray(img)).tobytes()
 
-    pil_img = _pil_image_from_bytes(mode, (img.width(), img.height()),
-                                    img_pixels, "raw", mode,
-                                    img.h_step() * img.pixel_num_bytes(), 1)
+    pil_img = _pil_image_from_bytes(
+        mode,
+        (img.width(), img.height()),
+        img_pixels,
+        "raw",
+        mode,
+        img.h_step() * img.pixel_num_bytes(),
+        1,
+    )
     return pil_img

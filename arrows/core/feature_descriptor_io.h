@@ -13,7 +13,9 @@
 #include <vital/algo/feature_descriptor_io.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 /// A class for reading and writing feature and desriptor sets
@@ -21,9 +23,10 @@ class KWIVER_ALGO_CORE_EXPORT feature_descriptor_io
   : public vital::algo::feature_descriptor_io
 {
 public:
-  PLUGIN_INFO( "core",
-               "Read and write features and descriptor"
-               " to binary files using Cereal serialization." )
+  PLUGIN_INFO(
+    "core",
+    "Read and write features and descriptor"
+    " to binary files using Cereal serialization." )
 
   /// Constructor
   feature_descriptor_io();
@@ -31,12 +34,13 @@ public:
   /// Destructor
   virtual ~feature_descriptor_io();
 
-  /// Get this algorithm's \link vital::config_block configuration block \endlink
+  /// Get this algorithm's \link vital::config_block configuration block
+  /// \endlink
   virtual vital::config_block_sptr get_configuration() const;
   /// Set this algorithm's properties via a config block
-  virtual void set_configuration(vital::config_block_sptr config);
+  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's currently configuration is valid
-  virtual bool check_configuration(vital::config_block_sptr config) const;
+  virtual bool check_configuration( vital::config_block_sptr config ) const;
 
 private:
   /// Implementation specific load functionality.
@@ -47,9 +51,10 @@ private:
   /// \param filename the path to the file the load
   /// \param feat the set of features to load from the file
   /// \param desc the set of descriptors to load from the file
-  virtual void load_(std::string const& filename,
-                     vital::feature_set_sptr& feat,
-                     vital::descriptor_set_sptr& desc) const;
+  virtual void load_(
+    std::string const& filename,
+    vital::feature_set_sptr& feat,
+    vital::descriptor_set_sptr& desc ) const;
 
   /// Implementation specific save functionality.
   ///
@@ -59,17 +64,21 @@ private:
   /// \param filename the path to the file to save
   /// \param feat the set of features to write to the file
   /// \param desc the set of descriptors to write to the file
-  virtual void save_(std::string const& filename,
-                     vital::feature_set_sptr feat,
-                     vital::descriptor_set_sptr desc) const;
+  virtual void save_(
+    std::string const& filename,
+    vital::feature_set_sptr feat,
+    vital::descriptor_set_sptr desc ) const;
 
   /// private implementation class
   class priv;
-  const std::unique_ptr<priv> d_;
+
+  const std::unique_ptr< priv > d_;
 };
 
 } // end namespace core
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif

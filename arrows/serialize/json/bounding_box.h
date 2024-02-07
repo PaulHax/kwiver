@@ -9,29 +9,42 @@
 #include <vital/algo/data_serializer.h>
 
 namespace cereal {
-  class JSONOutputArchive;
-  class JSONInputArchive;
+
+class JSONOutputArchive;
+class JSONInputArchive;
+
 } // end namespace cereal
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace serialize {
+
 namespace json {
 
 class KWIVER_SERIALIZE_JSON_EXPORT bounding_box
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO( "kwiver:bounding_box",
-               "Serializes a bounding_box using json notation." );
+  PLUGIN_INFO(
+    "kwiver:bounding_box",
+    "Serializes a bounding_box using json notation." );
 
   bounding_box();
   virtual ~bounding_box();
 
-  std::shared_ptr< std::string > serialize( const vital::any& elements ) override;
+  std::shared_ptr< std::string > serialize(
+    const vital::any& elements ) override;
   vital::any deserialize( const std::string& message ) override;
 };
 
-} } } }       // end namespace kwiver
+} // namespace json
+
+} // namespace serialize
+
+} // namespace arrows
+
+}             // end namespace kwiver
 
 #endif // ARROWS_SERIALIZATION_JSON_BOUNDING_BOX

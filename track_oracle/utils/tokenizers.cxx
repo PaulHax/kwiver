@@ -7,7 +7,8 @@
 #include <istream>
 
 #include <vital/logger/logger.h>
-static kwiver::vital::logger_handle_t main_logger( kwiver::vital::get_logger( __FILE__ ) );
+static kwiver::vital::logger_handle_t main_logger( kwiver::vital::get_logger(
+  __FILE__ ) );
 
 using std::istream;
 using std::string;
@@ -32,15 +33,18 @@ private:
 
 xml_stream_buffer
 ::xml_stream_buffer( FILE* fptr )
-  : fp( fptr ), index(0), top(0), bufsize( 2048 )
+  : fp( fptr ),
+    index( 0 ),
+    top( 0 ),
+    bufsize( 2048 )
 {
-  buf = new char[bufsize];
+  buf = new char [ bufsize ];
 }
 
 xml_stream_buffer
 ::~xml_stream_buffer()
 {
-  delete [] buf;
+  delete[] buf;
 }
 
 bool
@@ -48,19 +52,19 @@ xml_stream_buffer
 ::get_next_char( char& c )
 {
   // if we're at the end of the buffer, try to top it up
-  if (index == top)
+  if( index == top )
   {
     // if fp is null, we're done
-    if (fp == NULL) return false;
+    if( fp == NULL ) { return false; }
 
     index = 0;
-    top = fread( buf, sizeof(char), bufsize, fp );
+    top = fread( buf, sizeof( char ), bufsize, fp );
     // if we couldn't get a full buffer, then it's either error or EOF
     // either way, we'll be done as soon as this buffer is empty
-    if ( top < bufsize ) fp = NULL;
+    if( top < bufsize ) { fp = NULL; }
 
     // if we're STILL at the end of the buffer, we're done
-    if (index == top) return false;
+    if( index == top ) { return false; }
   }
 
   c = buf[ index++ ];
@@ -70,17 +74,18 @@ xml_stream_buffer
 } // ...anon
 
 namespace kwiver {
+
 namespace track_oracle {
 
 namespace xml_tokenizer {
 
-vector< string>
+vector< string >
 first_n_tokens( const string& fn, size_t n )
 {
   FILE* fp = fopen( fn.c_str(), "rb" );
-  if (fp == NULL)
+  if( fp == NULL )
   {
-    return vector<string>();
+    return vector< string >();
   }
 
   xml_stream_buffer xmlbuf( fp );
@@ -98,47 +103,51 @@ first_n_tokens( const string& fn, size_t n )
   do
   {
     char this_char;
-    if (! xmlbuf.get_next_char( this_char ))
+    if( !xmlbuf.get_next_char( this_char ) )
     {
-      // EOF / error / whatever; if outside comments, push current token (if any) and exit
-      if (( ! in_comment) && (this_token != "")) tokens.push_back( this_token );
+      // EOF / error / whatever; if outside comments, push current token (if
+      // any) and exit
+      if( ( !in_comment ) && ( this_token != "" ) )
+      {
+        tokens.push_back( this_token );
+      }
       break;
     }
 
-    if (isspace( this_char )) // new state will be 1
+    if( isspace( this_char ) ) // new state will be 1
     {
-      switch (state)
+      switch( state )
       {
-      case 0:
-        state = 1;
-        break;
-      case 1:
-        break;
-      case 2:
-        // check for entering / leaving comments; only store tokens which are
-        // outside comments
-        if (! in_comment)
-        {
-          if (this_token == "<!--")
+        case 0:
+          state = 1;
+          break;
+        case 1:
+          break;
+        case 2:
+          // check for entering / leaving comments; only store tokens which are
+          // outside comments
+          if( !in_comment )
           {
-            in_comment = true;
+            if( this_token == "<!--" )
+            {
+              in_comment = true;
+            }
+            else
+            {
+              tokens.push_back( this_token );
+            }
           }
           else
           {
-            tokens.push_back( this_token );
+            if( ( this_token.size() >= 3 ) &&
+                ( this_token.substr( this_token.size() - 3, 3 ) == "-->" ) )
+            {
+              in_comment = false;
+            }
           }
-        }
-        else
-        {
-          if ((this_token.size() >= 3)
-              && (this_token.substr( this_token.size()-3, 3) == "-->"))
-          {
-            in_comment = false;
-          }
-        }
-        this_token = "";
-        state = 1;
-        break;
+          this_token = "";
+          state = 1;
+          break;
       }
     }
     else  // new state will be 2
@@ -147,20 +156,21 @@ first_n_tokens( const string& fn, size_t n )
       // quick-n-dirty approach to breaking on "raw" xml streams
       // which may be '<token1><token2><token3>':
 
-      if ((this_char == '<') && (! in_comment))
+      if( ( this_char == '<' ) && ( !in_comment ) )
       {
         tokens.push_back( this_token );
         this_token = "<";
       }
-      else if (this_char == '>')
+      else if( this_char == '>' )
       {
         // does this end a comment?
         this_token += this_char;
+
         bool this_ends_comment =
           in_comment &&
-          (this_token.size() >= 3) &&
-          (this_token.substr( this_token.size()-3, 3) == "-->");
-        if (in_comment && this_ends_comment )
+          ( this_token.size() >= 3 ) &&
+          ( this_token.substr( this_token.size() - 3, 3 ) == "-->" );
+        if( in_comment && this_ends_comment )
         {
           // clear the token, but do not store
           this_token = "";
@@ -176,7 +186,7 @@ first_n_tokens( const string& fn, size_t n )
       else
       {
         this_token += this_char;
-        if (this_token == "<!--")
+        if( this_token == "<!--" )
         {
           in_comment = true;
         }
@@ -184,26 +194,24 @@ first_n_tokens( const string& fn, size_t n )
     }
 
     // don't store empty tokens
-    if ( ! tokens.empty() )
+    if( !tokens.empty() )
     {
-      if (tokens.back() == "")
+      if( tokens.back() == "" )
       {
         tokens.pop_back();
       }
     }
-  }
-  while (tokens.size() < n );
+  }while( tokens.size() < n );
   fclose( fp );
   return tokens;
-
 }
 
-} //...xml_tokenizer
+} // ...xml_tokenizer
 
 namespace csv_tokenizer {
 
 istream&
-get_record(istream& is, vector<string>& values)
+get_record( istream& is, vector< string >& values )
 {
   values.clear();
 
@@ -211,32 +219,36 @@ get_record(istream& is, vector<string>& values)
   char c;
   bool in_quote = false;
 
-  is.get(c);
-  if (is.eof()) return is; // Handle end of file gracefully
+  is.get( c );
+  if( is.eof() ) { return is; } // Handle end of file gracefully
 
-  for (; is; is.get(c))
+  // UNCRUST-OFF
+  for( ; is; is.get( c ) )
+  //  ^ `uncrustify` is not stable and will oscillate on whether this space
+  //  should exist or not.
+  // UNCRUST-ON
   {
     // Handle DOS and (old-style) Mac line endings
-    if (c == '\r')
+    if( c == '\r' )
     {
-      if (is.peek() == '\n') continue; // CR before LF is ignored
+      if( is.peek() == '\n' ) { continue; } // CR before LF is ignored
       c = '\n'; // CR followed by anything else is treated as LF
     }
-    else if (c == '"')
+    else if( c == '"' )
     {
       // Value starting with quote character denotes a quoted value
-      if (token.empty())
+      if( token.empty() )
       {
         in_quote = true;
         continue;
       }
       // Otherwise, quotes have special meaning only in quoted value
-      else if (in_quote)
+      else if( in_quote )
       {
-        if (is.get(c))
+        if( is.get( c ) )
         {
           // Doubled quote is emitted as-is; anything else ends quoting
-          in_quote = (c == '"');
+          in_quote = ( c == '"' );
         }
         else
         {
@@ -247,32 +259,36 @@ get_record(istream& is, vector<string>& values)
       }
     }
 
-    if (!in_quote)
+    if( !in_quote )
     {
-      if (c == '\n') break; // End of record
-      if (c == ';' || c == ',')
+      if( c == '\n' ) { break; } // End of record
+      if( c == ';' || c == ',' )
       {
-        values.push_back(token);
+        values.push_back( token );
         token.clear();
         continue;
       }
     }
 
-    token.push_back(c);
+    token.push_back( c );
   }
 
-  values.push_back(token);
+  values.push_back( token );
   return is;
 }
 
-vector<string>
-parse(string const& s)
+vector< string >
+parse( string const& s )
 {
-  vector<string> result;
+  vector< string > result;
 
-  stringstream ss(s);
-  if (!get_record(ss, result) && !ss.eof())
-    LOG_WARN( main_logger, "CSV parsing failed for input string '" << s << "'");
+  stringstream ss( s );
+  if( !get_record( ss, result ) && !ss.eof() )
+  {
+    LOG_WARN(
+      main_logger,
+      "CSV parsing failed for input string '" << s << "'" );
+  }
 
   return result;
 }
@@ -280,4 +296,5 @@ parse(string const& s)
 } // ...csv_tokenizer
 
 } // ...track_oracle
+
 } // ...kwiver

@@ -40,7 +40,7 @@ import numpy
 from kwiver.vital.types import Track, TrackState, Feature, Descriptor
 
 
-class TestVitalTrack (object):
+class TestVitalTrack(object):
 
     def test_new(self):
         t = Track()
@@ -86,7 +86,6 @@ class TestVitalTrack (object):
 
         t.id = 1345634
         nose.tools.assert_equal(t.id, 1345634)
-
 
     def test_ts_append(self):
         t = Track()
@@ -148,10 +147,7 @@ class TestVitalTrack (object):
         nose.tools.assert_is_not_none(ts)
         nose.tools.assert_equal(ts.frame_id, 9)
 
-        nose.tools.assert_raises(
-            IndexError,
-            t.find_state, 10
-        )
+        nose.tools.assert_raises(IndexError, t.find_state, 10)
         t.append(TrackState(10))
         nose.tools.assert_is_not_none(t.find_state(10))
         nose.tools.assert_equal(t.find_state(10).frame_id, 10)
@@ -181,10 +177,7 @@ class TestVitalTrack (object):
         nose.tools.assert_is_not_none(ts)
         nose.tools.assert_equal(ts.frame_id, 9)
 
-        nose.tools.assert_raises(
-            IndexError,
-            t.find_state, 10
-        )
+        nose.tools.assert_raises(IndexError, t.find_state, 10)
         t.append(TrackState(10))
         nose.tools.assert_is_not_none(t[10])
         nose.tools.assert_equal(t[10].frame_id, 10)
@@ -196,7 +189,4 @@ class TestVitalTrack (object):
         t.append(TrackState(5))
         t.append(TrackState(9))
 
-        nose.tools.assert_equal(
-            [ts.frame_id for ts in t],
-            [0, 1, 5, 9]
-        )
+        nose.tools.assert_equal([ts.frame_id for ts in t], [0, 1, 5, 9])

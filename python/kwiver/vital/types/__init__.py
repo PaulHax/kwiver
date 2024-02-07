@@ -16,6 +16,7 @@ from kwiver.vital.types.database_query import *
 from kwiver.vital.types.descriptor import *
 from kwiver.vital.types.descriptor_request import *
 from kwiver.vital.types.descriptor_set import *
+
 # For an explanation of why the next module is out of order,
 # see the CMakeLists.txt in this directory
 from kwiver.vital.types.detected_object_type import *
@@ -58,6 +59,7 @@ from kwiver.vital.types.track import *
 from kwiver.vital.types.track_descriptor import *
 from kwiver.vital.types.track_interval import *
 from kwiver.vital.types.track_set import *
+
 # For an explanation of why these modules are out of order,
 # see the CMakeLists.txt in this directory
 from kwiver.vital.types.activity import *

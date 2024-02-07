@@ -31,7 +31,7 @@ class VITAL_ALGO_EXPORT optimize_cameras
 {
 public:
   optimize_cameras();
-  PLUGGABLE_INTERFACE(optimize_cameras);
+  PLUGGABLE_INTERFACE( optimize_cameras );
   /// Optimize camera parameters given sets of landmarks and feature tracks
   ///
   /// We only optimize cameras that have associating tracks and landmarks in
@@ -47,10 +47,11 @@ public:
   /// \param[in]     metadata  The optional metadata to constrain the
   ///                          optimization.
   virtual void
-  optimize( kwiver::vital::camera_map_sptr& cameras,
-            kwiver::vital::feature_track_set_sptr tracks,
-            kwiver::vital::landmark_map_sptr landmarks,
-            kwiver::vital::sfm_constraints_sptr constraints = nullptr ) const;
+  optimize(
+    kwiver::vital::camera_map_sptr& cameras,
+    kwiver::vital::feature_track_set_sptr tracks,
+    kwiver::vital::landmark_map_sptr landmarks,
+    kwiver::vital::sfm_constraints_sptr constraints = nullptr ) const;
 
   /// Optimize a single camera given corresponding features and landmarks
   ///
@@ -66,10 +67,11 @@ public:
   /// \param[in]     metadata  The optional metadata to constrain the
   ///                          optimization.
   virtual void
-  optimize( kwiver::vital::camera_perspective_sptr& camera,
-            const std::vector< kwiver::vital::feature_sptr >& features,
-            const std::vector< kwiver::vital::landmark_sptr >& landmarks,
-            kwiver::vital::sfm_constraints_sptr constraints = nullptr ) const = 0;
+  optimize(
+    kwiver::vital::camera_perspective_sptr& camera,
+    const std::vector< kwiver::vital::feature_sptr >& features,
+    const std::vector< kwiver::vital::landmark_sptr >& landmarks,
+    kwiver::vital::sfm_constraints_sptr constraints = nullptr ) const = 0;
 };
 
 /// Type definition for shared pointer to an optimize cameras algorithm

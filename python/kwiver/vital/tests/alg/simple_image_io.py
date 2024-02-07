@@ -31,27 +31,28 @@ from __future__ import print_function
 from kwiver.vital.algo import ImageIO
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
 
-class SimpleImageIO(CommonConfigurationMixin,
-                                  ImageIO):
+
+class SimpleImageIO(CommonConfigurationMixin, ImageIO):
     """
     Implementation of ImageIO to test it
 
     Examples:
     """
+
     def __init__(self):
         ImageIO.__init__(self)
 
 
-
 def __vital_algorithm_register__():
     from kwiver.vital.algo import algorithm_factory
+
     # Register Algorithm
-    implementation_name  = "SimpleImageIO"
+    implementation_name = "SimpleImageIO"
     if algorithm_factory.has_algorithm_impl_name(
-                            SimpleImageIO.static_type_name(),
-                            implementation_name):
+        SimpleImageIO.static_type_name(), implementation_name
+    ):
         return
-    algorithm_factory.add_algorithm( implementation_name,
-                                "Test kwiver.vital.algo.ImageIO",
-                                 SimpleImageIO )
-    algorithm_factory.mark_algorithm_as_loaded( implementation_name )
+    algorithm_factory.add_algorithm(
+        implementation_name, "Test kwiver.vital.algo.ImageIO", SimpleImageIO
+    )
+    algorithm_factory.mark_algorithm_as_loaded(implementation_name)

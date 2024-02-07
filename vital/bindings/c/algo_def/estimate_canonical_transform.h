@@ -25,6 +25,7 @@ extern "C"
 DECLARE_COMMON_ALGO_API( estimate_canonical_transform )
 
 /// Estimate a canonical similarity transform for cameras and points
+
 /**
  *
  *
@@ -41,13 +42,14 @@ DECLARE_COMMON_ALGO_API( estimate_canonical_transform )
  */
 VITAL_C_EXPORT
 vital_similarity_d_t*
-vital_algorithm_estimate_canonical_transform_estimate( vital_algorithm_t *algo,
-                                                       vital_camera_map_t const *cam_map,
-                                                       vital_landmark_map_t const *lm_map,
-                                                       vital_error_handle_t *eh );
+vital_algorithm_estimate_canonical_transform_estimate(
+  vital_algorithm_t * algo,
+  vital_camera_map_t const* cam_map,
+  vital_landmark_map_t const* lm_map,
+  vital_error_handle_t * eh );
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif //VITAL_C_ALGO_ESTIMATE_CANONICAL_TRANSFORM_H_
+#endif // VITAL_C_ALGO_ESTIMATE_CANONICAL_TRANSFORM_H_

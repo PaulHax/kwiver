@@ -8,6 +8,7 @@
 #include "serialize.h"
 
 namespace kwiver {
+
 namespace vital {
 
 serialization_exception
@@ -18,6 +19,8 @@ serialization_exception
 
 serialization_exception
 ::~serialization_exception() noexcept
-{ }
+{}
 
-} } // end vital namespace
+} // namespace vital
+
+}   // end vital namespace

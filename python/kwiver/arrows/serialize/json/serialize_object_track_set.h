@@ -8,12 +8,19 @@
 #include <pybind11/pybind11.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace python {
+
 namespace py = pybind11;
 
-void serialize_object_track_set(py::module &m);
-}
-}
-}
+void serialize_object_track_set( py::module& m );
+
+} // namespace python
+
+} // namespace arrows
+
+} // namespace kwiver
+
 #endif

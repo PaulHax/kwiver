@@ -22,14 +22,16 @@ main( int argc, char** argv )
 
 // ----------------------------------------------------------------------------
 void
-test_read_write( klv_value const& expected_result,
-                 klv_bytes_t const& input_bytes )
+test_read_write(
+  klv_value const& expected_result,
+  klv_bytes_t const& input_bytes )
 {
   using format_t = klv_0601_local_set_format;
   test_read_write_format< format_t >( expected_result, input_bytes );
 }
 
 using kld = klv_lengthy< double >;
+
 auto const expected_result = klv_local_set{
   { KLV_0601_PRECISION_TIMESTAMP,
     uint64_t{ 0x000459F4A6AA4AA8 } },
@@ -86,9 +88,9 @@ auto const expected_result = klv_local_set{
       KLV_0601_GENERIC_FLAG_DATA_BIT_IMAGE_INVALID } },
   { KLV_0601_SECURITY_LOCAL_SET,               {} },
   { KLV_0601_DIFFERENTIAL_PRESSURE,            kld{ 1191.9584954604411 } },
-  { KLV_0601_PLATFORM_ANGLE_OF_ATTACK,         kld{-8.6703085421308028 } },
-  { KLV_0601_PLATFORM_VERTICAL_SPEED,          kld{-61.887874996185190 } },
-  { KLV_0601_PLATFORM_SIDESLIP_ANGLE,          kld{-5.0825525681325727 } },
+  { KLV_0601_PLATFORM_ANGLE_OF_ATTACK,         kld{ -8.6703085421308028 } },
+  { KLV_0601_PLATFORM_VERTICAL_SPEED,          kld{ -61.887874996185190 } },
+  { KLV_0601_PLATFORM_SIDESLIP_ANGLE,          kld{ -5.0825525681325727 } },
   { KLV_0601_AIRFIELD_BAROMETRIC_PRESSURE,     kld{ 2088.9600976577403 } },
   { KLV_0601_AIRFIELD_ELEVATION,               kld{ 8306.8055237659264 } },
   { KLV_0601_RELATIVE_HUMIDITY,                kld{ 50.588235294117645 } },
@@ -188,8 +190,7 @@ auto const expected_result = klv_local_set{
     klv_0601_frame_rate{ 60000, 1001 } },
   { KLV_0601_WAVELENGTHS_LIST,
     std::vector< klv_0601_wavelength_record >{
-     { 21, 1000.0, 2000.0, "NNIR" }
-    } },
+      { 21, 1000.0, 2000.0, "NNIR" } } },
   { KLV_0601_TARGET_ID,                        std::string{ "A123" } },
   { KLV_0601_AIRBASE_LOCATIONS,
     klv_0601_airbase_locations{
@@ -210,9 +211,7 @@ auto const expected_result = klv_local_set{
     std::vector< klv_0601_payload_record >{
       { 0, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "VIS Nose Camera" },
       { 1, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "ACME VIS Model 123" },
-      { 2, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "ACME IR Model 456" }
-    }
-  },
+      { 2, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "ACME IR Model 456" } } },
   { KLV_0601_ACTIVE_PAYLOADS, std::set< uint16_t >{ 0, 1, 3 } },
   { KLV_0601_WEAPONS_STORES,
     std::vector< klv_0601_weapons_store >{
@@ -230,9 +229,7 @@ auto const expected_result = klv_local_set{
       { 1, 2, 1, 1,
         KLV_0601_WEAPON_GENERAL_STATUS_ALL_UP_ROUND,
         {},
-        "GBU-15" }
-    }
-  },
+        "GBU-15" } } },
   { KLV_0601_WAYPOINT_LIST,
     std::vector< klv_0601_waypoint_record >{
       { 0, 1,
@@ -252,8 +249,7 @@ auto const expected_result = klv_local_set{
                                100.000000000000000 } },
       { 3, -2, std::set< klv_0601_waypoint_info_bit >{},
         klv_0601_location_dlp{ 38.8898218870162964, -77.0100920200347900,
-                               300.000000000000000 } }
-    } },
+                               300.000000000000000 } } } },
   { KLV_0601_VIEW_DOMAIN,
     klv_0601_view_domain{
       klv_0601_view_domain_interval{ 210.00000000000000,
@@ -565,6 +561,7 @@ TEST ( klv, read_write_0601 )
 TEST ( klv, read_write_0601_packet )
 {
   auto const packet_footer = klv_bytes_t{ KLV_0601_CHECKSUM, 2, 0x58, 0x02 };
-  CALL_TEST( test_read_write_packet,
-             expected_result, input_bytes, packet_footer, klv_0601_key() );
+  CALL_TEST(
+    test_read_write_packet,
+    expected_result, input_bytes, packet_footer, klv_0601_key() );
 }

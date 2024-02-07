@@ -19,7 +19,6 @@ namespace arrows {
 
 namespace ffmpeg {
 
-
 // ----------------------------------------------------------------------------
 std::string
 pretty_codec_name( AVCodecID codec_id )
@@ -98,7 +97,7 @@ format_supports_codec( AVOutputFormat const* format, AVCodecID codec_id )
 
 // ----------------------------------------------------------------------------
 #define DEFINE_DELETER( LOWER, UPPER ) \
-  void _ ## LOWER ## _deleter::operator()( UPPER* ptr ) const
+void _ ## LOWER ## _deleter::operator()( UPPER* ptr ) const
 
 // ----------------------------------------------------------------------------
 DEFINE_DELETER( format_context, AVFormatContext )

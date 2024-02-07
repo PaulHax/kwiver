@@ -22,11 +22,12 @@ using namespace kwiver;
 
 /// Optimize the camera and landmark parameters given a set of tracks
 void
-vital_algorithm_bundle_adjust_optimize( vital_algorithm_t *algo,
-                                        vital_camera_map_t **cmap,
-                                        vital_landmark_map_t **lmap,
-                                        vital_trackset_t *tset,
-                                        vital_error_handle_t *eh )
+vital_algorithm_bundle_adjust_optimize(
+  vital_algorithm_t* algo,
+  vital_camera_map_t** cmap,
+  vital_landmark_map_t** lmap,
+  vital_trackset_t* tset,
+  vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "vital_algorithm_bundle_adjust_optimize", eh,
@@ -35,24 +36,28 @@ vital_algorithm_bundle_adjust_optimize( vital_algorithm_t *algo,
     auto lmap_sptr = vital_c::LANDMARK_MAP_SPTR_CACHE.get( *lmap );
     auto tset_sptr = vital_c::TRACK_SET_SPTR_CACHE.get( tset );
 
-    a_sptr->optimize( cmap_sptr, lmap_sptr,
-      std::dynamic_pointer_cast< kwiver::vital::feature_track_set >( tset_sptr ) );
+    a_sptr->optimize(
+      cmap_sptr, lmap_sptr,
+      std::dynamic_pointer_cast< kwiver::vital::feature_track_set >(
+        tset_sptr ) );
 
     // Check instance pointer for cmap_sptr and lmap_sptr. If they are different
-    // than input, which probably are, cache the sptrs and assign casted pointers
+    // than input, which probably are, cache the sptrs and assign casted
+    // pointers
     // to parameters.
-    auto *cmap_after = reinterpret_cast< vital_camera_map_t* >( cmap_sptr.get() );
+    auto* cmap_after =
+      reinterpret_cast< vital_camera_map_t* >( cmap_sptr.get() );
     if( *cmap != cmap_after )
-    {
-      vital_c::CAM_MAP_SPTR_CACHE.store( cmap_sptr );
-      *cmap = cmap_after;
-    }
+  {
+    vital_c::CAM_MAP_SPTR_CACHE.store( cmap_sptr );
+    *cmap = cmap_after;
+  }
 
-    auto *lmap_after = reinterpret_cast< vital_landmark_map_t* >( lmap_sptr.get() );
+    auto* lmap_after =
+      reinterpret_cast< vital_landmark_map_t* >( lmap_sptr.get() );
     if( *lmap != lmap_after )
-    {
-      vital_c::LANDMARK_MAP_SPTR_CACHE.store( lmap_sptr );
-      *lmap = lmap_after;
-    }
-  );
+  {
+    vital_c::LANDMARK_MAP_SPTR_CACHE.store( lmap_sptr );
+    *lmap = lmap_after;
+  } );
 }

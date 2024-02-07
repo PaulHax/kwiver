@@ -22,7 +22,7 @@ main( int argc, char** argv )
 }
 
 // ----------------------------------------------------------------------------
-TEST( metadata, typed_metadata )
+TEST ( metadata, typed_metadata )
 {
   // create item
   auto tmds = metadata_item{ VITAL_META_METADATA_ORIGIN,
@@ -50,7 +50,7 @@ TEST( metadata, typed_metadata )
 }
 
 // ----------------------------------------------------------------------------
-TEST( metadata, item_equality )
+TEST ( metadata, item_equality )
 {
   {
     metadata_item const item1{
@@ -65,8 +65,7 @@ TEST( metadata, item_equality )
     EXPECT_TRUE( item1 == item2 );
     EXPECT_FALSE( item1 != item2 );
     EXPECT_FALSE( item2 == item3 );
-    EXPECT_TRUE( item2 != item3 );
-  }
+    EXPECT_TRUE( item2 != item3 ); }
 
   {
     metadata_item const item1{ VITAL_META_PLATFORM_HEADING_ANGLE, 3.14159 };
@@ -94,15 +93,16 @@ TEST( metadata, item_equality )
 }
 
 // ----------------------------------------------------------------------------
-TEST( metadata, add_metadata )
+TEST ( metadata, add_metadata )
 {
   // create item
   auto rmdi =
-    std::make_shared< metadata_item >( VITAL_META_UNIX_TIMESTAMP,
-                                       uint64_t{ 314159 } );
+    std::make_shared< metadata_item >(
+      VITAL_META_UNIX_TIMESTAMP,
+      uint64_t{ 314159 } );
   auto umdd =
     std::unique_ptr< metadata_item >{
-      new metadata_item{ VITAL_META_PLATFORM_HEADING_ANGLE, 3.14159 } };
+    new metadata_item{ VITAL_META_PLATFORM_HEADING_ANGLE, 3.14159 } };
 
   metadata meta_collection;
 

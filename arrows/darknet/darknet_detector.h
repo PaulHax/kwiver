@@ -10,7 +10,9 @@
 #include <vital/algo/image_object_detector.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace darknet {
 
 // ----------------------------------------------------------------------------
@@ -23,8 +25,9 @@ public:
   darknet_detector();
   virtual ~darknet_detector();
 
-  PLUGIN_INFO( "darknet",
-               "Image object detector using darknet." )
+  PLUGIN_INFO(
+    "darknet",
+    "Image object detector using darknet." )
 
   vital::config_block_sptr get_configuration() const override;
 
@@ -36,9 +39,14 @@ public:
 
 private:
   class priv;
-  const std::unique_ptr<priv> d;
+
+  const std::unique_ptr< priv > d;
 };
 
-} } }
+} // namespace darknet
+
+} // namespace arrows
+
+} // namespace kwiver
 
 #endif // KWIVER_ARROWS_DARKENT_DETECTOR

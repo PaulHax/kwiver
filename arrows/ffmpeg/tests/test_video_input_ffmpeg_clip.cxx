@@ -39,7 +39,8 @@ configure_input(
 }
 
 // ----------------------------------------------------------------------------
-void test_clipped(
+void
+test_clipped(
   ffmpeg::ffmpeg_video_input_clip& input,
   std::filesystem::path const& filepath,
   kv::frame_id_t frame_begin, kv::frame_id_t frame_end,
@@ -47,6 +48,7 @@ void test_clipped(
 {
   ffmpeg::ffmpeg_video_input unclipped_input;
   unclipped_input.open( filepath.string() );
+
   kv::timestamp ts;
   for( kv::frame_id_t i = 1; i < frame_begin; ++i )
   {
@@ -96,7 +98,8 @@ main( int argc, char* argv[] )
 class ffmpeg_video_input_clip : public ::testing::Test
 {
 public:
-  void SetUp() override
+  void
+  SetUp() override
   {
     ffmpeg_video_path = data_dir / "videos/ffmpeg_video.mp4";
     aphill_video_path = data_dir / "videos/aphill_short.ts";

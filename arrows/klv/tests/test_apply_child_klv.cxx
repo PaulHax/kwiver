@@ -7,13 +7,13 @@
 
 #include "data_format.h"
 
-#include <vital/plugin_management/plugin_manager.h>
 #include <vital/algo/algorithm.txx>
+#include <vital/plugin_management/plugin_manager.h>
 
 #include <arrows/klv/apply_child_klv.h>
-#include <arrows/klv/klv_metadata.h>
 #include <arrows/klv/klv_0601.h>
 #include <arrows/klv/klv_1607.h>
+#include <arrows/klv/klv_metadata.h>
 
 // ----------------------------------------------------------------------------
 int
@@ -31,7 +31,9 @@ using namespace kwiver::arrows::klv;
 // Ensure we can create the filter with the factory method.
 TEST ( apply_child_klv, create )
 {
-  EXPECT_NE( nullptr, kv::create_algorithm<kv::algo::metadata_filter>( "apply_child_klv" ) );
+  EXPECT_NE(
+    nullptr,
+    kv::create_algorithm< kv::algo::metadata_filter >( "apply_child_klv" ) );
 }
 
 // ----------------------------------------------------------------------------
@@ -61,10 +63,10 @@ TEST ( apply_child_klv, non_klv_metadata_sptr )
   apply_child_klv filter;
   kv::metadata_vector input{
     std::make_shared< kv::metadata >(),
-    std::make_shared< kv::metadata >(),
-  };
+    std::make_shared< kv::metadata >(), };
   input[ 0 ]->add< kv::VITAL_META_UNIX_TIMESTAMP >( 0 );
   input[ 1 ]->add< kv::VITAL_META_UNIX_TIMESTAMP >( 1 );
+
   auto const output = filter.filter( input, nullptr );
   ASSERT_EQ( 2, output.size() );
   EXPECT_EQ(
@@ -82,8 +84,10 @@ TEST ( apply_child_klv, empty_klv )
   kv::metadata_vector input{ klv_md };
   klv_md->klv().clear();
   klv_md->add< kv::VITAL_META_UNIX_TIMESTAMP >( 42 );
+
   auto const output = filter.filter( input, nullptr );
   ASSERT_EQ( 1, output.size() );
+
   auto const output_klv =
     dynamic_cast< klv_metadata* >( output.at( 0 ).get() );
   ASSERT_NE( nullptr, output_klv );
@@ -101,16 +105,18 @@ TEST ( apply_child_klv, no_children )
   kv::metadata_vector input{ klv_md };
   klv_md->klv() = {
     { klv_0601_key(), klv_local_set{
-      { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
-      { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } } };
+        { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
+        { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } } };
   klv_md->add< kv::VITAL_META_UNIX_TIMESTAMP >( 42 );
 
   auto const output = filter.filter( input, nullptr );
   ASSERT_EQ( 1, output.size() );
+
   auto const output_klv =
     dynamic_cast< klv_metadata* >( output.at( 0 ).get() );
   ASSERT_NE( nullptr, output_klv );
   ASSERT_EQ( 1, output_klv->klv().size() );
+
   auto const& output_set =
     output_klv->klv().at( 0 ).value.get< klv_local_set >();
   EXPECT_EQ(
@@ -129,19 +135,20 @@ TEST ( apply_child_klv, amend_only )
 
   klv_md->klv() = {
     { klv_0601_key(), klv_local_set{
-      { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
-      { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM" } },
-      { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } },
-      { KLV_0601_AMEND_LOCAL_SET, klv_local_set{
-        { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 43 } },
-        { KLV_0601_MISSION_ID, std::string{ "ID" } },
+        { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
+        { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM" } },
+        { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } },
         { KLV_0601_AMEND_LOCAL_SET, klv_local_set{
-          { KLV_0601_MISSION_ID, std::string{ "BETTER_ID" } },
-          { KLV_0601_PLATFORM_DESIGNATION, {} } } } } } } } };
+            { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 43 } },
+            { KLV_0601_MISSION_ID, std::string{ "ID" } },
+            { KLV_0601_AMEND_LOCAL_SET, klv_local_set{
+                { KLV_0601_MISSION_ID, std::string{ "BETTER_ID" } },
+                { KLV_0601_PLATFORM_DESIGNATION, {} } } } } } } } };
   klv_md->add< kv::VITAL_META_UNIX_TIMESTAMP >( 42 );
 
   auto const output = filter.filter( input, nullptr );
   ASSERT_EQ( 1, output.size() );
+
   auto const output_klv =
     dynamic_cast< klv_metadata* >( output.at( 0 ).get() );
   ASSERT_NE( nullptr, output_klv );
@@ -151,10 +158,10 @@ TEST ( apply_child_klv, amend_only )
 
   std::vector< klv_packet > expected_klv = {
     { klv_0601_key(), klv_local_set{
-      { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 43 } },
-      { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } },
-      { KLV_0601_MISSION_ID, std::string{ "BETTER_ID" } },
-      { KLV_0601_PLATFORM_DESIGNATION, {} } } } };
+        { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 43 } },
+        { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } },
+        { KLV_0601_MISSION_ID, std::string{ "BETTER_ID" } },
+        { KLV_0601_PLATFORM_DESIGNATION, {} } } } };
 
   EXPECT_EQ(
     std::multiset< klv_packet >( expected_klv.begin(), expected_klv.end() ),
@@ -172,17 +179,18 @@ TEST ( apply_child_klv, sibling_amend )
 
   klv_md->klv() = {
     { klv_0601_key(), klv_local_set{
-      { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
-      { KLV_0601_MISSION_ID, std::string{ "ID" } },
-      { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } },
-      { KLV_0601_AMEND_LOCAL_SET, klv_local_set{
-        { KLV_0601_MISSION_ID, std::string{ "ID_1" } } } },
-      { KLV_0601_AMEND_LOCAL_SET, klv_local_set{
-        { KLV_0601_MISSION_ID, std::string{ "ID_2" } } } } } } };
+        { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
+        { KLV_0601_MISSION_ID, std::string{ "ID" } },
+        { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } },
+        { KLV_0601_AMEND_LOCAL_SET, klv_local_set{
+            { KLV_0601_MISSION_ID, std::string{ "ID_1" } } } },
+        { KLV_0601_AMEND_LOCAL_SET, klv_local_set{
+            { KLV_0601_MISSION_ID, std::string{ "ID_2" } } } } } } };
   klv_md->add< kv::VITAL_META_UNIX_TIMESTAMP >( 42 );
 
   auto const output = filter.filter( input, nullptr );
   ASSERT_EQ( 1, output.size() );
+
   auto const output_klv =
     dynamic_cast< klv_metadata* >( output.at( 0 ).get() );
   ASSERT_NE( nullptr, output_klv );
@@ -201,36 +209,38 @@ TEST ( apply_child_klv, segment_only )
 
   klv_md->klv() = {
     { klv_0601_key(), klv_local_set{
-      { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
-      { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM" } },
-      { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } },
-      { KLV_0601_SEGMENT_LOCAL_SET, klv_local_set{
-        { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM_ALT" } },
-        { KLV_0601_MISSION_ID, std::string{ "ID_1" } } } },
-      { KLV_0601_SEGMENT_LOCAL_SET, klv_local_set{
-        { KLV_0601_MISSION_ID, std::string{ "ID_2" } } } } } },
-    { klv_0601_key(), klv_local_set{
-      { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
-      { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM2" } },
-      { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } },
-      { KLV_0601_SEGMENT_LOCAL_SET, klv_local_set{
-        { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM2_ALT" } },
-        { KLV_0601_MISSION_ID, std::string{ "ID_1" } },
+        { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
+        { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM" } },
+        { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } },
         { KLV_0601_SEGMENT_LOCAL_SET, klv_local_set{
-          { KLV_0601_MISSION_ID, std::string{ "ID_2" } } } },
+            { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM_ALT" } },
+            { KLV_0601_MISSION_ID, std::string{ "ID_1" } } } },
         { KLV_0601_SEGMENT_LOCAL_SET, klv_local_set{
-          { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM2_ALT2" } },
-          { KLV_0601_MISSION_ID, std::string{ "ID_3" } } } } } },
-      { KLV_0601_SEGMENT_LOCAL_SET, klv_local_set{
-        { KLV_0601_MISSION_ID, {} } } } } },
+            { KLV_0601_MISSION_ID, std::string{ "ID_2" } } } } } },
     { klv_0601_key(), klv_local_set{
-      { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
-      { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM3" } },
-      { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } } };
+        { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
+        { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM2" } },
+        { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } },
+        { KLV_0601_SEGMENT_LOCAL_SET, klv_local_set{
+            { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM2_ALT" } },
+            { KLV_0601_MISSION_ID, std::string{ "ID_1" } },
+            { KLV_0601_SEGMENT_LOCAL_SET, klv_local_set{
+                { KLV_0601_MISSION_ID, std::string{ "ID_2" } } } },
+            { KLV_0601_SEGMENT_LOCAL_SET, klv_local_set{
+                { KLV_0601_PLATFORM_DESIGNATION,
+                  std::string{ "PLATFORM2_ALT2" } },
+                { KLV_0601_MISSION_ID, std::string{ "ID_3" } } } } } },
+        { KLV_0601_SEGMENT_LOCAL_SET, klv_local_set{
+            { KLV_0601_MISSION_ID, {} } } } } },
+    { klv_0601_key(), klv_local_set{
+        { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
+        { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM3" } },
+        { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } } };
   klv_md->add< kv::VITAL_META_UNIX_TIMESTAMP >( 42 );
 
   auto const output = filter.filter( input, nullptr );
   ASSERT_EQ( 1, output.size() );
+
   auto const output_klv =
     dynamic_cast< klv_metadata* >( output.at( 0 ).get() );
   EXPECT_EQ(
@@ -238,34 +248,34 @@ TEST ( apply_child_klv, segment_only )
 
   std::vector< klv_packet > expected_klv = {
     { klv_0601_key(), klv_local_set{
-      { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
-      { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM_ALT" } },
-      { KLV_0601_MISSION_ID, std::string{ "ID_1" } },
-      { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } },
+        { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
+        { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM_ALT" } },
+        { KLV_0601_MISSION_ID, std::string{ "ID_1" } },
+        { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } },
     { klv_0601_key(), klv_local_set{
-      { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
-      { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM" } },
-      { KLV_0601_MISSION_ID, std::string{ "ID_2" } },
-      { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } },
-    { klv_0601_key(), klv_local_set{
-      { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
-      { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM2" } },
-      { KLV_0601_MISSION_ID, {} },
-      { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } },
-    { klv_0601_key(), klv_local_set{
-      { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
-      { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM2_ALT" } },
+        { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
+        { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM" } },
         { KLV_0601_MISSION_ID, std::string{ "ID_2" } },
-      { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } },
+        { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } },
     { klv_0601_key(), klv_local_set{
-      { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
-      { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM2_ALT2" } },
-      { KLV_0601_MISSION_ID, std::string{ "ID_3" } },
-      { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } },
+        { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
+        { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM2" } },
+        { KLV_0601_MISSION_ID, {} },
+        { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } },
     { klv_0601_key(), klv_local_set{
-      { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
-      { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM3" } },
-      { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } } };
+        { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
+        { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM2_ALT" } },
+        { KLV_0601_MISSION_ID, std::string{ "ID_2" } },
+        { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } },
+    { klv_0601_key(), klv_local_set{
+        { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
+        { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM2_ALT2" } },
+        { KLV_0601_MISSION_ID, std::string{ "ID_3" } },
+        { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } },
+    { klv_0601_key(), klv_local_set{
+        { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
+        { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM3" } },
+        { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } } };
 
   EXPECT_EQ(
     std::multiset< klv_packet >( expected_klv.begin(), expected_klv.end() ),
@@ -283,23 +293,25 @@ TEST ( apply_child_klv, mixed_children )
 
   klv_md->klv() = {
     { klv_0601_key(), klv_local_set{
-      { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
-      { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM" } },
-      { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } },
-      { KLV_0601_AMEND_LOCAL_SET, klv_local_set{
+        { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
+        { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM" } },
+        { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } },
+        { KLV_0601_AMEND_LOCAL_SET, klv_local_set{
+            { KLV_0601_SEGMENT_LOCAL_SET, klv_local_set{
+                { KLV_0601_PLATFORM_DESIGNATION,
+                  std::string{ "PLATFORM_AMEND" } },
+                { KLV_0601_AMEND_LOCAL_SET, klv_local_set{
+                    { KLV_0601_MISSION_ID, std::string{ "ID_3" } } } } } } } },
         { KLV_0601_SEGMENT_LOCAL_SET, klv_local_set{
-          { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM_AMEND" } },
-          { KLV_0601_AMEND_LOCAL_SET, klv_local_set{
-            { KLV_0601_MISSION_ID, std::string{ "ID_3" } } } } } } } },
-      { KLV_0601_SEGMENT_LOCAL_SET, klv_local_set{
-        { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM_ALT" } },
-        { KLV_0601_MISSION_ID, std::string{ "ID_1" } } } },
-      { KLV_0601_SEGMENT_LOCAL_SET, klv_local_set{
-        { KLV_0601_MISSION_ID, std::string{ "ID_2" } } } } } } };
+            { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM_ALT" } },
+            { KLV_0601_MISSION_ID, std::string{ "ID_1" } } } },
+        { KLV_0601_SEGMENT_LOCAL_SET, klv_local_set{
+            { KLV_0601_MISSION_ID, std::string{ "ID_2" } } } } } } };
   klv_md->add< kv::VITAL_META_UNIX_TIMESTAMP >( 42 );
 
   auto const output = filter.filter( input, nullptr );
   ASSERT_EQ( 1, output.size() );
+
   auto const output_klv =
     dynamic_cast< klv_metadata* >( output.at( 0 ).get() );
   EXPECT_EQ(
@@ -307,20 +319,20 @@ TEST ( apply_child_klv, mixed_children )
 
   std::vector< klv_packet > expected_klv = {
     { klv_0601_key(), klv_local_set{
-      { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
-      { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM_ALT" } },
-      { KLV_0601_MISSION_ID, std::string{ "ID_1" } },
-      { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } },
+        { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
+        { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM_ALT" } },
+        { KLV_0601_MISSION_ID, std::string{ "ID_1" } },
+        { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } },
     { klv_0601_key(), klv_local_set{
-      { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
-      { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM" } },
-      { KLV_0601_MISSION_ID, std::string{ "ID_2" } },
-      { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } },
+        { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
+        { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM" } },
+        { KLV_0601_MISSION_ID, std::string{ "ID_2" } },
+        { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } },
     { klv_0601_key(), klv_local_set{
-      { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
-      { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM_AMEND" } },
-      { KLV_0601_MISSION_ID, std::string{ "ID_3" } },
-      { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } } };
+        { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 42 } },
+        { KLV_0601_PLATFORM_DESIGNATION, std::string{ "PLATFORM_AMEND" } },
+        { KLV_0601_MISSION_ID, std::string{ "ID_3" } },
+        { KLV_0601_VERSION_NUMBER, uint64_t{ 17 } } } } };
 
   EXPECT_EQ(
     std::multiset< klv_packet >( expected_klv.begin(), expected_klv.end() ),

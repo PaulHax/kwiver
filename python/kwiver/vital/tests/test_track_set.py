@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Tests for Python interface to vital::track_set
 
 """
+
 from six.moves import range
 
 from kwiver.vital.types import Track, TrackState
@@ -41,7 +42,7 @@ from kwiver.vital.types import TrackSet
 import nose.tools as nt
 
 
-class TestVitalTrackSet (object):
+class TestVitalTrackSet(object):
 
     def test_new(self):
         ts = TrackSet()
@@ -78,10 +79,7 @@ class TestVitalTrackSet (object):
             t.append(TrackState(i))
         ts = TrackSet([t])
 
-        nt.assert_equal(
-            ts.all_frame_ids(),
-            set(range(10))
-        )
+        nt.assert_equal(ts.all_frame_ids(), set(range(10)))
 
     def test_all_frame_ids_multitrack(self):
         # Across multiple tracks
@@ -90,13 +88,10 @@ class TestVitalTrackSet (object):
         for i in range(0, n):
             t1.append(TrackState(i))
         t2 = Track(2)
-        for i in range(n, n+5):
+        for i in range(n, n + 5):
             t2.append(TrackState(i))
         ts = TrackSet([t1, t2])
-        nt.assert_equal(
-            ts.all_frame_ids(),
-            set(range(n+5))
-        )
+        nt.assert_equal(ts.all_frame_ids(), set(range(n + 5)))
 
     def test_first_frame(self):
         # no tracks
@@ -137,10 +132,7 @@ class TestVitalTrackSet (object):
     def test_get_track_empty(self):
         # Empty set
         ts = TrackSet()
-        nt.assert_raises(
-            IndexError,
-            ts.get_track, 0
-        )
+        nt.assert_raises(IndexError, ts.get_track, 0)
 
     def test_get_track_single(self):
         # get track when only track
@@ -152,7 +144,4 @@ class TestVitalTrackSet (object):
         # test failure to get track from set when set does have contents, but
         # TID is not present
         ts = TrackSet([Track(0), Track(1), Track(3)])
-        nt.assert_raises(
-            IndexError,
-            ts.get_track, 2
-        )
+        nt.assert_raises(IndexError, ts.get_track, 2)

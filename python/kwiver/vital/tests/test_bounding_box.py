@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Tests for BoundingBox python class, templates implemented as BoundingBoxD/F/I depending on type.
 
 """
+
 import unittest
 import nose.tools as nt
 import numpy as np
@@ -57,11 +58,16 @@ class TestBoundingBox(unittest.TestCase):
         self.height_d = 240.0
         self.min_x_i = 0
         self.min_y_i = 0
-        self.min_x_d = 0.
-        self.min_y_d = 0.
+        self.min_x_d = 0.0
+        self.min_y_d = 0.0
 
     def runner(self, bbox, type_):
-        m = bbox(type_(self.min_x_d), type_(self.min_y_d), type_(self.width_d), type_(self.height_d))
+        m = bbox(
+            type_(self.min_x_d),
+            type_(self.min_y_d),
+            type_(self.width_d),
+            type_(self.height_d),
+        )
         self.check_points(m)
         self.check_dimensions(m)
         self.check_has_points(m)
@@ -72,7 +78,7 @@ class TestBoundingBox(unittest.TestCase):
         nt.assert_almost_equal(bbox.min_y(), self.ul_d[1])
         nt.assert_almost_equal(bbox.max_x(), self.lr_d[0])
         nt.assert_almost_equal(bbox.max_y(), self.lr_d[1])
-        np.testing.assert_array_almost_equal(bbox.upper_left(), self.ul_d )
+        np.testing.assert_array_almost_equal(bbox.upper_left(), self.ul_d)
         np.testing.assert_array_almost_equal(bbox.lower_right(), self.lr_d)
 
     def check_dimensions(self, bbox):

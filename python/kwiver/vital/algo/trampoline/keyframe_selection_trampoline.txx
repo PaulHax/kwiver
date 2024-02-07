@@ -17,51 +17,56 @@
 #include <vital/algo/keyframe_selection.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
-template < class algorithm_def_kf_base=
-            kwiver::vital::algorithm_def<
-              kwiver::vital::algo::keyframe_selection > >
-class algorithm_def_kf_trampoline :
-      public algorithm_trampoline<algorithm_def_kf_base>
+template < class algorithm_def_kf_base =
+    kwiver::vital::algorithm_def<
+      kwiver::vital::algo::keyframe_selection > >
+class algorithm_def_kf_trampoline
+  : public algorithm_trampoline< algorithm_def_kf_base >
 {
-  public:
-    using algorithm_trampoline<algorithm_def_kf_base>::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_kf_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<kwiver::vital::algo::keyframe_selection>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::keyframe_selection >,
+      type_name,
+    );
+  }
 };
 
-template< class keyframe_selection_base=
-                kwiver::vital::algo::keyframe_selection >
-class keyframe_selection_trampoline :
-      public algorithm_def_kf_trampoline< keyframe_selection_base >
+template < class keyframe_selection_base =
+    kwiver::vital::algo::keyframe_selection >
+class keyframe_selection_trampoline
+  : public algorithm_def_kf_trampoline< keyframe_selection_base >
 {
-  public:
-    using algorithm_def_kf_trampoline< keyframe_selection_base>::
-              algorithm_def_kf_trampoline;
+public:
+  using algorithm_def_kf_trampoline< keyframe_selection_base >::
+  algorithm_def_kf_trampoline;
 
-    kwiver::vital::track_set_sptr
-    select( kwiver::vital::track_set_sptr tracks ) const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        kwiver::vital::track_set_sptr,
-        kwiver::vital::algo::keyframe_selection,
-        select,
-        tracks
-      );
-    }
+  kwiver::vital::track_set_sptr
+  select( kwiver::vital::track_set_sptr tracks ) const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      kwiver::vital::track_set_sptr,
+      kwiver::vital::algo::keyframe_selection,
+      select,
+      tracks
+    );
+  }
 };
 
-}
-}
-}
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
 
 #endif

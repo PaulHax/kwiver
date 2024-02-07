@@ -71,6 +71,7 @@ operator<<( std::ostream& os, klv_blob const& blob )
   auto const flags = os.flags();
 
   os << std::hex << std::setfill( '0' );
+
   auto first = true;
   for( auto const c : *blob )
   {
@@ -100,8 +101,9 @@ operator==( klv_blob const& lhs, klv_blob const& rhs )
 bool
 operator<( klv_blob const& lhs, klv_blob const& rhs )
 {
-  return std::lexicographical_compare( lhs->cbegin(), lhs->cend(),
-                                       rhs->cbegin(), rhs->cend() );
+  return std::lexicographical_compare(
+    lhs->cbegin(), lhs->cend(),
+    rhs->cbegin(), rhs->cend() );
 }
 
 // ----------------------------------------------------------------------------
@@ -120,8 +122,9 @@ klv_write_blob(
 {
   if( max_length < value->size() )
   {
-    VITAL_THROW( kwiver::vital::metadata_buffer_overflow,
-                 "writing blob overruns end of data buffer" );
+    VITAL_THROW(
+      kwiver::vital::metadata_buffer_overflow,
+      "writing blob overruns end of data buffer" );
   }
 
   data = std::copy( value->cbegin(), value->cend(), data );

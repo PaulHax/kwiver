@@ -1,4 +1,4 @@
-#ckwg +28
+# ckwg +28
 # Copyright 2015 by Kitware, Inc.
 # All rights reserved.
 #
@@ -40,14 +40,18 @@ try:
     from smqtk.algorithms.descriptor_generator import get_descriptor_generator_impls
     from smqtk.representation.data_element.file_element import DataFileElement
     from smqtk.representation.descriptor_element_factory import DescriptorElementFactory
-    from smqtk.representation.descriptor_element.local_elements import DescriptorMemoryElement
+    from smqtk.representation.descriptor_element.local_elements import (
+        DescriptorMemoryElement,
+    )
 
     from smqtk.algorithms import get_descriptor_generator_impls
     from smqtk.utils.plugin import from_plugin_config
 except:
     # By doing this we allow folks to test that their KWIVER environment is properly built, before
     # building and configuring SMQTK
-    logger.info("SMQTK not configured into this Python instance.  Entering ApplyDescriptor test mode")
+    logger.info(
+        "SMQTK not configured into this Python instance.  Entering ApplyDescriptor test mode"
+    )
     apply_descriptor_test_mode = True
 
 
@@ -56,29 +60,30 @@ class ApplyDescriptor(KwiverProcess):
     This process gets ain image as input, does some stuff to it and
     sends the modified version to the output port.
     """
+
     # ----------------------------------------------
     def __init__(self, conf):
         KwiverProcess.__init__(self, conf)
 
-	# Add trait for our output port
-        self.add_port_trait( 'vector', 'double_vector', 'Output descriptor vector' )
+        # Add trait for our output port
+        self.add_port_trait("vector", "double_vector", "Output descriptor vector")
 
         # set up required flags
         required = process.PortFlags()
         required.add(self.flag_required)
 
         #  declare our ports ( port-name, flags)
-        self.declare_input_port_using_trait('image', required)
-        self.declare_output_port_using_trait('vector', required )
+        self.declare_input_port_using_trait("image", required)
+        self.declare_output_port_using_trait("vector", required)
 
         # declare our configuration
-        self.declare_configuration_key( "config_file", "",
-                "Descriptor configuration file name" )
-
+        self.declare_configuration_key(
+            "config_file", "", "Descriptor configuration file name"
+        )
 
     # ----------------------------------------------
     def _configure(self):
-	# Test extracting config as dictionary
+        # Test extracting config as dictionary
         self.config_dict = {}
         cfg = self.available_config()
         for it in cfg:
@@ -90,25 +95,27 @@ class ApplyDescriptor(KwiverProcess):
             self.factory = DescriptorElementFactory(DescriptorMemoryElement, {})
 
             # get config file name
-            file_name = self.config_value( "config_file" )
+            file_name = self.config_value("config_file")
 
             # open file
-            cfg_file = open( file_name )
+            cfg_file = open(file_name)
 
             from smqtk.utils.jsmin import jsmin
             import json
 
-            self.descr_config = json.loads( jsmin( cfg_file.read() ) )
+            self.descr_config = json.loads(jsmin(cfg_file.read()))
 
-            #self.generator = CaffeDescriptorGenerator.from_config(self.descr_config)
-            self.generator = from_plugin_config(self.descr_config, get_descriptor_generator_impls)
+            # self.generator = CaffeDescriptorGenerator.from_config(self.descr_config)
+            self.generator = from_plugin_config(
+                self.descr_config, get_descriptor_generator_impls
+            )
 
         self._base_configure()
 
     # ----------------------------------------------
     def _step(self):
         # grab image container from port using traits
-        in_img_c = self.grab_input_using_trait('image')
+        in_img_c = self.grab_input_using_trait("image")
 
         # If we're in test mode, just grab the image and
         # push a fake descriptor without trying to use
@@ -117,36 +124,38 @@ class ApplyDescriptor(KwiverProcess):
             # Get image from conatiner
             in_img = in_img_c.image()
 
-
             # convert generic image to PIL image
             pil_image = get_pil_image(in_img)
             pix = np.array(pil_image)
 
             # get image in acceptable format
             # TBD use in memory transfer
-            pil_image.save( "file.png" )
+            pil_image.save("file.png")
             test_data = DataFileElement("file.png")
 
             result = self.generator.compute_descriptor(test_data, self.factory)
             desc_list = result.vector().tolist()
 
             # push list to output port
-            self.push_to_port_using_trait( 'vector', desc_list )
+            self.push_to_port_using_trait("vector", desc_list)
         else:
-            desc_list =  4096 * [0.223] # Create  fake descriptor in test mode
-            self.push_to_port_using_trait('vector', desc_list)
+            desc_list = 4096 * [0.223]  # Create  fake descriptor in test mode
+            self.push_to_port_using_trait("vector", desc_list)
 
         self._base_step()
+
 
 # ==================================================================
 def __sprokit_register__():
     from kwiver.sprokit.pipeline import process_factory
 
-    module_name = 'python:kwiver.ApplyDescriptor'
+    module_name = "python:kwiver.ApplyDescriptor"
 
     if process_factory.is_process_module_loaded(module_name):
         return
 
-    process_factory.add_process('ApplyDescriptor', 'Apply descriptor to image', ApplyDescriptor)
+    process_factory.add_process(
+        "ApplyDescriptor", "Apply descriptor to image", ApplyDescriptor
+    )
 
     process_factory.mark_process_module_as_loaded(module_name)

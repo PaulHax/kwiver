@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Tests for CameraRPC interface class.
 
 """
+
 import unittest
 import nose.tools as nt
 import numpy as np
@@ -41,7 +42,6 @@ import math
 from kwiver.vital.tests.py_helpers import no_call_pure_virtual_method
 from kwiver.vital.tests.cpp_helpers import camera_rpc_helpers as crpch
 from kwiver.vital.types import CameraRPC as crpc, SimpleCameraRPC as srpc
-
 
 
 class TestCameraRPC(unittest.TestCase):
@@ -69,20 +69,40 @@ class TestSimpleCameraRPC(unittest.TestCase):
         self.m_image_offset = np.array([0, 2])
         self.m_image_width = 1080
         self.m_image_height = 720
-        self.m_coeffs = np.ndarray(shape=(4, 20),dtype=float)
-        self.m_srpc = srpc(self.m_world_scale, self.m_world_offset, self.m_image_scale,
-                                 self.m_image_offset, self.m_coeffs,
-                                 self.m_image_width, self.m_image_height)
+        self.m_coeffs = np.ndarray(shape=(4, 20), dtype=float)
+        self.m_srpc = srpc(
+            self.m_world_scale,
+            self.m_world_offset,
+            self.m_image_scale,
+            self.m_image_offset,
+            self.m_coeffs,
+            self.m_image_width,
+            self.m_image_height,
+        )
 
     def test_constructors(self):
         srpc()
-        srpc(self.m_world_scale, self.m_world_offset, self.m_image_scale,
-                                 self.m_image_offset, self.m_coeffs,
-                                 self.m_image_width, self.m_image_height)
+        srpc(
+            self.m_world_scale,
+            self.m_world_offset,
+            self.m_image_scale,
+            self.m_image_offset,
+            self.m_coeffs,
+            self.m_image_width,
+            self.m_image_height,
+        )
         srpc(srpc())
-        srpc(srpc(self.m_world_scale, self.m_world_offset, self.m_image_scale,
-                                 self.m_image_offset, self.m_coeffs,
-                                 self.m_image_width, self.m_image_height))
+        srpc(
+            srpc(
+                self.m_world_scale,
+                self.m_world_offset,
+                self.m_image_scale,
+                self.m_image_offset,
+                self.m_coeffs,
+                self.m_image_width,
+                self.m_image_height,
+            )
+        )
 
     def test_methods(self):
         cameraRPC = srpc()
@@ -107,16 +127,101 @@ class TestSimpleCameraRPC(unittest.TestCase):
         proj_2d = srpc().project(np.array([1.0, 2.0, 10.0]))
         np.testing.assert_array_equal(proj_2d, np.array([1.0, 2.0]))
         proj_3d = srpc().back_project([1.0, 2.0], 1.0)
-        np.testing.assert_array_equal(np.array([1.0, 2.0 ,1.0]), proj_3d)
+        np.testing.assert_array_equal(np.array([1.0, 2.0, 1.0]), proj_3d)
         ret_val = np.array([0, 0])
-        ret_jac = np.ndarray(shape=(2, 2), dtype=(float), order='F')
+        ret_jac = np.ndarray(shape=(2, 2), dtype=(float), order="F")
         ret_jac.setflags(write=1)
-        rpc_coeffs_buffer = [[0.006585953, -1.032582, 0.001740937, 0.03034485, 0.0008819178, -0.000167943, 0.0001519299 -0.00626254, -0.00107337, 9.099077e-06, 2.608985e-06, -2.947004e-05, 2.231277e-05, 4.587831e-06, 4.16379e-06, 0.0003464555, 3.598323e-08, -2.859541e-06, 5.159311e-06, -1.349187e-07],
-         [1, 0.0003374458, 0.0008965622, -0.0003730697, -2.666499e-05, -2.711356e-06, 5.454434e-07, 4.485658e-07, 2.534922e-05, -4.546709e-06, 0, -1.056044e-07, -5.626866e-07, 2.243313e-08, -2.108053e-07, 9.199534e-07, 0, -3.887594e-08, -1.437016e-08, 0],
-         [0.0002703625, 0.04284488, 1.046869, 0.004713542, -0.0001706129, -1.525177e-07, 1.255623e-05, -0.0005820134,  -0.000710512, -2.510676e-07, 3.179984e-06, 3.120413e-06, 3.19923e-05, 4.194369e-06, 7.475295e-05, 0.0003630791, 0.0001021649, 4.493725e-07, 3.156566e-06, 4.596505e-07],
-         [1, 0.0001912806, 0.0005166397, -1.45044e-05, -3.860133e-05, 2.634582e-06, -4.551145e-06, 6.859296e-05, -0.0002410782, 9.753265e-05, -1.456261e-07, 5.310624e-08, -1.913253e-05, 3.18203e-08, 3.870586e-07, -0.000206842, 9.128349e-08, 0, -2.506197e-06, 0]]
+        rpc_coeffs_buffer = [
+            [
+                0.006585953,
+                -1.032582,
+                0.001740937,
+                0.03034485,
+                0.0008819178,
+                -0.000167943,
+                0.0001519299 - 0.00626254,
+                -0.00107337,
+                9.099077e-06,
+                2.608985e-06,
+                -2.947004e-05,
+                2.231277e-05,
+                4.587831e-06,
+                4.16379e-06,
+                0.0003464555,
+                3.598323e-08,
+                -2.859541e-06,
+                5.159311e-06,
+                -1.349187e-07,
+            ],
+            [
+                1,
+                0.0003374458,
+                0.0008965622,
+                -0.0003730697,
+                -2.666499e-05,
+                -2.711356e-06,
+                5.454434e-07,
+                4.485658e-07,
+                2.534922e-05,
+                -4.546709e-06,
+                0,
+                -1.056044e-07,
+                -5.626866e-07,
+                2.243313e-08,
+                -2.108053e-07,
+                9.199534e-07,
+                0,
+                -3.887594e-08,
+                -1.437016e-08,
+                0,
+            ],
+            [
+                0.0002703625,
+                0.04284488,
+                1.046869,
+                0.004713542,
+                -0.0001706129,
+                -1.525177e-07,
+                1.255623e-05,
+                -0.0005820134,
+                -0.000710512,
+                -2.510676e-07,
+                3.179984e-06,
+                3.120413e-06,
+                3.19923e-05,
+                4.194369e-06,
+                7.475295e-05,
+                0.0003630791,
+                0.0001021649,
+                4.493725e-07,
+                3.156566e-06,
+                4.596505e-07,
+            ],
+            [
+                1,
+                0.0001912806,
+                0.0005166397,
+                -1.45044e-05,
+                -3.860133e-05,
+                2.634582e-06,
+                -4.551145e-06,
+                6.859296e-05,
+                -0.0002410782,
+                9.753265e-05,
+                -1.456261e-07,
+                5.310624e-08,
+                -1.913253e-05,
+                3.18203e-08,
+                3.870586e-07,
+                -0.000206842,
+                9.128349e-08,
+                0,
+                -2.506197e-06,
+                0,
+            ],
+        ]
 
-        rpc_coeffs = np.ndarray(shape = (4,20), dtype = float)
+        rpc_coeffs = np.ndarray(shape=(4, 20), dtype=float)
         for x in range(len(rpc_coeffs_buffer)):
             for y in range(len(rpc_coeffs_buffer[x])):
                 rpc_coeffs[x][y] = rpc_coeffs_buffer[x][y]
@@ -126,11 +231,23 @@ class TestSimpleCameraRPC(unittest.TestCase):
         image_offset = np.array([21249, 21477])
         image_width = 1000
         image_height = 1000
-        s = srpc(world_scale, world_offset, image_scale, image_offset, rpc_coeffs, image_height, image_width)
-        ret_jac, ret_val = s.jacobian(np.array([-58.58, -34.49, 20.92]), ret_jac, ret_val)
+        s = srpc(
+            world_scale,
+            world_offset,
+            image_scale,
+            image_offset,
+            rpc_coeffs,
+            image_height,
+            image_width,
+        )
+        ret_jac, ret_val = s.jacobian(
+            np.array([-58.58, -34.49, 20.92]), ret_jac, ret_val
+        )
 
         self.assertFalse(ret_jac.flags.owndata)
-        np.testing.assert_array_almost_equal(ret_jac[1], np.array([ 2.92836539e-002, -2.25968e-001]))
+        np.testing.assert_array_almost_equal(
+            ret_jac[1], np.array([2.92836539e-002, -2.25968e-001])
+        )
 
         # test clone
         cameraRPC_2 = self.m_srpc.clone()
@@ -159,14 +276,32 @@ class TestSimpleCameraRPC(unittest.TestCase):
 
         # other members
         np.testing.assert_array_equal(self.m_coeffs, crpch.call_rpc_coeffs(self.m_srpc))
-        np.testing.assert_array_equal(self.m_world_scale, crpch.call_world_scale(self.m_srpc))
-        np.testing.assert_array_equal(self.m_world_offset, crpch.call_world_offset(self.m_srpc))
-        np.testing.assert_array_equal(self.m_image_width, crpch.call_image_width(self.m_srpc))
-        np.testing.assert_array_equal(self.m_image_height, crpch.call_image_height(self.m_srpc))
-        np.testing.assert_array_equal(self.m_image_scale, crpch.call_image_scale(self.m_srpc))
-        np.testing.assert_array_equal(self.m_image_offset, crpch.call_image_offset(self.m_srpc))
-        np.testing.assert_array_equal(np.array([1.0, 2.0]), crpch.call_project(srpc(), [1.0, 2.0, 10.0]))
-        np.testing.assert_array_equal(np.array([1.0, 2.0, 1.0]), crpch.call_back_project(srpc(), np.array([1.0, 2.0]), 1.0))
+        np.testing.assert_array_equal(
+            self.m_world_scale, crpch.call_world_scale(self.m_srpc)
+        )
+        np.testing.assert_array_equal(
+            self.m_world_offset, crpch.call_world_offset(self.m_srpc)
+        )
+        np.testing.assert_array_equal(
+            self.m_image_width, crpch.call_image_width(self.m_srpc)
+        )
+        np.testing.assert_array_equal(
+            self.m_image_height, crpch.call_image_height(self.m_srpc)
+        )
+        np.testing.assert_array_equal(
+            self.m_image_scale, crpch.call_image_scale(self.m_srpc)
+        )
+        np.testing.assert_array_equal(
+            self.m_image_offset, crpch.call_image_offset(self.m_srpc)
+        )
+        np.testing.assert_array_equal(
+            np.array([1.0, 2.0]), crpch.call_project(srpc(), [1.0, 2.0, 10.0])
+        )
+        np.testing.assert_array_equal(
+            np.array([1.0, 2.0, 1.0]),
+            crpch.call_back_project(srpc(), np.array([1.0, 2.0]), 1.0),
+        )
+
 
 class InheritedRPC(crpc):
     def __init__(self):
@@ -218,12 +353,27 @@ class TestInheritedRPC(unittest.TestCase):
 
     def test_methods(self):
         irpc = InheritedRPC()
-        self.assertEqual(crpch.call_rpc_coeffs(irpc).shape, np.ndarray(shape=(4, 20), dtype=float).shape)
-        np.testing.assert_array_equal(crpch.call_world_scale(irpc), np.array([8, 9, 10]))
-        np.testing.assert_array_equal(crpch.call_world_offset(irpc), np.array([1, 8, 9]))
-        np.testing.assert_array_equal(crpch.call_image_scale(irpc), np.array([0.5, 2.9]))
-        np.testing.assert_array_equal(crpch.call_image_offset(irpc), np.array([1.0, 0.75]))
+        self.assertEqual(
+            crpch.call_rpc_coeffs(irpc).shape,
+            np.ndarray(shape=(4, 20), dtype=float).shape,
+        )
+        np.testing.assert_array_equal(
+            crpch.call_world_scale(irpc), np.array([8, 9, 10])
+        )
+        np.testing.assert_array_equal(
+            crpch.call_world_offset(irpc), np.array([1, 8, 9])
+        )
+        np.testing.assert_array_equal(
+            crpch.call_image_scale(irpc), np.array([0.5, 2.9])
+        )
+        np.testing.assert_array_equal(
+            crpch.call_image_offset(irpc), np.array([1.0, 0.75])
+        )
         self.assertEqual(crpch.call_image_width(irpc), 3840)
         self.assertEqual(crpch.call_image_height(irpc), 2160)
-        np.testing.assert_array_equal(crpch.call_project(irpc, np.array([1, 2, 3])), np.array([99, 100]))
-        np.testing.assert_array_equal(crpch.call_back_project(irpc, np.array([0, 0.125]), 1), np.array([1, 2, 3]))
+        np.testing.assert_array_equal(
+            crpch.call_project(irpc, np.array([1, 2, 3])), np.array([99, 100])
+        )
+        np.testing.assert_array_equal(
+            crpch.call_back_project(irpc, np.array([0, 0.125]), 1), np.array([1, 2, 3])
+        )

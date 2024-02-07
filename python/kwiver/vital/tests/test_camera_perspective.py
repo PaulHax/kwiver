@@ -50,6 +50,7 @@ from kwiver.vital.types import (
 )
 from kwiver.vital.types.covariance import Covar3d
 
+
 # Test python classes inherited from C++ w/ virtual methods overridden
 class CameraPerspectiveImpl(cap):
     def __init__(self, rot_, cen_, intrin_):
@@ -83,17 +84,13 @@ class CameraPerspectiveImpl(cap):
         return self.intrins.image_height()
 
     def as_matrix(self):
-        return np.array([[1, 0, 0],
-                         [0, 1, 0],
-                         [0, 0, 1]])
+        return np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 
     def clone_look_at(self, stare_point, up):
         return CameraPerspectiveImpl(RotationD(0, [0, 1, 0]), self.center, self.intrins)
 
     def pose_matrix(self):
-        return np.array([[1, 0, 0],
-                         [0, 1, 0],
-                         [0, 0, 1]])
+        return np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 
     def project(self, pt):
         return pt[:2]
@@ -123,16 +120,18 @@ class TestCameraPerspective(unittest.TestCase):
         no_call_pure_virtual_method(cap().depth, np.array([1, 1, 1]))
         no_call_pure_virtual_method(cap().project, np.array([1, 2, 3]))
         no_call_pure_virtual_method(cap().as_matrix)
-        #pose matrix is not virtual, but it's impl does call pure virts
+        # pose matrix is not virtual, but it's impl does call pure virts
         no_call_pure_virtual_method(cap().pose_matrix)
         no_call_pure_virtual_method(cap().image_width)
         no_call_pure_virtual_method(cap().image_height)
+
 
 # Test simple Camera Perspective, impl of Camera Perspective
 class TestSimpleCameraPerspective(unittest.TestCase):
     @classmethod
     def setUp(self):
-        self.intrins = ci(focal_length=10.5,
+        self.intrins = ci(
+            focal_length=10.5,
             principal_point=[3.14, 6.28],
             aspect_ratio=1.2,
             skew=3.1,
@@ -165,12 +164,14 @@ class TestSimpleCameraPerspective(unittest.TestCase):
         center_ = cph.call_center(a)
         np.testing.assert_array_equal(center_, self.vec)
         trans_ = cph.call_translation(a)
-        np.testing.assert_array_equal(trans_, -(a.get_rotation().inverse()*a.get_center()))
+        np.testing.assert_array_equal(
+            trans_, -(a.get_rotation().inverse() * a.get_center())
+        )
         covar_ = cph.call_center_covar(a)
         self.assertIsInstance(covar_, Covar3d)
-        np.testing.assert_array_equal(covar_.matrix(), np.array([[1, 0, 0],
-                                                                    [0, 1, 0],
-                                                                    [0, 0, 1]]))
+        np.testing.assert_array_equal(
+            covar_.matrix(), np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+        )
         rot_ = cph.call_rotation(a)
         nt.assert_equal(rot_, self.rot)
         intr_ = cph.call_intrinsics(a)
@@ -179,35 +180,45 @@ class TestSimpleCameraPerspective(unittest.TestCase):
         self.assertEqual(ih_, 720)
         iw_ = cph.call_image_width(a)
         self.assertEqual(iw_, 1080)
-        clone_look_at_ = cph.call_clone_look_at(a, np.array([1, 0, 0]), np.array([0,1,0]))
+        clone_look_at_ = cph.call_clone_look_at(
+            a, np.array([1, 0, 0]), np.array([0, 1, 0])
+        )
         self.assertIsInstance(clone_look_at_, scap)
         nt.assert_not_equal(clone_look_at_.get_rotation(), self.rot)
         cam_ = cph.call_as_matrix(a)
-        np.testing.assert_array_almost_equal(cam_, np.array([[10.5, 3.1, 3.14, -69.5378],
-                                                        [0, 8.75, 6.28, -63.0826],
-                                                        [0, 0, 1, -5.67]]
-                                                        ))
+        np.testing.assert_array_almost_equal(
+            cam_,
+            np.array(
+                [
+                    [10.5, 3.1, 3.14, -69.5378],
+                    [0, 8.75, 6.28, -63.0826],
+                    [0, 0, 1, -5.67],
+                ]
+            ),
+        )
 
     def test_not_overidden(self):
         # Test getters
         scap_ = scap(center=self.vec, rotation=self.rot, intrinsics=self.intrins)
         np.testing.assert_array_equal(scap_.get_center(), self.vec)
         self.assertIsInstance(scap_.get_rotation(), RotationD)
-        nt.assert_equal(scap_.get_rotation(),self.rot)
+        nt.assert_equal(scap_.get_rotation(), self.rot)
         self.assertIsInstance(scap_.get_intrinsics(), ci)
         nt.assert_equal(scap_.get_intrinsics(), self.intrins)
 
         # Test setters
         new_center = np.array([0, 2, 0])
         scap_.set_center(new_center)
-        np.testing.assert_array_equal(scap_.get_center(),new_center)
+        np.testing.assert_array_equal(scap_.get_center(), new_center)
         new_rot = RotationD(1, np.array([0, 2, 0]))
         scap_.set_rotation(new_rot)
         nt.assert_equal(scap_.get_rotation(), new_rot)
         scap_.set_intrinsics(self.intrins_empty)
         nt.assert_equal(scap_.get_intrinsics(), self.intrins_empty)
         scap_.set_translation(np.array([1, 0, 3]))
-        np.testing.assert_array_equal(scap_.get_center(), -(scap_.get_rotation().inverse()*np.array([1, 0, 3])))
+        np.testing.assert_array_equal(
+            scap_.get_center(), -(scap_.get_rotation().inverse() * np.array([1, 0, 3]))
+        )
 
         # Test covar setter/gettter
         m_out = self.covar3d.matrix()
@@ -215,17 +226,19 @@ class TestSimpleCameraPerspective(unittest.TestCase):
         np.testing.assert_array_equal(scap_.get_center_covar().matrix(), m_out)
 
         # Test other (look_at)
-        scap_= scap()
+        scap_ = scap()
         scap_.look_at(np.array([1, 0, 0]), np.array([0, 0, 1]))
         rot_ = scap_.get_rotation()
-        np.testing.assert_array_almost_equal(rot_.matrix(), np.array([[0, -1, 0],
-                                                             [0, 0, -1],
-                                                             [1, 0 ,0]]))
+        np.testing.assert_array_almost_equal(
+            rot_.matrix(), np.array([[0, -1, 0], [0, 0, -1], [1, 0, 0]])
+        )
+
 
 class TestCameraPerspectiveImpl(unittest.TestCase):
     def test_init(self):
         rot_ = RotationD(0, [1, 0, 0])
-        intrins_ = ci(focal_length=10.5,
+        intrins_ = ci(
+            focal_length=10.5,
             principal_point=[3.14, 6.28],
             aspect_ratio=1.2,
             skew=3.1,
@@ -238,11 +251,12 @@ class TestCameraPerspectiveImpl(unittest.TestCase):
         CameraPerspectiveImpl(rot_, cent, intrins_)
 
     def test_inheritance(self):
-        nt.ok_(issubclass(CameraPerspectiveImpl,cap))
+        nt.ok_(issubclass(CameraPerspectiveImpl, cap))
 
     def test_clone_clone_look_at(self):
         rot_ = RotationD(0, [1, 0, 0])
-        intrins_ = ci(focal_length=10.5,
+        intrins_ = ci(
+            focal_length=10.5,
             principal_point=[3.14, 6.28],
             aspect_ratio=1.2,
             skew=3.1,
@@ -257,13 +271,16 @@ class TestCameraPerspectiveImpl(unittest.TestCase):
         self.assertIsInstance(campp, CameraPerspectiveImpl)
         np.testing.assert_array_equal(campp.center, cent)
 
-        campp_look_at = cph.call_clone_look_at(cam_test, np.array([2, 3, 4]), np.array([0, 0, 1]))
+        campp_look_at = cph.call_clone_look_at(
+            cam_test, np.array([2, 3, 4]), np.array([0, 0, 1])
+        )
         self.assertIsInstance(campp_look_at, CameraPerspectiveImpl)
         nt.assert_equal(campp_look_at.rot, RotationD(0, [0, 1, 0]))
 
     def test_overrides(self):
         rot_ = RotationD(0, [1, 0, 0])
-        intrins_ = ci(focal_length=10.5,
+        intrins_ = ci(
+            focal_length=10.5,
             principal_point=[3.14, 6.28],
             aspect_ratio=1.2,
             skew=3.1,
@@ -277,19 +294,22 @@ class TestCameraPerspectiveImpl(unittest.TestCase):
 
         np.testing.assert_array_equal(cam_test.get_center(), cent)
         nt.assert_equal(cam_test.rotation(), rot_)
-        np.testing.assert_array_equal(cam_test.translation(), -(cam_test.rot.inverse() * cam_test.center))
-        np.testing.assert_array_equal(cam_test.center_covar().matrix(), np.array([[1, 0, 0],
-                                                                                  [0, 1, 0],
-                                                                                  [0, 0, 1]]))
+        np.testing.assert_array_equal(
+            cam_test.translation(), -(cam_test.rot.inverse() * cam_test.center)
+        )
+        np.testing.assert_array_equal(
+            cam_test.center_covar().matrix(),
+            np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+        )
         nt.assert_equal(cam_test.intrinsics(), intrins_)
         self.assertEqual(cam_test.image_height(), 720)
         self.assertEqual(cam_test.image_width(), 1080)
-        np.testing.assert_array_equal(cam_test.pose_matrix(), np.array([[1, 0, 0],
-                                                                        [0, 1, 0],
-                                                                        [0, 0, 1]]))
-        np.testing.assert_array_equal(cam_test.as_matrix(), np.array([[1, 0, 0],
-                                                                        [0, 1, 0],
-                                                                        [0, 0, 1]]))
+        np.testing.assert_array_equal(
+            cam_test.pose_matrix(), np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+        )
+        np.testing.assert_array_equal(
+            cam_test.as_matrix(), np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+        )
         pt = np.array([1, 2, 3])
         np.testing.assert_array_equal(cam_test.project(pt), pt[:2])
         np.testing.assert_array_equal(cam_test.depth(pt), pt[2:])

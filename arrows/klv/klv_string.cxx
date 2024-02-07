@@ -36,7 +36,7 @@ decode_error_policy()
 }
 
 // ----------------------------------------------------------------------------
-template< class Codec >
+template < class Codec >
 Codec const&
 get_text_codec()
 {
@@ -88,10 +88,12 @@ klv_string_format
   auto const char_count = std::get< 1 >( length_tuple );
   if( !m_char_constraints.do_allow( char_count ) )
   {
-    LOG_WARN( vital::get_logger( "klv" ),
+    LOG_WARN(
+      vital::get_logger( "klv" ),
       "format `" << description() << "` "
-      << "received wrong number of characters ( " << char_count << " ) "
-      << "when reading" );
+                 << "received wrong number of characters ( " << char_count <<
+        " ) "
+                 << "when reading" );
   }
 
   return value;
@@ -100,8 +102,9 @@ klv_string_format
 // ----------------------------------------------------------------------------
 void
 klv_string_format
-::write_typed( std::string const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  std::string const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   // Calculate number of characters in input
   auto const length_tuple = m_codec->decoded_size( value );
@@ -115,10 +118,12 @@ klv_string_format
   auto const char_count = std::get< 1 >( length_tuple );
   if( !m_char_constraints.do_allow( char_count ) )
   {
-    LOG_WARN( vital::get_logger( "klv" ),
+    LOG_WARN(
+      vital::get_logger( "klv" ),
       "format `" << description() << "` "
-      << "received wrong number of characters ( " << char_count << " ) "
-      << "when writing" );
+                 << "received wrong number of characters ( " << char_count <<
+        " ) "
+                 << "when writing" );
   }
 
   klv_write_string( value, data, length );
@@ -172,8 +177,8 @@ klv_string_format
 klv_ascii_format
 ::klv_ascii_format( klv_length_constraints const& length_constraints )
   : klv_string_format{
-    get_text_codec< vital::text_codec_ascii >(),
-    length_constraints, length_constraints }
+      get_text_codec< vital::text_codec_ascii >(),
+      length_constraints, length_constraints }
 {}
 
 // ----------------------------------------------------------------------------
@@ -187,8 +192,8 @@ klv_utf_8_format
   klv_length_constraints const& char_constraints,
   klv_length_constraints const& byte_constraints )
   : klv_string_format{
-    get_text_codec< vital::text_codec_utf_8 >(),
-    char_constraints, byte_constraints }
+      get_text_codec< vital::text_codec_utf_8 >(),
+      char_constraints, byte_constraints }
 {}
 
 // ----------------------------------------------------------------------------
@@ -202,8 +207,8 @@ klv_utf_16_format
   klv_length_constraints const& char_constraints,
   klv_length_constraints const& byte_constraints )
   : klv_string_format{
-    get_text_codec< vital::text_codec_utf_16_be >(),
-    char_constraints, byte_constraints }
+      get_text_codec< vital::text_codec_utf_16_be >(),
+      char_constraints, byte_constraints }
 {}
 
 // ----------------------------------------------------------------------------

@@ -13,44 +13,47 @@
 #include <opencv2/nonfree/nonfree.hpp>
 #endif
 
-//#include <arrows/ocv/analyze_tracks.h>
-//#include <arrows/ocv/detect_features_AGAST.h>
-//#include <arrows/ocv/detect_features_FAST.h>
-//#include <arrows/ocv/detect_features_GFTT.h>
-//#include <arrows/ocv/detect_features_MSD.h>
-//#include <arrows/ocv/detect_features_MSER.h>
-//#include <arrows/ocv/detect_features_simple_blob.h>
-//#include <arrows/ocv/detect_features_STAR.h>
-//#include <arrows/ocv/draw_detected_object_set.h>
-//#include <arrows/ocv/draw_tracks.h>
-//#include <arrows/ocv/estimate_fundamental_matrix.h>
-//#include <arrows/ocv/estimate_homography.h>
-//#include <arrows/ocv/estimate_pnp.h>
-//#include <arrows/ocv/resection_camera.h>
-//#include <arrows/ocv/extract_descriptors_BRIEF.h>
-//#include <arrows/ocv/extract_descriptors_DAISY.h>
-//#include <arrows/ocv/extract_descriptors_FREAK.h>
-//#include <arrows/ocv/extract_descriptors_LATCH.h>
-//#include <arrows/ocv/extract_descriptors_LUCID.h>
-//#include <arrows/ocv/feature_detect_extract_BRISK.h>
-//#include <arrows/ocv/feature_detect_extract_ORB.h>
-//#include <arrows/ocv/feature_detect_extract_SIFT.h>
-//#include <arrows/ocv/feature_detect_extract_SURF.h>
+// #include <arrows/ocv/analyze_tracks.h>
+// #include <arrows/ocv/detect_features_AGAST.h>
+// #include <arrows/ocv/detect_features_FAST.h>
+// #include <arrows/ocv/detect_features_GFTT.h>
+// #include <arrows/ocv/detect_features_MSD.h>
+// #include <arrows/ocv/detect_features_MSER.h>
+// #include <arrows/ocv/detect_features_simple_blob.h>
+// #include <arrows/ocv/detect_features_STAR.h>
+// #include <arrows/ocv/draw_detected_object_set.h>
+// #include <arrows/ocv/draw_tracks.h>
+// #include <arrows/ocv/estimate_fundamental_matrix.h>
+// #include <arrows/ocv/estimate_homography.h>
+// #include <arrows/ocv/estimate_pnp.h>
+// #include <arrows/ocv/resection_camera.h>
+// #include <arrows/ocv/extract_descriptors_BRIEF.h>
+// #include <arrows/ocv/extract_descriptors_DAISY.h>
+// #include <arrows/ocv/extract_descriptors_FREAK.h>
+// #include <arrows/ocv/extract_descriptors_LATCH.h>
+// #include <arrows/ocv/extract_descriptors_LUCID.h>
+// #include <arrows/ocv/feature_detect_extract_BRISK.h>
+// #include <arrows/ocv/feature_detect_extract_ORB.h>
+// #include <arrows/ocv/feature_detect_extract_SIFT.h>
+// #include <arrows/ocv/feature_detect_extract_SURF.h>
 #include <arrows/ocv/image_io.h>
-//#include <arrows/ocv/inpaint.h>
-//#include <arrows/ocv/match_features_bruteforce.h>
-//#include <arrows/ocv/match_features_flannbased.h>
-//#include <arrows/ocv/merge_images.h>
-//#include <arrows/ocv/hough_circle_detector.h>
-//#include <arrows/ocv/refine_detections_write_to_disk.h>
-//#include <arrows/ocv/split_image.h>
-//#include <arrows/ocv/track_features_klt.h>
-//#include <arrows/ocv/detect_motion_3frame_differencing.h>
-//#include <arrows/ocv/detect_motion_mog2.h>
-//#include <arrows/ocv/detect_heat_map.h>
+
+// #include <arrows/ocv/inpaint.h>
+// #include <arrows/ocv/match_features_bruteforce.h>
+// #include <arrows/ocv/match_features_flannbased.h>
+// #include <arrows/ocv/merge_images.h>
+// #include <arrows/ocv/hough_circle_detector.h>
+// #include <arrows/ocv/refine_detections_write_to_disk.h>
+// #include <arrows/ocv/split_image.h>
+// #include <arrows/ocv/track_features_klt.h>
+// #include <arrows/ocv/detect_motion_3frame_differencing.h>
+// #include <arrows/ocv/detect_motion_mog2.h>
+// #include <arrows/ocv/detect_heat_map.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace ocv {
 
 extern "C"
@@ -60,11 +63,11 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 {
   using kvpf = ::kwiver::vital::plugin_factory;
 
-#if defined(HAVE_OPENCV_NONFREE)
+#if defined( HAVE_OPENCV_NONFREE )
   cv::initModule_nonfree();
 #endif
   auto fact =
-    vpm.add_factory< vital::algo::image_io , image_io>("ocv");
+    vpm.add_factory< vital::algo::image_io, image_io >( "ocv" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
 
 // kwiver-v2 xxx(needs to be updated/adapted)
@@ -96,47 +99,47 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 //  // Conditional algorithms
 //  // Source ``KWIVER_OCV_HAS_*`` symbol definitions can be found in the header
 //  //  files of the algorithms referred to.
-//#ifdef KWIVER_OCV_HAS_AGAST
+// #ifdef KWIVER_OCV_HAS_AGAST
 //  reg.register_algorithm< detect_features_AGAST >();
-//#endif
+// #endif
 //
-//#ifdef KWIVER_OCV_HAS_BRIEF
+// #ifdef KWIVER_OCV_HAS_BRIEF
 //  reg.register_algorithm< extract_descriptors_BRIEF >();
-//#endif
+// #endif
 //
-//#ifdef KWIVER_OCV_HAS_DAISY
+// #ifdef KWIVER_OCV_HAS_DAISY
 //  reg.register_algorithm< extract_descriptors_DAISY >();
-//#endif
+// #endif
 //
-//#ifdef KWIVER_OCV_HAS_FREAK
+// #ifdef KWIVER_OCV_HAS_FREAK
 //    reg.register_algorithm< extract_descriptors_FREAK >();
-//#endif
+// #endif
 //
-//#ifdef KWIVER_OCV_HAS_LATCH
+// #ifdef KWIVER_OCV_HAS_LATCH
 //   reg.register_algorithm< extract_descriptors_LATCH >();
-//#endif
+// #endif
 //
-//#ifdef KWIVER_OCV_HAS_LUCID
+// #ifdef KWIVER_OCV_HAS_LUCID
 //  reg.register_algorithm< extract_descriptors_LUCID >();
-//#endif
+// #endif
 //
-//#ifdef KWIVER_OCV_HAS_MSD
+// #ifdef KWIVER_OCV_HAS_MSD
 //  reg.register_algorithm< detect_features_MSD >();
-//#endif
+// #endif
 //
-//#ifdef KWIVER_OCV_HAS_SIFT
+// #ifdef KWIVER_OCV_HAS_SIFT
 //  reg.register_algorithm< detect_features_SIFT >();
 //  reg.register_algorithm< extract_descriptors_SIFT >();
-//#endif
+// #endif
 //
-//#ifdef KWIVER_OCV_HAS_STAR
+// #ifdef KWIVER_OCV_HAS_STAR
 //  reg.register_algorithm< detect_features_STAR >();
-//#endif
+// #endif
 //
-//#ifdef KWIVER_OCV_HAS_SURF
+// #ifdef KWIVER_OCV_HAS_SURF
 //  reg.register_algorithm< detect_features_SURF >();
 //  reg.register_algorithm< extract_descriptors_SURF >();
-//#endif
+// #endif
 //
 //  reg.register_algorithm< detect_heat_map >();
 //
@@ -151,5 +154,7 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 }
 
 } // end namespace ocv
+
 } // end namespace arrows
+
 } // end namespace kwiver

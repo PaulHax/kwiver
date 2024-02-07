@@ -127,8 +127,7 @@ read_object_track_set
 void
 read_object_track_set
 ::new_stream()
-{
-}
+{}
 
 } // namespace algo
 

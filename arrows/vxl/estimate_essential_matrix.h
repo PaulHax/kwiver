@@ -15,16 +15,20 @@
 #include <vital/algo/estimate_essential_matrix.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace vxl {
 
-/// A class that uses 5 pt algorithm to estimate an initial xform between 2 pt sets
+/// A class that uses 5 pt algorithm to estimate an initial xform between 2 pt
+/// sets
 class KWIVER_ALGO_VXL_EXPORT estimate_essential_matrix
   : public vital::algo::estimate_essential_matrix
 {
 public:
-  PLUGIN_INFO( "vxl",
-               "Use VXL (vpgl) to estimate an essential matrix." )
+  PLUGIN_INFO(
+    "vxl",
+    "Use VXL (vpgl) to estimate an essential matrix." )
 
   /// Constructor
   estimate_essential_matrix();
@@ -32,12 +36,13 @@ public:
   /// Destructor
   virtual ~estimate_essential_matrix();
 
-  /// Get this algorithm's \link vital::config_block configuration block \endlink
+  /// Get this algorithm's \link vital::config_block configuration block
+  /// \endlink
   virtual vital::config_block_sptr get_configuration() const;
   /// Set this algorithm's properties via a config block
-  virtual void set_configuration(vital::config_block_sptr config);
+  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's currently configuration is valid
-  virtual bool check_configuration(vital::config_block_sptr config) const;
+  virtual bool check_configuration( vital::config_block_sptr config ) const;
 
   /// Estimate an essential matrix from corresponding points
   ///
@@ -47,25 +52,30 @@ public:
   /// \param [in]  cal2 the intrinsic parameters of the second camera
   /// \param [out] inliers for each point pa:wir, the value is true if
   ///                      this pair is an inlier to the estimate
-  /// \param [in]  inlier_scale error distance tolerated for matches to be inliers
+  /// \param [in]  inlier_scale error distance tolerated for matches to be
+  /// inliers
   virtual
   vital::essential_matrix_sptr
-  estimate(const std::vector<vital::vector_2d>& pts1,
-           const std::vector<vital::vector_2d>& pts2,
-           const vital::camera_intrinsics_sptr cal1,
-           const vital::camera_intrinsics_sptr cal2,
-           std::vector<bool>& inliers,
-           double inlier_scale = 1.0) const;
+  estimate(
+    const std::vector< vital::vector_2d >& pts1,
+    const std::vector< vital::vector_2d >& pts2,
+    const vital::camera_intrinsics_sptr cal1,
+    const vital::camera_intrinsics_sptr cal2,
+    std::vector< bool >& inliers,
+    double inlier_scale = 1.0 ) const;
   using vital::algo::estimate_essential_matrix::estimate;
 
 private:
   /// private implementation class
   class priv;
-  const std::unique_ptr<priv> d_;
+
+  const std::unique_ptr< priv > d_;
 };
 
 } // end namespace vxl
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif

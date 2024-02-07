@@ -9,27 +9,31 @@
 /// Reduce logging verbosity.
 ///
 
-#include <vital/vital_config.h>
 #include <track_oracle/utils/logging_map_export.h>
+#include <vital/vital_config.h>
 
-#include <string>
 #include <map>
+#include <string>
 
-#include <vital/logger/logger.h>
 #include <vital/logger/location_info.h>
+#include <vital/logger/logger.h>
 
-namespace kwiver
-{
+namespace kwiver {
+
 class LOGGING_MAP_EXPORT logging_map_type
 {
 public:
-  logging_map_type( vital::logger_handle_t logger, const vital::logger_ns::location_info& s  );
+  logging_map_type(
+    vital::logger_handle_t logger,
+    const vital::logger_ns::location_info& s  );
 
   logging_map_type& set_output_prefix( const std::string& s );
   bool add_msg( const std::string& msg );
   bool empty() const;
   size_t n_msgs() const;
-  void dump_msgs( vital::kwiver_logger::log_level_t level = vital::kwiver_logger::LEVEL_INFO ) const;
+  void dump_msgs(
+    vital::kwiver_logger::log_level_t level = vital::kwiver_logger::LEVEL_INFO )
+  const;
   void clear();
 
 private:

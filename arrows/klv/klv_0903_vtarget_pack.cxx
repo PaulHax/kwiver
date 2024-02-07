@@ -35,11 +35,11 @@ operator<<( std::ostream& os, klv_0903_vtarget_pack_tag tag )
 std::ostream&
 operator<<( std::ostream& os, klv_0903_vtarget_pack const& value )
 {
-  os    << "{ "
-        << "id: " << value.id << ", "
-        << "set: ";
+  os << "{ "
+     << "id: " << value.id << ", "
+     << "set: ";
   klv_0903_vtarget_local_set_format().print( os, value.set );
-  os    << " }";
+  os << " }";
   return os;
 }
 
@@ -48,16 +48,16 @@ DEFINE_STRUCT_CMP(
   klv_0903_vtarget_pack,
   &klv_0903_vtarget_pack::id,
   &klv_0903_vtarget_pack::set
-  )
+)
 
 // ----------------------------------------------------------------------------
 std::ostream&
 operator<<( std::ostream& os, klv_0903_fpa_index const& value )
 {
-  os    << "{ "
-        << "row: " << static_cast< unsigned int >( value.row ) << ", "
-        << "column: " << static_cast< unsigned int >( value.column )
-        << " }";
+  os << "{ "
+     << "row: " << static_cast< unsigned int >( value.row ) << ", "
+     << "column: " << static_cast< unsigned int >( value.column )
+     << " }";
   return os;
 }
 
@@ -66,7 +66,7 @@ DEFINE_STRUCT_CMP(
   klv_0903_fpa_index,
   &klv_0903_fpa_index::row,
   &klv_0903_fpa_index::column
-  )
+)
 
 // ----------------------------------------------------------------------------
 klv_0903_fpa_index_format
@@ -88,8 +88,9 @@ klv_0903_fpa_index_format
 {
   if( length < 2 )
   {
-    VITAL_THROW( kv::metadata_buffer_overflow,
-                 "reading fpa index pack overflows data buffer" );
+    VITAL_THROW(
+      kv::metadata_buffer_overflow,
+      "reading fpa index pack overflows data buffer" );
   }
 
   klv_0903_fpa_index result;
@@ -101,13 +102,15 @@ klv_0903_fpa_index_format
 // ----------------------------------------------------------------------------
 void
 klv_0903_fpa_index_format
-::write_typed( klv_0903_fpa_index const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_0903_fpa_index const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   if( length < 2 )
   {
-    VITAL_THROW( kv::metadata_buffer_overflow,
-                 "writing fpa index pack overflows data buffer" );
+    VITAL_THROW(
+      kv::metadata_buffer_overflow,
+      "writing fpa index pack overflows data buffer" );
   }
   klv_write_int( value.row, data, 1 );
   klv_write_int( value.column, data, 1 );
@@ -150,8 +153,9 @@ klv_0903_vtarget_pack_format
 // ----------------------------------------------------------------------------
 void
 klv_0903_vtarget_pack_format
-::write_typed( klv_0903_vtarget_pack const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_0903_vtarget_pack const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
   klv_write_ber_oid( value.id, data, tracker.remaining() );

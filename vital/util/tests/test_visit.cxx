@@ -68,8 +68,9 @@ TEST ( visit, visit_types )
 
   {
     std::stringstream ss;
-    EXPECT_THROW( test_fn( { ss, 75 }, typeid( unsigned int ) ),
-                  std::out_of_range );
+    EXPECT_THROW(
+      test_fn( { ss, 75 }, typeid( unsigned int ) ),
+      std::out_of_range );
   }
 }
 
@@ -90,8 +91,9 @@ TEST ( visit, visit_types_return )
 
   {
     std::stringstream ss;
-    EXPECT_THROW( test_fn( { 75 }, typeid( unsigned int ) ),
-                  std::out_of_range );
+    EXPECT_THROW(
+      test_fn( { 75 }, typeid( unsigned int ) ),
+      std::out_of_range );
   }
 }
 
@@ -115,8 +117,9 @@ TEST ( visit, visit_variant_types )
 
   {
     std::stringstream ss;
-    EXPECT_THROW( test_fn( { ss, 75 }, typeid( unsigned int ) ),
-                  std::out_of_range );
+    EXPECT_THROW(
+      test_fn( { ss, 75 }, typeid( unsigned int ) ),
+      std::out_of_range );
   }
 }
 
@@ -137,7 +140,8 @@ TEST ( visit, visit_variant_types_return )
 
   {
     std::stringstream ss;
-    EXPECT_THROW( test_fn( { 75 }, typeid( unsigned int ) ),
-                  std::out_of_range );
+    EXPECT_THROW(
+      test_fn( { 75 }, typeid( unsigned int ) ),
+      std::out_of_range );
   }
 }

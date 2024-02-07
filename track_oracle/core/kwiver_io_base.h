@@ -33,44 +33,50 @@
 ///
 
 #include <iostream>
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
 
 #include <track_oracle/data_terms/data_term_tmp_utils.h>
 
 class TiXmlElement;
 
 namespace kwiver {
+
 namespace track_oracle {
 
-template< typename T >
+template < typename T >
 class kwiver_io_base
 {
 public:
   typedef typename data_term_traits< is_data_term< T >::value, T >::Type Type;
-  explicit kwiver_io_base( const std::string& n ):
-    name(n)
+  explicit kwiver_io_base( const std::string& n )
+    : name( n )
   {}
   virtual ~kwiver_io_base() {}
   virtual std::ostream& to_stream( std::ostream& os, const Type& val ) const;
-  virtual bool from_str( const std::string& s,
-                         Type& val ) const;
-  virtual bool read_xml( const TiXmlElement* e,
-                         Type& val ) const;
-  virtual void write_xml( std::ostream& os,
-                          const std::string& indent,
-                          const Type& val ) const;
+  virtual bool from_str(
+    const std::string& s,
+    Type& val ) const;
+  virtual bool read_xml(
+    const TiXmlElement* e,
+    Type& val ) const;
+  virtual void write_xml(
+    std::ostream& os,
+    const std::string& indent,
+    const Type& val ) const;
   virtual std::vector< std::string > csv_headers() const;
-  virtual bool from_csv( const std::map< std::string, std::string >& header_value_map, Type& val ) const;
+  virtual bool from_csv(
+    const std::map< std::string,
+      std::string >& header_value_map, Type& val ) const;
   virtual std::ostream& to_csv( std::ostream& os, const Type& val ) const;
 
 protected:
   std::string name;
-
 };
 
 } // ...track_oracle
+
 } // ...kwiver
 
 #endif

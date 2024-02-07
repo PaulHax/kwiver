@@ -8,23 +8,26 @@
 #ifndef KWIVER_ARROWS_WRITE_OBJECT_TRACK_SET_KW18_H
 #define KWIVER_ARROWS_WRITE_OBJECT_TRACK_SET_KW18_H
 
-#include <vital/vital_config.h>
 #include <arrows/core/kwiver_algo_core_export.h>
+#include <vital/vital_config.h>
 
 #include <vital/algo/write_object_track_set.h>
 
 #include <memory>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 class KWIVER_ALGO_CORE_EXPORT write_object_track_set_kw18
   : public vital::algo::write_object_track_set
 {
 public:
-  PLUGIN_INFO( "kw18",
-               "Object track set kw18 writer." )
+  PLUGIN_INFO(
+    "kw18",
+    "Object track set kw18 writer." )
 
   write_object_track_set_kw18();
   ~write_object_track_set_kw18();
@@ -41,9 +44,14 @@ public:
 
 private:
   class priv;
+
   std::unique_ptr< priv > d;
 };
 
-} } } // end namespace
+} // namespace core
+
+} // namespace arrows
+
+}     // end namespace
 
 #endif // KWIVER_ARROWS_WRITE_OBJECT_TRACK_SET_KW18_H

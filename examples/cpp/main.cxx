@@ -6,7 +6,8 @@
 void how_to_part_01_images();
 void how_to_part_02_detections();
 
-int main()
+int
+main()
 {
   // use comments to execute a particular method
 

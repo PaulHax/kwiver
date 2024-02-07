@@ -3,25 +3,36 @@
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
 #include <pybind11/pybind11.h>
-#include <python/kwiver/vital/algo/trampoline/compute_association_matrix_trampoline.txx>
 #include <python/kwiver/vital/algo/compute_association_matrix.h>
+#include \
+  <python/kwiver/vital/algo/trampoline/compute_association_matrix_trampoline.txx>
 
 namespace py = pybind11;
+
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
-void compute_association_matrix(py::module &m)
+
+void
+compute_association_matrix( py::module& m )
 {
   py::class_< kwiver::vital::algo::compute_association_matrix,
-              std::shared_ptr<kwiver::vital::algo::compute_association_matrix>,
-              kwiver::vital::algorithm_def<kwiver::vital::algo::compute_association_matrix>,
-              compute_association_matrix_trampoline<> >( m, "ComputeAssociationMatrix" )
-    .def(py::init())
-    .def_static("static_type_name",
-                &kwiver::vital::algo::compute_association_matrix::static_type_name)
-    .def("compute",
-         &kwiver::vital::algo::compute_association_matrix::compute);
+    std::shared_ptr< kwiver::vital::algo::compute_association_matrix >,
+    kwiver::vital::algorithm_def< kwiver::vital::algo::compute_association_matrix >,
+    compute_association_matrix_trampoline<> >( m, "ComputeAssociationMatrix" )
+    .def( py::init() )
+    .def_static(
+      "static_type_name",
+      &kwiver::vital::algo::compute_association_matrix::static_type_name )
+    .def(
+      "compute",
+      &kwiver::vital::algo::compute_association_matrix::compute );
 }
-}
-}
-}
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver

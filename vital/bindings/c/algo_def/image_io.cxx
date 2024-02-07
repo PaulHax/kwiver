@@ -16,28 +16,37 @@
 DEFINE_COMMON_ALGO_API( image_io );
 
 /// Load image from file
-vital_image_container_t* vital_algorithm_image_io_load( vital_algorithm_t *algo,
-                                                        char const *filename,
-                                                        vital_error_handle_t *eh )
+vital_image_container_t*
+vital_algorithm_image_io_load(
+  vital_algorithm_t* algo,
+  char const* filename,
+  vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "C::algorithm::image_io::load", eh,
-    kwiver::vital::image_container_sptr ic_sptr = kwiver::vital_c::ALGORITHM_image_io_SPTR_CACHE.get( algo )->load( filename );
+    kwiver::vital::image_container_sptr ic_sptr =
+      kwiver::vital_c::ALGORITHM_image_io_SPTR_CACHE.get( algo )->load(
+        filename );
     kwiver::vital_c::IMGC_SPTR_CACHE.store( ic_sptr );
-    return reinterpret_cast<vital_image_container_t*>( ic_sptr.get() );
+    return reinterpret_cast< vital_image_container_t* >( ic_sptr.get() );
   );
   return 0;
 }
 
 /// Save an image to file
-void vital_algorithm_image_io_save( vital_algorithm_t *algo,
-                                    char const *filename,
-                                    vital_image_container_t *ic,
-                                    vital_error_handle_t *eh )
+void
+vital_algorithm_image_io_save(
+  vital_algorithm_t* algo,
+  char const* filename,
+  vital_image_container_t* ic,
+  vital_error_handle_t* eh )
 {
   STANDARD_CATCH(
     "C::algorithm::image_io::save", eh,
-    kwiver::vital::image_container_sptr ic_sptr = kwiver::vital_c::IMGC_SPTR_CACHE.get(ic);
-    kwiver::vital_c::ALGORITHM_image_io_SPTR_CACHE.get( algo )->save( filename, ic_sptr );
+    kwiver::vital::image_container_sptr ic_sptr =
+      kwiver::vital_c::IMGC_SPTR_CACHE.get( ic );
+    kwiver::vital_c::ALGORITHM_image_io_SPTR_CACHE.get( algo )->save(
+      filename,
+      ic_sptr );
   );
 }

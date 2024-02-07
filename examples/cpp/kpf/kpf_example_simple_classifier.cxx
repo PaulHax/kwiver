@@ -26,7 +26,7 @@ using std::istringstream;
 using std::stringstream;
 using std::ostream;
 
-namespace KPF=kwiver::vital::kpf;
+namespace KPF = kwiver::vital::kpf;
 
 //
 // This is our simple detection object; our classifier knows about 'person',
@@ -37,25 +37,35 @@ struct user_simple_detection_t
 {
   size_t detection_id;
   unsigned frame_number;
-  vector<double> confidence; // 0 = person, 1 = vehicle, 2 = other
+  vector< double > confidence; // 0 = person, 1 = vehicle, 2 = other
   user_simple_detection_t()
-    : detection_id(0), frame_number(0), confidence( {0, 0, 0 })
+    : detection_id( 0 ),
+      frame_number( 0 ),
+      confidence( { 0, 0, 0 } )
   {}
-  user_simple_detection_t( int d, unsigned f, const vector<double>& conf )
-    : detection_id(d), frame_number(f), confidence(conf)
+  user_simple_detection_t( int d, unsigned f, const vector< double >& conf )
+    : detection_id( d ),
+      frame_number( f ),
+      confidence( conf )
   {}
-  static vector<string> conf_tags() { return {"person", "vehicle", "other"}; }
+
+  static vector< string >
+  conf_tags()
+  {
+    return { "person", "vehicle", "other" };
+  }
 };
 
 //
 // pretty-print the user detections
 //
 
-ostream& operator<<( ostream& os, const user_simple_detection_t& d )
+ostream&
+operator<<( ostream& os, const user_simple_detection_t& d )
 {
   os << "detection " << d.detection_id << " @ frame " << d.frame_number
-     << ": p-conf " << d.confidence[0] << "; v-conf " << d.confidence[1]
-     << "; o-conf " << d.confidence[2];
+     << ": p-conf " << d.confidence[ 0 ] << "; v-conf " << d.confidence[ 1 ]
+     << "; o-conf " << d.confidence[ 2 ];
   return os;
 }
 
@@ -67,10 +77,9 @@ vector< user_simple_detection_t >
 make_sample_detections()
 {
   return {
-    { 100, 4, {0.3, 0.6, 0.1} },
-    { 101, 4, {0.8, 0.15, 0.05} },
-    { 102, 5, {0.5, 0.2, 0.3} }
-  };
+    { 100, 4, { 0.3, 0.6, 0.1 } },
+    { 101, 4, { 0.8, 0.15, 0.05 } },
+    { 102, 5, { 0.5, 0.2, 0.3 } } };
 }
 
 //
@@ -79,7 +88,7 @@ make_sample_detections()
 // have on the project.
 //
 
-const int DETECTOR_DOMAIN=17;
+const int DETECTOR_DOMAIN = 17;
 
 //
 // Read a set of detections from a stream.
@@ -105,8 +114,10 @@ read_detections_from_stream( std::istream& is )
   user_simple_detection_t buffer;
 
   //
-  // The reader collects all the packets for each record; the KPF::reader< t > calls
-  // select the packets based on type and domain and copy them into the particular
+  // The reader collects all the packets for each record; the KPF::reader< t >
+  // calls
+  // select the packets based on type and domain and copy them into the
+  // particular
   // members of the buffer object.
   //
   // Note that the *order* in which the packets appear in the KPF record doesn't
@@ -119,21 +130,26 @@ read_detections_from_stream( std::istream& is )
   KPFC::cset_t conf_map;
 
   const auto& conf_tags = user_simple_detection_t::conf_tags();
-  while (reader
-         >> KPF::reader< KPFC::id_t >( buffer.detection_id, KPFC::id_t::DETECTION_ID )
-         >> KPF::reader< KPFC::timestamp_t>( buffer.frame_number, KPFC::timestamp_t::FRAME_NUMBER )
-         >> KPF::reader< KPFC::cset_t>( conf_map, DETECTOR_DOMAIN )
-    )
+  while( reader
+         >> KPF::reader< KPFC::id_t >(
+           buffer.detection_id,
+           KPFC::id_t::DETECTION_ID )
+         >> KPF::reader< KPFC::timestamp_t >(
+           buffer.frame_number,
+           KPFC::timestamp_t::FRAME_NUMBER )
+         >> KPF::reader< KPFC::cset_t >( conf_map, DETECTOR_DOMAIN )
+  )
   {
     // move the confidence values in
-    for ( size_t i=0; i<conf_tags.size(); ++i)
+    for( size_t i = 0; i < conf_tags.size(); ++i )
     {
-      const auto& tag = conf_tags[i];
+      const auto& tag = conf_tags[ i ];
       auto probe = conf_map.d.find( tag );
       double v = 0.0;
-      if (probe == conf_map.d.end())
+      if( probe == conf_map.d.end() )
       {
-        std::cout << "No confidence value found for '" << tag << "; assuming zero\n";
+        std::cout << "No confidence value found for '" << tag <<
+          "; assuming zero\n";
       }
       else
       {
@@ -144,7 +160,8 @@ read_detections_from_stream( std::istream& is )
 
     dets.push_back( buffer );
 
-    // the flush call throws away any optional packets we didn't copy into our buffer
+    // the flush call throws away any optional packets we didn't copy into our
+    // buffer
     reader.flush();
   }
   return dets;
@@ -155,8 +172,9 @@ read_detections_from_stream( std::istream& is )
 //
 
 void
-write_detections_to_stream( ostream& os,
-                            const vector< user_simple_detection_t >& dets )
+write_detections_to_stream(
+  ostream& os,
+  const vector< user_simple_detection_t >& dets )
 {
   namespace KPFC = KPF::canonical;
 
@@ -170,34 +188,36 @@ write_detections_to_stream( ostream& os,
   // Here, we explicitly leave the schema unspecified.
   const auto& conf_tags = user_simple_detection_t::conf_tags();
 
-  for (const auto& det: dets )
+  for( const auto& det : dets )
   {
     //
     // set up a KPF confidence set to transfer the confidence values.
     //
 
     KPFC::cset_t conf_map;
-    for (size_t i=0; i<conf_tags.size(); ++i)
+    for( size_t i = 0; i < conf_tags.size(); ++i )
     {
-      conf_map.d.insert( make_pair( conf_tags[i], det.confidence[i] ));
+      conf_map.d.insert( make_pair( conf_tags[ i ], det.confidence[ i ] ) );
     }
 
     w.set_schema( KPF::schema_style::UNSPECIFIED )
       << KPF::writer< KPFC::id_t >( det.detection_id, KPFC::id_t::DETECTION_ID )
-      << KPF::writer< KPFC::timestamp_t >( det.frame_number, KPFC::timestamp_t::FRAME_NUMBER )
-      << KPF::writer< KPFC::cset_t>( conf_map, DETECTOR_DOMAIN )
+      << KPF::writer< KPFC::timestamp_t >(
+      det.frame_number,
+      KPFC::timestamp_t::FRAME_NUMBER )
+      << KPF::writer< KPFC::cset_t >( conf_map, DETECTOR_DOMAIN )
       << KPF::record_yaml_writer::endl;
   }
 }
 
-int main()
+int
+main()
 {
-
   vector< user_simple_detection_t > src_dets = make_sample_detections();
   std::cout << "\n";
-  for (size_t i=0; i<src_dets.size(); ++i)
+  for( size_t i = 0; i < src_dets.size(); ++i )
   {
-    std::cout << "Source det " << i << ": " << src_dets[i] << "\n";
+    std::cout << "Source det " << i << ": " << src_dets[ i ] << "\n";
   }
 
   stringstream ss;
@@ -207,9 +227,11 @@ int main()
   std::cout << "Done\n";
 
   std::cout << "\nAbout to read KPF:\n";
-  vector< user_simple_detection_t> new_dets = read_detections_from_stream( ss );
-  for (size_t i=0; i<new_dets.size(); ++i)
+
+  vector< user_simple_detection_t > new_dets =
+    read_detections_from_stream( ss );
+  for( size_t i = 0; i < new_dets.size(); ++i )
   {
-    std::cout << "Converted det " << i << ": " << new_dets[i] << "\n";
+    std::cout << "Converted det " << i << ": " << new_dets[ i ] << "\n";
   }
 }

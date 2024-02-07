@@ -19,53 +19,61 @@
 #include <ostream>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
-template< class algorithm_def_cl_base=
-           kwiver::vital::algorithm_def< kwiver::vital::algo::close_loops > >
-class algorithm_def_cl_trampoline :
-      public algorithm_trampoline< algorithm_def_cl_base>
+template < class algorithm_def_cl_base =
+    kwiver::vital::algorithm_def< kwiver::vital::algo::close_loops > >
+class algorithm_def_cl_trampoline
+  : public algorithm_trampoline< algorithm_def_cl_base >
 {
-  public:
-    using algorithm_trampoline< algorithm_def_cl_base >::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_cl_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<kwiver::vital::algo::close_loops>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::close_loops >,
+      type_name,
+    );
+  }
 };
 
-template< class close_loops_base=kwiver::vital::algo::close_loops >
-class close_loops_trampoline :
-      public algorithm_def_cl_trampoline< close_loops_base >
+template < class close_loops_base = kwiver::vital::algo::close_loops >
+class close_loops_trampoline
+  : public algorithm_def_cl_trampoline< close_loops_base >
 {
-  public:
-    using algorithm_def_cl_trampoline< close_loops_base >::
-              algorithm_def_cl_trampoline;
+public:
+  using algorithm_def_cl_trampoline< close_loops_base >::
+  algorithm_def_cl_trampoline;
 
-    kwiver::vital::feature_track_set_sptr
-    stitch( kwiver::vital::frame_id_t frame_number,
-           kwiver::vital::feature_track_set_sptr input,
-           kwiver::vital::image_container_sptr image,
-           kwiver::vital::image_container_sptr mask ) const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        kwiver::vital::feature_track_set_sptr,
-        kwiver::vital::algo::close_loops,
-        stitch,
-        frame_number,
-        input,
-        image,
-        mask
-      );
-    }
+  kwiver::vital::feature_track_set_sptr
+  stitch(
+    kwiver::vital::frame_id_t frame_number,
+    kwiver::vital::feature_track_set_sptr input,
+    kwiver::vital::image_container_sptr image,
+    kwiver::vital::image_container_sptr mask ) const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      kwiver::vital::feature_track_set_sptr,
+      kwiver::vital::algo::close_loops,
+      stitch,
+      frame_number,
+      input,
+      image,
+      mask
+    );
+  }
 };
-}
-}
-}
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
+
 #endif

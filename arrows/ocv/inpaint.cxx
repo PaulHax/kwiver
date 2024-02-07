@@ -24,8 +24,9 @@ enum inpainting_method
   METHOD_navier_stokes,
 };
 
-ENUM_CONVERTER( method_converter, inpainting_method, { "mask", METHOD_mask },
-                { "navier_stokes", METHOD_navier_stokes } )
+ENUM_CONVERTER(
+  method_converter, inpainting_method, { "mask", METHOD_mask },
+  { "navier_stokes", METHOD_navier_stokes } )
 
 // ----------------------------------------------------------------------------
 /// Private implementation class
@@ -34,8 +35,7 @@ class inpaint::priv
 public:
   priv( inpaint* parent )
     : p{ parent }
-  {
-  }
+  {}
 
   inpaint* p;
   // Internal parameters/settings
@@ -53,8 +53,7 @@ inpaint
 
 // ----------------------------------------------------------------------------
 inpaint::~inpaint()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 vital::config_block_sptr
@@ -64,12 +63,14 @@ inpaint
   // Get base config from base class
   vital::config_block_sptr config = algorithm::get_configuration();
 
-  config->set_value( "inpaint_method",
-                     method_converter().to_string( d->method ),
-                     "Inpainting method, possible values: " +
-                     method_converter().element_name_string() );
-  config->set_value( "radius", d->radius,
-                     "Radius parameter for the inpainting method" );
+  config->set_value(
+    "inpaint_method",
+    method_converter().to_string( d->method ),
+    "Inpainting method, possible values: " +
+    method_converter().element_name_string() );
+  config->set_value(
+    "radius", d->radius,
+    "Radius parameter for the inpainting method" );
 
   return config;
 }
@@ -86,8 +87,9 @@ inpaint
   config->merge_config( in_config );
 
   // Settings for filtering
-  d->method = config->get_enum_value< method_converter >( "inpaint_method",
-                                                          d->method );
+  d->method = config->get_enum_value< method_converter >(
+    "inpaint_method",
+    d->method );
   d->radius = config->get_value< float >( "radius", d->radius );
 }
 
@@ -99,8 +101,9 @@ inpaint
   auto const radius = config->get_value< float >( "radius" );
   if( radius <= 0 )
   {
-    LOG_ERROR( logger(),
-               "Radius should be positive but instead was " << radius );
+    LOG_ERROR(
+      logger(),
+      "Radius should be positive but instead was " << radius );
     return false;
   }
   return true;
@@ -109,8 +112,9 @@ inpaint
 // ----------------------------------------------------------------------------
 kwiver::vital::image_container_sptr
 inpaint
-::merge( kwiver::vital::image_container_sptr image,
-         kwiver::vital::image_container_sptr mask ) const
+::merge(
+  kwiver::vital::image_container_sptr image,
+  kwiver::vital::image_container_sptr mask ) const
 {
   auto const& cv_image = ocv::image_container::vital_to_ocv(
     image->get_image(), ocv::image_container::RGB_COLOR );
@@ -123,7 +127,7 @@ inpaint
     LOG_ERROR(
       logger(),
       "Image size " << cv_image.size() << " does not match mask size " <<
-          cv_mask.size() );
+        cv_mask.size() );
     return image;
   }
 

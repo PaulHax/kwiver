@@ -8,8 +8,8 @@
 #ifndef KWIVER_ARROWS_KLV_KLV_LENGTHY_H_
 #define KWIVER_ARROWS_KLV_KLV_LENGTHY_H_
 
-#include <arrows/klv/kwiver_algo_klv_export.h>
 #include <arrows/klv/klv_util.h>
+#include <arrows/klv/kwiver_algo_klv_export.h>
 
 #include <ostream>
 

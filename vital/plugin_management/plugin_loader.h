@@ -11,10 +11,10 @@
 #include <vital/plugin_management/plugin_factory.h>
 #include <vital/vital_types.h>
 
-#include <vector>
-#include <string>
 #include <map>
 #include <memory>
+#include <string>
+#include <vector>
 
 namespace kwiver::vital {
 
@@ -24,12 +24,12 @@ class plugin_loader_filter;
 
 using plugin_factory_handle_t = std::shared_ptr< plugin_factory >;
 using plugin_factory_vector_t = std::vector< plugin_factory_handle_t >;
-using plugin_map_t            = std::map< std::string, plugin_factory_vector_t >;
+using plugin_map_t            = std::map< std::string,
+  plugin_factory_vector_t >;
 using plugin_module_map_t     = std::map< std::string, path_t >;
 using plugin_filter_handle_t  = std::shared_ptr< plugin_loader_filter >;
 
 class plugin_loader_impl;
-
 
 /**
  * @brief Manage dynamically loading plugin modules from search paths given a
@@ -50,8 +50,9 @@ public:
    * @param shared_lib_suffix Shared library suffix string for the platform
    *    being loaded from.
    */
-  plugin_loader( std::string const& init_function,
-                 std::string const& shared_lib_suffix );
+  plugin_loader(
+    std::string const& init_function,
+    std::string const& shared_lib_suffix );
 
   virtual ~plugin_loader();
 
@@ -116,12 +117,16 @@ public:
   ///
   /// @return Vector of factories. (vector may be empty)
   [[nodiscard]]
-  plugin_factory_vector_t const& get_factories( std::string const& type_name ) const;
+  plugin_factory_vector_t const& get_factories(
+    std::string const& type_name ) const;
 
-  template< typename INTERFACE >
+  template < typename INTERFACE >
   [[nodiscard]]
-  plugin_factory_vector_t const& get_factories() const {
-    return get_factories( get_interface_name<INTERFACE>() );
+
+  plugin_factory_vector_t const&
+  get_factories() const
+  {
+    return get_factories( get_interface_name< INTERFACE >() );
   }
 
   /// @brief Add factory to manager.
@@ -148,7 +153,8 @@ public:
   ///
   /// @param fact Plugin factory object to register
   ///
-  /// @return A pointer is returned to the added factory. This may be used to set
+  /// @return A pointer is returned to the added factory. This may be used to
+  /// set
   /// additional attributes to the factory.
   ///
   /// @throws plugin_factory_missing_required_attrs
@@ -191,13 +197,14 @@ public:
    * self-register all plugins in a module.
    *
    * Example:
-   \code
-   void add_factories( plugin_loader* pm )
-   {
-     plugin_factory_handle_t fact = pm->add_factory<SomeInterface, SomeDerived>( "derived" );
-     fact->add_attribute( "file-type", "xml mit" );
-   }
-   \endcode
+   *  \code
+   *  void add_factories( plugin_loader* pm )
+   *  {
+   *  plugin_factory_handle_t fact = pm->add_factory<SomeInterface,
+   * SomeDerived>( "derived" );
+   *  fact->add_attribute( "file-type", "xml mit" );
+   *  }
+   *  \endcode
    *
    * @param plugin_name String name to describe the concrete type that
    * implements the interface type.
@@ -209,13 +216,14 @@ public:
    * If the factory being added looks to already have been added before.
    *
    */
-  template< typename INTERFACE, typename CONCRETE >
-  plugin_factory_handle_t add_factory( std::string const& plugin_name )
+  template < typename INTERFACE, typename CONCRETE >
+  plugin_factory_handle_t
+  add_factory( std::string const& plugin_name )
   {
     // Call protected factory add method with the standard concrete plugin
     // factory.
     return add_factory(
-      new concrete_plugin_factory<INTERFACE, CONCRETE>( plugin_name )
+      new concrete_plugin_factory< INTERFACE, CONCRETE >( plugin_name )
     );
   }
 
@@ -260,7 +268,7 @@ public:
   /// @param name Module to indicate as loaded.
   ///
   /// @return \b true if module has been loaded. \b false otherwise.
-  bool is_module_loaded( std::string const& name) const;
+  bool is_module_loaded( std::string const& name ) const;
 
   /// @brief Get list of loaded modules.
   ///
@@ -276,12 +284,13 @@ public:
   void add_filter( plugin_filter_handle_t f );
 
 protected:
-  friend class plugin_loader_impl;  // is this needed? I clearly don't remember what friend classes are.
+  friend class plugin_loader_impl;  // is this needed? I clearly don't remember
+
+  // what friend classes are.
 
   kwiver::vital::logger_handle_t m_logger;
 
 private:
-
   const std::unique_ptr< plugin_loader_impl > m_impl;
 }; // end class plugin_loader
 

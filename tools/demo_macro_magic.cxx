@@ -25,8 +25,9 @@ main_config_formatter_load_example()
   cb_empty->set_value( "opt_prefix", ">>" );
 
   auto impl_names = vpm.impl_names< kv::format_config_block >();
-  LOG_INFO( LOG, "What impls are there for format_config_block? "
-                 "(found " << impl_names.size() << ")" );
+  LOG_INFO(
+    LOG, "What impls are there for format_config_block? "
+         "(found " << impl_names.size() << ")" );
 
   auto cb_new = kv::config_block::empty_config();
   cb_new->set_value( "a", "1" );

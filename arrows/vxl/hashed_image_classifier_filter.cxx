@@ -33,8 +33,7 @@ class hashed_image_classifier_filter::priv
 {
 public:
   priv( hashed_image_classifier_filter* parent ) : p{ parent }
-  {
-  }
+  {}
 
   // Convert the type
   template < typename ipix_t > vil_image_view< ipix_t >
@@ -62,15 +61,17 @@ hashed_image_classifier_filter::priv
     auto const& model_paths = vital::find_config_file( model_file );
     if( model_paths.empty() )
     {
-      LOG_ERROR( p->logger(),
-                 "Could not locate \"" << model_file << "\" model" );
+      LOG_ERROR(
+        p->logger(),
+        "Could not locate \"" << model_file << "\" model" );
       return false;
     }
 
     if( !hashed_classifier.load_from_file( model_paths.front() ) )
     {
-      LOG_ERROR( p->logger(),
-                 "Could not load \"" << model_paths.front() << "\" model" );
+      LOG_ERROR(
+        p->logger(),
+        "Could not load \"" << model_paths.front() << "\" model" );
       return false;
     }
     model_loaded = true;
@@ -89,8 +90,7 @@ hashed_image_classifier_filter
 // ----------------------------------------------------------------------------
 hashed_image_classifier_filter
 ::~hashed_image_classifier_filter()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 vital::config_block_sptr
@@ -100,10 +100,12 @@ hashed_image_classifier_filter
   // get base config from base class
   vital::config_block_sptr config = algorithm::get_configuration();
 
-  config->set_value( "model_file", d->model_file,
-                     "Model file from which to load weights." );
-  config->set_value( "offset", d->offset,
-                     "Value to initialize the response map with." );
+  config->set_value(
+    "model_file", d->model_file,
+    "Model file from which to load weights." );
+  config->set_value(
+    "offset", d->offset,
+    "Value to initialize the response map with." );
 
   return config;
 }

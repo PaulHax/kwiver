@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Tests for RGBColor interface
 
 """
+
 import unittest
 
 import nose.tools
@@ -41,7 +42,7 @@ import numpy
 from kwiver.vital.types import RGBColor
 
 
-class TestRGBColor (unittest.TestCase):
+class TestRGBColor(unittest.TestCase):
 
     def test_new(self):
         RGBColor()
@@ -55,19 +56,19 @@ class TestRGBColor (unittest.TestCase):
         nose.tools.assert_equal(RGBColor().r, 255)
         nose.tools.assert_equal(RGBColor(r=0).r, 0)
         nose.tools.assert_equal(RGBColor(r=44.4).r, 44)
-        nose.tools.assert_equal(RGBColor(r=400).r, 400-256)
+        nose.tools.assert_equal(RGBColor(r=400).r, 400 - 256)
 
     def test_g(self):
         nose.tools.assert_equal(RGBColor().g, 255)
         nose.tools.assert_equal(RGBColor(g=0).g, 0)
         nose.tools.assert_equal(RGBColor(g=44.4).g, 44)
-        nose.tools.assert_equal(RGBColor(g=400).g, 400-256)
+        nose.tools.assert_equal(RGBColor(g=400).g, 400 - 256)
 
     def test_b(self):
         nose.tools.assert_equal(RGBColor().b, 255)
         nose.tools.assert_equal(RGBColor(b=0).b, 0)
         nose.tools.assert_equal(RGBColor(b=44.4).b, 44)
-        nose.tools.assert_equal(RGBColor(b=400).b, 400-256)
+        nose.tools.assert_equal(RGBColor(b=400).b, 400 - 256)
 
     def test_getitem_access(self):
         c = RGBColor(10, 20, 30)
@@ -77,10 +78,7 @@ class TestRGBColor (unittest.TestCase):
 
     def test_getitem_access_IndexError(self):
         c = RGBColor(10, 20, 30)
-        nose.tools.assert_raises(
-            IndexError,
-            c.__getitem__, 4
-        )
+        nose.tools.assert_raises(IndexError, c.__getitem__, 4)
 
     def test_equality(self):
         c1 = RGBColor()

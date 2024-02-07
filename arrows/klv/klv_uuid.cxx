@@ -58,7 +58,7 @@ operator<<( std::ostream& os, klv_uuid const& value )
 DEFINE_STRUCT_CMP(
   klv_uuid,
   &klv_uuid::bytes
-  )
+)
 
 // ----------------------------------------------------------------------------
 klv_uuid
@@ -66,8 +66,9 @@ klv_read_uuid( klv_read_iter_t& data, size_t max_length )
 {
   if( max_length < 16 )
   {
-    VITAL_THROW( kwiver::vital::metadata_buffer_overflow,
-                 "reading UUID overflows buffer" );
+    VITAL_THROW(
+      kwiver::vital::metadata_buffer_overflow,
+      "reading UUID overflows buffer" );
   }
 
   klv_uuid result;
@@ -78,13 +79,15 @@ klv_read_uuid( klv_read_iter_t& data, size_t max_length )
 
 // ----------------------------------------------------------------------------
 void
-klv_write_uuid( klv_uuid const& value, klv_write_iter_t& data,
-                size_t max_length )
+klv_write_uuid(
+  klv_uuid const& value, klv_write_iter_t& data,
+  size_t max_length )
 {
   if( max_length < 16 )
   {
-    VITAL_THROW( kwiver::vital::metadata_buffer_overflow,
-                 "writing UUID overflows buffer" );
+    VITAL_THROW(
+      kwiver::vital::metadata_buffer_overflow,
+      "writing UUID overflows buffer" );
   }
   data = std::copy( value.bytes.begin(), value.bytes.end(), data );
 }

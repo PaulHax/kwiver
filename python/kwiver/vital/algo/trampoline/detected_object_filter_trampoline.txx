@@ -17,46 +17,54 @@
 #include <vital/algo/detected_object_filter.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
-template< class algorithm_def_dof_base=
-           kwiver::vital::algorithm_def< kwiver::vital::algo::detected_object_filter > >
-class algorithm_def_dof_trampoline :
-      public algorithm_trampoline< algorithm_def_dof_base>
-{
-  public:
-    using algorithm_trampoline< algorithm_def_dof_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<kwiver::vital::algo::detected_object_filter>,
-        type_name,
-      );
-    }
+template < class algorithm_def_dof_base =
+    kwiver::vital::algorithm_def< kwiver::vital::algo::detected_object_filter > >
+class algorithm_def_dof_trampoline
+  : public algorithm_trampoline< algorithm_def_dof_base >
+{
+public:
+  using algorithm_trampoline< algorithm_def_dof_base >::algorithm_trampoline;
+
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::detected_object_filter >,
+      type_name,
+    );
+  }
 };
 
-template< class detected_object_filter_base=kwiver::vital::algo::detected_object_filter >
-class detected_object_filter_trampoline :
-      public algorithm_def_dof_trampoline< detected_object_filter_base >
+template < class detected_object_filter_base = kwiver::vital::algo::detected_object_filter >
+class detected_object_filter_trampoline
+  : public algorithm_def_dof_trampoline< detected_object_filter_base >
 {
-  public:
-    using algorithm_def_dof_trampoline< detected_object_filter_base >::
-              algorithm_def_dof_trampoline;
+public:
+  using algorithm_def_dof_trampoline< detected_object_filter_base >::
+  algorithm_def_dof_trampoline;
 
-    kwiver::vital::detected_object_set_sptr
-    filter( kwiver::vital::detected_object_set_sptr input_set ) const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        kwiver::vital::detected_object_set_sptr,
-        kwiver::vital::algo::detected_object_filter,
-        filter,
-        input_set
-      );
-    }
+  kwiver::vital::detected_object_set_sptr
+  filter( kwiver::vital::detected_object_set_sptr input_set ) const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      kwiver::vital::detected_object_set_sptr,
+      kwiver::vital::algo::detected_object_filter,
+      filter,
+      input_set
+    );
+  }
 };
-}
-}
-}
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
+
 #endif

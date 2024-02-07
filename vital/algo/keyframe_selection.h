@@ -32,7 +32,7 @@ class VITAL_ALGO_EXPORT keyframe_selection
 public:
   /// Return the name of this algorithm.
   keyframe_selection();
-  PLUGGABLE_INTERFACE(keyframe_selection);
+  PLUGGABLE_INTERFACE( keyframe_selection );
   /// Select keyframes from a set of tracks.
   ///
   /// Different implementations can select key-frames in different ways.

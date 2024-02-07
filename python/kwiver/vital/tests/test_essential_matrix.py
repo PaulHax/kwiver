@@ -34,8 +34,11 @@ Tests for Python interface to vital::essential_matrix
 
 """
 
-from kwiver.vital.types.essential_matrix import BaseEssentialMatrix, \
-                                                EssentialMatrixD, EssentialMatrixF
+from kwiver.vital.types.essential_matrix import (
+    BaseEssentialMatrix,
+    EssentialMatrixD,
+    EssentialMatrixF,
+)
 from kwiver.vital.types import RotationD, RotationF
 
 import nose.tools as nt
@@ -104,8 +107,12 @@ class TestVitalEssentialMatrix(unittest.TestCase):
         emd_as_float = EssentialMatrixF(emd)
         emf_as_double = EssentialMatrixD(emf)
 
-        np.testing.assert_array_almost_equal(emf_as_double.matrix(), emf_as_double.clone().matrix(), 6)
-        np.testing.assert_array_almost_equal(emd_as_float.matrix(), emd_as_float.clone().matrix(), 6)
+        np.testing.assert_array_almost_equal(
+            emf_as_double.matrix(), emf_as_double.clone().matrix(), 6
+        )
+        np.testing.assert_array_almost_equal(
+            emd_as_float.matrix(), emd_as_float.clone().matrix(), 6
+        )
 
     def test_clone_is_same_type(self):
         emf, emd = self._create_ems()
@@ -300,16 +307,25 @@ class TestVitalEssentialMatrix(unittest.TestCase):
 
     def test_getitem(self):
         emf, emd = self._create_ems()
-        trans = self.translation  / np.linalg.norm(self.translation)
-        cross_d = np.array([[0,        -trans[2], trans[1]],
-                            [trans[2],  0,        -trans[0]],
-                            [-trans[1], trans[0], 0]], dtype='d')
+        trans = self.translation / np.linalg.norm(self.translation)
+        cross_d = np.array(
+            [
+                [0, -trans[2], trans[1]],
+                [trans[2], 0, -trans[0]],
+                [-trans[1], trans[0], 0],
+            ],
+            dtype="d",
+        )
 
-        cross_f = np.array(cross_d, dtype='f')
+        cross_f = np.array(cross_d, dtype="f")
 
         # Check matches expected
-        self.check_each_element_equal(emf, np.dot(cross_f, emf.get_rotation().matrix()), 6)
-        self.check_each_element_equal(emd, np.dot(cross_d, emd.get_rotation().matrix()), 15)
+        self.check_each_element_equal(
+            emf, np.dot(cross_f, emf.get_rotation().matrix()), 6
+        )
+        self.check_each_element_equal(
+            emd, np.dot(cross_d, emd.get_rotation().matrix()), 15
+        )
 
         # Check matches result of matrix()
         self.check_each_element_equal(emf, emf.compute_matrix(), 6)

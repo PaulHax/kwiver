@@ -17,57 +17,63 @@
 #include <vital/algo/match_features.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
-template < class algorithm_def_mf_base=
-            kwiver::vital::algorithm_def<
-              kwiver::vital::algo::match_features > >
-class algorithm_def_mf_trampoline :
-      public algorithm_trampoline<algorithm_def_mf_base>
+template < class algorithm_def_mf_base =
+    kwiver::vital::algorithm_def<
+      kwiver::vital::algo::match_features > >
+class algorithm_def_mf_trampoline
+  : public algorithm_trampoline< algorithm_def_mf_base >
 {
-  public:
-    using algorithm_trampoline<algorithm_def_mf_base>::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_mf_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<kwiver::vital::algo::match_features>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::match_features >,
+      type_name,
+    );
+  }
 };
 
-template< class match_features_base=
-                kwiver::vital::algo::match_features >
-class match_features_trampoline :
-      public algorithm_def_mf_trampoline< match_features_base >
+template < class match_features_base =
+    kwiver::vital::algo::match_features >
+class match_features_trampoline
+  : public algorithm_def_mf_trampoline< match_features_base >
 {
-  public:
-    using algorithm_def_mf_trampoline< match_features_base>::
-              algorithm_def_mf_trampoline;
+public:
+  using algorithm_def_mf_trampoline< match_features_base >::
+  algorithm_def_mf_trampoline;
 
-    kwiver::vital::match_set_sptr
-    match( kwiver::vital::feature_set_sptr feat1,
-           kwiver::vital::descriptor_set_sptr desc1,
-           kwiver::vital::feature_set_sptr feat2,
-           kwiver::vital::descriptor_set_sptr desc2 ) const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        kwiver::vital::match_set_sptr,
-        kwiver::vital::algo::match_features,
-        match,
-        feat1,
-        desc1,
-        feat2,
-        desc2
-      );
-    }
+  kwiver::vital::match_set_sptr
+  match(
+    kwiver::vital::feature_set_sptr feat1,
+    kwiver::vital::descriptor_set_sptr desc1,
+    kwiver::vital::feature_set_sptr feat2,
+    kwiver::vital::descriptor_set_sptr desc2 ) const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      kwiver::vital::match_set_sptr,
+      kwiver::vital::algo::match_features,
+      match,
+      feat1,
+      desc1,
+      feat2,
+      desc2
+    );
+  }
 };
 
-}
-}
-}
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
 
 #endif

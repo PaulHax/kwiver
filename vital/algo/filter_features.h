@@ -32,7 +32,7 @@ class VITAL_ALGO_EXPORT filter_features
 public:
   /// Return the name of this algorithm.
   filter_features();
-  PLUGGABLE_INTERFACE(filter_features);
+  PLUGGABLE_INTERFACE( filter_features );
   /// Filter a feature set and return a subset of the features
   ///
   /// The default implementation call the pure virtual function
@@ -52,9 +52,10 @@ public:
   /// \param [in] descr The parallel descriptor set to filter
   /// \returns a pair of the filtered features and descriptors
   virtual std::pair< kwiver::vital::feature_set_sptr,
-                     kwiver::vital::descriptor_set_sptr >
-  filter( kwiver::vital::feature_set_sptr feat,
-          kwiver::vital::descriptor_set_sptr descr ) const;
+    kwiver::vital::descriptor_set_sptr >
+  filter(
+    kwiver::vital::feature_set_sptr feat,
+    kwiver::vital::descriptor_set_sptr descr ) const;
 
 protected:
   /// Filter a feature set and return a new feature set with a subset of
@@ -65,8 +66,9 @@ protected:
   /// \return a new feature set containing the subset of features noted by \p
   /// indices
   virtual kwiver::vital::feature_set_sptr
-  filter( kwiver::vital::feature_set_sptr feat,
-          std::vector< unsigned int >& indices ) const = 0;
+  filter(
+    kwiver::vital::feature_set_sptr feat,
+    std::vector< unsigned int >& indices ) const = 0;
 };
 
 /// type definition for shared pointer to a filter_features algorithm

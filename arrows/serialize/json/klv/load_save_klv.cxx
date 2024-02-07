@@ -114,23 +114,24 @@ using klv_type_list =
 
 // ----------------------------------------------------------------------------
 // TODO (C++14): Use STL version instead.
-template< bool Value, class T = bool >
+template < bool Value, class T = bool >
 using enable_if_t = typename std::enable_if< Value, T >::type;
 
 // ----------------------------------------------------------------------------
-template< class T1, class T2 >
+template < class T1, class T2 >
 using enable_if_same_t = enable_if_t< std::is_same< T1, T2 >::value >;
 
 // ----------------------------------------------------------------------------
-template< class T >
-struct is_cerealizable {
+template < class T >
+struct is_cerealizable
+{
   static constexpr bool value = std::is_arithmetic< T >::value ||
                                 std::is_same< T, std::string >::value ||
                                 std::is_same< T, std::nullptr_t >::value;
 };
 
 // ----------------------------------------------------------------------------
-template< class T >
+template < class T >
 using is_cerealizable_t = enable_if_t< is_cerealizable< T >::value >;
 
 // ----------------------------------------------------------------------------
@@ -142,12 +143,15 @@ template < class Archive >
 class klv_json_base
 {
 protected:
+
   class scoped_lookup
   {
   public:
-    scoped_lookup( klv_tag_traits_lookup const*& value,
-                   klv_tag_traits_lookup const* new_value )
-      : old_value{ value }, value{ value }
+    scoped_lookup(
+      klv_tag_traits_lookup const*& value,
+      klv_tag_traits_lookup const* new_value )
+      : old_value{ value },
+        value{ value }
     {
       value = new_value;
     }
@@ -197,7 +201,8 @@ protected:
     Archive& m_archive;
   };
 
-  klv_json_base( Archive& archive ) : m_archive( archive ), m_lookup{ nullptr }
+  klv_json_base( Archive& archive ) : m_archive( archive ),
+                                      m_lookup{ nullptr }
   {}
 
   // Return internal cereal archive. Avoid excessive use.
@@ -270,7 +275,8 @@ private:
 
 // ----------------------------------------------------------------------------
 // Replace all underscores with hyphens in a string.
-std::string hyphenify( std::string input )
+std::string
+hyphenify( std::string input )
 {
   for( auto& c : input )
   {
@@ -293,19 +299,22 @@ class klv_json_saver : public klv_json_base< save_archive >
 {
 public:
   klv_json_saver( save_archive& archive, bool verbose = true )
-    : klv_json_base< save_archive >{ archive }, m_verbose{ verbose }
+    : klv_json_base< save_archive >{ archive },
+      m_verbose{ verbose }
   {}
 
   template < class T, is_cerealizable_t< T > = true >
-  void save( T const& value )
+  void
+  save( T const& value )
   {
     archive()( value );
   }
 
-  template< class T,
-            typename std::enable_if< std::is_enum< T >::value,
-                                     bool >::type = true >
-  void save( T value )
+  template < class T,
+    typename std::enable_if< std::is_enum< T >::value,
+      bool >::type = true >
+  void
+  save( T value )
   {
     auto const object_scope = push_object();
     save( "integer", static_cast< uint64_t >( value ) );
@@ -317,20 +326,22 @@ public:
     }
   }
 
-  template< class T, typename std::enable_if< !std::is_enum< T >::value &&
-                                              !is_cerealizable< T >::value,
-                                              bool >::type = true >
+  template < class T, typename std::enable_if< !std::is_enum< T >::value &&
+    !is_cerealizable< T >::value,
+    bool >::type = true >
   void save( T ) = delete; // Error? You must implement a new save() overload.
 
   template < class T >
-  void save( std::string const& name, T const& value )
+  void
+  save( std::string const& name, T const& value )
   {
     set_next_name( name );
     save( value );
   }
 
-  template< class T >
-  void save( std::vector< T > const& value )
+  template < class T >
+  void
+  save( std::vector< T > const& value )
   {
     auto const array_scope = push_array();
     for( auto const& item : value )
@@ -339,20 +350,24 @@ public:
     }
   }
 
-  void save_base64( std::string const& name,
-                    std::vector< uint8_t > const& value )
+  void
+  save_base64(
+    std::string const& name,
+    std::vector< uint8_t > const& value )
   {
     set_next_name( name );
     save_base64( value );
   }
 
-  void save_base64( std::vector< uint8_t > const& value )
+  void
+  save_base64( std::vector< uint8_t > const& value )
   {
     save( base64::encode( value.data(), value.size() ) );
   }
 
-  template< class T >
-  void save( std::set< T > const& value )
+  template < class T >
+  void
+  save( std::set< T > const& value )
   {
     auto const array_scope = push_array();
     for( auto const& item : value )
@@ -361,13 +376,14 @@ public:
     }
   }
 
-  void save( char const* value )
+  void
+  save( char const* value )
   {
     archive()( std::string{ value } );
   }
 
-
-  void save( klv_timed_packet const& packet )
+  void
+  save( klv_timed_packet const& packet )
   {
     if( packet.timestamp.has_valid_frame() )
     {
@@ -392,10 +408,12 @@ public:
     save( packet.packet );
   }
 
-  void save( klv_packet const& packet )
+  void
+  save( klv_packet const& packet )
   {
     auto const outer_lookup = push_lookup( &klv_lookup_packet_traits() );
     save( "key", packet.key );
+
     auto const inner_lookup =
       push_lookup( lookup()->by_uds_key( packet.key ).subtag_lookup() );
     save( "value", packet.value );
@@ -403,7 +421,8 @@ public:
 
   // Named separately since klv_lds_key is just an integer, so can't have its
   // own overload of save() separate from regular integers
-  void save_lds_key( klv_lds_key key )
+  void
+  save_lds_key( klv_lds_key key )
   {
     auto const object_scope = push_object();
     save( "integer", key );
@@ -413,13 +432,15 @@ public:
     }
   }
 
-  void save_lds_key( std::string const& name, klv_lds_key key )
+  void
+  save_lds_key( std::string const& name, klv_lds_key key )
   {
     set_next_name( name );
     save_lds_key( key );
   }
 
-  void save( klv_uds_key const& key )
+  void
+  save( klv_uds_key const& key )
   {
     auto const object_scope = push_object();
     save_base64( "bytes", { key.cbegin(), key.cend() } );
@@ -435,7 +456,8 @@ public:
     }
   }
 
-  void save( klv_value const& value )
+  void
+  save( klv_value const& value )
   {
     if( !value.valid() )
     {
@@ -458,13 +480,14 @@ public:
       LOG_ERROR(
         kv::get_logger( "klv" ),
         "json export for type "
-        << "`" << value.type_name() << "` "
-        << "has not been implemented" );
+          << "`" << value.type_name() << "` "
+          << "has not been implemented" );
       save( nullptr );
     }
   }
 
-  void save( klv_local_set const& value )
+  void
+  save( klv_local_set const& value )
   {
     auto const array_scope = push_array();
     for( auto const& entry : value )
@@ -484,7 +507,8 @@ public:
     }
   }
 
-  void save( klv_universal_set const& value )
+  void
+  save( klv_universal_set const& value )
   {
     auto const array_scope = push_array();
     for( auto const& entry : value )
@@ -504,21 +528,24 @@ public:
     }
   }
 
-  void save( klv_blob const& value )
+  void
+  save( klv_blob const& value )
   {
     save_base64( *value );
   }
 
-  template< class T >
-  void save( klv_lengthy< T > const& value )
+  template < class T >
+  void
+  save( klv_lengthy< T > const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( length );
     SAVE_MEMBER( value );
   }
 
-  template< class T >
-  void save( std::optional< T > const& value )
+  template < class T >
+  void
+  save( std::optional< T > const& value )
   {
     if( value )
     {
@@ -530,8 +557,9 @@ public:
     }
   }
 
-  template< class T >
-  void save( std::shared_ptr< T > const& value )
+  template < class T >
+  void
+  save( std::shared_ptr< T > const& value )
   {
     if( value )
     {
@@ -543,22 +571,25 @@ public:
     }
   }
 
-  template< class T >
-  void save( kv::interval< T > const& value )
+  template < class T >
+  void
+  save( kv::interval< T > const& value )
   {
     auto const object_scope = push_object();
     save( "lower-bound", value.lower() );
     save( "upper-bound", value.upper() );
   }
 
-  void save( klv_0601_airbase_locations const& value )
+  void
+  save( klv_0601_airbase_locations const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( take_off_location );
     SAVE_MEMBER( recovery_location );
   }
 
-  void save( klv_0601_control_command const& value )
+  void
+  save( klv_0601_control_command const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( id );
@@ -566,7 +597,8 @@ public:
     SAVE_MEMBER( timestamp );
   }
 
-  void save( klv_0601_country_codes const& value )
+  void
+  save( klv_0601_country_codes const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( coding_method );
@@ -575,14 +607,16 @@ public:
     SAVE_MEMBER( country_of_manufacture );
   }
 
-  void save( klv_0601_frame_rate const& value )
+  void
+  save( klv_0601_frame_rate const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( numerator );
     SAVE_MEMBER( denominator );
   }
 
-  void save( klv_0601_image_horizon_locations const& value )
+  void
+  save( klv_0601_image_horizon_locations const& value )
   {
     // No object scope so it's flat with the rest of
     // klv_0601_image_horizon_pixel_pack
@@ -592,7 +626,8 @@ public:
     SAVE_MEMBER( longitude1 );
   }
 
-  void save( klv_0601_image_horizon_pixel_pack const& value )
+  void
+  save( klv_0601_image_horizon_pixel_pack const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( x0 );
@@ -605,7 +640,8 @@ public:
     }
   }
 
-  void save( klv_0601_location_dlp const& value )
+  void
+  save( klv_0601_location_dlp const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( latitude );
@@ -613,7 +649,8 @@ public:
     SAVE_MEMBER( altitude );
   }
 
-  void save( klv_0601_payload_record const& value )
+  void
+  save( klv_0601_payload_record const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( id );
@@ -621,7 +658,8 @@ public:
     SAVE_MEMBER( name );
   }
 
-  void save( klv_0601_view_domain_interval const& value )
+  void
+  save( klv_0601_view_domain_interval const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( start );
@@ -629,7 +667,8 @@ public:
     SAVE_MEMBER( semi_length );
   }
 
-  void save( klv_0601_view_domain const& value )
+  void
+  save( klv_0601_view_domain const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( azimuth );
@@ -637,7 +676,8 @@ public:
     SAVE_MEMBER( roll );
   }
 
-  void save( klv_0601_wavelength_record const& value )
+  void
+  save( klv_0601_wavelength_record const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( id );
@@ -646,7 +686,8 @@ public:
     SAVE_MEMBER( name );
   }
 
-  void save( klv_0601_waypoint_record const& value )
+  void
+  save( klv_0601_waypoint_record const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( id );
@@ -655,7 +696,8 @@ public:
     SAVE_MEMBER( location );
   }
 
-  void save( klv_0601_weapons_store const& value )
+  void
+  save( klv_0601_weapons_store const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( station_id );
@@ -667,26 +709,30 @@ public:
     SAVE_MEMBER( weapon_type );
   }
 
-  void save( klv_0806_user_defined_data_type_id const& value )
+  void
+  save( klv_0806_user_defined_data_type_id const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( type );
     SAVE_MEMBER( id );
   }
 
-  void save( klv_0806_user_defined_data const& value )
+  void
+  save( klv_0806_user_defined_data const& value )
   {
     save_base64( value.bytes );
   }
 
-  void save( klv_0903_fpa_index const& value )
+  void
+  save( klv_0903_fpa_index const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( row );
     SAVE_MEMBER( column );
   }
 
-  void save( klv_0903_location_pack const& value )
+  void
+  save( klv_0903_location_pack const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( latitude );
@@ -696,14 +742,16 @@ public:
     SAVE_MEMBER( rho );
   }
 
-  void save( klv_0903_pixel_run const& value )
+  void
+  save( klv_0903_pixel_run const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( index );
     SAVE_MEMBER( length );
   }
 
-  void save( klv_0903_rho_pack const& value )
+  void
+  save( klv_0903_rho_pack const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( east_north );
@@ -711,7 +759,8 @@ public:
     SAVE_MEMBER( north_up );
   }
 
-  void save( klv_0903_sigma_pack const& value )
+  void
+  save( klv_0903_sigma_pack const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( east );
@@ -719,7 +768,8 @@ public:
     SAVE_MEMBER( up );
   }
 
-  void save( klv_0903_velocity_pack const& value )
+  void
+  save( klv_0903_velocity_pack const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( east );
@@ -729,21 +779,24 @@ public:
     SAVE_MEMBER( rho );
   }
 
-  void save( klv_0903_vtarget_pack const& value )
+  void
+  save( klv_0903_vtarget_pack const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( id );
     SAVE_MEMBER( set );
   }
 
-  void save( klv_0903_vtrackitem_pack const& value )
+  void
+  save( klv_0903_vtrackitem_pack const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( id );
     SAVE_MEMBER( set );
   }
 
-  void save( klv_1002_enumerations const& value )
+  void
+  save( klv_1002_enumerations const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( compression_method );
@@ -751,7 +804,8 @@ public:
     SAVE_MEMBER( source );
   }
 
-  void save( klv_1002_section_data_pack const& value )
+  void
+  save( klv_1002_section_data_pack const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( section_x );
@@ -763,7 +817,8 @@ public:
     SAVE_MEMBER( plane_constant );
   }
 
-  void save( klv_1010_sdcc_flp const& value )
+  void
+  save( klv_1010_sdcc_flp const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( members );
@@ -777,21 +832,24 @@ public:
     SAVE_MEMBER( sparse );
   }
 
-  void save( klv_1108_metric_implementer const& value )
+  void
+  save( klv_1108_metric_implementer const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( organization );
     SAVE_MEMBER( subgroup );
   }
 
-  void save( klv_1108_metric_period_pack const& value )
+  void
+  save( klv_1108_metric_period_pack const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( timestamp );
     SAVE_MEMBER( offset );
   }
 
-  void save( klv_1108_window_corners_pack const& value )
+  void
+  save( klv_1108_window_corners_pack const& value )
   {
     auto const object_scope = push_object();
     save( "min-x", value.bbox.min_x() );
@@ -800,7 +858,8 @@ public:
     save( "max-y", value.bbox.max_y() );
   }
 
-  void save( klv_1204_miis_id const& value )
+  void
+  save( klv_1204_miis_id const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( version );
@@ -812,8 +871,9 @@ public:
     SAVE_MEMBER( minor_id );
   }
 
-  template< class T >
-  void save( klv_1303_mdap< T > const& value )
+  template < class T >
+  void
+  save( klv_1303_mdap< T > const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( sizes );
@@ -824,7 +884,8 @@ public:
     SAVE_MEMBER( imap_params );
   }
 
-  void save( klv_uuid const& value )
+  void
+  save( klv_uuid const& value )
   {
     auto const object_scope = push_object();
     save_base64( "bytes", { value.bytes.begin(), value.bytes.end() } );
@@ -836,10 +897,12 @@ public:
     }
   }
 
-  private:
-  struct klv_value_visitor {
-    template< class T >
-    void operator()() const
+private:
+  struct klv_value_visitor
+  {
+    template < class T >
+    void
+    operator()() const
     {
       saver.save( value.get< T >() );
     }
@@ -848,9 +911,11 @@ public:
     klv_value const& value;
   };
 
-  struct klv_data_format_visitor {
-    template< class T >
-    void operator()() const
+  struct klv_data_format_visitor
+  {
+    template < class T >
+    void
+    operator()() const
     {
       saver.save( dynamic_cast< T const& >( value ) );
     }
@@ -865,15 +930,13 @@ public:
 // ----------------------------------------------------------------------------
 // Shortens the wordy template header needed to overload load().
 #define LOAD_TEMPLATE( TYPE ) \
-  template< class T, enable_if_same_t< T, TYPE > = true >
-
+template < class T, enable_if_same_t< T, TYPE > = true >
 // ----------------------------------------------------------------------------
 // Shortens the wordy template header needed to overload load() with some kind
 // of templated container.
 #define LOAD_CONTAINER_TEMPLATE( TYPE ) \
-  template< class T, \
-            enable_if_same_t< T, TYPE< typename T::value_type > > = true >
-
+template < class T,                     \
+  enable_if_same_t< T, TYPE< typename T::value_type > > = true >
 // ----------------------------------------------------------------------------
 // Loads a value with the given type into the given variable name.
 #define LOAD_VALUE( NAME, T ) auto NAME = load< T >( hyphenify( #NAME ) )
@@ -882,12 +945,12 @@ public:
 // Loads a value into the given variable name. Type is deduced by assuming NAME
 // is also the name of a data member of the struct T.
 #define LOAD_MEMBER( NAME ) \
-  auto NAME = load< decltype( T::NAME ) >( hyphenify( #NAME ) )
+auto NAME = load< decltype( T::NAME ) >( hyphenify( #NAME ) )
 
 // ----------------------------------------------------------------------------
 // Loads a klv_value into the given variable name.
 #define LOAD_MEMBER_VALUE( NAME, T ) \
-  auto NAME = load( hyphenify( #NAME ), typeid( T ) )
+auto NAME = load( hyphenify( #NAME ), typeid( T ) )
 
 // ----------------------------------------------------------------------------
 // Imports KLV objects. Relies heavily on templates to keep code relatively
@@ -900,7 +963,8 @@ struct klv_json_loader : public klv_json_base< load_archive >
   {}
 
   // Return the size of the array we are in.
-  size_t array_size()
+  size_t
+  array_size()
   {
     size_type size;
     archive().loadSize( size );
@@ -908,7 +972,8 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   // Return the KLV tag traits lookup object, throwing an error if none exists.
-  klv_tag_traits_lookup const& assert_lookup()
+  klv_tag_traits_lookup const&
+  assert_lookup()
   {
     if( !lookup() )
     {
@@ -918,7 +983,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   // Return true if the node we are reading has a value of null.
-  bool load_null() {
+  bool
+  load_null()
+  {
     try
     {
       load< nullptr_t >();
@@ -932,41 +999,48 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   template < class T, is_cerealizable_t< T > = true >
-  T load()
+  T
+  load()
   {
     T value;
     archive()( value );
     return value;
   }
 
-  template< class T, enable_if_t< std::is_enum< T >::value, bool > = true >
-  T load()
+  template < class T, enable_if_t< std::is_enum< T >::value, bool > = true >
+  T
+  load()
   {
     auto const object_scope = push_object();
     return static_cast< T >( load< uint64_t >( "integer" ) );
   }
 
   template < class T >
-  T load( std::string const& name )
+  T
+  load( std::string const& name )
   {
     set_next_name( name );
     return load< T >();
   }
 
-  std::vector< uint8_t > load_base64( std::string const& name )
+  std::vector< uint8_t >
+  load_base64( std::string const& name )
   {
     set_next_name( name );
     return load_base64();
   }
 
-  std::vector< uint8_t > load_base64()
+  std::vector< uint8_t >
+  load_base64()
   {
     auto const string = base64::decode( load< std::string >() );
     return { string.begin(), string.end() };
   }
 
   LOAD_CONTAINER_TEMPLATE( std::vector )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     auto const size = array_size();
@@ -980,7 +1054,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_CONTAINER_TEMPLATE( std::set )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     auto const size = array_size();
@@ -993,7 +1069,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_CONTAINER_TEMPLATE( std::optional )
-  T load()
+
+  T
+  load()
   {
     if( load_null() )
     {
@@ -1004,7 +1082,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_CONTAINER_TEMPLATE( kv::interval )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_VALUE( lower_bound, typename T::value_type );
@@ -1013,7 +1093,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_CONTAINER_TEMPLATE( klv_lengthy )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( length );
@@ -1022,7 +1104,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_timed_packet )
-  T load()
+
+  T
+  load()
   {
     LOAD_VALUE( frame, std::optional< int64_t > );
     LOAD_VALUE( microseconds, std::optional< int64_t > );
@@ -1041,7 +1125,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_packet )
-  T load()
+
+  T
+  load()
   {
     auto const outer_lookup = push_lookup( &klv_lookup_packet_traits() );
     LOAD_VALUE( key, klv_uds_key );
@@ -1053,20 +1139,24 @@ struct klv_json_loader : public klv_json_base< load_archive >
 
   // Named separately since klv_lds_key is just an integer, so can't have its
   // own overload of load() separate from regular integers
-  klv_lds_key load_lds_key()
+  klv_lds_key
+  load_lds_key()
   {
     auto const object_scope = push_object();
     return load< klv_lds_key >( "integer" );
   }
 
-  klv_lds_key load_lds_key( std::string const& name )
+  klv_lds_key
+  load_lds_key( std::string const& name )
   {
     set_next_name( name );
     return load_lds_key();
   }
 
   LOAD_TEMPLATE( klv_uds_key )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     auto const bytes = load_base64( "bytes" );
@@ -1077,7 +1167,8 @@ struct klv_json_loader : public klv_json_base< load_archive >
     return klv_uds_key{ bytes.data() };
   }
 
-  klv_value load( std::type_info const& type )
+  klv_value
+  load( std::type_info const& type )
   {
     if( load_null() )
     {
@@ -1104,26 +1195,31 @@ struct klv_json_loader : public klv_json_base< load_archive >
       LOG_ERROR(
         kv::get_logger( "klv" ),
         "json import for type "
-        << "`" << kv::demangle( type.name() ) << "` "
-        << "has not been implemented" );
+          << "`" << kv::demangle( type.name() ) << "` "
+          << "has not been implemented" );
       return {};
     }
   }
 
-  klv_value load( std::string const& name, std::type_info const& type )
+  klv_value
+  load( std::string const& name, std::type_info const& type )
   {
     set_next_name( name );
     return load( type );
   }
 
   LOAD_TEMPLATE( klv_blob )
-  T load()
+
+  T
+  load()
   {
     return { load_base64() };
   }
 
   LOAD_TEMPLATE( klv_local_set )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     auto const size = array_size();
@@ -1150,7 +1246,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_universal_set )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     auto const size = array_size();
@@ -1177,7 +1275,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0601_airbase_locations )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( take_off_location );
@@ -1187,7 +1287,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0601_control_command )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( id );
@@ -1199,7 +1301,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0601_country_codes )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( coding_method );
@@ -1213,7 +1317,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0601_frame_rate )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( numerator );
@@ -1223,7 +1329,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0601_image_horizon_locations )
-  T load()
+
+  T
+  load()
   {
     // No object scope so it's flat with the rest of
     // klv_0601_image_horizon_pixel_pack
@@ -1238,7 +1346,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0601_image_horizon_pixel_pack )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( x0 );
@@ -1263,7 +1373,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0601_location_dlp )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( latitude );
@@ -1275,7 +1387,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0601_payload_record )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( id );
@@ -1287,7 +1401,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0601_view_domain_interval )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( start );
@@ -1299,7 +1415,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0601_view_domain )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( azimuth );
@@ -1311,7 +1429,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0601_wavelength_record )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( id );
@@ -1325,7 +1445,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0601_waypoint_record )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( id );
@@ -1339,7 +1461,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0601_weapons_store )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( station_id );
@@ -1359,7 +1483,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0806_user_defined_data_type_id )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( type );
@@ -1369,13 +1495,17 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0806_user_defined_data )
-  T load()
+
+  T
+  load()
   {
     return { load_base64() };
   }
 
   LOAD_TEMPLATE( klv_0903_fpa_index )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( row );
@@ -1385,7 +1515,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0903_location_pack )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( latitude );
@@ -1401,7 +1533,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0903_pixel_run )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( index );
@@ -1411,7 +1545,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0903_rho_pack )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( east_north );
@@ -1423,7 +1559,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0903_sigma_pack )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( east );
@@ -1435,7 +1573,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0903_velocity_pack )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( east );
@@ -1451,7 +1591,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0903_vtarget_pack )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( id );
@@ -1461,7 +1603,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_0903_vtrackitem_pack )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( id );
@@ -1471,7 +1615,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_1002_enumerations )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( compression_method );
@@ -1483,7 +1629,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_1002_section_data_pack )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( section_x );
@@ -1503,7 +1651,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_1010_sdcc_flp )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( members );
@@ -1527,7 +1677,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_1108_metric_implementer )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( organization );
@@ -1536,9 +1688,10 @@ struct klv_json_loader : public klv_json_base< load_archive >
              std::move( subgroup ) };
   }
 
-
   LOAD_TEMPLATE( klv_1108_metric_period_pack )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( timestamp );
@@ -1548,7 +1701,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_1108_window_corners_pack )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_VALUE( min_x, uint16_t );
@@ -1556,13 +1711,15 @@ struct klv_json_loader : public klv_json_base< load_archive >
     LOAD_VALUE( max_x, uint16_t );
     LOAD_VALUE( max_y, uint16_t );
     return { { std::move( min_x ),
-               std::move( min_y ),
-               std::move( max_x ),
-               std::move( max_y ) } };
+      std::move( min_y ),
+      std::move( max_x ),
+      std::move( max_y ) } };
   }
 
   LOAD_TEMPLATE( klv_1204_miis_id )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( version );
@@ -1582,7 +1739,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_CONTAINER_TEMPLATE( klv_1303_mdap )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     LOAD_MEMBER( sizes );
@@ -1600,7 +1759,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
   }
 
   LOAD_TEMPLATE( klv_uuid )
-  T load()
+
+  T
+  load()
   {
     auto const object_scope = push_object();
     auto const bytes = load_base64( "bytes" );
@@ -1614,10 +1775,12 @@ struct klv_json_loader : public klv_json_base< load_archive >
     return value;
   }
 
-  private:
-  struct klv_value_visitor {
-    template< class T >
-    klv_value operator()() const
+private:
+  struct klv_value_visitor
+  {
+    template < class T >
+    klv_value
+    operator()() const
     {
       return loader.template load< T >();
     }
@@ -1625,8 +1788,9 @@ struct klv_json_loader : public klv_json_base< load_archive >
     klv_json_loader& loader;
   };
 
-  struct klv_data_format_visitor {
-    template< class T >
+  struct klv_data_format_visitor
+  {
+    template < class T >
     std::shared_ptr< klv_data_format > operator()() const
     {
       return std::make_shared< T >( std::move( loader.load< T >() ) );

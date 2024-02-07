@@ -49,7 +49,7 @@ struct pop_tuple_helper
 template < class... Ts >
 struct pop_tuple_helper< 0, Ts... >
 {
-  std::tuple< >
+  std::tuple<>
   operator()() const
   {
     return std::make_tuple();
@@ -75,7 +75,7 @@ void
 write_trunc_lv_impl(
   std::tuple<
     std::optional< typename Format::data_type > const&
-    > const& value,
+  > const& value,
   klv_write_iter_t& data, size_t length,
   Format const& format )
 {
@@ -90,13 +90,13 @@ write_trunc_lv_impl(
 // Internal version of write_trunc_lv where we have a guarantee that `length`
 // is the exact length, and not just a maximum length.
 template < class Format, class... Formats,
-           typename std::enable_if< ( sizeof...( Formats ) > 0 ),
-                                    bool >::type = true >
+  typename std::enable_if< ( sizeof...( Formats ) > 0 ),
+    bool >::type = true >
 void
 write_trunc_lv_impl(
   std::tuple< std::optional< typename Format::data_type > const&,
-              std::optional< typename Formats::data_type > const&...
-              > const& value,
+    std::optional< typename Formats::data_type > const&...
+  > const& value,
   klv_write_iter_t& data, size_t length,
   Format format, Formats const&... formats )
 {
@@ -117,6 +117,7 @@ write_trunc_lv_impl(
 // Both `max_length` and the actual length should be greater than 0.
 template < class Format >
 typename Format::data_type
+
 klv_read_lv(
   klv_read_iter_t& data, size_t max_length,
   Format const& format )
@@ -205,7 +206,7 @@ void
 klv_write_trunc_lv(
   std::tuple<
     std::optional< typename Format::data_type const& >
-    > const& value,
+  > const& value,
   klv_write_iter_t& data, size_t length,
   Format const& format )
 {
@@ -218,14 +219,14 @@ klv_write_trunc_lv(
 // including their length fields. Any `nullopt` items which have valid items
 // following them will be written as just the lengths fields with values of 0.
 template < class Format, class... Formats,
-          typename std::enable_if< ( sizeof...( Formats ) > 0 ),
-                                   bool >::type = true >
+  typename std::enable_if< ( sizeof...( Formats ) > 0 ),
+    bool >::type = true >
 void
 klv_write_trunc_lv(
   std::tuple<
     std::optional< typename Format::data_type > const&,
     std::optional< typename Formats::data_type > const&...
-    > const& value,
+  > const& value,
   klv_write_iter_t& data, size_t max_length,
   Format const& format, Formats const&... formats )
 {
@@ -233,8 +234,9 @@ klv_write_trunc_lv(
     klv_length_of_trunc_lv( value, format, formats... );
   if( length > max_length )
   {
-    VITAL_THROW( kwiver::vital::metadata_buffer_overflow,
-                 "writing trunc length-value would overflow data buffer" );
+    VITAL_THROW(
+      kwiver::vital::metadata_buffer_overflow,
+      "writing trunc length-value would overflow data buffer" );
   }
   lv_detail::write_trunc_lv_impl( value, data, length, format, formats... );
 }
@@ -243,8 +245,9 @@ klv_write_trunc_lv(
 // Return the length of `value` plus the length of its BER-encoded length.
 template < class Format >
 size_t
-klv_length_of_lv( typename Format::data_type const& value,
-                  Format const& format )
+klv_length_of_lv(
+  typename Format::data_type const& value,
+  Format const& format )
 {
   auto const length = format.length_of_( value );
   return klv_ber_length( length ) + length;
@@ -268,7 +271,7 @@ template < class Format >
 size_t
 klv_length_of_trunc_lv(
   std::tuple< std::optional< typename Format::data_type > const&
-              > const& value,
+  > const& value,
   Format const& format )
 {
   auto const& item = std::get< 0 >( value );
@@ -280,13 +283,13 @@ klv_length_of_trunc_lv(
 // Return the length of `value` plus the length of its BER-encoded length,
 // or 0 if the length is 0.
 template < class Format, class... Formats,
-           typename std::enable_if< ( sizeof...( Formats ) > 0 ),
-                                    bool >::type = true >
+  typename std::enable_if< ( sizeof...( Formats ) > 0 ),
+    bool >::type = true >
 size_t
 klv_length_of_trunc_lv(
   std::tuple< std::optional< typename Format::data_type > const&,
-              std::optional< typename Formats::data_type > const&...
-              > const& value,
+    std::optional< typename Formats::data_type > const&...
+  > const& value,
   Format const& format, Formats const&... formats )
 {
   auto const& item = std::get< 0 >( value );

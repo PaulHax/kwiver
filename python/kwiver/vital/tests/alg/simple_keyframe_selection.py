@@ -45,6 +45,8 @@ def __vital_algorithm_register__():
         return
 
     algorithm_factory.add_algorithm(
-        implementation_name, "test simple keyframe selection", SimpleKeyframeSelection,
+        implementation_name,
+        "test simple keyframe selection",
+        SimpleKeyframeSelection,
     )
     algorithm_factory.mark_algorithm_as_loaded(implementation_name)

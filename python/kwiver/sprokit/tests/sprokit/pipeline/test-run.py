@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#ckwg +28
+# ckwg +28
 # Copyright 2011-2020 by Kitware, Inc.
 # All rights reserved.
 #
@@ -30,7 +30,11 @@
 
 from kwiver.sprokit.util.test import expect_exception, find_tests, run_test, test_error
 
-cpp_scheds = ["sync","thread_per_process"] # One shop stop if we add any more c++ schedulers to the tests
+cpp_scheds = [
+    "sync",
+    "thread_per_process",
+]  # One shop stop if we add any more c++ schedulers to the tests
+
 
 def make_source(conf):
     from kwiver.sprokit.pipeline import process
@@ -39,18 +43,24 @@ def make_source(conf):
         def __init__(self, conf):
             process.PythonProcess.__init__(self, conf)
 
-            self.conf_start = 'start'
-            self.conf_end = 'end'
+            self.conf_start = "start"
+            self.conf_end = "end"
 
-            self.declare_configuration_key(self.conf_start, str(0), 'Starting number', False)
-            self.declare_configuration_key(self.conf_end, str(10), 'Ending number', True)
+            self.declare_configuration_key(
+                self.conf_start, str(0), "Starting number", False
+            )
+            self.declare_configuration_key(
+                self.conf_end, str(10), "Ending number", True
+            )
 
-            self.port_output = 'number'
+            self.port_output = "number"
 
             required = process.PortFlags()
             required.add(self.flag_required)
 
-            self.declare_output_port(self.port_output, 'integer', required, 'output port')
+            self.declare_output_port(
+                self.port_output, "integer", required, "output port"
+            )
 
         def _configure(self):
             self.counter = int(self.config_value(self.conf_start))
@@ -84,21 +94,23 @@ def make_sink(conf):
 
             self.stepped = False
             self.finalized = False
-            self.conf_output = 'output'
+            self.conf_output = "output"
 
-            self.declare_configuration_key(self.conf_output, 'output.txt', 'Output file name', False)
+            self.declare_configuration_key(
+                self.conf_output, "output.txt", "Output file name", False
+            )
 
-            self.port_input = 'number'
+            self.port_input = "number"
 
             required = process.PortFlags()
             required.add(self.flag_required)
 
-            self.declare_input_port(self.port_input, 'integer', required, 'input port')
+            self.declare_input_port(self.port_input, "integer", required, "input port")
 
         def _configure(self):
             output = self.config_value(self.conf_output)
 
-            self.fout = open(output, 'w+')
+            self.fout = open(output, "w+")
 
             self._base_configure()
 
@@ -107,7 +119,7 @@ def make_sink(conf):
 
             num = self.grab_value_from_port(self.port_input)
 
-            self.fout.write('%d\n' % num)
+            self.fout.write("%d\n" % num)
             self.fout.flush()
             self.stepped = True
 
@@ -139,8 +151,14 @@ def run_pipeline(sched_type, pipe, conf):
     modules.load_known_modules()
 
     if sched_type in cpp_scheds:
-        expect_exception("trying to run a python process on a C++ scheduler", RuntimeError,
-                         scheduler_factory.create_scheduler, sched_type, pipe, conf)
+        expect_exception(
+            "trying to run a python process on a C++ scheduler",
+            RuntimeError,
+            scheduler_factory.create_scheduler,
+            sched_type,
+            pipe,
+            conf,
+        )
 
     else:
         s = scheduler_factory.create_scheduler(sched_type, pipe, conf)
@@ -154,7 +172,7 @@ def check_file(fname, expect):
     if sched_type in cpp_scheds:
         return
 
-    with open(fname, 'r') as fin:
+    with open(fname, "r") as fin:
         ints = list([int(l.strip()) for l in list(fin)])
 
         num_ints = len(ints)
@@ -178,28 +196,28 @@ def test_python_to_python(sched_type):
     from kwiver.sprokit.pipeline import pipeline
     from kwiver.sprokit.pipeline import process
 
-    name_source = 'source'
-    name_sink = 'sink'
+    name_source = "source"
+    name_sink = "sink"
 
-    port_output = 'number'
-    port_input = 'number'
+    port_output = "number"
+    port_input = "number"
 
     min = 0
     max = 10
-    output_file = 'test-python-run-python_to_python.txt'
+    output_file = "test-python-run-python_to_python.txt"
 
     c = config.empty_config()
 
     c.set_value(process.PythonProcess.config_name, name_source)
-    c.set_value('start', str(min))
-    c.set_value('end', str(max))
+    c.set_value("start", str(min))
+    c.set_value("end", str(max))
 
     s = make_source(c)
 
     c = config.empty_config()
 
     c.set_value(process.PythonProcess.config_name, name_sink)
-    c.set_value('output', output_file)
+    c.set_value("output", output_file)
 
     t = make_sink(c)
 
@@ -208,8 +226,7 @@ def test_python_to_python(sched_type):
     p.add_process(s)
     p.add_process(t)
 
-    p.connect(name_source, port_output,
-              name_sink, port_input)
+    p.connect(name_source, port_output, name_sink, port_input)
 
     p.setup_pipeline()
 
@@ -226,27 +243,27 @@ def test_cpp_to_python(sched_type):
     from kwiver.sprokit.pipeline import pipeline
     from kwiver.sprokit.pipeline import process
 
-    name_source = 'source'
-    name_sink = 'sink'
+    name_source = "source"
+    name_sink = "sink"
 
-    port_output = 'number'
-    port_input = 'number'
+    port_output = "number"
+    port_input = "number"
 
     min = 0
     max = 10
-    output_file = 'test-python-run-cpp_to_python.txt'
+    output_file = "test-python-run-cpp_to_python.txt"
 
     c = config.empty_config()
 
-    c.set_value('start', str(min))
-    c.set_value('end', str(max))
+    c.set_value("start", str(min))
+    c.set_value("end", str(max))
 
-    s = create_process('numbers', name_source, c)
+    s = create_process("numbers", name_source, c)
 
     c = config.empty_config()
 
     c.set_value(process.PythonProcess.config_name, name_sink)
-    c.set_value('output', output_file)
+    c.set_value("output", output_file)
 
     t = make_sink(c)
 
@@ -255,8 +272,7 @@ def test_cpp_to_python(sched_type):
     p.add_process(s)
     p.add_process(t)
 
-    p.connect(name_source, port_output,
-              name_sink, port_input)
+    p.connect(name_source, port_output, name_sink, port_input)
 
     p.setup_pipeline()
 
@@ -270,37 +286,36 @@ def test_python_to_cpp(sched_type):
     from kwiver.sprokit.pipeline import pipeline
     from kwiver.sprokit.pipeline import process
 
-    name_source = 'source'
-    name_sink = 'sink'
+    name_source = "source"
+    name_sink = "sink"
 
-    port_output = 'number'
-    port_input = 'number'
+    port_output = "number"
+    port_input = "number"
 
     min = 0
     max = 10
-    output_file = 'test-python-run-python_to_cpp.txt'
+    output_file = "test-python-run-python_to_cpp.txt"
 
     c = config.empty_config()
 
     c.set_value(process.PythonProcess.config_name, name_source)
-    c.set_value('start', str(min))
-    c.set_value('end', str(max))
+    c.set_value("start", str(min))
+    c.set_value("end", str(max))
 
     s = make_source(c)
 
     c = config.empty_config()
 
-    c.set_value('output', output_file)
+    c.set_value("output", output_file)
 
-    t = create_process('print_number', name_sink, c)
+    t = create_process("print_number", name_sink, c)
 
     p = pipeline.Pipeline()
 
     p.add_process(s)
     p.add_process(t)
 
-    p.connect(name_source, port_output,
-              name_sink, port_input)
+    p.connect(name_source, port_output, name_sink, port_input)
 
     p.setup_pipeline()
 
@@ -314,51 +329,51 @@ def test_python_via_cpp(sched_type):
     from kwiver.sprokit.pipeline import pipeline
     from kwiver.sprokit.pipeline import process
 
-    name_source1 = 'source1'
-    name_source2 = 'source2'
-    name_mult = 'mult'
-    name_sink = 'sink'
+    name_source1 = "source1"
+    name_source2 = "source2"
+    name_mult = "mult"
+    name_sink = "sink"
 
-    port_output = 'number'
-    port_input1 = 'src/1'
-    port_input2 = 'src/2'
-    port_output1 = 'out/1'
-    port_output2 = 'out/2'
-    port_factor1 = 'factor1'
-    port_factor2 = 'factor2'
-    port_product = 'product'
-    port_input = 'number'
+    port_output = "number"
+    port_input1 = "src/1"
+    port_input2 = "src/2"
+    port_output1 = "out/1"
+    port_output2 = "out/2"
+    port_factor1 = "factor1"
+    port_factor2 = "factor2"
+    port_product = "product"
+    port_input = "number"
 
     min1 = 0
     max1 = 10
     min2 = 10
     max2 = 15
-    output_file = 'test-python-run-python_via_cpp.txt'
+    output_file = "test-python-run-python_via_cpp.txt"
 
     c = config.empty_config()
 
     c.set_value(process.PythonProcess.config_name, name_source1)
-    c.set_value('start', str(min1))
-    c.set_value('end', str(max1))
+    c.set_value("start", str(min1))
+    c.set_value("end", str(max1))
 
     s1 = make_source(c)
 
     c = config.empty_config()
 
     c.set_value(process.PythonProcess.config_name, name_source2)
-    c.set_value('start', str(min2))
-    c.set_value('end', str(max2))
+    c.set_value("start", str(min2))
+    c.set_value("end", str(max2))
 
     s2 = make_source(c)
 
     c = config.empty_config()
 
-    m = create_process('multiplication', name_mult, c)
+    m = create_process("multiplication", name_mult, c)
 
     c = config.empty_config()
 
     c.set_value(process.PythonProcess.config_name, name_sink)
-    c.set_value('output', output_file)
+    c.set_value("output", output_file)
 
     t = make_sink(c)
 
@@ -369,27 +384,27 @@ def test_python_via_cpp(sched_type):
     p.add_process(m)
     p.add_process(t)
 
-    p.connect(name_source1, port_output,
-              name_mult, port_factor1)
-    p.connect(name_source2, port_output,
-              name_mult, port_factor2)
-    p.connect(name_mult, port_product,
-              name_sink, port_input)
+    p.connect(name_source1, port_output, name_mult, port_factor1)
+    p.connect(name_source2, port_output, name_mult, port_factor2)
+    p.connect(name_mult, port_product, name_sink, port_input)
 
     p.setup_pipeline()
 
     run_pipeline(sched_type, p, c)
 
-    check_file(output_file, [a * b for a, b in zip(list(range(min1, max1)), list(range(min2, max2)))])
+    check_file(
+        output_file,
+        [a * b for a, b in zip(list(range(min1, max1)), list(range(min2, max2)))],
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
 
     if len(sys.argv) != 2:
         test_error("Expected two arguments")
         sys.exit(1)
 
-    (testname, sched_type) = tuple(sys.argv[1].split('-', 1))
+    (testname, sched_type) = tuple(sys.argv[1].split("-", 1))
 
     run_test(testname, find_tests(locals()), sched_type)

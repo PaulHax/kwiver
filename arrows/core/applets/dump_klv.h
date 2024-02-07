@@ -11,25 +11,29 @@
 #include <vector>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 class dump_klv
   : public kwiver::tools::kwiver_applet
 {
 public:
-
-  PLUGGABLE_IMPL(dump_klv, 
+  PLUGGABLE_IMPL(
+    dump_klv,
     "Dump KLV stream from video.\n\n"
     "This program displays the KLV metadata packets that are embedded in "
-    "a video stream.");
-
+    "a video stream." );
 
   int run() override;
   void add_command_options() override;
-
 }; // end of class
 
-} } } // end namespace
+} // namespace core
+
+} // namespace arrows
+
+}     // end namespace
 
 #endif /* KWIVER_TOOL_DUMP_KLV_H */

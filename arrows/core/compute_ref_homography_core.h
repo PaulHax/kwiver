@@ -12,12 +12,14 @@
 
 #include <vital/algo/algorithm.h>
 #include <vital/algo/compute_ref_homography.h>
+#include <vital/types/feature_track_set.h>
 #include <vital/types/homography.h>
 #include <vital/types/image_container.h>
-#include <vital/types/feature_track_set.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 /// Default impl class for mapping each image to some reference image.
@@ -36,8 +38,9 @@ class KWIVER_ALGO_CORE_EXPORT compute_ref_homography_core
   : public vital::algo::compute_ref_homography
 {
 public:
-  PLUGIN_INFO( "core",
-               "Default online sequential-frame reference homography estimator." )
+  PLUGIN_INFO(
+    "core",
+    "Default online sequential-frame reference homography estimator." )
 
   /// Default Constructor
   compute_ref_homography_core();
@@ -45,7 +48,8 @@ public:
   /// Default Destructor
   virtual ~compute_ref_homography_core();
 
-  /// Get this algorithm's \link vital::config_block configuration block \endlink
+  /// Get this algorithm's \link vital::config_block configuration block
+  /// \endlink
   ///
   /// This base virtual function implementation returns an empty configuration
   /// block whose name is set to \c this->type_name.
@@ -86,18 +90,21 @@ public:
   /// \param tracks the set of all tracked features from the image
   /// \return estimated homography
   virtual vital::f2f_homography_sptr
-  estimate( vital::frame_id_t frame_number,
-            vital::feature_track_set_sptr tracks ) const;
+  estimate(
+    vital::frame_id_t frame_number,
+    vital::feature_track_set_sptr tracks ) const;
 
 private:
-
   /// Class storing internal variables
   class priv;
-  const std::unique_ptr<priv> d_;
+
+  const std::unique_ptr< priv > d_;
 };
 
 } // end namespace core
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif

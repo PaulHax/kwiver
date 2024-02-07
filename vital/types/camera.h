@@ -18,6 +18,7 @@
 #include <vital/types/vector.h>
 
 namespace kwiver {
+
 namespace vital {
 
 /// forward declaration of camera class
@@ -50,10 +51,11 @@ public:
   virtual unsigned int image_height() const = 0;
 
 protected:
-  camera() {};
+  camera() {}
 };
 
-}
+} // namespace vital
+
 }   // end namespace vital
 
 #endif // VITAL_CAMERA_H_

@@ -19,27 +19,29 @@
 /// Pending unification of events, only handles VIRAT events (same as ever.)
 ///
 
-#include <vital/vital_config.h>
 #include <track_oracle/track_oracle_event_adapter_export.h>
+#include <vital/vital_config.h>
 
 #include <string>
 
 #include <track_oracle/track_base.h>
 #include <track_oracle/track_field.h>
 
-#include <track_oracle/utils/logging_map.h>
 #include <track_oracle/track_oracle_api_types.h>
+#include <track_oracle/utils/logging_map.h>
 
 #include <track_oracle/data_terms/data_terms.h>
 
 namespace kwiver {
+
 namespace track_oracle {
 
 struct TRACK_ORACLE_EVENT_ADAPTER_EXPORT event_data_block
 {
   bool valid;
   bool debug;
-  event_data_block(): valid(false),debug(false) {}
+  event_data_block() : valid( false ),
+                       debug( false ) {}
   dt::tracking::external_id::Type new_track_id;
   dt::tracking::external_id::Type src_track_id;
   std::string track_style;
@@ -58,11 +60,12 @@ struct TRACK_ORACLE_EVENT_ADAPTER_EXPORT event_data_block
   // they're consistent.  If the first bool is false, no decision
   // could be reached.  If the first bool is true, the second is
   // true if the time point is inside the window.
-  std::pair< bool, bool > timepoint_in_window( const dt::tracking::frame_number::Type* fn,
-                                               const dt::tracking::timestamp_usecs::Type* ts ) const;
+  std::pair< bool, bool > timepoint_in_window(
+    const dt::tracking::frame_number::Type* fn,
+    const dt::tracking::timestamp_usecs::Type* ts ) const;
 };
 
-struct TRACK_ORACLE_EVENT_ADAPTER_EXPORT event_data_schema: public track_base< event_data_schema >
+struct TRACK_ORACLE_EVENT_ADAPTER_EXPORT event_data_schema : public track_base< event_data_schema >
 {
   track_field< dt::tracking::external_id > external_id;
   track_field< dt::events::source_track_ids > source_track_ids;
@@ -83,7 +86,6 @@ struct TRACK_ORACLE_EVENT_ADAPTER_EXPORT event_data_schema: public track_base< e
 class TRACK_ORACLE_EVENT_ADAPTER_EXPORT event_adapter
 {
 public:
-
   //
   // given a line from a KWE file, extract the relevant
   // data fields from it.  Returning false signals a
@@ -93,18 +95,20 @@ public:
   // event.)
   //
 
-  static bool parse_kwe_line( const std::string& line,
-                              event_data_block& b,
-                              logging_map_type& msgs );
+  static bool parse_kwe_line(
+    const std::string& line,
+    event_data_block& b,
+    logging_map_type& msgs );
 
   //
   // Given a new track handle, copy over the data from
   // the event data block
   //
 
-  static void set_event_track_data( const track_handle_type& new_track,
-                                    const event_data_block& b,
-                                    logging_map_type& msgs );
+  static void set_event_track_data(
+    const track_handle_type& new_track,
+    const event_data_block& b,
+    logging_map_type& msgs );
 
   //
   // Given a source track handle and an event_data_block,
@@ -112,14 +116,16 @@ public:
   // track
   //
 
-  static bool clone_geometry( track_handle_type src_track,
-                              track_handle_type new_track,
-                              const event_data_block& b );
+  static bool clone_geometry(
+    track_handle_type src_track,
+    track_handle_type new_track,
+    const event_data_block& b );
 
 private:
 };
 
 } // ...track_oracle
+
 } // ...kwiver
 
 #endif

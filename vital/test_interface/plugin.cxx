@@ -7,10 +7,8 @@
 #include <vital/test_interface/say.h>
 #include <vital/test_interface/say_cpp_export.h>
 
-
 // ----------------------------------------------------------------------------
-namespace kwiver::vital
-{
+namespace kwiver::vital {
 
 class cpp_say_impl : public say
 {
@@ -18,7 +16,8 @@ public:
   cpp_say_impl() = default;
   ~cpp_say_impl() override = default;
 
-  std::string says() override
+  std::string
+  says() override
   {
     return "I am the C++ plugin";
   }
@@ -27,10 +26,11 @@ public:
   from_config( config_block_sptr const /* cb */ )
   {
     // No parameter constructor, just return new instance
-    return std::make_shared<cpp_say_impl>();
+    return std::make_shared< cpp_say_impl >();
   }
 
-  static void get_default_config( config_block & /* cb */ )
+  static void
+  get_default_config( config_block& /* cb */ )
   {
     // No constructor parameters, so nothing to set in the config block.
   }
@@ -54,7 +54,7 @@ public:
     auto ret_val = std::make_shared< cpp_they_say >();
     ret_val->m_speaker =
       implementation_factory_by_name< say >().create(
-        cb->get_value( "speaker" , std::string("cpp") ), cb );
+        cb->get_value( "speaker", std::string( "cpp" ) ), cb );
 
     return ret_val;
   }
@@ -70,8 +70,6 @@ private:
 };
 
 } // namespace kwiver::vital
-
-
 
 // ----------------------------------------------------------------------------
 namespace kv = kwiver::vital;

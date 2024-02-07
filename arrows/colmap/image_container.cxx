@@ -10,7 +10,7 @@ struct Color
 static void
 write_to_img( kwiver::vital::image img, int u, int v, Color color )
 {
-  unsigned char* data = (unsigned char*) img.first_pixel();
+  unsigned char* data = ( unsigned char* ) img.first_pixel();
 
   data[ img.w_step() * u + img.h_step() * v ] = color.r;
   data[ img.w_step() * u + img.h_step() * v + img.d_step() ] = color.g;
@@ -20,7 +20,7 @@ write_to_img( kwiver::vital::image img, int u, int v, Color color )
 static Color
 read_from_img( kwiver::vital::image img, int u, int v )
 {
-  unsigned char* data = (unsigned char*) img.first_pixel();
+  unsigned char* data = ( unsigned char* ) img.first_pixel();
 
   return Color{
     data[ img.w_step() * u + img.h_step() * v ],
@@ -40,9 +40,11 @@ kwiver::arrows::colmap_arrow::image_container
     for( unsigned int j = 0; j < image.width(); j++ )
     {
       Color color = read_from_img( image, j, i );
-      new_img.SetPixel( j, i,
-                        colmap::BitmapColor< unsigned char >( color.r, color.g,
-                                                              color.b ) );
+      new_img.SetPixel(
+        j, i,
+        colmap::BitmapColor< unsigned char >(
+          color.r, color.g,
+          color.b ) );
     }
   }
 

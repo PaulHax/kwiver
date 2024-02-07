@@ -14,16 +14,19 @@
 
 #include <vital/types/image_container.h>
 
-#include <vital/bindings/c/types/image_container.h>
 #include <vital/bindings/c/helpers/c_utils.h>
+#include <vital/bindings/c/types/image_container.h>
 
 namespace kwiver {
+
 namespace vital_c {
 
 /// Declaration of C interface shared_ptr cache of vital::image_container
 extern SharedPointerCache< kwiver::vital::image_container,
-                           vital_image_container_t > IMGC_SPTR_CACHE;
+  vital_image_container_t > IMGC_SPTR_CACHE;
 
-} }
+} // namespace vital_c
 
-#endif //VITAL_C_HELPERS_IMAGE_CONTAINER_H_
+} // namespace kwiver
+
+#endif // VITAL_C_HELPERS_IMAGE_CONTAINER_H_

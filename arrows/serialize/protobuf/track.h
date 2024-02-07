@@ -9,25 +9,36 @@
 #include <vital/algo/data_serializer.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace serialize {
+
 namespace protobuf {
 
 class KWIVER_SERIALIZE_PROTOBUF_EXPORT track
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO( "kwiver:track",
-               "Serializes a track using protobuf notation. "
-               "This implementation only handles a single data item." );
+  PLUGIN_INFO(
+    "kwiver:track",
+    "Serializes a track using protobuf notation. "
+    "This implementation only handles a single data item." );
 
   track();
   virtual ~track();
 
-  std::shared_ptr< std::string > serialize( const vital::any& element ) override;
+  std::shared_ptr< std::string > serialize(
+    const vital::any& element ) override;
   vital::any deserialize( const std::string& message ) override;
 };
 
-} } } }       // end namespace kwiver
+} // namespace protobuf
+
+} // namespace serialize
+
+} // namespace arrows
+
+}             // end namespace kwiver
 
 #endif // ARROWS_SERIALIZATION_TRACK

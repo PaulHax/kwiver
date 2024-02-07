@@ -8,13 +8,19 @@
 #include <pybind11/pybind11.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
+
 namespace py = pybind11;
 
-void split_image(py::module &m);
-}
-}
-}
+void split_image( py::module& m );
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
 
 #endif

@@ -14,7 +14,6 @@ namespace kwiver {
 namespace vital {
 
 #ifdef _MSC_VER
-
 // isnan() wrapper which accepts integral types, even on noncompliant MSVC.
 // See https://github.com/microsoft/STL/issues/519
 template < class T >
@@ -29,7 +28,6 @@ isnan( T value )
   }
   return false;
 }
-
 #else
 using std::isnan;
 #endif

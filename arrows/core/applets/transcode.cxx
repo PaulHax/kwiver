@@ -24,8 +24,9 @@ namespace {
 
 // ----------------------------------------------------------------------------
 void
-check_input( kva::video_input_sptr const& input,
-             cxxopts::ParseResult const& cmd_args )
+check_input(
+  kva::video_input_sptr const& input,
+  cxxopts::ParseResult const& cmd_args )
 {
   // Check capabilities
   auto const& capabilities = input->get_implementation_capabilities();
@@ -47,8 +48,9 @@ check_input( kva::video_input_sptr const& input,
 
 // ----------------------------------------------------------------------------
 void
-check_output( kva::video_output_sptr const& output,
-              cxxopts::ParseResult const& cmd_args )
+check_output(
+  kva::video_output_sptr const& output,
+  cxxopts::ParseResult const& cmd_args )
 {
   // Check initialization
   if( !output )
@@ -71,16 +73,16 @@ transcode_applet
 ::add_command_options()
 {
   m_cmd_options->add_options()                   //
-    ( "h,help",   "Display applet usage.",
-    ::cxxopts::value< bool >() )                 //
-    ( "c,config", "Specify configuration file.",
-    ::cxxopts::value< std::string >(), "file" )  //
-    ( "i,input",  "Specify input video file.",
-    ::cxxopts::value< std::string >(), "file" )  //
-    ( "o,output", "Specify output video file.",
-    ::cxxopts::value< std::string >(), "file" )  //
-    ( "copy-video", "Directly copy raw video without modification." )
-    ( "copy-metadata", "Directly copy raw metadata without modification." );
+  ( "h,help",   "Display applet usage.",
+    ::cxxopts::value< bool > () )                 //
+  ( "c,config", "Specify configuration file.",
+    ::cxxopts::value< std::string > (), "file" )  //
+  ( "i,input",  "Specify input video file.",
+    ::cxxopts::value< std::string > (), "file" )  //
+  ( "o,output", "Specify output video file.",
+    ::cxxopts::value< std::string > (), "file" )  //
+  ( "copy-video", "Directly copy raw video without modification." )
+  ( "copy-metadata", "Directly copy raw metadata without modification." );
 }
 
 // ----------------------------------------------------------------------------
@@ -156,6 +158,7 @@ transcode_applet
   // Acquire first frame, which may help produce more accurate video settings
   kv::timestamp timestamp;
   input->next_frame( timestamp );
+
   auto const video_settings = input->implementation_settings();
 
   // Setup video output
@@ -168,7 +171,11 @@ transcode_applet
   output->open( output_filename, video_settings.get() );
 
   // Transcode frames
+  // UNCRUST-OFF
   for( ; !input->end_of_video(); input->next_frame( timestamp ) )
+  //  ^ `uncrustify` is not stable and will oscillate on whether this space
+  //  should exist or not.
+  // UNCRUST-ON
   {
     // Transcode metadata
     if( cmd_args.count( "copy-metadata" ) )
@@ -178,7 +185,7 @@ transcode_applet
       {
         std::cerr << "No raw metadata found for frame " << timestamp.get_frame()
                   << "." << std::endl;
-        exit(-1);
+        exit( -1 );
       }
       output->add_metadata( *md );
     }
@@ -205,7 +212,7 @@ transcode_applet
       {
         std::cerr << "No raw image found for frame " << timestamp.get_frame()
                   << "." << std::endl;
-        exit(-1);
+        exit( -1 );
       }
       output->add_image( *image );
     }

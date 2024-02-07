@@ -13,26 +13,27 @@
 #include <vital/plugin_management/plugin_manager.h>
 #include <vital/vital_config.h>
 
+#include <fstream>
+#include <iostream>
 #include <memory>
 #include <string>
-#include <iostream>
-#include <fstream>
 
 kwiver::vital::path_t g_data_dir;
 
 namespace algo = kwiver::vital::algo;
 namespace kac = kwiver::arrows::core;
+
 static std::string list_file_name = "video_as_images/frame_list.txt";
 static std::string images_folder_name = "video_as_images/images";
 
 // ----------------------------------------------------------------------------
 int
-main(int argc, char* argv[])
+main( int argc, char* argv[] )
 {
   ::testing::InitGoogleTest( &argc, argv );
   TEST_LOAD_PLUGINS();
 
-  GET_ARG(1, g_data_dir);
+  GET_ARG( 1, g_data_dir );
 
   return RUN_ALL_TESTS();
 }
@@ -40,26 +41,27 @@ main(int argc, char* argv[])
 // ----------------------------------------------------------------------------
 class video_input_image_list : public ::testing::Test
 {
-  TEST_ARG(data_dir);
+  TEST_ARG( data_dir );
 };
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_image_list, create)
+TEST_F ( video_input_image_list, create )
 {
-  EXPECT_NE( nullptr, algo::video_input::create("image_list") );
+  EXPECT_NE( nullptr, algo::video_input::create( "image_list" ) );
 }
 
 // ----------------------------------------------------------------------------
 static
 bool
-set_config(kwiver::vital::config_block_sptr config,
-           VITAL_UNUSED std::string const& data_dir)
+set_config(
+  kwiver::vital::config_block_sptr config,
+  VITAL_UNUSED std::string const& data_dir )
 {
-  if ( kwiver::vital::has_algorithm_impl_name( "image_io", "ocv" ) )
+  if( kwiver::vital::has_algorithm_impl_name( "image_io", "ocv" ) )
   {
     config->set_value( "image_reader:type", "ocv" );
   }
-  else if ( kwiver::vital::has_algorithm_impl_name( "image_io", "vxl" ) )
+  else if( kwiver::vital::has_algorithm_impl_name( "image_io", "vxl" ) )
   {
     config->set_value( "image_reader:type", "vxl" );
   }
@@ -73,12 +75,12 @@ set_config(kwiver::vital::config_block_sptr config,
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_image_list, read_list)
+TEST_F ( video_input_image_list, read_list )
 {
   // make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -94,21 +96,21 @@ TEST_F(video_input_image_list, read_list)
   kwiver::vital::timestamp ts;
 
   int num_frames = 0;
-  while ( viil.next_frame( ts ) )
+  while( viil.next_frame( ts ) )
   {
     auto img = viil.frame_image();
     auto md = viil.frame_metadata();
 
-    if (md.size() > 0)
+    if( md.size() > 0 )
     {
       std::cout << "-----------------------------------\n" << std::endl;
-      kwiver::vital::print_metadata( std::cout, *md[0] );
+      kwiver::vital::print_metadata( std::cout, *md[ 0 ] );
     }
 
     ++num_frames;
     EXPECT_EQ( num_frames, ts.get_frame() )
       << "Frame numbers should be sequential";
-    EXPECT_EQ( ts.get_frame(), decode_barcode(*img) )
+    EXPECT_EQ( ts.get_frame(), decode_barcode( *img ) )
       << "Frame number should match barcode in frame image";
     EXPECT_EQ( ts.get_time_usec(), viil.frame_timestamp().get_time_usec() );
     EXPECT_EQ( ts.get_frame(), viil.frame_timestamp().get_frame() );
@@ -118,12 +120,12 @@ TEST_F(video_input_image_list, read_list)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_image_list, read_directory)
+TEST_F ( video_input_image_list, read_directory )
 {
   // make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -139,21 +141,21 @@ TEST_F(video_input_image_list, read_directory)
   kwiver::vital::timestamp ts;
 
   int num_frames = 0;
-  while ( viil.next_frame( ts ) )
+  while( viil.next_frame( ts ) )
   {
     auto img = viil.frame_image();
     auto md = viil.frame_metadata();
 
-    if (md.size() > 0)
+    if( md.size() > 0 )
     {
       std::cout << "-----------------------------------\n" << std::endl;
-      kwiver::vital::print_metadata( std::cout, *md[0] );
+      kwiver::vital::print_metadata( std::cout, *md[ 0 ] );
     }
 
     ++num_frames;
     EXPECT_EQ( num_frames, ts.get_frame() )
       << "Frame numbers should be sequential";
-    EXPECT_EQ( ts.get_frame(), decode_barcode(*img) )
+    EXPECT_EQ( ts.get_frame(), decode_barcode( *img ) )
       << "Frame number should match barcode in frame image";
     EXPECT_EQ( ts.get_time_usec(), viil.frame_timestamp().get_time_usec() );
     EXPECT_EQ( ts.get_frame(), viil.frame_timestamp().get_frame() );
@@ -163,12 +165,12 @@ TEST_F(video_input_image_list, read_directory)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_image_list, is_good)
+TEST_F ( video_input_image_list, is_good )
 {
   // make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -203,7 +205,7 @@ TEST_F(video_input_image_list, is_good)
   viil.open( list_file );
 
   int num_frames = 0;
-  while ( viil.next_frame( ts ) )
+  while( viil.next_frame( ts ) )
   {
     ++num_frames;
     EXPECT_TRUE( viil.good() )
@@ -213,12 +215,12 @@ TEST_F(video_input_image_list, is_good)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_image_list, seek_frame)
+TEST_F ( video_input_image_list, seek_frame )
 {
   // make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -239,12 +241,12 @@ TEST_F(video_input_image_list, seek_frame)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_image_list, seek_then_next_frame)
+TEST_F ( video_input_image_list, seek_then_next_frame )
 {
   // make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -265,12 +267,12 @@ TEST_F(video_input_image_list, seek_then_next_frame)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_image_list, next_then_seek_frame)
+TEST_F ( video_input_image_list, next_then_seek_frame )
 {
   // make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -291,12 +293,12 @@ TEST_F(video_input_image_list, next_then_seek_frame)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_image_list, next_then_seek_then_next)
+TEST_F ( video_input_image_list, next_then_seek_then_next )
 {
   // make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -317,12 +319,12 @@ TEST_F(video_input_image_list, next_then_seek_then_next)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_image_list, metadata_map)
+TEST_F ( video_input_image_list, metadata_map )
 {
   // make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -347,10 +349,10 @@ TEST_F(video_input_image_list, metadata_map)
   std::ifstream list_file_stream( list_file );
   int frame_number = 1;
   std::string file_name;
-  while ( std::getline( list_file_stream, file_name ) )
+  while( std::getline( list_file_stream, file_name ) )
   {
-    auto md_file_name = md_map[frame_number][0]->find(
-        kwiver::vital::VITAL_META_IMAGE_URI).as_string();
+    auto md_file_name = md_map[ frame_number ][ 0 ]->find(
+      kwiver::vital::VITAL_META_IMAGE_URI ).as_string();
     EXPECT_TRUE( md_file_name.find( file_name ) != std::string::npos )
       << "File path in metadata should contain " << file_name;
     frame_number++;

@@ -32,7 +32,7 @@ class VITAL_ALGO_EXPORT transform_2d_io
 {
 public:
   transform_2d_io();
-  PLUGGABLE_INTERFACE(transform_2d_io);
+  PLUGGABLE_INTERFACE( transform_2d_io );
 
   /// Load transform from the file
   ///
@@ -65,9 +65,9 @@ public:
   ///
   /// \param filename the path to the file to save
   /// \param data the transform instance referring to the transform to write
-  void save( std::string const& filename,
-             kwiver::vital::transform_2d_sptr data ) const;
-
+  void save(
+    std::string const& filename,
+    kwiver::vital::transform_2d_sptr data ) const;
 
 private:
   /// Implementation specific load functionality.
@@ -87,8 +87,9 @@ private:
   ///
   /// \param filename the path to the file to save
   /// \param data the transform instance referring to the transform to write
-  virtual void save_( std::string const& filename,
-                      kwiver::vital::transform_2d_sptr data ) const = 0;
+  virtual void save_(
+    std::string const& filename,
+    kwiver::vital::transform_2d_sptr data ) const = 0;
 };
 
 /// Shared pointer type for generic transform_2d_io definition type.

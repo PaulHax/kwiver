@@ -39,7 +39,7 @@ public:
   static const algorithm_capabilities::capability_name_t CAN_USE_FRAME_IMAGE;
 
   metadata_filter();
-  PLUGGABLE_INTERFACE(metadata_filter);
+  PLUGGABLE_INTERFACE( metadata_filter );
 
   /// Filter metadata and return resulting metadata.
   ///

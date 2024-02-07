@@ -9,7 +9,9 @@
 #include <vital/noncopyable.h>
 
 namespace kwiver {
+
 namespace vital {
+
 namespace logger_ns {
 
 // ----------------------------------------------------------------------------
@@ -57,6 +59,10 @@ private:
   std::string m_name; // factory name
 }; // end class kwiver_logger_factory
 
-} } } // end namespace
+} // namespace logger_ns
+
+} // namespace vital
+
+}     // end namespace
 
 #endif

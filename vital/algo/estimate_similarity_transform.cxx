@@ -24,8 +24,9 @@ estimate_similarity_transform
 /// Estimate the similarity transform between two corresponding sets of cameras
 similarity_d
 estimate_similarity_transform
-::estimate_transform( std::vector< camera_perspective_sptr > const& from,
-                      std::vector< camera_perspective_sptr > const& to ) const
+::estimate_transform(
+  std::vector< camera_perspective_sptr > const& from,
+  std::vector< camera_perspective_sptr > const& to ) const
 {
   std::vector< vector_3d > from_pts, to_pts;
   for( camera_perspective_sptr c : from )
@@ -41,11 +42,13 @@ estimate_similarity_transform
 }
 
 // ----------------------------------------------------------------------------
-/// Estimate the similarity transform between two corresponding sets of landmarks.
+/// Estimate the similarity transform between two corresponding sets of
+/// landmarks.
 similarity_d
 estimate_similarity_transform
-::estimate_transform( std::vector< landmark_sptr > const& from,
-                      std::vector< landmark_sptr > const& to ) const
+::estimate_transform(
+  std::vector< landmark_sptr > const& from,
+  std::vector< landmark_sptr > const& to ) const
 {
   std::vector< vector_3d > from_pts, to_pts;
   for( landmark_sptr l : from )
@@ -76,14 +79,15 @@ namespace {
 /// \param to_pts        vector in which to store \c to points that have
 ///                      a corresponding \c from point.
 template < typename M,
-           vector_3d( M::value_type::second_type::element_type::* afunc )( ) const >
+  vector_3d( M::value_type::second_type::element_type::* afunc )( ) const >
 void
-map_to_pts( M const& from_map, M const& to_map,
-            std::vector< vector_3d >& from_pts,
-            std::vector< vector_3d >& to_pts )
+map_to_pts(
+  M const& from_map, M const& to_map,
+  std::vector< vector_3d >& from_pts,
+  std::vector< vector_3d >& to_pts )
 {
   typename M::const_iterator from_it = from_map.begin(),
-                             to_it   = to_map.begin();
+    to_it   = to_map.begin();
   // STL map structure's stored data is ordered (binary search tree impl
   // O(from.size + to.size)
   while( from_it != from_map.end() && to_it != to_map.end() )
@@ -113,13 +117,14 @@ map_to_pts( M const& from_map, M const& to_map,
 /// Estimate the similarity transform between two corresponding camera maps
 similarity_d
 estimate_similarity_transform
-::estimate_transform( camera_map_sptr const from,
-                      camera_map_sptr const to ) const
+::estimate_transform(
+  camera_map_sptr const from,
+  camera_map_sptr const to ) const
 {
   // determine point pairings based on shared frame IDs
   std::vector< vector_3d > from_pts, to_pts;
   camera_map::map_camera_t from_map = from->cameras(),
-                           to_map = to->cameras();
+    to_map = to->cameras();
 
   auto from_it = from_map.begin();
   auto to_it = to_map.begin();
@@ -157,13 +162,14 @@ estimate_similarity_transform
 /// Estimate the similarity transform between two corresponding landmark maps
 similarity_d
 estimate_similarity_transform
-::estimate_transform( landmark_map_sptr const from,
-                      landmark_map_sptr const to ) const
+::estimate_transform(
+  landmark_map_sptr const from,
+  landmark_map_sptr const to ) const
 {
   // determine point pairings based on shared frame IDs
   std::vector< vector_3d > from_pts, to_pts;
   landmark_map::map_landmark_t from_map = from->landmarks(),
-                               to_map = to->landmarks();
+    to_map = to->landmarks();
   map_to_pts< landmark_map::map_landmark_t, &landmark::loc >(
     from_map, to_map, from_pts, to_pts );
   return this->estimate_transform( from_pts, to_pts );

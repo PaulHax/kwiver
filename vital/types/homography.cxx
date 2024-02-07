@@ -14,23 +14,30 @@
 #include <Eigen/LU>
 
 namespace kwiver {
+
 namespace vital {
 
-namespace //anonymous
+namespace // anonymous
 {
 
 /// Private helper method for point transformation via homography matrix
 template < typename T >
 Eigen::Matrix< T, 2, 1 >
-h_map_point( Eigen::Matrix< T, 3, 3 > const& h, Eigen::Matrix< T, 2, 1 > const& p )
+h_map_point(
+  Eigen::Matrix< T, 3, 3 > const& h,
+  Eigen::Matrix< T, 2, 1 > const& p )
 {
-  Eigen::Matrix< T, 3, 1 > out_pt = h * Eigen::Matrix< T, 3, 1 > ( p[0], p[1], 1.0 );
+  Eigen::Matrix< T, 3, 1 > out_pt = h * Eigen::Matrix< T, 3, 1 >(
+    p[ 0 ],
+    p[ 1 ], 1.0 );
 
-  if ( fabs( out_pt[2] ) <= Eigen::NumTraits< T >::dummy_precision() )
+  if( fabs( out_pt[ 2 ] ) <= Eigen::NumTraits< T >::dummy_precision() )
   {
-    VITAL_THROW(point_maps_to_infinity);
+    VITAL_THROW( point_maps_to_infinity );
   }
-  return Eigen::Matrix< T, 2, 1 > ( out_pt[0] / out_pt[2], out_pt[1] / out_pt[2] );
+  return Eigen::Matrix< T, 2, 1 >(
+    out_pt[ 0 ] / out_pt[ 2 ],
+    out_pt[ 1 ] / out_pt[ 2 ] );
 }
 
 } // end anonymous namespace
@@ -38,52 +45,52 @@ h_map_point( Eigen::Matrix< T, 3, 3 > const& h, Eigen::Matrix< T, 2, 1 > const& 
 /// Construct an identity homography
 template < typename T >
 homography_< T >
+
 ::homography_()
   : h_( matrix_t::Identity() )
-{
-}
+{}
 
 /// Construct from a provided transformation matrix
 template < typename T >
 homography_< T >
+
 ::homography_( Eigen::Matrix< T, 3, 3 > const& mat )
   : h_( mat )
-{
-}
+{}
 
 /// Conversion Copy constructor -- float specialization
-template < >
-template < >
+template <>
+template <>
 homography_< float >
+
 ::homography_( homography_< float > const& other )
   : h_( other.get_matrix() )
-{
-}
+{}
 
 /// Conversion Copy constructor -- double specialization
-template < >
-template < >
+template <>
+template <>
 homography_< double >
+
 ::homography_( homography_< double > const& other )
   : h_( other.get_matrix() )
-{
-}
+{}
 
 /// Construct from a generic homography
 template < typename T >
 homography_< T >
+
 ::homography_( homography const& base )
-  : h_( base.matrix().template cast< T > () )
-{
-}
+  : h_( base.matrix().template cast< T >() )
+{}
 
 /// Construct from a generic homography -- double specialization
-template < >
+template <>
 homography_< double >
+
 ::homography_( homography const& base )
   : h_( base.matrix() )
-{
-}
+{}
 
 /// Create a clone of outself as a shared pointer
 template < typename T >
@@ -100,11 +107,11 @@ Eigen::Matrix< double, 3, 3 >
 homography_< T >
 ::matrix() const
 {
-  return this->h_.template cast< double > ();
+  return this->h_.template cast< double >();
 }
 
 /// Specialization for homographies with native double type
-template < >
+template <>
 Eigen::Matrix< double, 3, 3 >
 homography_< double >
 ::matrix() const
@@ -120,7 +127,7 @@ homography_< T >
 {
   matrix_t norm = this->get_matrix();
 
-  if ( fabs( norm( 2, 2 ) ) >= Eigen::NumTraits< T >::dummy_precision() )
+  if( fabs( norm( 2, 2 ) ) >= Eigen::NumTraits< T >::dummy_precision() )
   {
     norm /= norm( 2, 2 );
   }
@@ -137,9 +144,9 @@ homography_< T >
   bool isvalid;
 
   this->h_.computeInverseWithCheck( inv, isvalid );
-  if ( ! isvalid )
+  if( !isvalid )
   {
-    VITAL_THROW(non_invertible);
+    VITAL_THROW( non_invertible );
   }
   return std::make_shared< homography_< T > >( inv );
 }
@@ -152,13 +159,13 @@ homography_< T >
 {
   // Explicitly refer to templated version of method so as to not infinitely
   // recurse.
-  Eigen::Matrix< double, 3, 3 > m = h_.template cast< double > ();
+  Eigen::Matrix< double, 3, 3 > m = h_.template cast< double >();
 
   return h_map_point( m, p );
 }
 
 /// Map a 2D double-type point using this homography -- double specialization
-template < >
+template <>
 Eigen::Matrix< double, 2, 1 >
 homography_< double >
 ::map( Eigen::Matrix< double, 2, 1 > const& p ) const
@@ -168,7 +175,8 @@ homography_< double >
 
 /// Get the underlying matrix transformation
 template < typename T >
-typename homography_< T >::matrix_t &
+typename homography_< T >::matrix_t&
+
 homography_< T >
 ::get_matrix()
 {
@@ -177,7 +185,8 @@ homography_< T >
 
 /// Get a const new copy of the underlying matrix transformation.
 template < typename T >
-typename homography_< T >::matrix_t const &
+typename homography_< T >::matrix_t const&
+
 homography_< T >
 ::get_matrix() const
 {
@@ -190,11 +199,11 @@ Eigen::Matrix< T, 2, 1 >
 homography_< T >
 ::map_point( Eigen::Matrix< T, 2, 1 > const& p ) const
 {
-  return h_map_point< T > ( h_.template cast< T > (), p );
+  return h_map_point< T >( h_.template cast< T >(), p );
 }
 
 /// Map a 2D point using this homography -- float specialization
-template < >
+template <>
 Eigen::Matrix< float, 2, 1 >
 homography_< float >
 ::map_point( Eigen::Matrix< float, 2, 1 > const& p ) const
@@ -203,7 +212,7 @@ homography_< float >
 }
 
 /// Map a 2D point using this homography -- double specialization
-template < >
+template <>
 Eigen::Matrix< double, 2, 1 >
 homography_< double >
 ::map_point( Eigen::Matrix< double, 2, 1 > const& p ) const
@@ -217,7 +226,7 @@ homography_< T >
 homography_< T >
 ::operator*( homography_< T > const& rhs ) const
 {
-  return homography_< T > ( h_ * rhs.h_ );
+  return homography_< T >( h_ * rhs.h_ );
 }
 
 // ----------------------------------------------------------------------------
@@ -245,15 +254,18 @@ operator<<( std::ostream& s, homography const& h )
 // Template class instantiation
 // ----------------------------------------------------------------------------
 /// \cond DoxygenSuppress
-#define INSTANTIATE_HOMOGRAPHY( T )              \
-  template class homography_< T >;               \
-  template VITAL_EXPORT std::ostream&            \
-  operator<<( std::ostream&,                     \
-              homography_< T > const& )
+#define INSTANTIATE_HOMOGRAPHY( T ) \
+template class homography_< T >;    \
+template VITAL_EXPORT std::ostream& \
+operator<<(                         \
+  std::ostream&,                    \
+  homography_< T > const& )
 
 INSTANTIATE_HOMOGRAPHY( float );
 INSTANTIATE_HOMOGRAPHY( double );
 #undef INSTANTIATE_HOMOGRAPHY
 /// \endcond
 
-} } // end vital namespace
+} // namespace vital
+
+}   // end vital namespace

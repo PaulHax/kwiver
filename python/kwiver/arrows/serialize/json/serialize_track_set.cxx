@@ -6,23 +6,32 @@
 #include <python/kwiver/arrows/serialize/json/serialize_utils.txx>
 
 #include <arrows/serialize/json/track_set.h>
-#include <vital/types/track_set.h>
 #include <vital/any.h>
+#include <vital/types/track_set.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace python {
-void serialize_track_set(py::module &m)
+
+void
+serialize_track_set( py::module& m )
 {
-  m.def("serialize_track_set",
-        &kwiver::python::arrows::json::serialize<
-                          kwiver::vital::track_set_sptr,
-                          kwiver::arrows::serialize::json::track_set > );
-  m.def("deserialize_track_set",
-        &kwiver::python::arrows::json::deserialize<
-                          kwiver::vital::track_set_sptr,
-                          kwiver::arrows::serialize::json::track_set> );
+  m.def(
+    "serialize_track_set",
+    &kwiver::python::arrows::json::serialize<
+      kwiver::vital::track_set_sptr,
+      kwiver::arrows::serialize::json::track_set > );
+  m.def(
+    "deserialize_track_set",
+    &kwiver::python::arrows::json::deserialize<
+      kwiver::vital::track_set_sptr,
+      kwiver::arrows::serialize::json::track_set > );
 }
-}
-}
-}
+
+} // namespace python
+
+} // namespace arrows
+
+} // namespace kwiver

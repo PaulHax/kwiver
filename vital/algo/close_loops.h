@@ -34,7 +34,7 @@ class VITAL_ALGO_EXPORT close_loops
 public:
   /// Return the name of this algorithm.
   close_loops();
-  PLUGGABLE_INTERFACE(close_loops);
+  PLUGGABLE_INTERFACE( close_loops );
   /// Attempt to perform closure operation and stitch tracks together.
   ///
   /// \param frame_number the frame number of the current frame
@@ -44,12 +44,12 @@ public:
   ///                  regions to consider in the input image.
   /// \returns an updated set of feature tracks after the stitching operation
   virtual kwiver::vital::feature_track_set_sptr
-  stitch( kwiver::vital::frame_id_t frame_number,
-          kwiver::vital::feature_track_set_sptr input,
-          kwiver::vital::image_container_sptr image,
-          kwiver::vital::image_container_sptr mask =
-	  kwiver::vital::image_container_sptr() ) const = 0;
-
+  stitch(
+    kwiver::vital::frame_id_t frame_number,
+    kwiver::vital::feature_track_set_sptr input,
+    kwiver::vital::image_container_sptr image,
+    kwiver::vital::image_container_sptr mask =
+    kwiver::vital::image_container_sptr() ) const = 0;
 };
 
 typedef std::shared_ptr< close_loops > close_loops_sptr;

@@ -235,7 +235,7 @@ std::ostream&
 operator<<( std::ostream& os, klv_0102_country_coding_method value )
 {
   static std::map< klv_0102_country_coding_method,
-                   std::string > const strings = {
+    std::string > const strings = {
     { KLV_0102_COUNTRY_CODING_METHOD_UNKNOWN,
       "Unknown Country Coding Method" },
     { KLV_0102_COUNTRY_CODING_METHOD_ISO_3166_TWO_LETTER,

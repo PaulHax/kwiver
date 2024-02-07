@@ -10,17 +10,19 @@
 #ifndef VITAL_C_HELPERS_HOMOGRAPHY_H_
 #define VITAL_C_HELPERS_HOMOGRAPHY_H_
 
-#include <vital/types/homography.h>
-#include <vital/bindings/c/types/homography.h>
 #include <vital/bindings/c/helpers/c_utils.h>
+#include <vital/bindings/c/types/homography.h>
+#include <vital/types/homography.h>
 
 namespace kwiver {
+
 namespace vital_c {
 
 extern SharedPointerCache< vital::homography, vital_homography_t >
-  HOMOGRAPHY_SPTR_CACHE;
+HOMOGRAPHY_SPTR_CACHE;
 
 } // end namespace vital_c
+
 } // end namespace kwiver
 
-#endif //VITAL_C_HELPERS_HOMOGRAPHY_H_
+#endif // VITAL_C_HELPERS_HOMOGRAPHY_H_

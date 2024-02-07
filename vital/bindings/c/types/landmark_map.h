@@ -26,6 +26,7 @@ extern "C"
 typedef struct vital_landmark_map_s vital_landmark_map_t;
 
 /// Create a new simple landmark map from an array of landmarks
+
 /**
  * \param landmarks Array of landmark instances to store in this map. Parallel
  *                  to \c lm_ids.
@@ -37,40 +38,48 @@ typedef struct vital_landmark_map_s vital_landmark_map_t;
  */
 VITAL_C_EXPORT
 vital_landmark_map_t*
-vital_landmark_map_new( vital_landmark_t const **landmarks,
-                        int64_t const *lm_ids,
-                        size_t length,
-                        vital_error_handle_t *eh );
+vital_landmark_map_new(
+  vital_landmark_t const** landmarks,
+  int64_t const* lm_ids,
+  size_t length,
+  vital_error_handle_t* eh );
 
 /// Create a new, empty landmark map
+
 /**
  * \param eh Vital error handle instance
  * \returns New, empty landmark map instance
  */
 VITAL_C_EXPORT
 vital_landmark_map_t*
-vital_landmark_map_new_empty( vital_error_handle_t *eh );
+vital_landmark_map_new_empty( vital_error_handle_t* eh );
 
 /// Destroy a landmark map instance
+
 /**
  * \param lm Landmark map instance to destroy
  * \param eh Vital error handle instance
  */
 VITAL_C_EXPORT
 void
-vital_landmark_map_destroy( vital_landmark_map_t *lm, vital_error_handle_t *eh);
+vital_landmark_map_destroy(
+  vital_landmark_map_t* lm,
+  vital_error_handle_t* eh );
 
 /// Get the size of the landmark map
+
 /**
  * \param lm Landmark map instance
  * \param eh Vital error handle instance
  */
 VITAL_C_EXPORT
 size_t
-vital_landmark_map_size( vital_landmark_map_t const *lm,
-                         vital_error_handle_t *eh );
+vital_landmark_map_size(
+  vital_landmark_map_t const* lm,
+  vital_error_handle_t* eh );
 
 /// Get the landmarks contained in this map
+
 /**
  * Number of landmarks and IDs returned is equal to the return of
  * \c vital_landmark_map_size for the given landmark map instance.
@@ -88,13 +97,14 @@ vital_landmark_map_size( vital_landmark_map_t const *lm,
  */
 VITAL_C_EXPORT
 void
-vital_landmark_map_landmarks( vital_landmark_map_t const *lm,
-                              int64_t **lm_ids,
-                              vital_landmark_t ***landmarks,
-                              vital_error_handle_t *eh );
+vital_landmark_map_landmarks(
+  vital_landmark_map_t const* lm,
+  int64_t** lm_ids,
+  vital_landmark_t*** landmarks,
+  vital_error_handle_t* eh );
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif //VITAL_C_LANDMARK_MAP_H_
+#endif // VITAL_C_LANDMARK_MAP_H_

@@ -17,50 +17,59 @@
 #include <vital/algo/detect_motion.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
-template< class algorithm_def_dm_base=
-           kwiver::vital::algorithm_def< kwiver::vital::algo::detect_motion > >
-class algorithm_def_dm_trampoline :
-      public algorithm_trampoline< algorithm_def_dm_base>
-{
-  public:
-    using algorithm_trampoline< algorithm_def_dm_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<kwiver::vital::algo::detect_motion>,
-        type_name,
-      );
-    }
+template < class algorithm_def_dm_base =
+    kwiver::vital::algorithm_def< kwiver::vital::algo::detect_motion > >
+class algorithm_def_dm_trampoline
+  : public algorithm_trampoline< algorithm_def_dm_base >
+{
+public:
+  using algorithm_trampoline< algorithm_def_dm_base >::algorithm_trampoline;
+
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::detect_motion >,
+      type_name,
+    );
+  }
 };
 
-template< class detect_motion_base=kwiver::vital::algo::detect_motion >
-class detect_motion_trampoline :
-      public algorithm_def_dm_trampoline< detect_motion_base >
+template < class detect_motion_base = kwiver::vital::algo::detect_motion >
+class detect_motion_trampoline
+  : public algorithm_def_dm_trampoline< detect_motion_base >
 {
-  public:
-    using algorithm_def_dm_trampoline< detect_motion_base >::
-              algorithm_def_dm_trampoline;
+public:
+  using algorithm_def_dm_trampoline< detect_motion_base >::
+  algorithm_def_dm_trampoline;
 
-    kwiver::vital::image_container_sptr
-    process_image ( kwiver::vital::timestamp const& ts,
-                    kwiver::vital::image_container_sptr const image,
-                    bool reset_model ) override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        kwiver::vital::image_container_sptr,
-        kwiver::vital::algo::detect_motion,
-        process_image,
-        ts,
-        image,
-        reset_model
-      );
-    }
+  kwiver::vital::image_container_sptr
+  process_image(
+    kwiver::vital::timestamp const& ts,
+    kwiver::vital::image_container_sptr const image,
+    bool reset_model ) override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      kwiver::vital::image_container_sptr,
+      kwiver::vital::algo::detect_motion,
+      process_image,
+      ts,
+      image,
+      reset_model
+    );
+  }
 };
-}
-}
-}
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
+
 #endif

@@ -5,25 +5,27 @@
 #include "token_type_config.h"
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
-token_type_config::
-token_type_config( kwiver::vital::config_block_sptr blk )
-  : token_type ("CONFIG")
-  , m_config( blk )
-{ }
+token_type_config
+::token_type_config( kwiver::vital::config_block_sptr blk )
+  : token_type( "CONFIG" ),
+    m_config( blk )
+{}
 
 // ----------------------------------------------------------------------------
 token_type_config::
- ~token_type_config()
-{ }
+~token_type_config()
+{}
 
 // ----------------------------------------------------------------------------
 bool
-token_type_config::
-lookup_entry (kwiver::vital::config_block_key_t const& name,
-              std::string& result) const
+token_type_config
+::lookup_entry(
+  kwiver::vital::config_block_key_t const& name,
+  std::string& result ) const
 {
   bool retcode( true );
 
@@ -31,11 +33,11 @@ lookup_entry (kwiver::vital::config_block_key_t const& name,
   {
     result = m_config->get_value< std::string >( name );
   }
-  catch ( kwiver::vital::config_block_exception& )
+  catch( kwiver::vital::config_block_exception& )
   {
     retcode = false; // not found
   }
-  catch ( ... )
+  catch( ... )
   {
     retcode = false; // not found
   }
@@ -43,4 +45,6 @@ lookup_entry (kwiver::vital::config_block_key_t const& name,
   return retcode;
 }
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace

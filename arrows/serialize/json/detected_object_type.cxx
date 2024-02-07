@@ -6,32 +6,36 @@
 
 #include "load_save.h"
 
-#include <vital/types/detected_object_type.h>
-#include <vital/internal/cereal/cereal.hpp>
 #include <vital/internal/cereal/archives/json.hpp>
+#include <vital/internal/cereal/cereal.hpp>
+#include <vital/types/detected_object_type.h>
 
 #include <sstream>
+
 namespace kwiver {
+
 namespace arrows {
+
 namespace serialize {
+
 namespace json {
 
 // ----------------------------------------------------------------------------
-detected_object_type::
-detected_object_type()
-{ }
+detected_object_type
+::detected_object_type()
+{}
 
 detected_object_type::
 ~detected_object_type()
-{ }
+{}
 
 // ----------------------------------------------------------------------------
 std::shared_ptr< std::string >
-detected_object_type::
-serialize( const vital::any& element )
+detected_object_type
+::serialize( const vital::any& element )
 {
   kwiver::vital::detected_object_type dot =
-    kwiver::vital::any_cast< kwiver::vital::detected_object_type > ( element );
+    kwiver::vital::any_cast< kwiver::vital::detected_object_type >( element );
 
   std::stringstream msg;
   msg << "detected_object_type ";
@@ -40,22 +44,25 @@ serialize( const vital::any& element )
     save( ar, dot );
   }
 
-  return std::make_shared< std::string > ( msg.str() );
+  return std::make_shared< std::string >( msg.str() );
 }
 
 // ----------------------------------------------------------------------------
-vital::any detected_object_type::
-deserialize( const std::string& message )
+vital::any
+detected_object_type
+::deserialize( const std::string& message )
 {
-  std::stringstream msg(message);
+  std::stringstream msg( message );
   kwiver::vital::detected_object_type dot;
   std::string tag;
   msg >> tag;
 
-  if (tag != "detected_object_type" )
+  if( tag != "detected_object_type" )
   {
-    LOG_ERROR( logger(), "Invalid data type tag received. Expected \"detected_object_type\", received \""
-               << tag << "\". Message dropped." );
+    LOG_ERROR(
+      logger(),
+      "Invalid data type tag received. Expected \"detected_object_type\", received \""
+        << tag << "\". Message dropped." );
   }
   else
   {
@@ -63,7 +70,13 @@ deserialize( const std::string& message )
     load( ar, dot );
   }
 
-  return kwiver::vital::any(dot);
+  return kwiver::vital::any( dot );
 }
 
-} } } }       // end namespace kwiver
+} // namespace json
+
+} // namespace serialize
+
+} // namespace arrows
+
+}             // end namespace kwiver

@@ -25,12 +25,11 @@ class VITAL_ALGO_EXPORT uv_unwrap_mesh
 {
 public:
   uv_unwrap_mesh();
-  PLUGGABLE_INTERFACE(uv_unwrap_mesh);
+  PLUGGABLE_INTERFACE( uv_unwrap_mesh );
   /// Unwrap a mesh and generate texture coordinates
   ///
   /// \param mesh [in/out] mesh to unwrap
   virtual void unwrap( kwiver::vital::mesh_sptr mesh ) const = 0;
-
 };
 
 typedef std::shared_ptr< uv_unwrap_mesh > uv_unwrap_mesh_sptr;
@@ -40,4 +39,5 @@ typedef std::shared_ptr< uv_unwrap_mesh > uv_unwrap_mesh_sptr;
 } // namespace vital
 
 } // namespace kwiver
+
 #endif // VITAL_ALGO_UV_UNWRAP_MESH_H

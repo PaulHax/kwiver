@@ -7,19 +7,21 @@
 #include <vital/util/tokenize.h>
 #include <vital/vital_config.h>
 
+#include <ctime>
+#include <fstream>
 #include <memory>
 #include <vector>
-#include <fstream>
-#include <ctime>
 
-#if ( __GNUC__ == 4 && __GNUC_MINOR__ < 5 && !defined(__clang__) )
-  #include <cstdatomic>
+#if ( __GNUC__ == 4 && __GNUC_MINOR__ < 5 && !defined( __clang__ ) )
+#include <cstdatomic>
 #else
-  #include <atomic>
+#include <atomic>
 #endif
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 /// This format should only be used for tracks.
@@ -30,9 +32,11 @@ namespace core {
 /// \li Column(s) 4-5: Tracking-plane-loc(x,y) (Could be same as World-loc)
 /// \li Column(s) 6-7: Velocity(x,y)
 /// \li Column(s) 8-9: Image-loc(x,y)
-/// \li Column(s) 10-13: Img-bbox(TL_x,TL_y,BR_x,BR_y) (location of top-left & bottom-right vertices)
+/// \li Column(s) 10-13: Img-bbox(TL_x,TL_y,BR_x,BR_y) (location of top-left &
+/// bottom-right vertices)
 /// \li Column(s) 14: Area (0 - when not available)
-/// \li Column(s) 15-17: World-loc(x,y,z) (longitude, latitude, 0 - when not available)
+/// \li Column(s) 15-17: World-loc(x,y,z) (longitude, latitude, 0 - when not
+/// available)
 /// \li Column(s) 18: Timesetamp(-1 if not available)
 /// \li Column(s) 19: Track-confidence(-1_when_not_available)
 
@@ -40,11 +44,11 @@ namespace core {
 class detected_object_set_output_kw18::priv
 {
 public:
-  priv( detected_object_set_output_kw18* parent)
-    : m_parent( parent )
-    , m_first( true )
-    , m_frame_number( 1 )
-    , m_write_tot( false )
+  priv( detected_object_set_output_kw18* parent )
+    : m_parent( parent ),
+      m_first( true ),
+      m_frame_number( 1 ),
+      m_write_tot( false )
   {}
 
   ~priv() {}
@@ -61,8 +65,8 @@ public:
 };
 
 // ----------------------------------------------------------------------------
-detected_object_set_output_kw18::
-detected_object_set_output_kw18()
+detected_object_set_output_kw18
+::detected_object_set_output_kw18()
   : d( new detected_object_set_output_kw18::priv( this ) )
 {
   attach_logger( "arrows.core.detected_object_set_output_kw18" );
@@ -79,45 +83,56 @@ detected_object_set_output_kw18::
 
 // ----------------------------------------------------------------------------
 void
-detected_object_set_output_kw18::
-set_configuration( vital::config_block_sptr config_in )
+detected_object_set_output_kw18
+::set_configuration( vital::config_block_sptr config_in )
 {
   vital::config_block_sptr config = this->get_configuration();
   config->merge_config( config_in );
 
-  d->m_write_tot = config->get_value<bool>( "write_tot" , d->m_write_tot );
+  d->m_write_tot = config->get_value< bool >( "write_tot", d->m_write_tot );
 
-  d->m_tot_field1_ids = config->get_value<std::string>( "tot_field1_ids" , d->m_tot_field1_ids );
-  d->m_tot_field2_ids = config->get_value<std::string>( "tot_field2_ids" , d->m_tot_field2_ids );
+  d->m_tot_field1_ids = config->get_value< std::string >(
+    "tot_field1_ids",
+    d->m_tot_field1_ids );
+  d->m_tot_field2_ids = config->get_value< std::string >(
+    "tot_field2_ids",
+    d->m_tot_field2_ids );
 
-  vital::tokenize( d->m_tot_field1_ids, d->m_parsed_tot_ids1, ",;", kwiver::vital::TokenizeTrimEmpty );
-  vital::tokenize( d->m_tot_field2_ids, d->m_parsed_tot_ids2, ",;", kwiver::vital::TokenizeTrimEmpty );
+  vital::tokenize(
+    d->m_tot_field1_ids, d->m_parsed_tot_ids1, ",;",
+    kwiver::vital::TokenizeTrimEmpty );
+  vital::tokenize(
+    d->m_tot_field2_ids, d->m_parsed_tot_ids2, ",;",
+    kwiver::vital::TokenizeTrimEmpty );
 }
 
 // ----------------------------------------------------------------------------
 vital::config_block_sptr
-detected_object_set_output_kw18::
-get_configuration() const
+detected_object_set_output_kw18
+::get_configuration() const
 {
   // get base config from base class
   kwiver::vital::config_block_sptr config = algorithm::get_configuration();
 
   // Class parameters
-  config->set_value( "write_tot", d->m_write_tot,
-                     "Write a file in the vpView TOT format alongside "
-                     "the computed tracks." );
-  config->set_value( "tot_field1_ids", d->m_tot_field1_ids,
-                     "Comma seperated list of ids used for TOT field 1." );
-  config->set_value( "tot_field2_ids", d->m_tot_field2_ids,
-                     "Comma seperated list of ids used for TOT field 2." );
+  config->set_value(
+    "write_tot", d->m_write_tot,
+    "Write a file in the vpView TOT format alongside "
+    "the computed tracks." );
+  config->set_value(
+    "tot_field1_ids", d->m_tot_field1_ids,
+    "Comma seperated list of ids used for TOT field 1." );
+  config->set_value(
+    "tot_field2_ids", d->m_tot_field2_ids,
+    "Comma seperated list of ids used for TOT field 2." );
 
   return config;
 }
 
 // ----------------------------------------------------------------------------
 bool
-detected_object_set_output_kw18::
-check_configuration( VITAL_UNUSED vital::config_block_sptr config ) const
+detected_object_set_output_kw18
+::check_configuration( VITAL_UNUSED vital::config_block_sptr config ) const
 {
   if( d->m_write_tot && d->m_tot_field1_ids.empty() )
   {
@@ -134,20 +149,22 @@ check_configuration( VITAL_UNUSED vital::config_block_sptr config ) const
 
 // ----------------------------------------------------------------------------
 void
-detected_object_set_output_kw18::
-write_set( const kwiver::vital::detected_object_set_sptr set,
-           VITAL_UNUSED std::string const& image_name )
+detected_object_set_output_kw18
+::write_set(
+  const kwiver::vital::detected_object_set_sptr set,
+  VITAL_UNUSED std::string const& image_name )
 {
-
-  if (d->m_first)
+  if( d->m_first )
   {
     std::time_t rawtime;
-    struct tm * timeinfo;
+    struct tm* timeinfo;
 
-    time ( &rawtime );
-    timeinfo = localtime ( &rawtime );
-    char* cp =  asctime( timeinfo );
-    cp[ strlen( cp )-1 ] = 0; // remove trailing newline
+    time( &rawtime );
+    timeinfo = localtime( &rawtime );
+
+    char* cp = asctime( timeinfo );
+    cp[ strlen( cp ) - 1 ] = 0; // remove trailing newline
+
     const std::string atime( cp );
 
     // Write file header(s)
@@ -194,19 +211,19 @@ write_set( const kwiver::vital::detected_object_set_sptr set,
   } // end first
 
   // process all detections
-  auto ie =  set->cend();
-  for ( auto det = set->cbegin(); det != ie; ++det )
+  auto ie = set->cend();
+  for( auto det = set->cbegin(); det != ie; ++det )
   {
-    const kwiver::vital::bounding_box_d bbox( (*det)->bounding_box() );
+    const kwiver::vital::bounding_box_d bbox( ( *det )->bounding_box() );
     double ilx = ( bbox.min_x() + bbox.max_x() ) / 2.0;
     double ily = ( bbox.min_y() + bbox.max_y() ) / 2.0;
 
-    static std::atomic<unsigned> id_counter( 0 );
+    static std::atomic< unsigned > id_counter( 0 );
     const unsigned l_id = id_counter++;
 
     stream() << l_id                  // 1: track id
              << " 1 "               // 2: track length
-             << d->m_frame_number-1 // 3: frame number / set number
+             << d->m_frame_number - 1 // 3: frame number / set number
              << " 0 "               // 4: tracking plane x
              << " 0 "               // 5: tracking plane y
              << "0 "                // 6: velocity x
@@ -222,13 +239,13 @@ write_set( const kwiver::vital::detected_object_set_sptr set,
              << "0 "                // 16: world-loc y
              << "0 "                // 17: world-loc z
              << "-1 "                // 18: timestamp
-             << (*det)->confidence()   // 19: confidence
+             << ( *det )->confidence() // 19: confidence
              << std::endl;
 
     // optionally write tot to corresponding file
     if( d->m_write_tot )
     {
-      vital::detected_object_type_sptr clf = (*det)->type();
+      vital::detected_object_type_sptr clf = ( *det )->type();
 
       double f1 = 0.0, f2 = 0.0, f3 = 0.0;
 
@@ -250,8 +267,8 @@ write_set( const kwiver::vital::detected_object_set_sptr set,
 
       f3 = 1.0 - f2 - f1;
 
-      (*d->m_tot_writer) << l_id << " " << f1 << " " << f2 << " " << f3 << std::endl;
-
+      ( *d->m_tot_writer ) << l_id << " " << f1 << " " << f2 << " " << f3 <<
+        std::endl;
     } // end write_tot
   } // end foreach
 
@@ -259,4 +276,8 @@ write_set( const kwiver::vital::detected_object_set_sptr set,
   ++d->m_frame_number;
 }
 
-} } } // end namespace
+} // namespace core
+
+} // namespace arrows
+
+}     // end namespace

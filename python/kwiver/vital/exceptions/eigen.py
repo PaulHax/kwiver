@@ -37,13 +37,14 @@ VITAL EigenArray related exceptions
 from .base import VitalBaseException
 
 
-class VitalEigenArrayException (VitalBaseException):
-    """ Base VitalEigenArray exception """
+class VitalEigenArrayException(VitalBaseException):
+    """Base VitalEigenArray exception"""
 
 
-class VitalInvalidStaticEigenShape (VitalEigenArrayException):
+class VitalInvalidStaticEigenShape(VitalEigenArrayException):
     """
     For when constructing an EigenArray of an invalid shape without stating
     dynamic rows or columns.
     """
+
     pass

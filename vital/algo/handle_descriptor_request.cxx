@@ -4,7 +4,6 @@
 
 #include "handle_descriptor_request.h"
 
-
 namespace kwiver {
 
 namespace vital {
@@ -22,7 +21,7 @@ void
 handle_descriptor_request
 ::set_configuration( kwiver::vital::config_block_sptr config )
 {
-  (void) config;
+  ( void ) config;
 }
 
 /// Check that the algorithm's current configuration is valid
@@ -30,7 +29,7 @@ bool
 handle_descriptor_request
 ::check_configuration( kwiver::vital::config_block_sptr config ) const
 {
-  (void) config;
+  ( void ) config;
   return true;
 }
 

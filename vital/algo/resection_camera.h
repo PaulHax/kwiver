@@ -30,7 +30,7 @@ class VITAL_ALGO_EXPORT resection_camera
 {
 public:
   resection_camera();
-  PLUGGABLE_INTERFACE(resection_camera);
+  PLUGGABLE_INTERFACE( resection_camera );
   /// Estimate camera parameters from 3D points and their corresponding
   /// projections.
   ///
@@ -97,7 +97,6 @@ public:
     kwiver::vital::feature_track_set_sptr tracks,
     kwiver::vital::camera_intrinsics_sptr initial_calibration,
     std::unordered_set< landmark_id_t >* inliers = nullptr ) const;
-
 };
 
 /// Shared pointer type of base resection_camera algorithm definition class.

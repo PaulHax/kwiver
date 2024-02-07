@@ -49,8 +49,8 @@ struct ffmpeg_audio_stream
 // ----------------------------------------------------------------------------
 ffmpeg_audio_stream
 ::ffmpeg_audio_stream(
-    AVFormatContext* format_context,
-    ffmpeg_audio_stream_settings const& settings )
+  AVFormatContext* format_context,
+  ffmpeg_audio_stream_settings const& settings )
   : settings{ settings },
     stream{ nullptr }
 {
@@ -93,7 +93,8 @@ ffmpeg_audio_stream
 class ffmpeg_video_output::impl
 {
 public:
-  struct open_video_state {
+  struct open_video_state
+  {
     open_video_state(
       impl& parent, std::string const& video_name,
       ffmpeg_video_settings const& settings );
@@ -140,7 +141,7 @@ public:
     std::list< ffmpeg_audio_stream > audio_streams;
   };
 
-  impl(ffmpeg_video_output& parent);
+  impl( ffmpeg_video_output& parent );
   ~impl();
 
   bool is_open() const;
@@ -159,12 +160,18 @@ public:
   hardware_device_context_uptr hardware_device_context;
 
   size_t width() { return parent.get_width(); }
-  size_t height() { return parent.get_height();}
-  AVRational frame_rate() { return { parent.get_frame_rate_num(), parent.get_frame_rate_den() }; };
+  size_t height() { return parent.get_height(); }
+
+  AVRational
+  frame_rate()
+  {
+    return { parent.get_frame_rate_num(), parent.get_frame_rate_den() };
+  }
+
   std::string codec_name() { return parent.get_codec_name(); }
-  size_t bitrate() { return parent.get_bitrate() ; }
-  bool cuda_enabled() { return parent.get_cuda_enabled(); };
-  int cuda_device_index() { return parent.get_cuda_device_index(); };
+  size_t bitrate() { return parent.get_bitrate(); }
+  bool cuda_enabled() { return parent.get_cuda_enabled(); }
+  int cuda_device_index() { return parent.get_cuda_device_index(); }
 
   ffmpeg_video_output& parent;
 
@@ -173,9 +180,9 @@ public:
 
 // ----------------------------------------------------------------------------
 ffmpeg_video_output::impl
-::impl(ffmpeg_video_output& parent)
+::impl( ffmpeg_video_output& parent )
   : logger{},
-    parent(parent)
+    parent( parent )
 {
   ffmpeg_init();
 }
@@ -268,9 +275,11 @@ ffmpeg_video_output::impl
 #endif
 
 // ----------------------------------------------------------------------------
-void ffmpeg_video_output::initialize()
+void
+ffmpeg_video_output
+::initialize()
 {
-  KWIVER_INITIALIZE_UNIQUE_PTR(impl,d);
+  KWIVER_INITIALIZE_UNIQUE_PTR( impl, d );
   attach_logger( "ffmpeg_video_output" );
   d->logger = logger();
 
@@ -285,26 +294,23 @@ ffmpeg_video_output::~ffmpeg_video_output()
   close();
 }
 
-
 // ----------------------------------------------------------------------------
 void
 ffmpeg_video_output
-::set_configuration_internal([[maybe_unused]] kv::config_block_sptr config )
+::set_configuration_internal( [[maybe_unused]] kv::config_block_sptr config )
 {
-
   if( !this->c_cuda_enabled && d->hardware_device() &&
       d->hardware_device()->type == AV_HWDEVICE_TYPE_CUDA )
   {
     // Turn off the active CUDA instance
     d->hardware_device_context.reset();
   }
-
 }
 
 // ----------------------------------------------------------------------------
 bool
 ffmpeg_video_output
-::check_configuration([[maybe_unused]] kv::config_block_sptr config ) const
+::check_configuration( [[maybe_unused]] kv::config_block_sptr config ) const
 {
   return true;
 }
@@ -395,8 +401,9 @@ ffmpeg_video_output
 
   auto const result = new ffmpeg_video_settings{};
   result->frame_rate = d->video->video_stream->avg_frame_rate;
-  avcodec_parameters_from_context( result->parameters.get(),
-                                   d->video->codec_context.get() );
+  avcodec_parameters_from_context(
+    result->parameters.get(),
+    d->video->codec_context.get() );
   result->klv_streams = {};
   for( auto const& stream : d->video->audio_streams )
   {
@@ -444,20 +451,20 @@ ffmpeg_video_output::impl::open_video_state
   // (3) Choose H.265 and H.264 over other codecs
   // (4) Choose hardware codecs over software codecs
   auto const codec_cmp =
-    [&]( AVCodec const* lhs, AVCodec const* rhs ) -> bool {
+    [ & ]( AVCodec const* lhs, AVCodec const* rhs ) -> bool {
       return
         std::make_tuple(
-          lhs->id == settings.parameters->codec_id,
-          lhs->name == parent.codec_name(),
-          lhs->id == AV_CODEC_ID_H265,
-          lhs->id == AV_CODEC_ID_H264,
-          is_hardware_codec( lhs ) ) >
+        lhs->id == settings.parameters->codec_id,
+        lhs->name == parent.codec_name(),
+        lhs->id == AV_CODEC_ID_H265,
+        lhs->id == AV_CODEC_ID_H264,
+        is_hardware_codec( lhs ) ) >
         std::make_tuple(
-          rhs->id == settings.parameters->codec_id,
-          rhs->name == parent.codec_name(),
-          rhs->id == AV_CODEC_ID_H265,
-          rhs->id == AV_CODEC_ID_H264,
-          is_hardware_codec( rhs ) );
+        rhs->id == settings.parameters->codec_id,
+        rhs->name == parent.codec_name(),
+        rhs->id == AV_CODEC_ID_H265,
+        rhs->id == AV_CODEC_ID_H264,
+        is_hardware_codec( rhs ) );
     };
 
   std::multiset<
@@ -643,13 +650,14 @@ ffmpeg_video_output::impl::open_video_state
   {
     av_dict_set( &codec_options, entry.first.c_str(), entry.second.c_str(), 0 );
   }
+
   auto const err = avcodec_open2( codec_context.get(), codec, &codec_options );
   if( err < 0 )
   {
     LOG_WARN(
       parent->logger,
       "Could not open output codec: " << pretty_codec_name( codec )
-      << ": " << error_string( err ) );
+                                      << ": " << error_string( err ) );
     return false;
   }
 
@@ -659,8 +667,9 @@ ffmpeg_video_output::impl::open_video_state
 // ----------------------------------------------------------------------------
 void
 ffmpeg_video_output::impl::open_video_state
-::add_image( kv::image_container_sptr const& image,
-             [[maybe_unused]] kv::timestamp const& ts )
+::add_image(
+  kv::image_container_sptr const& image,
+  [[maybe_unused]] kv::timestamp const& ts )
 {
   // Create frame object to represent incoming image
   frame_uptr frame{
@@ -671,8 +680,10 @@ ffmpeg_video_output::impl::open_video_state
   frame->height = image->height();
   switch( image->depth() )
   {
-    case 1: frame->format = AV_PIX_FMT_GRAY8; break;
-    case 3: frame->format = AV_PIX_FMT_RGB24; break;
+    case 1: frame->format = AV_PIX_FMT_GRAY8;
+      break;
+    case 3: frame->format = AV_PIX_FMT_RGB24;
+      break;
     default:
       throw_error( "Image has unsupported depth: ", image->depth() );
   }
@@ -771,7 +782,7 @@ ffmpeg_video_output::impl::open_video_state
     "Could not send frame to encoder" );
 
   // Write encoded packets out
-  while( write_next_packet() );
+  while( write_next_packet() ) {}
 
   ++frame_count;
 }
@@ -827,8 +838,8 @@ ffmpeg_video_output::impl::open_video_state
       LOG_ERROR(
         parent->logger,
         "Dropping video packet with invalid dts/pts "
-        << packet->dts << "/" << packet->pts << " "
-        << "with prev dts " << prev_video_dts );
+          << packet->dts << "/" << packet->pts << " "
+          << "with prev dts " << prev_video_dts );
       continue;
     }
 

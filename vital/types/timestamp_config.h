@@ -5,12 +5,13 @@
 #ifndef _VITAL_TYPES_TIMESTAMP_CONFIG_H
 #define _VITAL_TYPES_TIMESTAMP_CONFIG_H
 
-#include <vital/types/timestamp.h>
 #include <vital/config/config_block.h>
+#include <vital/types/timestamp.h>
 
 #include <sstream>
 
 namespace kwiver {
+
 namespace vital {
 
 /// @brief Convert string to timestamp for config block.
@@ -24,7 +25,7 @@ namespace vital {
 /// @param value String representation of timestamp.
 ///
 /// @return Native timestamp.
-template<>
+template <>
 inline
 timestamp
 config_block_get_value_cast( config_block_value_t const& value )
@@ -54,7 +55,7 @@ config_block_get_value_cast( config_block_value_t const& value )
 /// @param value Timestamp to be converted to a string.
 ///
 /// @return String representation of timestamp.
-template<>
+template <>
 inline
 config_block_value_t
 config_block_set_value_cast( timestamp const& value )
@@ -66,6 +67,8 @@ config_block_set_value_cast( timestamp const& value )
   return str.str();
 }
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // _VITAL_TYPES_TIMESTAMP_CONFIG_H

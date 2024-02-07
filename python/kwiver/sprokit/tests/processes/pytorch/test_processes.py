@@ -26,7 +26,7 @@ def run_pipeline_in_dir(dir_path, pipeline):
     as current
 
     """
-    f = tempfile.NamedTemporaryFile('w', suffix='.pipe', delete=False)
+    f = tempfile.NamedTemporaryFile("w", suffix=".pipe", delete=False)
     try:
         with f:
             f.write(pipeline)
@@ -36,7 +36,8 @@ def run_pipeline_in_dir(dir_path, pipeline):
         os.remove(f.name)
 
 
-DESCRIPTOR_PIPELINE_TEMPLATE = textwrap.dedent("""
+DESCRIPTOR_PIPELINE_TEMPLATE = textwrap.dedent(
+    """
     config _scheduler
         type = pythread_per_process
 
@@ -59,14 +60,14 @@ DESCRIPTOR_PIPELINE_TEMPLATE = textwrap.dedent("""
     connect from images.image to descriptors.image
     connect from detections.detected_object_set
             to descriptors.detected_object_set
-""")
+"""
+)
 
 
 def build_descriptor_pipeline(process, network, timestamp=True):
     DPT = DESCRIPTOR_PIPELINE_TEMPLATE
     return DPT.format(process=process, network=network) + (
-        "connect from images.timestamp to descriptors.timestamp\n"
-        if timestamp else ''
+        "connect from images.timestamp to descriptors.timestamp\n" if timestamp else ""
     )
 
 
@@ -75,10 +76,12 @@ def create_test_image_list(dir_path):
     directory
 
     """
-    im = Image.effect_mandelbrot((800, 600), (-2.23845, -1.1538375, 0.83845, 1.1538375), 64)
-    im.save(os.path.join(dir_path, 'image.png'))
-    with open(os.path.join(dir_path, 'image_list.txt'), 'w') as f:
-        f.writelines(itertools.repeat('image.png\n', 10))
+    im = Image.effect_mandelbrot(
+        (800, 600), (-2.23845, -1.1538375, 0.83845, 1.1538375), 64
+    )
+    im.save(os.path.join(dir_path, "image.png"))
+    with open(os.path.join(dir_path, "image_list.txt"), "w") as f:
+        f.writelines(itertools.repeat("image.png\n", 10))
 
 
 def _test_descriptors(model_func, *args, **kwargs):
@@ -88,28 +91,34 @@ def _test_descriptors(model_func, *args, **kwargs):
 
     """
     with tempfile.TemporaryDirectory() as dir_:
-        def j(*args): return os.path.join(dir_, *args)
+
+        def j(*args):
+            return os.path.join(dir_, *args)
+
         # Create all files required by the pipeline file
-        torch.save(model_func().state_dict(), j('model.pt'))
+        torch.save(model_func().state_dict(), j("model.pt"))
         create_test_image_list(dir_)
         pipeline = build_descriptor_pipeline(*args, **kwargs)
         run_pipeline_in_dir(dir_, pipeline)
 
 
 def test_alexnet_descriptors():
-    _test_descriptors(torchvision.models.alexnet, 'alexnet_descriptors', 'alexnet')
+    _test_descriptors(torchvision.models.alexnet, "alexnet_descriptors", "alexnet")
 
 
 def test_resnet_descriptors():
-    _test_descriptors(torchvision.models.resnet50, 'resnet_descriptors', 'resnet')
+    _test_descriptors(torchvision.models.resnet50, "resnet_descriptors", "resnet")
 
 
 def test_resnet_augmentation():
     # It has the same input interface, so close enough
-    _test_descriptors(torchvision.models.resnet50, 'resnet_augmentation', 'resnet', timestamp=False)
+    _test_descriptors(
+        torchvision.models.resnet50, "resnet_augmentation", "resnet", timestamp=False
+    )
 
 
-TUT_PIPELINE_TEMPLATE = textwrap.dedent("""
+TUT_PIPELINE_TEMPLATE = textwrap.dedent(
+    """
     config _scheduler
         type = pythread_per_process
 
@@ -136,17 +145,21 @@ TUT_PIPELINE_TEMPLATE = textwrap.dedent("""
     connect from detections.detected_object_set
             to tracker.detected_object_set
     connect from images.timestamp to tracker.timestamp
-""")
+"""
+)
 
 
 def test_srnn_tracker():
     with tempfile.TemporaryDirectory() as dir_:
-        def j(*args): return os.path.join(dir_, *args)
+
+        def j(*args):
+            return os.path.join(dir_, *args)
+
         # Create all files required by the pipeline file
         sm = torch.nn.DataParallel(models.Siamese())
-        torch.save(dict(state_dict=sm.state_dict()), j('siamese_model.pt'))
+        torch.save(dict(state_dict=sm.state_dict()), j("siamese_model.pt"))
         lm = models.TargetLSTM()
-        torch.save(dict(state_dict=lm.state_dict()), j('lstm_model.pt'))
+        torch.save(dict(state_dict=lm.state_dict()), j("lstm_model.pt"))
         del sm, lm
         create_test_image_list(dir_)
         for iou_tracking in [True, False]:

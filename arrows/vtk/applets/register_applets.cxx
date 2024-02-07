@@ -6,8 +6,8 @@
 /// \brief register vtk applets into a plugin
 
 #include <arrows/vtk/applets/kwiver_algo_vtk_applets_export.h>
-#include <vital/plugin_management/plugin_loader.h>
 #include <vital/applets/applet_registrar.h>
+#include <vital/plugin_management/plugin_loader.h>
 
 #ifdef VTK_ENABLE_COLOR_MESH
 #include <arrows/vtk/applets/color_mesh.h>
@@ -16,7 +16,9 @@
 #include <arrows/vtk/applets/fuse_depth.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace vtk {
 
 // ----------------------------------------------------------------------------
@@ -27,7 +29,7 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 {
   kwiver::applet_registrar reg( vpm, "arrows.vtk.applets" );
 
-  if (reg.is_module_loaded())
+  if( reg.is_module_loaded() )
   {
     return;
   }
@@ -43,5 +45,7 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 }
 
 } // end namespace vtk
+
 } // end namespace arrows
+
 } // end namespace kwiver

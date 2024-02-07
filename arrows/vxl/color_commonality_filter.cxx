@@ -75,8 +75,9 @@ integer_log2( int_t value )
 // Intersect a region with some image boundaries
 template < typename PixType >
 void
-check_region_boundaries( vgl_box_2d< unsigned >& bbox,
-                         vil_image_view< PixType > const& img )
+check_region_boundaries(
+  vgl_box_2d< unsigned >& bbox,
+  vil_image_view< PixType > const& img )
 {
   bbox.set_max_x( std::min( bbox.max_x(), img.ni() ) );
   bbox.set_max_y( std::min( bbox.max_y(), img.nj() ) );
@@ -86,9 +87,10 @@ check_region_boundaries( vgl_box_2d< unsigned >& bbox,
 // Point an image view to a rectangular region in the image
 template < typename PixType >
 void
-point_view_to_region( vil_image_view< PixType > const& src,
-                      vgl_box_2d< unsigned > const& region,
-                      vil_image_view< PixType >& dst )
+point_view_to_region(
+  vil_image_view< PixType > const& src,
+  vgl_box_2d< unsigned > const& region,
+  vil_image_view< PixType >& dst )
 {
   // Early exit case, no crop required
   if( region.min_x() == 0 && region.min_y() == 0 &&
@@ -110,16 +112,18 @@ point_view_to_region( vil_image_view< PixType > const& src,
   }
 
   // Perform crop
-  dst = vil_crop( src, to_crop.min_x(), to_crop.width(),
-                  to_crop.min_y(), to_crop.height() );
+  dst = vil_crop(
+    src, to_crop.min_x(), to_crop.width(),
+    to_crop.min_y(), to_crop.height() );
 }
 
 // ----------------------------------------------------------------------------
 // Alternative call for the above
 template < typename PixType >
 vil_image_view< PixType >
-point_view_to_region( vil_image_view< PixType > const& src,
-                      vgl_box_2d< unsigned > const& region )
+point_view_to_region(
+  vil_image_view< PixType > const& src,
+  vgl_box_2d< unsigned > const& region )
 {
   vil_image_view< PixType > output;
   point_view_to_region( src, region, output );
@@ -171,24 +175,25 @@ class color_commonality_filter::priv
 {
 public:
   priv( color_commonality_filter* parent ) : p{ parent }
-  {
-  }
+  {}
 
   ~priv() = default;
 
   // Integer-typed filtering main loop
   template < class InputType, class OutputType >
   typename std::enable_if< std::is_integral< OutputType >::value >::type
-  filter_color_image( vil_image_view< InputType > const& input,
-                      vil_image_view< OutputType >& output,
-                      std::vector< unsigned >& histogram,
-                      color_commonality_filter_settings const& options );
+  filter_color_image(
+    vil_image_view< InputType > const& input,
+    vil_image_view< OutputType >& output,
+    std::vector< unsigned >& histogram,
+    color_commonality_filter_settings const& options );
 
   template < class InputType, class OutputType >
   void
-  perform_filtering( vil_image_view< InputType > const& input,
-                     vil_image_view< OutputType >& output,
-                     color_commonality_filter_settings const& options );
+  perform_filtering(
+    vil_image_view< InputType > const& input,
+    vil_image_view< OutputType >& output,
+    color_commonality_filter_settings const& options );
 
   template < typename pix_t >
   kwiver::vital::image_container_sptr
@@ -211,21 +216,24 @@ template < class InputType, class OutputType >
 typename std::enable_if< std::is_integral< OutputType >::value >::type
 
 color_commonality_filter::priv
-::filter_color_image( vil_image_view< InputType > const& input,
-                      vil_image_view< OutputType >& output,
-                      std::vector< unsigned >& histogram,
-                      color_commonality_filter_settings const& options )
+::filter_color_image(
+  vil_image_view< InputType > const& input,
+  vil_image_view< OutputType >& output,
+  std::vector< unsigned >& histogram,
+  color_commonality_filter_settings const& options )
 {
   if( input.ni() != output.ni() || input.nj() != output.nj() )
   {
-    LOG_ERROR( p->logger(),
-               "Input and output images must be the same dimensions." );
+    LOG_ERROR(
+      p->logger(),
+      "Input and output images must be the same dimensions." );
     return;
   }
   if( !is_power_of_two( options.resolution_per_channel ) )
   {
-    LOG_ERROR( p->logger(),
-               "The resolution per channel must be a power of two." );
+    LOG_ERROR(
+      p->logger(),
+      "The resolution per channel must be a power of two." );
     return;
   }
 
@@ -322,9 +330,10 @@ color_commonality_filter::priv
 template < class InputType, class OutputType >
 void
 color_commonality_filter::priv
-::perform_filtering( vil_image_view< InputType > const& input,
-                     vil_image_view< OutputType >& output,
-                     color_commonality_filter_settings const& options )
+::perform_filtering(
+  vil_image_view< InputType > const& input,
+  vil_image_view< OutputType >& output,
+  color_commonality_filter_settings const& options )
 {
   if( !std::numeric_limits< InputType >::is_integer )
   {
@@ -372,8 +381,9 @@ color_commonality_filter::priv
           point_view_to_region( output, region );
 
         // Process rectangular region independently of one another
-        perform_filtering( region_data_ptr, output_data_ptr,
-                           recursive_options );
+        perform_filtering(
+          region_data_ptr, output_data_ptr,
+          recursive_options );
       }
     }
   }
@@ -443,8 +453,7 @@ color_commonality_filter
 // ----------------------------------------------------------------------------
 color_commonality_filter
 ::~color_commonality_filter()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 vital::config_block_sptr
@@ -538,14 +547,16 @@ color_commonality_filter
 
   if( !is_power_of_two( color_resolution_per_chan ) )
   {
-    LOG_ERROR( logger(), "color_resolution_per_chan must be a power of 2, "
-                         " but instead is: " << color_resolution_per_chan );
+    LOG_ERROR(
+      logger(), "color_resolution_per_chan must be a power of 2, "
+                " but instead is: " << color_resolution_per_chan );
     return false;
   }
   if( !is_power_of_two( intensity_resolution ) )
   {
-    LOG_ERROR( logger(), " intensity_resolution must be a power of 2, but "
-                         "instead is: " << intensity_resolution );
+    LOG_ERROR(
+      logger(), " intensity_resolution must be a power of 2, but "
+                "instead is: " << intensity_resolution );
     return false;
   }
   return true;
@@ -564,8 +575,9 @@ color_commonality_filter
 
   if( image_data->depth() != 1 && image_data->depth() != 3 )
   {
-    LOG_ERROR( logger(), "Unsupported number of input planes! Expected 1 or "
-                         "3 but instead was " << image_data->depth() );
+    LOG_ERROR(
+      logger(), "Unsupported number of input planes! Expected 1 or "
+                "3 but instead was " << image_data->depth() );
     return kwiver::vital::image_container_sptr();
   }
 
@@ -574,25 +586,25 @@ color_commonality_filter
     vxl::image_container::vital_to_vxl( image_data->get_image() );
 
   // Perform different actions based on input type
-#define HANDLE_CASE( T )                                             \
-  case T:                                                            \
-  {                                                                  \
-    using pix_t = vil_pixel_format_type_of< T >::component_type;     \
-    vil_image_view< pix_t > input = view;                            \
-    return d->compute_commonality( input );                          \
-  }                                                                  \
+#define HANDLE_CASE( T )                                           \
+  case T:                                                          \
+    {                                                              \
+      using pix_t = vil_pixel_format_type_of< T >::component_type; \
+      vil_image_view< pix_t > input = view;                        \
+      return d->compute_commonality( input );                      \
+    }                                                              \
 
   switch( view->pixel_format() )
   {
-    HANDLE_CASE( VIL_PIXEL_FORMAT_BOOL );
-    HANDLE_CASE( VIL_PIXEL_FORMAT_BYTE );
-    HANDLE_CASE( VIL_PIXEL_FORMAT_SBYTE );
-    HANDLE_CASE( VIL_PIXEL_FORMAT_UINT_16 );
-    HANDLE_CASE( VIL_PIXEL_FORMAT_UINT_32 );
-    HANDLE_CASE( VIL_PIXEL_FORMAT_UINT_64 );
-    HANDLE_CASE( VIL_PIXEL_FORMAT_INT_16 );
-    HANDLE_CASE( VIL_PIXEL_FORMAT_INT_32 );
-    HANDLE_CASE( VIL_PIXEL_FORMAT_INT_64 );
+  HANDLE_CASE( VIL_PIXEL_FORMAT_BOOL );
+  HANDLE_CASE( VIL_PIXEL_FORMAT_BYTE );
+  HANDLE_CASE( VIL_PIXEL_FORMAT_SBYTE );
+  HANDLE_CASE( VIL_PIXEL_FORMAT_UINT_16 );
+  HANDLE_CASE( VIL_PIXEL_FORMAT_UINT_32 );
+  HANDLE_CASE( VIL_PIXEL_FORMAT_UINT_64 );
+  HANDLE_CASE( VIL_PIXEL_FORMAT_INT_16 );
+  HANDLE_CASE( VIL_PIXEL_FORMAT_INT_32 );
+  HANDLE_CASE( VIL_PIXEL_FORMAT_INT_64 );
 #undef HANDLE_CASE
 
     default: break;

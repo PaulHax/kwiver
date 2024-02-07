@@ -28,9 +28,8 @@ class VITAL_ALGO_EXPORT compute_association_matrix
   : public kwiver::vital::algorithm
 {
 public:
-
   compute_association_matrix();
-  PLUGGABLE_INTERFACE(compute_association_matrix);
+  PLUGGABLE_INTERFACE( compute_association_matrix );
 
   /// Compute an association matrix given detections and tracks
   ///
@@ -42,13 +41,13 @@ public:
   /// \param considered output detections used in matrix
   /// \return returns whether a matrix was successfully computed
   virtual bool
-  compute( kwiver::vital::timestamp ts,
-           kwiver::vital::image_container_sptr image,
-           kwiver::vital::object_track_set_sptr tracks,
-           kwiver::vital::detected_object_set_sptr detections,
-           kwiver::vital::matrix_d& matrix,
-           kwiver::vital::detected_object_set_sptr& considered ) const = 0;
-
+  compute(
+    kwiver::vital::timestamp ts,
+    kwiver::vital::image_container_sptr image,
+    kwiver::vital::object_track_set_sptr tracks,
+    kwiver::vital::detected_object_set_sptr detections,
+    kwiver::vital::matrix_d& matrix,
+    kwiver::vital::detected_object_set_sptr& considered ) const = 0;
 };
 
 /// Shared pointer for compute_association_matrix algorithm definition class

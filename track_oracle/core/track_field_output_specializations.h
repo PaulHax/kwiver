@@ -5,64 +5,75 @@
 #ifndef INCL_TRACK_FIELD_OUTPUT_SPECIALIZATIONS_H
 #define INCL_TRACK_FIELD_OUTPUT_SPECIALIZATIONS_H
 
-#include <vital/vital_config.h>
 #include <track_oracle/core/track_oracle_export.h>
+#include <vital/vital_config.h>
 
 #include <set>
-#include <utility>
-#include <track_oracle/core/track_oracle_api_types.h>
 #include <track_oracle/core/track_field.h>
+#include <track_oracle/core/track_oracle_api_types.h>
+#include <utility>
 
 namespace kwiver {
+
 namespace track_oracle {
 
 // specialization for e.g. frame lists
-template< >
+template <>
 TRACK_ORACLE_EXPORT std::ostream&
-operator<<( std::ostream& os,
-            const track_field< frame_handle_list_type >& f );
+operator<<(
+  std::ostream& os,
+  const track_field< frame_handle_list_type >& f );
 
-template< >
+template <>
 TRACK_ORACLE_EXPORT std::ostream&
-operator<<( std::ostream& os,
-            const track_field< track_handle_list_type >& f );
+operator<<(
+  std::ostream& os,
+  const track_field< track_handle_list_type >& f );
 
-template< >
+template <>
 TRACK_ORACLE_EXPORT std::ostream&
-operator<<( std::ostream& os,
-            const track_field< std::vector< unsigned int> >& f );
+operator<<(
+  std::ostream& os,
+  const track_field< std::vector< unsigned int > >& f );
 
-template< >
+template <>
 TRACK_ORACLE_EXPORT std::ostream&
-operator<<( std::ostream& os,
-            const track_field< std::pair<unsigned int, unsigned int> >& f );
+operator<<(
+  std::ostream& os,
+  const track_field< std::pair< unsigned int, unsigned int > >& f );
 
-template< >
+template <>
 TRACK_ORACLE_EXPORT std::ostream&
-operator<<( std::ostream& os,
-            const track_field< std::vector< double> >& f );
+operator<<(
+  std::ostream& os,
+  const track_field< std::vector< double > >& f );
 
-template< >
+template <>
 TRACK_ORACLE_EXPORT std::ostream&
-operator<<( std::ostream& os,
-            const track_field< std::vector< std::vector<double> > >& f);
+operator<<(
+  std::ostream& os,
+  const track_field< std::vector< std::vector< double > > >& f );
 
-template< >
+template <>
 TRACK_ORACLE_EXPORT std::ostream&
-operator<<( std::ostream& os,
-            const track_field< std::vector< std::string> >& f );
+operator<<(
+  std::ostream& os,
+  const track_field< std::vector< std::string > >& f );
 
-template< >
+template <>
 TRACK_ORACLE_EXPORT std::ostream&
-operator<<( std::ostream& os,
-            const track_field< std::set< std::string> >& f );
+operator<<(
+  std::ostream& os,
+  const track_field< std::set< std::string > >& f );
 
-template< >
+template <>
 TRACK_ORACLE_EXPORT std::ostream&
-operator<<( std::ostream& os,
-            const track_field< std::map< std::string, double > >& f );
+operator<<(
+  std::ostream& os,
+  const track_field< std::map< std::string, double > >& f );
 
 } // ...track_oracle
+
 } // ...kwiver
 
 #endif

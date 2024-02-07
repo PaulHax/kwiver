@@ -24,6 +24,7 @@ extern "C"
 // Feature Track State
 
 /// Create a new feature track state
+
 /**
  * \param frame Frame ID for the state
  * \param f Feature instance associated with this state. May be null.
@@ -33,12 +34,14 @@ extern "C"
  */
 VITAL_C_EXPORT
 vital_track_state_t*
-vital_feature_track_state_new( int64_t frame,
-                               vital_feature_t *f,
-                               vital_descriptor_t *d,
-                               vital_error_handle_t *eh );
+vital_feature_track_state_new(
+  int64_t frame,
+  vital_feature_t* f,
+  vital_descriptor_t* d,
+  vital_error_handle_t* eh );
 
 /// Get a track state's feature
+
 /**
  * \param td Track state instance
  * \param eh Vital error handle instance
@@ -46,10 +49,12 @@ vital_feature_track_state_new( int64_t frame,
  */
 VITAL_C_EXPORT
 vital_feature_t*
-vital_feature_track_state_feature( vital_track_state_t *td,
-                                   vital_error_handle_t *eh );
+vital_feature_track_state_feature(
+  vital_track_state_t* td,
+  vital_error_handle_t* eh );
 
 /// Get a track state's descriptor
+
 /**
  * \param td Track state instance
  * \param eh Vital error handle instance
@@ -57,8 +62,9 @@ vital_feature_track_state_feature( vital_track_state_t *td,
  */
 VITAL_C_EXPORT
 vital_descriptor_t*
-vital_feature_track_state_descriptor( vital_track_state_t *td,
-                                      vital_error_handle_t *eh );
+vital_feature_track_state_descriptor(
+  vital_track_state_t* td,
+  vital_error_handle_t* eh );
 
 #ifdef __cplusplus
 }

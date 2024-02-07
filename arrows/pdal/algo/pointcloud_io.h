@@ -15,14 +15,18 @@
 #include <vital/types/local_geo_cs.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace pdal {
+
 class KWIVER_ALGO_PDAL_EXPORT pointcloud_io
   : public vital::algo::pointcloud_io
 {
 public:
-  PLUGIN_INFO( "pdal",
-               "Use PDAL to write and read point clouds." );
+  PLUGIN_INFO(
+    "pdal",
+    "Use PDAL to write and read point clouds." );
 
   /// \cond DoxygenSuppress
   virtual void
@@ -41,12 +45,16 @@ private:
 
   kwiver::vital::pointcloud_d load_( vital::path_t const& filename ) const;
 
-  void save_( vital::path_t const& filename,
-              std::vector< vital::vector_3d > const& points,
-              std::vector< vital::rgb_color > const& colors ) const;
+  void save_(
+    vital::path_t const& filename,
+    std::vector< vital::vector_3d > const& points,
+    std::vector< vital::rgb_color > const& colors ) const;
 };
+
 } // end namespace pdal
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif // KWIVER_ARROWS_PDAL_POINTCLOUD_IO_H_

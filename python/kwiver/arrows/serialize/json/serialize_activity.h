@@ -8,11 +8,19 @@
 #include <pybind11/pybind11.h>
 
 namespace py = pybind11;
+
 namespace kwiver {
+
 namespace arrows {
+
 namespace python {
-void serialize_activity(py::module &m);
-}
-}
-}
+
+void serialize_activity( py::module& m );
+
+} // namespace python
+
+} // namespace arrows
+
+} // namespace kwiver
+
 #endif

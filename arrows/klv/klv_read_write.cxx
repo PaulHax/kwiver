@@ -7,8 +7,8 @@
 
 #include "klv_read_write.txx"
 
-#include <stdexcept>
 #include <algorithm>
+#include <stdexcept>
 
 namespace kv = kwiver::vital;
 
@@ -101,8 +101,9 @@ _check_range( vital::interval< double > const& interval )
 
   if( std::isinf( interval.span() ) )
   {
-    VITAL_THROW( kv::metadata_type_overflow,
-                 "span too large for double type" );
+    VITAL_THROW(
+      kv::metadata_type_overflow,
+      "span too large for double type" );
   }
 
   if( !( interval.lower() < interval.upper() ) )
@@ -144,8 +145,9 @@ _check_range_length( vital::interval< double > const& interval, size_t length )
 
   if( length > sizeof( uint64_t ) )
   {
-    VITAL_THROW( kv::metadata_type_overflow,
-                 "value too large for native type" );
+    VITAL_THROW(
+      kv::metadata_type_overflow,
+      "value too large for native type" );
   }
 }
 
@@ -153,13 +155,16 @@ _check_range_length( vital::interval< double > const& interval, size_t length )
 double
 klv_read_float( klv_read_iter_t& data, size_t length )
 {
-  static_assert( std::numeric_limits< float  >::is_iec559 &&
-                 std::numeric_limits< double >::is_iec559,
-                 "non-IEEE-754 platform is not supported" );
+  static_assert(
+    std::numeric_limits< float  >::is_iec559 &&
+    std::numeric_limits< double >::is_iec559,
+    "non-IEEE-754 platform is not supported" );
   if( length == sizeof( float ) )
   {
-    static_assert( sizeof( float ) == sizeof( uint32_t ),
-                   "non-32-bit float not supported" );
+    static_assert(
+      sizeof( float ) == sizeof( uint32_t ),
+      "non-32-bit float not supported" );
+
     auto const int_value = klv_read_int< uint32_t >( data, length );
     float float_value;
     std::memcpy( &float_value, &int_value, sizeof( float_value ) );
@@ -167,28 +172,34 @@ klv_read_float( klv_read_iter_t& data, size_t length )
   }
   else if( length == sizeof( double ) )
   {
-    static_assert( sizeof( double ) == sizeof( uint64_t ),
-                   "non-64-bit double not supported" );
+    static_assert(
+      sizeof( double ) == sizeof( uint64_t ),
+      "non-64-bit double not supported" );
+
     auto const int_value = klv_read_int< uint64_t >( data, length );
     double float_value;
     std::memcpy( &float_value, &int_value, sizeof( float_value ) );
     return float_value;
   }
-  VITAL_THROW( kwiver::vital::invalid_value,
-               "length must be sizeof(float) or sizeof(double)" );
+  VITAL_THROW(
+    kwiver::vital::invalid_value,
+    "length must be sizeof(float) or sizeof(double)" );
 }
 
 // ----------------------------------------------------------------------------
 void
 klv_write_float( double value, klv_write_iter_t& data, size_t length )
 {
-  static_assert( std::numeric_limits< float  >::is_iec559 &&
-                 std::numeric_limits< double >::is_iec559,
-                 "non-IEEE-754 platform is not supported" );
+  static_assert(
+    std::numeric_limits< float  >::is_iec559 &&
+    std::numeric_limits< double >::is_iec559,
+    "non-IEEE-754 platform is not supported" );
   if( length == sizeof( float ) )
   {
-    static_assert( sizeof( float ) == sizeof( uint32_t ),
-                   "non-32-bit float not supported" );
+    static_assert(
+      sizeof( float ) == sizeof( uint32_t ),
+      "non-32-bit float not supported" );
+
     auto const float_value = static_cast< float >( value );
     uint32_t int_value;
     std::memcpy( &int_value, &float_value, sizeof( int_value ) );
@@ -196,8 +207,10 @@ klv_write_float( double value, klv_write_iter_t& data, size_t length )
   }
   else if( length == sizeof( double ) )
   {
-    static_assert( sizeof( double ) == sizeof( uint64_t ),
-                   "non-64-bit double not supported" );
+    static_assert(
+      sizeof( double ) == sizeof( uint64_t ),
+      "non-64-bit double not supported" );
+
     auto const float_value = static_cast< double >( value );
     uint64_t int_value;
     std::memcpy( &int_value, &float_value, sizeof( int_value ) );
@@ -205,8 +218,9 @@ klv_write_float( double value, klv_write_iter_t& data, size_t length )
   }
   else
   {
-    VITAL_THROW( kwiver::vital::invalid_value,
-                 "length must be sizeof(float) or sizeof(double)" );
+    VITAL_THROW(
+      kwiver::vital::invalid_value,
+      "length must be sizeof(float) or sizeof(double)" );
   }
 }
 
@@ -277,8 +291,9 @@ klv_read_imap(
 
 // ----------------------------------------------------------------------------
 void
-klv_write_imap( double value, vital::interval< double > const& interval,
-                klv_write_iter_t& data, size_t length )
+klv_write_imap(
+  double value, vital::interval< double > const& interval,
+  klv_write_iter_t& data, size_t length )
 {
   // Section 8.1.2, 8.2.1
   _check_range_length( interval, length );
@@ -331,8 +346,9 @@ klv_write_string(
 {
   if( klv_string_length( value ) > max_length )
   {
-    VITAL_THROW( kwiver::vital::metadata_buffer_overflow,
-                 "string will overrun end of data buffer" );
+    VITAL_THROW(
+      kwiver::vital::metadata_buffer_overflow,
+      "string will overrun end of data buffer" );
   }
 
   // Empty string represented as "\0"
@@ -347,8 +363,9 @@ klv_write_string(
   // We avoid constructing a temp string object to compare against
   if( value.size() == 1 && value[ 0 ] == '\0' )
   {
-    VITAL_THROW( kwiver::vital::metadata_type_overflow,
-                 "the string \"\\0\" cannot be written to KLV stream" );
+    VITAL_THROW(
+      kwiver::vital::metadata_type_overflow,
+      "the string \"\\0\" cannot be written to KLV stream" );
   }
 
   data = std::copy( value.cbegin(), value.cend(), data );
@@ -385,8 +402,9 @@ klv_string_length( std::string const& value )
   // We avoid constructing a temp string object to compare against
   if( value.size() == 1 && value[ 0 ] == '\0' )
   {
-    VITAL_THROW( kwiver::vital::metadata_type_overflow,
-                 "the string \"\\0\" cannot be written to KLV stream" );
+    VITAL_THROW(
+      kwiver::vital::metadata_type_overflow,
+      "the string \"\\0\" cannot be written to KLV stream" );
   }
 
   return std::max< size_t >( value.size(), 1 );

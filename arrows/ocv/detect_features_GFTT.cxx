@@ -12,7 +12,9 @@
 using namespace kwiver::vital;
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace ocv {
 
 class detect_features_GFTT::priv
@@ -26,20 +28,22 @@ public:
       block_size( 3 ),
       use_harris_detector( false ),
       k( 0.04 )
-  {
-  }
+  {}
 
   /// Create a new GFTT detector instance with the current parameter values
-  cv::Ptr<cv::GFTTDetector> create() const
+  cv::Ptr< cv::GFTTDetector >
+  create() const
   {
 #if KWIVER_OPENCV_VERSION_MAJOR < 3
-    return cv::Ptr<cv::GFTTDetector>(
-      new cv::GFTTDetector( max_corners, quality_level, min_distance,
-                            block_size, use_harris_detector, k )
+    return cv::Ptr< cv::GFTTDetector >(
+      new cv::GFTTDetector(
+        max_corners, quality_level, min_distance,
+        block_size, use_harris_detector, k )
     );
 #else
-    return cv::GFTTDetector::create( max_corners, quality_level, min_distance,
-                                     block_size, use_harris_detector, k );
+    return cv::GFTTDetector::create(
+      max_corners, quality_level, min_distance,
+      block_size, use_harris_detector, k );
 #endif
   }
 
@@ -47,7 +51,8 @@ public:
   /// Update the parameters of the given detector with the currently set values
   ///
   /// Returns false if the algo could not be updating, requiring recreation.
-  bool update(cv::Ptr<cv::GFTTDetector> a) const
+  bool
+  update( cv::Ptr< cv::GFTTDetector > a ) const
   {
     a->setMaxFeatures( max_corners );
     a->setQualityLevel( quality_level );
@@ -60,7 +65,8 @@ public:
 #endif
 
   /// Update given config block with currently set parameter values
-  void update_config( config_block_sptr config ) const
+  void
+  update_config( config_block_sptr config ) const
   {
     config->set_value( "max_corners", max_corners );
     config->set_value( "quality_level", quality_level );
@@ -71,14 +77,15 @@ public:
   }
 
   /// Set parameter values based on given config block
-  void set_config( config_block_sptr const &config )
+  void
+  set_config( config_block_sptr const& config )
   {
-    max_corners = config->get_value<int>( "max_corners" );
-    quality_level = config->get_value<double>( "quality_level" );
-    min_distance = config->get_value<double>( "min_distance" );
-    block_size = config->get_value<int>( "block_size" );
-    use_harris_detector = config->get_value<bool>( "use_harris_detector" );
-    k = config->get_value<double>( "k" );
+    max_corners = config->get_value< int >( "max_corners" );
+    quality_level = config->get_value< double >( "quality_level" );
+    min_distance = config->get_value< double >( "min_distance" );
+    block_size = config->get_value< int >( "block_size" );
+    use_harris_detector = config->get_value< bool >( "use_harris_detector" );
+    k = config->get_value< double >( "k" );
   }
 
   /// Parameters
@@ -100,8 +107,7 @@ detect_features_GFTT
 
 detect_features_GFTT
 ::~detect_features_GFTT()
-{
-}
+{}
 
 vital::config_block_sptr
 detect_features_GFTT
@@ -114,7 +120,7 @@ detect_features_GFTT
 
 void
 detect_features_GFTT
-::set_configuration(vital::config_block_sptr config)
+::set_configuration( vital::config_block_sptr config )
 {
   config_block_sptr c = get_configuration();
   c->merge_config( config );
@@ -124,7 +130,7 @@ detect_features_GFTT
   // constructor, lets just remake the algo instance.
   detector = p_->create();
 #else
-  p_->update( detector.dynamicCast<cv::GFTTDetector>() );
+  p_->update( detector.dynamicCast< cv::GFTTDetector >() );
 #endif
 }
 
@@ -137,5 +143,7 @@ detect_features_GFTT
 }
 
 } // end namespace ocv
+
 } // end namespace arrows
+
 } // end namespace kwiver

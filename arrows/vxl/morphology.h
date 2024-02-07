@@ -23,9 +23,10 @@ class KWIVER_ALGO_VXL_EXPORT morphology
   : public vital::algo::image_filter
 {
 public:
-  PLUGIN_INFO( "vxl_morphology",
-               "Apply channel-wise morphological operations and "
-               "optionally merge across channels." )
+  PLUGIN_INFO(
+    "vxl_morphology",
+    "Apply channel-wise morphological operations and "
+    "optionally merge across channels." )
 
   morphology();
   ~morphology();

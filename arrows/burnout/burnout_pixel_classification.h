@@ -10,7 +10,9 @@
 #include <vital/algo/image_filter.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace burnout {
 
 /// @brief Burnout Image Filtering
@@ -24,8 +26,9 @@ public:
   burnout_pixel_classification();
   virtual ~burnout_pixel_classification();
 
-  PLUGIN_INFO( "burnout_classifier",
-               "Pixel classification using burnout" )
+  PLUGIN_INFO(
+    "burnout_classifier",
+    "Pixel classification using burnout" )
 
   vital::config_block_sptr get_configuration() const override;
 
@@ -36,11 +39,15 @@ public:
     kwiver::vital::image_container_sptr image_data ) override;
 
 private:
-
   class priv;
-  const std::unique_ptr<priv> d;
+
+  const std::unique_ptr< priv > d;
 };
 
-} } }
+} // namespace burnout
+
+} // namespace arrows
+
+} // namespace kwiver
 
 #endif // KWIVER_ARROWS_BURNOUT_PIXEL_CLASSIFICATION

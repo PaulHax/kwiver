@@ -31,7 +31,7 @@ public:
   void send_frame(
     std::vector< klv_packet > const& packets,
     std::optional< uint64_t > backup_timestamp =
-      std::nullopt );
+    std::nullopt );
 
   /// Return the timestamp of the most recent frame.
   uint64_t frame_time() const;
@@ -63,17 +63,19 @@ private:
 
   void demux_1108( klv_local_set const& value, uint64_t timestamp );
 
-  void demux_single_entry( klv_top_level_tag standard,
-                           klv_lds_key tag,
-                           klv_value const& index,
-                           interval_t const& time_interval,
-                           klv_value const& value );
+  void demux_single_entry(
+    klv_top_level_tag standard,
+    klv_lds_key tag,
+    klv_value const& index,
+    interval_t const& time_interval,
+    klv_value const& value );
 
-  template< class T >
-  void demux_list( klv_top_level_tag standard,
-                   klv_lds_key tag,
-                   interval_t const& time_interval,
-                   std::vector< T > const& value );
+  template < class T >
+  void demux_list(
+    klv_top_level_tag standard,
+    klv_lds_key tag,
+    interval_t const& time_interval,
+    std::vector< T > const& value );
 
   uint64_t m_frame_timestamp;
   uint64_t m_prev_frame_timestamp;

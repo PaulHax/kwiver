@@ -3,52 +3,60 @@
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
 /// \file
-/// \brief Implementation of \link kwiver::vital::rotation_ rotation_<T> \endlink
+/// \brief Implementation of \link kwiver::vital::rotation_ rotation_<T>
+/// \endlink
 ///        for \c T = { \c float, \c double }
 
 #include "rotation.h"
 
-#include <vital/math_constants.h>
 #include <vital/io/eigen_io.h>
+#include <vital/math_constants.h>
 
 #include <cmath>
 #include <limits>
 
 namespace kwiver {
+
 namespace vital {
 
 /// Constructor - from a Rodrigues vector
 template < typename T >
 rotation_< T >
+
 ::rotation_( const Eigen::Matrix< T, 3, 1 >& rvec )
 {
   T mag = rvec.norm();
 
-  if ( mag == T( 0 ) )
+  if( mag == T( 0 ) )
   {
     // identity rotation is a special case
     q_.setIdentity();
   }
   else
   {
-    q_ = Eigen::Quaternion< T > ( Eigen::AngleAxis< T > ( mag, rvec / mag ) );
+    q_ = Eigen::Quaternion< T >( Eigen::AngleAxis< T >( mag, rvec / mag ) );
   }
 }
 
 /// Constructor - from rotation angle (radians) and axis
 template < typename T >
 rotation_< T >
+
 ::rotation_( T angle, const Eigen::Matrix< T, 3, 1 >& axis )
-  : q_( Eigen::Quaternion< T > ( Eigen::AngleAxis< T > ( angle, axis.normalized() ) ) )
-{
-}
+  : q_( Eigen::Quaternion< T >(
+      Eigen::AngleAxis< T >(
+        angle,
+        axis.normalized() ) ) )
+{}
 
 /// Constructor - from yaw, pitch, and roll (radians)
 template < typename T >
 rotation_< T >
+
 ::rotation_( const T& yaw, const T& pitch, const T& roll )
 {
-  // See https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Euler_angles_to_quaternion_conversion
+  // See
+  // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Euler_angles_to_quaternion_conversion
   T const half_x = static_cast< T >( 0.5 ) * roll;
   T const half_y = static_cast< T >( 0.5 ) * pitch;
   T const half_z = static_cast< T >( 0.5 ) * yaw;
@@ -59,10 +67,10 @@ rotation_< T >
   T const sin_z = std::sin( half_z );
   T const cos_z = std::cos( half_z );
   *this = Eigen::Quaternion< T >{
-    cos_x * cos_y * cos_z + sin_x * sin_y * sin_z,
-    sin_x * cos_y * cos_z - cos_x * sin_y * sin_z,
-    cos_x * sin_y * cos_z + sin_x * cos_y * sin_z,
-    cos_x * cos_y * sin_z - sin_x * sin_y * cos_z };
+    cos_x* cos_y* cos_z + sin_x * sin_y * sin_z,
+    sin_x* cos_y* cos_z - cos_x * sin_y * sin_z,
+    cos_x* sin_y* cos_z + sin_x * cos_y * sin_z,
+    cos_x* cos_y* sin_z - sin_x * sin_y * cos_z };
 }
 
 /// Constructor - from a matrix
@@ -70,9 +78,10 @@ rotation_< T >
 /// requires orthonormal matrix with +1 determinant
 template < typename T >
 rotation_< T >
+
 ::rotation_( const Eigen::Matrix< T, 3, 3 >& rot )
 {
-  q_ = Eigen::Quaternion< T > ( rot );
+  q_ = Eigen::Quaternion< T >( rot );
 }
 
 /// Convert to a 3x3 matrix
@@ -93,9 +102,9 @@ rotation_< T >
   Eigen::Matrix< T, 3, 1 > dir( q_.x(), q_.y(), q_.z() );
   T mag = dir.norm();
 
-  if ( mag == T( 0 ) )
+  if( mag == T( 0 ) )
   {
-    return Eigen::Matrix< T, 3, 1 > ( 0, 0, 1 );
+    return Eigen::Matrix< T, 3, 1 >( 0, 0, 1 );
   }
   return dir / mag;
 }
@@ -106,20 +115,20 @@ T
 rotation_< T >
 ::angle() const
 {
-  static const T _pi = static_cast< T > ( pi );
-  static const T _two_pi = static_cast< T > ( 2.0 * pi );
+  static const T _pi = static_cast< T >( pi );
+  static const T _two_pi = static_cast< T >( 2.0 * pi );
 
-  const double i = Eigen::Matrix< T, 3, 1 > ( q_.x(), q_.y(), q_.z() ).norm();
+  const double i = Eigen::Matrix< T, 3, 1 >( q_.x(), q_.y(), q_.z() ).norm();
   const double r = q_.w();
-  T a = static_cast< T > ( 2.0 * std::atan2( i, r ) );
+  T a = static_cast< T >( 2.0 * std::atan2( i, r ) );
 
   // make sure computed angle lies within a sensible range,
   // i.e. -pi/2 < a < pi/2
-  if ( a >= _pi )
+  if( a >= _pi )
   {
     a -= _two_pi;
   }
-  if ( a <= -_pi )
+  if( a <= -_pi )
   {
     a += _two_pi;
   }
@@ -134,9 +143,9 @@ rotation_< T >
 {
   T angle = this->angle();
 
-  if ( angle == 0.0 )
+  if( angle == 0.0 )
   {
-    return Eigen::Matrix< T, 3, 1 > ( 0, 0, 0 );
+    return Eigen::Matrix< T, 3, 1 >( 0, 0, 0 );
   }
   return this->axis() * angle;
 }
@@ -147,14 +156,17 @@ void
 rotation_< T >
 ::get_yaw_pitch_roll( T& yaw, T& pitch, T& roll ) const
 {
-  // See https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Quaternion_to_Euler_angles_conversion
+  // See
+  // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Quaternion_to_Euler_angles_conversion
   constexpr auto _1 = static_cast< T >( 1.0 );
   constexpr auto _2 = static_cast< T >( 2.0 );
-  roll = std::atan2( _2 * ( q_.w() * q_.x() + q_.y() * q_.z() ),
-                     _1 - _2 * ( q_.x() * q_.x() + q_.y() * q_.y() ) );
+  roll = std::atan2(
+    _2 * ( q_.w() * q_.x() + q_.y() * q_.z() ),
+    _1 - _2 * ( q_.x() * q_.x() + q_.y() * q_.y() ) );
   pitch = std::asin( _2 * ( q_.w() * q_.y() - q_.x() * q_.z() ) );
-  yaw = std::atan2( _2 * ( q_.w() * q_.z() + q_.x() * q_.y() ),
-                    _1 - _2 * ( q_.y() * q_.y() + q_.z() * q_.z() ) );
+  yaw = std::atan2(
+    _2 * ( q_.w() * q_.z() + q_.x() * q_.y() ),
+    _1 - _2 * ( q_.y() * q_.y() + q_.z() * q_.z() ) );
 }
 
 /// Compose two rotations
@@ -195,7 +207,7 @@ operator>>( std::istream& s, rotation_< T >& r )
   Eigen::Matrix< T, 4, 1 > q;
 
   s >> q;
-  r = rotation_< T > ( q );
+  r = rotation_< T >( q );
   return s;
 }
 
@@ -207,19 +219,25 @@ interpolate_rotation( rotation_< T > const& A, rotation_< T > const& B, T f )
   // rotation from A -> B
   rotation_< T > C = A.inverse() * B;
   // Reduce the angle of rotation by the fraction provided
-  return A * rotation_< T > ( C.angle() * f, C.axis() );
+  return A * rotation_< T >( C.angle() * f, C.axis() );
 }
 
 /// Generate N evenly interpolated rotations inbetween \c A and \c B.
 template < typename T >
 void
-interpolated_rotations( rotation_< T > const& A, rotation_< T > const& B, size_t n, std::vector< rotation_< T > >& interp_rots )
+interpolated_rotations(
+  rotation_< T > const& A, rotation_< T > const& B,
+  size_t n, std::vector< rotation_< T > >& interp_rots )
 {
   interp_rots.reserve( interp_rots.capacity() + n );
+
   size_t denom = n + 1;
-  for ( size_t i = 1; i < denom; ++i )
+  for( size_t i = 1; i < denom; ++i )
   {
-    interp_rots.push_back( interpolate_rotation< T > ( A, B, static_cast< T > ( i ) / denom ) );
+    interp_rots.push_back(
+      interpolate_rotation< T >(
+        A, B,
+        static_cast< T >( i ) / denom ) );
   }
 }
 
@@ -245,8 +263,9 @@ enu_to_ned( rotation_< T > const& r )
 
 template < typename T >
 rotation_< T >
-uas_ypr_to_rotation( T platform_yaw, T platform_pitch, T platform_roll,
-                     T sensor_yaw,   T sensor_pitch,   T sensor_roll )
+uas_ypr_to_rotation(
+  T platform_yaw, T platform_pitch, T platform_roll,
+  T sensor_yaw,   T sensor_pitch,   T sensor_roll )
 {
   auto const platform_rotation =
     rotation_< T >{ platform_yaw, platform_pitch, platform_roll };
@@ -257,20 +276,23 @@ uas_ypr_to_rotation( T platform_yaw, T platform_pitch, T platform_roll,
 }
 
 /// \cond DoxygenSuppress
-#define INSTANTIATE_ROTATION( T )                                       \
-  template class VITAL_EXPORT rotation_< T >;                           \
-  template VITAL_EXPORT std::ostream&                                   \
-  operator<<( std::ostream& s, const rotation_< T >& r );               \
-  template VITAL_EXPORT std::istream&                                   \
-  operator>>( std::istream& s, rotation_< T >& r );                     \
-  template VITAL_EXPORT rotation_< T > interpolate_rotation( rotation_< T > const & A, rotation_< T > const & B, T f ); \
-  template VITAL_EXPORT void                                            \
-  interpolated_rotations( rotation_< T > const & A, rotation_< T > const & B, size_t n, std::vector< rotation_< T > > &interp_rots ); \
-  template VITAL_EXPORT rotation_< T > ned_to_enu( rotation_< T > const& r ); \
-  template VITAL_EXPORT rotation_< T > enu_to_ned( rotation_< T > const& r ); \
-  template VITAL_EXPORT rotation_< T > uas_ypr_to_rotation(             \
-    T platform_yaw, T platform_pitch, T platform_roll,                  \
-    T sensor_yaw,   T sensor_pitch,   T sensor_roll )
+#define INSTANTIATE_ROTATION( T )                                           \
+template class VITAL_EXPORT rotation_< T >;                                 \
+template VITAL_EXPORT std::ostream&                                         \
+operator<<( std::ostream& s, const rotation_< T >& r );                     \
+template VITAL_EXPORT std::istream&                                         \
+operator>>( std::istream& s, rotation_< T >& r );                           \
+template VITAL_EXPORT rotation_< T > interpolate_rotation(                  \
+  rotation_< T > const& A, rotation_< T > const& B, T f );                  \
+template VITAL_EXPORT void                                                  \
+interpolated_rotations(                                                     \
+  rotation_< T > const& A, rotation_< T > const& B,                         \
+  size_t n, std::vector< rotation_< T > >& interp_rots );                   \
+template VITAL_EXPORT rotation_< T > ned_to_enu( rotation_< T > const& r ); \
+template VITAL_EXPORT rotation_< T > enu_to_ned( rotation_< T > const& r ); \
+template VITAL_EXPORT rotation_< T > uas_ypr_to_rotation(                   \
+  T platform_yaw, T platform_pitch, T platform_roll,                        \
+  T sensor_yaw,   T sensor_pitch,   T sensor_roll )
 
 INSTANTIATE_ROTATION( double );
 INSTANTIATE_ROTATION( float );
@@ -278,4 +300,6 @@ INSTANTIATE_ROTATION( float );
 #undef INSTANTIATE_ROTATION
 /// \endcond
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital

@@ -10,8 +10,8 @@
 #ifndef VITAL_C_TRACK_SET_HXX_
 #define VITAL_C_TRACK_SET_HXX_
 
-#include <vital/bindings/c/vital_c_export.h>
 #include <vital/bindings/c/types/track_set.h>
+#include <vital/bindings/c/vital_c_export.h>
 #include <vital/types/track_set.h>
 
 // -----------------------------------------------------------------------------
@@ -20,6 +20,7 @@
 // -----------------------------------------------------------------------------
 
 /// Create a vital_trackset_t around an existing shared pointer.
+
 /**
  * If an error occurs, a NULL pointer is returned.
  *
@@ -28,10 +29,12 @@
  */
 VITAL_C_EXPORT
 vital_trackset_t*
-vital_track_set_new_from_sptr( kwiver::vital::track_set_sptr ts_sptr,
-                               vital_error_handle_t* eh );
+vital_track_set_new_from_sptr(
+  kwiver::vital::track_set_sptr ts_sptr,
+  vital_error_handle_t* eh );
 
 /// Get the vital::track_set shared pointer for a handle.
+
 /**
  * If an error occurs, an empty shared pointer is returned.
  *
@@ -41,7 +44,8 @@ vital_track_set_new_from_sptr( kwiver::vital::track_set_sptr ts_sptr,
  */
 VITAL_C_EXPORT
 kwiver::vital::track_set_sptr
-vital_track_set_to_sptr( vital_trackset_t* ts,
-                         vital_error_handle_t* eh );
+vital_track_set_to_sptr(
+  vital_trackset_t* ts,
+  vital_error_handle_t* eh );
 
 #endif // VITAL_C_TRACK_SET_HXX_

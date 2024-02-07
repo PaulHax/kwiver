@@ -59,6 +59,7 @@ imap_to_int(
   std::vector< uint8_t > bytes( length );
   auto it = &*bytes.begin();
   klv_write_imap( imap_value, interval, it, length );
+
   auto cit = &*bytes.cbegin();
   return klv_read_int< uint64_t >( cit, length );
 }
@@ -71,6 +72,7 @@ int_to_imap(
   std::vector< uint8_t > bytes( length );
   auto it = &*bytes.begin();
   klv_write_int( int_value, it, length );
+
   auto cit = &*bytes.cbegin();
   return klv_read_imap( interval, cit, length );
 }
@@ -105,8 +107,7 @@ klv_1601_pixel_sdcc_format
   auto const& format = pixel_sdcc_internal_format;
   auto const int_value = format.read_( data, length );
 
-  klv_1303_mdap< double > result =
-  {
+  klv_1303_mdap< double > result = {
     int_value.sizes,
     {},
     int_value.element_size,
@@ -116,8 +117,9 @@ klv_1601_pixel_sdcc_format
 
   if( result.sizes.size() != 2 || result.sizes.at( 0 ) != 6 )
   {
-    VITAL_THROW( kv::metadata_exception,
-                 "pixel sdcc mdarray does not have correct dimensions" );
+    VITAL_THROW(
+      kv::metadata_exception,
+      "pixel sdcc mdarray does not have correct dimensions" );
   }
 
   auto const count = result.sizes.at( 1 );
@@ -139,12 +141,12 @@ klv_1601_pixel_sdcc_format
 // ----------------------------------------------------------------------------
 void
 klv_1601_pixel_sdcc_format
-::write_typed( klv_1303_mdap< double > const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_1303_mdap< double > const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const& format = pixel_sdcc_internal_format;
-  klv_1303_mdap< uint64_t > int_value =
-  {
+  klv_1303_mdap< uint64_t > int_value = {
     value.sizes,
     {},
     value.element_size,
@@ -154,8 +156,9 @@ klv_1601_pixel_sdcc_format
 
   if( int_value.sizes.size() != 2 || int_value.sizes.at( 0 ) != 6 )
   {
-    VITAL_THROW( kv::metadata_exception,
-                 "pixel sdcc mdarray does not have correct dimensions" );
+    VITAL_THROW(
+      kv::metadata_exception,
+      "pixel sdcc mdarray does not have correct dimensions" );
   }
 
   auto const count = int_value.sizes.at( 1 );
@@ -203,8 +206,7 @@ klv_1601_geographic_sdcc_format
   auto const& format = geographic_sdcc_internal_format;
   auto const int_value = format.read_( data, length );
 
-  klv_1303_mdap< double > result =
-  {
+  klv_1303_mdap< double > result = {
     int_value.sizes,
     {},
     int_value.element_size,
@@ -215,8 +217,9 @@ klv_1601_geographic_sdcc_format
   if( result.sizes.size() != 2 ||
       ( result.sizes.at( 0 ) != 3 && result.sizes.at( 0 ) != 6 ) )
   {
-    VITAL_THROW( kv::metadata_exception,
-                 "geographic sdcc mdarray does not have correct dimensions" );
+    VITAL_THROW(
+      kv::metadata_exception,
+      "geographic sdcc mdarray does not have correct dimensions" );
   }
 
   auto const count = result.sizes.at( 1 );
@@ -238,12 +241,12 @@ klv_1601_geographic_sdcc_format
 // ----------------------------------------------------------------------------
 void
 klv_1601_geographic_sdcc_format
-::write_typed( klv_1303_mdap< double > const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_1303_mdap< double > const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const& format = geographic_sdcc_internal_format;
-  klv_1303_mdap< uint64_t > int_value =
-  {
+  klv_1303_mdap< uint64_t > int_value = {
     value.sizes,
     {},
     value.element_size,
@@ -254,8 +257,9 @@ klv_1601_geographic_sdcc_format
   if( int_value.sizes.size() != 2 ||
       ( int_value.sizes.at( 0 ) != 3 && int_value.sizes.at( 0 ) != 6 ) )
   {
-    VITAL_THROW( kv::metadata_exception,
-                 "geographic sdcc mdarray does not have correct dimensions" );
+    VITAL_THROW(
+      kv::metadata_exception,
+      "geographic sdcc mdarray does not have correct dimensions" );
   }
 
   auto const count = int_value.sizes.at( 1 );

@@ -31,27 +31,28 @@ from __future__ import print_function
 from kwiver.vital.algo import DetectMotion
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
 
-class SimpleDetectMotion(CommonConfigurationMixin,
-                                  DetectMotion):
+
+class SimpleDetectMotion(CommonConfigurationMixin, DetectMotion):
     """
     Implementation of DetectMotion to test it
 
     Examples:
     """
+
     def __init__(self):
         DetectMotion.__init__(self)
 
 
-
 def __vital_algorithm_register__():
     from kwiver.vital.algo import algorithm_factory
+
     # Register Algorithm
-    implementation_name  = "SimpleDetectMotion"
+    implementation_name = "SimpleDetectMotion"
     if algorithm_factory.has_algorithm_impl_name(
-                            SimpleDetectMotion.static_type_name(),
-                            implementation_name):
+        SimpleDetectMotion.static_type_name(), implementation_name
+    ):
         return
-    algorithm_factory.add_algorithm( implementation_name,
-                                "Test kwiver.vital.algo.DetectMotion",
-                                 SimpleDetectMotion )
-    algorithm_factory.mark_algorithm_as_loaded( implementation_name )
+    algorithm_factory.add_algorithm(
+        implementation_name, "Test kwiver.vital.algo.DetectMotion", SimpleDetectMotion
+    )
+    algorithm_factory.mark_algorithm_as_loaded(implementation_name)

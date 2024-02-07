@@ -1,4 +1,4 @@
-#ckwg +28
+# ckwg +28
 # Copyright 2012 by Kitware, Inc.
 # All rights reserved.
 #
@@ -45,12 +45,11 @@ class UnsupportedProcess(Exception):
 
     def __str__(self):
         fmt = "The process '%s' does not support running in a Python thread"
-        return (fmt % self.name)
+        return fmt % self.name
 
 
 class PyThreadPerProcessScheduler(scheduler.PythonScheduler):
-    """ Runs each process in a pipeline in its own thread.
-    """
+    """Runs each process in a pipeline in its own thread."""
 
     def __init__(self, pipe, conf):
         scheduler.PythonScheduler.__init__(self, pipe, conf)
@@ -129,13 +128,15 @@ class PyThreadPerProcessScheduler(scheduler.PythonScheduler):
 def __sprokit_register__():
     from kwiver.sprokit.pipeline import scheduler_factory
 
-    module_name = 'python:schedulers'
+    module_name = "python:schedulers"
 
     if scheduler_factory.is_scheduler_module_loaded(module_name):
         return
 
-    scheduler_factory.add_scheduler('pythread_per_process',
-                                    'Run each process in its own Python thread',
-                                    PyThreadPerProcessScheduler)
+    scheduler_factory.add_scheduler(
+        "pythread_per_process",
+        "Run each process in its own Python thread",
+        PyThreadPerProcessScheduler,
+    )
 
     scheduler_factory.mark_scheduler_module_as_loaded(module_name)

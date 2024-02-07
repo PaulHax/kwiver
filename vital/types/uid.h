@@ -11,10 +11,11 @@
 #include <vital/vital_config.h>
 #include <vital/vital_export.h>
 
-#include <string>
 #include <cstdint>
+#include <string>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -66,13 +67,14 @@ public:
   /// equality operator
   bool operator==( const uid& other ) const;
   bool operator!=( const uid& other ) const;
-  bool operator< ( const uid& other ) const;
+  bool operator<( const uid& other ) const;
 
 private:
-  std::string  m_uid;
-
+  std::string m_uid;
 }; // end class uid
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // KWIVER_VITAL_TYPES_UID_H

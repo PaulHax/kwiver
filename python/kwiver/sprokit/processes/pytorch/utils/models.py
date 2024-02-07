@@ -33,7 +33,7 @@ from enum import Enum
 
 
 def get_config():
-    class Config():
+    class Config:
         # lstm settings
         H = 128
         K = 100
@@ -42,7 +42,9 @@ def get_config():
         M_F_num = 2
         B_F_num = 2
         timeStep = 6
+
     return Config()
+
 
 g_config = get_config()
 
@@ -54,7 +56,7 @@ class RnnType(Enum):
     BBox = 4
     Target_RNN_AIM = 5
     Target_RNN_AI = 6
-    Target_RNN_AIM_V= 7
+    Target_RNN_AIM_V = 7
     Target_RNN_AIMB = 8
 
 
@@ -84,7 +86,7 @@ class AppearanceLSTM(nn.Module):
             input_size=g_config.A_F_num,
             hidden_size=g_config.H,
             num_layers=1,
-            batch_first=True
+            batch_first=True,
         )
         self.fc1 = nn.Linear(g_config.H * 2, g_config.K)
         self.fc2 = nn.Linear(g_config.K, 2)
@@ -119,7 +121,7 @@ class InteractionLSTM(nn.Module):
             input_size=g_config.I_F_num,
             hidden_size=g_config.H,
             num_layers=1,
-            batch_first=True
+            batch_first=True,
         )
         self.fc1 = nn.Linear(g_config.H * 2, g_config.K)
         self.fc2 = nn.Linear(g_config.K, 2)
@@ -154,7 +156,7 @@ class MotionLSTM(nn.Module):
             input_size=g_config.M_F_num,
             hidden_size=g_config.H,
             num_layers=1,
-            batch_first=True
+            batch_first=True,
         )
         self.fc1 = nn.Linear(g_config.H * 2, g_config.K)
         self.fc2 = nn.Linear(g_config.K, 2)
@@ -189,7 +191,7 @@ class BBoxLSTM(nn.Module):
             input_size=g_config.B_F_num,
             hidden_size=g_config.H,
             num_layers=1,
-            batch_first=True
+            batch_first=True,
         )
         self.fc1 = nn.Linear(g_config.H * 2, g_config.K)
         self.fc2 = nn.Linear(g_config.K, 2)
@@ -215,9 +217,15 @@ class BBoxLSTM(nn.Module):
 # Target LSTM
 # ==================================================================
 class TargetLSTM(nn.Module):
-    def __init__(self, app_model='', motion_model='', interaction_model='', bbox_model='',
-                 model_list=(RnnType.Appearance, RnnType.Motion, RnnType.Interaction),
-                 use_gpu_flag=True):
+    def __init__(
+        self,
+        app_model="",
+        motion_model="",
+        interaction_model="",
+        bbox_model="",
+        model_list=(RnnType.Appearance, RnnType.Motion, RnnType.Interaction),
+        use_gpu_flag=True,
+    ):
         super(TargetLSTM, self).__init__()
 
         self.model_list = model_list
@@ -229,7 +237,7 @@ class TargetLSTM(nn.Module):
                 self.appearance = AppearanceLSTM()
             if app_model:
                 snapshot = torch.load(app_model)
-                self.appearance.load_state_dict(snapshot['state_dict'])
+                self.appearance.load_state_dict(snapshot["state_dict"])
 
         if RnnType.Motion in self.model_list:
             if use_gpu_flag:
@@ -238,7 +246,7 @@ class TargetLSTM(nn.Module):
                 self.motion = MotionLSTM()
             if motion_model:
                 snapshot = torch.load(motion_model)
-                self.motion.load_state_dict(snapshot['state_dict'])
+                self.motion.load_state_dict(snapshot["state_dict"])
 
         if RnnType.Interaction in self.model_list:
             if use_gpu_flag:
@@ -247,7 +255,7 @@ class TargetLSTM(nn.Module):
                 self.interaction = InteractionLSTM()
             if interaction_model:
                 snapshot = torch.load(interaction_model)
-                self.interaction.load_state_dict(snapshot['state_dict'])
+                self.interaction.load_state_dict(snapshot["state_dict"])
 
         if RnnType.BBox in self.model_list:
             if use_gpu_flag:
@@ -256,21 +264,28 @@ class TargetLSTM(nn.Module):
                 self.bbar = BBoxLSTM()
             if bbox_model:
                 snapshot = torch.load(bbox_model)
-                self.bbar.load_state_dict(snapshot['state_dict'])
+                self.bbar.load_state_dict(snapshot["state_dict"])
 
         self.lstm = nn.LSTM(
             input_size=g_config.K * len(model_list),
             hidden_size=g_config.H,
             num_layers=1,
-            batch_first=True
+            batch_first=True,
         )
 
         self.fc1 = nn.Linear(g_config.H, 2)
 
-
-    def forward(self, appearance_input=None, appearance_target=None, motion_input=None,
-                motion_target=None, interaction_input=None, interaction_target=None,
-                bbar_input=None, bbar_target=None):
+    def forward(
+        self,
+        appearance_input=None,
+        appearance_target=None,
+        motion_input=None,
+        motion_target=None,
+        interaction_input=None,
+        interaction_target=None,
+        bbar_input=None,
+        bbar_target=None,
+    ):
         r"""
         :param appearance_input:    appearance features         (batch, time_step, input_size)
         :param appearance_target:   appearance target feature   (batch, 1, input_size)

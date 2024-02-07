@@ -32,7 +32,7 @@ class VITAL_ALGO_EXPORT estimate_pnp
 {
 public:
   estimate_pnp();
-  PLUGGABLE_INTERFACE(estimate_pnp);
+  PLUGGABLE_INTERFACE( estimate_pnp );
 
   /// Estimate the camera's pose from the 3D points and their corresponding
   /// projections
@@ -45,10 +45,11 @@ public:
   ///                      this pair is an inlier to the estimate
   virtual
   kwiver::vital::camera_perspective_sptr
-  estimate( const std::vector< vector_2d >& pts2d,
-            const std::vector< vector_3d >& pts3d,
-            const kwiver::vital::camera_intrinsics_sptr cal,
-            std::vector< bool >& inliers ) const = 0;
+  estimate(
+    const std::vector< vector_2d >& pts2d,
+    const std::vector< vector_3d >& pts3d,
+    const kwiver::vital::camera_intrinsics_sptr cal,
+    std::vector< bool >& inliers ) const = 0;
 };
 
 /// Shared pointer type of base estimate_homography algorithm definition class

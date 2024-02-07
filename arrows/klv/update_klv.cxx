@@ -7,12 +7,12 @@
 
 #include <arrows/klv/update_klv.h>
 
+#include <arrows/klv/klv_1108.h>
+#include <arrows/klv/klv_1108_metric_set.h>
+#include <arrows/klv/klv_convert_vital.h>
 #include <arrows/klv/klv_demuxer.h>
 #include <arrows/klv/klv_metadata.h>
 #include <arrows/klv/klv_timeline.h>
-#include <arrows/klv/klv_convert_vital.h>
-#include <arrows/klv/klv_1108.h>
-#include <arrows/klv/klv_1108_metric_set.h>
 #include <arrows/klv/misp_time.h>
 
 #include <vital/range/iterator_range.h>
@@ -46,7 +46,7 @@ public:
     st1108_buffer_t st1108_buffer;
   };
 
-  impl(update_klv& parent);
+  impl( update_klv& parent );
 
   stream& get_stream( int index );
 
@@ -63,8 +63,8 @@ public:
   md_buffer_t in_buffer;
   md_buffer_t out_buffer;
 
-  size_t st1108_frequency() { return parent.c_st1108_frequency; } ;
-  std::string st1108_inter() { return parent.c_st1108_inter; } ;
+  size_t st1108_frequency() { return parent.c_st1108_frequency; }
+  std::string st1108_inter() { return parent.c_st1108_inter; }
 
   update_klv& parent;
 };
@@ -80,9 +80,9 @@ update_klv::impl::stream
 
 // ----------------------------------------------------------------------------
 update_klv::impl
-::impl(update_klv& parent)
- : streams{},
-   parent(parent)
+::impl( update_klv& parent )
+  : streams{},
+    parent( parent )
 {}
 
 // ----------------------------------------------------------------------------
@@ -125,9 +125,8 @@ update_klv::impl
 
   // Add metric-specific data
   for( auto const vital_tag : {
-    vital::VITAL_META_AVERAGE_GSD,
-    vital::VITAL_META_VNIIRS
-  } )
+          vital::VITAL_META_AVERAGE_GSD,
+          vital::VITAL_META_VNIIRS } )
   {
     auto const desired_entry = desired_data.find( vital_tag );
     auto const present_entry = present_data.find( vital_tag );
@@ -171,8 +170,7 @@ update_klv::impl
       { KLV_1108_METRIC_SET_PARAMETERS, parameters },
       { KLV_1108_METRIC_SET_TIME, metric_time },
       { KLV_1108_METRIC_SET_VALUE,
-        klv_lengthy< double >{ present_entry.as_double(), 8 } }
-    };
+        klv_lengthy< double >{ present_entry.as_double(), 8 } } };
 
     // Put this metric in the set
     set.add( KLV_1108_METRIC_LOCAL_SET, std::move( metric_set ) );
@@ -395,17 +393,18 @@ update_klv::impl
     out_buffer.splice( out_buffer.end(), in_buffer, in_buffer.begin() );
   }
 }
+
 // ----------------------------------------------------------------------------
 update_klv::~update_klv()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
-void update_klv::initialize()
+void
+update_klv
+::initialize()
 {
-  KWIVER_INITIALIZE_UNIQUE_PTR(impl,d);
+  KWIVER_INITIALIZE_UNIQUE_PTR( impl, d );
 }
-
 
 // ----------------------------------------------------------------------------
 bool
@@ -413,8 +412,7 @@ update_klv
 ::check_configuration( [[maybe_unused]] vital::config_block_sptr config ) const
 {
   static std::set< std::string > st1108_inter_options{
-    "sample", "sample_smear", "mean"
-  };
+    "sample", "sample_smear", "mean" };
   return st1108_inter_options.count(
     config->get_value< std::string >( "st1108_inter", "sample" ) );
 }
@@ -430,11 +428,12 @@ update_klv
   for( auto const& input_md : input_metadata )
   {
     // Copy input metadata
-    if ( !input_md )
+    if( !input_md )
     {
       metadata.emplace_back( nullptr );
       continue;
     }
+
     auto& md = *metadata.emplace_back( input_md->clone() );
 
     auto const klv_md = dynamic_cast< klv_metadata* >( &md );

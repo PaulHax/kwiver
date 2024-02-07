@@ -8,8 +8,8 @@
 #include <tests/test_eigen.h>
 #include <tests/test_gtest.h>
 
-#include <vital/io/camera_io.h>
 #include <vital/exceptions.h>
+#include <vital/io/camera_io.h>
 
 #include <iostream>
 #include <sstream>
@@ -20,11 +20,12 @@ static std::string valid_krtd = "vital_data/test_camera_io-valid_format.krtd";
 static std::string invalid_krtd = "vital_data/test_camera_io-invalid_file.krtd";
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
 
-  GET_ARG(1, g_data_dir);
+  GET_ARG( 1, g_data_dir );
 
   return RUN_ALL_TESTS();
 }
@@ -32,41 +33,45 @@ int main(int argc, char** argv)
 // ----------------------------------------------------------------------------
 class camera_io : public ::testing::Test
 {
-  TEST_ARG(data_dir);
+  TEST_ARG( data_dir );
 };
 
 // ----------------------------------------------------------------------------
-TEST_F(camera_io, KRTD_format_read)
+TEST_F ( camera_io, KRTD_format_read )
 {
   kwiver::vital::path_t test_read_file = data_dir + "/" + valid_krtd;
   kwiver::vital::camera_perspective_sptr read_camera =
     kwiver::vital::read_krtd_file( test_read_file );
 
-  Eigen::Matrix<double,3,3> expected_intrinsics;
+  Eigen::Matrix< double, 3, 3 > expected_intrinsics;
   expected_intrinsics << 1, 2, 3,
-                         0, 5, 6,
-                         0, 0, 1;
-  Eigen::Matrix<double,3,3> K( read_camera->intrinsics()->as_matrix() );
+    0, 5, 6,
+    0, 0, 1;
+
+  Eigen::Matrix< double, 3, 3 > K( read_camera->intrinsics()->as_matrix() );
   EXPECT_MATRIX_EQ( expected_intrinsics, K );
 
-  Eigen::Matrix<double,3,3> expected_rotation;
+  Eigen::Matrix< double, 3, 3 > expected_rotation;
   expected_rotation << 1, 0, 0,
-                       0, 1, 0,
-                       0, 0, 1;
-  Eigen::Matrix<double,3,3> R( read_camera->rotation().matrix() );
+    0, 1, 0,
+    0, 0, 1;
+
+  Eigen::Matrix< double, 3, 3 > R( read_camera->rotation().matrix() );
   EXPECT_MATRIX_EQ( expected_rotation, R );
 
-  Eigen::Matrix<double,3,1> expected_translation;
+  Eigen::Matrix< double, 3, 1 > expected_translation;
   expected_translation << 1, 2, 3;
-  Eigen::Matrix<double,3,1> T( read_camera->translation() );
+
+  Eigen::Matrix< double, 3, 1 > T( read_camera->translation() );
   EXPECT_MATRIX_EQ( expected_translation, T );
-  std::vector<double> expected_distortion = {1, 2, 3, 4, 5};
-  std::vector<double> D = read_camera->intrinsics()->dist_coeffs() ;
+
+  std::vector< double > expected_distortion = { 1, 2, 3, 4, 5 };
+  std::vector< double > D = read_camera->intrinsics()->dist_coeffs();
   EXPECT_EQ( expected_distortion, D );
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(camera_io, invalid_file_path)
+TEST_F ( camera_io, invalid_file_path )
 {
   EXPECT_THROW(
     kwiver::vital::read_krtd_file( data_dir + "/not_a_file.blob" ),
@@ -75,7 +80,7 @@ TEST_F(camera_io, invalid_file_path)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(camera_io, invalid_file_content)
+TEST_F ( camera_io, invalid_file_content )
 {
   kwiver::vital::path_t invalid_content_file = data_dir + "/" + invalid_krtd;
   EXPECT_THROW(
@@ -86,11 +91,12 @@ TEST_F(camera_io, invalid_file_content)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(camera_io, output_format_test)
+TEST_F ( camera_io, output_format_test )
 {
   kwiver::vital::simple_camera_perspective cam;
   std::cerr << "Default constructed camera\n" << cam << std::endl;
-  std::cerr << "cam.get_center()     : " << kwiver::vital::vector_3d(cam.get_center()).transpose() << std::endl;
+  std::cerr << "cam.get_center()     : " <<
+    kwiver::vital::vector_3d( cam.get_center() ).transpose() << std::endl;
   std::cerr << "cam.get_rotation()   : " << cam.get_rotation() << std::endl;
   std::cerr << "cam.get_translation(): " << cam.translation() << std::endl;
 

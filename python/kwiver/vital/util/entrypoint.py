@@ -35,8 +35,8 @@ import kwiver
 import os
 
 
-
 logger = vital_logging.getLogger(__name__)
+
 
 def get_python_plugins_from_entrypoint():
     """
@@ -74,12 +74,16 @@ def get_cpp_paths_from_entrypoint():
             if os.path.exists(search_path):
                 additional_search_paths.append(search_path)
             else:
-                logger.warn('Invalid search path {0} specified by {1}'.format(search_path,
-                            entry_point))
+                logger.warn(
+                    "Invalid search path {0} specified by {1}".format(
+                        search_path, entry_point
+                    )
+                )
     except DistributionNotFound:
         pass
 
     return additional_search_paths
+
 
 def add_entrypoint_paths_to_env():
     additional_search_paths = get_cpp_paths_from_entrypoint()
@@ -87,24 +91,44 @@ def add_entrypoint_paths_to_env():
     new_ld_path = current_ld_path
     for additional_search_path in additional_search_paths:
         new_ld_path += ":{0}".format(additional_search_path)
-    os.environ['LD_LIBRARY_PATH'] = new_ld_path
+    os.environ["LD_LIBRARY_PATH"] = new_ld_path
+
 
 def get_library_path():
-    return os.path.join(os.path.dirname(os.path.abspath(kwiver.__file__)),
-           'lib')
+    return os.path.join(os.path.dirname(os.path.abspath(kwiver.__file__)), "lib")
+
 
 def get_vital_logger_factory():
-    return os.path.join(os.path.dirname(os.path.abspath(kwiver.__file__)),
-           'lib', 'kwiver', 'modules', 'vital_log4cplus_logger')
+    return os.path.join(
+        os.path.dirname(os.path.abspath(kwiver.__file__)),
+        "lib",
+        "kwiver",
+        "modules",
+        "vital_log4cplus_logger",
+    )
+
 
 def sprokit_process_path():
-    return os.path.join(os.path.dirname(os.path.abspath(kwiver.__file__)),
-           'lib', 'kwiver', 'processes')
+    return os.path.join(
+        os.path.dirname(os.path.abspath(kwiver.__file__)), "lib", "kwiver", "processes"
+    )
+
 
 def applets_path():
-    return os.path.join(os.path.dirname(os.path.abspath(kwiver.__file__)),
-           'lib', 'kwiver', 'modules', 'applets')
+    return os.path.join(
+        os.path.dirname(os.path.abspath(kwiver.__file__)),
+        "lib",
+        "kwiver",
+        "modules",
+        "applets",
+    )
+
 
 def plugin_explorer_path():
-    return os.path.join(os.path.dirname(os.path.abspath(kwiver.__file__)),
-           'lib', 'kwiver', 'modules', 'plugin_explorer')
+    return os.path.join(
+        os.path.dirname(os.path.abspath(kwiver.__file__)),
+        "lib",
+        "kwiver",
+        "modules",
+        "plugin_explorer",
+    )

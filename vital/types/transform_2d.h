@@ -8,8 +8,8 @@
 #ifndef VITAL_TRANSFORM_2D_H_
 #define VITAL_TRANSFORM_2D_H_
 
-#include <vital/vital_export.h>
 #include <vital/vital_config.h>
+#include <vital/vital_export.h>
 #include <vital/vital_types.h>
 
 #include <vital/types/vector.h>
@@ -17,6 +17,7 @@
 #include <memory>
 
 namespace kwiver {
+
 namespace vital {
 
 // Forward declarations of abstract transform class
@@ -48,13 +49,15 @@ public:
   /// \throws non_invertible
   ///   When the transformation is non-invertible.
   /// \return A new transform object that is the inverse of this transformation.
-  transform_2d_sptr inverse() const { return this->inverse_(); }
+  transform_2d_sptr
+  inverse() const { return this->inverse_(); }
 
 protected:
   virtual transform_2d_sptr inverse_() const = 0;
 };
 
 } // namespace vital
+
 } // namespace kwiver
 
 #endif

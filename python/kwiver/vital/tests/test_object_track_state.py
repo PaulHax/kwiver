@@ -33,16 +33,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Tests for ObjectTrackState
 
 """
+
 import unittest
 
 import nose.tools
 import numpy
 
-from kwiver.vital.types import ObjectTrackState, BoundingBoxD as bbD, DetectedObjectType as DOT, \
-        DetectedObject
+from kwiver.vital.types import (
+    ObjectTrackState,
+    BoundingBoxD as bbD,
+    DetectedObjectType as DOT,
+    DetectedObject,
+)
 
 
-class TestObjectTrackState (unittest.TestCase):
+class TestObjectTrackState(unittest.TestCase):
     def _create_detected_object(self):
         """
         Helper function to generate a detected object for the track state
@@ -50,7 +55,7 @@ class TestObjectTrackState (unittest.TestCase):
                  (10, 10, 20, 20), confidence of 0.4 and "test" label
         """
         bbox = bbD(10, 10, 20, 20)
-        cm  = DOT("test", 0.4)
+        cm = DOT("test", 0.4)
         do = DetectedObject(bbox, 0.4, cm)
         return do
 
@@ -79,7 +84,7 @@ class TestObjectTrackState (unittest.TestCase):
         do = self._create_detected_object()
         ts = ObjectTrackState(0, 0, do)
         nose.tools.assert_equal(ts.time_usec, 0)
-        ts = ObjectTrackState(0, 14691234578 , do)
+        ts = ObjectTrackState(0, 14691234578, do)
         nose.tools.assert_equal(ts.time_usec, 14691234578)
 
     def test_detection(self):

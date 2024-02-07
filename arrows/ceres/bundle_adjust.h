@@ -45,10 +45,11 @@ public:
   /// \param [in] tracks The feature tracks to use as constraints.
   /// \param [in] metadata The frame metadata to use as constraints.
   virtual void
-  optimize( vital::camera_map_sptr& cameras,
-            vital::landmark_map_sptr& landmarks,
-            vital::feature_track_set_sptr tracks,
-            vital::sfm_constraints_sptr constraints = nullptr ) const;
+  optimize(
+    vital::camera_map_sptr& cameras,
+    vital::landmark_map_sptr& landmarks,
+    vital::feature_track_set_sptr tracks,
+    vital::sfm_constraints_sptr constraints = nullptr ) const;
 
   /// Optimize the camera and landmark parameters given a set of feature tracks
   /// \param [in,out] cameras the cameras to optimize

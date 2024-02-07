@@ -29,9 +29,10 @@ using namespace kwiver::arrows::mvg;
 // \param [out] xy: projected 2D normalized image coordinate
 template < typename T >
 void
-project_point( T const* const pose,
-               T const* const point,
-               T* xy )
+project_point(
+  T const* const pose,
+  T const* const point,
+  T* xy )
 {
   // Apply external parameters (Pose)
   const T* rotation = pose;
@@ -44,9 +45,10 @@ project_point( T const* const pose,
 
   T rotated_translated_point[ 3 ];
   // Rotate the point according the camera rotation
-  ::ceres::AngleAxisRotatePoint( rotation,
-                                 translated_point,
-                                 rotated_translated_point );
+  ::ceres::AngleAxisRotatePoint(
+    rotation,
+    translated_point,
+    rotated_translated_point );
 
   // Transform the point from homogeneous to euclidean
   xy[ 0 ] = rotated_translated_point[ 0 ] / rotated_translated_point[ 2 ];
@@ -59,9 +61,10 @@ project_point( T const* const pose,
 // \param [out] image_xy: 2D point in actual image coordinates
 template < typename T >
 void
-apply_intrinsic_matrix( T const* intrinsics,
-                        T const* xy,
-                        T* image_xy )
+apply_intrinsic_matrix(
+  T const* intrinsics,
+  T const* xy,
+  T* image_xy )
 {
   const T& x = xy[ 0 ];
   const T& y = xy[ 1 ];
@@ -88,7 +91,8 @@ apply_intrinsic_matrix( T const* intrinsics,
 struct rpe_no_distortion
 {
   rpe_no_distortion( double x, double y )
-    : x_( x ), y_( y ) {}
+    : x_( x ),
+      y_( y ) {}
 
   // Reprojection error functor for use in Ceres
   // \param [in] intrinsics: Camera intrinsics data block
@@ -96,11 +100,13 @@ struct rpe_no_distortion
   //             - 3 for rotation(angle axis), 3 for center
   // \param [in] point: 3D point.
   // \param [out] residuals
-  template < typename T > bool
-  operator()( const T* const intrinsics,
-              const T* const pose,
-              const T* const point,
-              T* residuals ) const
+  template < typename T >
+  bool
+  operator()(
+    const T* const intrinsics,
+    const T* const pose,
+    const T* const point,
+    T* residuals ) const
   {
     T xy[ 2 ], image_xy[ 2 ];
 
@@ -123,7 +129,7 @@ struct rpe_no_distortion
   {
     using Self = rpe_no_distortion;
     return new ::ceres::AutoDiffCostFunction< Self, 2, 5, 6,
-                                              3 >( new Self( x, y ) );
+      3 >( new Self( x, y ) );
   }
 
   double x_;
@@ -152,7 +158,8 @@ class rpe_distortion
 public:
   /// Constructor
   rpe_distortion( const double x, const double y )
-    : x_( x ), y_( y ) {}
+    : x_( x ),
+      y_( y ) {}
 
   /// Reprojection error functor for use in Ceres
   /// \param [in] intrinsics: Camera intrinsics data block
@@ -160,11 +167,13 @@ public:
   ///             - 3 for rotation(angle axis), 3 for center
   /// \param [in] point: 3D point.
   /// \param [out] residuals
-  template < typename T > bool
-  operator()( const T* const intrinsics,
-              const T* const pose,
-              const T* const point,
-              T* residuals ) const
+  template < typename T >
+  bool
+  operator()(
+    const T* const intrinsics,
+    const T* const pose,
+    const T* const point,
+    T* residuals ) const
   {
     T xy[ 2 ], distorted_xy[ 2 ], image_xy[ 2 ];
 
@@ -193,7 +202,7 @@ public:
     // number of intrinsic parameters
     static const int nip = 5 + DF::num_coeffs;
     return new ::ceres::AutoDiffCostFunction< Self, 2, nip, 6,
-                                              3 >( new Self( x, y ) );
+      3 >( new Self( x, y ) );
   }
 
   double x_;
@@ -210,10 +219,10 @@ create_cost_func( LensDistortionType ldt, double x, double y )
       return rpe_distortion< distortion_poly_radial >::create( x, y );
     case POLYNOMIAL_RADIAL_TANGENTIAL_DISTORTION:
       return rpe_distortion< distortion_poly_radial_tangential >
-	      ::create( x, y );
+             ::create( x, y );
     case RATIONAL_RADIAL_TANGENTIAL_DISTORTION:
       return rpe_distortion< distortion_ratpoly_radial_tangential >
-	      ::create( x, y );
+             ::create( x, y );
     default:
       return rpe_no_distortion::create( x, y );
   }

@@ -12,11 +12,9 @@
 #include <vital/algo/buffered_metadata_filter.h>
 #include <vital/algo/metadata_filter.h>
 
-
 // implementations
 #include <arrows/klv/apply_child_klv.h>
 #include <arrows/klv/update_klv.h>
-
 
 namespace kwiver::arrows::klv {
 
@@ -28,13 +26,14 @@ register_factories( kwiver::vital::plugin_loader& vpl )
   using kvpf = ::kwiver::vital::plugin_factory;
 
   auto fact =
-    vpl.add_factory< vital::algo::metadata_filter , apply_child_klv >("apply_child_klv");
+    vpl.add_factory< vital::algo::metadata_filter,
+      apply_child_klv >( "apply_child_klv" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_klv" );
-  
+
   fact =
-    vpl.add_factory< vital::algo::buffered_metadata_filter , update_klv >("update_klv");
+    vpl.add_factory< vital::algo::buffered_metadata_filter,
+      update_klv >( "update_klv" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_klv" );
-  
 }
 
 } // end namespace

@@ -6,11 +6,11 @@
 /// Test the text transcoding utilities.
 
 #include <vital/util/tests/test_text_codec.h>
-#include <vital/util/text_codec_error_policies.h>
 #include <vital/util/text_codec_ascii.h>
-#include <vital/util/text_codec_utf_8.h>
-#include <vital/util/text_codec_utf_16.h>
+#include <vital/util/text_codec_error_policies.h>
 #include <vital/util/text_codec_transcode.h>
+#include <vital/util/text_codec_utf_16.h>
+#include <vital/util/text_codec_utf_8.h>
 
 // ----------------------------------------------------------------------------
 int
@@ -63,9 +63,11 @@ TEST ( text_codec, transcode )
   CALL_TEST( test_transcode_round_trip, ascii, utf_8, "", "" );
   CALL_TEST( test_transcode_round_trip, ascii, utf_8, "Kitware", "Kitware" );
   CALL_TEST( test_transcode_round_trip, utf_8, utf_8, "", "" );
-  CALL_TEST( test_transcode_round_trip, utf_8, utf_8,
+  CALL_TEST(
+    test_transcode_round_trip, utf_8, utf_8,
     "🁙🂽🫖🦋🛸", "🁙🂽🫖🦋🛸" );
-  CALL_TEST( test_transcode_round_trip, utf_8, utf_16,
+  CALL_TEST(
+    test_transcode_round_trip, utf_8, utf_16,
     "🁙🂽🫖🦋🛸",
     "\xD8\x3C\xDC\x59"
     "\xD8\x3C\xDC\xBD"
@@ -76,12 +78,14 @@ TEST ( text_codec, transcode )
   CALL_TEST( test_transcode, ascii, ascii, "\xFF", "\x1A" );
   CALL_TEST( test_transcode, ascii, utf_8, "\xFF", "\x1A" );
   CALL_TEST( test_transcode, utf_8, ascii, "\xFF", "\x1A" );
-  CALL_TEST( test_transcode, utf_8, ascii,
+  CALL_TEST(
+    test_transcode, utf_8, ascii,
     "Ḱḯṫẃḁṝḕ", "\x1A\x1A\x1A\x1A\x1A\x1A\x1A" );
-  CALL_TEST( test_transcode, utf_8, ascii, "ABC\x80""DEF", "ABC\x1A""DEF" );
+  CALL_TEST( test_transcode, utf_8, ascii, "ABC\x80" "DEF", "ABC\x1A" "DEF" );
   CALL_TEST( test_transcode, utf_8, utf_8, "\x80", "\uFFFD" );
-  CALL_TEST( test_transcode, utf_8, utf_16,
-    "ABC\x80""DEF", std::string{ "\0A\0B\0C\xFF\xFD\0D\0E\0F", 14 } );
+  CALL_TEST(
+    test_transcode, utf_8, utf_16,
+    "ABC\x80" "DEF", std::string{ "\0A\0B\0C\xFF\xFD\0D\0E\0F", 14 } );
 }
 
 // ----------------------------------------------------------------------------
@@ -96,6 +100,7 @@ TEST ( text_codec, transcode_long )
   {
     src[ i ] = "ḯ"[ i % 3 ];
   }
+
   std::string dst( BUFSIZ * 6, 'A' );
   for( size_t i = 0; i < dst.size(); ++i )
   {

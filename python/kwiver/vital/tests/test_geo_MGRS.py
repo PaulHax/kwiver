@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Tests for geo_MGRS interface
 
 """
+
 import unittest
 
 import nose.tools as nt
@@ -55,11 +56,11 @@ class TestVitalGeoMGRS(object):
 
         nt.assert_false(empty1.is_valid())
         nt.assert_false(empty2.is_valid())
-        nt.assert_true( foo.is_valid())
-        nt.assert_true( num.is_valid())
+        nt.assert_true(foo.is_valid())
+        nt.assert_true(num.is_valid())
 
-        nt.assert_true( empty1.is_empty())
-        nt.assert_true( empty2.is_empty())
+        nt.assert_true(empty1.is_empty())
+        nt.assert_true(empty2.is_empty())
         nt.assert_false(foo.is_empty())
         nt.assert_false(num.is_empty())
 
@@ -77,24 +78,24 @@ class TestVitalGeoMGRS(object):
             nt.assert_equal(gm.coord(), "test_str12345")
             nt.assert_equal(gm_cpy.coord(), "test_str12345")
             nt.assert_false(gm.is_empty())
-            nt.assert_true( gm.is_valid())
+            nt.assert_true(gm.is_valid())
             nt.assert_false(gm_cpy.is_empty())
-            nt.assert_true( gm_cpy.is_valid())
+            nt.assert_true(gm_cpy.is_valid())
 
             gm_cpy = gm.set_coord("another_test_str")
             nt.assert_equal(gm.coord(), "another_test_str")
             nt.assert_equal(gm_cpy.coord(), "another_test_str")
             nt.assert_false(gm.is_empty())
-            nt.assert_true( gm.is_valid())
+            nt.assert_true(gm.is_valid())
             nt.assert_false(gm_cpy.is_empty())
-            nt.assert_true( gm_cpy.is_valid())
+            nt.assert_true(gm_cpy.is_valid())
 
             gm_cpy = gm.set_coord("")
             nt.assert_equal(gm.coord(), "")
             nt.assert_equal(gm_cpy.coord(), "")
-            nt.assert_true( gm.is_empty())
+            nt.assert_true(gm.is_empty())
             nt.assert_false(gm.is_valid())
-            nt.assert_true( gm_cpy.is_empty())
+            nt.assert_true(gm_cpy.is_empty())
             nt.assert_false(gm_cpy.is_valid())
 
     def test_equals(self):
@@ -104,7 +105,7 @@ class TestVitalGeoMGRS(object):
         # Check copies are equal
         gm1_cpy = gm1.set_coord("test_str12345")
         nt.assert_false(gm1 == gm2)
-        nt.assert_true( gm1_cpy == gm1)
+        nt.assert_true(gm1_cpy == gm1)
         nt.assert_false(gm1_cpy == gm2)
 
         gm2.set_coord("test_str12345")
@@ -117,9 +118,9 @@ class TestVitalGeoMGRS(object):
         nt.assert_false(gm1 != gm2)
 
         gm1_cpy = gm1.set_coord("test_str12345")
-        nt.assert_true( gm1 != gm2)
+        nt.assert_true(gm1 != gm2)
         nt.assert_false(gm1_cpy != gm1)
-        nt.assert_true( gm1_cpy != gm2)
+        nt.assert_true(gm1_cpy != gm2)
 
         gm2.set_coord("test_str12345")
         nt.assert_false(gm1 != gm2)

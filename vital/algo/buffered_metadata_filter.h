@@ -40,7 +40,7 @@ public:
   static const algorithm_capabilities::capability_name_t CAN_USE_FRAME_IMAGE;
 
   buffered_metadata_filter();
-  PLUGGABLE_INTERFACE(buffered_metadata_filter);
+  PLUGGABLE_INTERFACE( buffered_metadata_filter );
 
   /// Provide one frame of metadata to the filter.
   ///

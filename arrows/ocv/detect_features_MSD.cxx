@@ -17,7 +17,9 @@
 using namespace kwiver::vital;
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace ocv {
 
 class detect_features_MSD::priv
@@ -25,20 +27,20 @@ class detect_features_MSD::priv
 public:
   /// Constructor
   priv()
-    : patch_radius( 3 )
-    , search_area_radius( 5 )
-    , nms_radius( 5 )
-    , nms_scale_radius( 0 )
-    , th_saliency( 250.0f )
-    , knn( 4 )
-    , scale_factor( 1.25f )
-    , n_scales( -1 )
-    , compute_orientation( false )
-  {
-  }
+    : patch_radius( 3 ),
+      search_area_radius( 5 ),
+      nms_radius( 5 ),
+      nms_scale_radius( 0 ),
+      th_saliency( 250.0f ),
+      knn( 4 ),
+      scale_factor( 1.25f ),
+      n_scales( -1 ),
+      compute_orientation( false )
+  {}
 
   /// Create algorithm instance
-  cv::Ptr<cv::xfeatures2d::MSDDetector> create() const
+  cv::Ptr< cv::xfeatures2d::MSDDetector >
+  create() const
   {
     return cv::xfeatures2d::MSDDetector::create(
       patch_radius, search_area_radius, nms_radius, nms_scale_radius,
@@ -47,7 +49,8 @@ public:
   }
 
   /// Update given config block with currently set parameter values
-  void update_config( config_block_sptr config ) const
+  void
+  update_config( config_block_sptr config ) const
   {
     config->set_value( "patch_radius", patch_radius );
     config->set_value( "search_area_radius", search_area_radius );
@@ -61,22 +64,25 @@ public:
   }
 
   /// Set parameter values based on given config block
-  void set_config( config_block_sptr const &config )
+  void
+  set_config( config_block_sptr const& config )
   {
-    patch_radius = config->get_value<int>( "patch_radius" );
-    search_area_radius = config->get_value<int>( "search_area_radius" );
-    nms_radius = config->get_value<int>( "nms_radius" );
-    nms_scale_radius = config->get_value<int>( "nms_scale_radius" );
-    th_saliency = config->get_value<float>( "th_saliency" );
-    knn = config->get_value<int>( "knn" );
-    scale_factor = config->get_value<float>( "scale_factor" );
-    n_scales = config->get_value<int>( "n_scales" );
-    compute_orientation = config->get_value<bool>( "compute_orientation" );
+    patch_radius = config->get_value< int >( "patch_radius" );
+    search_area_radius = config->get_value< int >( "search_area_radius" );
+    nms_radius = config->get_value< int >( "nms_radius" );
+    nms_scale_radius = config->get_value< int >( "nms_scale_radius" );
+    th_saliency = config->get_value< float >( "th_saliency" );
+    knn = config->get_value< int >( "knn" );
+    scale_factor = config->get_value< float >( "scale_factor" );
+    n_scales = config->get_value< int >( "n_scales" );
+    compute_orientation = config->get_value< bool >( "compute_orientation" );
   }
 
   /// Check config parameter values
-  bool check_config( VITAL_UNUSED vital::config_block_sptr const &config,
-                     VITAL_UNUSED logger_handle_t const &logger ) const
+  bool
+  check_config(
+    VITAL_UNUSED vital::config_block_sptr const& config,
+    VITAL_UNUSED logger_handle_t const& logger ) const
   {
     return true;
   }
@@ -103,8 +109,7 @@ detect_features_MSD
 
 detect_features_MSD
 ::~detect_features_MSD()
-{
-}
+{}
 
 vital::config_block_sptr
 detect_features_MSD
@@ -117,7 +122,7 @@ detect_features_MSD
 
 void
 detect_features_MSD
-::set_configuration(vital::config_block_sptr config)
+::set_configuration( vital::config_block_sptr config )
 {
   config_block_sptr c = get_configuration();
   c->merge_config( config );
@@ -127,7 +132,7 @@ detect_features_MSD
 
 bool
 detect_features_MSD
-::check_configuration(vital::config_block_sptr config) const
+::check_configuration( vital::config_block_sptr config ) const
 {
   config_block_sptr c = get_configuration();
   c->merge_config( config );
@@ -135,7 +140,9 @@ detect_features_MSD
 }
 
 } // end namespace ocv
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
-#endif //HAVE_OPENCV_XFEATURES2D
+#endif // HAVE_OPENCV_XFEATURES2D

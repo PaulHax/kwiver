@@ -10,11 +10,12 @@
 #include <gtest/gtest.h>
 #include <test_gtest.h>
 
-#include <track_oracle/core/track_oracle_core.h>
 #include <track_oracle/core/track_field.h>
+#include <track_oracle/core/track_oracle_core.h>
 #include <track_oracle/data_terms/data_terms.h>
 #include <track_oracle/file_formats/file_format_manager.h>
-#include <track_oracle/file_formats/track_filter_kpf_activity/track_filter_kpf_activity.h>
+#include \
+  <track_oracle/file_formats/track_filter_kpf_activity/track_filter_kpf_activity.h>
 
 #include <map>
 #include <utility>
@@ -26,36 +27,39 @@ using std::string;
 string g_data_dir;
 
 static std::string geom_file = "track_oracle_data/test-large-IDs.geom.yml";
-static std::string activities_file = "track_oracle_data/test-large-IDs.activities.yml";
+static std::string activities_file =
+  "track_oracle_data/test-large-IDs.activities.yml";
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
-  GET_ARG(1, g_data_dir);
+  GET_ARG( 1, g_data_dir );
   return RUN_ALL_TESTS();
 }
 
 // ------------------------------------------------------------------
-TEST(track_oracle, kpf_activities)
+TEST ( track_oracle, kpf_activities )
 {
-
   to::track_handle_list_type kpf_tracks, kpf_activities;
   {
     string fn = g_data_dir + "/" + geom_file;
     bool rc = to::file_format_manager::read( fn, kpf_tracks );
     EXPECT_TRUE( rc ) << " reading tracks from '" << fn << "'";
+
     size_t n_read = kpf_tracks.size();
     EXPECT_EQ( n_read, 1 ) << " number of tracks read";
   }
 
   {
-    const int domain=2;
+    const int domain = 2;
     string fn = g_data_dir + "/" + activities_file;
-    bool rc = to::track_filter_kpf_activity::read( fn,
-                                                   kpf_tracks,
-                                                   domain,
-                                                   kpf_activities );
+    bool rc = to::track_filter_kpf_activity::read(
+      fn,
+      kpf_tracks,
+      domain,
+      kpf_activities );
     EXPECT_TRUE( rc ) << " reading activities from '" << fn << "'";
   }
 }

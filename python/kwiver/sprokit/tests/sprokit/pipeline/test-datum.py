@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#ckwg +28
+# ckwg +28
 # Copyright 2011-2020 by Kitware, Inc.
 # All rights reserved.
 #
@@ -30,6 +30,7 @@
 
 from kwiver.sprokit.util.test import expect_exception, find_tests, run_test, test_error
 
+
 def test_import():
     try:
         import kwiver.sprokit.pipeline.datum
@@ -40,7 +41,7 @@ def test_import():
 def test_new():
     from kwiver.sprokit.pipeline import datum
 
-    d = datum.new('test_datum')
+    d = datum.new("test_datum")
 
     if not d.type() == datum.DatumType.data:
         test_error("Datum type mismatch")
@@ -55,7 +56,7 @@ def test_new():
 
 
 def test_empty():
-    from  kwiver.sprokit.pipeline import datum
+    from kwiver.sprokit.pipeline import datum
 
     d = datum.empty()
 
@@ -72,7 +73,7 @@ def test_empty():
 
 
 def test_flush():
-    from  kwiver.sprokit.pipeline import datum
+    from kwiver.sprokit.pipeline import datum
 
     d = datum.flush()
 
@@ -89,7 +90,7 @@ def test_flush():
 
 
 def test_complete():
-    from  kwiver.sprokit.pipeline import datum
+    from kwiver.sprokit.pipeline import datum
 
     d = datum.complete()
 
@@ -106,9 +107,9 @@ def test_complete():
 
 
 def test_error_():
-    from  kwiver.sprokit.pipeline import datum
+    from kwiver.sprokit.pipeline import datum
 
-    err = 'An error'
+    err = "An error"
 
     d = datum.error(err)
 
@@ -123,11 +124,13 @@ def test_error_():
     if p is not None:
         test_error("An error datum does not have None as its data")
 
+
 def check_same_type(retrieved_val, val):
     if not type(retrieved_val) is type(val):
         msg = "Retrieved value of type: {}. Expected type: {}"
         msg = msg.format(type(retrieved_val), type(val))
         test_error(msg)
+
 
 # Check the automatic type conversion done by new() and get_datum()
 def check_automatic_conversion(val):
@@ -136,6 +139,7 @@ def check_automatic_conversion(val):
     datum_inst = datum.new(val)
     retrieved_val = datum_inst.get_datum()
     check_same_type(retrieved_val, val)
+
 
 # Next some basic types
 def test_add_get_basic_types():
@@ -158,6 +162,7 @@ def test_add_get_basic_types():
     check_automatic_conversion(10)
     check_automatic_conversion(0.5)
     check_automatic_conversion("str1")
+
 
 # Next some kwiver vital types that are handled with pointers
 def test_add_get_vital_types_by_ptr():
@@ -190,6 +195,7 @@ def test_add_get_vital_types_by_ptr():
     check_automatic_conversion(kvt.TrackSet())
     check_automatic_conversion(kvt.ObjectTrackSet())
 
+
 # Next some bound native C++ types
 def test_add_get_cpp_types():
     from kwiver.sprokit.pipeline import datum
@@ -209,6 +215,7 @@ def test_add_get_cpp_types():
     check_automatic_conversion(datum.VectorDouble([3.14, 4.14]))
     check_automatic_conversion(datum.VectorString(["s00", "s01"]))
     check_automatic_conversion(datum.VectorUChar([100, 101]))
+
 
 # Next kwiver vital types
 def test_add_get_vital_types():
@@ -231,6 +238,7 @@ def test_add_get_vital_types():
     check_automatic_conversion(kvt.Timestamp())
     check_automatic_conversion(kvt.F2FHomography(1))
 
+
 # Want to make sure data inside a datum created with the automatic
 # conversion constructor can be retrieved with a type specific getter, and
 # vice versa
@@ -247,7 +255,9 @@ def test_mix_new_and_get():
     check_same_type(datum_inst.get_timestamp(), kvt.Timestamp(1000000000, 10))
 
     datum_inst = datum.new(datum.VectorString(["element1", "element2"]))
-    check_same_type(datum_inst.get_string_vector(), datum.VectorString(["element1", "element2"]))
+    check_same_type(
+        datum_inst.get_string_vector(), datum.VectorString(["element1", "element2"])
+    )
 
     # Now try the opposite
     datum_inst = datum.new_string("string_value")
@@ -257,7 +267,10 @@ def test_mix_new_and_get():
     check_same_type(datum_inst.get_datum(), kvt.Timestamp(1000000000, 10))
 
     datum_inst = datum.new_string_vector(datum.VectorString(["element1", "element2"]))
-    check_same_type(datum_inst.get_datum(), datum.VectorString(["element1", "element2"]))
+    check_same_type(
+        datum_inst.get_datum(), datum.VectorString(["element1", "element2"])
+    )
+
 
 # Make sure that None isn't acceptable, even for pointers
 def test_new_with_none():
@@ -293,7 +306,8 @@ def test_new_with_none():
         None,
     )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     import sys
 
     if len(sys.argv) != 2:
@@ -301,6 +315,5 @@ if __name__ == '__main__':
         sys.exit(1)
 
     testname = sys.argv[1]
-
 
     run_test(testname, find_tests(locals()))

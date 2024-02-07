@@ -10,14 +10,15 @@
 #include <gtest/gtest.h>
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
 }
 
 // ----------------------------------------------------------------------------
-TEST(timestamp, api)
+TEST ( timestamp, api )
 {
   kwiver::vital::timestamp ts;
 
@@ -25,7 +26,7 @@ TEST(timestamp, api)
   EXPECT_FALSE( ts.has_valid_time() );
   EXPECT_FALSE( ts.has_valid_frame() );
 
-  kwiver::vital::timestamp tsv( 5000000, 2);
+  kwiver::vital::timestamp tsv( 5000000, 2 );
 
   EXPECT_TRUE( tsv.is_valid() );
   EXPECT_TRUE( tsv.has_valid_time() );
@@ -51,10 +52,10 @@ TEST(timestamp, api)
 }
 
 // ----------------------------------------------------------------------------
-TEST(timestamp, comparisons)
+TEST ( timestamp, comparisons )
 {
   kwiver::vital::timestamp tsii; // invalid TS
-  kwiver::vital::timestamp   ts( 5000000, 123 );
+  kwiver::vital::timestamp ts( 5000000, 123 );
   kwiver::vital::timestamp tsll( 4000000, 122 );
   kwiver::vital::timestamp tsel( 5000000, 122 );
   kwiver::vital::timestamp tseg( 5000000, 124 );

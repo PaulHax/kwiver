@@ -11,6 +11,7 @@
 #include <limits>
 
 namespace kwiver {
+
 namespace vital {
 
 typedef std::unique_ptr< track_set_implementation > tsi_uptr;
@@ -19,28 +20,26 @@ typedef std::unique_ptr< track_set_implementation > tsi_uptr;
 object_track_set
 ::object_track_set()
   : track_set( tsi_uptr( new simple_track_set_implementation ) )
-{
-}
+{}
 
 /// Constructor specifying the implementation
 object_track_set
-::object_track_set( std::unique_ptr<track_set_implementation> impl )
+::object_track_set( std::unique_ptr< track_set_implementation > impl )
   : track_set( std::move( impl ) )
-{
-}
+{}
 
 /// Constructor from a vector of tracks
 object_track_set
 ::object_track_set( std::vector< track_sptr > const& tracks )
   : track_set( tsi_uptr( new simple_track_set_implementation( tracks ) ) )
-{
-}
+{}
 
 /// Clone the track state (polymorphic copy constructor)
 track_state_sptr
-object_track_state::clone ( clone_type ct ) const
+object_track_state
+::clone( clone_type ct ) const
 {
-  if ( ct == clone_type::DEEP )
+  if( ct == clone_type::DEEP )
   {
     auto new_detection =
       ( this->detection_ ? this->detection_->clone() : nullptr );
@@ -59,4 +58,6 @@ object_track_state::clone ( clone_type ct ) const
   }
 }
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital

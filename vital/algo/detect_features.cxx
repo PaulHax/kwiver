@@ -7,7 +7,6 @@
 
 #include <vital/algo/detect_features.h>
 
-
 namespace kwiver {
 
 namespace vital {

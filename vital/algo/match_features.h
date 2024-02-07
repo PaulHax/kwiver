@@ -27,7 +27,7 @@ class VITAL_ALGO_EXPORT match_features
 {
 public:
   match_features();
-  PLUGGABLE_INTERFACE(match_features);
+  PLUGGABLE_INTERFACE( match_features );
   /// Match one set of features and corresponding descriptors to another
   ///
   /// \param feat1 the first set of features to match
@@ -36,11 +36,11 @@ public:
   /// \param desc2 the descriptors corresponding to \a feat2
   /// \returns a set of matching indices from \a feat1 to \a feat2
   virtual kwiver::vital::match_set_sptr
-  match( kwiver::vital::feature_set_sptr feat1,
-         kwiver::vital::descriptor_set_sptr desc1,
-         kwiver::vital::feature_set_sptr feat2,
-         kwiver::vital::descriptor_set_sptr desc2 ) const = 0;
-
+  match(
+    kwiver::vital::feature_set_sptr feat1,
+    kwiver::vital::descriptor_set_sptr desc1,
+    kwiver::vital::feature_set_sptr feat2,
+    kwiver::vital::descriptor_set_sptr desc2 ) const = 0;
 };
 
 /// Shared pointer type for match_features algorithm definition class

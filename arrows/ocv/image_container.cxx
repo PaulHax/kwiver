@@ -15,19 +15,21 @@
 using namespace kwiver::vital;
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace ocv {
 
 // ----------------------------------------------------------------------------
 image_container
-::image_container(const cv::Mat& d, ColorMode cm)
-  : data_(d)
+::image_container( const cv::Mat& d, ColorMode cm )
+  : data_( d )
 {
-  //Handle BGR(A) case, others just copy the memory, the assumption is
-  //RGB images
-  if(cm == BGR_COLOR && (data_.channels() == 3 || data_.channels() == 4 ))
+  // Handle BGR(A) case, others just copy the memory, the assumption is
+  // RGB images
+  if( cm == BGR_COLOR && ( data_.channels() == 3 || data_.channels() == 4 ) )
   {
-    switch(d.depth())
+    switch( d.depth() )
     {
       case CV_8U:
       case CV_16U:
@@ -36,7 +38,9 @@ image_container
         cv::Mat new_color;
         new_color.create( d.rows, d.cols, d.type() );
 
-        cv::cvtColor(data_, new_color, (data_.channels() == 3)?cv::COLOR_BGR2RGB:cv::COLOR_BGRA2RGBA);
+        cv::cvtColor(
+          data_, new_color,
+          ( data_.channels() == 3 ) ? cv::COLOR_BGR2RGB : cv::COLOR_BGRA2RGBA );
         data_ = new_color;
         break;
       }
@@ -45,8 +49,9 @@ image_container
       case CV_32S:
       case CV_64F:
       default:
-        VITAL_THROW( image_type_mismatch_exception,
-                     "Only CV_8U, CV_16U, and CV_32F are supported for BGR and RGB conversion");
+        VITAL_THROW(
+          image_type_mismatch_exception,
+          "Only CV_8U, CV_16U, and CV_32F are supported for BGR and RGB conversion" );
     }
   }
 }
@@ -54,18 +59,18 @@ image_container
 // ----------------------------------------------------------------------------
 /// Constructor - convert base image container to cv::Mat
 image_container
-::image_container(const vital::image_container& image_cont)
+::image_container( const vital::image_container& image_cont )
 {
   // testing if image_cont is an ocv image container
   const ocv::image_container* oic =
-      dynamic_cast<const ocv::image_container*>(&image_cont);
+    dynamic_cast< const ocv::image_container* >( &image_cont );
   if( oic )
   {
     this->data_ = oic->data_;
   }
   else
   {
-    this->data_ = vital_to_ocv(image_cont.get_image(), RGB_COLOR);
+    this->data_ = vital_to_ocv( image_cont.get_image(), RGB_COLOR );
   }
 }
 
@@ -81,54 +86,57 @@ image_container
 /// Convert an OpenCV cv::Mat to a VITAL image
 image
 image_container
-::ocv_to_vital(const cv::Mat& img,
-               VITAL_UNUSED ColorMode cm)
+::ocv_to_vital(
+  const cv::Mat& img,
+  VITAL_UNUSED ColorMode cm )
 {
   // if the cv::Mat has reference counted memory then wrap it to keep a
   // counted reference too it.  If it doesn't own its memory, then the
   // vital image won't take ownership either
   image_memory_sptr memory;
 #if KWIVER_OPENCV_VERSION_MAJOR < 3
-  if ( img.refcount )
+  if( img.refcount )
 #else
-  if ( img.u )
+  if( img.u )
 #endif
   {
-    memory = std::make_shared<mat_image_memory>(img);
+    memory = std::make_shared< mat_image_memory >( img );
   }
 
-  return image(memory, img.data,
-               img.cols, img.rows, img.channels(),
-               img.channels(), img.step1(), 1,
-               ocv_to_vital(img.type()));
+  return image(
+    memory, img.data,
+    img.cols, img.rows, img.channels(),
+    img.channels(), img.step1(), 1,
+    ocv_to_vital( img.type() ) );
 }
 
 // ----------------------------------------------------------------------------
 /// Convert an OpenCV cv::Mat type value to a vital::image_pixel_traits
 vital::image_pixel_traits
 image_container
-::ocv_to_vital(int type)
+::ocv_to_vital( int type )
 {
   typedef vital::image_pixel_traits pixel_traits_t;
-  switch(type % 8)
+  switch( type % 8 )
   {
     case CV_8U:
-      return pixel_traits_t(vital::image_pixel_traits::UNSIGNED, 1);
+      return pixel_traits_t( vital::image_pixel_traits::UNSIGNED, 1 );
     case CV_8S:
-      return pixel_traits_t(vital::image_pixel_traits::SIGNED, 1);
+      return pixel_traits_t( vital::image_pixel_traits::SIGNED, 1 );
     case CV_16U:
-      return pixel_traits_t(vital::image_pixel_traits::UNSIGNED, 2);
+      return pixel_traits_t( vital::image_pixel_traits::UNSIGNED, 2 );
     case CV_16S:
-      return pixel_traits_t(vital::image_pixel_traits::SIGNED, 2);
+      return pixel_traits_t( vital::image_pixel_traits::SIGNED, 2 );
     case CV_32S:
-      return pixel_traits_t(vital::image_pixel_traits::SIGNED, 4);
+      return pixel_traits_t( vital::image_pixel_traits::SIGNED, 4 );
     case CV_32F:
-      return pixel_traits_t(vital::image_pixel_traits::FLOAT, 4);
+      return pixel_traits_t( vital::image_pixel_traits::FLOAT, 4 );
     case CV_64F:
-      return pixel_traits_t(vital::image_pixel_traits::FLOAT, 8);
+      return pixel_traits_t( vital::image_pixel_traits::FLOAT, 8 );
     default:
-      VITAL_THROW( image_type_mismatch_exception,
-                   "kwiver::arrows::ocv::image_container::ocv_to_vital(int)");
+      VITAL_THROW(
+        image_type_mismatch_exception,
+        "kwiver::arrows::ocv::image_container::ocv_to_vital(int)" );
   }
 }
 
@@ -136,11 +144,11 @@ image_container
 /// Convert a VITAL image to an OpenCV cv::Mat
 cv::Mat
 image_container
-::vital_to_ocv(const vital::image& img, image_container::ColorMode cm)
+::vital_to_ocv( const vital::image& img, image_container::ColorMode cm )
 {
   // Find the matching OpenCV matrix type or throw and exception if there is no
   // compatible type
-  const int cv_type = vital_to_ocv(img.pixel_traits());
+  const int cv_type = vital_to_ocv( img.pixel_traits() );
 
   // cv::Mat is limited in the image data layouts and types that it supports.
   // Color channels must be interleaved (d_step==1) and the
@@ -148,18 +156,19 @@ image_container
   // If the image does not have these properties we must allocate
   // a new cv::Mat and deep copy the data.  Otherwise, share memory.
   if( ( img.depth() == 1 || img.d_step() == 1 ) &&
-      img.w_step() == static_cast<ptrdiff_t>(img.depth()) )
+      img.w_step() == static_cast< ptrdiff_t >( img.depth() ) )
   {
-    void * data_ptr = const_cast<void *>(img.first_pixel());
-    cv::Mat out(static_cast<int>(img.height()), static_cast<int>(img.width()),
-                CV_MAKETYPE(cv_type, static_cast<int>(img.depth())),
-                data_ptr, img.h_step() * img.pixel_traits().num_bytes);
+    void* data_ptr = const_cast< void* >( img.first_pixel() );
+    cv::Mat out( static_cast< int >( img.height() ),
+      static_cast< int >( img.width() ),
+      CV_MAKETYPE( cv_type, static_cast< int >( img.depth() ) ),
+      data_ptr, img.h_step() * img.pixel_traits().num_bytes );
 
     // if this VITAL image is already wrapping cv::Mat allocated data,
     // then restore the original cv::Mat reference counter.
     image_memory_sptr memory = img.memory();
     if( mat_image_memory* mat_memory =
-          dynamic_cast<mat_image_memory*>(memory.get()) )
+          dynamic_cast< mat_image_memory* >( memory.get() ) )
     {
       // extract the existing reference counter from the VITAL wrapper
 #if KWIVER_OPENCV_VERSION_MAJOR < 3
@@ -172,20 +181,23 @@ image_container
     // TODO use MatAllocator to share memory with image_memory
     if( cm != BGR_COLOR || out.channels() < 3 || out.channels() > 4 )
     {
-      //Want output as something other than an BGR(A) image
+      // Want output as something other than an BGR(A) image
       return out;
     }
     else
     {
-      //Want output as a BGR(A) image, and it has the correct number of channels
-      switch(out.depth())
+      // Want output as a BGR(A) image, and it has the correct number of
+      // channels
+      switch( out.depth() )
       {
         case CV_8U:
         case CV_16U:
         case CV_32F:
         {
           cv::Mat bgr;
-          cv::cvtColor(out, bgr, (out.channels() == 3)?cv::COLOR_BGR2RGB:cv::COLOR_BGRA2RGBA);
+          cv::cvtColor(
+            out, bgr,
+            ( out.channels() == 3 ) ? cv::COLOR_BGR2RGB : cv::COLOR_BGRA2RGBA );
           return bgr;
         }
         case CV_8S:
@@ -193,35 +205,39 @@ image_container
         case CV_32S:
         case CV_64F:
         default:
-          VITAL_THROW( image_type_mismatch_exception,
-                       "Only CV_8U, CV_16U, and CV_32F are supported for BGR and RGB conversion");
+          VITAL_THROW(
+            image_type_mismatch_exception,
+            "Only CV_8U, CV_16U, and CV_32F are supported for BGR and RGB conversion" );
       }
     }
   }
 
   // allocated a new cv::Mat
-  cv::Mat out(static_cast<int>(img.height()), static_cast<int>(img.width()),
-              CV_MAKETYPE(cv_type, static_cast<int>(img.depth())));
+  cv::Mat out( static_cast< int >( img.height() ),
+    static_cast< int >( img.width() ),
+    CV_MAKETYPE( cv_type, static_cast< int >( img.depth() ) ) );
   // wrap the new image as a VITAL image (always a shallow copy)
-  image new_img = ocv_to_vital(out, RGB_COLOR);
-  new_img.copy_from(img);
+  image new_img = ocv_to_vital( out, RGB_COLOR );
+  new_img.copy_from( img );
 
   if( cm != BGR_COLOR || out.channels() < 3 || out.channels() > 4 )
   {
-      //Want output as something other than an BGR(A) image
-      return out;
+    // Want output as something other than an BGR(A) image
+    return out;
   }
   else
   {
-    //Want output as a BGR(A) image, and it has the correct number of channels
-    switch(out.depth())
+    // Want output as a BGR(A) image, and it has the correct number of channels
+    switch( out.depth() )
     {
       case CV_8U:
       case CV_16U:
       case CV_32F:
       {
         cv::Mat bgr;
-        cv::cvtColor(out, bgr, (out.channels() == 3)?cv::COLOR_BGR2RGB:cv::COLOR_BGRA2RGBA);
+        cv::cvtColor(
+          out, bgr,
+          ( out.channels() == 3 ) ? cv::COLOR_BGR2RGB : cv::COLOR_BGRA2RGBA );
         return bgr;
       }
       case CV_8S:
@@ -229,8 +245,9 @@ image_container
       case CV_32S:
       case CV_64F:
       default:
-        VITAL_THROW( image_type_mismatch_exception,
-                     "Only CV_8U, CV_16U, and CV_32F are supported for BGR and RGB conversion");
+        VITAL_THROW(
+          image_type_mismatch_exception,
+          "Only CV_8U, CV_16U, and CV_32F are supported for BGR and RGB conversion" );
     }
   }
   return out;
@@ -240,9 +257,9 @@ image_container
 /// Convert a vital::image_pixel_traits to an OpenCV cv::Mat type integer
 int
 image_container
-::vital_to_ocv(const vital::image_pixel_traits& pt)
+::vital_to_ocv( const vital::image_pixel_traits& pt )
 {
-  switch (pt.num_bytes)
+  switch( pt.num_bytes )
   {
     case 1:
       if( pt.type == vital::image_pixel_traits::UNSIGNED )
@@ -287,53 +304,64 @@ image_container
     default:
       break;
   }
-  VITAL_THROW( image_type_mismatch_exception,
-               "kwiver::arrows::ocv::image_container::vital_to_ocv(pixel_traits_t)");
+  VITAL_THROW(
+    image_type_mismatch_exception,
+    "kwiver::arrows::ocv::image_container::vital_to_ocv(pixel_traits_t)" );
 }
 
 // ----------------------------------------------------------------------------
 /// Extract a cv::Mat from any image container
 cv::Mat
-image_container_to_ocv_matrix(const vital::image_container& img, image_container::ColorMode cm)
+image_container_to_ocv_matrix(
+  const vital::image_container& img,
+  image_container::ColorMode cm )
 {
   cv::Mat result;
-  if(const ocv::image_container* c =
-          dynamic_cast<const ocv::image_container*>(&img))
+  if( const ocv::image_container* c =
+        dynamic_cast< const ocv::image_container* >( &img ) )
   {
-    if(cm != image_container::BGR_COLOR ||
-      result.channels() < 3 || result.channels() > 4)
+    if( cm != image_container::BGR_COLOR ||
+        result.channels() < 3 || result.channels() > 4 )
     {
-      //Want something other than a BGR(A) image
+      // Want something other than a BGR(A) image
       return c->get_Mat();
     }
     result = c->get_Mat().clone();
   }
   else
   {
-    return ocv::image_container::vital_to_ocv(img.get_image(), cm);
+    return ocv::image_container::vital_to_ocv( img.get_image(), cm );
   }
-  if(cm == image_container::BGR_COLOR && (result.channels() == 3 || result.channels() == 4) )
+  if( cm == image_container::BGR_COLOR &&
+      ( result.channels() == 3 || result.channels() == 4 ) )
   {
-    //Want a BGR(A) image, and there is the correct number of channels for it to be a BGR(A) image
-    switch(result.depth())
+    // Want a BGR(A) image, and there is the correct number of channels for it
+    // to be a BGR(A) image
+    switch( result.depth() )
     {
       case CV_8U:
       case CV_16U:
       case CV_32F:
-        cv::cvtColor(result, result, (result.channels() == 3)?cv::COLOR_BGR2RGB:cv::COLOR_BGRA2RGBA);
+        cv::cvtColor(
+          result, result,
+          ( result.channels() ==
+            3 ) ? cv::COLOR_BGR2RGB : cv::COLOR_BGRA2RGBA );
         break;
       case CV_8S:
       case CV_16S:
       case CV_32S:
       case CV_64F:
       default:
-        VITAL_THROW( image_type_mismatch_exception,
-                     "Only CV_8U, CV_16U, and CV_32F are supported for BGR and RGB conversion");
+        VITAL_THROW(
+          image_type_mismatch_exception,
+          "Only CV_8U, CV_16U, and CV_32F are supported for BGR and RGB conversion" );
     }
   }
   return result;
 }
 
 } // end namespace ocv
+
 } // end namespace arrows
+
 } // end namespace kwiver

@@ -31,8 +31,9 @@ class KWIVER_SERIALIZE_JSON_EXPORT metadata
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO( "kwiver:metadata",
-               "Serializes a metadata vector using json notation." );
+  PLUGIN_INFO(
+    "kwiver:metadata",
+    "Serializes a metadata vector using json notation." );
 
   metadata();
   virtual ~metadata();

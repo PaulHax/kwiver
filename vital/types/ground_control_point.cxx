@@ -12,23 +12,26 @@
 #include "ground_control_point.h"
 #include <vital/io/eigen_io.h>
 
-namespace kwiver
-{
-namespace vital
-{
+namespace kwiver {
 
-//-----------------------------------------------------------------------------
-ground_control_point::ground_control_point() = default;
+namespace vital {
 
-//-----------------------------------------------------------------------------
-ground_control_point::ground_control_point(vector_3d const& loc,
-                                           std::string const& name)
-  : loc_{loc}, name_{name}
-{
-}
+// -----------------------------------------------------------------------------
+ground_control_point
+::ground_control_point() = default;
 
-//-----------------------------------------------------------------------------
-std::ostream& operator<<(std::ostream& s, ground_control_point const& m)
+// -----------------------------------------------------------------------------
+ground_control_point
+::ground_control_point(
+  vector_3d const& loc,
+  std::string const& name )
+  : loc_{ loc },
+    name_{ name }
+{}
+
+// -----------------------------------------------------------------------------
+std::ostream&
+operator<<( std::ostream& s, ground_control_point const& m )
 {
   s << m.loc() << ' '
     << m.geo_loc() << ' ' << m.elevation() << ' '
@@ -36,7 +39,7 @@ std::ostream& operator<<(std::ostream& s, ground_control_point const& m)
   return s;
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // The following code does not work since geo_point doesn't have an input stream
 // operator defined.
 // std::istream& operator>>(std::istream& s, ground_control_point& pt)
@@ -55,4 +58,5 @@ std::ostream& operator<<(std::ostream& s, ground_control_point const& m)
 // }
 
 } // vital
+
 } // kwiver

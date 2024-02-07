@@ -19,6 +19,7 @@
 #include <vector>
 
 namespace kwiver {
+
 namespace vital {
 
 class track;
@@ -36,12 +37,13 @@ public:
   track_ref( VITAL_UNUSED track_ref const& other ) {}
   track_ref( VITAL_UNUSED track_ref&& other ) {}
 
-  track_ref& operator= ( track_ref const& rhs ) = delete;
-  track_ref& operator= ( track_ref&& rhs ) = delete;
+  track_ref& operator=( track_ref const& rhs ) = delete;
+  track_ref& operator=( track_ref&& rhs ) = delete;
 
-  track_ref& operator= ( track_sptr const& rhs )
+  track_ref&
+  operator=( track_sptr const& rhs )
   {
-    this->std::weak_ptr< track >::operator= ( rhs );
+    this->std::weak_ptr< track >::operator=( rhs );
     return *this;
   }
 };
@@ -62,23 +64,27 @@ public:
   track_state( track_state&& other ) = default;
 
   /// Clone the track state (polymorphic copy constructor).
-  virtual track_state_sptr clone( clone_type = clone_type::DEEP ) const
+  virtual track_state_sptr
+  clone( clone_type = clone_type::DEEP ) const
   {
-    return std::make_shared<track_state>( *this );
+    return std::make_shared< track_state >( *this );
   }
 
   /// Access the frame identifier.
-  frame_id_t frame() const { return frame_id_; }
+  frame_id_t
+  frame() const { return frame_id_; }
 
   /// Access the track containing this state.
-  track_sptr track() const { return track_.lock(); }
+  track_sptr
+  track() const { return track_.lock(); }
 
   /// Set the frame identifier.
   void set_frame( frame_id_t frame_id ) { frame_id_ = frame_id; }
 
   virtual ~track_state() = default;
 
-  bool operator==( track_state other ) const { return frame_id_ == other.frame(); }
+  bool
+  operator==( track_state other ) const { return frame_id_ == other.frame(); }
 
 private:
   /// Frame identifier for this state.
@@ -119,10 +125,9 @@ class VITAL_EXPORT track_data_redirect : public track_data
 {
 public:
   track_data_redirect( track_sptr t, track_data_sptr d )
-    : redirect_track( t )
-    , old_track_data( d )
-  {
-  }
+    : redirect_track( t ),
+      old_track_data( d )
+  {}
 
   // Redirect to another track.
   track_sptr redirect_track;
@@ -140,7 +145,7 @@ public:
 /// identifiers are in monotonically increasing order but need not be
 /// sequential. The same track structure can be used to represent feature
 /// tracks for image registration or moving object tracks.
-class VITAL_EXPORT track : public std::enable_shared_from_this<track>
+class VITAL_EXPORT track : public std::enable_shared_from_this< track >
 {
 public:
   /// Convenience type for the \c const iterator of the track state vector.
@@ -156,10 +161,12 @@ public:
   track_sptr clone( clone_type = clone_type::DEEP ) const;
 
   /// Access the track identification number.
-  track_id_t id() const { return id_; }
+  track_id_t
+  id() const { return id_; }
 
   /// Access the track data.
-  track_data_sptr data() const { return data_; }
+  track_data_sptr
+  data() const { return data_; }
 
   /// Set the track identification number.
   void set_id( track_id_t id ) { id_ = id; }
@@ -226,16 +233,20 @@ public:
   void clear();
 
   /// Access a \c const iterator to the start of the history.
-  history_const_itr begin() const { return history_.begin(); }
+  history_const_itr
+  begin() const { return history_.begin(); }
 
   /// Access a \c const iterator to the end of the history.
-  history_const_itr end() const { return history_.end(); }
+  history_const_itr
+  end() const { return history_.end(); }
 
   /// Access the first entry of the history.
-  track_state_sptr front() const { return history_.front(); }
+  track_state_sptr
+  front() const { return history_.front(); }
 
   /// Access the last entry of the history.
-  track_state_sptr back() const { return history_.back(); }
+  track_state_sptr
+  back() const { return history_.back(); }
 
   /// Find the track state iterator matching \p frame.
   ///
@@ -259,10 +270,12 @@ public:
   std::set< frame_id_t > all_frame_ids() const;
 
   /// Return the number of states in the track.
-  size_t size() const { return history_.size(); }
+  size_t
+  size() const { return history_.size(); }
 
   /// Return whether or not this track has any states.
-  bool empty() const { return history_.empty(); }
+  bool
+  empty() const { return history_.empty(); }
 
   /// Get attribute set.
   ///
@@ -299,6 +312,8 @@ protected:
   attribute_set_sptr attrs_;
 };
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital
 
 #endif // VITAL_TRACK_H_

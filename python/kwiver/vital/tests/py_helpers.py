@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Helper functions for testing various Vital components
 
 """
+
 import logging
 import math
 from six.moves import range
@@ -68,7 +69,7 @@ def random_point_3d(stddev):
     :param stddev: standard deviation of normal distribution
     :return: numpy.ndarray of shape 3
     """
-    return np.random.normal(loc=0., scale=stddev, size=3)
+    return np.random.normal(loc=0.0, scale=stddev, size=3)
 
 
 def camera_seq(num_cams=20, k=None):
@@ -85,9 +86,9 @@ def camera_seq(num_cams=20, k=None):
     r = RotationD()  # identity
     for i in range(num_cams):
         frac = float(i) / num_cams
-        x = 4 * math.cos(2*frac)
-        y = 3 * math.sin(2*frac)
-        d[i] = Camera([x, y, 2+frac], r, k).clone_look_at([0, 0, 0])
+        x = 4 * math.cos(2 * frac)
+        y = 3 * math.sin(2 * frac)
+        d[i] = Camera([x, y, 2 + frac], r, k).clone_look_at([0, 0, 0])
 
     return CameraMap(d)
 
@@ -108,13 +109,12 @@ def init_cameras(num_cams=20, intrinsics=None):
     c = np.array([0, 0, 1])
     d = {}
     for i in range(num_cams):
-        cam = Camera(c, r, intrinsics).clone_look_at([0, 0, 0],
-                                                     [0, 1, 0])
+        cam = Camera(c, r, intrinsics).clone_look_at([0, 0, 0], [0, 1, 0])
         d[i] = cam
     return CameraMap(d)
 
 
-def noisy_cameras(cam_map, pos_stddev=1., rot_stddev=1.):
+def noisy_cameras(cam_map, pos_stddev=1.0, rot_stddev=1.0):
     """
     Add positional and rotational gaussian noise to cameras
     :type cam_map: CameraMap
@@ -127,11 +127,10 @@ def noisy_cameras(cam_map, pos_stddev=1., rot_stddev=1.):
         c2 = Camera(
             c.center + random_point_3d(pos_stddev),
             c.rotation * RotationD(random_point_3d(rot_stddev)),
-            c.intrinsics
+            c.intrinsics,
         )
         cmap[f] = c2
     return CameraMap(cmap)
-
 
 
 def subset_tracks(trackset, keep_fraction=0.75):
@@ -148,14 +147,14 @@ def subset_tracks(trackset, keep_fraction=0.75):
     for t in trackset.tracks():
         nt = Track(t.id)
 
-        msg = 'track %d:' % t.id,
+        msg = ("track %d:" % t.id,)
         for ts in t:
             if np.random.rand() < keep_fraction:
                 nt.append(ts)
-                msg += '.',
+                msg += (".",)
             else:
-                msg += 'X',
-        log.info(' '.join(msg))
+                msg += ("X",)
+        log.info(" ".join(msg))
         new_tracks.append(nt)
     return TrackSet(new_tracks)
 
@@ -185,7 +184,7 @@ def reprojection_error_sqr(cam, lm, feat):
     return (reprojection_error_vec(cam, lm, feat) ** 2).sum()
 
 
-def create_numpy_image(dtype_name, nchannels, order='c'):
+def create_numpy_image(dtype_name, nchannels, order="c"):
     """
     Create a numpy image with 'nchannels' channels of major ordering
     of 'order'
@@ -201,19 +200,19 @@ def create_numpy_image(dtype_name, nchannels, order='c'):
 
     dtype = np.dtype(dtype_name)
 
-    if dtype_name == 'bool':
+    if dtype_name == "bool":
         np_img = np.zeros(size, dtype=dtype).reshape(shape)
         np_img[0::2] = 1
     else:
         np_img = np.arange(size, dtype=dtype).reshape(shape)
 
-    if order.startswith('c'):
+    if order.startswith("c"):
         np_img = np.ascontiguousarray(np_img)
-    elif order.startswith('fortran'):
+    elif order.startswith("fortran"):
         np_img = np.asfortranarray(np_img)
     else:
         raise KeyError(order)
-    if order.endswith('-reverse'):
+    if order.endswith("-reverse"):
         np_img = np_img[::-1, ::-1]
 
     return np_img
@@ -227,15 +226,16 @@ def map_dtype_name_to_pixel_type(dtype_name):
     of underlying np.ndarray
     :return: String representing the correct pixel data type
     """
-    if dtype_name == 'float16':
-        want = 'float16'
-    if dtype_name == 'float32':
-        want = 'float'
-    elif dtype_name == 'float64':
-        want = 'double'
+    if dtype_name == "float16":
+        want = "float16"
+    if dtype_name == "float32":
+        want = "float"
+    elif dtype_name == "float64":
+        want = "double"
     else:
         want = dtype_name
     return want
+
 
 # Just gets a list of num_desc track_descriptors, each with td_size random entries
 # Returns a track_descriptor_set and a copy of the lists used to set each track_descriptor
@@ -278,6 +278,7 @@ def create_geo_poly(crs=geodesy.SRID.lat_lon_NAD83, pts=None):
         pts = [loc1, loc2, loc3, loc4]
     return GeoPolygon(Polygon(pts), crs)
 
+
 # Makes sure that a pure virtual method cannot be called
 def no_call_pure_virtual_method(mthd, *args, **kwargs):
     """
@@ -291,9 +292,11 @@ def no_call_pure_virtual_method(mthd, *args, **kwargs):
     :return:
     """
     with nt.assert_raises_regexp(
-                RuntimeError, "Tried to call pure virtual function",
-            ):
-                mthd(*args, **kwargs)
+        RuntimeError,
+        "Tried to call pure virtual function",
+    ):
+        mthd(*args, **kwargs)
+
 
 def generate_dummy_config(**kwargs):
     """
@@ -310,6 +313,7 @@ def generate_dummy_config(**kwargs):
             test_cfg.set_value(str(var_name), str(kwargs[var_name]))
     return test_cfg
 
+
 class CommonConfigurationMixin(object):
     """
     A mixin used by algorithm implementations that were created for testing. It
@@ -318,6 +322,7 @@ class CommonConfigurationMixin(object):
     Note: This mixin is intended only for simple algorithms that were written
           for testing kwiver.vital.algo bindings
     """
+
     threshold = 0.0
 
     def __init__(self):
@@ -357,7 +362,9 @@ class CommonConfigurationMixin(object):
         :return A boolean value representing the succeess of check
         """
         current_check = False
-        if cfg.has_value("threshold") and \
-           float(cfg.get_value("threshold"))==self.threshold:
+        if (
+            cfg.has_value("threshold")
+            and float(cfg.get_value("threshold")) == self.threshold
+        ):
             current_check = True
         return current_check

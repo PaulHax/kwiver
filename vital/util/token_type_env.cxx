@@ -6,29 +6,30 @@
 #include <kwiversys/SystemTools.hxx>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
-token_type_env::
-token_type_env()
-  : token_type ("ENV")
-{ }
+token_type_env
+::token_type_env()
+  : token_type( "ENV" )
+{}
 
 // ----------------------------------------------------------------------------
 token_type_env::
- ~token_type_env()
-{ }
+~token_type_env()
+{}
 
 // ----------------------------------------------------------------------------
 bool
-token_type_env::
-lookup_entry (std::string const& name, std::string& result) const
+token_type_env
+::lookup_entry( std::string const& name, std::string& result ) const
 {
   bool retcode( true );
 
-  const char * v = name.c_str();
-  const char * env_expansion = kwiversys::SystemTools::GetEnv( v );
-  if ( env_expansion != NULL )
+  const char* v = name.c_str();
+  const char* env_expansion = kwiversys::SystemTools::GetEnv( v );
+  if( env_expansion != NULL )
   {
     result = env_expansion;
   }
@@ -42,4 +43,5 @@ lookup_entry (std::string const& name, std::string& result) const
 }
 
 } // end namespace
+
 } // end namespace

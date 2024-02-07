@@ -398,10 +398,14 @@ unknown_tag_traits()
 
 // ----------------------------------------------------------------------------
 metadata_tag_traits
-::metadata_tag_traits( vital_metadata_tag tag, std::string const& enum_name,
-                       std::type_info const& type, std::string const& name,
-                       std::string const& description )
-  : m_tag{ tag }, m_enum_name{ enum_name }, m_type( type ), m_name{ name },
+::metadata_tag_traits(
+  vital_metadata_tag tag, std::string const& enum_name,
+  std::type_info const& type, std::string const& name,
+  std::string const& description )
+  : m_tag{ tag },
+    m_enum_name{ enum_name },
+    m_type( type ),
+    m_name{ name },
     m_description{ description }
 {}
 

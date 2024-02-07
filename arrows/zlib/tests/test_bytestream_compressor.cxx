@@ -26,7 +26,6 @@ main( int argc, char** argv )
 class test_bytestream_compressor : public ::testing::Test
 {
 private:
-
   void
   SetUp() override
   {
@@ -59,6 +58,7 @@ TEST_F ( test_bytestream_compressor, round_trip_deflate_text )
 
   compressor.write( text_data );
   compressor.flush();
+
   auto const compressed_data = compressor.read();
 
   EXPECT_EQ( expected_text_size, compressed_data.size() );
@@ -70,6 +70,7 @@ TEST_F ( test_bytestream_compressor, round_trip_deflate_text )
 
   decompressor.write( compressed_data );
   decompressor.flush();
+
   auto const decompressed_data = decompressor.read();
 
   EXPECT_EQ( text_data, decompressed_data );
@@ -85,6 +86,7 @@ TEST_F ( test_bytestream_compressor, round_trip_deflate_binary )
 
   compressor.write( binary_data );
   compressor.flush();
+
   auto const compressed_data = compressor.read();
 
   EXPECT_EQ( expected_binary_size, compressed_data.size() );
@@ -96,6 +98,7 @@ TEST_F ( test_bytestream_compressor, round_trip_deflate_binary )
 
   decompressor.write( compressed_data );
   decompressor.flush();
+
   auto const decompressed_data = decompressor.read();
 
   EXPECT_EQ( binary_data, decompressed_data );
@@ -125,6 +128,7 @@ TEST_F ( test_bytestream_compressor, round_trip_iostream_wrapper )
 
   std::string out_text;
   compress_is >> out_text;
+
   std::vector< uint8_t > decompressed_data( out_text.begin(), out_text.end() );
 
   EXPECT_EQ( text_data, decompressed_data );
@@ -145,10 +149,11 @@ TEST_F ( test_bytestream_compressor, round_trip_deflate_piecemeal )
   for( size_t i = 0; i < text_data.size(); i += step )
   {
     compressor.write(
-        text_data.data() + i,
-        text_data.data() + std::min( i + step, text_data.size() ) );
+      text_data.data() + i,
+      text_data.data() + std::min( i + step, text_data.size() ) );
   }
   compressor.flush();
+
   auto const compressed_data = compressor.read();
 
   EXPECT_EQ( expected_text_size, compressed_data.size() );
@@ -161,12 +166,13 @@ TEST_F ( test_bytestream_compressor, round_trip_deflate_piecemeal )
   for( size_t i = 0; i < compressed_data.size(); i += step )
   {
     compressor.write(
-        compressed_data.data() + i,
-        compressed_data.data() +
-        std::min( i + step, compressed_data.size() ) );
+      compressed_data.data() + i,
+      compressed_data.data() +
+      std::min( i + step, compressed_data.size() ) );
   }
   decompressor.write( compressed_data );
   decompressor.flush();
+
   auto const decompressed_data = decompressor.read();
 
   EXPECT_EQ( text_data, decompressed_data );
@@ -209,6 +215,7 @@ TEST_F ( test_bytestream_compressor, round_trip_iostream_wrapper_piecemeal )
     compress_is.read( &tmp[ 0 ], tmp.size() );
     out_text += tmp;
   }
+
   std::vector< uint8_t > decompressed_data( out_text.begin(), out_text.end() );
 
   EXPECT_EQ( text_data, decompressed_data );

@@ -386,7 +386,9 @@
  * Not necessary, <em>per se</em>, but is used more to match the other symbol
  * defines.
  */
+// UNCRUST-OFF
 #define COLON :
+// UNCRUST-ON
 
 /**
  * \def BEG
@@ -434,6 +436,7 @@
 ///The terminal symbol when expansion becomes an initializer list.
 #define END_INIT
 
+// UNCRUST-OFF
 /**
  * \def IMPLEMENT_FUNCTION_PROCESS
  *
@@ -522,9 +525,9 @@ conf(DEFINE_CONF_VARS, LINES)                                         \
 iports(DEFINE_IPORT_VARS, LINES)                                      \
 oports(DEFINE_OPORT_VARS, LINES)                                      \
                                                                       \
-CLASS_NAME(name)                                                        \
-::CLASS_NAME(name)(kwiver::vital::config_block_sptr const& config)      \
-                  : sprokit::process(config)                            \
+CLASS_NAME(name)                                                      \
+::CLASS_NAME(name)(kwiver::vital::config_block_sptr const& config)    \
+                  : sprokit::process(config)                          \
 {                                                                     \
   port_flags_t required;                                              \
                                                                       \
@@ -576,5 +579,6 @@ CLASS_NAME(name)::priv                                                \
 ::~priv()                                                             \
 {                                                                     \
 }
+// UNCRUST-ON
 
 #endif // SPROKIT_PROCESSES_HELPER_FUNCTIONS_FUNCTION_PROCESS_IMPL_H

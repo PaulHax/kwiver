@@ -5,8 +5,8 @@
 /// \file
 /// \brief core geodesy tests
 
-#include <vital/types/geodesy.h>
 #include <vital/plugin_management/plugin_manager.h>
+#include <vital/types/geodesy.h>
 
 #include <gtest/gtest.h>
 
@@ -19,14 +19,14 @@ static auto const loc6 = kwiver::vital::vector_2d{ 107.646964, -83.921037 };
 
 // ----------------------------------------------------------------------------
 int
-main(int argc, char* argv[])
+main( int argc, char* argv[] )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
 }
 
 // ----------------------------------------------------------------------------
-TEST(geodesy, utm_ups_zones)
+TEST ( geodesy, utm_ups_zones )
 {
   auto const z1 = kwiver::vital::utm_ups_zone( loc1 );
   EXPECT_EQ( 18, z1.number );
@@ -54,7 +54,7 @@ TEST(geodesy, utm_ups_zones)
 }
 
 // ----------------------------------------------------------------------------
-TEST(geodesy, utm_ups_zone_range_error)
+TEST ( geodesy, utm_ups_zone_range_error )
 {
   EXPECT_THROW(
     kwiver::vital::utm_ups_zone( 0.0, -100.0 ),
@@ -65,28 +65,27 @@ TEST(geodesy, utm_ups_zone_range_error)
 }
 
 // ----------------------------------------------------------------------------
-TEST(geodesy, descriptions)
+TEST ( geodesy, descriptions )
 {
   using namespace kwiver::vital;
 
   plugin_manager::instance().load_all_plugins();
 
   // Helper to get description value from key
-  auto get = []( geo_crs_description_t const& desc, char const* key )
-  {
-    auto i = desc.find( key );
-    return ( i == desc.end() ? "(not found)" : i->second );
-  };
+  auto get = []( geo_crs_description_t const& desc, char const* key ){
+               auto i = desc.find( key );
+               return ( i == desc.end() ? "(not found)" : i->second );
+             };
 
   // Helper to print a description
-  auto print = []( char const* name, geo_crs_description_t const& desc )
-  {
-    std::cout << name << std::endl;
-    for ( auto item : desc )
-    {
-      std::cout << "  " << item.first << ": " << item.second << std::endl;
-    }
-  };
+  auto print = []( char const* name, geo_crs_description_t const& desc ){
+                 std::cout << name << std::endl;
+                 for( auto item : desc )
+                 {
+                   std::cout << "  " << item.first << ": " << item.second <<
+                     std::endl;
+                 }
+               };
 
   // Test WGS84 lat/lon
   auto const& desc_wgs84_ll = geo_crs_description( SRID::lat_lon_WGS84 );

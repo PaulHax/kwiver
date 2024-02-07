@@ -23,8 +23,9 @@ class KWIVER_ALGO_VXL_EXPORT convert_image
   : public vital::algo::image_filter
 {
 public:
-  PLUGIN_INFO( "vxl_convert_image",
-               "Convert image between different formats or scales." )
+  PLUGIN_INFO(
+    "vxl_convert_image",
+    "Convert image between different formats or scales." )
 
   convert_image();
   virtual ~convert_image();

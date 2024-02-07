@@ -8,13 +8,14 @@
 #ifndef VITAL_EXCEPTIONS_BASE_H
 #define VITAL_EXCEPTIONS_BASE_H
 
-#include <vital/vital_config.h>
 #include <vital/exceptions/vital_exceptions_export.h>
+#include <vital/vital_config.h>
 
-#include <string>
 #include <exception>
+#include <string>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -76,15 +77,17 @@ class VITAL_EXCEPTIONS_EXPORT invalid_value
 {
 public:
   /// Constructor
-  invalid_value(std::string reason) noexcept;
+  invalid_value( std::string reason ) noexcept;
   /// Destructor
   virtual ~invalid_value() noexcept;
 };
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital
 
 // ----------------------------------------------------------------------------
-///Exception helper macro.
+/// Exception helper macro.
 ///
 /// Macro to simplify creating exceptions. The source
 /// location of this macro is also recorded in the exception.
@@ -94,10 +97,12 @@ public:
 ///
 /// @param E       Exception type.
 /// @param ...     exception parameters
-#define VITAL_THROW(E, ...) do {                \
-    E except{ __VA_ARGS__ };                    \
-    except.set_location( __FILE__, __LINE__ );  \
-    throw except;                               \
-  } while (0)
+#define VITAL_THROW( E, ... )                \
+do                                           \
+{                                            \
+  E except{ __VA_ARGS__ };                   \
+  except.set_location( __FILE__, __LINE__ ); \
+  throw except;                              \
+} while( 0 )
 
 #endif // VITAL_CORE_EXCEPTIONS_BASE_H

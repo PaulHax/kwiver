@@ -30,8 +30,8 @@ namespace arrows {
 namespace vtk {
 
 /// Color a mesh from a video and cameras.
-class KWIVER_ALGO_VTK_EXPORT mesh_coloration :
-  public kwiver::vital::noncopyable
+class KWIVER_ALGO_VTK_EXPORT mesh_coloration
+  : public kwiver::vital::noncopyable
 {
 public:
   /// Construct object to color a mesh.
@@ -45,17 +45,20 @@ public:
   /// \param video_path Video file path
   /// \param mask_config Configuration for reading the mask
   /// \param mask_path Mask file path
-  mesh_coloration( kwiver::vital::config_block_sptr const& video_config,
-                   std::string const& video_path,
-                   kwiver::vital::config_block_sptr const& mask_config,
-                   std::string const& mask_path,
-                   kwiver::vital::camera_map_sptr const& cameras );
+  mesh_coloration(
+    kwiver::vital::config_block_sptr const& video_config,
+    std::string const& video_path,
+    kwiver::vital::config_block_sptr const& mask_config,
+    std::string const& mask_path,
+    kwiver::vital::camera_map_sptr const& cameras );
   /// Set video input.
-  void set_video( kwiver::vital::config_block_sptr const& video_config,
-                  std::string const& video_path );
+  void set_video(
+    kwiver::vital::config_block_sptr const& video_config,
+    std::string const& video_path );
   /// Set mask to restrict area to be colored. Optional.
-  void set_mask( kwiver::vital::config_block_sptr const& mask_config,
-                 std::string const& mask_path );
+  void set_mask(
+    kwiver::vital::config_block_sptr const& mask_config,
+    std::string const& mask_path );
   /// Set cameras (and frames) to be used for coloring.
   void set_cameras( kwiver::vital::camera_map_sptr const& cameras );
   /// Input mesh to be colored. This is not modified.
@@ -128,13 +131,15 @@ public:
   bool colorize();
 
   /// Reports progress when coloring the mesh
-  virtual void report_progress_changed( std::string const& message,
-                                        int percentage ) = 0;
+  virtual void report_progress_changed(
+    std::string const& message,
+    int percentage ) = 0;
 
 protected:
   void initialize_data_list( int frame_id );
-  void push_data( kwiver::vital::camera_map::map_camera_t::value_type cam_itr,
-                  kwiver::vital::timestamp& ts, bool has_mask );
+  void push_data(
+    kwiver::vital::camera_map::map_camera_t::value_type cam_itr,
+    kwiver::vital::timestamp& ts, bool has_mask );
   vtkSmartPointer< vtkRenderWindow > create_depth_buffer_pipeline();
   vtkSmartPointer< vtkFloatArray > render_depth_buffer(
     vtkSmartPointer< vtkRenderWindow > ren_win,
@@ -156,10 +161,11 @@ protected:
 
   struct coloration_data
   {
-    coloration_data( kwiver::vital::image_container_sptr imageContainer,
-                     kwiver::vital::image_container_sptr maskImageContainer,
-                     kwiver::vital::camera_perspective_sptr camera,
-                     kwiver::vital::frame_id_t frame )
+    coloration_data(
+      kwiver::vital::image_container_sptr imageContainer,
+      kwiver::vital::image_container_sptr maskImageContainer,
+      kwiver::vital::camera_perspective_sptr camera,
+      kwiver::vital::frame_id_t frame )
       : image_{ imageContainer->get_image() },
         mask_image_{
           maskImageContainer ? maskImageContainer->get_image()

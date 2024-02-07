@@ -31,27 +31,28 @@ from __future__ import print_function
 from kwiver.vital.algo import FilterTracks
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
 
-class SimpleFilterTracks(CommonConfigurationMixin,
-                                  FilterTracks):
+
+class SimpleFilterTracks(CommonConfigurationMixin, FilterTracks):
     """
     Implementation of FilterTracks to test it
 
     Examples:
     """
+
     def __init__(self):
         FilterTracks.__init__(self)
 
 
-
 def __vital_algorithm_register__():
     from kwiver.vital.algo import algorithm_factory
+
     # Register Algorithm
-    implementation_name  = "SimpleFilterTracks"
+    implementation_name = "SimpleFilterTracks"
     if algorithm_factory.has_algorithm_impl_name(
-                            SimpleFilterTracks.static_type_name(),
-                            implementation_name):
+        SimpleFilterTracks.static_type_name(), implementation_name
+    ):
         return
-    algorithm_factory.add_algorithm( implementation_name,
-                                "Test kwiver.vital.algo.FilterTracks",
-                                 SimpleFilterTracks )
-    algorithm_factory.mark_algorithm_as_loaded( implementation_name )
+    algorithm_factory.add_algorithm(
+        implementation_name, "Test kwiver.vital.algo.FilterTracks", SimpleFilterTracks
+    )
+    algorithm_factory.mark_algorithm_as_loaded(implementation_name)

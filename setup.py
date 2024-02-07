@@ -2,6 +2,7 @@
 Scikit-build requires configuration to be passed to it's setup function.
 Support for setup.cfg is forthcoming (as of skbuild v0.12
 """
+
 from pathlib import Path
 from setuptools import find_packages
 
@@ -56,17 +57,14 @@ setup(
     package_dir={"": PACKAGE_SRC},
     packages=find_packages(where=PACKAGE_SRC, include=[f"{PACKAGE_NAME}*"]),
     # Requirements #############################################################
-    install_requires=[
-        "numpy",
-        "importlib-metadata>=3.7.0; python_version < '3.8'"
-    ],
+    install_requires=["numpy", "importlib-metadata>=3.7.0; python_version < '3.8'"],
     # extras_require=[],
     # tests_require=[],
     # Entry-Points #############################################################
     entry_points={
-        'kwiver.python_plugins': [
-          'say=kwiver.vital.test_interface.python_say',
-          'they_say=kwiver.vital.test_interface.python_they_say',
+        "kwiver.python_plugins": [
+            "say=kwiver.vital.test_interface.python_say",
+            "they_say=kwiver.vital.test_interface.python_they_say",
         ]
         # 'kwiver.python_plugin_registration': [
         #     'pythread_process=kwiver.sprokit.schedulers.pythread_per_process',

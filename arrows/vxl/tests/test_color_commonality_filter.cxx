@@ -16,7 +16,8 @@ namespace ka = kwiver::arrows;
 
 kv::path_t g_data_dir;
 static std::string test_image_name = "images/kitware_logos/small_grey_logo.png";
-static std::string test_color_image_name = "images/kitware_logos/small_color_logo.png";
+static std::string test_color_image_name =
+  "images/kitware_logos/small_color_logo.png";
 static std::string expected_commonality_default_color =
   "images/kitware_logos/commonality_filter_default_color.png";
 static std::string expected_commonality_default_gray =
@@ -41,7 +42,7 @@ class color_commonality_filter : public ::testing::Test
 };
 
 // ----------------------------------------------------------------------------
-TEST_F(color_commonality_filter, color)
+TEST_F ( color_commonality_filter, color )
 {
   ka::vxl::image_io io;
 
@@ -54,12 +55,14 @@ TEST_F(color_commonality_filter, color)
 
   kv::path_t expected = data_dir + "/" + expected_commonality_default_color;
   auto const expected_image_ptr = io.load( expected );
-  EXPECT_TRUE( equal_content( filtered_image_ptr->get_image(),
-                              expected_image_ptr->get_image() ) );
+  EXPECT_TRUE(
+    equal_content(
+      filtered_image_ptr->get_image(),
+      expected_image_ptr->get_image() ) );
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(color_commonality_filter, gray)
+TEST_F ( color_commonality_filter, gray )
 {
   ka::vxl::image_io io;
 
@@ -72,6 +75,8 @@ TEST_F(color_commonality_filter, gray)
 
   kv::path_t expected = data_dir + "/" + expected_commonality_default_gray;
   auto const expected_image_ptr = io.load( expected );
-  EXPECT_TRUE( equal_content( filtered_image_ptr->get_image(),
-                              expected_image_ptr->get_image() ) );
+  EXPECT_TRUE(
+    equal_content(
+      filtered_image_ptr->get_image(),
+      expected_image_ptr->get_image() ) );
 }

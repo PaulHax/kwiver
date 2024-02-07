@@ -13,17 +13,21 @@
 #include <vital/algo/split_image.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace ocv {
 
-/// A class for writing out image chips around detections, useful as a debugging process
+/// A class for writing out image chips around detections, useful as a debugging
+/// process
 /// for ensuring that the refine detections process is running on desired ROIs.
 class KWIVER_ALGO_OCV_EXPORT split_image
   : public vital::algo::split_image
 {
 public:
-  PLUGIN_INFO( "ocv",
-               "Split an image  into multiple smaller images using opencv functions" )
+  PLUGIN_INFO(
+    "ocv",
+    "Split an image  into multiple smaller images using opencv functions" )
 
   /// Constructor
   split_image();
@@ -31,16 +35,23 @@ public:
   /// Destructor
   virtual ~split_image();
 
-  virtual void set_configuration( kwiver::vital::config_block_sptr ) { }
-  virtual bool check_configuration( kwiver::vital::config_block_sptr config) const { return true; }
+  virtual void set_configuration( kwiver::vital::config_block_sptr ) {}
+
+  virtual bool
+  check_configuration( kwiver::vital::config_block_sptr config ) const
+  {
+    return true;
+  }
 
   /// Split image
   virtual std::vector< kwiver::vital::image_container_sptr >
-  split(kwiver::vital::image_container_sptr img) const;
+  split( kwiver::vital::image_container_sptr img ) const;
 };
 
 } // end namespace ocv
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif

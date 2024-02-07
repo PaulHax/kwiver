@@ -13,7 +13,9 @@
 #include <vital/algo/interpolate_track.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 /// Fills in missing track segments using spline interpolation
@@ -25,8 +27,9 @@ class KWIVER_ALGO_CORE_EXPORT interpolate_track_spline
   : public vital::algo::interpolate_track
 {
 public:
-  PLUGIN_INFO( "spline",
-               "Fill in missing object track intervals using spline-based interpolation." )
+  PLUGIN_INFO(
+    "spline",
+    "Fill in missing object track intervals using spline-based interpolation." )
 
   /// Default Constructor
   interpolate_track_spline();
@@ -49,9 +52,14 @@ public:
 protected:
   /// private implementation class
   class priv;
-  std::unique_ptr<priv> const d_;
+
+  std::unique_ptr< priv > const d_;
 };
 
-} } } // end namespace
+} // namespace core
+
+} // namespace arrows
+
+}     // end namespace
 
 #endif

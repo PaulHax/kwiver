@@ -20,8 +20,9 @@ class KWIVER_ALGO_VXL_EXPORT pixel_feature_extractor
   : public vital::algo::image_filter
 {
 public:
-  PLUGIN_INFO( "vxl_pixel_feature_extractor",
-               "Extract various local pixel-wise features from an image." )
+  PLUGIN_INFO(
+    "vxl_pixel_feature_extractor",
+    "Extract various local pixel-wise features from an image." )
 
   pixel_feature_extractor();
   virtual ~pixel_feature_extractor();

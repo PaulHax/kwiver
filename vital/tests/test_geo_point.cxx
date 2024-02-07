@@ -8,9 +8,9 @@
 #include <test_eigen.h>
 #include <test_gtest.h>
 
+#include <vital/plugin_management/plugin_manager.h>
 #include <vital/types/geo_point.h>
 #include <vital/types/geodesy.h>
-#include <vital/plugin_management/plugin_manager.h>
 
 #include <sstream>
 
@@ -31,32 +31,32 @@ auto const locrt = vector_2d{ 0.123456789012345678, -0.987654321098765432 };
 auto constexpr crs_ll = SRID::lat_lon_WGS84;
 auto constexpr crs_utm_18n = SRID::UTM_WGS84_north + 18;
 
-}
+} // namespace
 
 // ----------------------------------------------------------------------------
 int
-main(int argc, char* argv[])
+main( int argc, char* argv[] )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
 }
 
 // ----------------------------------------------------------------------------
-TEST(geo_point, default_constructor)
+TEST ( geo_point, default_constructor )
 {
   geo_point p;
   EXPECT_TRUE( p.is_empty() );
 }
 
 // ----------------------------------------------------------------------------
-TEST(geo_point, constructor_point)
+TEST ( geo_point, constructor_point )
 {
   geo_point p{ loc1, crs_ll };
   EXPECT_FALSE( p.is_empty() );
 }
 
 // ----------------------------------------------------------------------------
-TEST(geo_point, assignment)
+TEST ( geo_point, assignment )
 {
   geo_point p;
   geo_point const p1{ loc1, crs_ll };
@@ -79,10 +79,10 @@ TEST(geo_point, assignment)
 }
 
 // ----------------------------------------------------------------------------
-TEST(geo_point, api)
+TEST ( geo_point, api )
 {
   geo_point p{ loc1, crs_ll };
-  vector_3d _loc1{ loc1[0], loc1[1], 0 };
+  vector_3d _loc1{ loc1[ 0 ], loc1[ 1 ], 0 };
 
   // Test values of the point as originally constructed
   EXPECT_EQ( crs_ll, p.crs() );
@@ -91,7 +91,8 @@ TEST(geo_point, api)
 
   // Modify the location and test the new values
   p.set_location( loc3, crs_utm_18n );
-  vector_3d _loc3{ loc3[0], loc3[1], 0 };
+
+  vector_3d _loc3{ loc3[ 0 ], loc3[ 1 ], 0 };
 
   EXPECT_EQ( crs_utm_18n, p.crs() );
   EXPECT_EQ( _loc3, p.location() );
@@ -99,7 +100,8 @@ TEST(geo_point, api)
 
   // Modify the location again and test the new values
   p.set_location( loc2, crs_ll );
-  vector_3d _loc2{ loc2[0], loc2[1], 0 };
+
+  vector_3d _loc2{ loc2[ 0 ], loc2[ 1 ], 0 };
 
   EXPECT_EQ( crs_ll, p.crs() );
   EXPECT_EQ( _loc2, p.location() );
@@ -111,7 +113,7 @@ TEST(geo_point, api)
     EXPECT_NE( _loc3, p.location( crs_utm_18n ) )
       << "Changing the location did not clear the location cache";
   }
-  catch (...)
+  catch( ... )
   {
     // If no conversion functor is registered, the conversion will fail; that
     // is okay, since we are only checking here that the point isn't still
@@ -121,7 +123,7 @@ TEST(geo_point, api)
 }
 
 // ----------------------------------------------------------------------------
-TEST(geo_point, conversion)
+TEST ( geo_point, conversion )
 {
   plugin_manager::instance().load_all_plugins();
 
@@ -131,10 +133,10 @@ TEST(geo_point, conversion)
   auto const conv_loc_utm = p_ll.location( p_utm.crs() );
   auto const conv_loc_ll = p_utm.location( p_ll.crs() );
 
-  vector_3d _loc3{ loc3[0], loc3[1], 0 };
+  vector_3d _loc3{ loc3[ 0 ], loc3[ 1 ], 0 };
   auto const epsilon_ll_to_utm = ( _loc3 - conv_loc_utm ).norm();
 
-  vector_3d _loc1{ loc1[0], loc1[1], 0 };
+  vector_3d _loc1{ loc1[ 0 ], loc1[ 1 ], 0 };
   auto const epsilon_utm_to_ll = ( _loc1 - conv_loc_ll ).norm();
 
   EXPECT_MATRIX_NEAR( p_ll.location(), conv_loc_ll, 1e-7 );
@@ -165,7 +167,7 @@ TEST(geo_point, conversion)
 }
 
 // ----------------------------------------------------------------------------
-TEST(geo_point, insert_operator_empty)
+TEST ( geo_point, insert_operator_empty )
 {
   kwiver::vital::geo_point p_empty;
 
@@ -186,16 +188,15 @@ struct roundtrip_test
 void
 PrintTo( roundtrip_test const& v, ::std::ostream* os )
 {
-  (*os) << v.text;
+  ( *os ) << v.text;
 }
 
 // ----------------------------------------------------------------------------
-class geo_point_roundtrip : public ::testing::TestWithParam<roundtrip_test>
-{
-};
+class geo_point_roundtrip : public ::testing::TestWithParam< roundtrip_test >
+{};
 
 // ----------------------------------------------------------------------------
-TEST_P(geo_point_roundtrip, insert_operator)
+TEST_P ( geo_point_roundtrip, insert_operator )
 {
   auto const p = GetParam().point;
   auto const expected_loc = p.location();
@@ -210,7 +211,7 @@ TEST_P(geo_point_roundtrip, insert_operator)
   std::replace( s.begin(), s.end(), ',', ' ' );
 
   // Read back values
-  std::stringstream in(s);
+  std::stringstream in( s );
 
   double easting, northing, altitude;
   int crs;
@@ -226,9 +227,9 @@ TEST_P(geo_point_roundtrip, insert_operator)
   in >> crs;
 
   // Successful round-trip?
-  EXPECT_EQ( expected_loc[0], easting );
-  EXPECT_EQ( expected_loc[1], northing );
-  EXPECT_EQ( expected_loc[2], altitude );
+  EXPECT_EQ( expected_loc[ 0 ], easting );
+  EXPECT_EQ( expected_loc[ 1 ], northing );
+  EXPECT_EQ( expected_loc[ 2 ], altitude );
   EXPECT_EQ( expected_crs, crs );
 }
 
@@ -237,11 +238,12 @@ INSTANTIATE_TEST_CASE_P(
   ,
   geo_point_roundtrip,
   ::testing::Values(
-      ( roundtrip_test{ "1", geo_point{ loc1, crs_ll } } ),
-      ( roundtrip_test{ "2", geo_point{ loc2, crs_ll } } ),
-      ( roundtrip_test{ "3", geo_point{ loc3, crs_utm_18n } } ),
-      ( roundtrip_test{ "1a", geo_point{ loc1a, crs_ll } } ),
-      ( roundtrip_test{ "2a", geo_point{ loc2a, crs_ll } } ),
-      ( roundtrip_test{ "3a", geo_point{ loc3a, crs_utm_18n } } ),
-      ( roundtrip_test{ "rt", geo_point{ locrt, 12345 } } )
-  ) );
+    ( roundtrip_test{ "1", geo_point{ loc1, crs_ll } } ),
+    ( roundtrip_test{ "2", geo_point{ loc2, crs_ll } } ),
+    ( roundtrip_test{ "3", geo_point{ loc3, crs_utm_18n } } ),
+    ( roundtrip_test{ "1a", geo_point{ loc1a, crs_ll } } ),
+    ( roundtrip_test{ "2a", geo_point{ loc2a, crs_ll } } ),
+    ( roundtrip_test{ "3a", geo_point{ loc3a, crs_utm_18n } } ),
+    ( roundtrip_test{ "rt", geo_point{ locrt, 12345 } } )
+  )
+);

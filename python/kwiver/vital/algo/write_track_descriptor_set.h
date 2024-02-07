@@ -8,12 +8,16 @@
 #include <pybind11/pybind11.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
+
 namespace py = pybind11;
 
-void write_track_descriptor_set(py::module &m);
+void write_track_descriptor_set( py::module& m );
 #endif
-}
+
+} // namespace kwiver
 }
 }

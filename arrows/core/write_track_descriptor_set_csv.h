@@ -8,23 +8,26 @@
 #ifndef KWIVER_ARROWS_WRITE_TRACK_DESCRIPTOR_SET_CSV_H
 #define KWIVER_ARROWS_WRITE_TRACK_DESCRIPTOR_SET_CSV_H
 
-#include <vital/vital_config.h>
 #include <arrows/core/kwiver_algo_core_export.h>
+#include <vital/vital_config.h>
 
 #include <vital/algo/write_track_descriptor_set.h>
 
 #include <memory>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 class KWIVER_ALGO_CORE_EXPORT write_track_descriptor_set_csv
   : public vital::algo::write_track_descriptor_set
 {
 public:
-  PLUGIN_INFO( "csv",
-               "Track descriptor set csv writer." )
+  PLUGIN_INFO(
+    "csv",
+    "Track descriptor set csv writer." )
 
   write_track_descriptor_set_csv();
   virtual ~write_track_descriptor_set_csv();
@@ -36,9 +39,14 @@ public:
 
 private:
   class priv;
+
   std::unique_ptr< priv > d;
 };
 
-} } } // end namespace
+} // namespace core
+
+} // namespace arrows
+
+}     // end namespace
 
 #endif // KWIVER_ARROWS_TRACK_DESCRIPTOR_SET_OUTPUT_CSV_H

@@ -10,6 +10,7 @@
 #include <string>
 
 namespace kwiver {
+
 namespace vital {
 
 /// @brief Compute the md5 of a file
@@ -24,6 +25,7 @@ VITAL_UTIL_EXPORT std::string
 file_md5( const std::string& fn );
 
 } // ...vital
+
 } // ...kwiver
 
 #endif

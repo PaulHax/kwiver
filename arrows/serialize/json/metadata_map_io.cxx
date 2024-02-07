@@ -33,14 +33,12 @@ public:
 // ----------------------------------------------------------------------------
 metadata_map_io
 ::metadata_map_io()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 metadata_map_io
 ::~metadata_map_io()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 kwiver::vital::metadata_map_sptr
@@ -60,8 +58,9 @@ metadata_map_io
   }
   else
   {
-    VITAL_THROW( vital::file_not_read_exception, filename,
-                 "Could not read from stream" );
+    VITAL_THROW(
+      vital::file_not_read_exception, filename,
+      "Could not read from stream" );
   }
 
   return std::make_shared< vital::simple_metadata_map >( metadata_map );
@@ -70,8 +69,9 @@ metadata_map_io
 // ----------------------------------------------------------------------------
 void
 metadata_map_io
-::save_( std::ostream& fout,
-         vital::metadata_map_sptr data, std::string const& filename ) const
+::save_(
+  std::ostream& fout,
+  vital::metadata_map_sptr data, std::string const& filename ) const
 {
   if( fout )
   {
@@ -82,8 +82,9 @@ metadata_map_io
   }
   else
   {
-    VITAL_THROW( vital::file_write_exception, filename,
-                 "Could not write to stream" );
+    VITAL_THROW(
+      vital::file_write_exception, filename,
+      "Could not write to stream" );
   }
 }
 

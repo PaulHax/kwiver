@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Tests for vital::query_result interface
 
 """
+
 import nose.tools as nt
 import numpy as np
 
@@ -180,7 +181,7 @@ class TestVitalQueryResult(object):
             (Timestamp(300, 5), Timestamp(400, 6)),
         ]
 
-        for (t1, t2) in test_bounds:
+        for t1, t2 in test_bounds:
             qr.set_temporal_bounds(t1, t2)
             nt.assert_equals(qr.start_time(), t1)
             nt.assert_equals(qr.end_time(), t2)

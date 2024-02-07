@@ -5,35 +5,38 @@
 #include <arrows/serialize/json/activity.h>
 #include <arrows/serialize/json/load_save.h>
 
-#include <vital/types/activity.h>
-#include <vital/internal/cereal/cereal.hpp>
 #include <vital/internal/cereal/archives/json.hpp>
+#include <vital/internal/cereal/cereal.hpp>
+#include <vital/types/activity.h>
 
 #include <sstream>
 
 namespace kasj = kwiver::arrows::serialize::json;
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace serialize {
+
 namespace json {
 
 // ----------------------------------------------------------------------------
-activity::
-activity()
-{ }
+activity
+::activity()
+{}
 
 activity::
 ~activity()
-{ }
+{}
 
 // ----------------------------------------------------------------------------
 std::shared_ptr< std::string >
-activity::
-serialize( const kwiver::vital::any& element )
+activity
+::serialize( const kwiver::vital::any& element )
 {
   kwiver::vital::activity l_activity =
-    kwiver::vital::any_cast< kwiver::vital::activity > ( element );
+    kwiver::vital::any_cast< kwiver::vital::activity >( element );
 
   std::stringstream msg;
   msg << "activity ";
@@ -42,22 +45,25 @@ serialize( const kwiver::vital::any& element )
     save( ar, l_activity );
   }
 
-  return std::make_shared< std::string > ( msg.str() );
+  return std::make_shared< std::string >( msg.str() );
 }
 
 // ----------------------------------------------------------------------------
-kwiver::vital::any activity::
-deserialize( const std::string& message )
+kwiver::vital::any
+activity
+::deserialize( const std::string& message )
 {
-  std::stringstream msg(message);
+  std::stringstream msg( message );
   kwiver::vital::activity l_activity;
   std::string tag;
   msg >> tag;
 
-  if (tag != "activity" )
+  if( tag != "activity" )
   {
-    LOG_ERROR( logger(), "Invalid data type tag received. Expected \"activity\", received \""
-               << tag << "\". Message dropped." );
+    LOG_ERROR(
+      logger(),
+      "Invalid data type tag received. Expected \"activity\", received \""
+        << tag << "\". Message dropped." );
   }
   else
   {
@@ -68,4 +74,10 @@ deserialize( const std::string& message )
   return kwiver::vital::any( l_activity );
 }
 
-} } } }
+} // namespace json
+
+} // namespace serialize
+
+} // namespace arrows
+
+} // namespace kwiver

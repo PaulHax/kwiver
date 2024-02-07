@@ -8,13 +8,13 @@
 #include "iqr_feedback.h"
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
 iqr_feedback
 ::iqr_feedback()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 vital::uid
@@ -64,4 +64,6 @@ iqr_feedback
   m_negative_ids = ids;
 }
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace

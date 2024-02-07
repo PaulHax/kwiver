@@ -17,33 +17,35 @@ namespace {
 class compare_state_frame
 {
 public:
-  bool operator()( const kwiver::vital::track_state_sptr& ts, kwiver::vital::frame_id_t frame )
+  bool
+  operator()(
+    const kwiver::vital::track_state_sptr& ts,
+    kwiver::vital::frame_id_t frame )
   {
     return ts && ts->frame() < frame;
   }
 };
 
-}
+} // namespace
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
 track
-::track(track_data_sptr d)
-  : id_( invalid_track_id )
-  , data_(d)
-{
-}
+::track( track_data_sptr d )
+  : id_( invalid_track_id ),
+    data_( d )
+{}
 
 // ----------------------------------------------------------------------------
 track
 ::track( const track& other )
-  : history_()
-  , id_( other.id_ )
-  , data_( other.data_ )
-{
-}
+  : history_(),
+    id_( other.id_ ),
+    data_( other.data_ )
+{}
 
 // ----------------------------------------------------------------------------
 track_sptr
@@ -82,7 +84,7 @@ track
   {
     return 0;
   }
-  return( *this->history_.begin() )->frame();
+  return ( *this->history_.begin() )->frame();
 }
 
 // ----------------------------------------------------------------------------
@@ -94,7 +96,7 @@ track
   {
     return 0;
   }
-  return( *this->history_.rbegin() )->frame();
+  return ( *this->history_.rbegin() )->frame();
 }
 
 // ----------------------------------------------------------------------------
@@ -102,14 +104,14 @@ bool
 track
 ::append( track_state_sptr&& state )
 {
-  if ( state && ! state->track_.expired() )
+  if( state && !state->track_.expired() )
   {
     throw std::logic_error( "track states may not be reparented" );
   }
 
-  if ( ! state ||
-       ( ! this->history_.empty() &&
-       ( this->last_frame() >= state->frame() ) ) )
+  if( !state ||
+      ( !this->history_.empty() &&
+        ( this->last_frame() >= state->frame() ) ) )
   {
     return false;
   }
@@ -123,20 +125,20 @@ bool
 track
 ::append( track& to_append )
 {
-  if ( ! this->history_.empty() && ! to_append.empty() &&
-       ( this->last_frame() >= to_append.first_frame() ) )
+  if( !this->history_.empty() && !to_append.empty() &&
+      ( this->last_frame() >= to_append.first_frame() ) )
   {
     return false;
   }
   for( auto ts : to_append.history_ )
   {
     ts->track_ = this->shared_from_this();
-    this->history_.push_back(ts);
+    this->history_.push_back( ts );
   }
   to_append.history_.clear();
-  to_append.data_ = std::make_shared<track_data_redirect>(
-                        this->shared_from_this(),
-                        to_append.data_ );
+  to_append.data_ = std::make_shared< track_data_redirect >(
+    this->shared_from_this(),
+    to_append.data_ );
   return true;
 }
 
@@ -145,19 +147,20 @@ bool
 track
 ::insert( track_state_sptr&& state )
 {
-  if ( ! state )
+  if( !state )
   {
     return false;
   }
 
-  if ( ! state->track_.expired() )
+  if( !state->track_.expired() )
   {
     throw std::logic_error( "track states may not be reparented" );
   }
 
-  auto pos = std::lower_bound( this->history_.begin(), this->history_.end(),
-                               state->frame(), compare_state_frame() );
-  if( pos != this->history_.end() && (*pos)->frame() == state->frame() )
+  auto pos = std::lower_bound(
+    this->history_.begin(), this->history_.end(),
+    state->frame(), compare_state_frame() );
+  if( pos != this->history_.end() && ( *pos )->frame() == state->frame() )
   {
     return false;
   }
@@ -172,20 +175,21 @@ bool
 track
 ::remove( track_state_sptr const& state )
 {
-  if ( !state )
+  if( !state )
   {
     return false;
   }
 
-  auto pos = std::lower_bound(this->history_.begin(), this->history_.end(),
-    state->frame(), compare_state_frame());
+  auto pos = std::lower_bound(
+    this->history_.begin(), this->history_.end(),
+    state->frame(), compare_state_frame() );
 
-  if (pos == this->history_.end() || (*pos)->frame() != state->frame())
+  if( pos == this->history_.end() || ( *pos )->frame() != state->frame() )
   {
     return false;
   }
 
-  this->erase(pos);
+  this->erase( pos );
   return true;
 }
 
@@ -212,7 +216,7 @@ track
   {
     ( *iter )->track_.reset();
   }
-#if defined(__GNUC__) && !defined(__clang__) && __GNUC__ < 5
+#if defined( __GNUC__ ) && !defined( __clang__ ) && __GNUC__ < 5
   // GCC 4.8 is missing C++11 vector::erase(const_iterator)
   auto const offset = iter - this->history_.cbegin();
   return this->history_.erase( this->history_.begin() + offset );
@@ -226,7 +230,7 @@ void
 track
 ::clear()
 {
-  for (auto& s : this->history_)
+  for( auto& s : this->history_ )
   {
     s->track_.reset();
   }
@@ -238,14 +242,16 @@ track::history_const_itr
 track
 ::find( frame_id_t frame ) const
 {
-  if ( ( frame < this->first_frame() ) ||
-       ( frame > this->last_frame() ) )
+  if( ( frame < this->first_frame() ) ||
+      ( frame > this->last_frame() ) )
   {
     return this->end();
   }
-  history_const_itr it = std::lower_bound( this->begin(), this->end(),
-                                           frame, compare_state_frame() );
-  if ( ( it != this->end() ) && ( (*it)->frame() == frame ) )
+
+  history_const_itr it = std::lower_bound(
+    this->begin(), this->end(),
+    frame, compare_state_frame() );
+  if( ( it != this->end() ) && ( ( *it )->frame() == frame ) )
   {
     return it;
   }
@@ -298,4 +304,6 @@ track
   this->attrs_ = attrs;
 }
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital

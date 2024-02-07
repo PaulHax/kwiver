@@ -21,7 +21,8 @@ public:
   qt_image_memory( QImage const& img ) : image_{ img }
   { size_ = static_cast< size_t >( image_.sizeInBytes() ); }
 
-  virtual void* data() override { return image_.bits(); }
+  virtual void*
+  data() override { return image_.bits(); }
 
   QImage image_;
 };
@@ -60,9 +61,10 @@ depth( QImage::Format format )
     case QImage::Format_A2RGB30_Premultiplied:
       return 4;
     default:
-      VITAL_THROW( kwiver::vital::image_type_mismatch_exception,
-                   "depth: unsupported image format " +
-                   std::to_string( format ) );
+      VITAL_THROW(
+        kwiver::vital::image_type_mismatch_exception,
+        "depth: unsupported image format " +
+        std::to_string( format ) );
   }
 }
 
@@ -78,26 +80,29 @@ get_pixel_gray( uint8_t const* in, ptrdiff_t pstep )
 uint32_t
 get_pixel_rgb( uint8_t const* in, ptrdiff_t pstep )
 {
-  return qRgb( *( in + ( 0 * pstep ) ),
-               *( in + ( 1 * pstep ) ),
-               *( in + ( 2 * pstep ) ) );
+  return qRgb(
+    *( in + ( 0 * pstep ) ),
+    *( in + ( 1 * pstep ) ),
+    *( in + ( 2 * pstep ) ) );
 }
 
 // ----------------------------------------------------------------------------
 uint32_t
 get_pixel_rgba( uint8_t const* in, ptrdiff_t pstep )
 {
-  return qRgba( *( in + ( 0 * pstep ) ),
-                *( in + ( 1 * pstep ) ),
-                *( in + ( 2 * pstep ) ),
-                *( in + ( 3 * pstep ) ) );
+  return qRgba(
+    *( in + ( 0 * pstep ) ),
+    *( in + ( 1 * pstep ) ),
+    *( in + ( 2 * pstep ) ),
+    *( in + ( 3 * pstep ) ) );
 }
 
 // ----------------------------------------------------------------------------
 template < typename T >
 QImage
-vital_to_qt( kwiver::vital::image const& img, QImage::Format format,
-             T ( * get_pixel )( uint8_t const*, ptrdiff_t ) )
+vital_to_qt(
+  kwiver::vital::image const& img, QImage::Format format,
+  T ( * get_pixel )( uint8_t const*, ptrdiff_t ) )
 {
   auto const w = static_cast< int >( img.width() );
   auto const h = static_cast< int >( img.height() );
@@ -245,9 +250,10 @@ image_container
       break;
   }
 
-  VITAL_THROW( kwiver::vital::image_type_mismatch_exception,
-               "qt_to_vital: unsupported image format " +
-               std::to_string( img.format() ) );
+  VITAL_THROW(
+    kwiver::vital::image_type_mismatch_exception,
+    "qt_to_vital: unsupported image format " +
+    std::to_string( img.format() ) );
 }
 
 // ----------------------------------------------------------------------------
@@ -261,12 +267,13 @@ image_container
   if( img.width() > MAX_DIM ||
       img.height() > MAX_DIM )
   {
-    VITAL_THROW( kwiver::vital::image_exception,
-                 "vital_to_qt: input image dimensions "
-                 "(width = " + std::to_string( img.width() ) +
-                 ", height = " + std::to_string( img.height() ) +
-                 ") exceed maximum output dimension (" +
-                 std::to_string( MAX_DIM ) + ")" );
+    VITAL_THROW(
+      kwiver::vital::image_exception,
+      "vital_to_qt: input image dimensions "
+      "(width = " + std::to_string( img.width() ) +
+      ", height = " + std::to_string( img.height() ) +
+      ") exceed maximum output dimension (" +
+      std::to_string( MAX_DIM ) + ")" );
   }
 
   auto const& pt = img.pixel_traits();
@@ -276,9 +283,10 @@ image_container
     {
       if( img.depth() != 1 )
       {
-        VITAL_THROW( kwiver::vital::image_type_mismatch_exception,
-                     "vital_to_qt: unsupported image format "
-                     "(depth = " + std::to_string( img.depth() ) + ")" );
+        VITAL_THROW(
+          kwiver::vital::image_type_mismatch_exception,
+          "vital_to_qt: unsupported image format "
+          "(depth = " + std::to_string( img.depth() ) + ")" );
       }
 
       auto const w = static_cast< int >( img.width() );
@@ -337,17 +345,19 @@ image_container
           return ::vital_to_qt< uint32_t >(
             img, QImage::Format_ARGB32, &get_pixel_rgba );
         default:
-          VITAL_THROW( kwiver::vital::image_type_mismatch_exception,
-                       "vital_to_qt: unsupported image format "
-                       "(depth = " + std::to_string( img.depth() ) + ")" );
+          VITAL_THROW(
+            kwiver::vital::image_type_mismatch_exception,
+            "vital_to_qt: unsupported image format "
+            "(depth = " + std::to_string( img.depth() ) + ")" );
       }
     }
   }
 
-  VITAL_THROW( kwiver::vital::image_type_mismatch_exception,
-               "vital_to_qt: unsupported image format "
-               "(type = " + std::to_string( pt.type ) +
-               ", bytes = " + std::to_string( pt.num_bytes ) + ")" );
+  VITAL_THROW(
+    kwiver::vital::image_type_mismatch_exception,
+    "vital_to_qt: unsupported image format "
+    "(type = " + std::to_string( pt.type ) +
+    ", bytes = " + std::to_string( pt.num_bytes ) + ")" );
 }
 
 } // end namespace vxl

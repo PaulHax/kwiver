@@ -66,9 +66,10 @@ klv_1108_metric_implementer_format
   auto const pos = s.find( metric_implementer_separator );
   if( pos == s.npos )
   {
-    LOG_WARN( kwiver::vital::get_logger( "klv" ),
-              "separator character 0x1E not found "
-              "in metric implementer string" );
+    LOG_WARN(
+      kwiver::vital::get_logger( "klv" ),
+      "separator character 0x1E not found "
+      "in metric implementer string" );
     return { s, "" };
   }
   return { s.substr( 0, pos ), s.substr( pos + 1 ) };
@@ -77,8 +78,9 @@ klv_1108_metric_implementer_format
 // ----------------------------------------------------------------------------
 void
 klv_1108_metric_implementer_format
-::write_typed( klv_1108_metric_implementer const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_1108_metric_implementer const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const s = value.organization + metric_implementer_separator +
                  value.subgroup;

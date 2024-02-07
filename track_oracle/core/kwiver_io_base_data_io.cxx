@@ -11,31 +11,37 @@ using std::string;
 using std::pair;
 
 namespace kwiver {
+
 namespace track_oracle {
 
-ostream& operator<<(ostream& os, const set< string >&  )
+ostream&
+operator<<( ostream& os, const set< string >&  )
 {
   // todo
   return os;
 }
 
-istream& operator>>(istream& is, set< string >& )
+istream&
+operator>>( istream& is, set< string >& )
 {
   // todo
   return is;
 }
 
-ostream& operator<<(ostream& os, const pair<unsigned, unsigned >& )
+ostream&
+operator<<( ostream& os, const pair< unsigned, unsigned >& )
 {
   // todo
   return os;
 }
 
-istream& operator>>(istream& is, pair<unsigned, unsigned>& )
+istream&
+operator>>( istream& is, pair< unsigned, unsigned >& )
 {
   // todo
   return is;
 }
 
 } // ...track_oracle
+
 } // ...kwiver

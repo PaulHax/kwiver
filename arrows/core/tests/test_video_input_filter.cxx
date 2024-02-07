@@ -9,31 +9,32 @@
 
 #include <arrows/core/video_input_filter.h>
 #include <arrows/tests/test_video_input.h>
-#include <vital/io/metadata_io.h>
-#include <vital/plugin_management/plugin_manager.h>
 #include <vital/algo/algorithm.txx>
 #include <vital/algo/image_io.h>
+#include <vital/io/metadata_io.h>
+#include <vital/plugin_management/plugin_manager.h>
 
-#include <memory>
-#include <string>
 #include <fstream>
 #include <iostream>
+#include <memory>
+#include <string>
 
 kwiver::vital::path_t g_data_dir;
 
 namespace algo = kwiver::vital::algo;
 namespace kac = kwiver::arrows::core;
+
 static std::string list_file_name = "video_as_images/frame_list.txt";
 static std::string pos_folder_location = "video_as_images/pos";
 
 // ----------------------------------------------------------------------------
 int
-main(int argc, char* argv[])
+main( int argc, char* argv[] )
 {
   ::testing::InitGoogleTest( &argc, argv );
   TEST_LOAD_PLUGINS();
 
-  GET_ARG(1, g_data_dir);
+  GET_ARG( 1, g_data_dir );
 
   return RUN_ALL_TESTS();
 }
@@ -41,29 +42,36 @@ main(int argc, char* argv[])
 // ----------------------------------------------------------------------------
 class video_input_filter : public ::testing::Test
 {
-  TEST_ARG(data_dir);
+  TEST_ARG( data_dir );
 };
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_filter, create)
+TEST_F ( video_input_filter, create )
 {
-  EXPECT_NE( nullptr, kwiver::vital::create_algorithm<kwiver::vital::algo::video_input>("filter") );
+  EXPECT_NE(
+    nullptr,
+    kwiver::vital::create_algorithm< kwiver::vital::algo::video_input >(
+      "filter" ) );
 }
 
 // ----------------------------------------------------------------------------
 static
 bool
-set_config(kwiver::vital::config_block_sptr config, std::string const& data_dir)
+set_config(
+  kwiver::vital::config_block_sptr config,
+  std::string const& data_dir )
 {
   config->set_value( "video_input:type", "split" );
   config->set_value( "video_input:split:image_source:type", "image_list" );
-  if ( kwiver::vital::has_algorithm_impl_name<algo::image_io>( "ocv" ) )
+  if( kwiver::vital::has_algorithm_impl_name< algo::image_io >( "ocv" ) )
   {
-    config->set_value( "video_input:split:image_source:image_list:image_reader:type", "ocv" );
+    config->set_value(
+      "video_input:split:image_source:image_list:image_reader:type", "ocv" );
   }
-  else if ( kwiver::vital::has_algorithm_impl_name<algo::image_io>("vxl" ) )
+  else if( kwiver::vital::has_algorithm_impl_name< algo::image_io >( "vxl" ) )
   {
-    config->set_value( "video_input:split:image_source:image_list:image_reader:type", "vxl" );
+    config->set_value(
+      "video_input:split:image_source:image_list:image_reader:type", "vxl" );
   }
   else
   {
@@ -72,18 +80,20 @@ set_config(kwiver::vital::config_block_sptr config, std::string const& data_dir)
   }
 
   config->set_value( "video_input:split:metadata_source:type", "pos" );
-  config->set_value( "video_input:split:metadata_source:pos:metadata_directory", data_dir + "/" + pos_folder_location );
+  config->set_value(
+    "video_input:split:metadata_source:pos:metadata_directory",
+    data_dir + "/" + pos_folder_location );
 
   return true;
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_filter, read_list)
+TEST_F ( video_input_filter, read_list )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -103,21 +113,21 @@ TEST_F(video_input_filter, read_list)
     << num_expected_frames;
 
   int num_frames = 0;
-  while ( vif.next_frame( ts ) )
+  while( vif.next_frame( ts ) )
   {
     auto img = vif.frame_image();
     auto md = vif.frame_metadata();
 
-    if (md.size() > 0)
+    if( md.size() > 0 )
     {
       std::cout << "-----------------------------------\n" << std::endl;
-      kwiver::vital::print_metadata( std::cout, *md[0] );
+      kwiver::vital::print_metadata( std::cout, *md[ 0 ] );
     }
 
     ++num_frames;
     EXPECT_EQ( num_frames, ts.get_frame() )
       << "Frame numbers should be sequential";
-    EXPECT_EQ( ts.get_frame(), decode_barcode(*img) )
+    EXPECT_EQ( ts.get_frame(), decode_barcode( *img ) )
       << "Frame number should match barcode in frame image";
     EXPECT_EQ( ts.get_time_usec(), vif.frame_timestamp().get_time_usec() );
     EXPECT_EQ( ts.get_frame(), vif.frame_timestamp().get_frame() );
@@ -131,12 +141,12 @@ TEST_F(video_input_filter, read_list)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_filter, read_video_sublist)
+TEST_F ( video_input_filter, read_video_sublist )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -158,12 +168,12 @@ TEST_F(video_input_filter, read_video_sublist)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_filter, read_video_sublist_nth_frame)
+TEST_F ( video_input_filter, read_video_sublist_nth_frame )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -186,12 +196,12 @@ TEST_F(video_input_filter, read_video_sublist_nth_frame)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_filter, seek_frame)
+TEST_F ( video_input_filter, seek_frame )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -212,12 +222,12 @@ TEST_F(video_input_filter, seek_frame)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_filter, seek_then_next_frame)
+TEST_F ( video_input_filter, seek_then_next_frame )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -238,12 +248,12 @@ TEST_F(video_input_filter, seek_then_next_frame)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_filter, next_then_seek_frame)
+TEST_F ( video_input_filter, next_then_seek_frame )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -264,12 +274,12 @@ TEST_F(video_input_filter, next_then_seek_frame)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_filter, seek_frame_sublist_nth_frame)
+TEST_F ( video_input_filter, seek_frame_sublist_nth_frame )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -292,12 +302,12 @@ TEST_F(video_input_filter, seek_frame_sublist_nth_frame)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_filter, metadata_map)
+TEST_F ( video_input_filter, metadata_map )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -322,19 +332,19 @@ TEST_F(video_input_filter, metadata_map)
   std::ifstream list_file_stream( list_file );
   int frame_number = 1;
   std::string file_name;
-  while ( std::getline( list_file_stream, file_name ) )
+  while( std::getline( list_file_stream, file_name ) )
   {
-    file_name.replace(0, 6, pos_folder_location);
-    file_name.replace(file_name.length() - 3, 3, "pos");
+    file_name.replace( 0, 6, pos_folder_location );
+    file_name.replace( file_name.length() - 3, 3, "pos" );
 
     auto md_test = kwiver::vital::read_pos_file( data_dir + "/" + file_name );
-    auto md_vec = md_map[frame_number];
+    auto md_vec = md_map[ frame_number ];
 
     // Loop over metadata items and compare
-    for (auto iter = md_test->begin(); iter != md_test->end(); ++iter)
+    for( auto iter = md_test->begin(); iter != md_test->end(); ++iter )
     {
       bool found_item = false;
-      for (auto md : md_vec)
+      for( auto md : md_vec )
       {
         found_item = found_item || md->has( iter->first );
       }
@@ -350,12 +360,12 @@ TEST_F(video_input_filter, metadata_map)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_filter, seek_frame_sublist)
+TEST_F ( video_input_filter, seek_frame_sublist )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -379,12 +389,12 @@ TEST_F(video_input_filter, seek_frame_sublist)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_filter, metadata_map_sublist)
+TEST_F ( video_input_filter, metadata_map_sublist )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -412,21 +422,21 @@ TEST_F(video_input_filter, metadata_map_sublist)
   std::ifstream list_file_stream( list_file );
   int frame_number = 1;
   std::string file_name;
-  while ( std::getline( list_file_stream, file_name ) )
+  while( std::getline( list_file_stream, file_name ) )
   {
-    if (frame_number >= start_at_frame && frame_number <= stop_after_frame)
+    if( frame_number >= start_at_frame && frame_number <= stop_after_frame )
     {
-      file_name.replace(0, 6, pos_folder_location);
-      file_name.replace(file_name.length() - 3, 3, "pos");
+      file_name.replace( 0, 6, pos_folder_location );
+      file_name.replace( file_name.length() - 3, 3, "pos" );
 
       auto md_test = kwiver::vital::read_pos_file( data_dir + "/" + file_name );
-      auto md_vec = md_map[frame_number];
+      auto md_vec = md_map[ frame_number ];
 
       // Loop over metadata items and compare
-      for (auto iter = md_test->begin(); iter != md_test->end(); ++iter)
+      for( auto iter = md_test->begin(); iter != md_test->end(); ++iter )
       {
         bool found_item = false;
-        for (auto md : md_vec)
+        for( auto md : md_vec )
         {
           found_item = found_item || md->has( iter->first );
         }
@@ -443,12 +453,12 @@ TEST_F(video_input_filter, metadata_map_sublist)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_filter, read_video_nth_frame_output)
+TEST_F ( video_input_filter, read_video_nth_frame_output )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -470,12 +480,12 @@ TEST_F(video_input_filter, read_video_nth_frame_output)
   vif.close();
 }
 
-TEST_F(video_input_filter, seek_nth_frame_output)
+TEST_F ( video_input_filter, seek_nth_frame_output )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -498,12 +508,12 @@ TEST_F(video_input_filter, seek_nth_frame_output)
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(video_input_filter, test_capabilities)
+TEST_F ( video_input_filter, test_capabilities )
 {
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  if( !set_config(config, data_dir) )
+  if( !set_config( config, data_dir ) )
   {
     return;
   }
@@ -519,7 +529,7 @@ TEST_F(video_input_filter, test_capabilities)
   auto cap = vif.get_implementation_capabilities();
   auto cap_list = cap.capability_list();
 
-  for ( auto one : cap_list )
+  for( auto one : cap_list )
   {
     std::cout << one << " -- "
               << ( cap.capability( one ) ? "true" : "false" )

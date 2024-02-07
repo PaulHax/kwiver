@@ -33,11 +33,11 @@ public:
   /// \param [out] distorted_xy: 2D point in distorted normalized image
   /// coordinates
   template < typename T >
-
   static void
-  apply( const T* dist_coeffs,
-         const T* source_xy,
-         T* distorted_xy )
+  apply(
+    const T* dist_coeffs,
+    const T* source_xy,
+    T* distorted_xy )
   {
     const T& x = source_xy[ 0 ];
     const T& y = source_xy[ 1 ];
@@ -68,11 +68,11 @@ public:
   /// \param [out] distorted_xy: 2D point in distorted normalized image
   /// coordinates
   template < typename T >
-
   static void
-  apply( const T* dist_coeffs,
-         const T* source_xy,
-         T* distorted_xy )
+  apply(
+    const T* dist_coeffs,
+    const T* source_xy,
+    T* distorted_xy )
   {
     const T& x = source_xy[ 0 ];
     const T& y = source_xy[ 1 ];
@@ -112,11 +112,11 @@ public:
   /// \param [out] distorted_xy: 2D point in distorted normalized image
   /// coordinates
   template < typename T >
-
   static void
-  apply( const T* dist_coeffs,
-         const T* source_xy,
-         T* distorted_xy )
+  apply(
+    const T* dist_coeffs,
+    const T* source_xy,
+    T* distorted_xy )
   {
     const T& x = source_xy[ 0 ];
     const T& y = source_xy[ 1 ];

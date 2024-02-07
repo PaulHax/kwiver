@@ -29,6 +29,7 @@ TEST ( klv, demuxer_invalid )
 {
   // Unknown UDS keys or unparsed data
   using packet_set = std::set< klv_packet >;
+
   klv_uds_key const key1{ 0x060E2B34FFFFFFFF, 0x0A0B0C0D00000000 };
   klv_uds_key const key2{ 0x060E2B34FFFFFFFF, 0x0000000000000000 };
   klv_blob const data1{ { 0xAA, 0xBB, 0xCC, 0xDD } };
@@ -60,15 +61,18 @@ TEST ( klv, demuxer_invalid )
 
   auto const result_range = timeline.find_all( KLV_PACKET_UNKNOWN, 0 );
   ASSERT_EQ( 3, std::distance( result_range.begin(), result_range.end() ) );
-  EXPECT_EQ( packet_set( { packets[ 3 ] } ),
-             std::next( result_range.begin(), 0 )->second.at( 123 )
-                                                 ->get< packet_set >() );
-  EXPECT_EQ( packet_set( { packets[ 2 ] } ),
-             std::next( result_range.begin(), 1 )->second.at( 123 )
-                                                 ->get< packet_set >() );
-  EXPECT_EQ( packet_set( { packets[ 0 ], packets[ 1 ] } ),
-             std::next( result_range.begin(), 2 )->second.at( 123 )
-                                                 ->get< packet_set >() );
+  EXPECT_EQ(
+    packet_set( { packets[ 3 ] } ),
+    std::next( result_range.begin(), 0 )->second.at( 123 )
+    ->get< packet_set >() );
+  EXPECT_EQ(
+    packet_set( { packets[ 2 ] } ),
+    std::next( result_range.begin(), 1 )->second.at( 123 )
+    ->get< packet_set >() );
+  EXPECT_EQ(
+    packet_set( { packets[ 0 ], packets[ 1 ] } ),
+    std::next( result_range.begin(), 2 )->second.at( 123 )
+    ->get< packet_set >() );
 }
 
 // ----------------------------------------------------------------------------
@@ -124,80 +128,120 @@ TEST ( klv, demuxer_0601 )
   auto const standard = KLV_PACKET_MISB_0601_LOCAL_SET;
 
   // Before assignment
-  EXPECT_TRUE( timeline.at( standard, KLV_0601_ICING_DETECTED,         9 )
-               .empty() );
-  EXPECT_TRUE( timeline.at( standard, KLV_0601_PLATFORM_HEADING_ANGLE, 9 )
-               .empty() );
-  EXPECT_TRUE( timeline.at( standard, KLV_0601_LASER_PRF_CODE,         9 )
-               .empty() );
-  EXPECT_TRUE( timeline.at( standard, KLV_0601_PLATFORM_CALL_SIGN,     9 )
-               .empty() );
-  EXPECT_TRUE( timeline.at( standard, KLV_0601_PLATFORM_DESIGNATION,   9 )
-               .empty() );
+  EXPECT_TRUE(
+    timeline.at( standard, KLV_0601_ICING_DETECTED,         9 )
+      .empty() );
+  EXPECT_TRUE(
+    timeline.at( standard, KLV_0601_PLATFORM_HEADING_ANGLE, 9 )
+      .empty() );
+  EXPECT_TRUE(
+    timeline.at( standard, KLV_0601_LASER_PRF_CODE,         9 )
+      .empty() );
+  EXPECT_TRUE(
+    timeline.at( standard, KLV_0601_PLATFORM_CALL_SIGN,     9 )
+      .empty() );
+  EXPECT_TRUE(
+    timeline.at( standard, KLV_0601_PLATFORM_DESIGNATION,   9 )
+      .empty() );
 
   // After first assignment
-  EXPECT_EQ( KLV_0601_ICING_DETECTED_FALSE,
-             timeline.at( standard, KLV_0601_ICING_DETECTED,         10 ) );
-  EXPECT_EQ( 13.0,
-             timeline.at( standard, KLV_0601_PLATFORM_HEADING_ANGLE, 10 ) );
-  EXPECT_EQ( uint64_t{ 1111 },
-             timeline.at( standard, KLV_0601_LASER_PRF_CODE,         10 ) );
-  EXPECT_EQ( std::string{ "BOB" },
-             timeline.at( standard, KLV_0601_PLATFORM_CALL_SIGN,     10 ) );
-  EXPECT_EQ( std::string{ "Bob" },
-             timeline.at( standard, KLV_0601_PLATFORM_DESIGNATION,   10 ) );
+  EXPECT_EQ(
+    KLV_0601_ICING_DETECTED_FALSE,
+    timeline.at( standard, KLV_0601_ICING_DETECTED,         10 ) );
+  EXPECT_EQ(
+    13.0,
+    timeline.at( standard, KLV_0601_PLATFORM_HEADING_ANGLE, 10 ) );
+  EXPECT_EQ(
+    uint64_t{ 1111 },
+    timeline.at( standard, KLV_0601_LASER_PRF_CODE,         10 ) );
+  EXPECT_EQ(
+    std::string{ "BOB" },
+    timeline.at( standard, KLV_0601_PLATFORM_CALL_SIGN,     10 ) );
+  EXPECT_EQ(
+    std::string{ "Bob" },
+    timeline.at( standard, KLV_0601_PLATFORM_DESIGNATION,   10 ) );
 
   // After tricky assignments
-  EXPECT_EQ( KLV_0601_ICING_DETECTED_FALSE,
-             timeline.at( standard, KLV_0601_ICING_DETECTED,         20 ) );
-  EXPECT_EQ( 14.0,
-             timeline.at( standard, KLV_0601_PLATFORM_HEADING_ANGLE, 20 ) );
-  EXPECT_EQ( klv_value{},
-             timeline.at( standard, KLV_0601_LASER_PRF_CODE,         20 ) );
-  EXPECT_EQ( klv_blob{ 0xAA },
-             timeline.at( standard, KLV_0601_PLATFORM_CALL_SIGN,     20 ) );
-  EXPECT_EQ( std::string{ "Bob" },
-             timeline.at( standard, KLV_0601_PLATFORM_DESIGNATION,   20 ) );
+  EXPECT_EQ(
+    KLV_0601_ICING_DETECTED_FALSE,
+    timeline.at( standard, KLV_0601_ICING_DETECTED,         20 ) );
+  EXPECT_EQ(
+    14.0,
+    timeline.at( standard, KLV_0601_PLATFORM_HEADING_ANGLE, 20 ) );
+  EXPECT_EQ(
+    klv_value{},
+    timeline.at( standard, KLV_0601_LASER_PRF_CODE,         20 ) );
+  EXPECT_EQ(
+    klv_blob{ 0xAA },
+    timeline.at( standard, KLV_0601_PLATFORM_CALL_SIGN,     20 ) );
+  EXPECT_EQ(
+    std::string{ "Bob" },
+    timeline.at( standard, KLV_0601_PLATFORM_DESIGNATION,   20 ) );
 
   // After full reassignment
-  EXPECT_EQ( KLV_0601_ICING_DETECTED_TRUE,
-             timeline.at( standard, KLV_0601_ICING_DETECTED,         30 ) );
-  EXPECT_EQ( 15.0,
-             timeline.at( standard, KLV_0601_PLATFORM_HEADING_ANGLE, 30 ) );
-  EXPECT_EQ( uint64_t{ 2222 },
-             timeline.at( standard, KLV_0601_LASER_PRF_CODE,         30 ) );
-  EXPECT_EQ( std::string{ "ALICE" },
-             timeline.at( standard, KLV_0601_PLATFORM_CALL_SIGN,     30 ) );
-  EXPECT_EQ( std::string{ "Alice" },
-             timeline.at( standard, KLV_0601_PLATFORM_DESIGNATION,   30 ) );
+  EXPECT_EQ(
+    KLV_0601_ICING_DETECTED_TRUE,
+    timeline.at( standard, KLV_0601_ICING_DETECTED,         30 ) );
+  EXPECT_EQ(
+    15.0,
+    timeline.at( standard, KLV_0601_PLATFORM_HEADING_ANGLE, 30 ) );
+  EXPECT_EQ(
+    uint64_t{ 2222 },
+    timeline.at( standard, KLV_0601_LASER_PRF_CODE,         30 ) );
+  EXPECT_EQ(
+    std::string{ "ALICE" },
+    timeline.at( standard, KLV_0601_PLATFORM_CALL_SIGN,     30 ) );
+  EXPECT_EQ(
+    std::string{ "Alice" },
+    timeline.at( standard, KLV_0601_PLATFORM_DESIGNATION,   30 ) );
 
   // Check final time boundary
-  EXPECT_EQ( KLV_0601_ICING_DETECTED_TRUE,
-             timeline.at( standard, KLV_0601_ICING_DETECTED,
-                          30000029 ) );
-  EXPECT_EQ( 15.0,
-             timeline.at( standard, KLV_0601_PLATFORM_HEADING_ANGLE,
-                          30000029 ) );
-  EXPECT_EQ( uint64_t{ 2222 },
-             timeline.at( standard, KLV_0601_LASER_PRF_CODE,
-                          30000029 ) );
-  EXPECT_EQ( std::string{ "ALICE" },
-             timeline.at( standard, KLV_0601_PLATFORM_CALL_SIGN,
-                          30000029 ) );
-  EXPECT_EQ( std::string{ "Alice" },
-             timeline.at( standard, KLV_0601_PLATFORM_DESIGNATION,
-                          30000029 ) );
+  EXPECT_EQ(
+    KLV_0601_ICING_DETECTED_TRUE,
+    timeline.at(
+      standard, KLV_0601_ICING_DETECTED,
+      30000029 ) );
+  EXPECT_EQ(
+    15.0,
+    timeline.at(
+      standard, KLV_0601_PLATFORM_HEADING_ANGLE,
+      30000029 ) );
+  EXPECT_EQ(
+    uint64_t{ 2222 },
+    timeline.at(
+      standard, KLV_0601_LASER_PRF_CODE,
+      30000029 ) );
+  EXPECT_EQ(
+    std::string{ "ALICE" },
+    timeline.at(
+      standard, KLV_0601_PLATFORM_CALL_SIGN,
+      30000029 ) );
+  EXPECT_EQ(
+    std::string{ "Alice" },
+    timeline.at(
+      standard, KLV_0601_PLATFORM_DESIGNATION,
+      30000029 ) );
 
-  EXPECT_TRUE( timeline.at( standard, KLV_0601_ICING_DETECTED,
-                            30000030 ).empty() );
-  EXPECT_TRUE( timeline.at( standard, KLV_0601_PLATFORM_HEADING_ANGLE,
-                            30000030 ).empty() );
-  EXPECT_TRUE( timeline.at( standard, KLV_0601_LASER_PRF_CODE,
-                            30000030 ).empty() );
-  EXPECT_TRUE( timeline.at( standard, KLV_0601_PLATFORM_CALL_SIGN,
-                            30000030 ).empty() );
-  EXPECT_TRUE( timeline.at( standard, KLV_0601_PLATFORM_DESIGNATION,
-                            30000030 ).empty() );
+  EXPECT_TRUE(
+    timeline.at(
+      standard, KLV_0601_ICING_DETECTED,
+      30000030 ).empty() );
+  EXPECT_TRUE(
+    timeline.at(
+      standard, KLV_0601_PLATFORM_HEADING_ANGLE,
+      30000030 ).empty() );
+  EXPECT_TRUE(
+    timeline.at(
+      standard, KLV_0601_LASER_PRF_CODE,
+      30000030 ).empty() );
+  EXPECT_TRUE(
+    timeline.at(
+      standard, KLV_0601_PLATFORM_CALL_SIGN,
+      30000030 ).empty() );
+  EXPECT_TRUE(
+    timeline.at(
+      standard, KLV_0601_PLATFORM_DESIGNATION,
+      30000030 ).empty() );
 }
 
 // ----------------------------------------------------------------------------
@@ -327,11 +371,13 @@ TEST ( klv, demuxer_0601_special )
 
   {
     auto const tag = KLV_0601_CONTROL_COMMAND_VERIFICATION_LIST;
-    EXPECT_EQ( std::vector< uint64_t >{ 0 },
-               timeline.at( standard, tag, 15 ) );
+    EXPECT_EQ(
+      std::vector< uint64_t >{ 0 },
+      timeline.at( standard, tag, 15 ) );
     EXPECT_TRUE( timeline.at( standard, tag, 16 ).empty() );
-    EXPECT_EQ( std::vector< uint64_t >{ 1 },
-               timeline.at( standard, tag, 30 ) );
+    EXPECT_EQ(
+      std::vector< uint64_t >{ 1 },
+      timeline.at( standard, tag, 30 ) );
     EXPECT_TRUE( timeline.at( standard, tag, 31 ).empty() );
   }
 
@@ -367,19 +413,23 @@ TEST ( klv, demuxer_0601_special )
     auto const tag = KLV_0601_SDCC_FLP;
     auto const slice1 = timeline.all_at( standard, tag, 15 );
     ASSERT_EQ( 2, slice1.size() );
-    EXPECT_EQ( std::vector< double >( { 1.0, 2.0 } ),
-               slice1.at( 0 ).get< klv_1010_sdcc_flp >().sigma );
-    EXPECT_EQ( std::vector< double >( { 2.0, 3.0 } ),
-               slice1.at( 1 ).get< klv_1010_sdcc_flp >().sigma );
+    EXPECT_EQ(
+      std::vector< double >( { 1.0, 2.0 } ),
+      slice1.at( 0 ).get< klv_1010_sdcc_flp >().sigma );
+    EXPECT_EQ(
+      std::vector< double >( { 2.0, 3.0 } ),
+      slice1.at( 1 ).get< klv_1010_sdcc_flp >().sigma );
     EXPECT_EQ( 2, timeline.all_at( standard, tag, 16 ).size() );
     ASSERT_EQ( 2, timeline.all_at( standard, tag, 30 ).size() );
 
     auto const slice2 = timeline.all_at( standard, tag, 30 );
     ASSERT_EQ( 2, slice2.size() );
-    EXPECT_EQ( std::vector< double >( { 1.0, 2.0 } ),
-               slice2.at( 0 ).get< klv_1010_sdcc_flp >().sigma );
-    EXPECT_EQ( std::vector< double >( { 12.0, 13.0 } ),
-               slice2.at( 1 ).get< klv_1010_sdcc_flp >().sigma );
+    EXPECT_EQ(
+      std::vector< double >( { 1.0, 2.0 } ),
+      slice2.at( 0 ).get< klv_1010_sdcc_flp >().sigma );
+    EXPECT_EQ(
+      std::vector< double >( { 12.0, 13.0 } ),
+      slice2.at( 1 ).get< klv_1010_sdcc_flp >().sigma );
     EXPECT_EQ( 2, timeline.all_at( standard, tag, 31 ).size() );
   }
 
@@ -387,10 +437,12 @@ TEST ( klv, demuxer_0601_special )
     auto const tag = KLV_0601_CONTROL_COMMAND;
     auto const slice = timeline.all_at( standard, tag, 15 );
     ASSERT_EQ( 2, slice.size() );
-    EXPECT_EQ( uint64_t{ 0 },
-               slice.at( 0 ).get< klv_0601_control_command >().id );
-    EXPECT_EQ( uint64_t{ 1 },
-               slice.at( 1 ).get< klv_0601_control_command >().id );
+    EXPECT_EQ(
+      uint64_t{ 0 },
+      slice.at( 0 ).get< klv_0601_control_command >().id );
+    EXPECT_EQ(
+      uint64_t{ 1 },
+      slice.at( 1 ).get< klv_0601_control_command >().id );
     EXPECT_EQ( 2, timeline.all_at( standard, tag, 16 ).size() );
     ASSERT_EQ( 2, timeline.all_at( standard, tag, 30 ).size() );
   }
@@ -494,12 +546,15 @@ TEST ( klv, demuxer_1108 )
     EXPECT_EQ( 0, timeline.all_at( standard, tag, 280 ).size() );
   }
 
-  EXPECT_TRUE( timeline.all_at( standard, KLV_1108_METRIC_PERIOD_PACK, 180 )
-               .empty() );
-  EXPECT_EQ( std::vector< klv_value >( { std::string{ "5.2" },
-                                         std::string{ "5.1" },
-                                         std::string{ "5.1" } } ),
-             timeline.all_at( standard, KLV_1108_COMPRESSION_LEVEL, 155 ) );
+  EXPECT_TRUE(
+    timeline.all_at( standard, KLV_1108_METRIC_PERIOD_PACK, 180 )
+      .empty() );
+  EXPECT_EQ(
+    std::vector< klv_value >(
+      { std::string{ "5.2" },
+        std::string{ "5.1" },
+        std::string{ "5.1" } } ),
+    timeline.all_at( standard, KLV_1108_COMPRESSION_LEVEL, 155 ) );
 }
 
 // ----------------------------------------------------------------------------
@@ -515,8 +570,7 @@ TEST ( klv, demuxer_multipacket_frame )
       klv_local_set{
         { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 200 } },
         { KLV_0601_MISSION_ID, std::string{ "TEST2" } } } },
-    { { 3, 4 }, klv_blob{ { 0xFF } } },
-  };
+    { { 3, 4 }, klv_blob{ { 0xFF } } }, };
 
   auto const packets2 = std::vector< klv_packet >{
     { { 5, 6 }, klv_blob{ { 0xFF } } },
@@ -528,8 +582,7 @@ TEST ( klv, demuxer_multipacket_frame )
       klv_local_set{
         { KLV_0601_PRECISION_TIMESTAMP, uint64_t{ 300 } },
         { KLV_0601_MISSION_ID, std::string{ "TEST3" } } } },
-    { { 7, 8 }, klv_blob{ { 0xFF } } },
-  };
+    { { 7, 8 }, klv_blob{ { 0xFF } } }, };
 
   klv_timeline timeline;
   klv_demuxer demuxer( timeline );

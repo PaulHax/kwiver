@@ -8,20 +8,21 @@
 #ifndef VITAL_ESSENTIAL_MATRIX_H_
 #define VITAL_ESSENTIAL_MATRIX_H_
 
-#include <vital/vital_export.h>
 #include <vital/vital_config.h>
+#include <vital/vital_export.h>
 #include <vital/vital_types.h>
 
 #include <vital/types/matrix.h>
-#include <vital/types/vector.h>
 #include <vital/types/rotation.h>
+#include <vital/types/vector.h>
 
 #include <iostream>
 #include <map>
-#include <vector>
 #include <memory>
+#include <vector>
 
 namespace kwiver {
+
 namespace vital {
 
 // Forward declarations of abstract essential matrix class
@@ -68,40 +69,39 @@ public:
 // ----------------------------------------------------------------------------
 
 /// Representation of a templated Eigen-based essential matrix
-template <typename T>
+template < typename T >
 class VITAL_EXPORT essential_matrix_
   : public essential_matrix
 {
 public:
   typedef T value_type;
-  typedef Eigen::Matrix<T,3,3> matrix_t;
-  typedef Eigen::Matrix<T,3,1> vector_t;
+  typedef Eigen::Matrix< T, 3, 3 > matrix_t;
+  typedef Eigen::Matrix< T, 3, 1 > vector_t;
 
   /// Construct from a provided matrix by projection.
   ///
   /// Decompose and find closest essential matrix to the input \p mat.
   /// \param mat The 3x3 transformation matrix to use.
   explicit
-  essential_matrix_<T>( matrix_t const &mat );
+  essential_matrix_< T >( matrix_t const& mat );
 
   /// Construct from a rotation and translation
-  essential_matrix_<T>( rotation_<T> const &rot,
-                        vector_t const &trans );
+  essential_matrix_< T >(
+    rotation_< T > const& rot,
+    vector_t const& trans );
 
   /// Conversion Copy constructor
   ///
   /// \param other The other essential_matrix to be copied.
-  template <typename U>
-  explicit
-  essential_matrix_<T>( essential_matrix_<U> const &other )
-    : rot_( static_cast<rotation_<T> >(other.rotation() ) ),
-      trans_( other.translation().template cast<T>() )
-  {
-  }
+  template < typename U > explicit
+  essential_matrix_< T >( essential_matrix_< U > const& other )
+    : rot_( static_cast< rotation_< T > >( other.rotation() ) ),
+      trans_( other.translation().template cast< T >() )
+  {}
 
   /// Construct from a generic essential_matrix
   explicit
-  essential_matrix_<T>( essential_matrix const &base );
+  essential_matrix_< T >( essential_matrix const& base );
 
   // Abstract method definitions ---------------------------------------------
 
@@ -113,7 +113,7 @@ public:
   /// Get a double-typed copy of the underlying matrix
   ///
   /// \return A copy of the matrix represented in the double type.
-  virtual Eigen::Matrix<double,3,3> matrix() const;
+  virtual Eigen::Matrix< double, 3, 3 > matrix() const;
 
   /// Return the one of two possible 3D rotations that can parameterize E
   virtual rotation_d rotation() const;
@@ -136,39 +136,43 @@ public:
   ///
   ///  The twisted rotation is related to the primary rotation by a 180 degree
   ///  rotation about the translation axis
-  rotation_<T> compute_twisted_rotation() const;
+  rotation_< T > compute_twisted_rotation() const;
 
   /// Get a const reference to the underlying rotation
-  rotation_<T> const& get_rotation() const;
+  rotation_< T > const& get_rotation() const;
 
   /// Get a const reference to the underlying translation
   vector_t const& get_translation() const;
 
 protected:
   /// the rotation used to parameterize the essential matrix
-  rotation_<T> rot_;
+  rotation_< T > rot_;
   /// the translation used to parameterize the essential  matrix
   vector_t trans_;
 };
 
 /// Double-precision camera type
-typedef essential_matrix_<double> essential_matrix_d;
+typedef essential_matrix_< double > essential_matrix_d;
 /// Single-precision camera type
-typedef essential_matrix_<float> essential_matrix_f;
+typedef essential_matrix_< float > essential_matrix_f;
 
 // ----------------------------------------------------------------------------
 // Utility Functions
 // ----------------------------------------------------------------------------
 
 /// Output stream operator for \p essential_matrix base-class
-VITAL_EXPORT std::ostream& operator<<( std::ostream &s,
-                                           essential_matrix const &e );
+VITAL_EXPORT std::ostream& operator<<(
+  std::ostream& s,
+  essential_matrix const& e );
 
 /// essential_matrix_<T> output stream operator
-template <typename T>
-VITAL_EXPORT std::ostream& operator<<( std::ostream &s,
-                                           essential_matrix_<T> const &e );
+template < typename T >
+VITAL_EXPORT std::ostream& operator<<(
+  std::ostream& s,
+  essential_matrix_< T > const& e );
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital
 
 #endif // VITAL_ESSENTIAL_MATRIX_H_

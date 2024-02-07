@@ -115,8 +115,9 @@ klv_1002_enumerations_format
 // ----------------------------------------------------------------------------
 void
 klv_1002_enumerations_format
-::write_typed( klv_1002_enumerations const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_1002_enumerations const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const int_value =
     static_cast< uint8_t >( ( value.source << 6 ) |
@@ -215,8 +216,9 @@ klv_1002_section_data_pack_format
 // ----------------------------------------------------------------------------
 void
 klv_1002_section_data_pack_format
-::write_typed( klv_1002_section_data_pack const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_1002_section_data_pack const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   using namespace section_data_pack_detail;
 
@@ -227,11 +229,13 @@ klv_1002_section_data_pack_format
   klv_write_lv( value.measurements, data, tracker.remaining(), mdap_format );
   klv_write_opt_lv(
     value.uncertainty, data, tracker.remaining(), mdap_format );
-  klv_write_trunc_lv( std::forward_as_tuple( value.plane_x_scale,
-                                             value.plane_y_scale,
-                                             value.plane_constant ),
-                      data, tracker.remaining(),
-                      plane_format, plane_format, plane_format );
+  klv_write_trunc_lv(
+    std::forward_as_tuple(
+      value.plane_x_scale,
+      value.plane_y_scale,
+      value.plane_constant ),
+    data, tracker.remaining(),
+    plane_format, plane_format, plane_format );
 }
 
 // ----------------------------------------------------------------------------
@@ -245,10 +249,12 @@ klv_1002_section_data_pack_format
     klv_length_of_lv( value.section_y, index_format ) +
     klv_length_of_lv( value.measurements, mdap_format ) +
     klv_length_of_opt_lv( value.uncertainty, mdap_format ) +
-    klv_length_of_trunc_lv( std::forward_as_tuple( value.plane_x_scale,
-                                                   value.plane_y_scale,
-                                                   value.plane_constant ),
-                            plane_format, plane_format, plane_format );
+    klv_length_of_trunc_lv(
+    std::forward_as_tuple(
+      value.plane_x_scale,
+      value.plane_y_scale,
+      value.plane_constant ),
+    plane_format, plane_format, plane_format );
 }
 
 // ----------------------------------------------------------------------------

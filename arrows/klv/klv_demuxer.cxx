@@ -30,8 +30,9 @@ constexpr uint64_t klv_0601_default_duration = klv_packet_default_duration;
 
 // ----------------------------------------------------------------------------
 klv_local_set
-indexify_1108( klv_local_set const& parent_set,
-               klv_value const& metric_set_value )
+indexify_1108(
+  klv_local_set const& parent_set,
+  klv_value const& metric_set_value )
 {
   klv_local_set result;
   for( auto const tag : { KLV_1108_ASSESSMENT_POINT,
@@ -70,13 +71,16 @@ indexify_1108( klv_local_set const& parent_set,
 // ----------------------------------------------------------------------------
 klv_demuxer
 ::klv_demuxer( klv_timeline& timeline )
-  : m_frame_timestamp{ 0 }, m_prev_frame_timestamp{ 0 }, m_timeline( timeline ) {}
+  : m_frame_timestamp{ 0 },
+    m_prev_frame_timestamp{ 0 },
+    m_timeline( timeline ) {}
 
 // ----------------------------------------------------------------------------
 void
 klv_demuxer
-::send_frame( std::vector< klv_packet > const& packets,
-              std::optional< uint64_t > backup_timestamp )
+::send_frame(
+  std::vector< klv_packet > const& packets,
+  std::optional< uint64_t > backup_timestamp )
 {
   m_prev_frame_timestamp = m_frame_timestamp;
 
@@ -102,14 +106,16 @@ klv_demuxer
   {
     if( backup_timestamp )
     {
-      LOG_DEBUG( kv::get_logger( "klv" ),
-                 "demuxer: using backup timestamping method" );
+      LOG_DEBUG(
+        kv::get_logger( "klv" ),
+        "demuxer: using backup timestamping method" );
       m_frame_timestamp = *backup_timestamp;
     }
     else
     {
-      LOG_WARN( kv::get_logger( "klv" ),
-                "demuxer: unable to update timestamp for new frame" );
+      LOG_WARN(
+        kv::get_logger( "klv" ),
+        "demuxer: unable to update timestamp for new frame" );
     }
   }
 
@@ -135,8 +141,11 @@ klv_demuxer
   auto const& trait = klv_lookup_packet_traits().by_uds_key( packet.key );
 
   auto const derived_timestamp = klv_packet_timestamp( packet );
-  auto const timestamp = derived_timestamp ? *derived_timestamp : m_frame_timestamp;
-  auto const time_interval = interval_t{ timestamp, timestamp + klv_packet_default_duration };
+  auto const timestamp =
+    derived_timestamp ? *derived_timestamp : m_frame_timestamp;
+  auto const time_interval = interval_t{ timestamp,
+                                         timestamp +
+                                         klv_packet_default_duration };
 
   // Invalid or unrecognized packets are still saved in raw byte form
   if( !packet.value.valid() )
@@ -175,8 +184,9 @@ klv_demuxer
   switch( tag )
   {
     case KLV_PACKET_MISB_0104_UNIVERSAL_SET:
-      demux_set( tag, value.get< klv_universal_set >(), time_interval,
-                 timestamp_tag );
+      demux_set(
+        tag, value.get< klv_universal_set >(), time_interval,
+        timestamp_tag );
       break;
     case KLV_PACKET_MISB_0601_LOCAL_SET:
       demux_0601( value.get< klv_local_set >(), timestamp );
@@ -192,8 +202,9 @@ klv_demuxer
     case KLV_PACKET_MISB_1202_LOCAL_SET:
     case KLV_PACKET_MISB_1206_LOCAL_SET:
     case KLV_PACKET_MISB_1601_LOCAL_SET:
-      demux_set( tag, value.get< klv_local_set >(), time_interval,
-                 timestamp_tag );
+      demux_set(
+        tag, value.get< klv_local_set >(), time_interval,
+        timestamp_tag );
       break;
     case KLV_PACKET_MISB_1204_MIIS_ID:
       demux_single_entry( tag, 0, {}, time_interval, value );
@@ -225,18 +236,20 @@ klv_demuxer
 }
 
 // ----------------------------------------------------------------------------
-template< class T >
+template < class T >
 void
 klv_demuxer
-::demux_list( klv_top_level_tag standard,
-              klv_lds_key tag,
-              interval_t const& time_interval,
-              std::vector< T > const& value )
+::demux_list(
+  klv_top_level_tag standard,
+  klv_lds_key tag,
+  interval_t const& time_interval,
+  std::vector< T > const& value )
 {
   for( auto const& item : value )
   {
-    demux_single_entry( standard, tag, uint64_t{ item.id },
-                        time_interval, item );
+    demux_single_entry(
+      standard, tag, uint64_t{ item.id },
+      time_interval, item );
   }
 }
 
@@ -307,8 +320,9 @@ klv_demuxer
   auto const unknown_it = unknown_timeline.find( timestamp );
   if( unknown_it == unknown_timeline.end() )
   {
-    unknown_timeline.set( { timestamp, timestamp + 1 },
-                          std::set< klv_packet >{ packet } );
+    unknown_timeline.set(
+      { timestamp, timestamp + 1 },
+      std::set< klv_packet >{ packet } );
   }
   else
   {
@@ -347,16 +361,19 @@ klv_demuxer
 
       // List tags
       case KLV_0601_WAVELENGTHS_LIST:
-        demux_list( standard, tag, time_interval,
-                    value.get< std::vector< klv_0601_wavelength_record > >() );
+        demux_list(
+          standard, tag, time_interval,
+          value.get< std::vector< klv_0601_wavelength_record > >() );
         break;
       case KLV_0601_PAYLOAD_LIST:
-        demux_list( standard, tag, time_interval,
-                    value.get< std::vector< klv_0601_payload_record > >() );
+        demux_list(
+          standard, tag, time_interval,
+          value.get< std::vector< klv_0601_payload_record > >() );
         break;
       case KLV_0601_WAYPOINT_LIST:
-        demux_list( standard, tag, time_interval,
-                    value.get< std::vector< klv_0601_waypoint_record > >() );
+        demux_list(
+          standard, tag, time_interval,
+          value.get< std::vector< klv_0601_waypoint_record > >() );
         break;
 
       // Tags which only make sense as point occurences
@@ -392,7 +409,7 @@ klv_demuxer
       default:
         demux_single_entry( standard, tag, {}, time_interval, value );
         break;
-    };
+    }
   }
 }
 
@@ -414,6 +431,7 @@ klv_demuxer
       "and will be dropped" );
     return;
   }
+
   auto const metric_period =
     metric_period_range.begin()->second.get< klv_1108_metric_period_pack >();
 
@@ -430,8 +448,9 @@ klv_demuxer
   {
     // Create the and fill the index for this metric set
     auto const index = indexify_1108( value, metric_set_entry.second );
-    demux_single_entry( standard, KLV_1108_METRIC_LOCAL_SET, index,
-                        time_interval, metric_set_entry.second );
+    demux_single_entry(
+      standard, KLV_1108_METRIC_LOCAL_SET, index,
+      time_interval, metric_set_entry.second );
 
     // Copy the parent's data to this metric set's index
     for( auto const& entry : value )
@@ -453,9 +472,10 @@ klv_demuxer
 // ----------------------------------------------------------------------------
 void
 klv_demuxer
-::demux_single_entry( klv_top_level_tag standard, klv_lds_key tag,
-                      klv_value const& index, interval_t const& time_interval,
-                      klv_value const& value )
+::demux_single_entry(
+  klv_top_level_tag standard, klv_lds_key tag,
+  klv_value const& index, interval_t const& time_interval,
+  klv_value const& value )
 {
   auto const key = klv_timeline::key_t{ standard, tag, index };
   if( value.empty() )
@@ -474,8 +494,9 @@ klv_demuxer
     {
       return;
     }
-    it->second.erase( { time_interval.lower(),
-                        inner_it->key_interval.upper() } );
+    it->second.erase(
+      { time_interval.lower(),
+        inner_it->key_interval.upper() } );
   }
   else
   {
@@ -490,13 +511,16 @@ klv_demuxer
         adjusted_interval.truncate_upper( cancel_time );
       }
     }
+
     auto const it = m_timeline.insert_or_find( standard, tag, index );
     it->second.weak_set( adjusted_interval, value );
+
     auto const jt = it->second.find( adjusted_interval.lower() );
     if( jt != it->second.end() )
     {
-      it->second.set( { adjusted_interval.lower(), jt->key_interval.upper() },
-                      value );
+      it->second.set(
+        { adjusted_interval.lower(), jt->key_interval.upper() },
+        value );
     }
   }
 }

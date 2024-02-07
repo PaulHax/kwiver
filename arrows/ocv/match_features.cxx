@@ -17,16 +17,19 @@
 using namespace kwiver::vital;
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace ocv {
 
 /// Match one set of features and corresponding descriptors to another
 vital::match_set_sptr
 match_features
-::match( VITAL_UNUSED vital::feature_set_sptr feat1,
-         vital::descriptor_set_sptr desc1,
-         VITAL_UNUSED vital::feature_set_sptr feat2,
-         vital::descriptor_set_sptr desc2) const
+::match(
+  VITAL_UNUSED vital::feature_set_sptr feat1,
+  vital::descriptor_set_sptr desc1,
+  VITAL_UNUSED vital::feature_set_sptr feat2,
+  vital::descriptor_set_sptr desc2 ) const
 {
   // Return empty match set pointer if either of the input sets were empty
   // pointers
@@ -41,19 +44,21 @@ match_features
     return vital::match_set_sptr();
   }
 
-  cv::Mat d1 = descriptors_to_ocv_matrix(*desc1);
-  cv::Mat d2 = descriptors_to_ocv_matrix(*desc2);
-  if( d1.empty() || d2.empty())
+  cv::Mat d1 = descriptors_to_ocv_matrix( *desc1 );
+  cv::Mat d2 = descriptors_to_ocv_matrix( *desc2 );
+  if( d1.empty() || d2.empty() )
   {
-    LOG_DEBUG( logger(), "Unable to convert descriptors to OpenCV format");
+    LOG_DEBUG( logger(), "Unable to convert descriptors to OpenCV format" );
     return vital::match_set_sptr();
   }
 
-  std::vector<cv::DMatch> matches;
-  ocv_match(d1, d2, matches);
-  return vital::match_set_sptr(new ocv::match_set(matches));
+  std::vector< cv::DMatch > matches;
+  ocv_match( d1, d2, matches );
+  return vital::match_set_sptr( new ocv::match_set( matches ) );
 }
 
 } // end namespace ocv
+
 } // end namespace arrows
+
 } // end namespace kwiver

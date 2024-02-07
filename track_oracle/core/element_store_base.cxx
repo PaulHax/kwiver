@@ -5,6 +5,7 @@
 #include "element_store_base.h"
 
 namespace kwiver {
+
 namespace track_oracle {
 
 const element_descriptor&
@@ -19,4 +20,5 @@ element_store_base
 {}
 
 } // ...track_oracle
+
 } // ...kwiver

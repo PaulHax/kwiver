@@ -126,8 +126,7 @@ read_track_descriptor_set
 void
 read_track_descriptor_set
 ::new_stream()
-{
-}
+{}
 
 } // namespace algo
 

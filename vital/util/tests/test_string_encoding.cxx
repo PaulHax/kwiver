@@ -32,18 +32,22 @@ TEST ( string_encoding, utf8_code_point_count )
   EXPECT_EQ( 5, utf8_code_point_count( "🁙🂽🫖🦋🛸" ) );
 
   // Byte starting with five 1's
-  EXPECT_THROW( utf8_code_point_count( "\xF8xxxxxxxx" ),
-                std::runtime_error );
+  EXPECT_THROW(
+    utf8_code_point_count( "\xF8xxxxxxxx" ),
+    std::runtime_error );
 
   // Starting with continuation byte
-  EXPECT_THROW( utf8_code_point_count( "\xBFxxxxxxxx" ),
-                std::runtime_error );
+  EXPECT_THROW(
+    utf8_code_point_count( "\xBFxxxxxxxx" ),
+    std::runtime_error );
 
   // Continuation byte doesn't start with '10'
-  EXPECT_THROW( utf8_code_point_count( "\xE0\xBF\x3F" ),
-                std::runtime_error );
+  EXPECT_THROW(
+    utf8_code_point_count( "\xE0\xBF\x3F" ),
+    std::runtime_error );
 
   // String ends before multi-byte character is complete
-  EXPECT_THROW( utf8_code_point_count( "\xE0\xBF" ),
-                std::runtime_error );
+  EXPECT_THROW(
+    utf8_code_point_count( "\xE0\xBF" ),
+    std::runtime_error );
 }

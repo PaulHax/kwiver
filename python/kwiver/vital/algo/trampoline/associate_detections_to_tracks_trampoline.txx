@@ -17,60 +17,70 @@
 #include <vital/algo/associate_detections_to_tracks.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
-template< class algorithm_def_adtt_base=
-            kwiver::vital::algorithm_def<
-               kwiver::vital::algo::associate_detections_to_tracks > >
-class algorithm_def_adtt_trampoline :
-      public algorithm_trampoline<algorithm_def_adtt_base>
-{
-  public:
-    using algorithm_trampoline< algorithm_def_adtt_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<
-          kwiver::vital::algo::associate_detections_to_tracks>,
-        type_name,
-      );
-    }
+template < class algorithm_def_adtt_base =
+    kwiver::vital::algorithm_def<
+      kwiver::vital::algo::associate_detections_to_tracks > >
+class algorithm_def_adtt_trampoline
+  : public algorithm_trampoline< algorithm_def_adtt_base >
+{
+public:
+  using algorithm_trampoline< algorithm_def_adtt_base >::algorithm_trampoline;
+
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def<
+        kwiver::vital::algo::associate_detections_to_tracks >,
+      type_name,
+    );
+  }
 };
 
-template< class associate_detections_to_tracks_base=
-                  kwiver::vital::algo::associate_detections_to_tracks >
-class associate_detections_to_tracks_trampoline :
-      public algorithm_def_adtt_trampoline< associate_detections_to_tracks_base >
+template < class associate_detections_to_tracks_base =
+    kwiver::vital::algo::associate_detections_to_tracks >
+class associate_detections_to_tracks_trampoline
+  : public algorithm_def_adtt_trampoline< associate_detections_to_tracks_base >
 {
-  public:
-    using algorithm_def_adtt_trampoline< associate_detections_to_tracks_base >::
-              algorithm_def_adtt_trampoline;
+public:
+  using algorithm_def_adtt_trampoline< associate_detections_to_tracks_base >::
+  algorithm_def_adtt_trampoline;
 
-    bool associate( kwiver::vital::timestamp ts,
-                    kwiver::vital::image_container_sptr image,
-                    kwiver::vital::object_track_set_sptr tracks,
-                    kwiver::vital::detected_object_set_sptr detections,
-                    kwiver::vital::matrix_d matrix,
-                    kwiver::vital::object_track_set_sptr& output,
-                    kwiver::vital::detected_object_set_sptr& unused ) const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        bool,
-        kwiver::vital::algo::associate_detections_to_tracks,
-        associate,
-        ts,
-        image,
-        tracks,
-        detections,
-        matrix,
-        output,
-        unused
-      );
-    }
+  bool
+  associate(
+    kwiver::vital::timestamp ts,
+    kwiver::vital::image_container_sptr image,
+    kwiver::vital::object_track_set_sptr tracks,
+    kwiver::vital::detected_object_set_sptr detections,
+    kwiver::vital::matrix_d matrix,
+    kwiver::vital::object_track_set_sptr& output,
+    kwiver::vital::detected_object_set_sptr& unused ) const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      bool,
+      kwiver::vital::algo::associate_detections_to_tracks,
+      associate,
+      ts,
+      image,
+      tracks,
+      detections,
+      matrix,
+      output,
+      unused
+    );
+  }
 };
-}
-}
-}
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
+
 #endif

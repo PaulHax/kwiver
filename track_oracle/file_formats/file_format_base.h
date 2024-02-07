@@ -38,18 +38,19 @@
 /// classes.  Hah!  I like it.
 ///
 
-#include <vital/vital_config.h>
 #include <track_oracle/file_formats/track_oracle_format_base_export.h>
+#include <vital/vital_config.h>
 
-#include <string>
-#include <vector>
 #include <map>
-#include <track_oracle/core/track_oracle_api_types.h>
+#include <string>
 #include <track_oracle/core/element_descriptor.h>
 #include <track_oracle/core/track_base_impl.h>
+#include <track_oracle/core/track_oracle_api_types.h>
 #include <track_oracle/file_formats/file_format_type.h>
+#include <vector>
 
 namespace kwiver {
+
 namespace track_oracle {
 
 class track_base_impl;
@@ -67,19 +68,26 @@ enum file_format_operation
 struct TRACK_ORACLE_FORMAT_BASE_EXPORT file_format_reader_opts_base
 {
   // empty base class for format-specific reader options
-  virtual file_format_reader_opts_base& reset() { return *this; } // restore options to a known state
+  virtual file_format_reader_opts_base& reset() { return *this; } // restore
+                                                                  // options to
+                                                                  // a known
+                                                                  // state
 
   // make op= virtual so we can assign into the manager's map like this:
-  // file_format_manager::reader_options( TF_APIX ) = apix_reader_opts().set_verbose( true );
+  // file_format_manager::reader_options( TF_APIX ) =
+  // apix_reader_opts().set_verbose( true );
   // ... and not have the derived class sliced to the base
-  virtual file_format_reader_opts_base& operator=( const file_format_reader_opts_base& /*other*/) { return *this;}
+  virtual file_format_reader_opts_base&
+  operator=( const file_format_reader_opts_base& /*other*/ ) { return *this; }
   virtual ~file_format_reader_opts_base() {}
 };
 
 class TRACK_ORACLE_FORMAT_BASE_EXPORT file_format_base
 {
 public:
-  file_format_base( file_format_enum format_type, const std::string& description );
+  file_format_base(
+    file_format_enum format_type,
+    const std::string& description );
   virtual ~file_format_base();
 
   // a description of the format (defaults to name)
@@ -109,20 +117,24 @@ public:
   virtual file_format_reader_opts_base& options();
 
   // read tracks from the file using current state of options
-  virtual bool read( const std::string& fn,
-                     track_handle_list_type& tracks ) const = 0;
+  virtual bool read(
+    const std::string& fn,
+    track_handle_list_type& tracks ) const = 0;
 
   // read tracks from a stream (not implemented for all formats)
-  virtual bool read( std::istream& is,
-                     track_handle_list_type& tracks ) const;
+  virtual bool read(
+    std::istream& is,
+    track_handle_list_type& tracks ) const;
 
   // write tracks to the file (not implemented for all formats)
-  virtual bool write( const std::string& fn,
-                      const track_handle_list_type& tracks ) const;
+  virtual bool write(
+    const std::string& fn,
+    const track_handle_list_type& tracks ) const;
 
   // write tracks to a stream (not implemented for all formats)
-  virtual bool write( std::ostream& os,
-                      const track_handle_list_type& tracks ) const;
+  virtual bool write(
+    std::ostream& os,
+    const track_handle_list_type& tracks ) const;
 
   // read tracks from the file, check that each track contains the
   // fields listed in the required_fields schema.  List missing fields
@@ -132,18 +144,21 @@ public:
   // does NOT mean all the fields are present; it means the read
   // succeeded.)
 
-  bool read( const std::string& fn,
-             track_handle_list_type& tracks,
-             const track_base_impl& required_fields,
-             std::vector< element_descriptor >& missing_fields ) const;
+  bool read(
+    const std::string& fn,
+    track_handle_list_type& tracks,
+    const track_base_impl& required_fields,
+    std::vector< element_descriptor >& missing_fields ) const;
 
-  bool read( std::istream& is,
-             track_handle_list_type& tracks,
-             const track_base_impl& required_fields,
-             std::vector< element_descriptor >& missing_fields ) const;
+  bool read(
+    std::istream& is,
+    track_handle_list_type& tracks,
+    const track_base_impl& required_fields,
+    std::vector< element_descriptor >& missing_fields ) const;
 
   // format introspection: what fields does this format define?
-  std::map< field_handle_type, track_base_impl::schema_position_type > enumerate_schema() const;
+  std::map< field_handle_type,
+    track_base_impl::schema_position_type > enumerate_schema() const;
 
   // return a dynamically-allocated instance of the schema
   virtual track_base_impl* schema_instance() const = 0;
@@ -153,10 +168,10 @@ protected:
   std::string description;
   std::vector< std::string > globs;
   file_format_reader_opts_base null_opts;
-
 };
 
 } // ...track_oracle
+
 } // ...kwiver
 
 #endif

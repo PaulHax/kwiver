@@ -3,8 +3,10 @@
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
 /// \file
-/// \brief Header for \link kwiver::vital::camera_perspective camera_perspective \endlink and
-///        \link kwiver::vital::camera_perspective_ camera_perspective_<T> \endlink classes
+/// \brief Header for \link kwiver::vital::camera_perspective camera_perspective
+/// \endlink and
+///        \link kwiver::vital::camera_perspective_ camera_perspective_<T>
+/// \endlink classes
 
 #ifndef VITAL_CAMERA_PERSPECTIVE_H_
 #define VITAL_CAMERA_PERSPECTIVE_H_
@@ -12,19 +14,20 @@
 #include <vital/vital_export.h>
 
 #include <iostream>
-#include <vector>
 #include <memory>
+#include <vector>
 
-#include <vital/vital_config.h>
+#include <vital/logger/logger.h>
 #include <vital/types/camera.h>
 #include <vital/types/camera_intrinsics.h>
 #include <vital/types/covariance.h>
 #include <vital/types/rotation.h>
-#include <vital/types/vector.h>
 #include <vital/types/similarity.h>
-#include <vital/logger/logger.h>
+#include <vital/types/vector.h>
+#include <vital/vital_config.h>
 
 namespace kwiver {
+
 namespace vital {
 
 /// forward declaration of perspective camera class
@@ -58,18 +61,21 @@ public:
   /// Accessor for the intrinsics
   virtual camera_intrinsics_sptr intrinsics() const = 0;
   /// Accessor for the image width
-  virtual unsigned int image_width() const { return intrinsics()->image_width(); }
+  virtual unsigned int
+  image_width() const { return intrinsics()->image_width(); }
   /// Accessor for the image height
-  virtual unsigned int image_height() const { return intrinsics()->image_height(); }
+  virtual unsigned int
+  image_height() const { return intrinsics()->image_height(); }
 
   /// Create a clone of this camera that is rotated to look at the given point
   ///
   /// \param stare_point the location at which the camera is oriented to point
-  /// \param up_direction the vector which is "up" in the world (defaults to Z-axis)
+  /// \param up_direction the vector which is "up" in the world (defaults to
+  /// Z-axis)
   /// \returns New clone, but set to look at the given point.
   virtual camera_perspective_sptr clone_look_at(
-    const vector_3d &stare_point,
-    const vector_3d &up_direction = vector_3d::UnitZ() ) const = 0;
+    const vector_3d& stare_point,
+    const vector_3d& up_direction = vector_3d::UnitZ() ) const = 0;
 
   /// Convert to a 3x4 homogeneous projection matrix
   ///
@@ -89,94 +95,104 @@ public:
   /// Compute the distance of the 3D point to the image plane
   ///
   ///  Points with negative depth are behind the camera
-  virtual double depth(const vector_3d& pt) const;
+  virtual double depth( const vector_3d& pt ) const;
 
 protected:
   camera_perspective();
 
   kwiver::vital::logger_handle_t m_logger;
-
 };
 
 /// output stream operator for a base class camera_perspective
-VITAL_EXPORT std::ostream& operator<<( std::ostream& s,
-                                       const camera_perspective& c );
+VITAL_EXPORT std::ostream& operator<<(
+  std::ostream& s,
+  const camera_perspective& c );
 
 /// forward declaration of simple perspective camera class
 class simple_camera_perspective;
 /// typedef for a simple_camera_perspective shared pointer
-typedef std::shared_ptr< simple_camera_perspective > simple_camera_perspective_sptr;
+typedef std::shared_ptr< simple_camera_perspective >
+  simple_camera_perspective_sptr;
 
 /// A representation of a camera
 ///
 /// Contains camera location, orientation, and intrinsics
-class VITAL_EXPORT simple_camera_perspective :
-  public camera_perspective
+class VITAL_EXPORT simple_camera_perspective
+  : public camera_perspective
 {
 public:
   /// Default Constructor
-  simple_camera_perspective ( )
-  : center_( 0.0, 0.0, 0.0 ),
-  orientation_(),
-  intrinsics_( new simple_camera_intrinsics() )
-  { }
+  simple_camera_perspective()
+    : center_( 0.0, 0.0, 0.0 ),
+      orientation_(),
+      intrinsics_( new simple_camera_intrinsics() )
+  {}
 
   /// Constructor - from camera center, rotation, and intrinsics
   ///
   ///  This constructor keeps a shared pointer to the camera intrinsics object
-  ///  passed in, unless it is null.  If null it creates a new simple_camera_intrinsics
-  simple_camera_perspective (
-                  const vector_3d &center,
-                  const rotation_d &rotation,
-                  camera_intrinsics_sptr intrinsics = camera_intrinsics_sptr() )
-  : center_( center ),
-  orientation_( rotation ),
-  intrinsics_( !intrinsics
-               ? camera_intrinsics_sptr(new simple_camera_intrinsics())
-               : intrinsics )
-  { }
+  ///  passed in, unless it is null.  If null it creates a new
+  /// simple_camera_intrinsics
+  simple_camera_perspective(
+    const vector_3d& center,
+    const rotation_d& rotation,
+    camera_intrinsics_sptr intrinsics = camera_intrinsics_sptr() )
+    : center_( center ),
+      orientation_( rotation ),
+      intrinsics_( !intrinsics
+        ? camera_intrinsics_sptr( new simple_camera_intrinsics() )
+        : intrinsics )
+  {}
 
   /// Constructor - from camera_perspective center, rotation, and intrinsics
   ///
-  ///  This constructor make a clone of the camera_perspective intrinsics object passed in
-  simple_camera_perspective ( const vector_3d &center,
-                              const rotation_d &rotation,
-                              const camera_intrinsics& intrinsics )
-  : center_( center ),
-  orientation_( rotation ),
-  intrinsics_( intrinsics.clone() )
-  { }
+  ///  This constructor make a clone of the camera_perspective intrinsics object
+  /// passed in
+  simple_camera_perspective(
+    const vector_3d& center,
+    const rotation_d& rotation,
+    const camera_intrinsics& intrinsics )
+    : center_( center ),
+      orientation_( rotation ),
+      intrinsics_( intrinsics.clone() )
+  {}
 
   /// Constructor - from base class
-  simple_camera_perspective( const camera_perspective &base )
-  : center_( base.center() ),
-    center_covar_( base.center_covar() ),
-    orientation_( base.rotation() ),
-    intrinsics_( base.intrinsics() )
+  simple_camera_perspective( const camera_perspective& base )
+    : center_( base.center() ),
+      center_covar_( base.center_covar() ),
+      orientation_( base.rotation() ),
+      intrinsics_( base.intrinsics() )
   {}
 
   /// Create a clone of this camera object
-  virtual camera_sptr clone() const
+  virtual camera_sptr
+  clone() const
   { return camera_sptr( new simple_camera_perspective( *this ) ); }
 
   /// Accessor for the camera center of projection (position)
-  virtual vector_3d center() const
+  virtual vector_3d
+  center() const
   { return center_; }
 
   /// Accessor for the translation vector
-  virtual vector_3d translation() const
+  virtual vector_3d
+  translation() const
   { return -( orientation_ * center_ ); }
 
   /// Accessor for the covariance of camera center
-  virtual covariance_3d center_covar() const
+  virtual covariance_3d
+  center_covar() const
   { return center_covar_; }
 
   /// Accessor for the rotation
-  virtual rotation_d rotation() const
+  virtual rotation_d
+  rotation() const
   { return orientation_; }
 
   /// Accessor for the intrinsics
-  virtual camera_intrinsics_sptr intrinsics() const
+  virtual camera_intrinsics_sptr
+  intrinsics() const
   { return intrinsics_; }
 
   /// Create a clone of this camera that is rotated to look at the given point
@@ -184,35 +200,42 @@ public:
   /// This implementation creates a clone and call look_at on it.
   ///
   /// \param stare_point the location at which the camera is oriented to point
-  /// \param up_direction the vector which is "up" in the world (defaults to Z-axis)
+  /// \param up_direction the vector which is "up" in the world (defaults to
+  /// Z-axis)
   /// \returns New clone, but set to look at the given point.
   virtual camera_perspective_sptr clone_look_at(
-    const vector_3d &stare_point,
-    const vector_3d &up_direction = vector_3d::UnitZ() ) const override;
+    const vector_3d& stare_point,
+    const vector_3d& up_direction = vector_3d::UnitZ() ) const override;
 
   /// Accessor for the camera center of projection using underlying data type
-  const vector_3d& get_center() const { return center_; }
+  const vector_3d&
+  get_center() const { return center_; }
 
   /// Accessor for the covariance of camera center using underlying data type
-  const covariance_3d& get_center_covar() const { return center_covar_; }
+  const covariance_3d&
+  get_center_covar() const { return center_covar_; }
 
   /// Accessor for the rotation using underlying data type
-  const rotation_d& get_rotation() const { return orientation_; }
+  const rotation_d&
+  get_rotation() const { return orientation_; }
 
   /// Accessor for the intrinsics using underlying data type
-  camera_intrinsics_sptr get_intrinsics() const { return intrinsics_; }
+  camera_intrinsics_sptr
+  get_intrinsics() const { return intrinsics_; }
 
   /// Set the camera center of projection
   void set_center( const vector_3d& center ) { center_ = center; }
 
   /// Set the translation vector (relative to current rotation)
-  void set_translation( const vector_3d& translation )
+  void
+  set_translation( const vector_3d& translation )
   {
     center_ = -( orientation_.inverse() * translation );
   }
 
   /// Set the covariance matrix of the feature
-  void set_center_covar( const covariance_3d& center_covar )
+  void
+  set_center_covar( const covariance_3d& center_covar )
   {
     center_covar_ = center_covar;
   }
@@ -222,18 +245,22 @@ public:
 
   /// Set the intrinsics
   //@{
-  void set_intrinsics( const camera_intrinsics_sptr& intrinsics )
+  void
+  set_intrinsics( const camera_intrinsics_sptr& intrinsics )
   {
-    intrinsics_ = ! intrinsics
-                  ? camera_intrinsics_sptr(new simple_camera_intrinsics())
+    intrinsics_ = !intrinsics
+                  ? camera_intrinsics_sptr( new simple_camera_intrinsics() )
                   : intrinsics;
   }
-  void set_intrinsics( camera_intrinsics_sptr&& intrinsics )
+
+  void
+  set_intrinsics( camera_intrinsics_sptr&& intrinsics )
   {
-    intrinsics_ = ! intrinsics
+    intrinsics_ = !intrinsics
                   ? std::make_shared< simple_camera_intrinsics >()
                   : std::move( intrinsics );
   }
+
   //@}
 
   /// Rotate the camera about its center such that it looks at the given point.
@@ -242,9 +269,11 @@ public:
   /// the vertical image direction is closest to \c up_direction in the world.
   ///
   /// \param stare_point the location at which the camera is oriented to point
-  /// \param up_direction the vector which is "up" in the world (defaults to Z-axis)
-  void look_at( const vector_3d &stare_point,
-                const vector_3d &up_direction = vector_3d::UnitZ() );
+  /// \param up_direction the vector which is "up" in the world (defaults to
+  /// Z-axis)
+  void look_at(
+    const vector_3d& stare_point,
+    const vector_3d& up_direction = vector_3d::UnitZ() );
 
 protected:
   /// The camera center of project
@@ -261,10 +290,12 @@ protected:
 ///
 /// \param s input stream
 /// \param c camera_perspective to stream into
-VITAL_EXPORT std::istream& operator>>( std::istream& s,
-                                       simple_camera_perspective& c );
+VITAL_EXPORT std::istream& operator>>(
+  std::istream& s,
+  simple_camera_perspective& c );
 
-}
+} // namespace vital
+
 }   // end namespace vital
 
 #endif // VITAL_CAMERA_PERSPECTIVE_H_

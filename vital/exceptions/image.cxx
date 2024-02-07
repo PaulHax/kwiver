@@ -10,6 +10,7 @@
 #include <sstream>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -22,33 +23,30 @@ image_exception
 // ----------------------------------------------------------------------------
 image_exception
 ::image_exception( std::nullptr_t ) noexcept
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 image_exception
 ::~image_exception() noexcept
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 image_type_mismatch_exception
 ::image_type_mismatch_exception( std::string const& message ) noexcept
   : image_exception{ message }
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 image_type_mismatch_exception
 ::~image_type_mismatch_exception() noexcept
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 image_size_mismatch_exception
-::image_size_mismatch_exception( std::string const& message,
-                                 size_t correct_w, size_t correct_h,
-                                 size_t given_w, size_t given_h ) noexcept
+::image_size_mismatch_exception(
+  std::string const& message,
+  size_t correct_w, size_t correct_h,
+  size_t given_w, size_t given_h ) noexcept
   : image_exception{ nullptr },
     m_message{ message },
     m_correct_w{ correct_w },
@@ -66,8 +64,8 @@ image_size_mismatch_exception
 // ----------------------------------------------------------------------------
 image_size_mismatch_exception
 ::~image_size_mismatch_exception() noexcept
-{
-}
+{}
 
 } // end namespace vital
+
 } // end namespace kwiver

@@ -19,7 +19,9 @@ namespace arrows {
 
 namespace vxl {
 
-namespace { // anonymous
+namespace {
+
+// anonymous
 
 enum filter_mode
 {
@@ -27,8 +29,9 @@ enum filter_mode
   MODE_bidir,
 };
 
-ENUM_CONVERTER( mode_converter, filter_mode,
-                { "box", MODE_box }, { "bidir", MODE_bidir } )
+ENUM_CONVERTER(
+  mode_converter, filter_mode,
+  { "box", MODE_box }, { "bidir", MODE_bidir } )
 
 // ----------------------------------------------------------------------------
 template < typename T > struct accumulator;
@@ -78,12 +81,10 @@ class high_pass_filter::priv
 public:
   priv( high_pass_filter* parent )
     : p{ parent }
-  {
-  }
+  {}
 
   ~priv()
-  {
-  }
+  {}
 
   // Internal parameters/settings
   filter_mode mode = MODE_box;
@@ -123,14 +124,16 @@ public:
   odd_rows( vil_image_view< PixType > const& im );
   // Fast 1D (horizontal) box filter smoothing
   template < typename PixType > void
-  box_average_horizontal( vil_image_view< PixType > const& src,
-                          vil_image_view< PixType >& dst,
-                          unsigned kernel_width );
+  box_average_horizontal(
+    vil_image_view< PixType > const& src,
+    vil_image_view< PixType >& dst,
+    unsigned kernel_width );
   // Fast 1D (vertical) box filter smoothing
   template < typename PixType > void
-  box_average_vertical( vil_image_view< PixType > const& src,
-                        vil_image_view< PixType >& dst,
-                        unsigned kernel_height );
+  box_average_vertical(
+    vil_image_view< PixType > const& src,
+    vil_image_view< PixType >& dst,
+    unsigned kernel_height );
   // Apply a high pass filter to one frame and return the output
   template < typename PixType > kwiver::vital::image_container_sptr
   filter( vil_image_view< PixType >& input );
@@ -168,10 +171,11 @@ high_pass_filter::priv
 template < typename PixType >
 void
 high_pass_filter::priv
-::horizontal_box_bidirectional_pass( vil_image_view< PixType > const& grey,
-                                     vil_image_view< PixType > const& smoothed,
-                                     vil_image_view< PixType >& output,
-                                     unsigned kernel_width )
+::horizontal_box_bidirectional_pass(
+  vil_image_view< PixType > const& grey,
+  vil_image_view< PixType > const& smoothed,
+  vil_image_view< PixType >& output,
+  unsigned kernel_width )
 {
   unsigned const ni = grey.ni();
   unsigned const nj = grey.nj();
@@ -208,17 +212,19 @@ high_pass_filter::priv
 template < typename PixType >
 void
 high_pass_filter::priv
-::vertical_box_bidirectional_pass( vil_image_view< PixType > const& grey,
-                                   vil_image_view< PixType > const& smoothed,
-                                   vil_image_view< PixType >& output,
-                                   unsigned kernel_height )
+::vertical_box_bidirectional_pass(
+  vil_image_view< PixType > const& grey,
+  vil_image_view< PixType > const& smoothed,
+  vil_image_view< PixType >& output,
+  unsigned kernel_height )
 {
   vil_image_view< PixType > grey_t = vil_transpose( grey );
   vil_image_view< PixType > smoothed_t = vil_transpose( smoothed );
   vil_image_view< PixType > output_t = vil_transpose( output );
 
-  horizontal_box_bidirectional_pass( grey_t, smoothed_t,
-                                     output_t, kernel_height );
+  horizontal_box_bidirectional_pass(
+    grey_t, smoothed_t,
+    output_t, kernel_height );
 }
 
 // ----------------------------------------------------------------------------
@@ -238,11 +244,13 @@ high_pass_filter::priv
   // responses, using the xy channel as a temporary buffer to avoid additional
   // memory allocation.
   box_average_vertical( grey_img, filter_xy, kernel_height );
-  horizontal_box_bidirectional_pass( grey_img, filter_xy, filter_x,
-                                     kernel_width );
+  horizontal_box_bidirectional_pass(
+    grey_img, filter_xy, filter_x,
+    kernel_width );
   box_average_horizontal( grey_img, filter_xy, kernel_width );
-  vertical_box_bidirectional_pass( grey_img, filter_xy, filter_y,
-                                   kernel_height );
+  vertical_box_bidirectional_pass(
+    grey_img, filter_xy, filter_y,
+    kernel_height );
   vil_math_image_max( filter_x, filter_y, filter_xy );
 
   return output;
@@ -276,9 +284,10 @@ high_pass_filter::priv
 template < typename PixType >
 void
 high_pass_filter::priv
-::box_average_horizontal( vil_image_view< PixType > const& src,
-                          vil_image_view< PixType >& dst,
-                          unsigned kernel_width )
+::box_average_horizontal(
+  vil_image_view< PixType > const& src,
+  vil_image_view< PixType >& dst,
+  unsigned kernel_width )
 {
   if( src.ni() <= 0 )
   {
@@ -371,9 +380,10 @@ high_pass_filter::priv
 template < typename PixType >
 void
 high_pass_filter::priv
-::box_average_vertical( vil_image_view< PixType > const& src,
-                        vil_image_view< PixType >& dst,
-                        unsigned kernel_height )
+::box_average_vertical(
+  vil_image_view< PixType > const& src,
+  vil_image_view< PixType >& dst,
+  unsigned kernel_height )
 {
   if( treat_as_interlaced )
   {
@@ -444,8 +454,7 @@ high_pass_filter
 // ----------------------------------------------------------------------------
 high_pass_filter
 ::~high_pass_filter()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 vital::config_block_sptr
@@ -455,22 +464,27 @@ high_pass_filter
   // get base config from base class
   vital::config_block_sptr config = algorithm::get_configuration();
 
-  config->set_value( "mode", mode_converter().to_string(
-                       d->mode ),
-                     "Operating mode of this filter, possible values: " +
-                     mode_converter().element_name_string() );
-  config->set_value( "kernel_width", d->kernel_width,
-                     "Pixel width of smoothing kernel" );
-  config->set_value( "kernel_height", d->kernel_height,
-                     "Pixel height of smoothing kernel" );
-  config->set_value( "treat_as_interlaced", d->treat_as_interlaced,
-                     "Process alternating rows independently" );
-  config->set_value( "output_net_only", d->output_net_only,
-                     "If set to false, the output image will contain multiple "
-                     "planes, each representing the modal filter applied at "
-                     "different orientations, as opposed to a single plane "
-                     "image representing the sum of filters applied in all "
-                     "directions." );
+  config->set_value(
+    "mode", mode_converter().to_string(
+      d->mode ),
+    "Operating mode of this filter, possible values: " +
+    mode_converter().element_name_string() );
+  config->set_value(
+    "kernel_width", d->kernel_width,
+    "Pixel width of smoothing kernel" );
+  config->set_value(
+    "kernel_height", d->kernel_height,
+    "Pixel height of smoothing kernel" );
+  config->set_value(
+    "treat_as_interlaced", d->treat_as_interlaced,
+    "Process alternating rows independently" );
+  config->set_value(
+    "output_net_only", d->output_net_only,
+    "If set to false, the output image will contain multiple "
+    "planes, each representing the modal filter applied at "
+    "different orientations, as opposed to a single plane "
+    "image representing the sum of filters applied in all "
+    "directions." );
 
   return config;
 }
@@ -503,16 +517,18 @@ high_pass_filter
 
   if( width % 2 == 0 )
   {
-    LOG_ERROR( logger(), "Kernel width must be odd but is "
-               << width );
+    LOG_ERROR(
+      logger(), "Kernel width must be odd but is "
+        << width );
     return false;
   }
 
   unsigned height = config->get_value< unsigned >( "kernel_height" );
   if( height % 2 == 0 )
   {
-    LOG_ERROR( logger(), "Kernel height must be odd but is "
-               << height );
+    LOG_ERROR(
+      logger(), "Kernel height must be odd but is "
+        << height );
     return false;
   }
 
@@ -533,34 +549,36 @@ high_pass_filter
   }
   else if( view->nplanes() != 1 )
   {
-    LOG_ERROR( logger(), "Expected 1 or 3 channels but recieved "
-               << view->nplanes() );
+    LOG_ERROR(
+      logger(), "Expected 1 or 3 channels but recieved "
+        << view->nplanes() );
     return kwiver::vital::image_container_sptr();
   }
 
-#define HANDLE_CASE( T )                                          \
-  case T:                                                         \
-  {                                                               \
-    using pix_t = vil_pixel_format_type_of< T >::component_type;  \
-    auto input = static_cast< vil_image_view< pix_t > >( *view ); \
-    return d->filter( input );                                    \
-  }
+#define HANDLE_CASE( T )                                            \
+  case T:                                                           \
+    {                                                               \
+      using pix_t = vil_pixel_format_type_of< T >::component_type;  \
+      auto input = static_cast< vil_image_view< pix_t > >( *view ); \
+      return d->filter( input );                                    \
+    }
 
   switch( view->pixel_format() )
   {
-    HANDLE_CASE( VIL_PIXEL_FORMAT_BYTE )
-    HANDLE_CASE( VIL_PIXEL_FORMAT_SBYTE )
-    HANDLE_CASE( VIL_PIXEL_FORMAT_UINT_16 )
-    HANDLE_CASE( VIL_PIXEL_FORMAT_INT_16 )
-    HANDLE_CASE( VIL_PIXEL_FORMAT_UINT_32 )
-    HANDLE_CASE( VIL_PIXEL_FORMAT_INT_32 )
-    HANDLE_CASE( VIL_PIXEL_FORMAT_FLOAT )
-    HANDLE_CASE( VIL_PIXEL_FORMAT_DOUBLE )
+  HANDLE_CASE( VIL_PIXEL_FORMAT_BYTE )
+  HANDLE_CASE( VIL_PIXEL_FORMAT_SBYTE )
+  HANDLE_CASE( VIL_PIXEL_FORMAT_UINT_16 )
+  HANDLE_CASE( VIL_PIXEL_FORMAT_INT_16 )
+  HANDLE_CASE( VIL_PIXEL_FORMAT_UINT_32 )
+  HANDLE_CASE( VIL_PIXEL_FORMAT_INT_32 )
+  HANDLE_CASE( VIL_PIXEL_FORMAT_FLOAT )
+  HANDLE_CASE( VIL_PIXEL_FORMAT_DOUBLE )
 #undef HANDLE_CASE
 
     default:
-      LOG_ERROR( logger(), "Invalid input format " << view->pixel_format()
-                                                   << " type received" );
+      LOG_ERROR(
+        logger(), "Invalid input format " << view->pixel_format()
+                                          << " type received" );
       return nullptr;
   }
 

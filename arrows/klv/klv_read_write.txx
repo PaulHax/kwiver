@@ -31,15 +31,15 @@ namespace klv {
 // Message-less static_assert not available in C++11
 
 #define KLV_ASSERT_INT( T ) \
-  static_assert( std::is_integral_v< T >, "must be an integer type" )
+static_assert( std::is_integral_v< T >, "must be an integer type" )
 
-#define KLV_ASSERT_UINT( T )                                                \
-  KLV_ASSERT_INT( T );                                                      \
-  static_assert( std::is_unsigned_v< T >, "must be an unsigned type" )
+#define KLV_ASSERT_UINT( T ) \
+KLV_ASSERT_INT( T );         \
+static_assert( std::is_unsigned_v< T >, "must be an unsigned type" )
 
-#define KLV_ASSERT_SINT( T )                                           \
-  KLV_ASSERT_INT( T );                                                 \
-  static_assert( std::is_signed_v< T >, "must be a signed type" )
+#define KLV_ASSERT_SINT( T ) \
+KLV_ASSERT_INT( T );         \
+static_assert( std::is_signed_v< T >, "must be a signed type" )
 
 // ----------------------------------------------------------------------------
 // Return number of bits required to store the given signed or unsigned int.
@@ -94,13 +94,17 @@ struct KWIVER_ALGO_KLV_EXPORT _imap_terms
 // Calculates the derived terms needed for both IMAP reading and writing.
 KWIVER_ALGO_KLV_EXPORT
 _imap_terms
-_calculate_imap_terms( vital::interval< double > const& interval, size_t length );
+_calculate_imap_terms(
+  vital::interval< double > const& interval,
+  size_t length );
 
 // ----------------------------------------------------------------------------
 // Throws invalid_value if arguments don't make sense
 KWIVER_ALGO_KLV_EXPORT
 void
-_check_range_precision( vital::interval< double > const& interval, double precision );
+_check_range_precision(
+  vital::interval< double > const& interval,
+  double precision );
 
 // ----------------------------------------------------------------------------
 // Throws invalid_value if arguments don't make sense
@@ -118,8 +122,9 @@ klv_read_int( klv_read_iter_t& data, size_t length )
 
   if( sizeof( T ) < length )
   {
-    VITAL_THROW( kwiver::vital::metadata_type_overflow,
-                 "integer will overflow given type" );
+    VITAL_THROW(
+      kwiver::vital::metadata_type_overflow,
+      "integer will overflow given type" );
   }
 
   // Avoid integer underflow in later expressions
@@ -138,8 +143,9 @@ klv_read_int( klv_read_iter_t& data, size_t length )
 
   // Reduce span to final result
   auto result =
-    std::accumulate( data, data + length, static_cast< UnsignedT >( 0 ),
-                     accumulator );
+    std::accumulate(
+      data, data + length, static_cast< UnsignedT >( 0 ),
+      accumulator );
 
   // Extend sign bit
   UnsignedT const result_sign_bit = 1ull << ( 8 * length - 1 );
@@ -167,8 +173,9 @@ klv_write_int( T value, klv_write_iter_t& data, size_t length )
   auto const value_length = klv_int_length( value );
   if( value_length > length )
   {
-    VITAL_THROW( kwiver::vital::metadata_type_overflow,
-                 "integer not representable using given length" );
+    VITAL_THROW(
+      kwiver::vital::metadata_type_overflow,
+      "integer not representable using given length" );
   }
 
   using UnsignedT = typename std::make_unsigned< T >::type;
@@ -201,8 +208,9 @@ klv_read_ber( klv_read_iter_t& data, size_t max_length )
 
   if( !max_length )
   {
-    VITAL_THROW( kwiver::vital::metadata_buffer_overflow,
-                 "BER decoding overruns end of data buffer" );
+    VITAL_THROW(
+      kwiver::vital::metadata_buffer_overflow,
+      "BER decoding overruns end of data buffer" );
   }
 
   // Short form - first bit is 0, remaining bits are the value itself
@@ -219,8 +227,9 @@ klv_read_ber( klv_read_iter_t& data, size_t max_length )
 
   if( total_length > max_length )
   {
-    VITAL_THROW( kwiver::vital::metadata_buffer_overflow,
-                 "BER decoding overruns end of data buffer" );
+    VITAL_THROW(
+      kwiver::vital::metadata_buffer_overflow,
+      "BER decoding overruns end of data buffer" );
   }
 
   auto const rewind = data;
@@ -228,7 +237,7 @@ klv_read_ber( klv_read_iter_t& data, size_t max_length )
   {
     return klv_read_int< T >( ++data, total_length - 1 );
   }
-  catch ( const kwiver::vital::metadata_type_overflow& e )
+  catch( const kwiver::vital::metadata_type_overflow& e )
   {
     data = rewind;
 
@@ -246,8 +255,9 @@ klv_write_ber( T value, klv_write_iter_t& data, size_t max_length )
   auto const value_length = klv_ber_length( value );
   if( value_length > max_length )
   {
-    VITAL_THROW( kwiver::vital::metadata_buffer_overflow,
-                 "BER encoding overruns end of data buffer" );
+    VITAL_THROW(
+      kwiver::vital::metadata_buffer_overflow,
+      "BER encoding overruns end of data buffer" );
   }
 
   if( value < 128 )
@@ -287,16 +297,18 @@ klv_read_ber_oid( klv_read_iter_t& data, size_t max_length )
     if( !max_length )
     {
       data = rewind;
-      VITAL_THROW( kwiver::vital::metadata_buffer_overflow,
-                   "BER-OID decoding overruns end of data buffer" );
+      VITAL_THROW(
+        kwiver::vital::metadata_buffer_overflow,
+        "BER-OID decoding overruns end of data buffer" );
     }
     --max_length;
 
     if( _left_shift_overflow< 7, T >( value ) )
     {
       data = rewind;
-      VITAL_THROW( kwiver::vital::metadata_type_overflow,
-                   "BER-OID value will overflow given type" );
+      VITAL_THROW(
+        kwiver::vital::metadata_type_overflow,
+        "BER-OID value will overflow given type" );
     }
 
     value <<= 7;
@@ -316,8 +328,9 @@ klv_write_ber_oid( T value, klv_write_iter_t& data, size_t max_length )
   auto value_length = klv_ber_oid_length( value );
   if( value_length > max_length )
   {
-    VITAL_THROW( kwiver::vital::metadata_buffer_overflow,
-                 "BER-OID encoding overruns end of data buffer" );
+    VITAL_THROW(
+      kwiver::vital::metadata_buffer_overflow,
+      "BER-OID encoding overruns end of data buffer" );
   }
 
   if( !value )
@@ -351,7 +364,8 @@ klv_ber_oid_length( T value )
 template < class T >
 double
 klv_read_flint(
-  vital::interval< double > const& interval, klv_read_iter_t& data, size_t length )
+  vital::interval< double > const& interval, klv_read_iter_t& data,
+  size_t length )
 {
   KLV_ASSERT_INT( T );
 
@@ -390,8 +404,9 @@ klv_read_flint(
 // ----------------------------------------------------------------------------
 template < class T >
 void
-klv_write_flint( double value, vital::interval< double > const& interval,
-                 klv_write_iter_t& data, size_t length )
+klv_write_flint(
+  double value, vital::interval< double > const& interval,
+  klv_write_iter_t& data, size_t length )
 {
   // Ensure types are compatible with our assumptions
   KLV_ASSERT_INT( T );

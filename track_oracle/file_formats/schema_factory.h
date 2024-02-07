@@ -11,12 +11,13 @@
 // than with the track_oracle core.)
 //
 
-#include <vital/vital_config.h>
 #include <track_oracle/file_formats/track_oracle_file_formats_export.h>
+#include <vital/vital_config.h>
 
 #include <string>
 
 namespace kwiver {
+
 namespace track_oracle {
 
 class track_base_impl;
@@ -24,12 +25,14 @@ class track_base_impl;
 namespace schema_factory {
 
 bool TRACK_ORACLE_FILE_FORMATS_EXPORT
-clone_field_into_schema( track_base_impl& schema,
-                         const std::string& name );
+clone_field_into_schema(
+  track_base_impl& schema,
+  const std::string& name );
 
 } // ...schema_factory
 
 } // ...track_oracle
+
 } // ...kwiver
 
 #endif

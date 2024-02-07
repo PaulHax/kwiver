@@ -3,7 +3,8 @@
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
 /// \file
-/// \brief Header file for \link kwiver::vital::object_track_set object_track_set
+/// \brief Header file for \link kwiver::vital::object_track_set
+/// object_track_set
 ///        \endlink and a concrete \link kwiver::vital::simple_object_track_set
 ///        simple_object_track_set \endlink
 
@@ -15,16 +16,17 @@
 #include <vital/types/timestamp.h>
 #include <vital/types/track_set.h>
 
-#include <vital/vital_export.h>
 #include <vital/vital_config.h>
+#include <vital/vital_export.h>
 #include <vital/vital_types.h>
 
 #include <vital/range/transform.h>
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -36,37 +38,41 @@ public:
 
   //@{
   /// Default constructor
-  object_track_state( frame_id_t frame,
-                      time_usec_t time,
-                      detected_object_sptr const& d = nullptr )
-    : track_state( frame )
-    , detection_( d )
-    , time_( time )
+  object_track_state(
+    frame_id_t frame,
+    time_usec_t time,
+    detected_object_sptr const& d = nullptr )
+    : track_state( frame ),
+      detection_( d ),
+      time_( time )
   {}
 
-  object_track_state( frame_id_t frame,
-                      time_usec_t time,
-                      detected_object_sptr&& d )
-    : track_state( frame )
-    , detection_( std::move( d ) )
-    , time_( time )
+  object_track_state(
+    frame_id_t frame,
+    time_usec_t time,
+    detected_object_sptr&& d )
+    : track_state( frame ),
+      detection_( std::move( d ) ),
+      time_( time )
   {}
   //@}
 
   //@{
   /// Alternative constructor
-  object_track_state( timestamp const& ts,
-                      detected_object_sptr const& d = nullptr )
-    : track_state( ts.get_frame() )
-    , detection_( d )
-    , time_( ts.get_time_usec() )
+  object_track_state(
+    timestamp const& ts,
+    detected_object_sptr const& d = nullptr )
+    : track_state( ts.get_frame() ),
+      detection_( d ),
+      time_( ts.get_time_usec() )
   {}
 
-  object_track_state( timestamp const& ts,
-                      detected_object_sptr&& d )
-    : track_state( ts.get_frame() )
-    , detection_( std::move( d ) )
-    , time_( ts.get_time_usec() )
+  object_track_state(
+    timestamp const& ts,
+    detected_object_sptr&& d )
+    : track_state( ts.get_frame() ),
+      detection_( std::move( d ) ),
+      time_( ts.get_time_usec() )
   {}
   //@}
 
@@ -79,52 +85,62 @@ public:
   /// Clone the track state (polymorphic copy constructor)
   track_state_sptr clone( clone_type ct = clone_type::DEEP ) const override;
 
-  void set_time( time_usec_t time )
+  void
+  set_time( time_usec_t time )
   {
     time_ = time;
   }
 
-  time_usec_t time() const
+  time_usec_t
+  time() const
   {
     return time_;
   }
 
-  void set_detection( detected_object_sptr const& d )
+  void
+  set_detection( detected_object_sptr const& d )
   {
     detection_ = d;
   }
 
-  detected_object_sptr detection()
+  detected_object_sptr
+  detection()
   {
     return detection_;
   }
 
-  detected_object_scptr detection() const
+  detected_object_scptr
+  detection() const
   {
     return detection_;
   }
 
-  void set_image_point( point_2d const& p )
+  void
+  set_image_point( point_2d const& p )
   {
     image_point_ = p;
   }
 
-  point_2d image_point() const
+  point_2d
+  image_point() const
   {
     return image_point_;
   }
 
-  void set_track_point( point_3d const& p )
+  void
+  set_track_point( point_3d const& p )
   {
     track_point_ = p;
   }
 
-  point_3d track_point() const
+  point_3d
+  track_point() const
   {
     return track_point_;
   }
 
-  static std::shared_ptr< object_track_state > downcast(
+  static std::shared_ptr< object_track_state >
+  downcast(
     track_state_sptr const& sp )
   {
     return std::dynamic_pointer_cast< object_track_state >( sp );
@@ -183,6 +199,8 @@ typedef std::shared_ptr< object_track_set > object_track_set_sptr;
 /// \sa kwiver::vital::range::transform_view
 static constexpr auto as_object_track = object_track_state::downcast_transform;
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital
 
 #endif // VITAL_OBJECT_TRACK_SET_H_

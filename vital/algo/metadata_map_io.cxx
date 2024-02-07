@@ -86,8 +86,9 @@ metadata_map_io
 // ----------------------------------------------------------------------------
 void
 metadata_map_io
-::save( std::ostream& fout, metadata_map_sptr data,
-        std::string const& filename ) const
+::save(
+  std::ostream& fout, metadata_map_sptr data,
+  std::string const& filename ) const
 {
   save_( fout, data, filename );
 }
@@ -103,8 +104,9 @@ metadata_map_io
 // ----------------------------------------------------------------------------
 void
 metadata_map_io
-::set_capability( algorithm_capabilities::capability_name_t const& name,
-                  bool val )
+::set_capability(
+  algorithm_capabilities::capability_name_t const& name,
+  bool val )
 {
   this->m_capabilities.set_capability( name, val );
 }
@@ -113,8 +115,7 @@ metadata_map_io
 void
 metadata_map_io
 ::set_configuration( VITAL_UNUSED vital::config_block_sptr config )
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 bool

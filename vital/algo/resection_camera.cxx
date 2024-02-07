@@ -25,11 +25,12 @@ resection_camera
 // ----------------------------------------------------------------------------
 camera_perspective_sptr
 resection_camera
-::resection( frame_id_t frame_id,
-             landmark_map_sptr landmarks,
-             feature_track_set_sptr tracks,
-             unsigned width, unsigned height,
-             std::unordered_set< landmark_id_t >* inliers ) const
+::resection(
+  frame_id_t frame_id,
+  landmark_map_sptr landmarks,
+  feature_track_set_sptr tracks,
+  unsigned width, unsigned height,
+  std::unordered_set< landmark_id_t >* inliers ) const
 {
   // Generate calibration guess from image dimensions.
   auto const principal_point = vector_2d{ width* 0.5, height* 0.5 };
@@ -45,11 +46,12 @@ resection_camera
 // ----------------------------------------------------------------------------
 camera_perspective_sptr
 resection_camera
-::resection( frame_id_t frame_id,
-             landmark_map_sptr landmarks,
-             feature_track_set_sptr tracks,
-             kwiver::vital::camera_intrinsics_sptr cal,
-             std::unordered_set< landmark_id_t >* inliers ) const
+::resection(
+  frame_id_t frame_id,
+  landmark_map_sptr landmarks,
+  feature_track_set_sptr tracks,
+  kwiver::vital::camera_intrinsics_sptr cal,
+  std::unordered_set< landmark_id_t >* inliers ) const
 {
   auto world_points = std::vector< vector_3d >{};
   auto camera_points = std::vector< vector_2d >{};

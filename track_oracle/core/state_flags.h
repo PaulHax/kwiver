@@ -35,19 +35,20 @@
 ///
 ///
 
-#include <vital/vital_config.h>
 #include <track_oracle/core/track_oracle_export.h>
+#include <vital/vital_config.h>
 
 #include <iostream>
-#include <string>
-#include <vector>
 #include <map>
-#include <track_oracle/core/track_oracle_api_types.h>
+#include <string>
 #include <track_oracle/core/kwiver_io_base.h>
+#include <track_oracle/core/track_oracle_api_types.h>
+#include <vector>
 
 class TiXmlElement;
 
 namespace kwiver {
+
 namespace track_oracle {
 
 struct TRACK_ORACLE_EXPORT state_flag_type
@@ -58,40 +59,65 @@ struct TRACK_ORACLE_EXPORT state_flag_type
   bool operator==( const state_flag_type& rhs ) const;
 
 private:
-  std::vector<size_t> data;
+  std::vector< size_t > data;
 };
 
-TRACK_ORACLE_EXPORT std::ostream& operator<<( std::ostream& os, const state_flag_type& t );
-TRACK_ORACLE_EXPORT std::istream& operator>>( std::istream& os, state_flag_type& t );
+TRACK_ORACLE_EXPORT std::ostream& operator<<(
+  std::ostream& os,
+  const state_flag_type& t );
+TRACK_ORACLE_EXPORT std::istream& operator>>(
+  std::istream& os,
+  state_flag_type& t );
 
-// not sure why the TMP in kwiver_io_base.txx isn't picking these up automatically
+// not sure why the TMP in kwiver_io_base.txx isn't picking these up
+// automatically
 // ...I guess because we want kwiver_io on the state_flag_type, but the data
 // term is 'state_flags'; the state_flag_type won't pass the is-data-term test.
 
-template <> TRACK_ORACLE_EXPORT std::ostream& kwiver_io_base<state_flag_type>::to_stream( std::ostream& os, const state_flag_type& t ) const;
-template <> TRACK_ORACLE_EXPORT bool kwiver_io_base<state_flag_type>::from_str( const std::string& s, state_flag_type& t ) const;
-template <> TRACK_ORACLE_EXPORT bool kwiver_io_base<state_flag_type>::read_xml( const TiXmlElement* e, state_flag_type& val ) const;
-template <> TRACK_ORACLE_EXPORT void kwiver_io_base<state_flag_type>::write_xml( std::ostream& os, const std::string& indent, const state_flag_type& val ) const;
-template <> TRACK_ORACLE_EXPORT std::vector< std::string > kwiver_io_base<state_flag_type>::csv_headers() const;
-template <> TRACK_ORACLE_EXPORT bool kwiver_io_base<state_flag_type>::from_csv( const std::map< std::string, std::string >& header_value_map, state_flag_type& val ) const;
-template <> TRACK_ORACLE_EXPORT std::ostream& kwiver_io_base<state_flag_type>::to_csv( std::ostream& os, const state_flag_type& val ) const;
+template <> TRACK_ORACLE_EXPORT std::ostream& kwiver_io_base< state_flag_type >
+::to_stream( std::ostream& os, const state_flag_type& t ) const;
+template <> TRACK_ORACLE_EXPORT bool kwiver_io_base< state_flag_type >
+::from_str( const std::string& s, state_flag_type& t ) const;
+template <> TRACK_ORACLE_EXPORT bool kwiver_io_base< state_flag_type >
+::read_xml( const TiXmlElement* e, state_flag_type& val ) const;
+template <> TRACK_ORACLE_EXPORT void kwiver_io_base< state_flag_type >
+::write_xml(
+  std::ostream& os, const std::string& indent,
+  const state_flag_type& val ) const;
+template <> TRACK_ORACLE_EXPORT std::vector< std::string > kwiver_io_base< state_flag_type >
+::csv_headers() const;
+template <> TRACK_ORACLE_EXPORT bool kwiver_io_base< state_flag_type >
+::from_csv(
+  const std::map< std::string, std::string >& header_value_map,
+  state_flag_type& val ) const;
+template <> TRACK_ORACLE_EXPORT std::ostream& kwiver_io_base< state_flag_type >
+::to_csv( std::ostream& os, const state_flag_type& val ) const;
 
 namespace dt {
+
 namespace utility {
 
-struct TRACK_ORACLE_EXPORT state_flags: public data_term_base, kwiver_io_base<state_flag_type>
+struct TRACK_ORACLE_EXPORT state_flags : public data_term_base,
+                                           kwiver_io_base< state_flag_type >
 {
-  state_flags(): kwiver_io_base< state_flag_type >( "attributes" ) {}
+  state_flags() : kwiver_io_base< state_flag_type >( "attributes" ) {}
   typedef state_flag_type Type;
   static context c;
   static std::string get_context_name() { return "attributes"; }
-  static std::string get_context_description() { return "domain-defined attribute flags"; }
+
+  static std::string
+  get_context_description()
+  {
+    return "domain-defined attribute flags";
+  }
 };
 
 } // ...utility
+
 } // ...dt
 
 } // ...track_oracle
+
 } // ...kwiver
 
 #endif

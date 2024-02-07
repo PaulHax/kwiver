@@ -128,8 +128,9 @@ klv_blob_format
 // ----------------------------------------------------------------------------
 void
 klv_blob_format
-::write_typed( klv_blob const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_blob const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   return klv_write_blob( value, data, length );
 }
@@ -174,8 +175,9 @@ klv_uuid_format
 // ----------------------------------------------------------------------------
 void
 klv_uuid_format
-::write_typed( klv_uuid const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_uuid const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   klv_write_uuid( value, data, length );
 }
@@ -212,8 +214,9 @@ klv_bool_format
 // ----------------------------------------------------------------------------
 void
 klv_bool_format
-::write_typed( bool const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  bool const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   klv_write_int< uint8_t >( value, data, length );
 }
@@ -243,8 +246,9 @@ klv_uint_format
 // ----------------------------------------------------------------------------
 void
 klv_uint_format
-::write_typed( uint64_t const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  uint64_t const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   klv_write_int( value, data, length );
 }
@@ -283,8 +287,9 @@ klv_sint_format
 // ----------------------------------------------------------------------------
 void
 klv_sint_format
-::write_typed( int64_t const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  int64_t const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   klv_write_int( value, data, length );
 }
@@ -322,8 +327,9 @@ klv_ber_format
 // ----------------------------------------------------------------------------
 void
 klv_ber_format
-::write_typed( uint64_t const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  uint64_t const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   klv_write_ber( value, data, length );
 }
@@ -360,8 +366,9 @@ klv_ber_oid_format
 // ----------------------------------------------------------------------------
 void
 klv_ber_oid_format
-::write_typed( uint64_t const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  uint64_t const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   klv_write_ber_oid< uint64_t >( value, data, length );
 }
@@ -399,8 +406,9 @@ klv_float_format
 // ----------------------------------------------------------------------------
 void
 klv_float_format
-::write_typed( klv_lengthy< double > const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_lengthy< double > const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   klv_write_float( value.value, data, length );
 }
@@ -445,7 +453,8 @@ klv_sflint_format
 ::klv_sflint_format(
   vital::interval< double > const& interval,
   klv_length_constraints const& length_constraints )
-  : klv_data_format_< data_type >{ length_constraints }, m_interval{ interval }
+  : klv_data_format_< data_type >{ length_constraints },
+    m_interval{ interval }
 {}
 
 // ----------------------------------------------------------------------------
@@ -459,8 +468,9 @@ klv_sflint_format
 // ----------------------------------------------------------------------------
 void
 klv_sflint_format
-::write_typed( klv_lengthy< double > const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_lengthy< double > const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   klv_write_flint< int64_t >( value.value, m_interval, data, length );
 }
@@ -516,7 +526,8 @@ klv_uflint_format
 ::klv_uflint_format(
   vital::interval< double > const& interval,
   klv_length_constraints const& length_constraints )
-  : klv_data_format_< data_type >{ length_constraints }, m_interval{ interval }
+  : klv_data_format_< data_type >{ length_constraints },
+    m_interval{ interval }
 {}
 
 // ----------------------------------------------------------------------------
@@ -530,8 +541,9 @@ klv_uflint_format
 // ----------------------------------------------------------------------------
 void
 klv_uflint_format
-::write_typed( klv_lengthy< double > const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_lengthy< double > const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   klv_write_flint< uint64_t >( value.value, m_interval, data, length );
 }
@@ -584,9 +596,11 @@ klv_uflint_format
 
 // ----------------------------------------------------------------------------
 klv_imap_format
-::klv_imap_format( vital::interval< double > const& interval,
-                   klv_length_constraints const& length_constraints )
-  : klv_data_format_< data_type >{ length_constraints }, m_interval{ interval }
+::klv_imap_format(
+  vital::interval< double > const& interval,
+  klv_length_constraints const& length_constraints )
+  : klv_data_format_< data_type >{ length_constraints },
+    m_interval{ interval }
 {}
 
 // ----------------------------------------------------------------------------
@@ -600,8 +614,9 @@ klv_imap_format
 // ----------------------------------------------------------------------------
 void
 klv_imap_format
-::write_typed( klv_lengthy< double > const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_lengthy< double > const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   klv_write_imap( value.value, m_interval, data, length );
 }

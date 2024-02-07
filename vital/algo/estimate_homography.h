@@ -30,7 +30,7 @@ class VITAL_ALGO_EXPORT estimate_homography
 {
 public:
   estimate_homography();
-  PLUGGABLE_INTERFACE(estimate_homography);
+  PLUGGABLE_INTERFACE( estimate_homography );
   /// Estimate a homography matrix from corresponding features
   ///
   /// If estimation fails, a NULL-containing sptr is returned
@@ -44,11 +44,12 @@ public:
   /// \param [in]  inlier_scale error distance tolerated for matches to be
   /// inliers
   virtual kwiver::vital::homography_sptr
-  estimate( kwiver::vital::feature_set_sptr feat1,
-            kwiver::vital::feature_set_sptr feat2,
-            kwiver::vital::match_set_sptr matches,
-            std::vector< bool >& inliers,
-            double inlier_scale = 1.0 ) const;
+  estimate(
+    kwiver::vital::feature_set_sptr feat1,
+    kwiver::vital::feature_set_sptr feat2,
+    kwiver::vital::match_set_sptr matches,
+    std::vector< bool >& inliers,
+    double inlier_scale = 1.0 ) const;
 
   /// Estimate a homography matrix from corresponding points
   ///
@@ -62,11 +63,11 @@ public:
   /// \param [in]  inlier_scale error distance tolerated for matches to be
   /// inliers
   virtual kwiver::vital::homography_sptr
-  estimate( const std::vector< kwiver::vital::vector_2d >& pts1,
-            const std::vector< kwiver::vital::vector_2d >& pts2,
-            std::vector< bool >& inliers,
-            double inlier_scale = 1.0 ) const = 0;
-
+  estimate(
+    const std::vector< kwiver::vital::vector_2d >& pts1,
+    const std::vector< kwiver::vital::vector_2d >& pts2,
+    std::vector< bool >& inliers,
+    double inlier_scale = 1.0 ) const = 0;
 };
 
 /// Shared pointer type of base estimate_homography algorithm definition class

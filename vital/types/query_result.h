@@ -8,21 +8,22 @@
 #ifndef VITAL_QUERY_RESULT_H_
 #define VITAL_QUERY_RESULT_H_
 
-#include "image_container.h"
-#include "timestamp.h"
-#include "object_track_set.h"
-#include "track_descriptor_set.h"
-#include "track_descriptor.h"
 #include "geo_point.h"
+#include "image_container.h"
+#include "object_track_set.h"
+#include "timestamp.h"
+#include "track_descriptor.h"
+#include "track_descriptor_set.h"
 #include "uid.h"
 
-#include <vital/vital_export.h>
 #include <vital/vital_config.h>
+#include <vital/vital_export.h>
 
 #include <memory>
 #include <string>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -34,8 +35,8 @@ namespace vital {
 class VITAL_EXPORT query_result
 {
 public:
-
   query_result();
+
   ~query_result() VITAL_DEFAULT_DTOR
 
   uid query_id() const;
@@ -70,7 +71,6 @@ public:
   void set_image_data( std::vector< image_container_sptr > const& );
 
 protected:
-
   vital::uid m_query_id;
   std::string m_stream_id;
 
@@ -91,6 +91,8 @@ protected:
 /// Shared pointer for query result
 typedef std::shared_ptr< query_result > query_result_sptr;
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital
 
 #endif // VITAL_QUERY_RESULT_H_

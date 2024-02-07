@@ -4,14 +4,15 @@
 
 #include "kwiver_io_base.h"
 
-#include <vector>
 #include <tinyxml.h>
+#include <vector>
 
-#include <track_oracle/core/kwiver_io_helpers.h>
 #include <track_oracle/core/kwiver_io_base_data_io.h>
+#include <track_oracle/core/kwiver_io_helpers.h>
 
 #include <vital/logger/logger.h>
-static kwiver::vital::logger_handle_t kib_logger( kwiver::vital::get_logger( __FILE__ ) );
+static kwiver::vital::logger_handle_t kib_logger( kwiver::vital::get_logger(
+  __FILE__ ) );
 
 using std::istream;
 using std::vector;
@@ -23,40 +24,46 @@ using std::istringstream;
 namespace // anon
 {
 
-typedef char (&no_io_type)[2];
+typedef char (& no_io_type )[ 2 ];
 typedef char yes_io_type;
 
-struct proxy{ template <typename U> proxy(const U&); };
+struct proxy { template < typename U > proxy( const U& ); };
 
-char tmp[2]; no_io_type not_used(tmp);
-no_io_type operator>>( const proxy&, const proxy& ) { return not_used; }
+char tmp[ 2 ];
+no_io_type not_used( tmp );
+no_io_type
+operator>>( const proxy&, const proxy& ) { return not_used; }
+
 no_io_type check( no_io_type ) { return not_used; }
 
-template <typename U> yes_io_type check( const U& );
+template < typename U > yes_io_type check( const U& );
 
-template< typename T >
+template < typename T >
 class class_has_input_operator
 {
   static istream& is;
   static T& val;
 
 public:
-  static const bool value = (sizeof(check(is >> val)) == sizeof( yes_io_type ));
+  static const bool value = ( sizeof( check( is >> val ) ) ==
+                              sizeof( yes_io_type ) );
 };
 
-template< bool T_has_input_operator, typename T >
+template < bool T_has_input_operator, typename T >
 struct input_handler
 {
-  static bool get( istream& is, T& val )
+  static bool
+  get( istream& is, T& val )
   {
-    return static_cast<bool>( is >> val );
+    return static_cast< bool >( is >> val );
   }
 };
 
-template< typename T >
-struct input_handler<false, T >
+template < typename T >
+struct input_handler< false, T >
 {
-  static bool get( istream& is, T&  )
+  static bool
+  get( istream& is, T&  )
   {
     // If we get here, it's because from_str or vector operator>>
     // has been called on a type which (a) has no intrinsic op>>
@@ -69,7 +76,10 @@ struct input_handler<false, T >
 
     string tmp( "failed-to-read" );
     is >> tmp;
-    LOG_DEBUG( kib_logger, "kwiver_io_base input handler called for unimplemented type; string-read returned '" << tmp << "'" );
+    LOG_DEBUG(
+      kib_logger,
+      "kwiver_io_base input handler called for unimplemented type; string-read returned '"
+        << tmp << "'" );
     return false;
   }
 };
@@ -79,41 +89,49 @@ struct input_handler<false, T >
 // otherwise, use operator>>
 //
 
-template< typename T >
+template < typename T >
 class class_has_kwiver_write
 {
   static ostream& os;
+
 public:
-  static const bool value = (sizeof( ::kwiver::track_oracle::kwiver_write( os, T())) != sizeof(char));
+  static const bool value = ( sizeof( ::kwiver::track_oracle::kwiver_write(
+    os,
+    T() ) ) != sizeof( char ) );
 };
 
-template< bool T_has_kwiver_write, typename T>
+template < bool T_has_kwiver_write, typename T >
 struct output_handler
 {
-  static ostream& write( ostream& os, const T& val )
+  static ostream&
+  write( ostream& os, const T& val )
   {
     return ::kwiver::track_oracle::kwiver_write( os, val );
   }
 };
 
-template< typename T >
-struct output_handler<false, T>
+template < typename T >
+struct output_handler< false, T >
 {
-  static ostream& write( ostream& os, const T& val )
+  static ostream&
+  write( ostream& os, const T& val )
   {
     os << val;
     return os;
   }
 };
 
-template< typename T >
-struct output_handler< false, vector<T> >
+template < typename T >
+struct output_handler< false, vector< T > >
 {
-  static ostream& write( ostream& os, const vector<T>& vals )
+  static ostream&
+  write( ostream& os, const vector< T >& vals )
   {
-    for (size_t i=0; i<vals.size(); ++i)
+    for( size_t i = 0; i < vals.size(); ++i )
     {
-      output_handler< class_has_kwiver_write<T>::value, T>::write( os, vals[i] );
+      output_handler< class_has_kwiver_write< T >::value, T >::write(
+        os,
+        vals[ i ] );
       os << " ";
     }
     return os;
@@ -123,64 +141,74 @@ struct output_handler< false, vector<T> >
 } // ...anon
 
 namespace kwiver {
+
 namespace track_oracle {
 
 //
 // generic vector read/write
 //
 
-template< typename T >
-ostream& operator<<( ostream& os, const vector< T >& vals )
+template < typename T >
+ostream&
+operator<<( ostream& os, const vector< T >& vals )
 {
-  for (size_t i=0; i<vals.size(); ++i)
+  for( size_t i = 0; i < vals.size(); ++i )
   {
-    output_handler< class_has_kwiver_write<T>::value, T>::write( os, vals[i] );
+    output_handler< class_has_kwiver_write< T >::value, T >::write(
+      os,
+      vals[ i ] );
   }
   return os;
 }
 
-template< typename T >
-istream& operator>>( istream& is, vector< T >& vals )
+template < typename T >
+istream&
+operator>>( istream& is, vector< T >& vals )
 {
   T tmp;
-  while ( input_handler< class_has_input_operator<T>::value, T >::get( is, tmp ))
+  while( input_handler< class_has_input_operator< T >::value, T >::get(
+    is,
+    tmp ) )
   {
     vals.push_back( tmp );
   }
   return is;
 }
 
-template< typename DATA_TERM_T >
+template < typename DATA_TERM_T >
 ostream&
-kwiver_io_base<DATA_TERM_T>
+kwiver_io_base< DATA_TERM_T >
 ::to_stream( ostream& os, const Type& val ) const
 {
-  //os << val;
-  output_handler< class_has_kwiver_write<Type>::value, Type>::write( os, val );
+  // os << val;
+  output_handler< class_has_kwiver_write< Type >::value, Type >::write(
+    os,
+    val );
   return os;
 }
 
-template< typename DATA_TERM_T >
+template < typename DATA_TERM_T >
 bool
-kwiver_io_base<DATA_TERM_T>
+kwiver_io_base< DATA_TERM_T >
 ::from_str( const string& s, Type& val ) const
 {
   istringstream iss( s );
-  return input_handler< class_has_input_operator<Type>::value, Type>::get( iss, val );
+  return input_handler< class_has_input_operator< Type >::value,
+    Type >::get( iss, val );
 }
 
-template< typename DATA_TERM_T >
+template < typename DATA_TERM_T >
 bool
-kwiver_io_base<DATA_TERM_T>
+kwiver_io_base< DATA_TERM_T >
 ::read_xml( const TiXmlElement* e, Type& val ) const
 {
-  if (! e->GetText()) return false;
+  if( !e->GetText() ) { return false; }
   return this->from_str( e->GetText(), val );
 }
 
-template<typename DATA_TERM_T>
+template < typename DATA_TERM_T >
 void
-kwiver_io_base<DATA_TERM_T>
+kwiver_io_base< DATA_TERM_T >
 ::write_xml( ostream& os, const string& indent, const Type& val ) const
 {
   os << indent << "<" << this->name << "> ";
@@ -188,9 +216,9 @@ kwiver_io_base<DATA_TERM_T>
   os << " </" << name << ">\n";
 }
 
-template<typename DATA_TERM_T>
-vector< string>
-kwiver_io_base<DATA_TERM_T>
+template < typename DATA_TERM_T >
+vector< string >
+kwiver_io_base< DATA_TERM_T >
 ::csv_headers() const
 {
   vector< string > h;
@@ -198,30 +226,31 @@ kwiver_io_base<DATA_TERM_T>
   return h;
 }
 
-template<typename DATA_TERM_T>
+template < typename DATA_TERM_T >
 bool
-kwiver_io_base<DATA_TERM_T>
+kwiver_io_base< DATA_TERM_T >
 ::from_csv( const map< string, string >& header_value_map, Type& val ) const
 {
   const vector< string >& csv_h = this->csv_headers();
-  string s("");
-  for (size_t i=0; i<csv_h.size(); ++i)
+  string s( "" );
+  for( size_t i = 0; i < csv_h.size(); ++i )
   {
-    map< string, string >::const_iterator p = header_value_map.find( csv_h[i] );
-    if ( p == header_value_map.end() ) return false;
+    map< string,
+      string >::const_iterator p = header_value_map.find( csv_h[ i ] );
+    if( p == header_value_map.end() ) { return false; }
     s += p->second + " ";
   }
   return this->from_str( s, val );
 }
 
-template<typename DATA_TERM_T>
+template < typename DATA_TERM_T >
 ostream&
-kwiver_io_base<DATA_TERM_T>
+kwiver_io_base< DATA_TERM_T >
 ::to_csv( ostream& os, const Type& val ) const
 {
   return this->to_stream( os, val );
 }
 
 } // ...track_oracle
-} // ...kwiver
 
+} // ...kwiver

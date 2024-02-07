@@ -11,6 +11,7 @@
 #include <vital/types/homography.h>
 
 namespace kwiver {
+
 namespace vital {
 
 class VITAL_EXPORT f2w_homography
@@ -23,10 +24,10 @@ public:
   ///
   /// The given homography sptr is cloned into this object so we retain a unique
   /// copy.
-  f2w_homography( homography_sptr const &h, frame_id_t const frame_id );
+  f2w_homography( homography_sptr const& h, frame_id_t const frame_id );
 
   /// Copy Constructor
-  f2w_homography( f2w_homography const &h );
+  f2w_homography( f2w_homography const& h );
 
   virtual ~f2w_homography() = default;
 
@@ -44,6 +45,8 @@ protected:
   frame_id_t frame_id_;
 };
 
-} } // end vital namespace
+} // namespace vital
+
+}   // end vital namespace
 
 #endif // VITAL_HOMOGRAPHY_F2W_H

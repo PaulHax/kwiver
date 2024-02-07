@@ -31,13 +31,14 @@ test_blob_read( klv_bytes_t const& data )
 }
 
 // ----------------------------------------------------------------------------
-TEST( klv, blob_read )
+TEST ( klv, blob_read )
 {
   CALL_TEST( test_blob_read, {} );
   CALL_TEST( test_blob_read, { 0x00 } );
   CALL_TEST( test_blob_read, { 0xFF, 0xFF } );
-  CALL_TEST( test_blob_read,
-             { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0x00 } );
+  CALL_TEST(
+    test_blob_read,
+    { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0x00 } );
 }
 
 // ----------------------------------------------------------------------------
@@ -48,18 +49,20 @@ test_blob_write( klv_bytes_t const& data )
   auto it = &*buffer.begin();
   klv_write_blob( data, it, buffer.size() );
   EXPECT_EQ( &*buffer.end(), it );
+
   auto cit = &*buffer.cbegin();
   EXPECT_EQ( data, *klv_read_blob( cit, buffer.size() ) );
 }
 
 // ----------------------------------------------------------------------------
-TEST( klv, blob_write )
+TEST ( klv, blob_write )
 {
   CALL_TEST( test_blob_read, {} );
   CALL_TEST( test_blob_read, { 0x00 } );
   CALL_TEST( test_blob_read, { 0xFF, 0xFF } );
-  CALL_TEST( test_blob_read,
-             { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0x00 } );
+  CALL_TEST(
+    test_blob_read,
+    { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0x00 } );
 }
 
 // ----------------------------------------------------------------------------
@@ -70,11 +73,12 @@ test_blob_length( klv_bytes_t const& data )
 }
 
 // ----------------------------------------------------------------------------
-TEST( klv, blob_length )
+TEST ( klv, blob_length )
 {
   CALL_TEST( test_blob_length, {} );
   CALL_TEST( test_blob_length, { 0x00 } );
   CALL_TEST( test_blob_length, { 0xBA, 0xDA } );
-  CALL_TEST( test_blob_length,
-             { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0x00 } );
+  CALL_TEST(
+    test_blob_length,
+    { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0x00 } );
 }

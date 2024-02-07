@@ -12,15 +12,17 @@
 
 #include <opencv2/opencv.hpp>
 
-#include <vital/types/timestamp.h>
-#include <vital/vital_config.h>
 #include <vital/algo/detect_motion.h>
 #include <vital/config/config_block.h>
+#include <vital/types/timestamp.h>
+#include <vital/vital_config.h>
 
 #include <arrows/ocv/kwiver_algo_ocv_export.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace ocv {
 
 /// OCV implementation of detect_motion_using cv::BackgroundSubtractormog2
@@ -28,8 +30,9 @@ class KWIVER_ALGO_OCV_EXPORT detect_motion_mog2
   : public vital::algo::detect_motion
 {
 public:
-  PLUGIN_INFO( "ocv_mog2",
-               "OCV implementation of detect_motion using cv::BackgroundSubtractormog2" )
+  PLUGIN_INFO(
+    "ocv_mog2",
+    "OCV implementation of detect_motion using cv::BackgroundSubtractormog2" )
 
   double learning_rate = 0.01;
 
@@ -38,12 +41,13 @@ public:
   /// Destructor
   virtual ~detect_motion_mog2() noexcept;
 
-  /// Get this algorithm's \link kwiver::vital::config_block configuration block \endlink
+  /// Get this algorithm's \link kwiver::vital::config_block configuration block
+  /// \endlink
   virtual vital::config_block_sptr get_configuration() const;
   /// Set this algorithm's properties via a config block
-  virtual void set_configuration(vital::config_block_sptr config);
+  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's configuration vital::config_block is valid
-  virtual bool check_configuration(vital::config_block_sptr config) const;
+  virtual bool check_configuration( vital::config_block_sptr config ) const;
 
   /// Detect motion from a sequence of images
   ///
@@ -63,18 +67,22 @@ public:
   /// that motion occurred at each pixel. Heat map image is single channel
   /// and has the same width and height dimensions as the input image.
   virtual kwiver::vital::image_container_sptr
-    process_image( const kwiver::vital::timestamp& ts,
-                   const kwiver::vital::image_container_sptr image,
-                   bool reset_model );
+  process_image(
+    const kwiver::vital::timestamp& ts,
+    const kwiver::vital::image_container_sptr image,
+    bool reset_model );
 
 private:
   // private implementation class
   class priv;
-  std::unique_ptr<priv> d_;
+
+  std::unique_ptr< priv > d_;
 };
 
 } // end namespace ocv
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif

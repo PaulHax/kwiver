@@ -10,11 +10,13 @@
 
 #include <arrows/core/kwiver_algo_core_export.h>
 
-#include <vital/types/mesh.h>
 #include <vital/types/camera_perspective.h>
+#include <vital/types/mesh.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 /// Subdivide mesh faces into triangles
@@ -25,8 +27,8 @@ namespace core {
 /// \note This implementation assumes that each face is convex and does not
 ///       consider mesh geometry when deciding how to best split faces.
 KWIVER_ALGO_CORE_EXPORT
-std::unique_ptr<kwiver::vital::mesh_regular_face_array<3> >
-mesh_triangulate(kwiver::vital::mesh_face_array_base const& faces);
+std::unique_ptr< kwiver::vital::mesh_regular_face_array< 3 > >
+mesh_triangulate( kwiver::vital::mesh_face_array_base const& faces );
 
 /// Subdivide quadrilaterals into triangles
 ///
@@ -36,8 +38,8 @@ mesh_triangulate(kwiver::vital::mesh_face_array_base const& faces);
 /// \note This implementation assumes that each face is convex and does not
 ///       consider mesh geometry when deciding how to best split faces.
 KWIVER_ALGO_CORE_EXPORT
-std::unique_ptr<kwiver::vital::mesh_regular_face_array<3> >
-mesh_triangulate(kwiver::vital::mesh_regular_face_array<4> const& faces);
+std::unique_ptr< kwiver::vital::mesh_regular_face_array< 3 > >
+mesh_triangulate( kwiver::vital::mesh_regular_face_array< 4 > const& faces );
 
 /// Triangulate the faces of the mesh (in place)
 ///
@@ -47,7 +49,7 @@ mesh_triangulate(kwiver::vital::mesh_regular_face_array<4> const& faces);
 ///       consider mesh geometry when deciding how to best split faces.
 KWIVER_ALGO_CORE_EXPORT
 void
-mesh_triangulate(kwiver::vital::mesh& mesh);
+mesh_triangulate( kwiver::vital::mesh& mesh );
 
 /// Clip a triangular mesh with a plane
 ///
@@ -64,8 +66,9 @@ mesh_triangulate(kwiver::vital::mesh& mesh);
 /// \note This implementation assumes that the mesh is triangular
 KWIVER_ALGO_CORE_EXPORT
 bool
-clip_mesh(kwiver::vital::mesh& mesh,
-          kwiver::vital::vector_4d const& plane);
+clip_mesh(
+  kwiver::vital::mesh& mesh,
+  kwiver::vital::vector_4d const& plane );
 
 /// Clip a triangular mesh with a camera frustum
 ///
@@ -92,13 +95,17 @@ clip_mesh(kwiver::vital::mesh& mesh,
 /// \note This implementation assumes that the mesh is triangular
 KWIVER_ALGO_CORE_EXPORT
 bool
-clip_mesh(kwiver::vital::mesh& mesh,
-          kwiver::vital::camera_perspective const& camera,
-          double near = 0.0,
-          double far = std::numeric_limits<double>::infinity(),
-          double margin = 1.0);
+clip_mesh(
+  kwiver::vital::mesh& mesh,
+  kwiver::vital::camera_perspective const& camera,
+  double near = 0.0,
+  double far = std::numeric_limits< double >::infinity(),
+  double margin = 1.0 );
 
-}
-}
-}
+} // namespace core
+
+} // namespace arrows
+
+} // namespace kwiver
+
 #endif // KWIVER_ARROWS_CORE_MESH_OPERATIONS_H

@@ -8,19 +8,20 @@
 #ifndef VITAL_DESCRIPTOR_REQUEST_H_
 #define VITAL_DESCRIPTOR_REQUEST_H_
 
-#include "image_container.h"
 #include "bounding_box.h"
+#include "image_container.h"
 #include "timestamp.h"
 #include "track_descriptor.h"
 #include "uid.h"
 
-#include <vital/vital_export.h>
 #include <vital/vital_config.h>
+#include <vital/vital_export.h>
 
 #include <memory>
 #include <string>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -31,7 +32,6 @@ namespace vital {
 class VITAL_EXPORT descriptor_request
 {
 public:
-
   descriptor_request();
   ~descriptor_request() = default;
 
@@ -43,7 +43,7 @@ public:
   std::vector< bounding_box_i > spatial_regions() const;
 
   std::string data_location() const;
-  std::vector< image_container_sptr> image_data() const;
+  std::vector< image_container_sptr > image_data() const;
 
   void set_id( uid const& );
   void set_temporal_bounds( timestamp const& lower, timestamp const& upper );
@@ -53,7 +53,6 @@ public:
   void set_image_data( std::vector< image_container_sptr > const& );
 
 protected:
-
   vital::uid m_id;
   vital::timestamp m_temporal_lower;
   vital::timestamp m_temporal_upper;
@@ -65,6 +64,8 @@ protected:
 /// Shared pointer for query plan
 typedef std::shared_ptr< descriptor_request > descriptor_request_sptr;
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital
 
 #endif // VITAL_DESCRIPTOR_REQUEST_H_

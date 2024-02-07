@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Tests for vital.types.Rotation class
 
 """
+
 from __future__ import print_function
 import math
 import unittest
@@ -153,8 +154,12 @@ class TestVitalRotation(unittest.TestCase):
         # deals with equivalence of e.g. +pi and -pi with respect to orientation
         def assert_angles_almost_equal(angles1, angles2, digits):
             for angle1, angle2 in zip(angles1, angles2):
-                numpy.testing.assert_almost_equal(math.sin(angle1), math.sin(angle2), digits)
-                numpy.testing.assert_almost_equal(math.cos(angle1), math.cos(angle2), digits)
+                numpy.testing.assert_almost_equal(
+                    math.sin(angle1), math.sin(angle2), digits
+                )
+                numpy.testing.assert_almost_equal(
+                    math.cos(angle1), math.cos(angle2), digits
+                )
 
         rot_d = rotation.enu_to_ned(RotationD())
         rot_f = rotation.enu_to_ned(RotationF())
@@ -202,7 +207,6 @@ class TestVitalRotation(unittest.TestCase):
         r_cpy = RotationD(r)
         numpy.testing.assert_array_almost_equal(r.quaternion(), r_cpy.quaternion(), 6)
 
-
     def test_from_quaternion(self):
         q = array_normalize([+2, -1, -3, +0], float)
         r = RotationD(q)
@@ -224,7 +228,9 @@ class TestVitalRotation(unittest.TestCase):
 
         r2 = RotationD(rod2)
         numpy.testing.assert_array_almost_equal(
-            r2.rodrigues(), rod2, decimal=14,  # 1e-14
+            r2.rodrigues(),
+            rod2,
+            decimal=14,  # 1e-14
         )
 
     def test_from_aa(self):

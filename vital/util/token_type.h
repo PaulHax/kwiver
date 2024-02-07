@@ -5,10 +5,11 @@
 #ifndef _TOKEN_TYPE_H_
 #define _TOKEN_TYPE_H_
 
-#include <vital/util/vital_util_export.h>
 #include <string>
+#include <vital/util/vital_util_export.h>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -27,16 +28,19 @@ public:
   /// @param[in] name Name to look up
   /// @param[out] result Translated string
   /// @return TRUE if name found in table; false otherwise
-  virtual bool lookup_entry (std::string const& name, std::string& result) const = 0;
+  virtual bool lookup_entry(
+    std::string const& name,
+    std::string& result ) const = 0;
 
 protected:
-  token_type(std::string const& name);
+  token_type( std::string const& name );
 
 private:
   std::string m_typeName;
-
 }; // end class token_type
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // _TOKEN_TYPE_H_

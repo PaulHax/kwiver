@@ -20,8 +20,9 @@ main( int argc, char** argv )
 
 // ----------------------------------------------------------------------------
 void
-test_read_write( klv_value const& expected_result,
-                 klv_bytes_t const& input_bytes )
+test_read_write(
+  klv_value const& expected_result,
+  klv_bytes_t const& input_bytes )
 {
   using format_t = klv_0104_universal_set_format;
   test_read_write_format< format_t >( expected_result, input_bytes );
@@ -227,6 +228,7 @@ auto const input_bytes = klv_bytes_t{
   0x00, };
 
 using kld = klv_lengthy< double >;
+
 auto const expected_result = klv_universal_set{
   { to_key( KLV_0104_FRAME_CENTER_LATITUDE ),   kld{ -10.542388633146132 } },
   { to_key( KLV_0104_FRAME_CENTER_LONGITUDE ),  kld{  29.157890122923014 } },
@@ -274,30 +276,49 @@ TEST ( klv, read_write_0104 )
 // ----------------------------------------------------------------------------
 TEST ( klv, read_write_0104_packet )
 {
-  CALL_TEST( test_read_write_packet,
-             expected_result, input_bytes, {}, klv_0104_key() );
+  CALL_TEST(
+    test_read_write_packet,
+    expected_result, input_bytes, {}, klv_0104_key() );
 }
 
 // ----------------------------------------------------------------------------
-TEST( klv, convert_0104_timestamp )
+TEST ( klv, convert_0104_timestamp )
 {
   auto fn = klv_0104_datetime_to_unix_timestamp;
 
   // Wrongly formatted dates
   // YY, not YYYY
-  EXPECT_THROW( fn( "030201T070809" );,   kv::metadata_exception );
+  EXPECT_THROW(
+    fn( "030201T070809" );
+    ,
+    kv::metadata_exception );
   // Non-numeric
-  EXPECT_THROW( fn( "20030201T07081A" );, kv::metadata_exception );
+  EXPECT_THROW(
+    fn( "20030201T07081A" );
+    ,
+    kv::metadata_exception );
   // Non-numeric but tricky
-  EXPECT_THROW( fn( "20030201T07081 " );, kv::metadata_exception );
+  EXPECT_THROW(
+    fn( "20030201T07081 " );
+    ,
+    kv::metadata_exception );
 
   // Invalid dates
   // Out-of-range year
-  EXPECT_THROW( fn( "19690101T070809" );, kv::metadata_exception );
+  EXPECT_THROW(
+    fn( "19690101T070809" );
+    ,
+    kv::metadata_exception );
   // Out-of-range month
-  EXPECT_THROW( fn( "20031301T070809" );, kv::metadata_exception );
+  EXPECT_THROW(
+    fn( "20031301T070809" );
+    ,
+    kv::metadata_exception );
   // Feb. 29 on not-a-leap-year
-  EXPECT_THROW( fn( "20030229T070809" );, kv::metadata_exception );
+  EXPECT_THROW(
+    fn( "20030229T070809" );
+    ,
+    kv::metadata_exception );
 
   // Valid dates (validated by epochconverter.com)
   // Epoch

@@ -1,6 +1,21 @@
 *.h      hooks.checkcopyright diff=cpp
 *.h.in   hooks.checkcopyright diff=cpp
 *.cxx    hooks.checkcopyright diff=cpp
+*.hxx    hooks.checkcopyright diff=cpp
 *.txx    hooks.checkcopyright diff=cpp
 *.py     hooks.checkcopyright diff=python
 *.in     hooks.checkcopyright
+
+[attr]our-c-style  format.uncrustify=0.78
+
+*.h      our-c-style
+*.cxx    our-c-style
+*.hxx    our-c-style
+*.txx    our-c-style
+
+# The sprokit codebase uses a different consistent style. Ignore it for now.
+sprokit/**  -our-c-style
+
+[attr]our-py-style  format.black=24
+
+*.py     our-py-style

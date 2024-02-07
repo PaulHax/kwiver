@@ -49,53 +49,75 @@ from kwiver.vital.tests.cpp_helpers import type_check as tc
 class TestVitalMetaTraits(unittest.TestCase):
     # One of approx each type is tested
     def test_vital_meta_traits(self):
-        self.check_are_valid_traits(tag_traits_by_tag( mt.tags.VITAL_META_UNKNOWN ),
-                                    mt.tags.VITAL_META_UNKNOWN,
-                                    "Unknown / Undefined Entry",
-                                    "UNKNOWN",
-                                    "int",
-                                    "Unknown or undefined entry.")
+        self.check_are_valid_traits(
+            tag_traits_by_tag(mt.tags.VITAL_META_UNKNOWN),
+            mt.tags.VITAL_META_UNKNOWN,
+            "Unknown / Undefined Entry",
+            "UNKNOWN",
+            "int",
+            "Unknown or undefined entry.",
+        )
 
-        self.check_are_valid_traits(tag_traits_by_tag( mt.tags.VITAL_META_METADATA_ORIGIN ),
-                                    mt.tags.VITAL_META_METADATA_ORIGIN,
-                                    "Origin of Metadata",
-                                    "METADATA_ORIGIN",
-                                    "string",
-                                    "Name of the metadata standard used to decode these metadata values from a video stream.")
-        self.check_are_valid_traits(tag_traits_by_tag( mt.tags.VITAL_META_UNIX_TIMESTAMP ),
-                                    mt.tags.VITAL_META_UNIX_TIMESTAMP,
-                                    "Unix Timestamp (microseconds)",
-                                    "UNIX_TIMESTAMP",
-                                    tc.get_uint64_rep(),
-                                    "Number of microseconds since the Unix epoch, not counting leap seconds.")
+        self.check_are_valid_traits(
+            tag_traits_by_tag(mt.tags.VITAL_META_METADATA_ORIGIN),
+            mt.tags.VITAL_META_METADATA_ORIGIN,
+            "Origin of Metadata",
+            "METADATA_ORIGIN",
+            "string",
+            "Name of the metadata standard used to decode these metadata values from a video stream.",
+        )
+        self.check_are_valid_traits(
+            tag_traits_by_tag(mt.tags.VITAL_META_UNIX_TIMESTAMP),
+            mt.tags.VITAL_META_UNIX_TIMESTAMP,
+            "Unix Timestamp (microseconds)",
+            "UNIX_TIMESTAMP",
+            tc.get_uint64_rep(),
+            "Number of microseconds since the Unix epoch, not counting leap seconds.",
+        )
 
-        self.check_are_valid_traits(tag_traits_by_tag( mt.tags.VITAL_META_SLANT_RANGE ),
-                                    mt.tags.VITAL_META_SLANT_RANGE,
-                                    "Slant Range (meters)",
-                                    "SLANT_RANGE",
-                                    "double",
-                                    "Distance to target.")
+        self.check_are_valid_traits(
+            tag_traits_by_tag(mt.tags.VITAL_META_SLANT_RANGE),
+            mt.tags.VITAL_META_SLANT_RANGE,
+            "Slant Range (meters)",
+            "SLANT_RANGE",
+            "double",
+            "Distance to target.",
+        )
 
-        self.check_are_valid_traits(tag_traits_by_tag( mt.tags.VITAL_META_VIDEO_KEY_FRAME ),
-                                    mt.tags.VITAL_META_VIDEO_KEY_FRAME,
-                                    "Is Key Frame",
-                                    "VIDEO_KEY_FRAME",
-                                    "bool",
-                                    "True if the current frame is a key frame.")
+        self.check_are_valid_traits(
+            tag_traits_by_tag(mt.tags.VITAL_META_VIDEO_KEY_FRAME),
+            mt.tags.VITAL_META_VIDEO_KEY_FRAME,
+            "Is Key Frame",
+            "VIDEO_KEY_FRAME",
+            "bool",
+            "True if the current frame is a key frame.",
+        )
 
-    def check_are_valid_traits(self, traits, exp_tag, exp_name, exp_enum_name, exp_type, exp_description):
-        self.assertEqual(traits.tag(),         exp_tag)
-        self.assertEqual(traits.name(),        exp_name)
-        self.assertEqual(traits.enum_name(),   exp_enum_name)
-        self.assertEqual(traits.type(),        exp_type)
+    def check_are_valid_traits(
+        self, traits, exp_tag, exp_name, exp_enum_name, exp_type, exp_description
+    ):
+        self.assertEqual(traits.tag(), exp_tag)
+        self.assertEqual(traits.name(), exp_name)
+        self.assertEqual(traits.enum_name(), exp_enum_name)
+        self.assertEqual(traits.type(), exp_type)
         self.assertEqual(traits.description(), exp_description)
+
 
 class TestMetadataTraits(unittest.TestCase):
     def test_traits_by_tag(self):
-        self.assertEqual(tag_traits_by_tag( mt.tags.VITAL_META_METADATA_ORIGIN ).tag(), mt.tags.VITAL_META_METADATA_ORIGIN)
+        self.assertEqual(
+            tag_traits_by_tag(mt.tags.VITAL_META_METADATA_ORIGIN).tag(),
+            mt.tags.VITAL_META_METADATA_ORIGIN,
+        )
 
     def test_traits_by_name(self):
-        self.assertEqual(tag_traits_by_name( "Origin of Metadata" ).tag(), mt.tags.VITAL_META_METADATA_ORIGIN)
+        self.assertEqual(
+            tag_traits_by_name("Origin of Metadata").tag(),
+            mt.tags.VITAL_META_METADATA_ORIGIN,
+        )
 
     def test_traits_by_enum_name(self):
-        self.assertEqual(tag_traits_by_enum_name( "METADATA_ORIGIN" ).tag(), mt.tags.VITAL_META_METADATA_ORIGIN)
+        self.assertEqual(
+            tag_traits_by_enum_name("METADATA_ORIGIN").tag(),
+            mt.tags.VITAL_META_METADATA_ORIGIN,
+        )

@@ -38,7 +38,7 @@ public:
   virtual ~read_track_descriptor_set();
 
   read_track_descriptor_set();
-  PLUGGABLE_INTERFACE_NO_DESTR(read_track_descriptor_set);
+  PLUGGABLE_INTERFACE_NO_DESTR( read_track_descriptor_set );
   /// Open a file of track descriptor sets.
   ///
   /// This method opens a track descriptor set file for reading.
@@ -88,7 +88,6 @@ public:
   ///
   /// @return \b true if file is at end.
   bool at_eof() const;
-
 
   std::istream& stream();
 

@@ -8,42 +8,44 @@
 #include "match_features_bruteforce.h"
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace ocv {
 
 class match_features_bruteforce::priv
 {
 public:
-  priv(int p_norm_type = cv::NORM_L2, bool p_cross_check = false)
-      : norm_type( p_norm_type ),
-        cross_check( p_cross_check ),
-        matcher( new cv::BFMatcher( norm_type, cross_check ) )
-  {
-  }
+  priv( int p_norm_type = cv::NORM_L2, bool p_cross_check = false )
+    : norm_type( p_norm_type ),
+      cross_check( p_cross_check ),
+      matcher( new cv::BFMatcher( norm_type, cross_check ) )
+  {}
 
   // Can't currently update parameters on BF implementation, so no update
   // function. Will need to create a new instance on each parameter update.
 
   /// Create a new brute-force matcher instance and set our matcher param to it
-  void create()
+  void
+  create()
   {
     // cross version compatible
-    matcher = cv::Ptr<cv::BFMatcher>(
-        new cv::BFMatcher(norm_type, cross_check)
+    matcher = cv::Ptr< cv::BFMatcher >(
+      new cv::BFMatcher( norm_type, cross_check )
     );
   }
 
   /// Parameters
   int norm_type;
   bool cross_check;
-  cv::Ptr<cv::BFMatcher> matcher;
-
+  cv::Ptr< cv::BFMatcher > matcher;
 }; // end match_features_bruteforce::priv
 
 namespace {
 
 /// Norm type info string generator
-std::string str_list_enum_values()
+std::string
+str_list_enum_values()
 {
   std::stringstream ss;
   ss << "cv::NORM_INF="       << cv::NORM_INF       << ", "
@@ -59,7 +61,8 @@ std::string str_list_enum_values()
 }
 
 /// Check value against known OCV norm enum values
-bool check_norm_enum_value(int norm_type)
+bool
+check_norm_enum_value( int norm_type )
 {
   switch( norm_type )
   {
@@ -69,7 +72,8 @@ bool check_norm_enum_value(int norm_type)
     case cv::NORM_L2SQR:
     case cv::NORM_HAMMING:
     case cv::NORM_HAMMING2:
-    //case cv::NORM_TYPE_MASK:  // This is the same value as HAMMING2 apparently
+    // case cv::NORM_TYPE_MASK:  // This is the same value as HAMMING2
+    // apparently
     case cv::NORM_RELATIVE:
     case cv::NORM_MINMAX:
       return true;
@@ -78,7 +82,7 @@ bool check_norm_enum_value(int norm_type)
   }
 }
 
-}
+} // namespace
 
 match_features_bruteforce
 ::match_features_bruteforce()
@@ -89,8 +93,7 @@ match_features_bruteforce
 
 match_features_bruteforce
 ::~match_features_bruteforce()
-{
-}
+{}
 
 vital::config_block_sptr
 match_features_bruteforce
@@ -98,29 +101,30 @@ match_features_bruteforce
 {
   vital::config_block_sptr config = match_features::get_configuration();
 
-  config->set_value( "cross_check", p_->cross_check,
-                     "Perform cross checking when finding matches to filter "
-                     "through only the consistent pairs. This is an "
-                     "alternative to the ratio test used by D. Lowe in the "
-                     "SIFT paper." );
+  config->set_value(
+    "cross_check", p_->cross_check,
+    "Perform cross checking when finding matches to filter "
+    "through only the consistent pairs. This is an "
+    "alternative to the ratio test used by D. Lowe in the "
+    "SIFT paper." );
 
   std::stringstream ss;
   ss << "Normalization type enum value. This should be one of the enum values: "
      << str_list_enum_values();
-  config->set_value( "norm_type", p_->norm_type, ss.str());
+  config->set_value( "norm_type", p_->norm_type, ss.str() );
 
   return config;
 }
 
 void
 match_features_bruteforce
-::set_configuration(vital::config_block_sptr in_config)
+::set_configuration( vital::config_block_sptr in_config )
 {
   vital::config_block_sptr config = get_configuration();
-  config->merge_config(in_config);
+  config->merge_config( in_config );
 
-  p_->cross_check = config->get_value<bool>("cross_check");
-  p_->norm_type = config->get_value<int>("norm_type");
+  p_->cross_check = config->get_value< bool >( "cross_check" );
+  p_->norm_type = config->get_value< int >( "norm_type" );
 
   // Create new instance with the updated parameters
   p_->create();
@@ -128,15 +132,16 @@ match_features_bruteforce
 
 bool
 match_features_bruteforce
-::check_configuration(vital::config_block_sptr in_config) const
+::check_configuration( vital::config_block_sptr in_config ) const
 {
   vital::config_block_sptr config = get_configuration();
-  config->merge_config(in_config);
+  config->merge_config( in_config );
+
   bool valid = true;
 
   // user has the chance to input an incorret value for the norm type enum value
-  int norm_type = config->get_value<int>( "norm_type" );
-  if( ! check_norm_enum_value( norm_type ) )
+  int norm_type = config->get_value< int >( "norm_type" );
+  if( !check_norm_enum_value( norm_type ) )
   {
     std::stringstream ss;
     ss << "Incorrect norm type enum value given: '" << norm_type << "'. "
@@ -150,12 +155,15 @@ match_features_bruteforce
 
 void
 match_features_bruteforce
-::ocv_match(const cv::Mat &descriptors1, const cv::Mat &descriptors2,
-            std::vector<cv::DMatch> &matches) const
+::ocv_match(
+  const cv::Mat& descriptors1, const cv::Mat& descriptors2,
+  std::vector< cv::DMatch >& matches ) const
 {
   p_->matcher->match( descriptors1, descriptors2, matches );
 }
 
 } // end namespace ocv
+
 } // end namespace arrows
+
 } // end namespace kwiver

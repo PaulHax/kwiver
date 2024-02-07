@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#ckwg +28
+# ckwg +28
 # Copyright 2011-2020 by Kitware, Inc.
 # All rights reserved.
 #
@@ -30,6 +30,7 @@
 
 from kwiver.sprokit.util.test import find_tests, run_test, test_error
 
+
 def test_import():
     try:
         import kwiver.sprokit.pipeline.pipeline
@@ -58,26 +59,26 @@ def test_api_calls():
 
     p = pipeline.Pipeline()
 
-    proc_type1 = 'numbers'
-    proc_type2 = 'print_number'
-    proc_type3 = 'orphan_cluster'
+    proc_type1 = "numbers"
+    proc_type2 = "print_number"
+    proc_type3 = "orphan_cluster"
 
-    proc_name1 = 'src'
-    proc_name2 = 'snk'
-    proc_name3 = 'orp'
+    proc_name1 = "src"
+    proc_name2 = "snk"
+    proc_name3 = "orp"
 
-    port_name1 = 'number'
-    port_name2 = 'number'
+    port_name1 = "number"
+    port_name2 = "number"
 
     modules.load_known_modules()
 
     proc1 = process_factory.create_process(proc_type1, proc_name1)
 
-    conf_name = 'output'
+    conf_name = "output"
 
     c = config.empty_config()
 
-    c.set_value(conf_name, 'test-python-pipeline-api_calls-print_number.txt')
+    c.set_value(conf_name, "test-python-pipeline-api_calls-print_number.txt")
     proc2 = process_factory.create_process(proc_type2, proc_name2, c)
 
     proc3 = process_factory.create_process(proc_type3, proc_name3)
@@ -85,8 +86,7 @@ def test_api_calls():
     p.add_process(proc1)
     p.add_process(proc2)
     p.add_process(proc3)
-    p.connect(proc_name1, port_name1,
-              proc_name2, port_name2)
+    p.connect(proc_name1, port_name1, proc_name2, port_name2)
     p.process_names()
     p.process_by_name(proc_name1)
     p.cluster_names()
@@ -94,15 +94,13 @@ def test_api_calls():
     p.connections_from_addr(proc_name1, port_name1)
     p.connection_to_addr(proc_name2, port_name2)
 
-    p.disconnect(proc_name1, port_name1,
-                 proc_name2, port_name2)
+    p.disconnect(proc_name1, port_name1, proc_name2, port_name2)
     p.remove_process(proc_name1)
     p.remove_process(proc_name3)
 
     # Restore the pipeline so that setup_pipeline works.
     p.add_process(proc1)
-    p.connect(proc_name1, port_name1,
-              proc_name2, port_name2)
+    p.connect(proc_name1, port_name1, proc_name2, port_name2)
 
     p.setup_pipeline()
 
@@ -112,8 +110,7 @@ def test_api_calls():
     p.downstream_for_port(proc_name1, port_name1)
     p.sender_for_port(proc_name2, port_name2)
     p.receivers_for_port(proc_name1, port_name1)
-    p.edge_for_connection(proc_name1, port_name1,
-                          proc_name2, port_name2)
+    p.edge_for_connection(proc_name1, port_name1, proc_name2, port_name2)
     p.input_edges_for_process(proc_name2)
     p.input_edge_for_port(proc_name2, port_name2)
     p.output_edges_for_process(proc_name1)
@@ -129,7 +126,7 @@ def test_api_calls():
     p.reset()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
 
     if len(sys.argv) != 2:

@@ -39,8 +39,8 @@
 #include <iostream>
 #include <track_oracle/data_terms/data_terms_common.h>
 
-#include <vgl/vgl_point_2d.h>
 #include <vgl/vgl_box_2d.h>
+#include <vgl/vgl_point_2d.h>
 #include <vgl/vgl_point_3d.h>
 
 #include <vital/types/timestamp.h>
@@ -49,6 +49,7 @@
 class TiXmlElement;
 
 namespace kwiver {
+
 namespace track_oracle {
 
 namespace dt {
@@ -57,7 +58,8 @@ namespace dt {
 ///
 /// DECL_DT: defines a data term with type-standard stream and XML I/O.
 ///
-/// DECL_DT_RW_STRCSV: Custom stream I/O, custom CSV I/O, default XML I/O (using the stream I/O.)
+/// DECL_DT_RW_STRCSV: Custom stream I/O, custom CSV I/O, default XML I/O (using
+/// the stream I/O.)
 ///
 /// DECL_DT_W_STR: Custom stream output; everything else default.  (For example,
 /// setting the precision on the output of a double or float.)
@@ -69,56 +71,93 @@ namespace dt {
 ///
 
 namespace detection {
-  DECL_DT( detection_id, unsigned long long, "detection ID; unique within a session but not a UUID" );
-}
+
+DECL_DT(
+  detection_id, unsigned long long,
+  "detection ID; unique within a session but not a UUID" );
+
+} // namespace detection
 
 namespace tracking {
 
-  DECL_DT( external_id, uint64_t, "track ID; unique within a session but not a UUID" );
-  DECL_DT( timestamp_usecs, unsigned long long, "timestamp of a frame, in usecs; epoch is data-dependent" );
-  DECL_DT( frame_number, unsigned, "frame number; relationship to any downsampling is unspecified" );
-  DECL_DT( fg_mask_area, double, "area of foreground mask; in pixels?" );
-  DECL_DT_RW_STRCSV_DEFAULT( track_location, vgl_point_2d<double>, vgl_point_2d<double>(0,0), "track location; in frame-relative pixels?" );
-  DECL_DT( obj_x, double, "estimate of object's x-axis location" );
-  DECL_DT( obj_y, double, "estimate of object's y-axis location" );
-  DECL_DT_RW_STRCSV( obj_location, vgl_point_2d<double>, "obj_{x,y} as a structure" );
-  DECL_DT( velocity_x, double, "speed of object along x-axis; usually m/s" );
-  DECL_DT( velocity_y, double, "speed of object along y-axis; usually m/s" );
-  DECL_DT_RW_STRXMLCSV( bounding_box, vgl_box_2d<double>, "bounding box of tracked object; pixels" );
-  DECL_DT_W_STR( world_x, double, "world X location (UTM or lat/lon)" );
-  DECL_DT_W_STR( world_y, double, "world Y location (UTM or lat/lon)" );
-  DECL_DT_W_STR( world_z, double, "world Z location (altitude?)" );
-  DECL_DT_DEFAULT( world_gcs, int, 4326, "GCS (4326 == WGS84_LATLON); only written w/ world_x && world_y are written" );
-  DECL_DT_RW_STRCSV( world_location, vgl_point_3d<double>, "world {x,y,z} as a structure" );
-  DECL_DT_W_STR( latitude,  double, "latitude, -90 to 90" );
-  DECL_DT_W_STR( longitude, double, "longitude, -180 to 180" );
-  DECL_DT_RW_STRXMLCSV( time_stamp, vital::timestamp, "timestamp (carries both time and framenumber); epoch is data-dependent" );
-  DECL_DT_RW_STR( track_uuid, vital::uid, "UUID associated with the track" );
-  DECL_DT( track_style, std::string, "track_style, typically indicating the source (tracker, detector, etc.)" );
+DECL_DT(
+  external_id, uint64_t,
+  "track ID; unique within a session but not a UUID" );
+DECL_DT(
+  timestamp_usecs, unsigned long long,
+  "timestamp of a frame, in usecs; epoch is data-dependent" );
+DECL_DT(
+  frame_number, unsigned,
+  "frame number; relationship to any downsampling is unspecified" );
+DECL_DT( fg_mask_area, double, "area of foreground mask; in pixels?" );
+DECL_DT_RW_STRCSV_DEFAULT(
+  track_location, vgl_point_2d< double >,
+  vgl_point_2d< double >( 0, 0 ), "track location; in frame-relative pixels?" );
+DECL_DT( obj_x, double, "estimate of object's x-axis location" );
+DECL_DT( obj_y, double, "estimate of object's y-axis location" );
+DECL_DT_RW_STRCSV(
+  obj_location, vgl_point_2d< double >,
+  "obj_{x,y} as a structure" );
+DECL_DT( velocity_x, double, "speed of object along x-axis; usually m/s" );
+DECL_DT( velocity_y, double, "speed of object along y-axis; usually m/s" );
+DECL_DT_RW_STRXMLCSV(
+  bounding_box, vgl_box_2d< double >,
+  "bounding box of tracked object; pixels" );
+DECL_DT_W_STR( world_x, double, "world X location (UTM or lat/lon)" );
+DECL_DT_W_STR( world_y, double, "world Y location (UTM or lat/lon)" );
+DECL_DT_W_STR( world_z, double, "world Z location (altitude?)" );
+DECL_DT_DEFAULT(
+  world_gcs, int, 4326,
+  "GCS (4326 == WGS84_LATLON); only written w/ world_x && world_y are written" );
+DECL_DT_RW_STRCSV(
+  world_location, vgl_point_3d< double >,
+  "world {x,y,z} as a structure" );
+DECL_DT_W_STR( latitude,  double, "latitude, -90 to 90" );
+DECL_DT_W_STR( longitude, double, "longitude, -180 to 180" );
+DECL_DT_RW_STRXMLCSV(
+  time_stamp, vital::timestamp,
+  "timestamp (carries both time and framenumber); epoch is data-dependent" );
+DECL_DT_RW_STR( track_uuid, vital::uid, "UUID associated with the track" );
+DECL_DT(
+  track_style, std::string,
+  "track_style, typically indicating the source (tracker, detector, etc.)" );
 
 } // ...tracking
 
 namespace events {
-  DECL_DT( event_id, uint64_t, "event ID; unique within a session but not a UUID" );
-  DECL_DT_RW_STRXMLCSV( event_type, int, "event type: currently always in the VIRAT domain" );
-  DECL_DT( event_probability, double, "event probability" );
-  DECL_DT_RW_STR( source_track_ids, std::vector<unsigned>, "Track IDs contributing to the event" );
-  DECL_DT_RW_STR( actor_track_rows, track_handle_list_type, "Track handles participating in the event" );
 
-  DECL_DT( kpf_activity_domain, int, "KPF activity domain" );
-  DECL_DT( kpf_activity_start, unsigned, "KPF activity start (frame number)" );
-  DECL_DT( kpf_activity_stop, unsigned, "KPF activity stop (frame number)" );
+DECL_DT(
+  event_id, uint64_t,
+  "event ID; unique within a session but not a UUID" );
+DECL_DT_RW_STRXMLCSV(
+  event_type, int,
+  "event type: currently always in the VIRAT domain" );
+DECL_DT( event_probability, double, "event probability" );
+DECL_DT_RW_STR(
+  source_track_ids, std::vector< unsigned >,
+  "Track IDs contributing to the event" );
+DECL_DT_RW_STR(
+  actor_track_rows, track_handle_list_type,
+  "Track handles participating in the event" );
+
+DECL_DT( kpf_activity_domain, int, "KPF activity domain" );
+DECL_DT( kpf_activity_start, unsigned, "KPF activity start (frame number)" );
+DECL_DT( kpf_activity_stop, unsigned, "KPF activity stop (frame number)" );
 
 } // ...events
 
 namespace virat {
-  DECL_DT_RW_STRXML( descriptor_classifier, std::vector<double>, "40-column vector of VIRAT activity probabilities" );
+
+DECL_DT_RW_STRXML(
+  descriptor_classifier, std::vector< double >,
+  "40-column vector of VIRAT activity probabilities" );
 
 } // ...virat
 
 } // ...dt
 
 } // ...track_oracle
+
 } // ...kwiver
 
 #endif

@@ -37,7 +37,7 @@ class VITAL_ALGO_EXPORT metadata_map_io
 {
 public:
   metadata_map_io();
-  PLUGGABLE_INTERFACE(metadata_map_io);
+  PLUGGABLE_INTERFACE( metadata_map_io );
   /// Load metadata from the file.
   ///
   /// \throws kwiver::vital::path_not_exists
@@ -71,8 +71,9 @@ public:
   ///
   /// \param filename The path to the file to save.
   /// \param data Pointer to the metadata to write.
-  void save( std::string const& filename,
-             kwiver::vital::metadata_map_sptr data ) const;
+  void save(
+    std::string const& filename,
+    kwiver::vital::metadata_map_sptr data ) const;
 
   /// Save metadata to a stream.
   ///
@@ -81,8 +82,9 @@ public:
   /// \param filename Filename that generated the stream. May be used for
   ///                 logging, or in case of other operations for which the
   ///                 filesystem path to the input is relevant.
-  void save( std::ostream& fout, kwiver::vital::metadata_map_sptr data,
-             std::string const& filename = "stream" ) const;
+  void save(
+    std::ostream& fout, kwiver::vital::metadata_map_sptr data,
+    std::string const& filename = "stream" ) const;
 
   /// Return capabilities of concrete implementation.
   ///
@@ -97,8 +99,9 @@ public:
   bool check_configuration( vital::config_block_sptr config ) const override;
 
 protected:
-  void set_capability( algorithm_capabilities::capability_name_t const& name,
-                       bool val );
+  void set_capability(
+    algorithm_capabilities::capability_name_t const& name,
+    bool val );
 
 private:
   /// Implementation specific load functionality.
@@ -124,9 +127,10 @@ private:
   /// \param filename Filename that generated the stream. May be used for
   ///                 logging, or in case of other operations for which the
   ///                 filesystem path to the input is relevant.
-  virtual void save_( std::ostream& fout,
-                      kwiver::vital::metadata_map_sptr data,
-                      std::string const& filename ) const = 0;
+  virtual void save_(
+    std::ostream& fout,
+    kwiver::vital::metadata_map_sptr data,
+    std::string const& filename ) const = 0;
 
   /// Returns implementation specific open mode when loading files.
   ///

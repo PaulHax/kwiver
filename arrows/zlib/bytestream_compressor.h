@@ -105,7 +105,7 @@ private:
 // ----------------------------------------------------------------------------
 /// Wrapper around another std::istream which (de)compresses the data as it
 /// comes in.
-template< class CharT, class Traits = std::char_traits< CharT > >
+template < class CharT, class Traits = std::char_traits< CharT > >
 class basic_compress_istream
   : private std::basic_streambuf< CharT, Traits >,
     public std::basic_istream< CharT, Traits >
@@ -117,7 +117,7 @@ public:
   basic_compress_istream(
     istream_t& source, bytestream_compressor& compressor )
     : std::basic_streambuf< CharT, Traits >(),
-      std::basic_istream< CharT, Traits >(this),
+      std::basic_istream< CharT, Traits >( this ),
       m_source( source ),
       m_compressor( compressor ),
       m_flushed( false )
@@ -198,7 +198,7 @@ using compress_istream = basic_compress_istream< char >;
 ///   Input is not guaranteed to write to the wrapped stream immediately;
 ///   call \c flush() to guarantee this. Frequent use of \c flush()
 ///   ( or \c std::endl ) will degrade the quality of the compression.
-template< class CharT, class Traits = std::char_traits< CharT > >
+template < class CharT, class Traits = std::char_traits< CharT > >
 class basic_compress_ostream
   : private std::basic_streambuf< CharT, Traits >,
     public std::basic_ostream< CharT, Traits >
@@ -210,7 +210,7 @@ public:
   basic_compress_ostream(
     ostream_t& destination, bytestream_compressor& compressor )
     : std::basic_streambuf< CharT, Traits >(),
-      std::basic_ostream< CharT, Traits >(this),
+      std::basic_ostream< CharT, Traits >( this ),
       m_destination( destination ),
       m_compressor( compressor )
   {

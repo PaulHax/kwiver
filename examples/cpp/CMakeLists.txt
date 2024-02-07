@@ -1,8 +1,8 @@
 
 if (KWIVER_ENABLE_OPENCV AND KWIVER_ENABLE_VXL)
-  set(SOURCE "main.cpp"
-    "how_to_part_01_images.cpp"
-    "how_to_part_02_detections.cpp"
+  set(SOURCE "main.cxx"
+    "how_to_part_01_images.cxx"
+    "how_to_part_02_detections.cxx"
     )
 
   set(kwiver_examples_libraries vital_algo

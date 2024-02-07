@@ -31,26 +31,30 @@ from __future__ import print_function
 from kwiver.vital.algo import ComputeRefHomography
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
 
+
 class SimpleComputeRefHomography(CommonConfigurationMixin, ComputeRefHomography):
     """
     Implementation of ComputeRefHomography to test it
 
     Examples:
     """
+
     def __init__(self):
         ComputeRefHomography.__init__(self)
 
 
-
 def __vital_algorithm_register__():
     from kwiver.vital.algo import algorithm_factory
+
     # Register Algorithm
-    implementation_name  = "SimpleComputeRefHomography"
+    implementation_name = "SimpleComputeRefHomography"
     if algorithm_factory.has_algorithm_impl_name(
-                            SimpleComputeRefHomography.static_type_name(),
-                            implementation_name):
+        SimpleComputeRefHomography.static_type_name(), implementation_name
+    ):
         return
-    algorithm_factory.add_algorithm( implementation_name,
-                                "Test kwiver.vital.algo.ComputeRefHomography",
-                                 SimpleComputeRefHomography )
-    algorithm_factory.mark_algorithm_as_loaded( implementation_name )
+    algorithm_factory.add_algorithm(
+        implementation_name,
+        "Test kwiver.vital.algo.ComputeRefHomography",
+        SimpleComputeRefHomography,
+    )
+    algorithm_factory.mark_algorithm_as_loaded(implementation_name)

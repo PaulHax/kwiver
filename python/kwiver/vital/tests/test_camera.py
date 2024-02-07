@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Tests for Camera interface class.
 
 """
+
 import unittest
 import nose.tools as nt
 import numpy as np
@@ -58,6 +59,7 @@ class SimpleCamera(Camera):
 
     def image_height(self):
         return 720
+
 
 class TestVitalCameraSubclass(unittest.TestCase):
     def test_init(self):
@@ -90,6 +92,7 @@ class TestVitalCameraSubclass(unittest.TestCase):
     def test_height_override(self):
         cam = SimpleCamera(4)
         nt.assert_equal(helper.call_image_height(cam), 720)
+
 
 class TestVitalCamera(unittest.TestCase):
     def test_init(self):

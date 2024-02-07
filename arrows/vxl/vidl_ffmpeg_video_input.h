@@ -13,7 +13,9 @@
 #include <arrows/vxl/kwiver_algo_vxl_export.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace vxl {
 
 /// Video input using VXL vidl ffmpeg services.
@@ -25,21 +27,23 @@ class KWIVER_ALGO_VXL_EXPORT vidl_ffmpeg_video_input
   : public vital::algo::video_input
 {
 public:
-  PLUGIN_INFO( "vidl_ffmpeg",
-               "Use VXL (vidl with FFMPEG) to read video files as a sequence of images." )
+  PLUGIN_INFO(
+    "vidl_ffmpeg",
+    "Use VXL (vidl with FFMPEG) to read video files as a sequence of images." )
 
   /// Constructor
   vidl_ffmpeg_video_input();
   virtual ~vidl_ffmpeg_video_input();
 
-  /// Get this algorithm's \link vital::config_block configuration block \endlink
+  /// Get this algorithm's \link vital::config_block configuration block
+  /// \endlink
   virtual vital::config_block_sptr get_configuration() const;
 
   /// Set this algorithm's properties via a config block
-  virtual void set_configuration(vital::config_block_sptr config);
+  virtual void set_configuration( vital::config_block_sptr config );
 
   /// Check that the algorithm's currently configuration is valid
-  virtual bool check_configuration(vital::config_block_sptr config) const;
+  virtual bool check_configuration( vital::config_block_sptr config ) const;
 
   virtual void open( std::string video_name );
   virtual void close();
@@ -49,12 +53,14 @@ public:
   virtual bool seekable() const;
   virtual size_t num_frames() const;
 
-  virtual bool next_frame( kwiver::vital::timestamp& ts,
-                           uint32_t timeout = 0 );
+  virtual bool next_frame(
+    kwiver::vital::timestamp& ts,
+    uint32_t timeout = 0 );
 
-  virtual bool seek_frame( kwiver::vital::timestamp& ts,
-                           kwiver::vital::timestamp::frame_t frame_number,
-                           uint32_t timeout = 0 );
+  virtual bool seek_frame(
+    kwiver::vital::timestamp& ts,
+    kwiver::vital::timestamp::frame_t frame_number,
+    uint32_t timeout = 0 );
 
   virtual kwiver::vital::timestamp frame_timestamp() const;
 
@@ -67,9 +73,14 @@ public:
 private:
   /// private implementation class
   class priv;
-  const std::unique_ptr<priv> d;
+
+  const std::unique_ptr< priv > d;
 };
 
-} } } // end namespace
+} // namespace vxl
+
+} // namespace arrows
+
+}     // end namespace
 
 #endif // KWIVER_ARROWS_VXL_VIDL_FFMPEG_VIDEO_INPUT_H

@@ -20,8 +20,9 @@ main( int argc, char** argv )
 
 // ----------------------------------------------------------------------------
 void
-test_read_write( klv_value const& expected_result,
-                 klv_bytes_t const& input_bytes )
+test_read_write(
+  klv_value const& expected_result,
+  klv_bytes_t const& input_bytes )
 {
   using format_t = klv_0102_local_set_format;
   test_read_write_format< format_t >( expected_result, input_bytes );
@@ -110,6 +111,7 @@ TEST ( klv, read_write_0102 )
 // ----------------------------------------------------------------------------
 TEST ( klv, read_write_0102_packet )
 {
-  CALL_TEST( test_read_write_packet,
-             expected_result, input_bytes, {}, klv_0102_key() );
+  CALL_TEST(
+    test_read_write_packet,
+    expected_result, input_bytes, {}, klv_0102_key() );
 }

@@ -29,7 +29,7 @@ class VITAL_ALGO_EXPORT refine_detections
 {
 public:
   refine_detections();
-  PLUGGABLE_INTERFACE(refine_detections);
+  PLUGGABLE_INTERFACE( refine_detections );
   /// Refine all object detections on the provided image
   ///
   /// This method analyzes the supplied image and and detections on it,
@@ -39,9 +39,9 @@ public:
   /// \param detections detected objects
   /// \returns vector of image objects refined
   virtual detected_object_set_sptr
-  refine( image_container_sptr image_data,
-          detected_object_set_sptr detections ) const = 0;
-
+  refine(
+    image_container_sptr image_data,
+    detected_object_set_sptr detections ) const = 0;
 };
 
 /// Shared pointer for generic refine_detections definition type.
@@ -53,4 +53,4 @@ typedef std::shared_ptr< refine_detections > refine_detections_sptr;
 
 } // namespace kwiver
 
-#endif //VITAL_ALGO_REFINE_DETECTIONS_H_
+#endif // VITAL_ALGO_REFINE_DETECTIONS_H_

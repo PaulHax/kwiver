@@ -38,7 +38,7 @@ public:
   virtual ~detected_object_set_input();
 
   detected_object_set_input();
-  PLUGGABLE_INTERFACE_NO_DESTR(detected_object_set_input);
+  PLUGGABLE_INTERFACE_NO_DESTR( detected_object_set_input );
 
   /// Open a file of detection sets.
   ///
@@ -83,8 +83,9 @@ public:
   /// format.
   ///
   /// @return \b true if detections are returned, \b false if end of file.
-  virtual bool read_set( kwiver::vital::detected_object_set_sptr& set,
-                         std::string& image_name ) = 0;
+  virtual bool read_set(
+    kwiver::vital::detected_object_set_sptr& set,
+    std::string& image_name ) = 0;
 
   /// Determine if input file is at end of file.
   ///

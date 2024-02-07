@@ -31,27 +31,30 @@ from __future__ import print_function
 from kwiver.vital.algo import ComputeStereoDepthMap
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
 
-class SimpleComputeStereoDepthMap(CommonConfigurationMixin,
-                                  ComputeStereoDepthMap):
+
+class SimpleComputeStereoDepthMap(CommonConfigurationMixin, ComputeStereoDepthMap):
     """
     Implementation of ComputeStereoDepthMap to test it
 
     Examples:
     """
+
     def __init__(self):
         ComputeStereoDepthMap.__init__(self)
 
 
-
 def __vital_algorithm_register__():
     from kwiver.vital.algo import algorithm_factory
+
     # Register Algorithm
-    implementation_name  = "SimpleComputeStereoDepthMap"
+    implementation_name = "SimpleComputeStereoDepthMap"
     if algorithm_factory.has_algorithm_impl_name(
-                            SimpleComputeStereoDepthMap.static_type_name(),
-                            implementation_name):
+        SimpleComputeStereoDepthMap.static_type_name(), implementation_name
+    ):
         return
-    algorithm_factory.add_algorithm( implementation_name,
-                                "Test kwiver.vital.algo.ComputeStereoDepthMap",
-                                 SimpleComputeStereoDepthMap )
-    algorithm_factory.mark_algorithm_as_loaded( implementation_name )
+    algorithm_factory.add_algorithm(
+        implementation_name,
+        "Test kwiver.vital.algo.ComputeStereoDepthMap",
+        SimpleComputeStereoDepthMap,
+    )
+    algorithm_factory.mark_algorithm_as_loaded(implementation_name)

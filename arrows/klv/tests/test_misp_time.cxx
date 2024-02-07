@@ -29,6 +29,7 @@ test_round_trip(
 {
   // Setup
   ASSERT_EQ( expected_bytes.size(), misp_timestamp_length() );
+
   std::vector< uint8_t > buffer( misp_timestamp_length(), 0xEE );
 
   // Write
@@ -45,6 +46,7 @@ test_round_trip(
     auto it = &*buffer.cbegin();
     auto const end_it = &*buffer.cend();
     EXPECT_EQ( is_nano, is_misp_timestamp_nano( it ) );
+
     auto const read_value = read_misp_timestamp( it );
     EXPECT_EQ( end_it, it );
     EXPECT_EQ( value.nanoseconds(), read_value.nanoseconds() );
@@ -53,7 +55,7 @@ test_round_trip(
 }
 
 // ----------------------------------------------------------------------------
-TEST( misp_time, round_trip )
+TEST ( misp_time, round_trip )
 {
   using us = std::chrono::microseconds;
   using ns = std::chrono::nanoseconds;

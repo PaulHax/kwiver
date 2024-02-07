@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Tests for DetectedObject interface class.
 
 """
+
 import nose.tools as nt
 import numpy as np
 import pytest
@@ -47,10 +48,13 @@ from kwiver.vital.types import (
     ImageContainer,
     geodesy,
     GeoPoint,
-    Point2d
+    Point2d,
 )
 
-@pytest.mark.skip(reason="See TODO in binding code. Users may experience UB until resolved")
+
+@pytest.mark.skip(
+    reason="See TODO in binding code. Users may experience UB until resolved"
+)
 class TestVitalDetectedObject(unittest.TestCase):
     def setUp(self):
         self.loc1 = np.array([-73.759291, 42.849631])
@@ -101,8 +105,9 @@ class TestVitalDetectedObject(unittest.TestCase):
         dot1_scores = [dot1.score(cname) for cname in dot1.class_names()]
         dot2_scores = [dot2.score(cname) for cname in dot2.class_names()]
 
-        return dot1.class_names() == dot2.class_names() and \
-               np.allclose(dot1_scores, dot2_scores)
+        return dot1.class_names() == dot2.class_names() and np.allclose(
+            dot1_scores, dot2_scores
+        )
 
     def check_img_containers_equal(self, img_c1, img_c2):
         if img_c1 is None or img_c2 is None:
@@ -131,7 +136,9 @@ class TestVitalDetectedObject(unittest.TestCase):
                 pt2 = kp2[key]
 
                 values_equal = np.allclose(pt1.value, pt2.value)
-                covars_equal = np.allclose(pt1.covariance.matrix(), pt2.covariance.matrix())
+                covars_equal = np.allclose(
+                    pt1.covariance.matrix(), pt2.covariance.matrix()
+                )
                 if not (values_equal and covars_equal):
                     return False
 
@@ -149,13 +156,24 @@ class TestVitalDetectedObject(unittest.TestCase):
         detector_names_equal = do1.detector_name == do2.detector_name
         types_equal = self.check_det_obj_types_equal(do1.type, do2.type)
         masks_equal = self.check_img_containers_equal(do1.mask, do2.mask)
-        descriptors_equal = self.check_descriptors_equal(do1.descriptor_copy(), do2.descriptor_copy())
+        descriptors_equal = self.check_descriptors_equal(
+            do1.descriptor_copy(), do2.descriptor_copy()
+        )
         notes_equal = do1.notes == do2.notes
         keypoints_equal = self.check_keypoints_equal(do1.keypoints, do2.keypoints)
 
-        return bboxes_equal and geo_points_equal and confidences_equal and \
-               indices_equal and detector_names_equal and types_equal and \
-               masks_equal and descriptors_equal and notes_equal and keypoints_equal
+        return (
+            bboxes_equal
+            and geo_points_equal
+            and confidences_equal
+            and indices_equal
+            and detector_names_equal
+            and types_equal
+            and masks_equal
+            and descriptors_equal
+            and notes_equal
+            and keypoints_equal
+        )
 
     def test_nice_format(self):
         # Test default
@@ -168,10 +186,14 @@ class TestVitalDetectedObject(unittest.TestCase):
     def test_repr_format(self):
         # Test default
         do = DetectedObject(self.bbox)
-        nt.assert_equal(do.__repr__(), "<DetectedObject(conf=1.0) at {}>".format(hex(id(do))))
+        nt.assert_equal(
+            do.__repr__(), "<DetectedObject(conf=1.0) at {}>".format(hex(id(do)))
+        )
 
         do = DetectedObject(self.bbox, confidence=-0.5)
-        nt.assert_equal(do.__repr__(), "<DetectedObject(conf=-0.5) at {}>".format(hex(id(do))))
+        nt.assert_equal(
+            do.__repr__(), "<DetectedObject(conf=-0.5) at {}>".format(hex(id(do)))
+        )
 
     def test_str_format(self):
         # Test default
@@ -215,7 +237,6 @@ class TestVitalDetectedObject(unittest.TestCase):
         new_bbox = BoundingBox(20, 20, 40, 40)
         do.bounding_box = new_bbox
         nt.ok_(do.bounding_box == new_bbox)
-
 
     def test_get_set_geo_point(self):
         do = DetectedObject(self.bbox)
@@ -310,7 +331,9 @@ class TestVitalDetectedObject(unittest.TestCase):
         # the detected_objects reference
         self.descriptor[0] += 1
         # print(do.descriptor_copy().todoublearray(), self.descriptor.todoublearray())
-        nt.assert_false(self.check_descriptors_equal(do.descriptor_copy(), self.descriptor))
+        nt.assert_false(
+            self.check_descriptors_equal(do.descriptor_copy(), self.descriptor)
+        )
 
         # Storing the copy in a new variable, obviously, allows for modification
         desc = do.descriptor_copy()

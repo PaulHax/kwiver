@@ -109,7 +109,7 @@ video_input_buffered_metadata_filter
   {
     d->use_image =
       d->filter->get_implementation_capabilities()
-        .capability( kv::algo::buffered_metadata_filter::CAN_USE_FRAME_IMAGE );
+      .capability( kv::algo::buffered_metadata_filter::CAN_USE_FRAME_IMAGE );
   }
 }
 
@@ -120,9 +120,9 @@ video_input_buffered_metadata_filter
 {
   return
     kv::algo::video_input::check_nested_algo_configuration(
-      "video_input", config ) &&
+    "video_input", config ) &&
     kv::algo::buffered_metadata_filter::check_nested_algo_configuration(
-      "metadata_filter", config );
+    "metadata_filter", config );
 }
 
 // ----------------------------------------------------------------------------
@@ -132,8 +132,9 @@ video_input_buffered_metadata_filter
 {
   if( !d->video_input )
   {
-    VITAL_THROW( kv::algorithm_configuration_exception,
-                 type_name(), impl_name(), "Invalid video_input." );
+    VITAL_THROW(
+      kv::algorithm_configuration_exception,
+      type_name(), impl_name(), "Invalid video_input." );
   }
 
   d->video_input->open( name );
@@ -142,16 +143,16 @@ video_input_buffered_metadata_filter
 
   using vi = kv::algo::video_input;
   for( auto const& capability : {
-    vi::HAS_EOV,
-    vi::HAS_FRAME_NUMBERS,
-    vi::HAS_FRAME_DATA,
-    vi::HAS_FRAME_TIME,
-    vi::HAS_METADATA,
-    vi::HAS_ABSOLUTE_FRAME_TIME,
-    vi::HAS_TIMEOUT,
-    vi::HAS_RAW_IMAGE,
-    vi::HAS_RAW_METADATA,
-    vi::HAS_UNINTERPRETED_DATA, } )
+          vi::HAS_EOV,
+          vi::HAS_FRAME_NUMBERS,
+          vi::HAS_FRAME_DATA,
+          vi::HAS_FRAME_TIME,
+          vi::HAS_METADATA,
+          vi::HAS_ABSOLUTE_FRAME_TIME,
+          vi::HAS_TIMEOUT,
+          vi::HAS_RAW_IMAGE,
+          vi::HAS_RAW_METADATA,
+          vi::HAS_UNINTERPRETED_DATA, } )
   {
     set_capability( capability, capabilities.capability( capability ) );
   }

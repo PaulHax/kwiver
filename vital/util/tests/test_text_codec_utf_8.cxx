@@ -36,16 +36,16 @@ TEST ( text_codec, utf_8 )
 
   CALL_TEST( test_codec_encode_abort, codec, U"\xFFFFFFFF", "" );
   CALL_TEST( test_codec_encode_abort, codec, U"A\xFFFFFFFF", "A" );
-  CALL_TEST( test_codec_encode_abort, codec, U"A\xFFFFFFFF""B", "A" );
-  CALL_TEST( test_codec_encode_abort, codec, U"\xFFFFFFFF""B", "" );
+  CALL_TEST( test_codec_encode_abort, codec, U"A\xFFFFFFFF" "B", "A" );
+  CALL_TEST( test_codec_encode_abort, codec, U"\xFFFFFFFF" "B", "" );
 
   CALL_TEST( test_codec_decode_abort, codec, "\xC0\x80", U"" );
   CALL_TEST( test_codec_decode_abort, codec, "\x80", U"" );
   CALL_TEST( test_codec_decode_abort, codec, "A\x80", U"A" );
-  CALL_TEST( test_codec_decode_abort, codec, "A\x80""B", U"A" );
-  CALL_TEST( test_codec_decode_abort, codec, "\x80""B", U"" );
+  CALL_TEST( test_codec_decode_abort, codec, "A\x80" "B", U"A" );
+  CALL_TEST( test_codec_decode_abort, codec, "\x80" "B", U"" );
   CALL_TEST( test_codec_decode_abort, codec, "\xC0\xFF", U"" );
-  CALL_TEST( test_codec_decode_abort, codec, "\xC0""B", U"" );
+  CALL_TEST( test_codec_decode_abort, codec, "\xC0" "B", U"" );
   CALL_TEST( test_codec_decode_abort, codec, "\xBF", U"" );
 
   CALL_TEST( test_codec_encode_out_of_space, codec, U"AB", "A", 1, 1 );
@@ -71,6 +71,7 @@ TEST ( text_codec, utf_8_long )
   {
     s[ i ] = "ḯ"[ i % 3 ];
   }
-  CALL_TEST( test_codec_round_trip, codec,
+  CALL_TEST(
+    test_codec_round_trip, codec,
     s, std::u32string( BUFSIZ * 3, U'ḯ' ) );
 }

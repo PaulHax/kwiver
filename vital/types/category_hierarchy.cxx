@@ -6,22 +6,22 @@
 
 #include <vital/util/data_stream_reader.h>
 
-#include <string>
-#include <stdexcept>
 #include <algorithm>
 #include <fstream>
-#include <sstream>
 #include <iterator>
+#include <sstream>
+#include <stdexcept>
+#include <string>
 #include <utility>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
 category_hierarchy
 ::category_hierarchy()
-{
-}
+{}
 
 category_hierarchy
 ::category_hierarchy( std::string filename )
@@ -30,9 +30,10 @@ category_hierarchy
 }
 
 category_hierarchy
-::category_hierarchy( const label_vec_t& class_names,
-                      const label_vec_t& parent_names,
-                      const label_id_vec_t& ids )
+::category_hierarchy(
+  const label_vec_t& class_names,
+  const label_vec_t& parent_names,
+  const label_id_vec_t& ids )
 {
   if( !parent_names.empty() && class_names.size() != parent_names.size() )
   {
@@ -51,13 +52,13 @@ category_hierarchy
 
   for( unsigned i = 0; i < class_names.size(); ++i )
   {
-    const label_t& name = class_names[i];
+    const label_t& name = class_names[ i ];
 
     this->add_class( name );
 
     if( !ids.empty() )
     {
-      m_hierarchy[ name ]->category_id = ids[i];
+      m_hierarchy[ name ]->category_id = ids[ i ];
     }
   }
 
@@ -65,9 +66,9 @@ category_hierarchy
   {
     for( unsigned i = 0; i < class_names.size(); ++i )
     {
-      if( !parent_names[i].empty() )
+      if( !parent_names[ i ].empty() )
       {
-        this->add_relationship( class_names[i], parent_names[i] );
+        this->add_relationship( class_names[ i ], parent_names[ i ] );
       }
     }
   }
@@ -75,15 +76,15 @@ category_hierarchy
 
 category_hierarchy
 ::~category_hierarchy()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 void
 category_hierarchy
-::add_class( const label_t& class_name,
-             const label_t& parent_name,
-             const label_id_t id )
+::add_class(
+  const label_t& class_name,
+  const label_t& parent_name,
+  const label_id_t id )
 {
   if( m_hierarchy.find( class_name ) != m_hierarchy.end() )
   {
@@ -144,7 +145,7 @@ category_hierarchy
 
   hierarchy_const_itr_t itr = this->find( class_name );
 
-  for( category *p : itr->second->parents )
+  for( category* p : itr->second->parents )
   {
     output.push_back( p->category_name );
   }
@@ -249,29 +250,31 @@ category_hierarchy
   {
     std::vector< label_t > tokens;
     std::istringstream iss( line );
-    std::copy( std::istream_iterator< std::string >( iss ),
+    std::copy(
+      std::istream_iterator< std::string >( iss ),
       std::istream_iterator< std::string >(),
       std::back_inserter( tokens ) );
 
-    if( tokens.size() == 0 || tokens[0].size() == 0 || tokens[0][0] == '#' )
+    if( tokens.size() == 0 || tokens[ 0 ].size() == 0 ||
+        tokens[ 0 ][ 0 ] == '#' )
     {
       continue;
     }
 
-    this->add_class( tokens[0], "", entry_num );
+    this->add_class( tokens[ 0 ], "", entry_num );
     entry_num++;
 
     for( unsigned i = 1; i < tokens.size(); ++i )
     {
-      if( tokens[i].compare( 0, 8, ":parent=" ) == 0 )
+      if( tokens[ i ].compare( 0, 8, ":parent=" ) == 0 )
       {
         relationships.push_back(
           std::make_pair< label_t, label_t >(
-            label_t( tokens[0] ), label_t( tokens[i].substr( 8 ) ) ) );
+            label_t( tokens[ 0 ] ), label_t( tokens[ i ].substr( 8 ) ) ) );
       }
       else
       {
-        this->add_synonym( tokens[0], tokens[i] );
+        this->add_synonym( tokens[ 0 ], tokens[ i ] );
       }
     }
   }
@@ -313,15 +316,19 @@ category_hierarchy
     }
   }
 
-  std::sort( sorted_cats.begin(), sorted_cats.end(),
-    []( const category_sptr& lhs, const category_sptr& rhs )
-      { return ( lhs->category_id >= 0 && rhs->category_id >= 0
-                  && lhs->category_id < rhs->category_id ) ||
-               ( lhs->category_id >= 0 && rhs->category_id < 0 ) ||
-               ( lhs->category_id < 0 && rhs->category_id < 0
-                  && lhs->category_name < rhs->category_name ); } );
+  std::sort(
+    sorted_cats.begin(), sorted_cats.end(),
+    []( const category_sptr& lhs, const category_sptr& rhs ){
+      return ( lhs->category_id >= 0 && rhs->category_id >= 0 &&
+               lhs->category_id < rhs->category_id ) ||
+             ( lhs->category_id >= 0 && rhs->category_id < 0 ) ||
+             ( lhs->category_id < 0 && rhs->category_id < 0 &&
+               lhs->category_name < rhs->category_name );
+    } );
 
   return sorted_cats;
 }
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace

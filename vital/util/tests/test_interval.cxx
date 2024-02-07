@@ -32,8 +32,7 @@ TEST ( interval, construct )
   {
     auto const test_interval = interval< double >{ 5.0, 7.0 };
     EXPECT_EQ( 5.0, test_interval.lower() );
-    EXPECT_EQ( 7.0, test_interval.upper() );
-  }
+    EXPECT_EQ( 7.0, test_interval.upper() ); }
 
   {
     auto const test_interval = interval< int >{ 9, 2 };
@@ -67,11 +66,12 @@ TEST ( interval, truncate )
     EXPECT_EQ( interval< double >( 5.0, 15.0 ), test_interval );
     test_interval.truncate_lower( 15.0 );
     EXPECT_EQ( interval< double >( 15.0, 15.0 ), test_interval );
-    EXPECT_THROW( test_interval.truncate_lower( 16.0 ),
-                  std::invalid_argument );
-    EXPECT_THROW( test_interval.truncate_lower( dnan ),
-                  std::invalid_argument );
-  }
+    EXPECT_THROW(
+      test_interval.truncate_lower( 16.0 ),
+      std::invalid_argument );
+    EXPECT_THROW(
+      test_interval.truncate_lower( dnan ),
+      std::invalid_argument ); }
 
   {
     auto test_interval = interval< double >{ 0.0, 15.0 };
@@ -83,10 +83,12 @@ TEST ( interval, truncate )
     EXPECT_EQ( interval< double >( 0.0, 5.0 ), test_interval );
     test_interval.truncate_upper( 0.0 );
     EXPECT_EQ( interval< double >( 0.0, 0.0 ), test_interval );
-    EXPECT_THROW( test_interval.truncate_upper( -1.0 ),
-                  std::invalid_argument );
-    EXPECT_THROW( test_interval.truncate_upper( dnan ),
-                  std::invalid_argument );
+    EXPECT_THROW(
+      test_interval.truncate_upper( -1.0 ),
+      std::invalid_argument );
+    EXPECT_THROW(
+      test_interval.truncate_upper( dnan ),
+      std::invalid_argument );
   }
 
   {
@@ -138,10 +140,13 @@ TEST ( interval, contains )
   EXPECT_FALSE( interval< int >( -1, 5 ).contains( -2, true, true ) );
   EXPECT_TRUE(  interval< int >( -1, 5 ).contains( 4, false, false ) );
   EXPECT_FALSE( interval< int >( -1, 5 ).contains( -1, false, true ) );
-  EXPECT_TRUE(  interval< double >( 0, dinf )
-                  .contains( dinf, false, true ) );
-  EXPECT_FALSE( interval< double >( -dinf, 0 )
-                  .contains( -dinf, false, true ) );
-  EXPECT_FALSE( interval< double >( -dinf, dinf )
-                  .contains( dnan, true, true ) );
+  EXPECT_TRUE(
+    interval< double >( 0, dinf )
+    .contains( dinf, false, true ) );
+  EXPECT_FALSE(
+    interval< double >( -dinf, 0 )
+    .contains( -dinf, false, true ) );
+  EXPECT_FALSE(
+    interval< double >( -dinf, dinf )
+    .contains( dnan, true, true ) );
 }

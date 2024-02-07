@@ -27,6 +27,7 @@ if sys.version_info >= (3, 8):
 
     def get_ns_entrypoints(ns: str) -> Iterable["metadata.EntryPoint"]:
         return metadata.entry_points().get(ns, ())
+
 else:
     import importlib_metadata as metadata
 
@@ -42,7 +43,7 @@ LOG = logging.getLogger(__name__)
 OS_ENV_PATH_SEP = os.pathsep
 
 # String name of the namespace from which we query for entry-points.
-PLUGIN_NAMESPACE = 'kwiver.python_plugins'
+PLUGIN_NAMESPACE = "kwiver.python_plugins"
 PLUGIN_ENV_VAR = "KWIVER_PYTHON_PLUGIN_PATH"
 
 # Type variable for some subtype of the Pluggable abstract class.
@@ -181,7 +182,7 @@ def import_via_env_var(env_var: str) -> Set[ModuleType]:
         LOG.log(
             llevel,
             f"Environment variable `{env_var}` not defined or did not "
-            f"contain any module paths."
+            f"contain any module paths.",
         )
     for path in env_var_paths:
         # Skip empty strings
@@ -192,7 +193,7 @@ def import_via_env_var(env_var: str) -> Set[ModuleType]:
             LOG.log(
                 llevel,
                 f"For environment variable `{env_var}`, imported module "
-                f"path `{path}`."
+                f"path `{path}`.",
             )
             mod_set.add(m)
     return mod_set
@@ -236,9 +237,9 @@ def is_concrete_pluggable(t: Type[P]) -> bool:
     # TODO: Would love to rely on better introspection than duck-type checks as
     #       this would need to be co-updated with binding definition...
     if (
-        hasattr(t, "interface_name") and
-        hasattr(t, "from_config") and
-        hasattr(t, "get_default_config")
+        hasattr(t, "interface_name")
+        and hasattr(t, "from_config")
+        and hasattr(t, "get_default_config")
     ):
         return True
     return False

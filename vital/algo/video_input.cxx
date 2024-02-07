@@ -14,21 +14,32 @@ namespace vital {
 namespace algo {
 
 // ----------------------------------------------------------------------------
-algorithm_capabilities::capability_name_t const video_input::HAS_EOV( "has-eov" );
-algorithm_capabilities::capability_name_t const video_input::HAS_FRAME_NUMBERS( "has-frame-numbers" );
-algorithm_capabilities::capability_name_t const video_input::HAS_FRAME_TIME( "has-frame-time" );
-algorithm_capabilities::capability_name_t const video_input::HAS_FRAME_DATA( "has-frame-data" );
-algorithm_capabilities::capability_name_t const video_input::HAS_FRAME_RATE( "has-frame-rate" );
-algorithm_capabilities::capability_name_t const video_input::HAS_ABSOLUTE_FRAME_TIME( "has-abs-frame-time" );
-algorithm_capabilities::capability_name_t const video_input::HAS_METADATA( "has-metadata" );
-algorithm_capabilities::capability_name_t const video_input::HAS_TIMEOUT( "has-timeout" );
-algorithm_capabilities::capability_name_t const video_input::IS_SEEKABLE( "is-seekable" );
-algorithm_capabilities::capability_name_t const video_input::HAS_RAW_IMAGE( "has-raw-image" );
-algorithm_capabilities::capability_name_t const video_input::HAS_RAW_METADATA( "has-raw-metadata" );
-algorithm_capabilities::capability_name_t const video_input::HAS_UNINTERPRETED_DATA( "has-uninterpreted-data" );
+algorithm_capabilities::capability_name_t const video_input::HAS_EOV(
+  "has-eov" );
+algorithm_capabilities::capability_name_t const video_input::HAS_FRAME_NUMBERS(
+  "has-frame-numbers" );
+algorithm_capabilities::capability_name_t const video_input::HAS_FRAME_TIME(
+  "has-frame-time" );
+algorithm_capabilities::capability_name_t const video_input::HAS_FRAME_DATA(
+  "has-frame-data" );
+algorithm_capabilities::capability_name_t const video_input::HAS_FRAME_RATE(
+  "has-frame-rate" );
+algorithm_capabilities::capability_name_t const video_input::
+HAS_ABSOLUTE_FRAME_TIME( "has-abs-frame-time" );
+algorithm_capabilities::capability_name_t const video_input::HAS_METADATA(
+  "has-metadata" );
+algorithm_capabilities::capability_name_t const video_input::HAS_TIMEOUT(
+  "has-timeout" );
+algorithm_capabilities::capability_name_t const video_input::IS_SEEKABLE(
+  "is-seekable" );
+algorithm_capabilities::capability_name_t const video_input::HAS_RAW_IMAGE(
+  "has-raw-image" );
+algorithm_capabilities::capability_name_t const video_input::HAS_RAW_METADATA(
+  "has-raw-metadata" );
+algorithm_capabilities::capability_name_t const video_input::
+HAS_UNINTERPRETED_DATA( "has-uninterpreted-data" );
 
 // ----------------------------------------------------------------------------
-
 
 // ----------------------------------------------------------------------------
 video_input
@@ -88,8 +99,9 @@ video_input
 // ----------------------------------------------------------------------------
 void
 video_input
-::set_capability( algorithm_capabilities::capability_name_t const& name,
-                  bool val )
+::set_capability(
+  algorithm_capabilities::capability_name_t const& name,
+  bool val )
 {
   m_capabilities.set_capability( name, val );
 }

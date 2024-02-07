@@ -90,7 +90,8 @@ context()
 }
 
 // ----------------------------------------------------------------------------
-std::string epsg_to_init( int crs )
+std::string
+epsg_to_init( int crs )
 {
   return "EPSG:" + std::to_string( crs );
 }
@@ -124,15 +125,16 @@ projection( int crs_from, int crs_to )
   {
     auto const arg_from = epsg_to_init( crs_from );
     auto const arg_to = epsg_to_init( crs_to );
-    auto const p = proj_create_crs_to_crs( context(), arg_from.c_str(),
-                                           arg_to.c_str(), nullptr );
+    auto const p = proj_create_crs_to_crs(
+      context(), arg_from.c_str(),
+      arg_to.c_str(), nullptr );
 
     if( !p )
     {
       auto const msg =
         "Failed to construct PROJ projection"
         " from EPSG:" + std::to_string( crs_from );
-        " to EPSG:" + std::to_string( crs_to );
+      " to EPSG:" + std::to_string( crs_to );
       throw std::runtime_error( msg );
     }
 
@@ -147,7 +149,7 @@ projection( int crs_from, int crs_to )
       auto const msg =
         "Failed to construct normalized PROJ projection"
         " from EPSG:" + std::to_string( crs_from );
-        " to EPSG:" + std::to_string( crs_to );
+      " to EPSG:" + std::to_string( crs_to );
       throw std::runtime_error( msg );
     }
 
@@ -203,11 +205,10 @@ geo_conversion
 {
   static const auto prop_map =
     std::unordered_map< std::string, std::string >{
-      { "datum", "datum" },
-      { "ellps", "ellipse" },
-      { "proj", "projection" },
-      { "units", "units" },
-    };
+    { "datum", "datum" },
+    { "ellps", "ellipse" },
+    { "proj", "projection" },
+    { "units", "units" }, };
 
   // Get CRS init string
   auto const proj = projection( crs );
@@ -224,8 +225,9 @@ geo_conversion
     if( item.first == "zone" )
     {
       result.emplace( "zone", item.second );
-      result.emplace( "hemisphere",
-                      props.count( "south" ) ? "south" : "north" );
+      result.emplace(
+        "hemisphere",
+        props.count( "south" ) ? "south" : "north" );
     }
     else
     {

@@ -33,6 +33,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Tests for Python interface to vital::transform_2d
 
 """
+
 import numpy as np
 
 import nose.tools as nt
@@ -40,6 +41,7 @@ import unittest
 from kwiver.vital.tests.py_helpers import no_call_pure_virtual_method
 from kwiver.vital.tests.cpp_helpers import transform_2d_helpers as t2dh
 from kwiver.vital.types import Transform2D
+
 
 class SimpleTransform2D(Transform2D):
     def __init__(self, arr):
@@ -53,7 +55,8 @@ class SimpleTransform2D(Transform2D):
         return p + 5
 
     def inverse_(self):
-        return SimpleTransform2D(1/self.arr)
+        return SimpleTransform2D(1 / self.arr)
+
 
 class TestVitalTransform2D(object):
     # Note that clone and inverse_ are skipped. See binding code for explanation
@@ -64,12 +67,15 @@ class TestVitalTransform2D(object):
     def test_pure_virt_inverse(self):
         t = Transform2D()
         with nt.assert_raises_regexp(
-                AttributeError, "'kwiver.vital.types.transform_2d.Transform2D' object has no attribute 'inverse_'",
-            ):
-                t.inverse()
+            AttributeError,
+            "'kwiver.vital.types.transform_2d.Transform2D' object has no attribute 'inverse_'",
+        ):
+            t.inverse()
+
     def test_is_instance(self):
         st = SimpleTransform2D(np.array([2, 4]))
         nt.ok_(isinstance(st, Transform2D))
+
 
 class TestVitalTransform2DSubclass(unittest.TestCase):
     def test_inverse_(self):
@@ -94,4 +100,6 @@ class TestVitalTransform2DSubclass(unittest.TestCase):
     def test_map(self):
         st = SimpleTransform2D(np.array([2, 4]))
         np.testing.assert_array_equal(st.map(np.array([-5, 5])), np.array([0, 10]))
-        np.testing.assert_array_equal(t2dh.call_map(st, np.array([-5, 5])), np.array([0, 10]))
+        np.testing.assert_array_equal(
+            t2dh.call_map(st, np.array([-5, 5])), np.array([0, 10])
+        )

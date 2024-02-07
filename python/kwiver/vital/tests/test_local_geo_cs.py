@@ -34,7 +34,6 @@ Tests for Python interface to vital::local_geo_cs
 
 """
 
-
 import nose.tools as nt
 import unittest
 import numpy as np
@@ -47,6 +46,7 @@ from kwiver.vital.types import (
 )
 
 modules.load_known_modules()
+
 
 class TestLocalGeoCS(unittest.TestCase):
     @classmethod
@@ -61,7 +61,9 @@ class TestLocalGeoCS(unittest.TestCase):
     def test_origin(self):
         g = LocalGeoCS()
         g.geo_origin = self.geo1
-        np.testing.assert_array_almost_equal(g.geo_origin.location(self.wgs), self.geo1.location())
+        np.testing.assert_array_almost_equal(
+            g.geo_origin.location(self.wgs), self.geo1.location()
+        )
 
     def test_read_write_localgeocs(self):
         g = LocalGeoCS()
@@ -71,4 +73,6 @@ class TestLocalGeoCS(unittest.TestCase):
         local_geo_cs.write_local_geo_cs_to_file(g, "geo_data.txt")
         g2 = LocalGeoCS()
         local_geo_cs.read_local_geo_cs_from_file(g2, "geo_data.txt")
-        np.testing.assert_array_almost_equal(g2.geo_origin.location(self.wgs), self.geo1.location())
+        np.testing.assert_array_almost_equal(
+            g2.geo_origin.location(self.wgs), self.geo1.location()
+        )

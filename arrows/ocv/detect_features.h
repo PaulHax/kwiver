@@ -15,7 +15,9 @@
 #include <opencv2/features2d/features2d.hpp>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace ocv {
 
 /// OCV Specific base definition for algorithms that detect feature points
@@ -38,16 +40,19 @@ public:
   ///             considered.
   /// \returns a set of image features
   virtual vital::feature_set_sptr
-  detect(vital::image_container_sptr image_data,
-         vital::image_container_sptr mask = vital::image_container_sptr()) const;
+  detect(
+    vital::image_container_sptr image_data,
+    vital::image_container_sptr mask = vital::image_container_sptr() ) const;
 
 protected:
   /// the feature detector algorithm
-  cv::Ptr<cv::FeatureDetector> detector;
+  cv::Ptr< cv::FeatureDetector > detector;
 };
 
 } // end namespace ocv
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif

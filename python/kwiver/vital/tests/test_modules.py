@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#ckwg +28
+# ckwg +28
 # Copyright 2011-2013, 2019 by Kitware, Inc.
 # All rights reserved.
 #
@@ -30,10 +30,12 @@
 
 import nose.tools
 
+
 class TestVitalModules(object):
     def test_import(self):
         import kwiver.vital.modules.modules
 
     def test_load(self):
         from kwiver.vital.modules import modules
+
         modules.load_known_modules()

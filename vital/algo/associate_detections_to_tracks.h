@@ -28,9 +28,8 @@ class VITAL_ALGO_EXPORT associate_detections_to_tracks
   : public kwiver::vital::algorithm
 {
 public:
-
   associate_detections_to_tracks();
-  PLUGGABLE_INTERFACE(associate_detections_to_tracks);
+  PLUGGABLE_INTERFACE( associate_detections_to_tracks );
 
   /// Use cost matrices to assign detections to existing tracks
   ///
@@ -43,14 +42,14 @@ public:
   /// \param unused output detection set for any detections not associated
   /// \returns whether or not any tracks were updated
   virtual bool
-  associate( kwiver::vital::timestamp ts,
-             kwiver::vital::image_container_sptr image,
-             kwiver::vital::object_track_set_sptr tracks,
-             kwiver::vital::detected_object_set_sptr detections,
-             kwiver::vital::matrix_d matrix,
-             kwiver::vital::object_track_set_sptr& output,
-             kwiver::vital::detected_object_set_sptr& unused ) const = 0;
-
+  associate(
+    kwiver::vital::timestamp ts,
+    kwiver::vital::image_container_sptr image,
+    kwiver::vital::object_track_set_sptr tracks,
+    kwiver::vital::detected_object_set_sptr detections,
+    kwiver::vital::matrix_d matrix,
+    kwiver::vital::object_track_set_sptr& output,
+    kwiver::vital::detected_object_set_sptr& unused ) const = 0;
 };
 
 /// Shared pointer for associate_detections_to_tracks algorithm definition

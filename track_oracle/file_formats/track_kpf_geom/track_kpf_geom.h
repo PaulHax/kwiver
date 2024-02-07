@@ -19,17 +19,18 @@
 #ifndef KWIVER_TRACK_ORACLE_TRACK_KPF_GEOM_H_
 #define KWIVER_TRACK_ORACLE_TRACK_KPF_GEOM_H_
 
-#include <vital/vital_config.h>
 #include <track_oracle/file_formats/track_kpf_geom/track_kpf_geom_export.h>
+#include <vital/vital_config.h>
 
 #include <track_oracle/core/track_base.h>
 #include <track_oracle/core/track_field.h>
 #include <track_oracle/data_terms/data_terms.h>
 
 namespace kwiver {
+
 namespace track_oracle {
 
-struct TRACK_KPF_GEOM_EXPORT track_kpf_geom_type: public track_base< track_kpf_geom_type >
+struct TRACK_KPF_GEOM_EXPORT track_kpf_geom_type : public track_base< track_kpf_geom_type >
 {
   track_field< dt::detection::detection_id > det_id;
   track_field< dt::tracking::external_id > track_id;
@@ -48,6 +49,7 @@ struct TRACK_KPF_GEOM_EXPORT track_kpf_geom_type: public track_base< track_kpf_g
 };
 
 } // ...track_oracle
+
 } // ...kwiver
 
 #endif

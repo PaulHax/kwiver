@@ -30,7 +30,7 @@ class VITAL_ALGO_EXPORT compute_depth
 {
 public:
   compute_depth();
-  PLUGGABLE_INTERFACE(compute_depth);
+  PLUGGABLE_INTERFACE( compute_depth );
   /// Compute a depth map from an image sequence
   ///
   /// Implementations of this function should not modify the underlying objects
@@ -47,13 +47,14 @@ public:
   /// image)
   /// \param [in] masks optional masks corresponding to the image sequence
   virtual kwiver::vital::image_container_sptr
-  compute( std::vector< kwiver::vital::image_container_sptr > const& frames,
-           std::vector< kwiver::vital::camera_perspective_sptr > const& cameras,
-           double depth_min, double depth_max,
-           unsigned int reference_frame,
-           vital::bounding_box< int > const& roi,
-           std::vector< kwiver::vital::image_container_sptr > const& masks =
-           std::vector< kwiver::vital::image_container_sptr >( ) ) const;
+  compute(
+    std::vector< kwiver::vital::image_container_sptr > const& frames,
+    std::vector< kwiver::vital::camera_perspective_sptr > const& cameras,
+    double depth_min, double depth_max,
+    unsigned int reference_frame,
+    vital::bounding_box< int > const& roi,
+    std::vector< kwiver::vital::image_container_sptr > const& masks =
+    std::vector< kwiver::vital::image_container_sptr >( ) ) const;
 
   /// Compute a depth map and depth uncertainty from an image sequence
   ///
@@ -72,20 +73,22 @@ public:
   /// \param [out] depth_uncertainty returns pixel-wise uncertainty
   /// \param [in] masks optional masks corresponding to the image sequence
   virtual kwiver::vital::image_container_sptr
-  compute( std::vector< kwiver::vital::image_container_sptr > const& frames,
-           std::vector< kwiver::vital::camera_perspective_sptr > const& cameras,
-           double depth_min, double depth_max,
-           unsigned int reference_frame,
-           vital::bounding_box< int > const& roi,
-           kwiver::vital::image_container_sptr& depth_uncertainty,
-           std::vector< kwiver::vital::image_container_sptr > const& masks =
-           std::vector< kwiver::vital::image_container_sptr >( ) ) const = 0;
+  compute(
+    std::vector< kwiver::vital::image_container_sptr > const& frames,
+    std::vector< kwiver::vital::camera_perspective_sptr > const& cameras,
+    double depth_min, double depth_max,
+    unsigned int reference_frame,
+    vital::bounding_box< int > const& roi,
+    kwiver::vital::image_container_sptr& depth_uncertainty,
+    std::vector< kwiver::vital::image_container_sptr > const& masks =
+    std::vector< kwiver::vital::image_container_sptr >( ) ) const = 0;
 
   /// Typedef for the callback function signature
   typedef std::function< bool ( kwiver::vital::image_container_sptr,
                                 std::string const&,
                                 unsigned int,
-                                kwiver::vital::image_container_sptr ) > callback_t;
+                                kwiver::vital::image_container_sptr ) >
+    callback_t;
 
   /// Set a callback function to report intermediate progress
   virtual void set_callback( callback_t cb );

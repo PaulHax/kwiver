@@ -18,7 +18,7 @@ namespace klv {
 
 // ----------------------------------------------------------------------------
 /// Utility class to aid in the pruning of Report-On-Change set entries.
-template< class Key >
+template < class Key >
 class KWIVER_ALGO_KLV_EXPORT klv_update_tracker
 {
 public:
@@ -44,8 +44,9 @@ public:
 
   bool has_changed( klv_set< Key > const& set, key_t const& key ) const;
 
-  bool update( klv_set< Key > const& set, key_t const& key,
-               uint64_t timestamp );
+  bool update(
+    klv_set< Key > const& set, key_t const& key,
+    uint64_t timestamp );
 
   void prune(
     klv_set< Key >& set, klv_update_intervals const& intervals,

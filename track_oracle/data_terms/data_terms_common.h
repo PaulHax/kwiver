@@ -39,162 +39,165 @@
 #include <string>
 #include <track_oracle/data_terms/data_term_tmp_utils.h>
 
-#include <vital/vital_config.h>
 #include <track_oracle/data_terms/data_terms_export.h>
+#include <vital/vital_config.h>
 
-#include <track_oracle/core/track_oracle_api_types.h>
 #include <track_oracle/core/kwiver_io_base.h>
 #include <track_oracle/core/track_oracle_api_types.h>
+#include <track_oracle/core/track_oracle_api_types.h>
 
-#define DECL_DT(NAME, TYPE, DESC )         \
-  struct DATA_TERMS_EXPORT NAME : public data_term_base, kwiver_io_base<TYPE>    \
-{ \
-  NAME(): kwiver::track_oracle::kwiver_io_base<TYPE>( #NAME ) {}                        \
-  ~NAME() {} \
-  typedef TYPE Type; \
-  static context c; \
-  static std::string get_context_name() { return #NAME; }   \
-  static std::string get_context_description() { return #DESC; }         \
-}
-
-#define DECL_DT_DEFAULT(NAME, TYPE, DEFAULT, DESC )                      \
-  struct DATA_TERMS_EXPORT NAME : public data_term_base, kwiver_io_base<TYPE>    \
-{ \
-  NAME(): kwiver::track_oracle::kwiver_io_base<TYPE>( #NAME ) {}                        \
-  ~NAME() {} \
-  typedef TYPE Type; \
-  static TYPE get_default_value() { return DEFAULT; } \
-  static context c; \
-  static std::string get_context_name() { return #NAME; }   \
-  static std::string get_context_description() { return #DESC; }         \
-}
-
-#define DECL_DT_RW_STRCSV(NAME, TYPE, DESC )         \
-  struct DATA_TERMS_EXPORT NAME : public data_term_base, kwiver_io_base<TYPE> \
-{ \
-  NAME(): kwiver::track_oracle::kwiver_io_base<TYPE>( #NAME ) {}                        \
-  ~NAME() {} \
-  typedef TYPE Type; \
-  static context c; \
-  static std::string get_context_name() { return #NAME; }   \
-  static std::string get_context_description() { return #DESC; }        \
+#define DECL_DT( NAME, TYPE, DESC )                                           \
+struct DATA_TERMS_EXPORT NAME : public data_term_base,                        \
+                                  kwiver_io_base< TYPE >                      \
+{                                                                             \
+  NAME() : kwiver::track_oracle::kwiver_io_base< TYPE >( #NAME ) {}           \
+  ~NAME() {}                                                                  \
+  typedef TYPE Type;                                                          \
+  static context c;                                                           \
+  static std::string get_context_name() { return #NAME; }                     \
+  static std::string get_context_description() { return #DESC; }              \
+}#define DECL_DT_DEFAULT( NAME, TYPE, DEFAULT, DESC )                         \
+struct DATA_TERMS_EXPORT NAME : public data_term_base,                        \
+                                  kwiver_io_base< TYPE >                      \
+{                                                                             \
+  NAME() : kwiver::track_oracle::kwiver_io_base< TYPE >( #NAME ) {}           \
+  ~NAME() {}                                                                  \
+  typedef TYPE Type;                                                          \
+  static TYPE get_default_value() { return DEFAULT; }                         \
+  static context c;                                                           \
+  static std::string get_context_name() { return #NAME; }                     \
+  static std::string get_context_description() { return #DESC; }              \
+}#define DECL_DT_RW_STRCSV( NAME, TYPE, DESC )                                \
+struct DATA_TERMS_EXPORT NAME : public data_term_base,                        \
+                                  kwiver_io_base< TYPE >                      \
+{                                                                             \
+  NAME() : kwiver::track_oracle::kwiver_io_base< TYPE >( #NAME ) {}           \
+  ~NAME() {}                                                                  \
+  typedef TYPE Type;                                                          \
+  static context c;                                                           \
+  static std::string get_context_name() { return #NAME; }                     \
+  static std::string get_context_description() { return #DESC; }              \
   virtual std::ostream& to_stream( std::ostream& os, const Type& val ) const; \
-  virtual bool from_str( const std::string& s, Type& val ) const;             \
-  virtual std::vector< std::string > csv_headers() const; \
-  virtual bool from_csv( const std::map< std::string, std::string >& header_value_map, Type& val ) const; \
-  virtual std::ostream& to_csv( std::ostream& os, const Type& val ) const; \
-}
-
-#define DECL_DT_RW_STRCSV_DEFAULT(NAME, TYPE, DEFAULT, DESC )         \
-  struct DATA_TERMS_EXPORT NAME : public data_term_base, kwiver_io_base<TYPE> \
-{ \
-  NAME(): kwiver::track_oracle::kwiver_io_base<TYPE>( #NAME ) {}                        \
-  ~NAME() {} \
-  typedef TYPE Type; \
-  static TYPE get_default_value() { return DEFAULT; } \
-  static context c; \
-  static std::string get_context_name() { return #NAME; }   \
-  static std::string get_context_description() { return #DESC; }        \
+  virtual bool from_str( const std::string& s, Type & val ) const;            \
+  virtual std::vector< std::string > csv_headers() const;                     \
+  virtual bool from_csv(                                                      \
+  const std::map< std::string,                                                \
+  std::string >& header_value_map, Type & val ) const;                        \
+  virtual std::ostream& to_csv( std::ostream& os, const Type& val ) const;    \
+}#define DECL_DT_RW_STRCSV_DEFAULT( NAME, TYPE, DEFAULT, DESC )               \
+struct DATA_TERMS_EXPORT NAME : public data_term_base,                        \
+                                  kwiver_io_base< TYPE >                      \
+{                                                                             \
+  NAME() : kwiver::track_oracle::kwiver_io_base< TYPE >( #NAME ) {}           \
+  ~NAME() {}                                                                  \
+  typedef TYPE Type;                                                          \
+  static TYPE get_default_value() { return DEFAULT; }                         \
+  static context c;                                                           \
+  static std::string get_context_name() { return #NAME; }                     \
+  static std::string get_context_description() { return #DESC; }              \
   virtual std::ostream& to_stream( std::ostream& os, const Type& val ) const; \
-  virtual bool from_str( const std::string& s, Type& val ) const;             \
-  virtual std::vector< std::string > csv_headers() const; \
-  virtual bool from_csv( const std::map< std::string, std::string >& header_value_map, Type& val ) const; \
-  virtual std::ostream& to_csv( std::ostream& os, const Type& val ) const; \
-}
-
-#define DECL_DT_W_STR(NAME, TYPE, DESC )         \
-  struct DATA_TERMS_EXPORT NAME : public data_term_base, kwiver_io_base<TYPE> \
-{ \
-  NAME(): kwiver::track_oracle::kwiver_io_base<TYPE>( #NAME ) {}                        \
-  ~NAME() {} \
-  typedef TYPE Type; \
-  static context c; \
-  static std::string get_context_name() { return #NAME; }   \
-  static std::string get_context_description() { return #DESC; }        \
+  virtual bool from_str( const std::string& s, Type & val ) const;            \
+  virtual std::vector< std::string > csv_headers() const;                     \
+  virtual bool from_csv(                                                      \
+  const std::map< std::string,                                                \
+  std::string >& header_value_map, Type & val ) const;                        \
+  virtual std::ostream& to_csv( std::ostream& os, const Type& val ) const;    \
+}#define DECL_DT_W_STR( NAME, TYPE, DESC )                                    \
+struct DATA_TERMS_EXPORT NAME : public data_term_base,                        \
+                                  kwiver_io_base< TYPE >                      \
+{                                                                             \
+  NAME() : kwiver::track_oracle::kwiver_io_base< TYPE >( #NAME ) {}           \
+  ~NAME() {}                                                                  \
+  typedef TYPE Type;                                                          \
+  static context c;                                                           \
+  static std::string get_context_name() { return #NAME; }                     \
+  static std::string get_context_description() { return #DESC; }              \
   virtual std::ostream& to_stream( std::ostream& os, const Type& val ) const; \
-}
-
-#define DECL_DT_RW_STR(NAME, TYPE, DESC )         \
-  struct DATA_TERMS_EXPORT NAME : public data_term_base, kwiver_io_base<TYPE> \
-{ \
-  NAME(): kwiver::track_oracle::kwiver_io_base<TYPE>( #NAME ) {}                        \
-  ~NAME() {} \
-  typedef TYPE Type; \
-  static context c; \
-  static std::string get_context_name() { return #NAME; }   \
-  static std::string get_context_description() { return #DESC; }        \
+}#define DECL_DT_RW_STR( NAME, TYPE, DESC )                                   \
+struct DATA_TERMS_EXPORT NAME : public data_term_base,                        \
+                                  kwiver_io_base< TYPE >                      \
+{                                                                             \
+  NAME() : kwiver::track_oracle::kwiver_io_base< TYPE >( #NAME ) {}           \
+  ~NAME() {}                                                                  \
+  typedef TYPE Type;                                                          \
+  static context c;                                                           \
+  static std::string get_context_name() { return #NAME; }                     \
+  static std::string get_context_description() { return #DESC; }              \
   virtual std::ostream& to_stream( std::ostream& os, const Type& val ) const; \
-  virtual bool from_str( const std::string& s, Type& val ) const;             \
-}
-
-#define DECL_DT_W_STRCSV(NAME, TYPE, DESC )         \
-  struct DATA_TERMS_EXPORT NAME : public data_term_base, kwiver_io_base<TYPE> \
-{ \
-  NAME(): kwiver::track_oracle::kwiver_io_base<TYPE>( #NAME ) {}                        \
-  ~NAME() {} \
-  typedef TYPE Type; \
-  static context c; \
-  static std::string get_context_name() { return #NAME; }   \
-  static std::string get_context_description() { return #DESC; }        \
+  virtual bool from_str( const std::string& s, Type & val ) const;            \
+}#define DECL_DT_W_STRCSV( NAME, TYPE, DESC )                                 \
+struct DATA_TERMS_EXPORT NAME : public data_term_base,                        \
+                                  kwiver_io_base< TYPE >                      \
+{                                                                             \
+  NAME() : kwiver::track_oracle::kwiver_io_base< TYPE >( #NAME ) {}           \
+  ~NAME() {}                                                                  \
+  typedef TYPE Type;                                                          \
+  static context c;                                                           \
+  static std::string get_context_name() { return #NAME; }                     \
+  static std::string get_context_description() { return #DESC; }              \
   virtual std::ostream& to_stream( std::ostream& os, const Type& val ) const; \
-  virtual std::vector< std::string > csv_headers() const; \
-  virtual bool from_csv( const std::map< std::string, std::string >& header_value_map, Type& val ) const; \
-  virtual std::ostream& to_csv( std::ostream& os, const Type& val ) const; \
-}
-
-#define DECL_DT_RW_STRXMLCSV(NAME, TYPE, DESC )         \
-  struct DATA_TERMS_EXPORT NAME : public data_term_base, kwiver_io_base<TYPE> \
-{ \
-  NAME(): kwiver::track_oracle::kwiver_io_base<TYPE>( #NAME ) {}                        \
-  ~NAME() {} \
-  typedef TYPE Type; \
-  static context c; \
-  static std::string get_context_name() { return #NAME; }   \
-  static std::string get_context_description() { return #DESC; }        \
-  virtual std::ostream& to_stream( std::ostream& os, const Type& val ) const;  \
-  virtual bool from_str( const std::string& s, Type& val ) const;             \
-  virtual bool read_xml( const TiXmlElement* e, Type& val ) const;            \
-  virtual void write_xml( std::ostream& os, \
-                          const std::string& indent, \
-                          const Type& val ) const; \
-  virtual std::vector< std::string > csv_headers() const; \
-  virtual bool from_csv( const std::map< std::string, std::string >& header_value_map, Type& val ) const; \
-  virtual std::ostream& to_csv( std::ostream& os, const Type& val ) const; \
-}
-
-#define DECL_DT_RW_STRXML(NAME, TYPE, DESC )         \
-  struct DATA_TERMS_EXPORT NAME : public data_term_base, kwiver_io_base<TYPE> \
-{ \
-  NAME(): kwiver::track_oracle::kwiver_io_base<TYPE>( #NAME ) {}                        \
-  ~NAME() {} \
-  typedef TYPE Type; \
-  static context c; \
-  static std::string get_context_name() { return #NAME; }   \
-  static std::string get_context_description() { return #DESC; }        \
-  virtual std::ostream& to_stream( std::ostream& os, const Type& val ) const;  \
-  virtual bool from_str( const std::string& s, Type& val ) const;             \
-  virtual bool read_xml( const TiXmlElement* e, Type& val ) const;            \
-  virtual void write_xml( std::ostream& os, \
-                          const std::string& indent, \
-                          const Type& val ) const; \
-}
-
-#define DECL_DT_XMLCSV(NAME, TYPE, DESC )         \
-  struct DATA_TERMS_EXPORT NAME : public data_term_base, kwiver_io_base<TYPE> \
-{ \
-  NAME(): kwiver::track_oracle::kwiver_io_base<TYPE>( #NAME ) {}                        \
-  ~NAME() {} \
-  typedef TYPE Type; \
-  static context c; \
-  static std::string get_context_name() { return #NAME; }   \
-  static std::string get_context_description() { return #DESC; }        \
-  virtual bool read_xml( const TiXmlElement* e, Type& val ) const;            \
-  virtual void write_xml( std::ostream& os, \
-                          const std::string& indent, \
-                          const Type& val ) const; \
-  virtual std::vector< std::string > csv_headers() const; \
-  virtual bool from_csv( const std::map< std::string, std::string >& header_value_map, Type& val ) const; \
-  virtual std::ostream& to_csv( std::ostream& os, const Type& val ) const; \
-}
-
-#endif
+  virtual std::vector< std::string > csv_headers() const;                     \
+  virtual bool from_csv(                                                      \
+  const std::map< std::string,                                                \
+  std::string >& header_value_map, Type & val ) const;                        \
+  virtual std::ostream& to_csv( std::ostream& os, const Type& val ) const;    \
+}#define DECL_DT_RW_STRXMLCSV( NAME, TYPE, DESC )                             \
+struct DATA_TERMS_EXPORT NAME : public data_term_base,                        \
+                                  kwiver_io_base< TYPE >                      \
+{                                                                             \
+  NAME() : kwiver::track_oracle::kwiver_io_base< TYPE >( #NAME ) {}           \
+  ~NAME() {}                                                                  \
+  typedef TYPE Type;                                                          \
+  static context c;                                                           \
+  static std::string get_context_name() { return #NAME; }                     \
+  static std::string get_context_description() { return #DESC; }              \
+  virtual std::ostream& to_stream( std::ostream& os, const Type& val ) const; \
+  virtual bool from_str( const std::string& s, Type & val ) const;            \
+  virtual bool read_xml( const TiXmlElement * e, Type & val ) const;          \
+  virtual void write_xml(                                                     \
+  std::ostream& os,                                                           \
+  const std::string& indent,                                                  \
+  const Type& val ) const;                                                    \
+  virtual std::vector< std::string > csv_headers() const;                     \
+  virtual bool from_csv(                                                      \
+  const std::map< std::string,                                                \
+  std::string >& header_value_map, Type & val ) const;                        \
+  virtual std::ostream& to_csv( std::ostream& os, const Type& val ) const;    \
+}#define DECL_DT_RW_STRXML( NAME, TYPE, DESC )                                \
+struct DATA_TERMS_EXPORT NAME : public data_term_base,                        \
+                                  kwiver_io_base< TYPE >                      \
+{                                                                             \
+  NAME() : kwiver::track_oracle::kwiver_io_base< TYPE >( #NAME ) {}           \
+  ~NAME() {}                                                                  \
+  typedef TYPE Type;                                                          \
+  static context c;                                                           \
+  static std::string get_context_name() { return #NAME; }                     \
+  static std::string get_context_description() { return #DESC; }              \
+  virtual std::ostream& to_stream( std::ostream& os, const Type& val ) const; \
+  virtual bool from_str( const std::string& s, Type & val ) const;            \
+  virtual bool read_xml( const TiXmlElement * e, Type & val ) const;          \
+  virtual void write_xml(                                                     \
+  std::ostream& os,                                                           \
+  const std::string& indent,                                                  \
+  const Type& val ) const;                                                    \
+}#define DECL_DT_XMLCSV( NAME, TYPE, DESC )                                   \
+struct DATA_TERMS_EXPORT NAME : public data_term_base,                        \
+                                  kwiver_io_base< TYPE >                      \
+{                                                                             \
+  NAME() : kwiver::track_oracle::kwiver_io_base< TYPE >( #NAME ) {}           \
+  ~NAME() {}                                                                  \
+  typedef TYPE Type;                                                          \
+  static context c;                                                           \
+  static std::string get_context_name() { return #NAME; }                     \
+  static std::string get_context_description() { return #DESC; }              \
+  virtual bool read_xml( const TiXmlElement * e, Type & val ) const;          \
+  virtual void write_xml(                                                     \
+  std::ostream& os,                                                           \
+  const std::string& indent,                                                  \
+  const Type& val ) const;                                                    \
+  virtual std::vector< std::string > csv_headers() const;                     \
+  virtual bool from_csv(                                                      \
+  const std::map< std::string,                                                \
+  std::string >& header_value_map, Type & val ) const;                        \
+  virtual std::ostream& to_csv( std::ostream& os, const Type& val ) const;    \
+}#endif

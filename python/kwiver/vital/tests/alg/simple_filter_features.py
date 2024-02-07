@@ -31,27 +31,30 @@ from __future__ import print_function
 from kwiver.vital.algo import FilterFeatures
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
 
-class SimpleFilterFeatures(CommonConfigurationMixin,
-                                  FilterFeatures):
+
+class SimpleFilterFeatures(CommonConfigurationMixin, FilterFeatures):
     """
     Implementation of FilterFeatures to test it
 
     Examples:
     """
+
     def __init__(self):
         FilterFeatures.__init__(self)
 
 
-
 def __vital_algorithm_register__():
     from kwiver.vital.algo import algorithm_factory
+
     # Register Algorithm
-    implementation_name  = "SimpleFilterFeatures"
+    implementation_name = "SimpleFilterFeatures"
     if algorithm_factory.has_algorithm_impl_name(
-                            SimpleFilterFeatures.static_type_name(),
-                            implementation_name):
+        SimpleFilterFeatures.static_type_name(), implementation_name
+    ):
         return
-    algorithm_factory.add_algorithm( implementation_name,
-                                "Test kwiver.vital.algo.FilterFeatures",
-                                 SimpleFilterFeatures )
-    algorithm_factory.mark_algorithm_as_loaded( implementation_name )
+    algorithm_factory.add_algorithm(
+        implementation_name,
+        "Test kwiver.vital.algo.FilterFeatures",
+        SimpleFilterFeatures,
+    )
+    algorithm_factory.mark_algorithm_as_loaded(implementation_name)

@@ -19,6 +19,7 @@
 #include <vector>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -67,8 +68,9 @@ public:
   /// @param class_names List of names for the possible classes.
   /// @param scores Vector of scores for this object.*
   /// @throws std::invalid_argument if the vector lengths differ
-  class_map( const std::vector< std::string >& class_names,
-             const std::vector< double >& scores );
+  class_map(
+    const std::vector< std::string >& class_names,
+    const std::vector< double >& scores );
 
   /// @brief Create new object type class.
   ///
@@ -77,8 +79,9 @@ public:
   ///
   /// @param class_name Class name
   /// @param score Probability score for the class
-  class_map( const std::string& class_name,
-             double score );
+  class_map(
+    const std::string& class_name,
+    double score );
 
   /// @brief Determine if class-name is present.
   ///
@@ -168,7 +171,8 @@ public:
   ///                  below this value are omitted from the returned list.
   ///
   /// @return Ordered list of class_names. Note that the list may be empty.
-  std::vector< std::string > class_names( double threshold = INVALID_SCORE ) const;
+  std::vector< std::string > class_names(
+    double threshold = INVALID_SCORE ) const;
 
   /// @brief Get number of class names on this object.
   ///
@@ -213,7 +217,7 @@ public:
   /// previously unseen class_name is passed to the CTOR or
   ///
   /// @return Vector of class names.
-  static std::vector < std::string > all_class_names();
+  static std::vector< std::string > all_class_names();
 
   /// @brief Signal emitted when a new type name is created.
   ///

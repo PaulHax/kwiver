@@ -30,7 +30,7 @@ enum klv_1607_child_policy
 };
 
 using klv_1607_child_policy_fn =
-  std::function< klv_1607_child_policy( klv_lds_key ) >;
+  std::function< klv_1607_child_policy ( klv_lds_key ) >;
 
 // ----------------------------------------------------------------------------
 /// Interprets data as a KLV ST1607 amend or segment local set.

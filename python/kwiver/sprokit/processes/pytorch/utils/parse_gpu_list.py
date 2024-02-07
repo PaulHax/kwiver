@@ -34,6 +34,7 @@ turning that into a Pytorch device.
 
 import torch
 
+
 def gpu_list_desc(use_for=None):
     """
     Generate a description for a GPU list config trait.  The optional
@@ -41,8 +42,10 @@ def gpu_list_desc(use_for=None):
     what task the GPU list will be used for.
 
     """
-    return ('define which GPUs to use{}: "all", "None", or a comma-separated list, e.g. "1,2"'
-            .format('' if use_for is None else ' for ' + use_for))
+    return 'define which GPUs to use{}: "all", "None", or a comma-separated list, e.g. "1,2"'.format(
+        "" if use_for is None else " for " + use_for
+    )
+
 
 def parse_gpu_list(gpu_list_str):
     """
@@ -54,9 +57,12 @@ def parse_gpu_list(gpu_list_str):
     "None" is the only way to produce an empty list; an empty string
     won't work.
     """
-    return ([] if gpu_list_str == 'None' else
-            None if gpu_list_str == 'all' else
-            list(map(int, gpu_list_str.split(','))))
+    return (
+        []
+        if gpu_list_str == "None"
+        else None if gpu_list_str == "all" else list(map(int, gpu_list_str.split(",")))
+    )
+
 
 def get_device(gpu_list=None):
     """Get a Pytorch device corresponding to one of the GPU indices listed
@@ -75,5 +81,5 @@ def get_device(gpu_list=None):
     if gpu_list is None:
         gpu_list = list(range(torch.cuda.device_count()))
     elif not gpu_list:
-        return torch.device('cpu'), False
-    return torch.device('cuda:{}'.format(gpu_list[0])), True
+        return torch.device("cpu"), False
+    return torch.device("cuda:{}".format(gpu_list[0])), True

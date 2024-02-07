@@ -13,34 +13,34 @@ namespace vital {
 
 // ----------------------------------------------------------------------------
 detected_object
-::detected_object( double confidence,
-                   detected_object_type_sptr classifications )
+::detected_object(
+  double confidence,
+  detected_object_type_sptr classifications )
   : m_confidence{ confidence },
     m_type{ classifications }
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 detected_object
-::detected_object( bounding_box_d const& bbox,
-                   double confidence,
-                   detected_object_type_sptr classifications )
+::detected_object(
+  bounding_box_d const& bbox,
+  double confidence,
+  detected_object_type_sptr classifications )
   : m_bounding_box{ bbox },
     m_confidence{ confidence },
     m_type{ classifications }
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 detected_object
-::detected_object( kwiver::vital::geo_point const& gp,
-                   double confidence,
-                   detected_object_type_sptr classifications )
+::detected_object(
+  kwiver::vital::geo_point const& gp,
+  double confidence,
+  detected_object_type_sptr classifications )
   : m_geo_point{ gp },
     m_confidence{ confidence },
     m_type{ classifications }
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 detected_object_sptr
@@ -48,7 +48,7 @@ detected_object
 ::clone() const
 {
   detected_object_type_sptr new_type;
-  if ( this->m_type )
+  if( this->m_type )
   {
     new_type = std::make_shared< detected_object_type >( *this->m_type );
   }

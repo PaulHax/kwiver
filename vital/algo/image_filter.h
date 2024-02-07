@@ -29,7 +29,7 @@ class VITAL_ALGO_EXPORT image_filter
 public:
   /// Return the name of this algorithm.
   image_filter();
-  PLUGGABLE_INTERFACE(image_filter);
+  PLUGGABLE_INTERFACE( image_filter );
   /// Filter a  input image and return resulting image
   ///
   /// This method implements the filtering operation. The method does
@@ -40,7 +40,6 @@ public:
   /// \returns a filtered version of the input image
   virtual kwiver::vital::image_container_sptr filter(
     kwiver::vital::image_container_sptr image_data ) = 0;
-
 };
 
 /// type definition for shared pointer to a image_filter algorithm

@@ -17,7 +17,9 @@
 #include <vital/config/config_block.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 /// Combines a feature matchers, homography estimation, and filtering
@@ -47,9 +49,10 @@ class KWIVER_ALGO_CORE_EXPORT match_features_homography
   : public vital::algo::match_features
 {
 public:
-  PLUGIN_INFO( "homography_guided",
-               "Use an estimated homography as a geometric filter"
-               " to remove outlier matches." )
+  PLUGIN_INFO(
+    "homography_guided",
+    "Use an estimated homography as a geometric filter"
+    " to remove outlier matches." )
 
   /// Default Constructor
   match_features_homography();
@@ -60,9 +63,9 @@ public:
   /// Get this alg's \link vital::config_block configuration block \endlink
   virtual vital::config_block_sptr get_configuration() const;
   /// Set this algo's properties via a config block
-  virtual void set_configuration(vital::config_block_sptr config);
+  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's currently configuration is valid
-  virtual bool check_configuration(vital::config_block_sptr config) const;
+  virtual bool check_configuration( vital::config_block_sptr config ) const;
 
   /// Match one set of features and corresponding descriptors to another
   ///
@@ -72,29 +75,34 @@ public:
   /// \param [in] desc2 the descriptors corresponding to \a feat2
   /// \returns a set of matching indices from \a feat1 to \a feat2
   virtual vital::match_set_sptr
-  match(vital::feature_set_sptr feat1, vital::descriptor_set_sptr desc1,
-        vital::feature_set_sptr feat2, vital::descriptor_set_sptr desc2) const;
+  match(
+    vital::feature_set_sptr feat1, vital::descriptor_set_sptr desc1,
+    vital::feature_set_sptr feat2, vital::descriptor_set_sptr desc2 ) const;
 
   /// Set the feature matching algorithms to use
-  void set_first_feature_matcher(vital::algo::match_features_sptr alg)
+  void
+  set_first_feature_matcher( vital::algo::match_features_sptr alg )
   {
     matcher1_ = alg;
   }
 
   /// Set the optional second pass feature matching algorithm to use
-  void set_second_feature_matcher(vital::algo::match_features_sptr alg)
+  void
+  set_second_feature_matcher( vital::algo::match_features_sptr alg )
   {
     matcher2_ = alg;
   }
 
   /// Set the optional feature filter to use
-  void set_feature_filter(vital::algo::filter_features_sptr alg)
+  void
+  set_feature_filter( vital::algo::filter_features_sptr alg )
   {
     feature_filter_ = alg;
   }
 
   /// Set the homography estimation algorithm to use
-  void set_homography_estimator(vital::algo::estimate_homography_sptr alg)
+  void
+  set_homography_estimator( vital::algo::estimate_homography_sptr alg )
   {
     h_estimator_ = alg;
   }
@@ -102,7 +110,8 @@ public:
 private:
   /// private implementation class
   class priv;
-  const std::unique_ptr<priv> d_;
+
+  const std::unique_ptr< priv > d_;
 
   /// The feature matching algorithms to use
   vital::algo::match_features_sptr matcher1_, matcher2_;
@@ -115,7 +124,9 @@ private:
 };
 
 } // end namespace algo
+
 } // end namespace arrows
+
 } // end namespace kwiver
 
 #endif

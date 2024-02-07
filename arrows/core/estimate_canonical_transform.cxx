@@ -15,7 +15,9 @@
 using namespace kwiver::vital;
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 /// Private implementation class
@@ -24,16 +26,14 @@ class estimate_canonical_transform::priv
 public:
   /// Constructor
   priv()
-    : estimate_scale(true),
-      height_percentile(0.05)
-  {
-  }
+    : estimate_scale( true ),
+      height_percentile( 0.05 )
+  {}
 
-  priv(const priv& other)
-    : estimate_scale(other.estimate_scale),
-      height_percentile(other.height_percentile)
-  {
-  }
+  priv( const priv& other )
+    : estimate_scale( other.estimate_scale ),
+      height_percentile( other.height_percentile )
+  {}
 
   bool estimate_scale;
   double height_percentile;
@@ -43,43 +43,43 @@ public:
 // Constructor
 estimate_canonical_transform
 ::estimate_canonical_transform()
-: d_(new priv)
+  : d_( new priv )
 {
   attach_logger( "arrows.core.estimate_canonical_transform" );
 }
 
 // Copy Constructor
 estimate_canonical_transform
-::estimate_canonical_transform(const estimate_canonical_transform& other)
-: d_(new priv(*other.d_))
-{
-}
+::estimate_canonical_transform( const estimate_canonical_transform& other )
+  : d_( new priv( *other.d_ ) )
+{}
 
 // Destructor
 estimate_canonical_transform
 ::~estimate_canonical_transform()
-{
-}
+{}
 
 // ----------------------------------------------------------------------------
 // Get this algorithm's \link vital::config_block configuration block \endlink
-  vital::config_block_sptr
+vital::config_block_sptr
 estimate_canonical_transform
 ::get_configuration() const
 {
   // get base config from base class
   vital::config_block_sptr config =
-      vital::algo::estimate_canonical_transform::get_configuration();
+    vital::algo::estimate_canonical_transform::get_configuration();
 
-  config->set_value("estimate_scale", d_->estimate_scale,
-                    "Estimate the scale to normalize the data. "
-                    "If disabled the estimate transform is rigid");
+  config->set_value(
+    "estimate_scale", d_->estimate_scale,
+    "Estimate the scale to normalize the data. "
+    "If disabled the estimate transform is rigid" );
 
-  config->set_value("height_percentile", d_->height_percentile,
-                    "Shift the ground plane along the normal axis such that "
-                    "this percentage of landmarks are below the ground. Values "
-                    "are in the range [0.0, 1.0).  If the value is outside "
-                    "this range use the mean height instead.");
+  config->set_value(
+    "height_percentile", d_->height_percentile,
+    "Shift the ground plane along the normal axis such that "
+    "this percentage of landmarks are below the ground. Values "
+    "are in the range [0.0, 1.0).  If the value is outside "
+    "this range use the mean height instead." );
 
   return config;
 }
@@ -88,10 +88,14 @@ estimate_canonical_transform
 // Set this algorithm's properties via a config block
 void
 estimate_canonical_transform
-::set_configuration(vital::config_block_sptr config)
+::set_configuration( vital::config_block_sptr config )
 {
-  d_->estimate_scale = config->get_value<bool>("estimate_scale", d_->estimate_scale);
-  d_->height_percentile = config->get_value<double>("height_percentile", d_->height_percentile);
+  d_->estimate_scale = config->get_value< bool >(
+    "estimate_scale",
+    d_->estimate_scale );
+  d_->height_percentile = config->get_value< double >(
+    "height_percentile",
+    d_->height_percentile );
 }
 
 // ----------------------------------------------------------------------------
@@ -100,89 +104,97 @@ bool
 estimate_canonical_transform
 ::check_configuration( VITAL_UNUSED vital::config_block_sptr config ) const
 {
- return true;
+  return true;
 }
 
 // ----------------------------------------------------------------------------
 // Estimate a canonical similarity transform for cameras and points
 kwiver::vital::similarity_d
 estimate_canonical_transform
-::estimate_transform(kwiver::vital::camera_map_sptr const cameras,
-                     kwiver::vital::landmark_map_sptr const landmarks) const
+::estimate_transform(
+  kwiver::vital::camera_map_sptr const cameras,
+  kwiver::vital::landmark_map_sptr const landmarks ) const
 {
   using namespace arrows;
   // find the centroid and scale of all the landmarks
   typedef vital::landmark_map::map_landmark_t lm_map_t;
-  vital::vector_3d center(0,0,0);
-  double s=0.0;
+
+  vital::vector_3d center( 0, 0, 0 );
+  double s = 0.0;
   vital::matrix_3x3d covar = vital::matrix_3x3d::Zero();
-  for(const lm_map_t::value_type& p : landmarks->landmarks())
+  for( const lm_map_t::value_type& p : landmarks->landmarks() )
   {
     vital::vector_3d pt = p.second->loc();
     center += pt;
     covar += pt * pt.transpose();
-    s += pt.dot(pt);
+    s += pt.dot( pt );
   }
-  const double num_lm = static_cast<double>(landmarks->size());
+
+  const double num_lm = static_cast< double >( landmarks->size() );
   center /= num_lm;
   covar /= num_lm;
   covar -= center * center.transpose();
   s /= num_lm;
-  s -= center.dot(center);
-  s = 1.0/std::sqrt(s);
+  s -= center.dot( center );
+  s = 1.0 / std::sqrt( s );
 
-  Eigen::JacobiSVD<vital::matrix_3x3d> svd(covar, Eigen::ComputeFullV);
+  Eigen::JacobiSVD< vital::matrix_3x3d > svd( covar, Eigen::ComputeFullV );
   vital::matrix_3x3d rot = svd.matrixV();
   // ensure that rot is a rotation (determinant 1)
-  rot.col(1) = rot.col(2).cross(rot.col(0)).normalized();
+  rot.col( 1 ) = rot.col( 2 ).cross( rot.col( 0 ) ).normalized();
 
-  if(cameras->size() > 0)
+  if( cameras->size() > 0 )
   {
     // find the average camera center and  average up direction
-    vital::vector_3d cam_center(0,0,0);
-    vital::vector_3d cam_up(0,0,0);
+    vital::vector_3d cam_center( 0, 0, 0 );
+    vital::vector_3d cam_up( 0, 0, 0 );
     typedef vital::camera_map::map_camera_t cam_map_t;
-    for(const cam_map_t::value_type& p : cameras->cameras())
+    for( const cam_map_t::value_type& p : cameras->cameras() )
     {
-      auto cam_ptr = std::dynamic_pointer_cast<camera_perspective>(p.second);
+      auto cam_ptr =
+        std::dynamic_pointer_cast< camera_perspective >( p.second );
       cam_center += cam_ptr->center();
     }
-    cam_center /= static_cast<double>(cameras->size());
+    cam_center /= static_cast< double >( cameras->size() );
     cam_center -= center;
     cam_center = cam_center.normalized();
     // flip the plane normal if it points away from the cameras
-    if( cam_center.dot(rot.col(2)) < 0.0 )
+    if( cam_center.dot( rot.col( 2 ) ) < 0.0 )
     {
       // rotate 180 about the X-axis
-      rot.col(2) = -rot.col(2);
-      rot.col(1) = -rot.col(1);
+      rot.col( 2 ) = -rot.col( 2 );
+      rot.col( 1 ) = -rot.col( 1 );
     }
   }
 
-  if(d_->height_percentile >= 0.0 && d_->height_percentile < 1.0)
+  if( d_->height_percentile >= 0.0 && d_->height_percentile < 1.0 )
   {
-    const vital::vector_3d z = rot.col(2);
-    std::vector<double> heights;
-    for(const lm_map_t::value_type& p : landmarks->landmarks())
+    const vital::vector_3d z = rot.col( 2 );
+    std::vector< double > heights;
+    for( const lm_map_t::value_type& p : landmarks->landmarks() )
     {
       vital::vector_3d pt = p.second->loc();
-      heights.push_back(z.dot(pt-center));
+      heights.push_back( z.dot( pt - center ) );
     }
-    std::sort(heights.begin(), heights.end());
-    const unsigned idx = static_cast<unsigned>(d_->height_percentile * heights.size());
-    center += heights[idx] * z;
+    std::sort( heights.begin(), heights.end() );
+
+    const unsigned idx = static_cast< unsigned >( d_->height_percentile *
+                                                  heights.size() );
+    center += heights[ idx ] * z;
   }
 
-  if(!d_->estimate_scale)
+  if( !d_->estimate_scale )
   {
     s = 1.0;
   }
 
-  vital::rotation_d R(rot);
+  vital::rotation_d R( rot );
   R = R.inverse();
-  return vital::similarity_d(s, R, R*(-s*center));
+  return vital::similarity_d( s, R, R * ( -s * center ) );
 }
 
 } // end namespace core
+
 } // end namespace arrows
+
 } // end namespace kwiver

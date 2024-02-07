@@ -48,8 +48,8 @@ metadata_istream_from_video
   if( at_end() )
   {
     throw std::invalid_argument(
-            "metadata_istream_from_video::frame_number() "
-            "called at end of stream" );
+      "metadata_istream_from_video::frame_number() "
+      "called at end of stream" );
   }
 
   auto const timestamp = m_video->frame_timestamp();
@@ -64,8 +64,8 @@ metadata_istream_from_video
   if( at_end() )
   {
     throw std::invalid_argument(
-            "metadata_istream_from_video::metadata() "
-            "called at end of stream" );
+      "metadata_istream_from_video::metadata() "
+      "called at end of stream" );
   }
   return m_video->frame_metadata();
 }

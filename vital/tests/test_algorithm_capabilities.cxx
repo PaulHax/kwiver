@@ -10,7 +10,8 @@
 #include <gtest/gtest.h>
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
@@ -20,7 +21,8 @@ int main(int argc, char** argv)
 class algorithm_capabilities : public ::testing::Test
 {
 public:
-  void SetUp()
+  void
+  SetUp()
   {
     cap.set_capability( "cap1", true );
     cap.set_capability( "cap2", false );
@@ -30,7 +32,7 @@ public:
 };
 
 // ----------------------------------------------------------------------------
-TEST_F(algorithm_capabilities, empty)
+TEST_F ( algorithm_capabilities, empty )
 {
   kwiver::vital::algorithm_capabilities cap_empty;
 
@@ -42,7 +44,8 @@ TEST_F(algorithm_capabilities, empty)
 }
 
 // ----------------------------------------------------------------------------
-static void test_capabilities(
+static void
+test_capabilities(
   kwiver::vital::algorithm_capabilities const& cap )
 {
   auto cap_list = cap.capability_list();
@@ -56,20 +59,20 @@ static void test_capabilities(
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(algorithm_capabilities, api)
+TEST_F ( algorithm_capabilities, api )
 {
   test_capabilities( cap );
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(algorithm_capabilities, copy)
+TEST_F ( algorithm_capabilities, copy )
 {
   kwiver::vital::algorithm_capabilities cap_copied( cap );
   test_capabilities( cap_copied );
 }
 
 // ----------------------------------------------------------------------------
-TEST_F(algorithm_capabilities, assign)
+TEST_F ( algorithm_capabilities, assign )
 {
   kwiver::vital::algorithm_capabilities cap_assigned;
   cap_assigned = cap;

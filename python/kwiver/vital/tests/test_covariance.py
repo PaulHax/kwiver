@@ -33,13 +33,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Tests for Vital python Covariance class
 
 """
+
 from __future__ import print_function
 import unittest
 
 import nose.tools
 import numpy as np
 
-from kwiver.vital.types.covariance import Covar2d, Covar2f, Covar3d, Covar3f, Covar4d, Covar4f
+from kwiver.vital.types.covariance import (
+    Covar2d,
+    Covar2f,
+    Covar3d,
+    Covar3f,
+    Covar4d,
+    Covar4f,
+)
 
 
 class TestVitalCovariance(unittest.TestCase):

@@ -16,27 +16,28 @@ using namespace kwiver::vital;
 
 namespace {
 
-std::vector<std::string> const names =
-  { "person", "vehicle", "other", "clam", "barnacle" };
+std::vector< std::string > const names = { "person", "vehicle", "other", "clam",
+                                           "barnacle" };
 
-std::vector<double> const scores  = { 0.65, 0.6, 0.07, 0.055, 0.005 };
+std::vector< double > const scores  = { 0.65, 0.6, 0.07, 0.055, 0.005 };
 
 struct test_class_map_tag {};
 
-}
+} // namespace
 
 template class kwiver::vital::class_map< test_class_map_tag >;
 using test_class_map = class_map< test_class_map_tag >;
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
 }
 
 // ----------------------------------------------------------------------------
-TEST(class_map, api)
+TEST ( class_map, api )
 {
   test_class_map cm( names, scores );
 
@@ -49,12 +50,12 @@ TEST(class_map, api)
   EXPECT_EQ( "person", ml_name );
   EXPECT_EQ( 0.65, ml_score );
 
-  for ( size_t i = 0; i < names.size(); ++i )
+  for( size_t i = 0; i < names.size(); ++i )
   {
     SCOPED_TRACE(
-      "For score " + std::to_string( i ) + " ('" + names[i] + "')" );
+      "For score " + std::to_string( i ) + " ('" + names[ i ] + "')" );
 
-    EXPECT_EQ( scores[i], cm.score( names[i] ) );
+    EXPECT_EQ( scores[ i ], cm.score( names[ i ] ) );
   }
 
   EXPECT_EQ( 0.055, cm.score( "clam" ) );
@@ -66,21 +67,20 @@ TEST(class_map, api)
 
   EXPECT_NO_THROW( cm.score( "other" ) ); // make sure this entry exists
   cm.delete_score( "other" );
-  EXPECT_THROW( cm.score("other"), std::runtime_error )
+  EXPECT_THROW( cm.score( "other" ), std::runtime_error )
     << "Accessing deleted class name";
 
   EXPECT_EQ( 4, cm.class_names().size() );
 
-  for ( auto const& name : cm.class_names() )
+  for( auto const& name : cm.class_names() )
   {
     std::cout << " -- " << name << "    score: "
               << cm.score( name ) << std::endl;
   }
-
 }
 
 // ----------------------------------------------------------------------------
-TEST(class_map, creation_error)
+TEST ( class_map, creation_error )
 {
   auto wrong_size_scores = scores;
   wrong_size_scores.resize( 4 );
@@ -95,12 +95,12 @@ TEST(class_map, creation_error)
 }
 
 // ----------------------------------------------------------------------------
-TEST(class_map, name_pool)
+TEST ( class_map, name_pool )
 {
   test_class_map cm( names, scores );
 
-  std::vector<std::string> alt_names =
-    { "a-person", "a-vehicle", "a-other", "a-clam", "a-barnacle" };
+  std::vector< std::string > alt_names = { "a-person", "a-vehicle", "a-other",
+                                           "a-clam", "a-barnacle" };
 
   test_class_map cm_2( alt_names, scores );
 
@@ -108,9 +108,8 @@ TEST(class_map, name_pool)
   EXPECT_EQ( 0, activity_type::all_class_names().size() );
   EXPECT_EQ( 0, detected_object_type::all_class_names().size() );
 
-  for ( auto const& name : test_class_map::all_class_names() )
+  for( auto const& name : test_class_map::all_class_names() )
   {
     std::cout << "  --  " << name << std::endl;
   }
-
 }

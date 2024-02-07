@@ -31,27 +31,30 @@ from __future__ import print_function
 from kwiver.vital.algo import DetectFeatures
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
 
-class SimpleDetectFeatures(CommonConfigurationMixin,
-                                  DetectFeatures):
+
+class SimpleDetectFeatures(CommonConfigurationMixin, DetectFeatures):
     """
     Implementation of DetectFeatures to test it
 
     Examples:
     """
+
     def __init__(self):
         DetectFeatures.__init__(self)
 
 
-
 def __vital_algorithm_register__():
     from kwiver.vital.algo import algorithm_factory
+
     # Register Algorithm
-    implementation_name  = "SimpleDetectFeatures"
+    implementation_name = "SimpleDetectFeatures"
     if algorithm_factory.has_algorithm_impl_name(
-                            SimpleDetectFeatures.static_type_name(),
-                            implementation_name):
+        SimpleDetectFeatures.static_type_name(), implementation_name
+    ):
         return
-    algorithm_factory.add_algorithm( implementation_name,
-                                "Test kwiver.vital.algo.DetectFeatures",
-                                 SimpleDetectFeatures )
-    algorithm_factory.mark_algorithm_as_loaded( implementation_name )
+    algorithm_factory.add_algorithm(
+        implementation_name,
+        "Test kwiver.vital.algo.DetectFeatures",
+        SimpleDetectFeatures,
+    )
+    algorithm_factory.mark_algorithm_as_loaded(implementation_name)

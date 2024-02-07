@@ -7,13 +7,13 @@
 
 #include "data_format.h"
 
-#include <vital/plugin_management/plugin_manager.h>
 #include <vital/algo/algorithm.txx>
+#include <vital/plugin_management/plugin_manager.h>
 
-#include <arrows/klv/update_klv.h>
-#include <arrows/klv/klv_metadata.h>
 #include <arrows/klv/klv_1108.h>
 #include <arrows/klv/klv_1108_metric_set.h>
+#include <arrows/klv/klv_metadata.h>
+#include <arrows/klv/update_klv.h>
 
 // ----------------------------------------------------------------------------
 int
@@ -33,7 +33,8 @@ class update_klv_fixture : public ::testing::Test
 protected:
   // We have to treat the timestamp fields specially, since they should be the
   // current time and we can't hardcode the correct value for that.
-  void check_metric_times( klv_local_set& set ) const
+  void
+  check_metric_times( klv_local_set& set ) const
   {
     for( auto& entry : set.all_at( KLV_1108_METRIC_LOCAL_SET ) )
     {
@@ -44,8 +45,8 @@ protected:
       // and 2100.
       auto const timestamp =
         metric_set.at( KLV_1108_METRIC_SET_TIME ).get< uint64_t >();
-      EXPECT_GT( timestamp, 1670000000000000);
-      EXPECT_LT( timestamp, 4102462800000000);
+      EXPECT_GT( timestamp, 1670000000000000 );
+      EXPECT_LT( timestamp, 4102462800000000 );
 
       // Remove the timestamp field
       metric_set.erase( KLV_1108_METRIC_SET_TIME );
@@ -77,32 +78,38 @@ protected:
     double gsd_value, double vniirs_value ) const
   {
     return { klv_1108_key(), klv_local_set{
-      { KLV_1108_ASSESSMENT_POINT, KLV_1108_ASSESSMENT_POINT_ARCHIVE },
-      { KLV_1108_METRIC_PERIOD_PACK, period_pack },
-      { KLV_1108_METRIC_LOCAL_SET, klv_local_set{
-        { KLV_1108_METRIC_SET_NAME, std::string{ "GSD" } },
-        { KLV_1108_METRIC_SET_VERSION, std::string{} },
-        { KLV_1108_METRIC_SET_IMPLEMENTER,
-          klv_1108_kwiver_metric_implementer() },
-        { KLV_1108_METRIC_SET_PARAMETERS, std::string{
-          "Geo. mean of horiz. and vert. GSD of central pixel" } },
-        { KLV_1108_METRIC_SET_VALUE, klv_lengthy< double >{ gsd_value } } } },
-      { KLV_1108_METRIC_LOCAL_SET, klv_local_set{
-        { KLV_1108_METRIC_SET_NAME, std::string{ "VNIIRS" } },
-        { KLV_1108_METRIC_SET_VERSION, std::string{ "GIQE5" } },
-        { KLV_1108_METRIC_SET_IMPLEMENTER,
-          klv_1108_kwiver_metric_implementer() },
-        { KLV_1108_METRIC_SET_PARAMETERS, std::string{ "Terms a0, a1 only" } },
-        { KLV_1108_METRIC_SET_VALUE, klv_lengthy< double >{ vniirs_value } } } },
-      { KLV_1108_COMPRESSION_TYPE, KLV_1108_COMPRESSION_TYPE_H264 },
-      { KLV_1108_COMPRESSION_PROFILE, KLV_1108_COMPRESSION_PROFILE_MAIN },
-      { KLV_1108_COMPRESSION_LEVEL, std::string{ "4.1" } },
-      { KLV_1108_COMPRESSION_RATIO, klv_lengthy< double >{ 1327.104 } },
-      { KLV_1108_STREAM_BITRATE, uint64_t{ 500 } },
-      { KLV_1108_DOCUMENT_VERSION, uint64_t{ 3 } } } };
+               { KLV_1108_ASSESSMENT_POINT, KLV_1108_ASSESSMENT_POINT_ARCHIVE },
+               { KLV_1108_METRIC_PERIOD_PACK, period_pack },
+               { KLV_1108_METRIC_LOCAL_SET, klv_local_set{
+                   { KLV_1108_METRIC_SET_NAME, std::string{ "GSD" } },
+                   { KLV_1108_METRIC_SET_VERSION, std::string{} },
+                   { KLV_1108_METRIC_SET_IMPLEMENTER,
+                     klv_1108_kwiver_metric_implementer() },
+                   { KLV_1108_METRIC_SET_PARAMETERS, std::string{
+                       "Geo. mean of horiz. and vert. GSD of central pixel" } },
+                   { KLV_1108_METRIC_SET_VALUE,
+                     klv_lengthy< double >{ gsd_value } } } },
+               { KLV_1108_METRIC_LOCAL_SET, klv_local_set{
+                   { KLV_1108_METRIC_SET_NAME, std::string{ "VNIIRS" } },
+                   { KLV_1108_METRIC_SET_VERSION, std::string{ "GIQE5" } },
+                   { KLV_1108_METRIC_SET_IMPLEMENTER,
+                     klv_1108_kwiver_metric_implementer() },
+                   { KLV_1108_METRIC_SET_PARAMETERS,
+                     std::string{ "Terms a0, a1 only" } },
+                   { KLV_1108_METRIC_SET_VALUE,
+                     klv_lengthy< double >{ vniirs_value } } } },
+               { KLV_1108_COMPRESSION_TYPE, KLV_1108_COMPRESSION_TYPE_H264 },
+               { KLV_1108_COMPRESSION_PROFILE,
+                 KLV_1108_COMPRESSION_PROFILE_MAIN },
+               { KLV_1108_COMPRESSION_LEVEL, std::string{ "4.1" } },
+               { KLV_1108_COMPRESSION_RATIO,
+                 klv_lengthy< double >{ 1327.104 } },
+               { KLV_1108_STREAM_BITRATE, uint64_t{ 500 } },
+               { KLV_1108_DOCUMENT_VERSION, uint64_t{ 3 } } } };
   }
 
-  void expect_empty_frames( size_t count )
+  void
+  expect_empty_frames( size_t count )
   {
     for( size_t i = 0; i < count; ++i )
     {
@@ -123,7 +130,9 @@ protected:
 TEST_F ( update_klv_fixture, create )
 {
   EXPECT_NE(
-    nullptr, kv::create_algorithm<kv::algo::buffered_metadata_filter>( "update_klv" ) );
+    nullptr,
+    kv::create_algorithm< kv::algo::buffered_metadata_filter >(
+      "update_klv" ) );
 }
 
 // ----------------------------------------------------------------------------
@@ -215,8 +224,7 @@ TEST_F ( update_klv_fixture, non_klv_metadata )
 {
   kv::metadata_vector input{
     std::make_shared< kv::metadata >(),
-    std::make_shared< kv::metadata >(),
-  };
+    std::make_shared< kv::metadata >(), };
   input[ 0 ]->add< kv::VITAL_META_UNIX_TIMESTAMP >( 0 );
   input[ 0 ]->add< kv::VITAL_META_AVERAGE_GSD >( 12.0 );
   input[ 1 ]->add< kv::VITAL_META_UNIX_TIMESTAMP >( 1 );
@@ -255,8 +263,7 @@ TEST_F ( update_klv_fixture, add_st1108 )
   CALL_TEST( check_metric_times, output_klv[ 0 ].value.get< klv_local_set >() );
 
   std::vector< klv_packet > expected_klv {
-    metric_klv( { 1, 33333 }, 12.0, 5.0 )
-  };
+    metric_klv( { 1, 33333 }, 12.0, 5.0 ) };
 
   EXPECT_EQ( expected_klv, output_klv );
 }
@@ -287,8 +294,7 @@ TEST_F ( update_klv_fixture, add_st1108_with_sample_delay )
   CALL_TEST( check_metric_times, output_klv[ 0 ].value.get< klv_local_set >() );
 
   std::vector< klv_packet > expected_klv{
-    metric_klv( { 1, 33333 }, 12.0, 5.0 )
-  };
+    metric_klv( { 1, 33333 }, 12.0, 5.0 ) };
 
   EXPECT_EQ( expected_klv, output_klv );
 
@@ -321,8 +327,7 @@ TEST_F ( update_klv_fixture, add_st1108_with_sample_smear_delay )
   CALL_TEST( check_metric_times, output_klv[ 0 ].value.get< klv_local_set >() );
 
   std::vector< klv_packet > expected_klv{
-    metric_klv( { 1, 99999 }, 12.0, 5.0 )
-  };
+    metric_klv( { 1, 99999 }, 12.0, 5.0 ) };
 
   EXPECT_EQ( expected_klv, output_klv );
 
@@ -355,8 +360,7 @@ TEST_F ( update_klv_fixture, add_st1108_with_mean_delay )
   CALL_TEST( check_metric_times, output_klv[ 0 ].value.get< klv_local_set >() );
 
   std::vector< klv_packet > expected_klv{
-    metric_klv( { 1, 99999 }, 14.0, 7.0 )
-  };
+    metric_klv( { 1, 99999 }, 14.0, 7.0 ) };
 
   EXPECT_EQ( expected_klv, output_klv );
 

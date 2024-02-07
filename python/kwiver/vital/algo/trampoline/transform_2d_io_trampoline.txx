@@ -17,64 +17,70 @@
 #include <vital/algo/transform_2d_io.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
 
-template < class algorithm_def_t2dio_base=
-            kwiver::vital::algorithm_def<
-              kwiver::vital::algo::transform_2d_io > >
-class algorithm_def_t2dio_trampoline :
-      public algorithm_trampoline<algorithm_def_t2dio_base>
+template < class algorithm_def_t2dio_base =
+    kwiver::vital::algorithm_def<
+      kwiver::vital::algo::transform_2d_io > >
+class algorithm_def_t2dio_trampoline
+  : public algorithm_trampoline< algorithm_def_t2dio_base >
 {
-  public:
-    using algorithm_trampoline<algorithm_def_t2dio_base>::algorithm_trampoline;
+public:
+  using algorithm_trampoline< algorithm_def_t2dio_base >::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<kwiver::vital::algo::transform_2d_io>,
-        type_name,
-      );
-    }
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def< kwiver::vital::algo::transform_2d_io >,
+      type_name,
+    );
+  }
 };
 
-template< class transform_2d_io_base=
-                kwiver::vital::algo::transform_2d_io >
-class transform_2d_io_trampoline :
-      public algorithm_def_t2dio_trampoline< transform_2d_io_base >
+template < class transform_2d_io_base =
+    kwiver::vital::algo::transform_2d_io >
+class transform_2d_io_trampoline
+  : public algorithm_def_t2dio_trampoline< transform_2d_io_base >
 {
-  public:
-    using algorithm_def_t2dio_trampoline< transform_2d_io_base>::
-              algorithm_def_t2dio_trampoline;
+public:
+  using algorithm_def_t2dio_trampoline< transform_2d_io_base >::
+  algorithm_def_t2dio_trampoline;
 
-    kwiver::vital::transform_2d_sptr
-    load_( std::string const& filename )  const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        kwiver::vital::transform_2d_sptr,
-        kwiver::vital::algo::transform_2d_io,
-        load_,
-        filename
-      );
-    }
+  kwiver::vital::transform_2d_sptr
+  load_( std::string const& filename )  const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      kwiver::vital::transform_2d_sptr,
+      kwiver::vital::algo::transform_2d_io,
+      load_,
+      filename
+    );
+  }
 
-    void
-    save_( std::string const& filename,
-           kwiver::vital::transform_2d_sptr data ) const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        void,
-        kwiver::vital::algo::transform_2d_io,
-        save_,
-        filename,
-        data
-      );
-    }
+  void
+  save_(
+    std::string const& filename,
+    kwiver::vital::transform_2d_sptr data ) const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      void,
+      kwiver::vital::algo::transform_2d_io,
+      save_,
+      filename,
+      data
+    );
+  }
 };
 
-}
-}
-}
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
 
 #endif

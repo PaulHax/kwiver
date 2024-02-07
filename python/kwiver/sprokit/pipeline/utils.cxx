@@ -14,9 +14,10 @@
 
 using namespace pybind11;
 
-PYBIND11_MODULE(utils, m)
+PYBIND11_MODULE( utils, m )
 {
-  m.def("name_thread", &sprokit::name_thread
-    , (arg("name"))
-    , "Names the currently running thread.");
+  m.def(
+    "name_thread", &sprokit::name_thread,
+    ( arg( "name" ) ),
+    "Names the currently running thread." );
 }

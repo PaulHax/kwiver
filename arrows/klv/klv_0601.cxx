@@ -14,9 +14,9 @@
 #include <arrows/klv/klv_1602.h>
 #include <arrows/klv/klv_1607.h>
 #include <arrows/klv/klv_checksum.h>
-#include <arrows/klv/klv_series.hpp>
 #include <arrows/klv/klv_length_value.h>
 #include <arrows/klv/klv_list.hpp>
+#include <arrows/klv/klv_series.hpp>
 #include <arrows/klv/klv_string.h>
 #include <arrows/klv/klv_util.h>
 
@@ -1131,8 +1131,9 @@ operator<<( std::ostream& os, klv_0601_positioning_method_source_bit value )
     "Unknown Positioning Method Source Bit" };
 
   os <<
-    strings[ std::min( value,
-                       KLV_0601_POSITIONING_METHOD_SOURCE_BIT_ENUM_END ) ];
+    strings[ std::min(
+    value,
+    KLV_0601_POSITIONING_METHOD_SOURCE_BIT_ENUM_END ) ];
   return os;
 }
 
@@ -1272,18 +1273,23 @@ klv_0601_image_horizon_locations_format
 // ----------------------------------------------------------------------------
 void
 klv_0601_image_horizon_locations_format
-::write_typed( klv_0601_image_horizon_locations const& value,
-              klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_0601_image_horizon_locations const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
-  klv_write_flint< uint32_t >( value.latitude0, { -90.0, 90.0 },
-                               data, tracker.verify( 4 ) );
-  klv_write_flint< uint32_t >( value.longitude0, { -180.0, 180.0 },
-                               data, tracker.verify( 4 ) );
-  klv_write_flint< uint32_t >( value.latitude1, { -90.0, 90.0 },
-                               data, tracker.verify( 4 ) );
-  klv_write_flint< uint32_t >( value.longitude1, { -180.0, 180.0 },
-                               data, tracker.verify( 4 ) );
+  klv_write_flint< uint32_t >(
+    value.latitude0, { -90.0, 90.0 },
+    data, tracker.verify( 4 ) );
+  klv_write_flint< uint32_t >(
+    value.longitude0, { -180.0, 180.0 },
+    data, tracker.verify( 4 ) );
+  klv_write_flint< uint32_t >(
+    value.latitude1, { -90.0, 90.0 },
+    data, tracker.verify( 4 ) );
+  klv_write_flint< uint32_t >(
+    value.longitude1, { -180.0, 180.0 },
+    data, tracker.verify( 4 ) );
 }
 
 // ----------------------------------------------------------------------------
@@ -1354,8 +1360,9 @@ klv_0601_image_horizon_pixel_pack_format
 // ----------------------------------------------------------------------------
 void
 klv_0601_image_horizon_pixel_pack_format
-::write_typed( klv_0601_image_horizon_pixel_pack const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_0601_image_horizon_pixel_pack const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
   klv_write_int( value.x0, data, tracker.verify( 1 ) );
@@ -1413,8 +1420,9 @@ klv_0601_control_command_format
     klv_read_ber< size_t >( data, tracker.remaining() );
   if( length_of_string > tracker.remaining() )
   {
-    VITAL_THROW( kwiver::vital::metadata_buffer_overflow,
-                 "reading command string overruns data buffer" );
+    VITAL_THROW(
+      kwiver::vital::metadata_buffer_overflow,
+      "reading command string overruns data buffer" );
   }
 
   result.string = klv_read_string( data, length_of_string );
@@ -1428,8 +1436,9 @@ klv_0601_control_command_format
 // ----------------------------------------------------------------------------
 void
 klv_0601_control_command_format
-::write_typed( klv_0601_control_command const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_0601_control_command const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
   klv_write_ber_oid( value.id, data, tracker.remaining() );
@@ -1476,7 +1485,7 @@ operator<<( std::ostream& os, klv_0601_frame_rate const& value )
   }
   return os << std::fixed << std::setprecision( 3 )
             << ( static_cast< double >( value.numerator ) /
-                 value.denominator );
+              value.denominator );
 }
 
 // ----------------------------------------------------------------------------
@@ -1509,8 +1518,9 @@ klv_0601_frame_rate_format
 // ----------------------------------------------------------------------------
 void
 klv_0601_frame_rate_format
-::write_typed( klv_0601_frame_rate const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_0601_frame_rate const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
   klv_write_ber_oid( value.numerator, data, tracker.remaining() );
@@ -1549,18 +1559,18 @@ operator<<( std::ostream& os, klv_0601_country_codes const& value )
        << ", "
        << "overflight country: "
        << ( value.overflight_country
-        ? *value.overflight_country
-        : "(empty)" )
+         ? *value.overflight_country
+         : "(empty)" )
        << ", "
        << "operator country: "
        << ( value.operator_country
-        ? *value.operator_country
-        : "(empty)" )
+         ? *value.operator_country
+         : "(empty)" )
        << ", "
        << "country of manufacture: "
        << ( value.country_of_manufacture
-        ? *value.country_of_manufacture
-        : "(empty)" )
+         ? *value.country_of_manufacture
+         : "(empty)" )
        << " }";
 }
 
@@ -1648,16 +1658,18 @@ klv_0601_country_codes_format
 // ----------------------------------------------------------------------------
 void
 klv_0601_country_codes_format
-::write_typed( klv_0601_country_codes const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_0601_country_codes const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
 
   // Write coding method
   size_t const length_of_coding_method = 1;
   klv_write_ber( length_of_coding_method, data, tracker.remaining() );
-  klv_write_int( static_cast< size_t >( value.coding_method ), data,
-                 tracker.verify( length_of_coding_method ) );
+  klv_write_int(
+    static_cast< size_t >( value.coding_method ), data,
+    tracker.verify( length_of_coding_method ) );
 
   // Write overflight country
   if( value.overflight_country )
@@ -1695,8 +1707,9 @@ klv_0601_country_codes_format
     auto const field_length =
       klv_string_length( *value.country_of_manufacture );
     klv_write_ber< size_t >( field_length, data, tracker.remaining() );
-    klv_write_string( *value.country_of_manufacture, data,
-                      tracker.remaining() );
+    klv_write_string(
+      *value.country_of_manufacture, data,
+      tracker.remaining() );
   }
   // Omit (write nothing) for final field if no value is present
 }
@@ -1762,8 +1775,8 @@ operator<<( std::ostream& os, klv_0601_location_dlp const& value )
        << ", "
        << "altitude: "
        << ( value.altitude
-        ? std::to_string( *value.altitude )
-        : std::string( "(empty)" ) )
+         ? std::to_string( *value.altitude )
+         : std::string( "(empty)" ) )
        << " }";
 }
 
@@ -1814,22 +1827,26 @@ klv_0601_location_dlp_format
 // ----------------------------------------------------------------------------
 void
 klv_0601_location_dlp_format
-::write_typed( klv_0601_location_dlp const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_0601_location_dlp const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
 
-  klv_write_imap( value.latitude,
-                  { -90.0, 90.0 },
-                  data, tracker.verify( 4 ) );
-  klv_write_imap( value.longitude,
-                  { -180.0, 180.0 },
-                  data, tracker.verify( 4 ) );
+  klv_write_imap(
+    value.latitude,
+    { -90.0, 90.0 },
+    data, tracker.verify( 4 ) );
+  klv_write_imap(
+    value.longitude,
+    { -180.0, 180.0 },
+    data, tracker.verify( 4 ) );
   if( value.altitude )
   {
-    klv_write_imap( *value.altitude,
-                    { -900.0, 9000.0 },
-                    data, tracker.verify( 3 ) );
+    klv_write_imap(
+      *value.altitude,
+      { -900.0, 9000.0 },
+      data, tracker.verify( 3 ) );
   }
 }
 
@@ -1899,7 +1916,7 @@ klv_0601_airbase_locations_format
     // Take-off location is set
     result.take_off_location =
       klv_0601_location_dlp_format{}
-        .read_( data, tracker.verify( length_of_take_off_location ) );
+      .read_( data, tracker.verify( length_of_take_off_location ) );
   }
 
   if( !tracker.remaining() )
@@ -1918,7 +1935,7 @@ klv_0601_airbase_locations_format
     // Recovery location is set
     result.recovery_location =
       klv_0601_location_dlp_format{}
-        .read_( data, tracker.verify( length_of_recovery_location ) );
+      .read_( data, tracker.verify( length_of_recovery_location ) );
   }
 
   return result;
@@ -1927,8 +1944,9 @@ klv_0601_airbase_locations_format
 // ----------------------------------------------------------------------------
 void
 klv_0601_airbase_locations_format
-::write_typed( klv_0601_airbase_locations const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_0601_airbase_locations const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
 
@@ -1944,8 +1962,9 @@ klv_0601_airbase_locations_format
       klv_write_ber( length_of_take_off_location, data, tracker.remaining() );
 
       klv_0601_location_dlp_format{}
-        .write_( *value.take_off_location, data,
-                 tracker.verify( length_of_take_off_location ) );
+        .write_(
+        *value.take_off_location, data,
+        tracker.verify( length_of_take_off_location ) );
     }
   }
   else
@@ -1978,8 +1997,9 @@ klv_0601_airbase_locations_format
       klv_write_ber( length_of_recovery_location, data, tracker.remaining() );
 
       klv_0601_location_dlp_format{}
-        .write_( *value.recovery_location, data,
-                 tracker.verify( length_of_recovery_location ) );
+        .write_(
+        *value.recovery_location, data,
+        tracker.verify( length_of_recovery_location ) );
     }
   }
   else
@@ -2074,8 +2094,9 @@ klv_0601_view_domain_interval_format
   klv_0601_view_domain_interval result;
   if( length % 2 )
   {
-    VITAL_THROW( kv::metadata_exception,
-                 "odd length given for view domain interval" );
+    VITAL_THROW(
+      kv::metadata_exception,
+      "odd length given for view domain interval" );
   }
   result.semi_length = length / 2;
   result.start = m_start_format.read_( data, result.semi_length ).value;
@@ -2086,14 +2107,17 @@ klv_0601_view_domain_interval_format
 // ----------------------------------------------------------------------------
 void
 klv_0601_view_domain_interval_format
-::write_typed( klv_0601_view_domain_interval const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_0601_view_domain_interval const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   if( length % 2 )
   {
-    VITAL_THROW( kv::metadata_exception,
-                 "odd length given for view domain interval" );
+    VITAL_THROW(
+      kv::metadata_exception,
+      "odd length given for view domain interval" );
   }
+
   auto const semi_length = length / 2;
   m_start_format.write_( { value.start, semi_length }, data, semi_length );
   range_format.write_( { value.range, semi_length }, data, semi_length );
@@ -2172,8 +2196,9 @@ klv_0601_view_domain_format
 // ----------------------------------------------------------------------------
 void
 klv_0601_view_domain_format
-::write_typed( klv_0601_view_domain const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_0601_view_domain const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   klv_write_trunc_lv(
     std::tie( value.azimuth, value.elevation, value.roll ),
@@ -2188,8 +2213,8 @@ klv_0601_view_domain_format
 {
   return
     klv_length_of_trunc_lv(
-      std::tie( value.azimuth, value.elevation, value.roll ),
-      azimuth_format, elevation_format, roll_format );
+    std::tie( value.azimuth, value.elevation, value.roll ),
+    azimuth_format, elevation_format, roll_format );
 }
 
 // ----------------------------------------------------------------------------
@@ -2281,8 +2306,9 @@ klv_0601_waypoint_record_format
 // ----------------------------------------------------------------------------
 void
 klv_0601_waypoint_record_format
-::write_typed( klv_0601_waypoint_record const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_0601_waypoint_record const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
 
@@ -2328,8 +2354,7 @@ klv_0601_waypoint_record_format
 std::ostream&
 operator<<( std::ostream& os, klv_0601_weapon_general_status value )
 {
-  static std::string strings[ KLV_0601_WEAPON_GENERAL_STATUS_ENUM_END + 1 ] =
-  {
+  static std::string strings[ KLV_0601_WEAPON_GENERAL_STATUS_ENUM_END + 1 ] = {
     "Off",
     "Initialization",
     "Ready/Degraded",
@@ -2361,8 +2386,9 @@ operator<<( std::ostream& os, klv_0601_weapon_engagement_status_bit value )
     "Weapon Armed",
     "Unknown Engagement Status Bit" };
 
-  os << strings[ std::min( value,
-                           KLV_0601_WEAPON_ENGAGEMENT_STATUS_BIT_ENUM_END ) ];
+  os << strings[ std::min(
+    value,
+    KLV_0601_WEAPON_ENGAGEMENT_STATUS_BIT_ENUM_END ) ];
   return os;
 }
 
@@ -2464,8 +2490,9 @@ klv_0601_weapons_store_format
 // ----------------------------------------------------------------------------
 void
 klv_0601_weapons_store_format
-::write_typed( klv_0601_weapons_store const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_0601_weapons_store const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
 
@@ -2487,9 +2514,10 @@ klv_0601_weapons_store_format
 
   // Write weapons type
   size_t const length_of_weapon_type =
-  klv_string_length( value.weapon_type );
-  klv_write_ber< size_t >( length_of_weapon_type, data,
-                               tracker.remaining() );
+    klv_string_length( value.weapon_type );
+  klv_write_ber< size_t >(
+    length_of_weapon_type, data,
+    tracker.remaining() );
   klv_write_string( value.weapon_type, data, tracker.remaining() );
 }
 
@@ -2532,14 +2560,12 @@ klv_0601_weapons_store_format
 std::ostream&
 operator<<( std::ostream& os, klv_0601_payload_type const& value )
 {
-  static std::string strings[ KLV_0601_PAYLOAD_TYPE_ENUM_END + 1 ] =
-  {
+  static std::string strings[ KLV_0601_PAYLOAD_TYPE_ENUM_END + 1 ] = {
     "Electro Optical MI Sensor",
     "LIDAR",
     "RADAR",
     "SIGINT",
-    "Unknown Payload Type"
-  };
+    "Unknown Payload Type" };
 
   os << strings[ std::min( value, KLV_0601_PAYLOAD_TYPE_ENUM_END ) ];
   return os;
@@ -2611,8 +2637,9 @@ klv_0601_payload_record_format
 // ----------------------------------------------------------------------------
 void
 klv_0601_payload_record_format
-::write_typed( klv_0601_payload_record const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_0601_payload_record const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
 
@@ -2620,13 +2647,15 @@ klv_0601_payload_record_format
   klv_write_ber_oid( value.id, data, tracker.remaining() );
 
   // Write payload type
-  klv_write_ber_oid( static_cast< uint16_t >( value.type ),
-                     data, tracker.remaining() );
+  klv_write_ber_oid(
+    static_cast< uint16_t >( value.type ),
+    data, tracker.remaining() );
 
   // Write payload name
   size_t const length_of_payload_name = klv_string_length( value.name );
-  klv_write_ber< size_t >( length_of_payload_name, data,
-                           tracker.remaining() );
+  klv_write_ber< size_t >(
+    length_of_payload_name, data,
+    tracker.remaining() );
   klv_write_string( value.name, data, tracker.remaining() );
 }
 
@@ -2688,8 +2717,9 @@ klv_0601_payload_list_format
 // ----------------------------------------------------------------------------
 void
 klv_0601_payload_list_format
-::write_typed( std::vector< klv_0601_payload_record > const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  std::vector< klv_0601_payload_record > const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
 
@@ -2785,8 +2815,9 @@ klv_0601_wavelength_record_format
 // ----------------------------------------------------------------------------
 void
 klv_0601_wavelength_record_format
-::write_typed( klv_0601_wavelength_record const& value,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_0601_wavelength_record const& value,
+  klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
 

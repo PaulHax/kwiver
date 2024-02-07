@@ -25,6 +25,7 @@ extern "C"
 DECLARE_COMMON_ALGO_API( initialize_cameras_landmarks )
 
 /// Initialize the camera and landmark parameters given a set of tracks
+
 /**
  * \param[in] algo initialize cameras landmarks algorithm instance
  * \param[in,out] cameras Cameras to initialize
@@ -34,14 +35,15 @@ DECLARE_COMMON_ALGO_API( initialize_cameras_landmarks )
  */
 VITAL_C_EXPORT
 void
-vital_algorithm_initialize_cameras_landmarks_initialize( vital_algorithm_t *algo,
-                                                         vital_camera_map_t **cameras,
-                                                         vital_landmark_map_t **landmarks,
-                                                         vital_trackset_t *tracks,
-                                                         vital_error_handle_t *eh );
+vital_algorithm_initialize_cameras_landmarks_initialize(
+  vital_algorithm_t* algo,
+  vital_camera_map_t** cameras,
+  vital_landmark_map_t** landmarks,
+  vital_trackset_t* tracks,
+  vital_error_handle_t* eh );
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif //VITAL_C_ALGO_INITIALIZE_CAMERAS_LANDMARKS_H_
+#endif // VITAL_C_ALGO_INITIALIZE_CAMERAS_LANDMARKS_H_

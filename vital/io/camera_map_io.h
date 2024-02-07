@@ -15,6 +15,7 @@
 #include <vector>
 
 namespace  kwiver {
+
 namespace vital {
 
 /// Load a camera map from krtd files stored in a directory.
@@ -32,8 +33,12 @@ namespace vital {
 /// \param dir directory path containing krtd files for the given images
 /// \return a new camera map created after parsing all krtd files
 camera_map_sptr
-VITAL_EXPORT read_krtd_files( std::vector< path_t > const& img_files, path_t const& dir );
+VITAL_EXPORT read_krtd_files(
+  std::vector< path_t > const& img_files,
+  path_t const& dir );
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital
 
 #endif // VITAL_CAMERA_MAP_IO_H_

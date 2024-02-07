@@ -1,7 +1,5 @@
 class foo final
-{
-
-};
+{};
 
 struct Base
 {
@@ -20,7 +18,8 @@ struct B final : A // struct B is final
 //   void foo(); // Error: foo cannot be overridden as it's final in A
 };
 
-int main()
+int
+main()
 {
   return 0;
 }

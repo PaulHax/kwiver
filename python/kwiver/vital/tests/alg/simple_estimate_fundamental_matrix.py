@@ -31,27 +31,32 @@ from __future__ import print_function
 from kwiver.vital.algo import EstimateFundamentalMatrix
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
 
-class SimpleEstimateFundamentalMatrix(CommonConfigurationMixin,
-                                  EstimateFundamentalMatrix):
+
+class SimpleEstimateFundamentalMatrix(
+    CommonConfigurationMixin, EstimateFundamentalMatrix
+):
     """
     Implementation of EstimateFundamentalMatrix to test it
 
     Examples:
     """
+
     def __init__(self):
         EstimateFundamentalMatrix.__init__(self)
 
 
-
 def __vital_algorithm_register__():
     from kwiver.vital.algo import algorithm_factory
+
     # Register Algorithm
-    implementation_name  = "SimpleEstimateFundamentalMatrix"
+    implementation_name = "SimpleEstimateFundamentalMatrix"
     if algorithm_factory.has_algorithm_impl_name(
-                            SimpleEstimateFundamentalMatrix.static_type_name(),
-                            implementation_name):
+        SimpleEstimateFundamentalMatrix.static_type_name(), implementation_name
+    ):
         return
-    algorithm_factory.add_algorithm( implementation_name,
-                                "Test kwiver.vital.algo.EstimateFundamentalMatrix",
-                                 SimpleEstimateFundamentalMatrix )
-    algorithm_factory.mark_algorithm_as_loaded( implementation_name )
+    algorithm_factory.add_algorithm(
+        implementation_name,
+        "Test kwiver.vital.algo.EstimateFundamentalMatrix",
+        SimpleEstimateFundamentalMatrix,
+    )
+    algorithm_factory.mark_algorithm_as_loaded(implementation_name)

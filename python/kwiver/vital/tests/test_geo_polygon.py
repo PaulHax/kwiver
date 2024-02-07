@@ -51,7 +51,7 @@ class TestVitalGeoPolygon(unittest.TestCase):
                 np.array([10, 10]),
                 np.array([10, 50]),
                 np.array([50, 50]),
-                np.array([30, 30])
+                np.array([30, 30]),
             ]
         )
 
@@ -79,7 +79,6 @@ class TestVitalGeoPolygon(unittest.TestCase):
         g_poly2 = gp.GeoPolygon(self._create_polygon(), self.crs_ll)
         nt.assert_equals(g_poly1.crs(), -1)
         nt.assert_equals(g_poly2.crs(), self.crs_ll)
-
 
     def test_initial_polygon(self):
         g_poly = gp.GeoPolygon(self._create_polygon(), self.crs_ll)
@@ -135,7 +134,7 @@ class TestVitalGeoPolygon(unittest.TestCase):
                     diff_loc_out_loc2_ll,
                     0,
                     msg="Changing the location did not clear the location cache",
-                ) # This would fail if loc2_ll was cached
+                )  # This would fail if loc2_ll was cached
 
     def test_conversion(self):
         modules.load_known_modules()
@@ -159,7 +158,7 @@ class TestVitalGeoPolygon(unittest.TestCase):
     def test_to_str_empty(self):
         g_poly1 = gp.GeoPolygon()
         nt.assert_equals(str(g_poly1), "{ empty }")
-        print("empty geo_polygon:", str(g_poly1), sep='\n')
+        print("empty geo_polygon:", str(g_poly1), sep="\n")
 
     # Also test double roundtrip
     def test_to_str(self):
@@ -191,4 +190,4 @@ class TestVitalGeoPolygon(unittest.TestCase):
         # crs_ll
         nt.assert_equals(int(split_str[6]), self.crs_ll)
 
-        print("geo_polygon with data:", str(g_poly), sep='\n')
+        print("geo_polygon with data:", str(g_poly), sep="\n")

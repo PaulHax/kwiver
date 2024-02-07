@@ -30,8 +30,9 @@ ffmpeg_kwiver_log_callback( void* ptr, int level, const char* fmt, va_list vl )
 {
   static int print_prefix = 0;
   char line[ 1024 ];
-  av_log_format_line( ptr, level, fmt, vl, line, sizeof( line ),
-                      &print_prefix );
+  av_log_format_line(
+    ptr, level, fmt, vl, line, sizeof( line ),
+    &print_prefix );
 
   std::string msg( line );
   kwiver::vital::right_trim( msg );

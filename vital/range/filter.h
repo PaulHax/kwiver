@@ -8,7 +8,9 @@
 #include <vital/range/defs.h>
 
 namespace kwiver {
+
 namespace vital {
+
 namespace range {
 
 // ----------------------------------------------------------------------------
@@ -54,10 +56,12 @@ public:
     iterator( iterator const& ) = default;
     iterator& operator=( iterator const& ) = default;
 
-    bool operator!=( iterator const& other ) const
+    bool
+    operator!=( iterator const& other ) const
     { return m_iter != other.m_iter; }
 
-    value_t operator*() const { return *m_iter; }
+    value_t
+    operator*() const { return *m_iter; }
 
     iterator& operator++();
 
@@ -65,21 +69,26 @@ public:
 
   protected:
     friend class filter_view;
-    iterator( range_iterator_t const& iter,
-              range_iterator_t const& end,
-              filter_function_t const& func )
-      : m_iter{ iter }, m_end{ end }, m_func( func ) {}
+    iterator(
+      range_iterator_t const& iter,
+      range_iterator_t const& end,
+      filter_function_t const& func )
+      : m_iter{ iter },
+        m_end{ end },
+        m_func( func ) {}
 
     range_iterator_t m_iter, m_end;
     filter_function_t m_func;
   };
 
   filter_view( Range&& range, filter_function_t func )
-    : m_range( std::forward< Range >( range ) ), m_func( func ) {}
+    : m_range( std::forward< Range >( range ) ),
+      m_func( func ) {}
 
   iterator begin() const;
 
-  iterator end() const
+  iterator
+  end() const
   { return { m_range.end(), m_range.end(), m_func }; }
 
 protected:
@@ -90,6 +99,7 @@ protected:
 // ----------------------------------------------------------------------------
 template < typename FilterFunction, typename Range >
 typename filter_view< FilterFunction, Range >::iterator
+
 filter_view< FilterFunction, Range >
 ::begin() const
 {
@@ -103,10 +113,10 @@ typename filter_view< FilterFunction, Range >::iterator&
 filter_view< FilterFunction, Range >::iterator
 ::operator++()
 {
-  while ( m_iter != m_end )
+  while( m_iter != m_end )
   {
     ++m_iter;
-    if ( m_iter != m_end && m_func( *m_iter ) ) break;
+    if( m_iter != m_end && m_func( *m_iter ) ) { break; }
   }
   return *this;
 }
@@ -116,7 +126,9 @@ filter_view< FilterFunction, Range >::iterator
 KWIVER_RANGE_ADAPTER_FUNCTION( filter )
 
 } // namespace range
+
 } // namespace vital
+
 } // namespace kwiver
 
 #endif

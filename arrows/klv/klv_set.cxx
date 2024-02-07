@@ -146,6 +146,7 @@ klv_set< Key >
 // ----------------------------------------------------------------------------
 template < class Key >
 typename klv_set< Key >::iterator
+
 klv_set< Key >
 ::erase( const_iterator it )
 {
@@ -297,11 +298,12 @@ operator==( klv_set< Key > const& lhs, klv_set< Key > const& rhs )
   auto const lhs_values = lhs.fully_sorted();
   auto const rhs_values = rhs.fully_sorted();
 
-  return std::equal( lhs_values.cbegin(), lhs_values.cend(),
-                     rhs_values.cbegin(),
-                     []( const_iterator lhs_value, const_iterator rhs_value ){
-                       return *lhs_value == *rhs_value;
-                     } );
+  return std::equal(
+    lhs_values.cbegin(), lhs_values.cend(),
+    rhs_values.cbegin(),
+    []( const_iterator lhs_value, const_iterator rhs_value ){
+      return *lhs_value == *rhs_value;
+    } );
 }
 
 // ----------------------------------------------------------------------------
@@ -363,6 +365,7 @@ klv_set< Key >
 // ----------------------------------------------------------------------------
 template < class Key >
 klv_set_format< Key >
+
 ::klv_set_format( klv_tag_traits_lookup const& traits )
   : m_traits( traits )
 {}
@@ -370,6 +373,7 @@ klv_set_format< Key >
 // ----------------------------------------------------------------------------
 template < class Key >
 klv_set_format< Key >
+
 ::~klv_set_format()
 {}
 
@@ -434,8 +438,9 @@ klv_set_format< Key >
 template < class Key >
 void
 klv_set_format< Key >
-::write_typed( klv_set< Key > const& klv,
-               klv_write_iter_t& data, size_t length ) const
+::write_typed(
+  klv_set< Key > const& klv,
+  klv_write_iter_t& data, size_t length ) const
 {
   using kt = key_traits< Key >;
 
@@ -454,8 +459,9 @@ klv_set_format< Key >
       {
         if( held_keys.count( key ) )
         {
-          VITAL_THROW( kv::metadata_exception,
-                       "Two SDCC-FLPs concern the same item" );
+          VITAL_THROW(
+            kv::metadata_exception,
+            "Two SDCC-FLPs concern the same item" );
         }
         held_keys.emplace( key );
       }
@@ -481,8 +487,9 @@ klv_set_format< Key >
         if( jt == klv.end() ||
             !kt::tag_traits_from_key( m_traits, jt->first ).tag() )
         {
-          VITAL_THROW( kv::metadata_exception,
-                       "SDCC-FLP concerns non-existent item" );
+          VITAL_THROW(
+            kv::metadata_exception,
+            "SDCC-FLP concerns non-existent item" );
         }
         entries.emplace_back( jt );
       }
@@ -542,8 +549,9 @@ klv_set_format< Key >
       auto const length_of_length = klv_ber_length( length_of_value );
       return total + length_of_key + length_of_length + length_of_value;
     };
-  return std::accumulate( value.cbegin(), value.cend(),
-                          initializer, accumulator );
+  return std::accumulate(
+    value.cbegin(), value.cend(),
+    initializer, accumulator );
 }
 
 // ----------------------------------------------------------------------------
@@ -585,9 +593,9 @@ klv_set_format< Key >
       LOG_WARN(
         kv::get_logger( "klv" ),
         this->description() << ": "
-        << "tag `" << trait.name() << "` "
-        << "appears " << count << " times; "
-        << "expected " << range.description() );
+                            << "tag `" << trait.name() << "` "
+                            << "appears " << count << " times; "
+                            << "expected " << range.description() );
     }
   }
 }
@@ -602,15 +610,15 @@ klv_set_format< Key >
 }
 
 // ----------------------------------------------------------------------------
-#define KLV_INSTANTIATE( Key )                                       \
-  template class KWIVER_ALGO_KLV_EXPORT klv_set< Key >;              \
-  template class KWIVER_ALGO_KLV_EXPORT klv_set_format< Key >;       \
-  template KWIVER_ALGO_KLV_EXPORT bool                               \
-  operator==< Key >( klv_set< Key > const&, klv_set< Key > const& ); \
-  template KWIVER_ALGO_KLV_EXPORT bool                               \
-  operator< < Key >( klv_set< Key > const&, klv_set< Key > const& ); \
-  template KWIVER_ALGO_KLV_EXPORT std::ostream&                      \
-  operator<< < Key >( std::ostream&, klv_set< Key > const& )
+#define KLV_INSTANTIATE( Key )                                     \
+template class KWIVER_ALGO_KLV_EXPORT klv_set< Key >;              \
+template class KWIVER_ALGO_KLV_EXPORT klv_set_format< Key >;       \
+template KWIVER_ALGO_KLV_EXPORT bool                               \
+operator==< Key >( klv_set< Key > const&, klv_set< Key > const& ); \
+template KWIVER_ALGO_KLV_EXPORT bool                               \
+operator< < Key >( klv_set< Key > const&, klv_set< Key > const& ); \
+template KWIVER_ALGO_KLV_EXPORT std::ostream&                      \
+operator<<< Key >( std::ostream&, klv_set< Key > const& )
 
 KLV_INSTANTIATE( klv_lds_key );
 KLV_INSTANTIATE( klv_uds_key );

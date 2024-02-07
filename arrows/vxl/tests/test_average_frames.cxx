@@ -20,9 +20,12 @@ namespace kv = kwiver::vital;
 namespace ka = kwiver::arrows;
 
 kv::path_t g_data_dir;
-static std::string test_red_image_name = "images/kitware_logos/small_red_logo.png";
-static std::string test_green_image_name = "images/kitware_logos/small_green_logo.png";
-static std::string test_blue_image_name = "images/kitware_logos/small_blue_logo.png";
+static std::string test_red_image_name =
+  "images/kitware_logos/small_red_logo.png";
+static std::string test_green_image_name =
+  "images/kitware_logos/small_green_logo.png";
+static std::string test_blue_image_name =
+  "images/kitware_logos/small_blue_logo.png";
 
 static std::string window_first_expected_name =
   "images/kitware_logos/window_expected_first_average.png";
@@ -65,8 +68,9 @@ class average_frames : public ::testing::Test
 
 // ----------------------------------------------------------------------------
 void
-test_averaging_type( kv::path_t data_dir, std::string type,
-                     std::vector< std::string > expected_filenames )
+test_averaging_type(
+  kv::path_t data_dir, std::string type,
+  std::vector< std::string > expected_filenames )
 {
   std::string red_filename = data_dir + "/" + test_red_image_name;
   std::string green_filename = data_dir + "/" + test_green_image_name;
@@ -99,36 +103,45 @@ test_averaging_type( kv::path_t data_dir, std::string type,
   auto const second_expected = io.load( second_expected_filename );
   auto const third_expected = io.load( third_expected_filename );
 
-  EXPECT_TRUE( equal_content( first_filtered->get_image(),
-                              first_expected->get_image() ) );
-  EXPECT_TRUE( equal_content( second_filtered->get_image(),
-                              second_expected->get_image() ) );
-  EXPECT_TRUE( equal_content( third_filtered->get_image(),
-                              third_expected->get_image() ) );
+  EXPECT_TRUE(
+    equal_content(
+      first_filtered->get_image(),
+      first_expected->get_image() ) );
+  EXPECT_TRUE(
+    equal_content(
+      second_filtered->get_image(),
+      second_expected->get_image() ) );
+  EXPECT_TRUE(
+    equal_content(
+      third_filtered->get_image(),
+      third_expected->get_image() ) );
 }
 
 // ----------------------------------------------------------------------------
 TEST_F ( average_frames, window )
 {
-  test_averaging_type( data_dir, "window", { window_first_expected_name,
-                                             window_second_expected_name,
-                                             window_third_expected_name } );
+  test_averaging_type(
+    data_dir, "window", { window_first_expected_name,
+                          window_second_expected_name,
+                          window_third_expected_name } );
 }
 
 // ----------------------------------------------------------------------------
 TEST_F ( average_frames, cumulative )
 {
-  test_averaging_type( data_dir, "cumulative",
-                       { cumulative_first_expected_name,
-                         cumulative_second_expected_name,
-                         cumulative_third_expected_name } );
+  test_averaging_type(
+    data_dir, "cumulative",
+    { cumulative_first_expected_name,
+      cumulative_second_expected_name,
+      cumulative_third_expected_name } );
 }
 
 // ----------------------------------------------------------------------------
 TEST_F ( average_frames, exponential )
 {
-  test_averaging_type( data_dir, "exponential",
-                       { exponential_first_expected_name,
-                         exponential_second_expected_name,
-                         exponential_third_expected_name } );
+  test_averaging_type(
+    data_dir, "exponential",
+    { exponential_first_expected_name,
+      exponential_second_expected_name,
+      exponential_third_expected_name } );
 }

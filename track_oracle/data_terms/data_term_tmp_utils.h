@@ -13,6 +13,7 @@
 #include <string>
 
 namespace kwiver {
+
 namespace track_oracle {
 
 //
@@ -20,18 +21,17 @@ namespace track_oracle {
 //
 
 struct data_term_base
-{
-};
+{};
 
 //
 // value is true if the template parameter is derived from
 // data_term_base
 //
 
-template< typename T >
+template < typename T >
 struct is_data_term
 {
-  typedef class dummy{ char dummy_vals[2]; } yes_type;
+  typedef class dummy{ char dummy_vals[ 2 ]; } yes_type;
   typedef char no_type;
 
   static yes_type test( data_term_base* );
@@ -41,7 +41,8 @@ struct is_data_term
   static T* PhonyMakeT();
 
 public:
-  static const bool value = ( sizeof(test( PhonyMakeT() )) == sizeof(yes_type));
+  static const bool value = ( sizeof( test( PhonyMakeT() ) ) ==
+                              sizeof( yes_type ) );
 };
 
 //
@@ -59,14 +60,14 @@ public:
 // Not 100% sure what was going on there yet.
 //
 
-template< bool T_is_a_delegate, typename T >
+template < bool T_is_a_delegate, typename T >
 struct data_term_traits
 {
   typedef typename T::Type Type;
   static std::string get_name() { return T::c.name; }
 };
 
-template< typename T >
+template < typename T >
 struct data_term_traits< false, T >
 {
   typedef T Type;
@@ -74,6 +75,7 @@ struct data_term_traits< false, T >
 };
 
 } // ...track_oracle
+
 } // ...kwiver
 
 #endif

@@ -14,6 +14,7 @@
 #include <iostream>
 
 namespace kwiver {
+
 namespace vital {
 
 // Forward declarations of abstract homography class
@@ -54,7 +55,8 @@ public:
   /// Get a new \p homography that has been inverted.
   ///
   /// \return New homography transformation instance.
-  homography_sptr inverse() const
+  homography_sptr
+  inverse() const
   { return std::static_pointer_cast< homography >( this->inverse_() ); }
 };
 
@@ -69,41 +71,40 @@ public:
 ///
 /// \tparam T Coordinate point data type
 template < typename T >
-class VITAL_EXPORT homography_ :
-  public homography
+class VITAL_EXPORT homography_
+  : public homography
 {
 public:
   typedef T value_type;
   typedef Eigen::Matrix< T, 3, 3 > matrix_t;
 
   /// Construct an identity homography
-  homography_< T > ( );
+  homography_< T >();
 
   /// Construct from a provided transformation matrix
   ///
   /// \param mat The 3x3 transformation matrix to use.
   explicit
-  homography_< T > ( matrix_t const & mat );
+  homography_< T >( matrix_t const& mat );
 
   /// Conversion Copy constructor
   ///
   /// \param other The other homography whose transformation should be copied.
-  template < typename U >
-  explicit
-  homography_< T > ( homography_< U > const & other )
-  : h_( other.h_.template cast< T > () )
-  {
-  }
+  template < typename U > explicit
+  homography_< T >( homography_< U > const& other )
+    : h_( other.h_.template cast< T >() )
+  {}
 
   /// Construct from a generic homography
   explicit
-  homography_< T > ( homography const & base );
+  homography_< T >( homography const& base );
 
   // --------------------------------------------------------------------------
   // ---- Abstract method definitions ----
 
   /// Access the type info of the underlying data
-  std::type_info const& data_type() const override { return typeid( T ); }
+  std::type_info const&
+  data_type() const override { return typeid( T ); }
 
   /// Create a clone of ourself as a shared pointer
   ///
@@ -166,7 +167,8 @@ public:
   virtual homography_< T > operator*( homography_< T > const& rhs ) const;
 
 protected:
-  transform_2d_sptr inverse_() const { return this->inverse(); }
+  transform_2d_sptr
+  inverse_() const { return this->inverse(); }
 
   /// homography transformation matrix
   matrix_t h_;
@@ -181,8 +183,12 @@ VITAL_EXPORT std::ostream& operator<<( std::ostream& s, homography const& h );
 
 /// homography_<T> output stream operator
 template < typename T >
-VITAL_EXPORT std::ostream& operator<<( std::ostream& s, homography_< T > const& h );
+VITAL_EXPORT std::ostream& operator<<(
+  std::ostream& s,
+  homography_< T > const& h );
 
-} } // end namespace vital
+} // namespace vital
+
+}   // end namespace vital
 
 #endif // VITAL_HOMOGRAPHY_H_

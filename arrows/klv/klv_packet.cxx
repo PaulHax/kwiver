@@ -23,7 +23,8 @@ namespace klv {
 
 // ----------------------------------------------------------------------------
 klv_packet
-::klv_packet() : key{}, value{} {}
+::klv_packet() : key{},
+                 value{} {}
 
 // ----------------------------------------------------------------------------
 klv_packet
@@ -102,6 +103,7 @@ verify_checksum(
       traits.name() << ": checksum not present (data range too small)" );
     return data_range;
   }
+
   uint64_t written_checksum = 0;
   try
   {
@@ -142,7 +144,8 @@ verify_checksum(
       LOG_DEBUG(
         logger,
         traits.name() << ": "
-        << "the producer of this data implemented the checksum incorrectly"
+                      <<
+          "the producer of this data implemented the checksum incorrectly"
       );
       return result;
     }
@@ -153,10 +156,10 @@ verify_checksum(
   LOG_ERROR(
     logger,
     traits.name() << ": "
-    << "calculated checksum "
-    << "(" << format.to_string( actual_checksum ) << ") "
-    << "does not equal checksum contained in packet "
-    << "(" << format.to_string( written_checksum ) << ")" );
+                  << "calculated checksum "
+                  << "(" << format.to_string( actual_checksum ) << ") "
+                  << "does not equal checksum contained in packet "
+                  << "(" << format.to_string( written_checksum ) << ")" );
 
   return result;
 }
@@ -256,12 +259,12 @@ write_checksum(
 
   auto const header = format->header();
   std::copy( header.begin(), header.end(), data );
+
   auto const checksum =
     format->evaluate(
       begin, static_cast< size_t >( data - begin ) + header.size() );
   format->write_( checksum, data, *format->length_constraints().fixed() );
 }
-
 
 } // namespace <anonymous>
 
@@ -273,8 +276,9 @@ klv_read_packet( klv_read_iter_t& data, size_t max_length )
 
   // Find the prefix which begins all UDS keys
   auto const search_result =
-    std::search( data, data + max_length,
-                 klv_uds_key::prefix, klv_uds_key::prefix + 4 );
+    std::search(
+      data, data + max_length,
+      klv_uds_key::prefix, klv_uds_key::prefix + 4 );
   if( search_result == data + max_length )
   {
     // Set read position to the first byte that could possibly be the start of
@@ -285,17 +289,19 @@ klv_read_packet( klv_read_iter_t& data, size_t max_length )
       data = search_result - 3;
     }
 
-    VITAL_THROW( kv::metadata_buffer_overflow,
-                 "universal key not found in data buffer" );
+    VITAL_THROW(
+      kv::metadata_buffer_overflow,
+      "universal key not found in data buffer" );
   }
 
   // Sometimes encoders will put other data between KLV packets, so we may have
   // to skip some bytes
   if( search_result != data )
   {
-    LOG_DEBUG( kv::get_logger( "klv" ), "skipped "
-                << std::distance( data, search_result )
-                << " bytes in klv stream" );
+    LOG_DEBUG(
+      kv::get_logger( "klv" ), "skipped "
+        << std::distance( data, search_result )
+        << " bytes in klv stream" );
     data = search_result;
   }
 
@@ -321,6 +327,7 @@ klv_read_packet( klv_read_iter_t& data, size_t max_length )
 
   // Read value
   data = value_range.begin();
+
   auto const value =
     format.read( data, tracker.verify( value_range.size() ) );
 
@@ -332,8 +339,9 @@ klv_read_packet( klv_read_iter_t& data, size_t max_length )
 
 // ----------------------------------------------------------------------------
 void
-klv_write_packet( klv_packet const& packet, klv_write_iter_t& data,
-                  size_t max_length )
+klv_write_packet(
+  klv_packet const& packet, klv_write_iter_t& data,
+  size_t max_length )
 {
   auto const tracker = track_it( data, max_length );
 
@@ -349,6 +357,7 @@ klv_write_packet( klv_packet const& packet, klv_write_iter_t& data,
   klv_write_ber( value_length + checksums_length, data, tracker.remaining() );
 
   write_checksum( format.prefix_checksum_format(), tracker.begin(), data );
+
   auto const value_begin = data;
 
   // Write value
@@ -384,15 +393,16 @@ klv_packet_timestamp( klv_packet const& packet )
     return std::nullopt;
   }
 
-  auto const get_local = [&]( klv_lds_key key ) -> std::optional< uint64_t > {
-    auto const& set = packet.value.get< klv_local_set >();
-    auto const it = set.find( key );
-    if ( it != set.end() && it->second.valid() )
-    {
-      return it->second.get< uint64_t >();
-    }
-    return std::nullopt;
-  };
+  auto const get_local = [ & ]( klv_lds_key key ) -> std::optional< uint64_t > {
+                           auto const& set =
+                             packet.value.get< klv_local_set >();
+                           auto const it = set.find( key );
+                           if( it != set.end() && it->second.valid() )
+                           {
+                             return it->second.get< uint64_t >();
+                           }
+                           return std::nullopt;
+                         };
 
   std::optional< uint64_t > result;
   switch( klv_lookup_packet_traits().by_uds_key( packet.key ).tag() )
@@ -403,7 +413,7 @@ klv_packet_timestamp( klv_packet const& packet )
         .by_tag( KLV_0104_USER_DEFINED_TIMESTAMP ).uds_key();
       auto const& set = packet.value.get< klv_universal_set >();
       auto const it = set.find( key );
-      if ( it != set.end() && it->second.valid() )
+      if( it != set.end() && it->second.valid() )
       {
         result = it->second.get< uint64_t >();
       }
@@ -421,7 +431,7 @@ klv_packet_timestamp( klv_packet const& packet )
     {
       auto const& set = packet.value.get< klv_local_set >();
       auto const it = set.find( KLV_1108_METRIC_PERIOD_PACK );
-      if ( it != set.end() && it->second.valid() )
+      if( it != set.end() && it->second.valid() )
       {
         result = it->second.get< klv_1108_metric_period_pack >().timestamp;
       }

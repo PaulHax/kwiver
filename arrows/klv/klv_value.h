@@ -13,7 +13,7 @@
 #include <sstream>
 
 #ifndef KWIVER_ARROWS_KLV_KLV_VALUE_H_
-# define KWIVER_ARROWS_KLV_KLV_VALUE_H_
+#define KWIVER_ARROWS_KLV_KLV_VALUE_H_
 
 namespace kwiver {
 
@@ -27,10 +27,11 @@ namespace klv {
 class KWIVER_ALGO_KLV_EXPORT klv_bad_value_cast : public std::bad_cast
 {
 public:
-  klv_bad_value_cast( std::type_info const& requested_type,
-                      std::type_info const& actual_type );
+  klv_bad_value_cast(
+    std::type_info const& requested_type,
+    std::type_info const& actual_type );
 
-  virtual ~klv_bad_value_cast() noexcept = default;
+  virtual ~klv_bad_value_cast() noexcept= default;
 
   char const* what() const noexcept override;
 
@@ -53,11 +54,11 @@ public:
   klv_value();
 
   template < class T,
-             typename = typename std::enable_if<
-               !std::is_same< typename std::decay< T >::type,
-                              klv_value >::value &&
-               !std::is_same< typename std::decay< T >::type,
-                              kwiver::vital::any >::value >::type >
+    typename = typename std::enable_if<
+      !std::is_same< typename std::decay< T >::type,
+        klv_value >::value &&
+      !std::is_same< typename std::decay< T >::type,
+        kwiver::vital::any >::value >::type >
   klv_value( T&& value );
 
   klv_value( klv_value const& other );

@@ -35,7 +35,7 @@ class VITAL_ALGO_EXPORT compute_ref_homography
 {
 public:
   compute_ref_homography();
-  PLUGGABLE_INTERFACE(compute_ref_homography);
+  PLUGGABLE_INTERFACE( compute_ref_homography );
   /// Estimate the transformation which maps some frame to a reference frame
   ///
   /// Similarly to track_features, this class was designed to be called in
@@ -53,9 +53,9 @@ public:
   /// \param [in]   tracks the set of all tracked features from the image
   /// \return estimated homography
   virtual kwiver::vital::f2f_homography_sptr
-  estimate( kwiver::vital::frame_id_t frame_number,
-            kwiver::vital::feature_track_set_sptr tracks ) const = 0;
-
+  estimate(
+    kwiver::vital::frame_id_t frame_number,
+    kwiver::vital::feature_track_set_sptr tracks ) const = 0;
 };
 
 /// Shared pointer type of base compute_ref_homography algorithm definition

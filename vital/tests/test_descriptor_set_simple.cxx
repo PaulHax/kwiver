@@ -19,15 +19,16 @@ main( int argc, char* argv[] )
 
 // ----------------------------------------------------------------------------
 // Test construction of simple descriptor set.
-TEST( descriptor_set_simple, construct_default )
+TEST ( descriptor_set_simple, construct_default )
 {
   using namespace kwiver::vital;
+
   simple_descriptor_set ds;
 }
 
 // ----------------------------------------------------------------------------
 // Test using range-based for-loop with empty dscriptor-set
-TEST( descriptor_set_simple, range_based_loop_empty )
+TEST ( descriptor_set_simple, range_based_loop_empty )
 {
   using namespace kwiver::vital;
 
@@ -43,17 +44,17 @@ TEST( descriptor_set_simple, range_based_loop_empty )
 
 // ----------------------------------------------------------------------------
 // Test using range-based for-loop with non-empty dscriptor-set
-TEST( descriptor_set_simple, range_based_loop )
+TEST ( descriptor_set_simple, range_based_loop )
 {
   using namespace kwiver::vital;
 
   // Make simple vector of descriptor_sptr
   std::vector< descriptor_sptr > dsptr_vec;
-  for( int i=0; i < 3; ++i )
+  for( int i = 0; i < 3; ++i )
   {
-    descriptor_fixed<int,2> *d = new descriptor_fixed<int,2>();
-    d->raw_data()[0] = i;
-    d->raw_data()[1] = i;
+    descriptor_fixed< int, 2 >* d = new descriptor_fixed< int, 2 >();
+    d->raw_data()[ 0 ] = i;
+    d->raw_data()[ 1 ] = i;
     dsptr_vec.push_back( descriptor_sptr( d ) );
   }
 
@@ -63,8 +64,8 @@ TEST( descriptor_set_simple, range_based_loop )
   for( descriptor_sptr const d : ds )
   {
     EXPECT_EQ( d->size(), 2 );
-    EXPECT_EQ( d->as_double()[0], i );
-    EXPECT_EQ( d->as_double()[1], i );
+    EXPECT_EQ( d->as_double()[ 0 ], i );
+    EXPECT_EQ( d->as_double()[ 1 ], i );
     ++i;
   }
   EXPECT_EQ( i, 3 );

@@ -5,21 +5,22 @@
 #ifndef VITAL_TRACK_DESCRIPTOR_
 #define VITAL_TRACK_DESCRIPTOR_
 
-#include <vital/vital_export.h>
 #include <vital/vital_config.h>
+#include <vital/vital_export.h>
 
-#include <vital/types/uid.h>
-#include <vital/types/timestamp.h>
-#include <vital/types/vector.h>
 #include <vital/types/bounding_box.h>
-#include <vital/types/detected_object.h>
 #include <vital/types/descriptor.h>
+#include <vital/types/detected_object.h>
+#include <vital/types/timestamp.h>
+#include <vital/types/uid.h>
+#include <vital/types/vector.h>
 
-#include <vector>
-#include <string>
 #include <memory>
+#include <string>
+#include <vector>
 
 namespace kwiver {
+
 namespace vital {
 
 class track_descriptor;
@@ -65,16 +66,18 @@ public:
     /// @param ts Timestamp for this entry
     /// @param img_loc Image location for object
     /// @param world_loc World location for image
-    history_entry( const vital::timestamp& ts,
-                   const image_bbox_t& img_loc,
-                   const world_bbox_t& world_loc );
+    history_entry(
+      const vital::timestamp& ts,
+      const image_bbox_t& img_loc,
+      const world_bbox_t& world_loc );
 
     /// Create new object.
     ///
     /// @param ts Timestamp for object.
     /// @param img_loc Image location for object.
-    history_entry( const vital::timestamp& ts,
-                   const image_bbox_t& img_loc );
+    history_entry(
+      const vital::timestamp& ts,
+      const image_bbox_t& img_loc );
 
     /// \brief Get timestamp.
     ///
@@ -333,6 +336,8 @@ private:
   descriptor_history_t history_;
 };
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif

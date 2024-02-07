@@ -21,6 +21,7 @@ using namespace kwiver::arrows::klv;
 namespace kv = kwiver::vital;
 using kld = klv_lengthy< double >;
 
+
 kwiver::vital::path_t g_data_dir;
 
 // ----------------------------------------------------------------------------
@@ -46,6 +47,7 @@ key_0104( klv_0104_tag tag )
 {
   return klv_0104_traits_lookup().by_tag( tag ).uds_key();
 }
+
 
 // ---------------------------------------------------------------------------
 klv_local_set const test_0102_set = {
@@ -242,8 +244,7 @@ klv_local_set const test_0601_set = {
 // ---------------------------------------------------------------------------
 klv_local_set const test_1107_set = {
   { KLV_1107_SLANT_RANGE_PEDIGREE,
-    KLV_1107_SLANT_RANGE_PEDIGREE_CALCULATED }
-};
+    KLV_1107_SLANT_RANGE_PEDIGREE_CALCULATED } };
 
 // ---------------------------------------------------------------------------
 klv_local_set const test_1108_metric_set = {
@@ -307,6 +308,8 @@ TEST_F ( load_save_klv, compare_golden )
   {
     std::ifstream fs;
     fs.open( data_dir + "/klv_gold.json" );
+
+
     std::stringstream ss;
     ss << fs.rdbuf();
     golden_string = ss.str();

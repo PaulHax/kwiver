@@ -8,20 +8,23 @@
 #ifndef KWIVER_VITAL_ATTRIBUTE_SET_H
 #define KWIVER_VITAL_ATTRIBUTE_SET_H
 
-#include <vital/vital_export.h>
 #include <vital/vital_config.h>
+#include <vital/vital_export.h>
 
 #include <vital/any.h>
-#include <vital/noncopyable.h>
 #include <vital/exceptions/base.h>
+#include <vital/noncopyable.h>
 
 #include <map>
-#include <string>
 #include <memory>
+#include <string>
 
 namespace kwiver {
+
 namespace vital {
+
 namespace types {
+
 // ----------------------------------------------------------------------------
 class VITAL_EXPORT attribute_set_exception
   : public vital_exception
@@ -51,7 +54,7 @@ class VITAL_EXPORT attribute_set
   : private noncopyable
 {
 public:
-  #ifdef VITAL_STD_MAP_UNIQUE_PTR_ALLOWED
+#ifdef VITAL_STD_MAP_UNIQUE_PTR_ALLOWED
   typedef std::unique_ptr< kwiver::vital::any > item_ptr;
 #else
   typedef std::shared_ptr< kwiver::vital::any > item_ptr;
@@ -85,8 +88,9 @@ public:
   ///
   /// @param name Name if attribute
   /// @param val Value of attribute
-  template<typename T>
-  void add( const std::string& name, const T& val )
+  template < typename T >
+  void
+  add( const std::string& name, const T& val )
   {
     add( name, kwiver::vital::any( val ) );
   }
@@ -166,10 +170,11 @@ public:
   /// @return Value of attribute.
   /// @throws kwiver::vital::bad_any_cast if actual type does not match
   /// requested type.
-  template<typename T>
-  T get( const std::string& name ) const
+  template < typename T >
+  T
+  get( const std::string& name ) const
   {
-    return kwiver::vital::any_cast<T>( data(name ) );
+    return kwiver::vital::any_cast< T >( data( name ) );
   }
 
   /// @brief Is the attribute of expected type.
@@ -192,17 +197,22 @@ public:
   /// ...
   /// }
   /// \endcode
-  template< typename T>
-  bool is_type( const std::string& name ) const
+  template < typename T >
+  bool
+  is_type( const std::string& name ) const
   {
     const auto val = data( name );
-    return (typeid(T) == val.type());
+    return ( typeid( T ) == val.type() );
   }
 
 private:
   attribute_map_t m_attr_map;
 }; // end class attribute_set
 
-} } } // end namespace
+} // namespace types
+
+} // namespace vital
+
+}     // end namespace
 
 #endif // KWIVER_VITAL_ATTRIBUTE_SET_H

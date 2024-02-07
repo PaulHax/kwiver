@@ -6,36 +6,39 @@
 
 #include "bounding_box.h"
 
-#include <vital/types/detected_object.h>
-#include <vital/internal/cereal/cereal.hpp>
 #include <vital/internal/cereal/archives/json.hpp>
+#include <vital/internal/cereal/cereal.hpp>
+#include <vital/types/detected_object.h>
 
 #include <sstream>
 
 namespace kasj = kwiver::arrows::serialize::json;
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace serialize {
+
 namespace json {
 
 // ----------------------------------------------------------------------------
-detected_object::
-detected_object()
-{ }
+detected_object
+::detected_object()
+{}
 
 detected_object::
 ~detected_object()
-{ }
+{}
 
 // ----------------------------------------------------------------------------
 std::shared_ptr< std::string >
-detected_object::
-serialize( const vital::any& element )
+detected_object
+::serialize( const vital::any& element )
 {
   // Get native data type from any
   kwiver::vital::detected_object_sptr obj =
-    kwiver::vital::any_cast< kwiver::vital::detected_object_sptr > ( element );
+    kwiver::vital::any_cast< kwiver::vital::detected_object_sptr >( element );
 
   std::stringstream msg;
   msg << "detected_object ";
@@ -44,23 +47,28 @@ serialize( const vital::any& element )
     save( ar, *obj );
   }
 
-  return std::make_shared< std::string > ( msg.str() );
+  return std::make_shared< std::string >( msg.str() );
 }
 
 // ----------------------------------------------------------------------------
-vital::any detected_object::
-deserialize( const std::string& message )
+vital::any
+detected_object
+::deserialize( const std::string& message )
 {
-  std::stringstream msg(message);
-  auto obj = std::make_shared< kwiver::vital::detected_object >( kwiver::vital::bounding_box_d { 0, 0, 0, 0 } );
+  std::stringstream msg( message );
+  auto obj =
+    std::make_shared< kwiver::vital::detected_object >(
+      kwiver::vital::bounding_box_d{ 0, 0, 0, 0 } );
 
   std::string tag;
   msg >> tag;
 
-  if (tag != "detected_object" )
+  if( tag != "detected_object" )
   {
-    LOG_ERROR( logger(), "Invalid data type tag received. Expected \"detected_object\", received \""
-               << tag << "\". Message dropped. Default object returned." );
+    LOG_ERROR(
+      logger(),
+      "Invalid data type tag received. Expected \"detected_object\", received \""
+        << tag << "\". Message dropped. Default object returned." );
   }
   else
   {
@@ -68,7 +76,13 @@ deserialize( const std::string& message )
     load( ar, *obj );
   }
 
-  return kwiver::vital::any(obj);
+  return kwiver::vital::any( obj );
 }
 
-} } } }       // end namespace kwiver
+} // namespace json
+
+} // namespace serialize
+
+} // namespace arrows
+
+}             // end namespace kwiver

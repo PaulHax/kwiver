@@ -5,8 +5,8 @@
 #ifndef VITAL_PLUGIN_LOADER_PLUGIN_INFO_H
 #define VITAL_PLUGIN_LOADER_PLUGIN_INFO_H
 
-#define PLUGIN_INFO(NAME, DESCRIP)             \
-  static constexpr char const* _plugin_name{ NAME };            \
-  static constexpr char const* _plugin_description{ DESCRIP };
+#define PLUGIN_INFO( NAME, DESCRIP )               \
+static constexpr char const* _plugin_name{ NAME }; \
+static constexpr char const* _plugin_description{ DESCRIP };
 
 #endif // VITAL_PLUGIN_LOADER_PLUGIN_INFO_H

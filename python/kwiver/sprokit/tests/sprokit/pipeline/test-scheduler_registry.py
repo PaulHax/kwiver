@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#ckwg +28
+# ckwg +28
 # Copyright 2011-2020 by Kitware, Inc.
 # All rights reserved.
 #
@@ -30,6 +30,7 @@
 
 from kwiver.sprokit.util.test import find_tests, run_test, test_error
 
+
 def test_import():
     try:
         from kwiver.vital.config import config
@@ -46,7 +47,7 @@ def test_api_calls():
 
     modules.load_known_modules()
 
-    sched_type = 'thread_per_process'
+    sched_type = "thread_per_process"
     c = config.empty_config()
     p = pipeline.Pipeline()
 
@@ -108,8 +109,8 @@ def test_register():
 
     modules.load_known_modules()
 
-    sched_type = 'python_example'
-    sched_desc = 'simple description'
+    sched_type = "python_example"
+    sched_desc = "simple description"
 
     scheduler_factory.add_scheduler(sched_type, sched_desc, example_scheduler(True))
 
@@ -133,8 +134,8 @@ def test_wrapper_api():
     from kwiver.sprokit.pipeline import process_factory
     from kwiver.sprokit.pipeline import scheduler_factory
 
-    sched_type = 'python_example'
-    sched_desc = 'simple description'
+    sched_type = "python_example"
+    sched_desc = "simple description"
 
     modules.load_known_modules()
 
@@ -142,8 +143,8 @@ def test_wrapper_api():
 
     p = pipeline.Pipeline()
 
-    proc_type = 'orphan'
-    proc_name = 'orphan'
+    proc_type = "orphan"
+    proc_name = "orphan"
 
     proc = process_factory.create_process(proc_type, proc_name)
 
@@ -170,7 +171,7 @@ def test_wrapper_api():
     check_scheduler(s)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
 
     if len(sys.argv) != 2:

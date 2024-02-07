@@ -13,42 +13,43 @@
 #include <arrows/kpf/yaml/kpf_yaml_parser.h>
 #include <arrows/kpf/yaml/kpf_yaml_writer.h>
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
 using std::cerr;
 using std::cout;
 using std::ifstream;
 
-namespace KPF=kwiver::vital::kpf;
+namespace KPF = kwiver::vital::kpf;
 
-int main( int argc, char *argv[] )
+int
+main( int argc, char* argv[] )
 {
-  if (argc != 2)
+  if( argc != 2 )
   {
-    cerr << "Usage: " << argv[0] << " kpf-yaml-file\n";
+    cerr << "Usage: " << argv[ 0 ] << " kpf-yaml-file\n";
     return EXIT_FAILURE;
   }
 
-  ifstream is( argv[1] );
-  if ( ! is )
+  ifstream is( argv[ 1 ] );
+  if( !is )
   {
-    cerr << "Couldn't open '" << argv[1] << "'\n";
+    cerr << "Couldn't open '" << argv[ 1 ] << "'\n";
     return EXIT_FAILURE;
   }
 
   KPF::kpf_yaml_parser_t parser( is );
-  KPF::kpf_reader_t reader ( parser );
+  KPF::kpf_reader_t reader( parser );
 
   size_t line_c = 0;
-  while (reader.next())
+  while( reader.next() )
   {
     ++line_c;
-    for (const auto& p: reader.get_meta_packets() )
+    for( const auto& p : reader.get_meta_packets() )
     {
       cout << "line " << line_c << ": meta '" << p << "'\n";
     }
-    for (const auto& p: reader.get_packet_buffer() )
+    for( const auto& p : reader.get_packet_buffer() )
     {
       cout << "line " << line_c << ": " << p.second << "\n";
     }

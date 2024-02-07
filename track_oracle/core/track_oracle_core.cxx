@@ -3,9 +3,9 @@
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
 #include "track_oracle_core.h"
+#include <mutex>
 #include <track_oracle/core/element_descriptor.h>
 #include <track_oracle/core/track_oracle_core_impl.h>
-#include <mutex>
 
 using std::ostream;
 using std::string;
@@ -13,20 +13,23 @@ using std::vector;
 
 namespace // anon
 {
+
 std::mutex instance_lock;
-};
+
+} // namespace
 
 namespace kwiver {
+
 namespace track_oracle {
 
 track_oracle_core_impl&
 track_oracle_core
 ::get_instance()
 {
-  if ( ! track_oracle_core::impl )
+  if( !track_oracle_core::impl )
   {
     std::lock_guard< std::mutex > lock( instance_lock );
-    if ( ! track_oracle_core::impl )
+    if( !track_oracle_core::impl )
     {
       track_oracle_core::impl = new track_oracle_core_impl();
     }
@@ -108,7 +111,9 @@ domain_handle_type
 track_oracle_core
 ::lookup_domain( const string& domain_name, bool create_if_not_found )
 {
-  return track_oracle_core::get_instance().lookup_domain( domain_name, create_if_not_found );
+  return track_oracle_core::get_instance().lookup_domain(
+    domain_name,
+    create_if_not_found );
 }
 
 domain_handle_type
@@ -141,14 +146,18 @@ track_oracle_core
 
 bool
 track_oracle_core
-::add_to_domain( const handle_list_type& handles, const domain_handle_type& domain )
+::add_to_domain(
+  const handle_list_type& handles,
+  const domain_handle_type& domain )
 {
   return track_oracle_core::get_instance().add_to_domain( handles, domain );
 }
 
 bool
 track_oracle_core
-::add_to_domain( const track_handle_type& track, const domain_handle_type& domain )
+::add_to_domain(
+  const track_handle_type& track,
+  const domain_handle_type& domain )
 {
   return track_oracle_core::get_instance().add_to_domain( track, domain );
 }
@@ -165,9 +174,9 @@ track_oracle_core
 ::generic_to_track_handle_list( const handle_list_type& handles )
 {
   track_handle_list_type ret;
-  for (unsigned i=0; i<handles.size(); ++i)
+  for( unsigned i = 0; i < handles.size(); ++i )
   {
-    ret.push_back( track_handle_type( handles[i] ));
+    ret.push_back( track_handle_type( handles[ i ] ) );
   }
   return ret;
 }
@@ -177,9 +186,9 @@ track_oracle_core
 ::generic_to_frame_handle_list( const handle_list_type& handles )
 {
   frame_handle_list_type ret;
-  for (unsigned i=0; i<handles.size(); ++i)
+  for( unsigned i = 0; i < handles.size(); ++i )
   {
-    ret.push_back( frame_handle_type( handles[i] ));
+    ret.push_back( frame_handle_type( handles[ i ] ) );
   }
   return ret;
 }
@@ -189,9 +198,9 @@ track_oracle_core
 ::track_to_generic_handle_list( const track_handle_list_type& handles )
 {
   handle_list_type ret;
-  for (unsigned i=0; i<handles.size(); ++i)
+  for( unsigned i = 0; i < handles.size(); ++i )
   {
-    ret.push_back( handles[i].row );
+    ret.push_back( handles[ i ].row );
   }
   return ret;
 }
@@ -201,9 +210,9 @@ track_oracle_core
 ::frame_to_generic_handle_list( const frame_handle_list_type& handles )
 {
   handle_list_type ret;
-  for (unsigned i=0; i<handles.size(); ++i)
+  for( unsigned i = 0; i < handles.size(); ++i )
   {
-    ret.push_back( handles[i].row );
+    ret.push_back( handles[ i ].row );
   }
   return ret;
 }
@@ -231,24 +240,27 @@ track_oracle_core
 
 bool
 track_oracle_core
-::clone_nonsystem_fields( const track_handle_type& src,
-                          const track_handle_type& dst )
+::clone_nonsystem_fields(
+  const track_handle_type& src,
+  const track_handle_type& dst )
 {
   return track_oracle_core::clone_nonsystem_fields( src.row, dst.row );
 }
 
 bool
 track_oracle_core
-::clone_nonsystem_fields( const frame_handle_type& src,
-                          const frame_handle_type& dst )
+::clone_nonsystem_fields(
+  const frame_handle_type& src,
+  const frame_handle_type& dst )
 {
   return track_oracle_core::clone_nonsystem_fields( src.row, dst.row );
 }
 
 bool
 track_oracle_core
-::clone_nonsystem_fields( const oracle_entry_handle_type& src,
-                          const oracle_entry_handle_type& dst )
+::clone_nonsystem_fields(
+  const oracle_entry_handle_type& src,
+  const oracle_entry_handle_type& dst )
 {
   return track_oracle_core::get_instance().clone_nonsystem_fields( src, dst );
 }
@@ -262,9 +274,13 @@ track_oracle_core
 
 bool
 track_oracle_core
-::write_csv( ostream& os, const track_handle_list_type& tracks, bool csv_v1_semantics )
+::write_csv(
+  ostream& os, const track_handle_list_type& tracks,
+  bool csv_v1_semantics )
 {
-  return track_oracle_core::get_instance().write_csv( os, tracks, csv_v1_semantics );
+  return track_oracle_core::get_instance().write_csv(
+    os, tracks,
+    csv_v1_semantics );
 }
 
 csv_handler_map_type
@@ -275,4 +291,5 @@ track_oracle_core
 }
 
 } // ...track_oracle
+
 } // ...kwiver

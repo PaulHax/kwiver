@@ -12,30 +12,33 @@
 using namespace kwiver::vital;
 
 // ----------------------------------------------------------------------------
-int main(int argc, char** argv)
+int
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
 }
 
 namespace {
+
 static const polygon::point_t p1{ 10, 10 };
 static const polygon::point_t p2{ 10, 50 };
 static const polygon::point_t p3{ 50, 50 };
 static const polygon::point_t p4{ 30, 30 };
-}
+
+} // namespace
 
 // ----------------------------------------------------------------------------
-TEST(polygon, default_constructor)
+TEST ( polygon, default_constructor )
 {
   polygon p;
   EXPECT_EQ( 0, p.num_vertices() );
 }
 
 // ----------------------------------------------------------------------------
-TEST(polygon, construct_from_vector)
+TEST ( polygon, construct_from_vector )
 {
-  std::vector<polygon::point_t> vec;
+  std::vector< polygon::point_t > vec;
 
   vec.push_back( p1 );
   vec.push_back( p2 );
@@ -47,7 +50,7 @@ TEST(polygon, construct_from_vector)
 }
 
 // ----------------------------------------------------------------------------
-TEST(polygon, add_points)
+TEST ( polygon, add_points )
 {
   polygon p;
 
@@ -70,7 +73,7 @@ TEST(polygon, add_points)
 }
 
 // ----------------------------------------------------------------------------
-TEST(polygon, contains)
+TEST ( polygon, contains )
 {
   polygon p;
 
@@ -84,7 +87,7 @@ TEST(polygon, contains)
 }
 
 // ----------------------------------------------------------------------------
-TEST(polygon, get_vertices)
+TEST ( polygon, get_vertices )
 {
   polygon p;
 

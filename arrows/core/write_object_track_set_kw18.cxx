@@ -12,7 +12,9 @@
 #include <time.h>
 
 namespace kwiver {
+
 namespace arrows {
+
 namespace core {
 
 /// This format should only be used for tracks.
@@ -33,15 +35,15 @@ namespace core {
 class write_object_track_set_kw18::priv
 {
 public:
-  priv( write_object_track_set_kw18* parent)
-    : m_parent( parent )
-    , m_logger( kwiver::vital::get_logger( "write_object_track_set_kw18" ) )
-    , m_first( true )
-    , m_frame_number( 1 )
-    , m_delim( "," )
-  { }
+  priv( write_object_track_set_kw18* parent )
+    : m_parent( parent ),
+      m_logger( kwiver::vital::get_logger( "write_object_track_set_kw18" ) ),
+      m_first( true ),
+      m_frame_number( 1 ),
+      m_delim( "," )
+  {}
 
-  ~priv() { }
+  ~priv() {}
 
   write_object_track_set_kw18* m_parent;
   kwiver::vital::logger_handle_t m_logger;
@@ -55,15 +57,14 @@ public:
 write_object_track_set_kw18
 ::write_object_track_set_kw18()
   : d( new write_object_track_set_kw18::priv( this ) )
-{
-}
+{}
 
 write_object_track_set_kw18
 ::~write_object_track_set_kw18()
-{
-}
+{}
 
-void write_object_track_set_kw18
+void
+write_object_track_set_kw18
 ::close()
 {
   for( auto trk_pair : d->m_tracks )
@@ -77,12 +78,16 @@ void write_object_track_set_kw18
 
       if( !ts )
       {
-        LOG_ERROR( d->m_logger, "MISSED STATE " << trk_ptr->id() << " " << trk_ptr->size() );
+        LOG_ERROR(
+          d->m_logger,
+          "MISSED STATE " << trk_ptr->id() << " " << trk_ptr->size() );
         continue;
       }
 
       vital::detected_object_sptr det = ts->detection();
-      const vital::bounding_box_d empty_box = vital::bounding_box_d( -1, -1, -1, -1 );
+      const vital::bounding_box_d empty_box = vital::bounding_box_d(
+        -1, -1, -1,
+        -1 );
       vital::bounding_box_d bbox = ( det ? det->bounding_box() : empty_box );
 
       stream() << trk_ptr->id() << " "     // 1: track id
@@ -92,8 +97,8 @@ void write_object_track_set_kw18
                << "0 "                     // 5: tracking plane y
                << "0 "                     // 6: velocity x
                << "0 "                     // 7: velocity y
-               << bbox.center()[0] << " "  // 8: image location x
-               << bbox.center()[1] << " "  // 9: image location y
+               << bbox.center()[ 0 ] << " " // 8: image location x
+               << bbox.center()[ 1 ] << " " // 9: image location y
                << bbox.min_x() << " "      // 10: TL-x
                << bbox.min_y() << " "      // 11: TL-y
                << bbox.max_x() << " "      // 12: BR-x
@@ -114,9 +119,9 @@ void write_object_track_set_kw18
 // ----------------------------------------------------------------------------
 void
 write_object_track_set_kw18
-::set_configuration(vital::config_block_sptr config)
+::set_configuration( vital::config_block_sptr config )
 {
-  d->m_delim = config->get_value<std::string>( "delimiter", d->m_delim );
+  d->m_delim = config->get_value< std::string >( "delimiter", d->m_delim );
 }
 
 // ----------------------------------------------------------------------------
@@ -170,4 +175,8 @@ write_object_track_set_kw18
   }
 }
 
-} } } // end namespace
+} // namespace core
+
+} // namespace arrows
+
+}     // end namespace

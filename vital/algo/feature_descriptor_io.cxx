@@ -26,9 +26,10 @@ feature_descriptor_io
 
 void
 feature_descriptor_io
-::load( std::string const& filename,
-        feature_set_sptr& feat,
-        descriptor_set_sptr& desc ) const
+::load(
+  std::string const& filename,
+  feature_set_sptr& feat,
+  descriptor_set_sptr& desc ) const
 {
   // Make sure that the given file path exists and is a file.
   if( !kwiversys::SystemTools::FileExists( filename ) )
@@ -45,9 +46,10 @@ feature_descriptor_io
 
 void
 feature_descriptor_io
-::save( std::string const& filename,
-        feature_set_sptr feat,
-        descriptor_set_sptr desc ) const
+::save(
+  std::string const& filename,
+  feature_set_sptr feat,
+  descriptor_set_sptr desc ) const
 {
   // Make sure that the given file path's containing directory exists and is
   // actually a directory.
@@ -64,8 +66,9 @@ feature_descriptor_io
   }
   if( !feat && !desc )
   {
-    VITAL_THROW( invalid_value,
-                 "both features and descriptor are Null" );
+    VITAL_THROW(
+      invalid_value,
+      "both features and descriptor are Null" );
   }
 
   this->save_( filename, feat, desc );

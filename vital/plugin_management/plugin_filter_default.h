@@ -10,6 +10,7 @@
 #include <vital/plugin_management/plugin_loader_filter.h>
 
 namespace kwiver {
+
 namespace vital {
 
 // ----------------------------------------------------------------------------
@@ -26,9 +27,10 @@ public:
   virtual ~plugin_filter_default() = default;
 
   virtual bool add_factory( plugin_factory_handle_t fact ) const;
-
 }; // end class plugin_filter_default
 
-} } // end namespace
+} // namespace vital
+
+}   // end namespace
 
 #endif // KWIVER_FITAL_PLUGIN_FILTER_DEFAULT_H

@@ -16,98 +16,105 @@
 #include <vital/types/vector.h>
 
 namespace kwiver {
-namespace vital  {
+
+namespace vital {
+
 namespace python {
-template< class algorithm_def_resection_base=
-           kwiver::vital::algorithm_def<
-               kwiver::vital::algo::resection_camera > >
-class algorithm_def_resection_trampoline :
-      public algorithm_trampoline< algorithm_def_resection_base >
-{
-  public:
-    using algorithm_trampoline< algorithm_def_resection_base >
-      ::algorithm_trampoline;
 
-    std::string type_name() const override
-    {
-      PYBIND11_OVERLOAD(
-        std::string,
-        kwiver::vital::algorithm_def<
-          kwiver::vital::algo::resection_camera >,
-        type_name,
-      );
-    }
+template < class algorithm_def_resection_base =
+    kwiver::vital::algorithm_def<
+      kwiver::vital::algo::resection_camera > >
+class algorithm_def_resection_trampoline
+  : public algorithm_trampoline< algorithm_def_resection_base >
+{
+public:
+  using algorithm_trampoline< algorithm_def_resection_base >
+  ::algorithm_trampoline;
+
+  std::string
+  type_name() const override
+  {
+    PYBIND11_OVERLOAD(
+      std::string,
+      kwiver::vital::algorithm_def<
+        kwiver::vital::algo::resection_camera >,
+      type_name,
+    );
+  }
 };
 
-template< class resection_camera_base =
-                  kwiver::vital::algo::resection_camera >
-class resection_camera_trampoline :
-      public algorithm_def_resection_trampoline< resection_camera_base >
+template < class resection_camera_base =
+    kwiver::vital::algo::resection_camera >
+class resection_camera_trampoline
+  : public algorithm_def_resection_trampoline< resection_camera_base >
 {
-  public:
-    using algorithm_def_resection_trampoline< resection_camera_base >::
-              algorithm_def_resection_trampoline;
+public:
+  using algorithm_def_resection_trampoline< resection_camera_base >::
+  algorithm_def_resection_trampoline;
 
-    kwiver::vital::camera_perspective_sptr
-      resection( const std::vector<kwiver::vital::vector_2d>& image_points,
-                 const std::vector<kwiver::vital::vector_3d>& world_points,
-                 kwiver::vital::camera_intrinsics_sptr cal,
-                 std::vector<bool>* inliers
-               ) const override
-    {
-      PYBIND11_OVERLOAD_PURE(
-        kwiver::vital::camera_perspective_sptr,
-        kwiver::vital::algo::resection_camera,
-        resection,
-        image_points,
-        world_points,
-        cal,
-        inliers
-      );
-    }
+  kwiver::vital::camera_perspective_sptr
+  resection(
+    const std::vector< kwiver::vital::vector_2d >& image_points,
+    const std::vector< kwiver::vital::vector_3d >& world_points,
+    kwiver::vital::camera_intrinsics_sptr cal,
+    std::vector< bool >* inliers ) const override
+  {
+    PYBIND11_OVERLOAD_PURE(
+      kwiver::vital::camera_perspective_sptr,
+      kwiver::vital::algo::resection_camera,
+      resection,
+      image_points,
+      world_points,
+      cal,
+      inliers
+    );
+  }
 
-    kwiver::vital::camera_perspective_sptr
-      resection( kwiver::vital::frame_id_t frame_id,
-                 kwiver::vital::landmark_map_sptr landmarks,
-                 kwiver::vital::feature_track_set_sptr tracks,
-                 unsigned width, unsigned height,
-                 std::unordered_set<landmark_id_t>* inliers
-               ) const override
-    {
-      PYBIND11_OVERLOAD(
-        kwiver::vital::camera_perspective_sptr,
-        kwiver::vital::algo::resection_camera,
-        resection,
-        frame_id,
-        landmarks,
-        tracks,
-        width, height,
-        inliers
-      );
-    }
+  kwiver::vital::camera_perspective_sptr
+  resection(
+    kwiver::vital::frame_id_t frame_id,
+    kwiver::vital::landmark_map_sptr landmarks,
+    kwiver::vital::feature_track_set_sptr tracks,
+    unsigned width, unsigned height,
+    std::unordered_set< landmark_id_t >* inliers ) const override
+  {
+    PYBIND11_OVERLOAD(
+      kwiver::vital::camera_perspective_sptr,
+      kwiver::vital::algo::resection_camera,
+      resection,
+      frame_id,
+      landmarks,
+      tracks,
+      width, height,
+      inliers
+    );
+  }
 
-    kwiver::vital::camera_perspective_sptr
-      resection( kwiver::vital::frame_id_t frame_id,
-                 kwiver::vital::landmark_map_sptr landmarks,
-                 kwiver::vital::feature_track_set_sptr tracks,
-                 kwiver::vital::camera_intrinsics_sptr cal,
-                 std::unordered_set<landmark_id_t>* inliers
-               ) const override
-    {
-      PYBIND11_OVERLOAD(
-        kwiver::vital::camera_perspective_sptr,
-        kwiver::vital::algo::resection_camera,
-        resection,
-        frame_id,
-        landmarks,
-        tracks,
-        cal,
-        inliers
-      );
-    }
+  kwiver::vital::camera_perspective_sptr
+  resection(
+    kwiver::vital::frame_id_t frame_id,
+    kwiver::vital::landmark_map_sptr landmarks,
+    kwiver::vital::feature_track_set_sptr tracks,
+    kwiver::vital::camera_intrinsics_sptr cal,
+    std::unordered_set< landmark_id_t >* inliers ) const override
+  {
+    PYBIND11_OVERLOAD(
+      kwiver::vital::camera_perspective_sptr,
+      kwiver::vital::algo::resection_camera,
+      resection,
+      frame_id,
+      landmarks,
+      tracks,
+      cal,
+      inliers
+    );
+  }
 };
-}
-}
-}
+
+} // namespace python
+
+} // namespace vital
+
+} // namespace kwiver
 
 #endif
