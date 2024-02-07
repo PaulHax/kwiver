@@ -27,12 +27,9 @@ class KWIVER_SERIALIZE_JSON_EXPORT timestamp
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO(
-    "kwiver:timestamp",
+  PLUGGABLE_IMPL(
+    timestamp,
     "Serializes a timestamp object using json notation" );
-
-  timestamp();
-  virtual ~timestamp();
 
   std::shared_ptr< std::string > serialize(
     const vital::any& elements ) override;

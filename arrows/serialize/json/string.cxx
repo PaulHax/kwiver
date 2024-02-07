@@ -17,13 +17,6 @@ namespace serialize {
 
 namespace json {
 
-string
-::string()
-{}
-
-string::~string()
-{}
-
 std::shared_ptr< std::string >
 string
 ::serialize( const vital::any& element )

@@ -28,12 +28,9 @@ class KWIVER_SERIALIZE_JSON_EXPORT detected_object_set
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO(
-    "kwiver:detected_object_set",
+  PLUGGABLE_IMPL(
+    detected_object_set,
     "Serializes a detected_object_set using JSON notation." );
-
-  detected_object_set();
-  virtual ~detected_object_set();
 
   std::shared_ptr< std::string > serialize(
     const vital::any& element ) override;

@@ -21,16 +21,6 @@ namespace serialize {
 
 namespace json {
 
-// ----------------------------------------------------------------------------
-activity
-::activity()
-{}
-
-activity::
-~activity()
-{}
-
-// ----------------------------------------------------------------------------
 std::shared_ptr< std::string >
 activity
 ::serialize( const kwiver::vital::any& element )

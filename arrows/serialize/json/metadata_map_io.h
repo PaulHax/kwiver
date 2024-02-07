@@ -4,7 +4,6 @@
 
 /// \file
 /// \brief Interface for metadata_map_io
-/// \link kwiver::vital::algo::algorithm_def algorithm definition \endlink.
 
 #ifndef VITAL_ARROWS_SERIALIZATION_JSON_METADATA_MAP_IO_H_
 #define VITAL_ARROWS_SERIALIZATION_JSON_METADATA_MAP_IO_H_
@@ -33,13 +32,9 @@ class KWIVER_SERIALIZE_JSON_EXPORT metadata_map_io
   : public vital::algo::metadata_map_io
 {
 public:
-  PLUGIN_INFO(
-    "json",
-    "Perform IO on video metadata using JSON." )
-
-  metadata_map_io();
-
-  ~metadata_map_io();
+  PLUGGABLE_IMPL(
+    metadata_map_io,
+    "Perform IO on video metadata using JSON." );
 
   /// Load in the data from a file.
   ///
@@ -67,7 +62,7 @@ public:
 private:
   class priv;
 
-  std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // namespace json

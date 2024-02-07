@@ -22,16 +22,6 @@ namespace serialize {
 
 namespace json {
 
-// ----------------------------------------------------------------------------
-detected_object
-::detected_object()
-{}
-
-detected_object::
-~detected_object()
-{}
-
-// ----------------------------------------------------------------------------
 std::shared_ptr< std::string >
 detected_object
 ::serialize( const vital::any& element )

@@ -20,15 +20,6 @@ namespace serialize {
 
 namespace json {
 
-// ----------------------------------------------------------------------------
-timestamp
-::timestamp()
-{}
-
-timestamp::~timestamp()
-{}
-
-// ----------------------------------------------------------------------------
 std::shared_ptr< std::string >
 timestamp
 ::serialize( const vital::any& element )

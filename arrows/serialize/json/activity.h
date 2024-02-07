@@ -29,14 +29,10 @@ class KWIVER_SERIALIZE_JSON_EXPORT activity
 {
 public:
   // Type name this class supports and description
-  PLUGIN_INFO(
-    "kwiver:activity",
+  PLUGGABLE_IMPL(
+    activity,
     "Serializes an activity using JSON notation. "
-    "This implementation only handles a single data item."
-  );
-
-  activity();
-  virtual ~activity();
+    "This implementation only handles a single data item." );
 
   std::shared_ptr< std::string >
   serialize( const kwiver::vital::any& element ) override;

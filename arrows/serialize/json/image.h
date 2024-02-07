@@ -27,12 +27,9 @@ class KWIVER_SERIALIZE_JSON_EXPORT image
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO(
-    "kwiver:image",
+  PLUGGABLE_IMPL(
+    image,
     "Serializes an image using JSON notation. " );
-
-  image();
-  virtual ~image();
 
   std::shared_ptr< std::string > serialize(
     const vital::any& element ) override;

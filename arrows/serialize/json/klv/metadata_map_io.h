@@ -21,11 +21,15 @@ class KWIVER_SERIALIZE_JSON_KLV_EXPORT metadata_map_io_klv
   : public vital::algo::metadata_map_io
 {
 public:
-  PLUGIN_INFO(
-    "klv-json",
-    "Perform IO on video KLV metadata using JSON." );
-
-  metadata_map_io_klv();
+  PLUGGABLE_IMPL(
+    metadata_map_io_klv,
+    "Perform IO on video KLV metadata using JSON.",
+    PARAM_DEFAULT(
+      compress,
+      bool,
+      "Set to true to read and write compressed JSON instead.",
+      false )
+  );
 
   virtual ~metadata_map_io_klv();
 
@@ -41,13 +45,13 @@ public:
   std::ios_base::openmode
   save_open_mode( std::string const& filename ) const override;
 
-  vital::config_block_sptr get_configuration() const override;
-  void set_configuration( vital::config_block_sptr config ) override;
+protected:
+  void initialize() override;
 
 private:
   class priv;
 
-  std::unique_ptr< priv > d;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // namespace json
