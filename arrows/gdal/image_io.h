@@ -10,6 +10,8 @@
 
 #include <arrows/gdal/kwiver_algo_gdal_export.h>
 
+#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/image_io.h>
 
 namespace kwiver {
@@ -23,16 +25,13 @@ class KWIVER_ALGO_GDAL_EXPORT image_io
   : public vital::algo::image_io
 {
 public:
-  // No configuration for this class yet
-  /// \cond DoxygenSuppress
-  virtual void set_configuration( vital::config_block_sptr /*config*/ ) {}
+  PLUGGABLE_IMPL(
+    image_io,
+    " A class for using GDAL to read and write images. "
+  )
 
-  virtual bool
-  check_configuration( vital::config_block_sptr /*config*/ ) const
-  {
-    return true;
-  }
-
+  /// Check configuration
+  bool check_configuration( vital::config_block_sptr config ) const override;
   /// \endcond
 
 private:

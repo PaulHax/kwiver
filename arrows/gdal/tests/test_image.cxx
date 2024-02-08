@@ -107,7 +107,9 @@ TEST_F ( image_io, create )
 {
   kwiver::vital::plugin_manager::instance().load_all_plugins();
 
-  ASSERT_NE( nullptr, algo::image_io::create( "gdal" ) );
+  ASSERT_NE(
+    nullptr,
+    kwiver::vital::create_algorithm< algo::image_io >( "gdal" ) );
 }
 
 TEST_F ( image_io, load_geotiff )
