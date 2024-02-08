@@ -12,7 +12,7 @@
 #include <arrows/ffmpeg/ffmpeg_video_uninterpreted_data.h>
 #include <arrows/klv/klv_metadata.h>
 
-#include <vital/plugin_loader/plugin_manager.h>
+#include <vital/plugin_management/plugin_manager.h>
 
 #include <random>
 
