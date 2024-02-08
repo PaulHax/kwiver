@@ -1,0 +1,68 @@
+# Linux-specific builder configurations and build commands
+
+## Base images
+
+.linux:
+    variables:
+        GIT_CLONE_PATH: $CI_BUILDS_DIR/gitlab-kitware-sciviz-ci
+        GIT_SUBMODULE_STRATEGY: none
+
+.ubuntu2004:
+    extends: .linux
+    image: "kitware/kwiver:ci-ubuntu20_04-20240209"
+
+.linux_builder_tags:
+    tags:
+        - build
+        - docker
+        - linux-x86_64
+        - kwiver
+
+.linux_tester_tags:
+    tags:
+        - docker
+        - linux-x86_64
+        - build
+        - kwiver
+
+## Linux-specific scripts
+
+.before_script_linux: &before_script_linux
+    - .gitlab/ci/cmake.sh
+    - .gitlab/ci/ninja.sh
+    - export PATH=$PWD/.gitlab:$PWD/.gitlab/cmake/bin:$PATH
+    - cmake --version
+    - ninja --version
+
+.before_script_linux_venv: &before_script_linux_venv
+    - python3 -m venv build/ci-venv
+    - . build/ci-venv/bin/activate
+    - pip install -r .gitlab/ci/requirements_dev.txt
+
+.cmake_build_linux:
+    stage: build
+    extends: .warning_policy
+
+    script:
+        - *before_script_linux
+        - *before_script_linux_venv
+        - .gitlab/ci/sccache.sh
+        - sccache --start-server
+        - sccache --show-stats
+        - $LAUNCHER ctest -VV -S .gitlab/ci/ctest_configure.cmake
+        - $LAUNCHER ctest -VV -S .gitlab/ci/ctest_build.cmake &> $GIT_CLONE_PATH/compile_output.log
+        - sccache --show-stats
+        - exec .gitlab/ci/check_warnings.sh .
+
+    interruptible: true
+
+.cmake_test_linux:
+    stage: test
+
+    script:
+        - *before_script_linux
+        - . build/ci-venv/bin/activate
+        - . build/setup_KWIVER.sh
+        - ctest -V --output-on-failure -S .gitlab/ci/ctest_test.cmake
+
+    interruptible: true
