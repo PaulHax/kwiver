@@ -11,6 +11,13 @@
     extends: .linux
     image: "kitware/kwiver:ci-ubuntu20_04-20240209"
 
+.ubuntu2004_ffmpeg_opencv_python:
+    extends:
+        - .ubuntu2004
+
+    variables:
+        CMAKE_CONFIGURATION: ubuntu2004_ffmpeg_opencv_python
+
 .linux_builder_tags:
     tags:
         - build
