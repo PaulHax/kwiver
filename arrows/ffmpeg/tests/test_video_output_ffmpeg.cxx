@@ -14,6 +14,8 @@
 
 #include <vital/plugin_management/plugin_manager.h>
 
+#include <vital/algo/algorithm.txx>
+
 #include <random>
 
 kv::path_t g_data_dir;
@@ -123,6 +125,14 @@ struct _tmp_file_deleter
 };
 
 } // namespace
+
+// ----------------------------------------------------------------------------
+TEST_F ( ffmpeg_video_output, create )
+{
+  EXPECT_NE(
+    nullptr,
+    kv::create_algorithm< kv::algo::video_output >( "ffmpeg" ) );
+}
 
 // ----------------------------------------------------------------------------
 // Test that reading, writing, then reading a video produces generally the
