@@ -30,6 +30,11 @@ from __future__ import print_function
 
 from kwiver.vital.algo import ImageIO
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
+from kwiver.vital.config import Config
+from typing import Type
+from typing import TypeVar
+
+T = TypeVar("T", bound="SimpleImageIO")
 
 
 class SimpleImageIO(CommonConfigurationMixin, ImageIO):
@@ -41,6 +46,14 @@ class SimpleImageIO(CommonConfigurationMixin, ImageIO):
 
     def __init__(self):
         ImageIO.__init__(self)
+
+    @classmethod
+    def from_config(cls: Type[T], c: Config) -> T:
+        return SimpleImageIO()
+
+    @classmethod
+    def get_default_config(cls, c: Config):  # ...  # nothing to set
+        return
 
 
 def __vital_algorithm_register__():

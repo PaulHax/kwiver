@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 from kwiver.vital.types.types import *
-from kwiver.vital.types.activity_types import *
+from kwiver.vital.types.activity_type import *
 from kwiver.vital.types.bounding_box import *
 from kwiver.vital.types.camera import *
 from kwiver.vital.types.camera_intrinsics import *

@@ -2,13 +2,10 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-/**
- * \file video_input_trampoline.txx
- *
- * \brief trampoline for overriding virtual functions of
- *        algorithm_def<video_input> and video_input
- */
-
+// Generated using: ./scripts/cpp_to_pybind11.py -i ./vital/algo/video_input.h
+// -o video_input -I . ../build/ ../../fletch/build/install/include/eigen3
+// ../../fletch/build/install/include -d kwiver::vital::algo::video_input -e
+// <pybind11/stl.h> -t -v
 #ifndef VIDEO_INPUT_TRAMPOLINE_TXX
 #define VIDEO_INPUT_TRAMPOLINE_TXX
 
@@ -16,43 +13,17 @@
 #include <python/kwiver/vital/algo/trampoline/algorithm_trampoline.txx>
 #include <vital/algo/video_input.h>
 
-namespace kwiver {
+namespace kwiver::vital::python {
 
-namespace vital {
-
-namespace python {
-
-template < class algorithm_def_vi_base =
-    kwiver::vital::algorithm_def<
-      kwiver::vital::algo::video_input > >
-class algorithm_def_vi_trampoline
-  : public algorithm_trampoline< algorithm_def_vi_base >
-{
-public:
-  using algorithm_trampoline< algorithm_def_vi_base >::algorithm_trampoline;
-
-  std::string
-  type_name() const override
-  {
-    PYBIND11_OVERLOAD(
-      std::string,
-      kwiver::vital::algorithm_def< kwiver::vital::algo::video_input >,
-      type_name,
-    );
-  }
-};
-
-template < class video_input_base =
-    kwiver::vital::algo::video_input >
+template < class video_input_base = kwiver::vital::algo::video_input >
 class video_input_trampoline
-  : public algorithm_def_vi_trampoline< video_input_base >
+  : public algorithm_trampoline< video_input_base >
 {
 public:
-  using algorithm_def_vi_trampoline< video_input_base >::
-  algorithm_def_vi_trampoline;
+  using algorithm_trampoline< video_input_base >::algorithm_trampoline;
 
   void
-  open( std::string video_name ) override
+  open( ::std::string video_name ) override
   {
     PYBIND11_OVERLOAD_PURE(
       void,
@@ -69,6 +40,7 @@ public:
       void,
       kwiver::vital::algo::video_input,
       close,
+
     );
   }
 
@@ -79,6 +51,7 @@ public:
       bool,
       kwiver::vital::algo::video_input,
       end_of_video,
+
     );
   }
 
@@ -89,6 +62,7 @@ public:
       bool,
       kwiver::vital::algo::video_input,
       good,
+
     );
   }
 
@@ -99,6 +73,7 @@ public:
       bool,
       kwiver::vital::algo::video_input,
       seekable,
+
     );
   }
 
@@ -109,36 +84,32 @@ public:
       size_t,
       kwiver::vital::algo::video_input,
       num_frames,
+
     );
   }
 
   bool
-  next_frame(
-    kwiver::vital::timestamp& ts,
-    uint32_t timeout = 0 ) override
+  next_frame( ::kwiver::vital::timestamp& ts, ::uint32_t timeout ) override
   {
     PYBIND11_OVERLOAD_PURE(
       bool,
       kwiver::vital::algo::video_input,
       next_frame,
-      ts,
-      timeout
+      ts, timeout
     );
   }
 
   bool
   seek_frame(
-    kwiver::vital::timestamp& ts,
-    kwiver::vital::timestamp::frame_t frame_number,
-    uint32_t timeout = 0 ) override
+    ::kwiver::vital::timestamp& ts,
+    ::kwiver::vital::timestamp::frame_t frame_number,
+    ::uint32_t timeout ) override
   {
     PYBIND11_OVERLOAD_PURE(
       bool,
       kwiver::vital::algo::video_input,
       seek_frame,
-      ts,
-      frame_number,
-      timeout
+      ts, frame_number, timeout
     );
   }
 
@@ -149,6 +120,7 @@ public:
       kwiver::vital::timestamp,
       kwiver::vital::algo::video_input,
       frame_timestamp,
+
     );
   }
 
@@ -159,6 +131,18 @@ public:
       kwiver::vital::image_container_sptr,
       kwiver::vital::algo::video_input,
       frame_image,
+
+    );
+  }
+
+  kwiver::vital::video_raw_image_sptr
+  raw_frame_image() override
+  {
+    PYBIND11_OVERLOAD(
+      kwiver::vital::video_raw_image_sptr,
+      kwiver::vital::algo::video_input,
+      raw_frame_image,
+
     );
   }
 
@@ -169,6 +153,18 @@ public:
       kwiver::vital::metadata_vector,
       kwiver::vital::algo::video_input,
       frame_metadata,
+
+    );
+  }
+
+  kwiver::vital::video_raw_metadata_sptr
+  raw_frame_metadata() override
+  {
+    PYBIND11_OVERLOAD(
+      kwiver::vital::video_raw_metadata_sptr,
+      kwiver::vital::algo::video_input,
+      raw_frame_metadata,
+
     );
   }
 
@@ -179,6 +175,7 @@ public:
       kwiver::vital::metadata_map_sptr,
       kwiver::vital::algo::video_input,
       metadata_map,
+
     );
   }
 
@@ -189,14 +186,11 @@ public:
       double,
       kwiver::vital::algo::video_input,
       frame_rate,
+
     );
   }
-};
+}; // class
 
-} // namespace python
-
-} // namespace vital
-
-} // namespace kwiver
+} // namespace
 
 #endif

@@ -1,197 +1,38 @@
-project(vital_python_algo)
+set( THIS_MODULE vital/algo )
 
-kwiver_add_python_library(algos
-  vital/algo
-  activity_detector.h
+kwiver_add_python_module( ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py "${THIS_MODULE}" __init__ )
+
+################################################################################
+set(module_headers
   algorithm.h
-  analyze_tracks.h
-  associate_detections_to_tracks.h
-  bundle_adjust.h
-  close_loops.h
-  compute_association_matrix.h
-  compute_depth.h
-  compute_ref_homography.h
-  compute_stereo_depth_map.h
-  compute_track_descriptors.h
-  convert_image.h
-  detect_features.h
-  detect_motion.h
-  detected_object_filter.h
-  detected_object_set_input.h
-  detected_object_set_output.h
-  draw_detected_object_set.h
-  draw_tracks.h
-  estimate_canonical_transform.h
-  estimate_essential_matrix.h
-  estimate_fundamental_matrix.h
-  estimate_homography.h
-  estimate_pnp.h
-  estimate_similarity_transform.h
-  extract_descriptors.h
-  feature_descriptor_io.h
-  filter_features.h
-  filter_tracks.h
-  image_filter.h
   image_io.h
-  image_object_detector.h
-  initialize_cameras_landmarks.h
-  initialize_object_tracks.h
-  integrate_depth_maps.h
-  interpolate_track.h
-  keyframe_selection.h
-  match_descriptor_sets.h
-  match_features.h
-  merge_images.h
   metadata_map_io.h
-  optimize_cameras.h
-  read_object_track_set.h
-  read_track_descriptor_set.h
-  refine_detections.h
-  resection_camera.h
-  split_image.h
-  track_features.h
-  train_detector.h
-  transform_2d_io.h
-  triangulate_landmarks.h
-  uuid_factory.h
-  uv_unwrap_mesh.h
   video_input.h
-  write_object_track_set.h
-  write_track_descriptor_set.h
-  algorithm.cxx
-  activity_detector.cxx
-  analyze_tracks.cxx
-  associate_detections_to_tracks.cxx
-  bundle_adjust.cxx
-  close_loops.cxx
-  compute_association_matrix.cxx
-  compute_depth.cxx
-  compute_ref_homography.cxx
-  compute_stereo_depth_map.cxx
-  compute_track_descriptors.cxx
-  convert_image.cxx
-  detect_features.cxx
-  detect_motion.cxx
-  detected_object_filter.cxx
-  detected_object_set_input.cxx
-  detected_object_set_output.cxx
-  draw_detected_object_set.cxx
-  draw_tracks.cxx
-  estimate_canonical_transform.cxx
-  estimate_essential_matrix.cxx
-  estimate_fundamental_matrix.cxx
-  estimate_homography.cxx
-  estimate_pnp.cxx
-  estimate_similarity_transform.cxx
-  extract_descriptors.cxx
-  feature_descriptor_io.cxx
-  filter_features.cxx
-  filter_tracks.cxx
-  image_filter.cxx
-  image_io.cxx
-  image_object_detector.cxx
-  initialize_cameras_landmarks.cxx
-  initialize_object_tracks.cxx
-  integrate_depth_maps.cxx
-  interpolate_track.cxx
-  keyframe_selection.cxx
-  match_descriptor_sets.cxx
-  match_features.cxx
-  merge_images.cxx
-  metadata_map_io.cxx
-  optimize_cameras.cxx
-  read_object_track_set.cxx
-  read_track_descriptor_set.cxx
-  refine_detections.cxx
-  resection_camera.cxx
-  split_image.cxx
-  track_features.cxx
-  train_detector.cxx
-  transform_2d_io.cxx
-  triangulate_landmarks.cxx
-  uuid_factory.cxx
-  uv_unwrap_mesh.cxx
-  video_input.cxx
-  write_object_track_set.cxx
-  write_track_descriptor_set.cxx
-  algorithm_module.cxx
+
   trampoline/algorithm_trampoline.txx
-  trampoline/activity_detector_trampoline.txx
-  trampoline/analyze_tracks_trampoline.txx
-  trampoline/bundle_adjust_trampoline.txx
-  trampoline/close_loops_trampoline.txx
-  trampoline/compute_association_matrix_trampoline.txx
-  trampoline/compute_depth_trampoline.txx
-  trampoline/compute_ref_homography_trampoline.txx
-  trampoline/compute_stereo_depth_map_trampoline.txx
-  trampoline/compute_track_descriptors_trampoline.txx
-  trampoline/convert_image_trampoline.txx
-  trampoline/detect_features_trampoline.txx
-  trampoline/detect_motion_trampoline.txx
-  trampoline/detected_object_filter_trampoline.txx
-  trampoline/detected_object_set_input_trampoline.txx
-  trampoline/detected_object_set_output_trampoline.txx
-  trampoline/draw_detected_object_set_trampoline.txx
-  trampoline/draw_tracks_trampoline.txx
-  trampoline/estimate_canonical_transform_trampoline.txx
-  trampoline/estimate_essential_matrix_trampoline.txx
-  trampoline/estimate_fundamental_matrix_trampoline.txx
-  trampoline/estimate_homography_trampoline.txx
-  trampoline/estimate_pnp_trampoline.txx
-  trampoline/estimate_similarity_transform_trampoline.txx
-  trampoline/extract_descriptors_trampoline.txx
-  trampoline/feature_descriptor_io_trampoline.txx
-  trampoline/filter_features_trampoline.txx
-  trampoline/filter_tracks_trampoline.txx
-  trampoline/image_filter_trampoline.txx
   trampoline/image_io_trampoline.txx
-  trampoline/image_object_detector_trampoline.txx
-  trampoline/initialize_cameras_landmarks_trampoline.txx
-  trampoline/initialize_object_tracks_trampoline.txx
-  trampoline/integrate_depth_maps_trampoline.txx
-  trampoline/interpolate_track_trampoline.txx
-  trampoline/keyframe_selection_trampoline.txx
-  trampoline/match_descriptor_sets_trampoline.txx
-  trampoline/match_features_trampoline.txx
-  trampoline/merge_images_trampoline.txx
   trampoline/metadata_map_io_trampoline.txx
-  trampoline/optimize_cameras_trampoline.txx
-  trampoline/read_object_track_set_trampoline.txx
-  trampoline/read_track_descriptor_set_trampoline.txx
-  trampoline/refine_detections_trampoline.txx
-  trampoline/resection_camera_trampoline.txx
-  trampoline/split_image_trampoline.txx
-  trampoline/track_features_trampoline.txx
-  trampoline/train_detector_trampoline.txx
-  trampoline/transform_2d_io_trampoline.txx
-  trampoline/triangulate_landmarks_trampoline.txx
-  trampoline/uuid_factory_trampoline.txx
-  trampoline/uv_unwrap_mesh_trampoline.txx
   trampoline/video_input_trampoline.txx
-  trampoline/write_object_track_set_trampoline.txx
-  trampoline/write_track_descriptor_set_trampoline.txx
+
 )
 
+set(module_sources
+  algorithm_module.cxx
 
-target_link_libraries(python-vital.algo-algos
-  PRIVATE ${PYTHON_LIBRARIES}
+  algorithm.cxx
+  image_io.cxx
+  metadata_map_io.cxx
+  video_input.cxx
+)
+
+# Python Module Library: _algos
+kwiver_add_python_library(
+  algos
+  "${THIS_MODULE}"
+  SOURCES ${module_headers}
+          ${module_sources}
+  PRIVATE pybind11::pybind11
           vital
           vital_config
           vital_algo
-          vital_python_util
 )
-
-kwiver_add_python_library(algorithm_factory
-  vital/algo
-  algorithm_factory.cxx
-)
-
-target_link_libraries(python-vital.algo-algorithm_factory
-  PRIVATE ${PYTHON_LIBRARIES} pybind11::pybind11
-          vital
-          vital_algo
-)
-
-kwiver_add_python_module(${CMAKE_CURRENT_SOURCE_DIR}/__init__.py
-                                vital/algo
-                                __init__)
