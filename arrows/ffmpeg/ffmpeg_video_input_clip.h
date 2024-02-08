@@ -9,6 +9,7 @@
 #define KWIVER_ARROWS_FFMPEG_FFMPEG_VIDEO_INPUT_CLIP_H
 
 #include <arrows/ffmpeg/kwiver_algo_ffmpeg_export.h>
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/video_input.h>
 
 #include <memory>
@@ -28,13 +29,32 @@ class KWIVER_ALGO_FFMPEG_EXPORT ffmpeg_video_input_clip
   : public vital::algo::video_input
 {
 public:
-  ffmpeg_video_input_clip();
-  virtual ~ffmpeg_video_input_clip();
+  PLUGGABLE_IMPL(
+    ffmpeg_video_input_clip,
+    "Clip an FFmpeg-sourced video.",
 
-  PLUGIN_INFO( "ffmpeg_clip", "Clip an FFmpeg-sourced video." )
+    PARAM_DEFAULT(
+      frame_begin, vital::frame_id_t,
+      "First frame to include in the clip. Indexed from 1.",
+      0 ),
 
-  vital::config_block_sptr get_configuration() const override;
-  void set_configuration( vital::config_block_sptr config ) override;
+    PARAM_DEFAULT(
+      frame_end, vital::frame_id_t,
+      "First frame not to include in the clip, i.e. one past the final frame in "
+      "the clip. Indexed from 1.",
+      0 ),
+
+    PARAM_DEFAULT(
+      start_at_keyframe, bool,
+      "Start at the first keyframe before frame_begin, if frame_begin is not a "
+      "keyframe.",
+      false ),
+
+    PARAM(
+      video_input, vital::algo::video_input_sptr,
+      "Video input reader" )
+  )
+
   bool check_configuration( vital::config_block_sptr config ) const override;
 
   void open( std::string video_name ) override;
@@ -60,11 +80,15 @@ public:
   vital::metadata_map_sptr metadata_map() override;
 
   vital::video_settings_uptr implementation_settings() const override;
+  ~ffmpeg_video_input_clip() override;
+
+protected:
+  void initialize() override;
+  void set_configuration_internal( vital::config_block_sptr config ) override;
 
 private:
   class impl;
-
-  std::unique_ptr< impl > const d;
+  KWIVER_UNIQUE_PTR( impl, d );
 };
 
 } // namespace ffmpeg

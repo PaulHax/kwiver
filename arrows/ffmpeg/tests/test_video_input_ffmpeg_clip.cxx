@@ -12,7 +12,7 @@
 #include <arrows/ffmpeg/ffmpeg_video_input.h>
 #include <arrows/ffmpeg/ffmpeg_video_input_clip.h>
 
-#include <vital/plugin_loader/plugin_manager.h>
+#include <vital/plugin_management/plugin_manager.h>
 
 #include <filesystem>
 
@@ -113,7 +113,9 @@ public:
 // ----------------------------------------------------------------------------
 TEST_F ( ffmpeg_video_input_clip, create )
 {
-  EXPECT_NE( nullptr, kv::algo::video_input::create( "ffmpeg_clip" ) );
+  EXPECT_NE(
+    nullptr,
+    kv::create_algorithm< kv::algo::video_input >( "ffmpeg_clip" ) );
 }
 
 // ----------------------------------------------------------------------------
