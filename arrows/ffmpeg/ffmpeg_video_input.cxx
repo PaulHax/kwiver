@@ -95,8 +95,6 @@ struct ffmpeg_klv_stream
   klv::klv_demuxer demuxer;
   klv::klv_muxer muxer;
   uint64_t timeline_retention;
-
-  constexpr static uint64_t default_timeline_retention = 5000000; // 5 seconds
 };
 
 // ----------------------------------------------------------------------------
@@ -109,7 +107,7 @@ ffmpeg_klv_stream
     timeline{},
     demuxer( timeline ),
     muxer( timeline ),
-    timeline_retention{ default_timeline_retention }
+    timeline_retention{ ffmpeg_video_input::default_timeline_retention }
 {
   if( !stream )
   {
@@ -456,7 +454,12 @@ public:
     std::map< int64_t, int64_t > packet_pos_to_dts;
     int64_t prev_frame_dts;
     int64_t prev_video_dts;
+
     std::multimap< int64_t, packet_uptr > lookahead;
+    typename std::multimap< int64_t, packet_uptr >::iterator first_video_it;
+    std::vector< int64_t > most_recent_dts;
+    size_t video_packet_count;
+
     std::list< packet_uptr > raw_image_buffer;
 
     std::list< ffmpeg_klv_stream > klv_streams;
@@ -475,15 +478,29 @@ public:
 
   hardware_device_context_uptr hardware_device_context;
 
-  bool klv_enabled;
-  bool audio_enabled;
-  bool use_misp_timestamps;
-  bool smooth_klv_packets;
-  std::string unknown_stream_behavior;
-  std::string filter_description;
-  uint64_t retain_klv_duration;
-  bool cuda_enabled;
-  int cuda_device_index;
+  bool
+  klv_enabled() const { return parent.get_klv_enabled(); }
+  bool
+  audio_enabled() const { return parent.get_audio_enabled(); }
+  bool
+  use_misp_timestamps() const { return parent.get_use_misp_timestamps(); }
+  bool
+  smooth_klv_packets()  const { return parent.get_smooth_klv_packets(); }
+
+  std::string
+  unknown_stream_behavior() const
+  {
+    return parent.get_unknown_stream_behavior();
+  }
+
+  const std::string&
+  filter_description() const { return parent.get_filter_desc(); }
+  uint64_t
+  retain_klv_duration() const { return parent.get_retain_klv_duration(); }
+  bool
+  cuda_enabled() const { return parent.get_cuda_enabled(); }
+  int
+  cuda_device_index() const { return parent.get_cuda_device_index(); }
 
   std::optional< open_video_state > video;
 
@@ -511,19 +528,6 @@ ffmpeg_video_input::priv
   : parent( parent ),
     logger{ kv::get_logger( "ffmpeg_video_input" ) },
     hardware_device_context{ nullptr },
-    klv_enabled{ true },
-    audio_enabled{ true },
-    use_misp_timestamps{ false },
-    smooth_klv_packets{ false },
-    unknown_stream_behavior{ "klv" },
-    filter_description{ "yadif=deint=1" },
-    retain_klv_duration{ ffmpeg_klv_stream::default_timeline_retention },
-#ifdef KWIVER_ENABLE_FFMPEG_CUDA
-    cuda_enabled{ true },
-#else
-    cuda_enabled{ false },
-#endif
-    cuda_device_index{ 0 },
     video{}
 {}
 
@@ -583,7 +587,7 @@ void
 ffmpeg_video_input::priv
 ::hardware_init()
 {
-  if( !hardware_device_context && cuda_enabled )
+  if( !hardware_device_context && cuda_enabled() )
   {
     try
     {
@@ -603,7 +607,7 @@ ffmpeg_video_input::priv
 {
 #ifdef KWIVER_ENABLE_FFMPEG_CUDA
   hardware_device_context =
-    std::move( cuda_create_context( cuda_device_index ) );
+    std::move( cuda_create_context( cuda_device_index() ) );
 #else
   LOG_DEBUG(
     logger,
@@ -799,11 +803,11 @@ ffmpeg_video_input::priv::frame_state
   }
   metadata.emplace();
 
-  if( parent->parent->klv_enabled )
+  if( parent->parent->klv_enabled() )
   {
     // Find MISP timestamp for this frame
     uint64_t misp_timestamp = 0;
-    if( parent->parent->use_misp_timestamps )
+    if( parent->parent->use_misp_timestamps() )
     {
       auto const it =
         parent->pts_to_misp_ts.find( frame->best_effort_timestamp );
@@ -825,7 +829,9 @@ ffmpeg_video_input::priv::frame_state
       auto const timestamp =
         misp_timestamp ? misp_timestamp : stream.demuxer.frame_time();
       auto stream_metadata =
-        stream.vital_metadata( timestamp, parent->parent->smooth_klv_packets );
+        stream.vital_metadata(
+          timestamp,
+          parent->parent->smooth_klv_packets() );
       stream_metadata->add< kv::VITAL_META_UNIX_TIMESTAMP_SOURCE >(
         misp_timestamp ? "misp" : "klv" );
 
@@ -934,6 +940,9 @@ ffmpeg_video_input::priv::open_video_state
     prev_frame_dts{ AV_NOPTS_VALUE },
     prev_video_dts{ AV_NOPTS_VALUE },
     lookahead{},
+    first_video_it{ lookahead.end() },
+    most_recent_dts{},
+    video_packet_count{ 0 },
     raw_image_buffer{},
     klv_streams{},
     all_metadata{ nullptr },
@@ -990,17 +999,17 @@ ffmpeg_video_input::priv::open_video_state
         }
         video_stream = stream;
       }
-      else if( parent.klv_enabled &&
+      else if( parent.klv_enabled() &&
                params->codec_id == AV_CODEC_ID_SMPTE_KLV )
       {
         klv_streams.emplace_back( stream );
       }
-      else if( parent.klv_enabled &&
+      else if( parent.klv_enabled() &&
                params->codec_id == AV_CODEC_ID_NONE )
       {
         if( ( params->codec_type == AVMEDIA_TYPE_DATA ||
               params->codec_type == AVMEDIA_TYPE_UNKNOWN ) &&
-            parent.unknown_stream_behavior == "klv" )
+            parent.unknown_stream_behavior() == "klv" )
         {
           LOG_INFO(
             logger,
@@ -1013,10 +1022,20 @@ ffmpeg_video_input::priv::open_video_state
         }
       }
       else if(
-        parent.audio_enabled &&
+        parent.audio_enabled() &&
         params->codec_type == AVMEDIA_TYPE_AUDIO )
       {
-        audio_streams.emplace_back( stream );
+        if( stream->codecpar->frame_size > 0 )
+        {
+          audio_streams.emplace_back( stream );
+        }
+        else
+        {
+          LOG_WARN(
+            logger,
+            "Ignoring audio stream " << stream->index
+                                     << " due to unknown codec parameters" );
+        }
       }
     }
 
@@ -1045,12 +1064,12 @@ ffmpeg_video_input::priv::open_video_state
   av_dump_format(
     format_context.get(), video_stream->index, path.c_str(), 0 );
 
-  if( parent.klv_enabled )
+  if( parent.klv_enabled() )
   {
     LOG_INFO( logger, "Found " << klv_streams.size() << " KLV stream(s)" );
     for( auto& klv_stream : klv_streams )
     {
-      klv_stream.timeline_retention = parent.retain_klv_duration;
+      klv_stream.timeline_retention = parent.retain_klv_duration();
     }
   }
 
@@ -1225,8 +1244,8 @@ ffmpeg_video_input::priv::open_video_state
 {
   // Check for empty filter string
   if( std::all_of(
-    parent->filter_description.begin(),
-    parent->filter_description.end(), isspace ) )
+    parent->filter_description().begin(),
+    parent->filter_description().end(), isspace ) )
   {
     return;
   }
@@ -1286,7 +1305,7 @@ ffmpeg_video_input::priv::open_video_state
     auto output_ptr = output.release();
     auto const err =
       avfilter_graph_parse_ptr(
-        filter_graph.get(), parent->filter_description.c_str(),
+        filter_graph.get(), parent->filter_description().c_str(),
         &input_ptr, &output_ptr, NULL );
     avfilter_inout_free( &input_ptr );
     avfilter_inout_free( &output_ptr );
@@ -1324,34 +1343,18 @@ ffmpeg_video_input::priv::open_video_state
   std::vector< int64_t > video_pos_list;
   while( !frame.has_value() && !at_eof )
   {
-    // We need at least one video packet before we could expect another frame
-    auto first_video_it = lookahead.end();
-
-    // We want to make sure each stream has caught up before actually using the
-    // next video packet
-    std::vector< int64_t > most_recent_dts(
-      format_context->nb_streams, AV_NOPTS_VALUE );
-
-    // Take stock of packets we have in storage
-    for( auto it = lookahead.begin(); it != lookahead.end(); ++it )
-    {
-      most_recent_dts.at( it->second->stream_index ) =
-        std::max(
-          most_recent_dts.at( it->second->stream_index ), it->first );
-      if( first_video_it == lookahead.end() &&
-          it->second->stream_index == video_stream->index )
-      {
-        first_video_it = it;
-      }
-    }
-
     // Functor determining if we need to parse more of other streams before
     // continuing with decoding the video
     auto const looked_ahead_enough =
-      [ this, &most_recent_dts, &first_video_it ]() -> bool {
+      [ this ]() -> bool {
         if( first_video_it == lookahead.end() )
         {
           return false;
+        }
+
+        if( video_packet_count >= 30 )
+        {
+          return true;
         }
 
         auto const first_video_pts =
@@ -1462,17 +1465,19 @@ ffmpeg_video_input::priv::open_video_state
           packet->dts,
           format_context->streams[ packet->stream_index ]->time_base,
           AVRational{ 1, AV_TIME_BASE } );
-      for( auto& stream : klv_streams )
+      if( packet_dts == AV_NOPTS_VALUE )
       {
-        if( packet->stream_index != stream.stream->index ||
-            stream.settings().type != klv::KLV_STREAM_TYPE_ASYNC )
+        for( auto& stream : klv_streams )
         {
-          continue;
-        }
+          if( packet->stream_index != stream.stream->index )
+          {
+            continue;
+          }
 
-        packet_dts =
-          lookahead.empty() ? 0 : std::prev( lookahead.end() )->first;
-        break;
+          packet_dts =
+            lookahead.empty() ? 0 : std::prev( lookahead.end() )->first;
+          break;
+        }
       }
 
       // Put the packet in the lookahead buffer
@@ -1485,10 +1490,13 @@ ffmpeg_video_input::priv::open_video_state
       most_recent_dts.at( it->second->stream_index ) =
         std::max(
           packet_dts, most_recent_dts.at( it->second->stream_index ) );
-      if( first_video_it == lookahead.end() &&
-          it->second->stream_index == video_stream->index )
+      if( it->second->stream_index == video_stream->index )
       {
-        first_video_it = it;
+        ++video_packet_count;
+        if( first_video_it == lookahead.end() )
+        {
+          first_video_it = it;
+        }
       }
     }
 
@@ -1505,8 +1513,14 @@ ffmpeg_video_input::priv::open_video_state
     if( first_video_it != lookahead.end() )
     {
       packet = std::move( first_video_it->second );
-      lookahead.erase( first_video_it );
-      first_video_it = lookahead.end();
+      first_video_it = lookahead.erase( first_video_it );
+      while(
+        first_video_it != lookahead.end() &&
+        first_video_it->second->stream_index != video_stream->index )
+      {
+        ++first_video_it;
+      }
+      --video_packet_count;
       video_pos_list.emplace_back( packet->pos );
 
       // Record packet as raw image
@@ -1756,6 +1770,9 @@ ffmpeg_video_input::priv::open_video_state
   prev_frame_dts = AV_NOPTS_VALUE;
   prev_video_dts = AV_NOPTS_VALUE;
   lookahead.clear();
+  first_video_it = lookahead.end();
+  most_recent_dts.assign( format_context->nb_streams, AV_NOPTS_VALUE );
+  video_packet_count = 0;
   raw_image_buffer.clear();
   lookahead_at_eof = false;
   at_eof = false;
@@ -1854,7 +1871,7 @@ ffmpeg_video_input::priv::open_video_state
         ( mode != SEEK_MODE_EXACT && frame && frame->frame->key_frame &&
           this->frame_number() <= frame_number ) )
     {
-      if( parent->klv_enabled && advance_count <= 1 && false )
+      if( parent->klv_enabled() && advance_count <= 1 && false )
       {
         auto const chosen_frame_number = this->frame_number();
         converted_timestamp =
@@ -2260,10 +2277,11 @@ ffmpeg_video_input::priv::open_video_state
 }
 
 // ----------------------------------------------------------------------------
+void
 ffmpeg_video_input
-::ffmpeg_video_input()
-  : d( new priv( *this ) )
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
   attach_logger( "ffmpeg_video_input" );
   d->logger = logger();
 
@@ -2290,77 +2308,10 @@ ffmpeg_video_input
 }
 
 // ----------------------------------------------------------------------------
-kv::config_block_sptr
-ffmpeg_video_input
-::get_configuration() const
-{
-  // Get base config from base class
-  kv::config_block_sptr config =
-    kva::video_input::get_configuration();
-
-  config->set_value(
-    "filter_desc", d->filter_description,
-    "A string describing the libavfilter pipeline to apply when reading "
-    "the video.  Only filters that operate on each frame independently "
-    "will currently work.  The default \"yadif=deint=1\" filter applies "
-    "deinterlacing only to frames which are interlaced.  "
-    "See details at https://ffmpeg.org/ffmpeg-filters.html" );
-
-  config->set_value(
-    "klv_enabled", d->klv_enabled,
-    "When set to false, will not attempt to process any KLV metadata found in "
-    "the video file. This may be useful if only processing imagery."
-  );
-
-  config->set_value(
-    "audio_enabled", d->audio_enabled,
-    "When set to false, will not attempt to pass along any audio streams found "
-    "in the video file. This may be useful if no transcoding is to be done, or "
-    "if audio is to be dropped."
-  );
-
-  config->set_value(
-    "use_misp_timestamps", d->use_misp_timestamps,
-    "When set to true, will attempt to use correlate KLV packet data to "
-    "frames using the MISP timestamps embedding in the frame packets. This is "
-    "technically the correct way to decode KLV, but the frame timestamps are "
-    "wrongly encoded so often in real-world data that it is turned off by "
-    "default. When turned off, the frame timestamps are emulated by looking "
-    "at the KLV packets near each frame." );
-
-  config->set_value(
-    "smooth_klv_packets", d->smooth_klv_packets,
-    "When set to true, will output 'smoothed' KLV packets: one packet for each "
-    "standard for each frame with the current value of every existing tag. "
-    "Otherwise, will report packets as they appear in the source video." );
-
-  config->set_value(
-    "unknown_stream_behavior", d->unknown_stream_behavior,
-    "Set to 'klv' to treat unknown streams as KLV. "
-    "Set to 'ignore' to ignore unknown streams (default)." );
-
-  config->set_value(
-    "retain_klv_duration", d->retain_klv_duration,
-    "Number of microseconds of past KLV to retain in case of backwards "
-    "timestamp jumps. Defaults to 5000000." );
-
-  config->set_value(
-    "cuda_enabled", d->cuda_enabled,
-    "When set to true, uses CUDA/CUVID to accelerate video decoding." );
-
-  config->set_value(
-    "cuda_device_index", d->cuda_device_index,
-    "Integer index of the CUDA-enabled device to use for decoding. "
-    "Defaults to 0." );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
 // Set this algorithm's properties via a config block
 void
 ffmpeg_video_input
-::set_configuration( kv::config_block_sptr in_config )
+::set_configuration_internal( kv::config_block_sptr in_config )
 {
   if( d->is_open() )
   {
@@ -2377,46 +2328,12 @@ ffmpeg_video_input
   kv::config_block_sptr config = get_configuration();
   config->merge_config( in_config );
 
-  d->filter_description =
-    config->get_value< std::string >(
-      "filter_desc", d->filter_description );
-
-  d->klv_enabled =
-    config->get_value< bool >( "klv_enabled", d->klv_enabled );
-
-  d->audio_enabled =
-    config->get_value< bool >( "audio_enabled", d->audio_enabled );
-
-  d->use_misp_timestamps =
-    config->get_value< bool >(
-      "use_misp_timestamps", d->use_misp_timestamps );
-
-  d->smooth_klv_packets =
-    config->get_value< bool >(
-      "smooth_klv_packets", d->smooth_klv_packets );
-
-  d->unknown_stream_behavior =
-    config->get_value< std::string >(
-      "unknown_stream_behavior", d->unknown_stream_behavior );
-
-  d->retain_klv_duration =
-    config->get_value< uint64_t >(
-      "retain_klv_duration", d->retain_klv_duration );
-
-  d->cuda_enabled =
-    config->get_value< bool >(
-      "cuda_enabled", d->cuda_enabled );
-
-  if( !d->cuda_enabled && d->hardware_device() &&
+  if( !d->cuda_enabled() && d->hardware_device() &&
       d->hardware_device()->type == AV_HWDEVICE_TYPE_CUDA )
   {
     // Turn off the active CUDA instance
     d->hardware_device_context.reset();
   }
-
-  d->cuda_device_index =
-    config->get_value< int >(
-      "cuda_device_index", d->cuda_device_index );
 }
 
 // ----------------------------------------------------------------------------

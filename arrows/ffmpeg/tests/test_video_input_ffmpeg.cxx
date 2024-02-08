@@ -13,7 +13,7 @@
 
 #include <vital/exceptions/io.h>
 #include <vital/exceptions/video.h>
-#include <vital/plugin_loader/plugin_manager.h>
+#include <vital/plugin_management/plugin_manager.h>
 
 #include <kwiversys/SystemTools.hxx>
 
@@ -65,7 +65,9 @@ public:
 // ----------------------------------------------------------------------------
 TEST_F ( ffmpeg_video_input, create )
 {
-  EXPECT_NE( nullptr, algo::video_input::create( "ffmpeg" ) );
+  EXPECT_NE(
+    nullptr,
+    kwiver::vital::create_algorithm< algo::video_input >( "ffmpeg" ) );
 }
 
 // ----------------------------------------------------------------------------
