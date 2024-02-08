@@ -43,5 +43,5 @@ add_test(
 )
 add_test(
   NAME Python::demo_python_impl_call
-  COMMAND ${PYTHON_EXECUTABLE} ${KWIVER_BINARY_DIR}/bin/demo_python_impl_call.py
+  COMMAND ${Python_EXECUTABLE} ${KWIVER_BINARY_DIR}/bin/demo_python_impl_call.py
 )
