@@ -48,7 +48,9 @@ TEST_F ( pointcloud_io, create )
 {
   kv::plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE( nullptr, kv::algo::pointcloud_io::create( "pdal" ) );
+  EXPECT_NE(
+    nullptr,
+    kv::create_algorithm< kv::algo::pointcloud_io >( "pdal" ) );
 }
 
 TEST_F ( pointcloud_io, load )
