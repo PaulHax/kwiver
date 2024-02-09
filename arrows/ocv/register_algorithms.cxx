@@ -102,9 +102,11 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 //  // Conditional algorithms
 //  // Source ``KWIVER_OCV_HAS_*`` symbol definitions can be found in the header
 //  //  files of the algorithms referred to.
-// #ifdef KWIVER_OCV_HAS_AGAST
-//  reg.register_algorithm< detect_features_AGAST >();
-// #endif
+#ifdef KWIVER_OCV_HAS_AGAST
+  fact = vpm.add_factory< vital::algo::detect_features,
+    detect_features_AGAST >( "ocv_AGAST" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+#endif
 //
 // #ifdef KWIVER_OCV_HAS_BRIEF
 //  reg.register_algorithm< extract_descriptors_BRIEF >();

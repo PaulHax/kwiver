@@ -57,13 +57,6 @@ public:
   print_info(
     vital::track_set_sptr track_set,
     stream_t& stream = std::cout ) const override;
-
-private:
-  void initialize() override;
-  /// private implementation class
-  class priv;
-
-  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace ocv

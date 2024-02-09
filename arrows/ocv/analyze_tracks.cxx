@@ -26,53 +26,27 @@ namespace arrows {
 
 namespace ocv {
 
-/// Private implementation class
-class analyze_tracks::priv
+namespace {
+
+std::vector< int >
+frames_to_compare_vec( std::string frames_to_compare_str )
 {
-public:
-  /// Constructor
-  priv( analyze_tracks& parent )
-    : parent( parent )
-  {}
+  std::vector< int > value;
+  std::stringstream ss( frames_to_compare_str );
+  int next_int;
 
-  /// Destructor
-  ~priv()
-  {}
-
-  /// Text output parameters
-  bool
-  output_summary() const { return parent.get_output_summary(); }
-  bool
-  output_pt_matrix() const { return parent.get_output_pt_matrix(); }
-
-  std::vector< int >
-  frames_to_compare() const
+  while( ss >> next_int )
   {
-    std::vector< int > value;
-    std::stringstream ss( parent.get_frames_to_compare() );
-    int next_int;
-
-    while( ss >> next_int )
+    value.push_back( next_int );
+    if( ss.peek() == ',' )
     {
-      value.push_back( next_int );
-      if( ss.peek() == ',' )
-      {
-        ss.ignore();
-      }
+      ss.ignore();
     }
-    return value;
   }
-
-  analyze_tracks& parent;
-};
-
-/// Constructor
-void
-analyze_tracks
-::initialize()
-{
-  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
+  return value;
 }
+
+} // namespace
 
 /// Destructor
 analyze_tracks
@@ -95,7 +69,7 @@ analyze_tracks
   stream_t& stream ) const
 {
   // Early exist case
-  if( !d_->output_pt_matrix() && !d_->output_summary() )
+  if( !this->get_output_pt_matrix() && !this->get_output_summary() )
   {
     return;
   }
@@ -112,9 +86,10 @@ analyze_tracks
   const frame_id_t last_frame = track_set->last_frame();
   const frame_id_t total_frames = last_frame - first_frame + 1;
 
-  auto frames_to_compare = d_->frames_to_compare();
+  auto frames_to_compare =
+    frames_to_compare_vec( this->get_frames_to_compare() );
   // Output percent tracked matrix
-  if( d_->output_pt_matrix() )
+  if( this->get_output_pt_matrix() )
   {
     stream << std::endl;
     stream << "        Percent of Features Tracked Matrix         " <<
@@ -163,13 +138,13 @@ analyze_tracks
   }
 
   // Output matrix if enabled
-  if( d_->output_pt_matrix() )
+  if( this->get_output_pt_matrix() )
   {
     stream << data << std::endl;
   }
 
   // Output number of tracks in stream
-  if( d_->output_summary() )
+  if( this->get_output_summary() )
   {
     stream << std::endl;
     stream << "Track Set Properties" << std::endl;

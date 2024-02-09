@@ -26,28 +26,42 @@ class KWIVER_ALGO_OCV_EXPORT detect_features_AGAST
   : public ocv::detect_features
 {
 public:
-  PLUGIN_INFO(
-    "ocv_AGAST",
-    "OpenCV feature detection via the AGAST algorithm" )
+  PLUGGABLE_IMPL(
+    detect_features_AGAST,
+    "OpenCV feature detection via the AGAST algorithm",
 
-  /// Constructor
-  detect_features_AGAST();
+    PARAM_DEFAULT(
+      threshold, int,
+      "Integer threshold on difference between intensity of "
+      "the central pixel and pixels of a circle around this "
+      "pixel", 10 ),
+
+    PARAM_DEFAULT(
+      nonmax_suppression, bool,
+      "if true, non-maximum suppression is applied to "
+      "detected corners (keypoints)", true ),
+
+    PARAM_DEFAULT(
+      type, int,
+      "Neighborhood pattern type. Should be one of the "
+      "following enumeration type values:\n" +
+      list_agast_types +  " (default)",
+      static_cast< int >( cv::AgastFeatureDetector::OAST_9_16 )
+    )
+
+  );
 
   /// Destructor
   virtual ~detect_features_AGAST();
 
-  /// Get this algorithm's \link kwiver::vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
-  /// Check that the algorithm's configuration vital::config_block is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
 private:
-  class priv;
+  void initialize() override;
+  void set_configuration_internal( vital::config_block_sptr config ) override;
+  void update_detector_parameters() const override;
 
-  std::unique_ptr< priv > const p_;
+  static const std::string list_agast_types;
 };
 
 #define KWIVER_OCV_HAS_AGAST
