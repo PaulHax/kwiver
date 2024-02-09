@@ -5,9 +5,9 @@ set(CMAKE_FOLDER "Arrows/OCV")
 
 set( ocv_headers_public
   analyze_tracks.h
-  #camera_intrinsics.h
-  #descriptor_set.h
-  #detect_features.h
+  camera_intrinsics.h
+  descriptor_set.h
+  detect_features.h
   #detect_features_AGAST.h
   #detect_features_FAST.h
   #detect_features_GFTT.h
@@ -28,7 +28,7 @@ set( ocv_headers_public
   #extract_descriptors_FREAK.h
   #extract_descriptors_LATCH.h
   #extract_descriptors_LUCID.h
-  #feature_set.h
+  feature_set.h
   #feature_detect_extract_BRISK.h
   #feature_detect_extract_ORB.h
   #feature_detect_extract_SIFT.h
@@ -60,9 +60,9 @@ kwiver_install_headers(
 
 set( ocv_sources
   analyze_tracks.cxx
-  #camera_intrinsics.cxx
-  #descriptor_set.cxx
-  #detect_features.cxx
+  camera_intrinsics.cxx
+  descriptor_set.cxx
+  detect_features.cxx
   #detect_features_AGAST.cxx
   #detect_features_FAST.cxx
   #detect_features_GFTT.cxx
@@ -85,7 +85,7 @@ set( ocv_sources
   #extract_descriptors_LUCID.cxx
   #detect_heat_map.cxx
   #hough_circle_detector.cxx
-  #feature_set.cxx
+  feature_set.cxx
   #feature_detect_extract_BRISK.cxx
   #feature_detect_extract_ORB.cxx
   #feature_detect_extract_SIFT.cxx
