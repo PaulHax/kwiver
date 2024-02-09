@@ -335,4 +335,6 @@ name = { nullptr, kwiver::vital::detail::KwiverEmptyDeleter< type > }
   *this ), kwiver::vital::detail::KwiverDefaultDeleter< type > )
 // ----------------------------------------------------------------------------
 
+#define KWIVER_STRINGIFY( x ) #x
+
 #endif // PLUGGABLE_MACRO_MAGIC_H
