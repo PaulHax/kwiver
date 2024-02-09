@@ -11,7 +11,6 @@
 #include <arrows/ffmpeg/ffmpeg_video_input.h>
 #include <arrows/tests/test_video_input.h>
 
-#include <vital/algo/algorithm.txx>
 #include <vital/exceptions/io.h>
 #include <vital/exceptions/video.h>
 #include <vital/plugin_management/plugin_manager.h>
@@ -68,7 +67,7 @@ TEST_F ( ffmpeg_video_input, create )
 {
   EXPECT_NE(
     nullptr,
-    kv::create_algorithm< kv::algo::video_input >( "ffmpeg" ) );
+    kwiver::vital::create_algorithm< algo::video_input >( "ffmpeg" ) );
 }
 
 // ----------------------------------------------------------------------------
@@ -510,7 +509,6 @@ TEST_F ( ffmpeg_video_input, sync_metadata )
 TEST_F ( ffmpeg_video_input, empty_filter_desc )
 {
   ffmpeg::ffmpeg_video_input input;
-
   auto config = input.get_configuration();
   // make the avfilter pipeline empty
   config->set_value( "filter_desc", "" );

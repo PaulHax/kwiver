@@ -113,7 +113,9 @@ public:
 // ----------------------------------------------------------------------------
 TEST_F ( ffmpeg_video_input_clip, create )
 {
-  EXPECT_NE( nullptr, kv::algo::video_input::create( "ffmpeg_clip" ) );
+  EXPECT_NE(
+    nullptr,
+    kv::create_algorithm< kv::algo::video_input >( "ffmpeg_clip" ) );
 }
 
 // ----------------------------------------------------------------------------

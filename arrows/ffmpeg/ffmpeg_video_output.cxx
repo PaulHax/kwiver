@@ -159,19 +159,25 @@ public:
 
   hardware_device_context_uptr hardware_device_context;
 
-  size_t width() { return parent.get_width(); }
-  size_t height() { return parent.get_height(); }
+  size_t
+  width()  const { return parent.get_width(); }
+  size_t
+  height() const { return parent.get_height(); }
 
   AVRational
-  frame_rate()
+  frame_rate() const
   {
     return { parent.get_frame_rate_num(), parent.get_frame_rate_den() };
   }
 
-  std::string codec_name() { return parent.get_codec_name(); }
-  size_t bitrate() { return parent.get_bitrate(); }
-  bool cuda_enabled() { return parent.get_cuda_enabled(); }
-  int cuda_device_index() { return parent.get_cuda_device_index(); }
+  std::string
+  codec_name() const { return parent.get_codec_name(); }
+  size_t
+  bitrate() const { return parent.get_bitrate(); }
+  bool
+  cuda_enabled() const { return parent.get_cuda_enabled(); }
+  int
+  cuda_device_index() const { return parent.get_cuda_device_index(); }
 
   ffmpeg_video_output& parent;
 
@@ -182,7 +188,8 @@ public:
 ffmpeg_video_output::impl
 ::impl( ffmpeg_video_output& parent )
   : logger{},
-    parent( parent )
+    parent( parent ),
+    video{}
 {
   ffmpeg_init();
 }
@@ -297,7 +304,7 @@ ffmpeg_video_output::~ffmpeg_video_output()
 // ----------------------------------------------------------------------------
 void
 ffmpeg_video_output
-::set_configuration_internal( [[maybe_unused]] kv::config_block_sptr config )
+::set_configuration_internal( VITAL_UNUSED kv::config_block_sptr config )
 {
   if( !this->c_cuda_enabled && d->hardware_device() &&
       d->hardware_device()->type == AV_HWDEVICE_TYPE_CUDA )
@@ -310,7 +317,7 @@ ffmpeg_video_output
 // ----------------------------------------------------------------------------
 bool
 ffmpeg_video_output
-::check_configuration( [[maybe_unused]] kv::config_block_sptr config ) const
+::check_configuration( VITAL_UNUSED kv::config_block_sptr config ) const
 {
   return true;
 }
@@ -375,7 +382,7 @@ ffmpeg_video_output
 // ----------------------------------------------------------------------------
 void
 ffmpeg_video_output
-::add_metadata( [[maybe_unused]] kwiver::vital::metadata const& md )
+::add_metadata( VITAL_UNUSED kwiver::vital::metadata const& md )
 {
   // TODO
 }
@@ -669,7 +676,7 @@ void
 ffmpeg_video_output::impl::open_video_state
 ::add_image(
   kv::image_container_sptr const& image,
-  [[maybe_unused]] kv::timestamp const& ts )
+  VITAL_UNUSED kv::timestamp const& ts )
 {
   // Create frame object to represent incoming image
   frame_uptr frame{

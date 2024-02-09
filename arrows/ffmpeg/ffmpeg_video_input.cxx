@@ -95,8 +95,6 @@ struct ffmpeg_klv_stream
   klv::klv_demuxer demuxer;
   klv::klv_muxer muxer;
   uint64_t timeline_retention;
-
-  constexpr static uint64_t default_timeline_retention = 5000000; // 5 seconds
 };
 
 // ----------------------------------------------------------------------------
@@ -109,7 +107,7 @@ ffmpeg_klv_stream
     timeline{},
     demuxer( timeline ),
     muxer( timeline ),
-    timeline_retention{ default_timeline_retention }
+    timeline_retention{ ffmpeg_video_input::default_timeline_retention }
 {
   if( !stream )
   {
@@ -480,22 +478,29 @@ public:
 
   hardware_device_context_uptr hardware_device_context;
 
-  // configuration parameters
-  bool klv_enabled() { return parent.c_klv_enabled; }
-  bool audio_enabled() { return parent.c_audio_enabled; }
-  bool use_misp_timestamps() { return parent.c_use_misp_timestamps; }
-  bool smooth_klv_packets() { return parent.c_smooth_klv_packets; }
+  bool
+  klv_enabled() const { return parent.get_klv_enabled(); }
+  bool
+  audio_enabled() const { return parent.get_audio_enabled(); }
+  bool
+  use_misp_timestamps() const { return parent.get_use_misp_timestamps(); }
+  bool
+  smooth_klv_packets()  const { return parent.get_smooth_klv_packets(); }
 
-  const std::string&
-  unknown_stream_behavior()
+  std::string
+  unknown_stream_behavior() const
   {
-    return parent.c_unknown_stream_behavior;
+    return parent.get_unknown_stream_behavior();
   }
 
-  const std::string& filter_description() { return parent.c_filter_desc; }
-  uint64_t retain_klv_duration() { return parent.c_retain_klv_duration; }
-  bool cuda_enabled() { return parent.c_cuda_enabled; }
-  int cuda_device_index() { return parent.c_cuda_device_index; }
+  const std::string&
+  filter_description() const { return parent.get_filter_desc(); }
+  uint64_t
+  retain_klv_duration() const { return parent.get_retain_klv_duration(); }
+  bool
+  cuda_enabled() const { return parent.get_cuda_enabled(); }
+  int
+  cuda_device_index() const { return parent.get_cuda_device_index(); }
 
   std::optional< open_video_state > video;
 
@@ -602,7 +607,7 @@ ffmpeg_video_input::priv
 {
 #ifdef KWIVER_ENABLE_FFMPEG_CUDA
   hardware_device_context =
-    std::move( cuda_create_context( cuda_device_index ) );
+    std::move( cuda_create_context( cuda_device_index() ) );
 #else
   LOG_DEBUG(
     logger,
@@ -2302,10 +2307,11 @@ ffmpeg_video_input
   close();
 }
 
+// ----------------------------------------------------------------------------
 // Set this algorithm's properties via a config block
 void
 ffmpeg_video_input
-::set_configuration_internal( [[maybe_unused]] kv::config_block_sptr in_config )
+::set_configuration_internal( kv::config_block_sptr in_config )
 {
   if( d->is_open() )
   {
@@ -2314,7 +2320,15 @@ ffmpeg_video_input
       "Cannot change video configuration while video is open" );
   }
 
-  if( !this->c_cuda_enabled && d->hardware_device() &&
+  // Starting with our generated kv::config_block to ensure that assumed
+  // values are present
+  // An alternative is to check for key presence before performing a
+  // get_value() call.
+
+  kv::config_block_sptr config = get_configuration();
+  config->merge_config( in_config );
+
+  if( !d->cuda_enabled() && d->hardware_device() &&
       d->hardware_device()->type == AV_HWDEVICE_TYPE_CUDA )
   {
     // Turn off the active CUDA instance
@@ -2325,7 +2339,7 @@ ffmpeg_video_input
 // ----------------------------------------------------------------------------
 bool
 ffmpeg_video_input
-::check_configuration( [[maybe_unused]] kv::config_block_sptr config ) const
+::check_configuration( VITAL_UNUSED kv::config_block_sptr config ) const
 {
   return true;
 }
@@ -2373,7 +2387,7 @@ bool
 ffmpeg_video_input
 ::next_frame(
   kv::timestamp& ts,
-  [[maybe_unused]] uint32_t timeout )
+  VITAL_UNUSED uint32_t timeout )
 {
   d->assert_open( "next_frame()" );
 

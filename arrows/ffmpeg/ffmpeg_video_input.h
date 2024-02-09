@@ -31,12 +31,11 @@ public:
     SEEK_MODE_KEYFRAME_BEFORE,
   };
 
-  virtual ~ffmpeg_video_input();
+  ~ffmpeg_video_input() override;
 
-public:
   PLUGGABLE_IMPL(
     ffmpeg_video_input,
-    "Use FFMPEG to read video files as a sequence of images.",
+    "Use FFmpeg to read video files as a sequence of images.",
     PARAM_DEFAULT(
       filter_desc, std::string,
       "A string describing the libavfilter pipeline to apply when reading "
@@ -80,7 +79,7 @@ public:
       retain_klv_duration, uint64_t,
       "Number of microseconds of past KLV to retain in case of backwards "
       "timestamp jumps. Defaults to 5000000.",
-      5000000 ),
+      default_timeline_retention ),
     PARAM_DEFAULT(
       cuda_enabled, bool,
       "When set to true, uses CUDA/CUVID to accelerate video decoding.",
@@ -92,7 +91,6 @@ public:
       "Defaults to 0.",
       0 ) )
 
-  /// Check that the algorithm's currently configuration is valid
   bool check_configuration( vital::config_block_sptr config ) const override;
 
   void open( std::string video_name ) override;
@@ -124,19 +122,22 @@ public:
 
   vital::video_settings_uptr implementation_settings() const override;
 
+  constexpr static uint64_t default_timeline_retention = 5000000; // 5 seconds
+
 protected:
   void initialize() override;
-  void set_configuration_internal( vital::config_block_sptr cb ) override;
+  void set_configuration_internal(
+    kwiver::vital::config_block_sptr config ) override;
 
 private:
 #ifdef KWIVER_ENABLE_FFMPEG_CUDA
-  static constexpr bool m_cuda_available = true;
+  constexpr static bool m_cuda_available = true;
 #else
-  static constexpr bool m_cuda_available = false;
+  constexpr static bool m_cuda_available = false;
 #endif
+
   /// Private implementation class
   class priv;
-
   KWIVER_UNIQUE_PTR( priv, d );
 };
 

@@ -14,6 +14,8 @@
 
 #include <vital/plugin_management/plugin_manager.h>
 
+#include <vital/algo/algorithm.txx>
+
 #include <random>
 
 kv::path_t g_data_dir;
@@ -125,6 +127,14 @@ struct _tmp_file_deleter
 } // namespace
 
 // ----------------------------------------------------------------------------
+TEST_F ( ffmpeg_video_output, create )
+{
+  EXPECT_NE(
+    nullptr,
+    kv::create_algorithm< kv::algo::video_output >( "ffmpeg" ) );
+}
+
+// ----------------------------------------------------------------------------
 // Test that reading, writing, then reading a video produces generally the
 // same result as the first time we read it.
 TEST_F ( ffmpeg_video_output, round_trip )
@@ -156,7 +166,7 @@ TEST_F ( ffmpeg_video_output, round_trip )
   auto image_epsilon = 6.5;
 
   // Hardware decoding produces a lower-quality image
-  if( is.get_cuda_enabled() )
+  if( is.get_configuration()->get_value< bool >( "cuda_enabled", false ) )
   {
     image_epsilon = 10.5;
   }
