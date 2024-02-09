@@ -14,7 +14,7 @@
 #endif
 
 // #include <arrows/ocv/analyze_tracks.h>
-// #include <arrows/ocv/detect_features_AGAST.h>
+#include <arrows/ocv/detect_features_AGAST.h>
 // #include <arrows/ocv/detect_features_FAST.h>
 // #include <arrows/ocv/detect_features_GFTT.h>
 // #include <arrows/ocv/detect_features_MSD.h>
@@ -81,6 +81,9 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 //
 //  reg.register_algorithm< detect_features_BRISK >();
 //  reg.register_algorithm< detect_features_FAST >();
+  fact = vpm.add_factory< vital::algo::detect_features,
+    detect_features_FAST >( "ocv_FAST" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
 //  reg.register_algorithm< detect_features_GFTT >();
 //  reg.register_algorithm< detect_features_MSER >();
 //  reg.register_algorithm< detect_features_ORB >();

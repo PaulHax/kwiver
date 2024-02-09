@@ -47,6 +47,11 @@ public:
 protected:
   /// the feature detector algorithm
   cv::Ptr< cv::FeatureDetector > detector;
+
+  // Make sure we use the latest parameters from the child algorithm.
+  // to be overriden by implementations
+  virtual void
+  update_detector_parameters() const {}
 };
 
 } // end namespace ocv
