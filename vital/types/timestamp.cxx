@@ -213,10 +213,12 @@ timestamp
     char* p = ctime( &tt ); // this may return null if <tt> is out of range,
     if( p )
     {
-      char buffer[ 128 ];
+      constexpr size_t BUFFER_SIZE = 128;
+      char buffer[ BUFFER_SIZE + 1 ];
       c_tim = " (";
       buffer[ 0 ] = 0;
-      strncpy( buffer, p, sizeof buffer );
+      buffer[ BUFFER_SIZE ] = 0;
+      strncpy( buffer, p, BUFFER_SIZE );
       buffer[ std::strlen( buffer ) - 1 ] = 0; // remove NL
 
       c_tim = c_tim + buffer;
