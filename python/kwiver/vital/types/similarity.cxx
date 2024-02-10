@@ -59,7 +59,7 @@ declare_similarity(
     .def_property_readonly( "rotation", &Class::rotation )
     .def_property_readonly( "translation", &Class::translation )
     .def_property_readonly(
-      "type_name", [ dtype ]( Class const& self ){
+      "type_name", [ dtype ]( Class const& /* self */ ){
         return dtype;
       } )
   ;

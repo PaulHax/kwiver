@@ -65,7 +65,7 @@ declare_essential_matrix(
         }
       } )
     .def_property_readonly(
-      "type_name", [ dtype ]( Class const& self ){
+      "type_name", [ dtype ]( Class const& /* self */ ){
         return dtype;
       } )
   ;

@@ -294,8 +294,6 @@ TEST ( mesh, compute_vertex_normals )
 // ----------------------------------------------------------------------------
 TEST ( mesh, compute_vertex_normals_from_faces )
 {
-  double threshhold = 0.000001;
-
   mesh_sptr grid_mesh = kwiver::testing::grid_mesh( 2, 3 );
   EXPECT_FALSE( grid_mesh->vertices().has_normals() );
   EXPECT_FALSE( grid_mesh->faces().has_normals() );
