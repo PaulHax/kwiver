@@ -254,6 +254,11 @@ if (KWIVER_ENABLE_TESTS)
   set(BUILD_TESTING    ON)  # needed for compatibility with kwiversys
   mark_as_advanced(BUILD_TESTING)
 
+  configure_file(
+    "${KWIVER_CMAKE_DIR}/CTestCustom.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake"
+    @ONLY)
+
   add_subdirectory( tests )
   include_directories( tests )
 endif()
