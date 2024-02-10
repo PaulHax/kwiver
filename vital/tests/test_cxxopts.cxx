@@ -27,8 +27,8 @@ TEST ( cxxopts, strings )
   std::string s = "test";
   EXPECT_EQ( cxxopts::stringLength( s ), 4 );
   EXPECT_EQ( cxxopts::stringAppend( s, "!" ), "test!" );
-  EXPECT_EQ( cxxopts::stringAppend( s, 1, '?' ), "test!?" );
-  EXPECT_EQ( cxxopts::stringAppend( s, s.rbegin(), s.rend() ), "test!??!tset" );
+  EXPECT_EQ( cxxopts::stringAppend( s, 1, '^' ), "test!^" );
+  EXPECT_EQ( cxxopts::stringAppend( s, s.rbegin(), s.rend() ), "test!^^!tset" );
   EXPECT_FALSE( cxxopts::empty( s ) );
 }
 
