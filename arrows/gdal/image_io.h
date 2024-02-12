@@ -30,14 +30,20 @@ public:
     " A class for using GDAL to read and write images. "
   )
 
-  /// Check configuration
-  bool check_configuration( vital::config_block_sptr config ) const override;
+// No configuration for this class yet
+  /// \cond DoxygenSuppress
+  virtual bool
+  check_configuration( vital::config_block_sptr /*config*/ ) const
+  {
+    return true;
+  }
+
   /// \endcond
 
 private:
   /// Implementation specific load functionality.
   ///
-  /// \param filename the path to the file the load
+  /// \param filename the path to the file to load
   /// \returns an image container refering to the loaded image
   virtual vital::image_container_sptr load_(
     const std::string& filename ) const;
