@@ -30,7 +30,7 @@ set( plugin_core_headers
   # feature_descriptor_io.h
   # filter_features_magnitude.h
   # filter_features_nonmax.h
-  # filter_features_scale.h
+  filter_features_scale.h
   # filter_tracks.h
   # handle_descriptor_request_core.h
   # initialize_object_tracks_threshold.h
@@ -107,7 +107,7 @@ set( plugin_core_sources
   # feature_descriptor_io.cxx
   # filter_features_magnitude.cxx
   # filter_features_nonmax.cxx
-  # filter_features_scale.cxx
+  filter_features_scale.cxx
   # filter_tracks.cxx
   # handle_descriptor_request_core.cxx
   # initialize_object_tracks_threshold.cxx
