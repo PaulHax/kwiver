@@ -3,7 +3,8 @@
 set -e
 
 readonly fletch_repo="https://github.com/Kitware/fletch"
-readonly fletch_commit="998bbc00e7ccb000334c6d6d21629de10b4b8b66" # snapshot at image creation time
+# snapshot of master branch on 2024.02.13
+readonly fletch_commit="3f39a6966bb94cbd03cf70f1814865d530470973"
 
 readonly fletch_root="$HOME/fletch"
 readonly fletch_src="$fletch_root/src"
@@ -13,13 +14,6 @@ readonly fletch_prefix="/opt/fletch"
 git clone "$fletch_repo" "$fletch_src"
 git -C "$fletch_src" checkout "$fletch_commit"
 
-git -C "$fletch_src" config user.name "kwiver Developers"
-git -C "$fletch_src" config user.email "kwiver-developers@kitware.com"
-
-# https://github.com/Kitware/fletch/pull/722
-git -C "$fletch_src" fetch origin refs/pull/722/head
-git -C "$fletch_src" merge --no-ff FETCH_HEAD
-
 cmake \
   -GNinja \
   -B "$fletch_build" \
@@ -28,6 +22,7 @@ cmake \
   -Dfletch_BUILD_WITH_CX11=ON \
   -Dfletch_ENABLE_Eigen=ON \
   -Dfletch_ENABLE_pybind11=ON \
+  -Dpybind11_SELECT_VERSION="2.10.3" \
   -Dfletch_ENABLE_FFmpeg=ON \
   -Dfletch_ENABLE_GTest=ON \
   -Dfletch_ENABLE_OpenCV=ON \
