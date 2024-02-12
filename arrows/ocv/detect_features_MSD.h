@@ -27,28 +27,30 @@ class KWIVER_ALGO_OCV_EXPORT detect_features_MSD
   : public ocv::detect_features
 {
 public:
-  PLUGIN_INFO(
-    "ocv_MSD",
-    "OpenCV feature detection via the MSD algorithm" )
-
-  /// Constructor
-  detect_features_MSD();
+  PLUGGABLE_IMPL(
+    detect_features_MSD,
+    "OpenCV feature detection via the MSD algorithm",
+    PARAM_DEFAULT( patch_radius, int, "patch_radius", 3 ),
+    PARAM_DEFAULT( search_area_radius, int, "search_area_radius", 5 ),
+    PARAM_DEFAULT( nms_radius, int, "nms_radius", 5 ),
+    PARAM_DEFAULT( nms_scale_radius, int, "nms_scale_radius", 0 ),
+    PARAM_DEFAULT( th_saliency, float, "th_saliency", 250.0f ),
+    PARAM_DEFAULT( knn, int, "knn", 4 ),
+    PARAM_DEFAULT( scale_factor, float, "scale_factor", 1.25f ),
+    PARAM_DEFAULT( n_scales, int, "n_scales", -1 ),
+    PARAM_DEFAULT( compute_orientation, bool, "compute_orientation", false )
+  )
 
   /// Destructor
   virtual ~detect_features_MSD();
 
-  /// Get this algorithm's \link kwiver::vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's configuration vital::config_block is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
 private:
-  class priv;
-
-  std::unique_ptr< priv > const p_;
+  void initialize() override;
+  void set_configuration_internal( vital::config_block_sptr config ) override;
+  void update_detector_parameters() const override;
 };
 
 #define KWIVER_OCV_HAS_MSD
