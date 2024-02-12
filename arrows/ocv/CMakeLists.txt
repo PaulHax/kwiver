@@ -13,7 +13,7 @@ set( ocv_headers_public
   detect_features_GFTT.h
   detect_features_MSD.h
   detect_features_MSER.h
-  #detect_features_simple_blob.h
+  detect_features_simple_blob.h
   #detect_features_STAR.h
   #detect_motion_3frame_differencing.h
   #detect_motion_mog2.h
@@ -68,7 +68,7 @@ set( ocv_sources
   detect_features_GFTT.cxx
   detect_features_MSD.cxx
   detect_features_MSER.cxx
-  #detect_features_simple_blob.cxx
+  detect_features_simple_blob.cxx
   #detect_features_STAR.cxx
   #detect_motion_3frame_differencing.cxx
   #detect_motion_mog2.cxx
