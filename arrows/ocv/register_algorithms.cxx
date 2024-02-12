@@ -20,7 +20,7 @@
 #include <arrows/ocv/detect_features_MSD.h>
 #include <arrows/ocv/detect_features_MSER.h>
 #include <arrows/ocv/detect_features_simple_blob.h>
-// #include <arrows/ocv/detect_features_STAR.h>
+#include <arrows/ocv/detect_features_STAR.h>
 // #include <arrows/ocv/draw_detected_object_set.h>
 // #include <arrows/ocv/draw_tracks.h>
 // #include <arrows/ocv/estimate_fundamental_matrix.h>
@@ -147,9 +147,11 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 //  reg.register_algorithm< extract_descriptors_SIFT >();
 // #endif
 //
-// #ifdef KWIVER_OCV_HAS_STAR
-//  reg.register_algorithm< detect_features_STAR >();
-// #endif
+#ifdef KWIVER_OCV_HAS_STAR
+  fact = vpm.add_factory< vital::algo::detect_features,
+    detect_features_STAR >( "ocv_STAR" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+#endif
 //
 // #ifdef KWIVER_OCV_HAS_SURF
 //  reg.register_algorithm< detect_features_SURF >();

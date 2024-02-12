@@ -26,109 +26,61 @@ namespace arrows {
 
 namespace ocv {
 
-class detect_features_STAR::priv
+namespace  {
+
+cv::Ptr< cv_STAR_t >
+create( const detect_features_STAR& parent )
 {
-public:
-  priv()
-    : max_size( 45 ),
-      response_threshold( 30 ),
-      line_threshold_projected( 10 ),
-      line_threshold_binarized( 8 ),
-      suppress_nonmax_size( 5 )
-  {}
-
-  cv::Ptr< cv_STAR_t >
-  create() const
-  {
 #if KWIVER_OPENCV_VERSION_MAJOR < 3
-    return cv::Ptr< cv_STAR_t >(
-      new cv_STAR_t(
-        max_size, response_threshold, line_threshold_projected,
-        line_threshold_binarized, suppress_nonmax_size )
-    );
+  return cv::Ptr< cv_STAR_t >(
+    new cv_STAR_t(
+      parent.get_max_size(), parent.get_response_threshold(),
+      parent.get_line_threshold_projected(),
+      parent.get_line_threshold_binarized(), parent.get_suppress_nonmax_size() )
+  );
 #else
-    return cv_STAR_t::create(
-      max_size, response_threshold,
-      line_threshold_projected,
-      line_threshold_binarized, suppress_nonmax_size );
+  return cv_STAR_t::create(
+    parent.get_max_size(), parent.get_response_threshold(),
+    parent.get_line_threshold_projected(),
+    parent.get_line_threshold_binarized(), parent.get_suppress_nonmax_size() );
 #endif
-  }
+}
 
-#if KWIVER_OPENCV_VERSION_MAJOR < 3
-  void
-  update( cv::Ptr< cv_STAR_t > a ) const
-  {
-    a->set( "maxSize", max_size );
-    a->set( "responseThreshold", response_threshold );
-    a->set( "lineThresholdProjected", line_threshold_projected );
-    a->set( "lineThresholdBinarized", line_threshold_binarized );
-    a->set( "suppressNonmaxSize", suppress_nonmax_size );
-  }
-#endif
+} // namespace
 
-  void
-  update_config( config_block_sptr config ) const
-  {
-    config->set_value( "max_size", max_size );
-    config->set_value( "response_threshold", response_threshold );
-    config->set_value( "line_threshold_projected", line_threshold_projected );
-    config->set_value( "line_threshold_binarized", line_threshold_binarized );
-    config->set_value( "suppress_nonmax_size", suppress_nonmax_size );
-  }
-
-  void
-  set_config( config_block_sptr config )
-  {
-    max_size = config->get_value< int >( "max_size" );
-    response_threshold = config->get_value< int >( "response_threshold" );
-    line_threshold_projected =
-      config->get_value< int >( "line_threshold_projected" );
-    line_threshold_binarized =
-      config->get_value< int >( "line_threshold_binarized" );
-    suppress_nonmax_size = config->get_value< int >( "suppress_nonmax_size" );
-  }
-
-  // Parameters
-  int max_size;
-  int response_threshold;
-  int line_threshold_projected;
-  int line_threshold_binarized;
-  int suppress_nonmax_size;
-};
-
+void
 detect_features_STAR
-::detect_features_STAR()
-  : p_( new priv )
+::initialize()
 {
   attach_logger( "arrows.ocv.star" );
-  detector = p_->create();
+  detector = create( *this );
 }
 
 detect_features_STAR
 ::~detect_features_STAR()
 {}
 
-vital::config_block_sptr
+void
 detect_features_STAR
-::get_configuration() const
+::update_detector_parameters() const
 {
-  config_block_sptr config = ocv::detect_features::get_configuration();
-  p_->update_config( config );
-  return config;
+#if KWIVER_OPENCV_VERSION_MAJOR < 3
+  cv::Ptr< cv_STAR_t > a  = detector;
+  a->set( "maxSize", max_size() );
+  a->set( "responseThreshold", response_threshold() );
+  a->set( "lineThresholdProjected", line_threshold_projected() );
+  a->set( "lineThresholdBinarized", line_threshold_binarized() );
+  a->set( "suppressNonmaxSize", suppress_nonmax_size() );
+#else
+  detector.constCast<  cv::Feature2D  >() = create( *this );
+#endif
 }
 
 void
 detect_features_STAR
-::set_configuration( vital::config_block_sptr config )
+::set_configuration_internal( VITAL_UNUSED vital::config_block_sptr config )
 {
-  config_block_sptr c = get_configuration();
-  c->merge_config( config );
-  p_->set_config( c );
-#if KWIVER_OPENCV_VERSION_MAJOR < 3
-  p_->update( detector );
-#else
-  detector = p_->create();
-#endif
+  this->update_detector_parameters();
 }
 
 bool

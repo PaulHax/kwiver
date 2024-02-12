@@ -27,28 +27,31 @@ class KWIVER_ALGO_OCV_EXPORT detect_features_STAR
   : public ocv::detect_features
 {
 public:
-  PLUGIN_INFO(
-    "ocv_STAR",
-    "OpenCV feature detection via the STAR algorithm" )
+  PLUGGABLE_IMPL(
+    detect_features_STAR,
+    "OpenCV feature detection via the STAR algorithm",
 
-  /// Constructor
-  detect_features_STAR();
+    PARAM_DEFAULT( max_size, int, "max_size", 45 ),
+    PARAM_DEFAULT( response_threshold, int, "response_threshold", 30 ),
+    PARAM_DEFAULT(
+      line_threshold_projected, int, "line_threshold_projected",
+      10 ),
+    PARAM_DEFAULT(
+      line_threshold_binarized, int, "line_threshold_binarized",
+      8 ),
+    PARAM_DEFAULT( suppress_nonmax_size, int, "suppress_nonmax_size", 5 )
+  );
 
   /// Destructor
   virtual ~detect_features_STAR();
 
-  /// Get this algorithm's \link kwiver::vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's configuration config_block is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
 private:
-  class priv;
-
-  std::unique_ptr< priv > p_;
+  void initialize() override;
+  void set_configuration_internal( vital::config_block_sptr config ) override;
+  void update_detector_parameters() const override;
 };
 
 #define KWIVER_OCV_HAS_STAR
