@@ -25,13 +25,6 @@ class KWIVER_ALGO_CORE_EXPORT filter_features_scale
   : public vital::algo::filter_features
 {
 public:
-/*
- *  PLUGIN_INFO(
- *   "scale",
- *   "Filter features using a threshold on the scale of the detected features."
- * )
- */
-
   PLUGGABLE_IMPL(
     filter_features_scale,
     "Filter features using a threshold on the scale of the detected features.",

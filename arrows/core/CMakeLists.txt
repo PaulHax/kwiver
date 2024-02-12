@@ -28,7 +28,7 @@ set( plugin_core_headers
   # estimate_canonical_transform.h
   # example_detector.h
   # feature_descriptor_io.h
-  # filter_features_magnitude.h
+  filter_features_magnitude.h
   # filter_features_nonmax.h
   filter_features_scale.h
   # filter_tracks.h
@@ -105,7 +105,7 @@ set( plugin_core_sources
   # estimate_canonical_transform.cxx
   # example_detector.cxx
   # feature_descriptor_io.cxx
-  # filter_features_magnitude.cxx
+  filter_features_magnitude.cxx
   # filter_features_nonmax.cxx
   filter_features_scale.cxx
   # filter_tracks.cxx
