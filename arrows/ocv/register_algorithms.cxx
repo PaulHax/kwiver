@@ -18,7 +18,7 @@
 #include <arrows/ocv/detect_features_FAST.h>
 #include <arrows/ocv/detect_features_GFTT.h>
 #include <arrows/ocv/detect_features_MSD.h>
-// #include <arrows/ocv/detect_features_MSER.h>
+#include <arrows/ocv/detect_features_MSER.h>
 // #include <arrows/ocv/detect_features_simple_blob.h>
 // #include <arrows/ocv/detect_features_STAR.h>
 // #include <arrows/ocv/draw_detected_object_set.h>
@@ -89,7 +89,9 @@ register_factories( kwiver::vital::plugin_loader& vpm )
   fact = vpm.add_factory< vital::algo::detect_features,
     detect_features_GFTT >( "ocv_GFTT" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
-//  reg.register_algorithm< detect_features_MSER >();
+  fact = vpm.add_factory< vital::algo::detect_features,
+    detect_features_MSER >( "ocv_MSER" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
 //  reg.register_algorithm< detect_features_ORB >();
 //  reg.register_algorithm< detect_features_simple_blob >();
 //
