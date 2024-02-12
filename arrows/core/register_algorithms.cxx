@@ -18,6 +18,7 @@
 
 // implementation
 #include <arrows/core/filter_features_magnitude.h>
+#include <arrows/core/filter_features_nonmax.h>
 #include <arrows/core/filter_features_scale.h>
 #include <arrows/core/metadata_map_io_csv.h>
 #include <arrows/core/uv_unwrap_mesh.h>
@@ -69,6 +70,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::filter_features,
     filter_features_magnitude >( "magnitude" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::filter_features,
+    filter_features_nonmax >( "nonmax" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 

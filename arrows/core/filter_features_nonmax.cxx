@@ -162,13 +162,13 @@ private:
 class filter_features_nonmax::priv
 {
 public:
-  /// Constructor
-  priv()
-    : suppression_radius( 0 ),
-      resolution( 3 ),
-      num_features_target( 500 ),
-      num_features_range( 50 )
+
+public:
+  priv( filter_features_nonmax& parent )
+    : parent( parent )
   {}
+
+  filter_features_nonmax& parent;
 
   // --------------------------------------------------------------------------
   feature_set_sptr
@@ -321,76 +321,18 @@ private:
 
 // ----------------------------------------------------------------------------
 // Constructor
+void
 filter_features_nonmax
-::filter_features_nonmax()
-  : d_( new priv )
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
   attach_logger( "arrows.core.filter_features_nonmax" );
-  d_->m_logger = logger();
 }
 
 // Destructor
 filter_features_nonmax
 ::~filter_features_nonmax()
 {}
-
-// ----------------------------------------------------------------------------
-// Get this algorithm's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-filter_features_nonmax
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config =
-    vital::algo::filter_features::get_configuration();
-
-  config->set_value(
-    "suppression_radius", d_->suppression_radius,
-    "The radius, in pixels, within which to "
-    "suppress weaker features.  This is an initial guess. "
-    "The radius is adapted to reach the desired number of "
-    "features.  If target_num_features is 0 then this radius "
-    "is not adapted." );
-
-  config->set_value(
-    "num_features_target", d_->num_features_target,
-    "The target number of features to detect. "
-    "The suppression radius is dynamically adjusted to "
-    "acheive this number of features." );
-
-  config->set_value(
-    "num_features_range", d_->num_features_range,
-    "The number of features above target_num_features to "
-    "allow in the output.  This window allows the binary "
-    "search on radius to terminate sooner." );
-
-  config->set_value(
-    "resolution", d_->resolution,
-    "The resolution (N) of the filter for computing neighbors."
-    " The filter is an (2N+1) x (2N+1) box containing a circle"
-    " of radius N. The value must be a positive integer. "
-    "Larger values are more "
-    "accurate at the cost of more memory and compute time." );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-// Set this algorithm's properties via a config block
-void
-filter_features_nonmax
-::set_configuration( vital::config_block_sptr config )
-{
-#define GET_VALUE( name, type ) \
-d_->name = config->get_value< type >(#name, d_->name )
-
-  GET_VALUE( suppression_radius, double );
-  GET_VALUE( resolution, unsigned int );
-  GET_VALUE( num_features_target, unsigned int );
-  GET_VALUE( num_features_range, unsigned int );
-
-#undef GET_VALUE
-}
 
 // ----------------------------------------------------------------------------
 // Check that the algorithm's configuration vital::config_block is valid
