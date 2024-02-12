@@ -13,10 +13,10 @@
 #include <opencv2/nonfree/nonfree.hpp>
 #endif
 
-// #include <arrows/ocv/analyze_tracks.h>
+#include <arrows/ocv/analyze_tracks.h>
 #include <arrows/ocv/detect_features_AGAST.h>
-// #include <arrows/ocv/detect_features_FAST.h>
-// #include <arrows/ocv/detect_features_GFTT.h>
+#include <arrows/ocv/detect_features_FAST.h>
+#include <arrows/ocv/detect_features_GFTT.h>
 // #include <arrows/ocv/detect_features_MSD.h>
 // #include <arrows/ocv/detect_features_MSER.h>
 // #include <arrows/ocv/detect_features_simple_blob.h>
@@ -71,7 +71,9 @@ register_factories( kwiver::vital::plugin_loader& vpm )
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
 
 // kwiver-v2 xxx(needs to be updated/adapted)
-//  reg.register_algorithm< analyze_tracks >();
+  fact = vpm.add_factory< vital::algo::analyze_tracks,
+    analyze_tracks >( "ocv" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
 //  reg.register_algorithm< draw_tracks >();
 //  reg.register_algorithm< estimate_fundamental_matrix >();
 //  reg.register_algorithm< estimate_homography >();
@@ -83,6 +85,9 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 //  reg.register_algorithm< detect_features_FAST >();
   fact = vpm.add_factory< vital::algo::detect_features,
     detect_features_FAST >( "ocv_FAST" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+  fact = vpm.add_factory< vital::algo::detect_features,
+    detect_features_GFTT >( "ocv_GFTT" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
 //  reg.register_algorithm< detect_features_GFTT >();
 //  reg.register_algorithm< detect_features_MSER >();
