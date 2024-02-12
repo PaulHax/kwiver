@@ -148,9 +148,9 @@ klv_read_int( klv_read_iter_t& data, size_t length )
       accumulator );
 
   // Extend sign bit
-  UnsignedT const result_sign_bit = 1ull << ( 8 * length - 1 );
   if constexpr( std::is_signed_v< T > )
   {
+    UnsignedT const result_sign_bit = 1ull << ( 8 * length - 1 );
     if( sizeof( T ) != length && ( result_sign_bit & result ) )
     {
       result |= ~UnsignedT{ 0 } << ( 8 * length );

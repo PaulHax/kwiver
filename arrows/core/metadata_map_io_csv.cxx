@@ -351,7 +351,8 @@ struct set_subvalue_visitor
   void
   operator()() const
   {
-    constexpr auto nan = std::numeric_limits< double >::quiet_NaN();
+    [[maybe_unused]] constexpr auto nan =
+      std::numeric_limits< double >::quiet_NaN();
     if constexpr( std::is_same_v< T, kv::geo_point > )
     {
       static T const default_value{ kv::vector_3d{ nan, nan, nan }, crs };

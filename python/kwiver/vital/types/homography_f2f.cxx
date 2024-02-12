@@ -51,10 +51,10 @@ PYBIND11_MODULE( homography_f2f, m )
     .def(
       "get",
       [](f2f_homography const& self, int r, int c){
-        auto m = self.homography()->matrix();
-        if( 0 <= r && r < m.rows() && 0 <= c && c < m.cols() )
+        auto mat = self.homography()->matrix();
+        if( 0 <= r && r < mat.rows() && 0 <= c && c < mat.cols() )
         {
-          return m( r, c );
+          return mat( r, c );
         }
         throw std::out_of_range( "Tried to perform get() out of bounds" );
       },

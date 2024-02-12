@@ -637,11 +637,11 @@ void kwiver::vital::python::image
     .def( "__getitem__", &kwiver::vital::python::image::get_pixel )
     .def_buffer( &kwiver::vital::python::image::get_buffer_info )
     .def(
-      "asarray", [](image_t& img){
+      "asarray", [](image_t& p_img){
         // It may be possible to write this method to share memory between
         // vital and numpy using the py::capsule class. For references see:
         // https://stackoverflow.com/questions/44659924/ret-nparrays-pybind11
-        py::object np_arr = kwiver::vital::python::image::asarray( img );
+        py::object np_arr = kwiver::vital::python::image::asarray( p_img );
         return np_arr;
       }, py::doc( "Copy the image into a numpy array'" ) );
 }

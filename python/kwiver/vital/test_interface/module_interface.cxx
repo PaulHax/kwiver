@@ -21,7 +21,7 @@ public:
   std::string
   says() override
   {
-    PYBIND11_OVERRIDE_PURE(
+    PYBIND11_OVERLOAD_PURE(
       std::string,
       kv::say,
       says
@@ -33,7 +33,7 @@ public:
 PYBIND11_MODULE( _interface, m )
 {
   // import pluggable python type for class definition.
-  py::module_::import( "kwiver.vital.plugins._pluggable" );
+  py::module::import( "kwiver.vital.plugins._pluggable" );
 
   py::class_<
     kv::say,

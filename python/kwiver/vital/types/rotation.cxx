@@ -104,7 +104,7 @@ declare_rotation(
         return self != other;
       } )
     .def_property_readonly(
-      "type_name", [ dtype ]( Class const& self ){
+      "type_name", [ dtype ]( Class const& /* self */ ){
         return dtype;
       } )
   ;

@@ -41,7 +41,7 @@ declare_point( py::module& m, std::string const& typestr )
   p.def_property( "value",      &Class::value,      &Class::set_value );
   p.def_property( "covariance", &Class::covariance, &Class::set_covariance );
   p.def_property_readonly(
-    "type_name", [ typestr ]( Class const& self ){
+    "type_name", [ typestr ]( Class const& /* self */ ){
       return typestr;
     } );
 }
