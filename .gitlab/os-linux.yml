@@ -11,7 +11,7 @@
     extends: .linux
     image: "kitware/kwiver:ci-ubuntu20_04-20240214"
 
-.ubuntu2004_ffmpeg_gdal_opencv_python:
+.ubuntu2004_ffmpeg_gdal_opencv_proj_python:
     extends:
         - .ubuntu2004
 
