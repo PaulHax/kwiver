@@ -14,6 +14,13 @@ readonly fletch_prefix="/opt/fletch"
 git clone "$fletch_repo" "$fletch_src"
 git -C "$fletch_src" checkout "$fletch_commit"
 
+git -C "$fletch_src" config user.name "kwiver Developers"
+git -C "$fletch_src" config user.email "kwiver-developers@kitware.com"
+
+# https://github.com/Kitware/fletch/pull/742
+git -C "$fletch_src" fetch origin refs/pull/742/head
+git -C "$fletch_src" merge --no-ff FETCH_HEAD
+
 cmake \
   -B "$fletch_build" \
   "-Dfletch_BUILD_INSTALL_PREFIX=$fletch_prefix" \
