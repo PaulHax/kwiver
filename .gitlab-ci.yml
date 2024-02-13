@@ -32,7 +32,7 @@ stages:
 
 ## Basic builds
 
-ubuntu2004-ffmpeg-opencv-python:build:
+ubuntu2004-ffmpeg-gdal-opencv-python:build:
     extends:
         - .ubuntu2004_ffmpeg_gdal_opencv_python
         - .cmake_build_linux
@@ -40,7 +40,7 @@ ubuntu2004-ffmpeg-opencv-python:build:
         - .cmake_build_artifacts
         - .rules
 
-ubuntu2004-ffmpeg-opencv-python:test:
+ubuntu2004-ffmpeg-gdal-opencv-python:test:
     extends:
         - .ubuntu2004_ffmpeg_gdal_opencv_python
         - .cmake_test_linux
