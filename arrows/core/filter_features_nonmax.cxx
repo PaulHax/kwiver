@@ -320,7 +320,6 @@ private:
 };
 
 // ----------------------------------------------------------------------------
-// Constructor
 void
 filter_features_nonmax
 ::initialize()
