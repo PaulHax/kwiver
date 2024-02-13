@@ -15,7 +15,6 @@ git clone "$fletch_repo" "$fletch_src"
 git -C "$fletch_src" checkout "$fletch_commit"
 
 cmake \
-  -GNinja \
   -B "$fletch_build" \
   "-Dfletch_BUILD_INSTALL_PREFIX=$fletch_prefix" \
   -Dfletch_BUILD_WITH_PYTHON=ON \
@@ -37,7 +36,7 @@ cmake \
   -Dfletch_ENABLE_x264=OFF \
   -Dfletch_ENABLE_x265=OFF \
   -S "$fletch_src"
-cmake --build "$fletch_build"
+cmake --build "$fletch_build" --parallel "$(nproc)"
 
 # Clean up.
 rm -rf "$fletch_root"

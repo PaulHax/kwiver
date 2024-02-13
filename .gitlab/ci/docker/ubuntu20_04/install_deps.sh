@@ -15,7 +15,7 @@ apt-get install -y --no-install-recommends \
 
 # Development tools
 apt-get install -y --no-install-recommends \
-    cmake make ninja-build gcc g++ pkg-config
+    cmake make gcc g++ pkg-config
 
 # Python dependencies
 apt-get install -y --no-install-recommends \
