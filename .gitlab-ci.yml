@@ -32,17 +32,17 @@ stages:
 
 ## Basic builds
 
-ubuntu2004-ffmpeg-gdal-opencv-python:build:
+ubuntu2004-ffmpeg-gdal-opencv-proj-python:build:
     extends:
-        - .ubuntu2004_ffmpeg_gdal_opencv_python
+        - .ubuntu2004_ffmpeg_gdal_opencv_proj_python
         - .cmake_build_linux
         - .linux_builder_tags
         - .cmake_build_artifacts
         - .rules
 
-ubuntu2004-ffmpeg-gdal-opencv-python:test:
+ubuntu2004-ffmpeg-gdal-opencv-proj-python:test:
     extends:
-        - .ubuntu2004_ffmpeg_gdal_opencv_python
+        - .ubuntu2004_ffmpeg_gdal_opencv_proj_python
         - .cmake_test_linux
         - .linux_tester_tags
         - .cmake_test_artifacts
@@ -50,6 +50,6 @@ ubuntu2004-ffmpeg-gdal-opencv-python:test:
     variables:
         RUN_DEPENDENT: "true"
     dependencies:
-        - ubuntu2004-ffmpeg-gdal-opencv-python:build
+        - ubuntu2004-ffmpeg-gdal-opencv-proj-python:build
     needs:
-        - ubuntu2004-ffmpeg-gdal-opencv-python:build
+        - ubuntu2004-ffmpeg-gdal-opencv-proj-python:build

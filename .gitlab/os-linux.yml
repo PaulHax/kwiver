@@ -16,7 +16,7 @@
         - .ubuntu2004
 
     variables:
-        CMAKE_CONFIGURATION: ubuntu2004_ffmpeg_gdal_opencv_python
+        CMAKE_CONFIGURATION: ubuntu2004_ffmpeg_gdal_opencv_proj_python
 
 .linux_builder_tags:
     tags:
