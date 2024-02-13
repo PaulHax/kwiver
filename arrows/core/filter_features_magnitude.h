@@ -7,6 +7,8 @@
 
 #include <arrows/core/kwiver_algo_core_export.h>
 
+#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/filter_features.h>
 
 /// \file
@@ -23,22 +25,23 @@ class KWIVER_ALGO_CORE_EXPORT filter_features_magnitude
   : public vital::algo::filter_features
 {
 public:
-  PLUGIN_INFO(
-    "magnitude",
+  PLUGGABLE_IMPL(
+    filter_features_magnitude,
     "Filter features using a threshold"
-    " on the magnitude of the detector response function." )
-
-  /// Constructor
-  filter_features_magnitude();
+    " on the magnitude of the detector response function.",
+    PARAM_DEFAULT(
+      top_fraction, double,
+      "Fraction of strongest keypoints to keep, range (0.0, 1.0]",
+      0.2 ),
+    PARAM_DEFAULT(
+      min_features, int,
+      "Minimum number of features to keep",
+      100 )
+  )
 
   /// Destructor
   virtual ~filter_features_magnitude();
 
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's configuration config_block is valid
   virtual bool check_configuration( vital::config_block_sptr config ) const;
 
@@ -55,10 +58,10 @@ protected:
   using filter_features::filter;
 
 private:
+  void initialize() override;
   /// private implementation class
   class priv;
-
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace core

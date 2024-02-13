@@ -7,6 +7,8 @@
 
 #include <arrows/core/kwiver_algo_core_export.h>
 
+#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/filter_features.h>
 
 /// \file
@@ -23,21 +25,42 @@ class KWIVER_ALGO_CORE_EXPORT filter_features_nonmax
   : public vital::algo::filter_features
 {
 public:
-  PLUGIN_INFO(
-    "nonmax",
-    "Filter features using non-max supression." )
-
-  /// Constructor
-  filter_features_nonmax();
+  PLUGGABLE_IMPL(
+    filter_features_nonmax,
+    "Filter features using non-max supression.",
+    PARAM_DEFAULT(
+      suppression_radius, double,
+      "The radius, in pixels, within which to "
+      "suppress weaker features.  This is an initial guess. "
+      "The radius is adapted to reach the desired number of "
+      "features.  If target_num_features is 0 then this radius "
+      "is not adapted.",
+      0.0 ),
+    PARAM_DEFAULT(
+      num_features_target, unsigned int,
+      "The target number of features to detect. "
+      "The suppression radius is dynamically adjusted to "
+      "acheive this number of features.",
+      500 ),
+    PARAM_DEFAULT(
+      num_features_range, unsigned int,
+      "The number of features above target_num_features to "
+      "allow in the output.  This window allows the binary "
+      "search on radius to terminate sooner.",
+      50 ),
+    PARAM_DEFAULT(
+      resolution, unsigned int,
+      "The resolution (N) of the filter for computing neighbors."
+      " The filter is an (2N+1) x (2N+1) box containing a circle"
+      " of radius N. The value must be a positive integer. "
+      "Larger values are more "
+      "accurate at the cost of more memory and compute time.",
+      3 ),
+  )
 
   /// Destructor
   virtual ~filter_features_nonmax();
 
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's configuration config_block is valid
   virtual bool check_configuration( vital::config_block_sptr config ) const;
 
@@ -54,10 +77,10 @@ protected:
   using filter_features::filter;
 
 private:
+  void initialize() override;
   /// private implementation class
   class priv;
-
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace core

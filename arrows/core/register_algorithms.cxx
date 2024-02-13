@@ -11,11 +11,15 @@
 #include <vital/plugin_management/plugin_manager.h>
 
 // interface
+#include <vital/algo/filter_features.h>
 #include <vital/algo/metadata_map_io.h>
 #include <vital/algo/uv_unwrap_mesh.h>
 #include <vital/algo/video_input.h>
 
 // implementation
+#include <arrows/core/filter_features_magnitude.h>
+#include <arrows/core/filter_features_nonmax.h>
+#include <arrows/core/filter_features_scale.h>
 #include <arrows/core/metadata_map_io_csv.h>
 #include <arrows/core/uv_unwrap_mesh.h>
 #include <arrows/core/video_input_filter.h>
@@ -58,6 +62,18 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::metadata_map_io,
     metadata_map_io_csv >( "csv" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::filter_features,
+    filter_features_scale >( "scale" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::filter_features,
+    filter_features_magnitude >( "magnitude" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::filter_features,
+    filter_features_nonmax >( "nonmax" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 

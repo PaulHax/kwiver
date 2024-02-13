@@ -32,12 +32,11 @@ struct feature_at_index_is_greater
 class filter_features_scale::priv
 {
 public:
-  // Constructor
-  priv()
-    : top_fraction( 0.2 ),
-      min_features( 100 ),
-      max_features( 1000 )
+  priv( filter_features_scale& parent )
+    : parent( parent )
   {}
+
+  filter_features_scale& parent;
 
 // ----------------------------------------------------------------------------
   feature_set_sptr
@@ -102,61 +101,18 @@ public:
 };
 
 // ----------------------------------------------------------------------------
-// Constructor
+void
 filter_features_scale
-::filter_features_scale()
-  : d_( new priv )
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
   attach_logger( "arrows.core.filter_features_scale" );
-  d_->m_logger = logger();
 }
 
 // Destructor
 filter_features_scale
 ::~filter_features_scale()
 {}
-
-// ----------------------------------------------------------------------------
-// Get this algorithm's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-filter_features_scale
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config =
-    vital::algo::filter_features::get_configuration();
-
-  config->set_value(
-    "top_fraction", d_->top_fraction,
-    "Fraction of largest scale keypoints to keep, range (0.0, 1.0]" );
-
-  config->set_value(
-    "min_features", d_->min_features,
-    "Minimum number of features to keep" );
-
-  config->set_value(
-    "max_features", d_->max_features,
-    "Maximum number of features to keep, use 0 for unlimited" );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-// Set this algorithm's properties via a config block
-void
-filter_features_scale
-::set_configuration( vital::config_block_sptr config )
-{
-  d_->top_fraction = config->get_value< double >(
-    "top_fraction",
-    d_->top_fraction );
-  d_->min_features = config->get_value< unsigned int >(
-    "min_features",
-    d_->min_features );
-  d_->max_features = config->get_value< unsigned int >(
-    "max_features",
-    d_->max_features );
-}
 
 // Check that the algorithm's configuration vital::config_block is valid
 bool
