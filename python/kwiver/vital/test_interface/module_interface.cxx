@@ -21,7 +21,7 @@ public:
   std::string
   says() override
   {
-    PYBIND11_OVERLOAD_PURE(
+    PYBIND11_OVERRIDE_PURE(
       std::string,
       kv::say,
       says
