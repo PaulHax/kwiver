@@ -39,14 +39,9 @@ class draw_detected_object_set::priv
 {
 public:
   // -- CONSTRUCTORS --
-  priv()
-    : m_config_error( false ),
-      m_threshold( -1 ),
-      m_do_alpha( true ),
-      m_text_scale( 0.4 ),
-      m_text_thickness( 1.0 ),
-      m_clip_box_to_image( false ),
-      m_draw_text( true )
+  priv( draw_detected_object_set& parent )
+    : m_parent( parent ),
+      m_config_error( false )
   {
     m_default_params.thickness = 1.0;
     m_default_params.color[ 0 ] = 255;
@@ -57,13 +52,18 @@ public:
   ~priv()
   {}
 
+  draw_detected_object_set& m_parent;
+
   // internal state
   bool m_config_error;
 
   // Configuration values
-  float m_threshold;
+  float
+  m_threshold() const { return m_parent.get_threshold(); }
+
   std::vector< std::string > m_select_classes;
-  bool m_do_alpha;
+  bool
+  m_do_alpha() const { return m_parent.get_alpha_blend_prob(); }
 
   struct Bound_Box_Params
   {
@@ -74,17 +74,19 @@ public:
   // box attributes per object type
   std::map< std::string, Bound_Box_Params > m_custum_colors;
 
-  float m_text_scale;
-  float m_text_thickness;
-  bool m_clip_box_to_image;
-  bool m_draw_text;
+  float
+  m_text_scale() const { return m_parent.get_text_scale(); }
+  float
+  m_text_thickness() const { return m_parent.get_text_thickness(); }
+  bool
+  m_clip_box_to_image() const { return m_parent.get_clip_box_to_image(); }
+  bool
+  m_draw_text() const { return m_parent.get_draw_text(); }
 
   // -- temp config storage --
   std::string m_tmp_custom;
   std::string m_tmp_def_color;
   std::string m_tmp_class_select;
-
-  draw_detected_object_set* m_parent;
 
   // --------------------------------------------------------------------------
   /// @brief Draw a box on an image.
@@ -121,7 +123,7 @@ public:
     image.copyTo( overlay );
 
     vital::bounding_box_d bbox = dos->bounding_box();
-    if( m_clip_box_to_image )
+    if( m_clip_box_to_image() )
     {
       cv::Size s = image.size();
       vital::bounding_box_d img( vital::bounding_box_d::vector_type( 0, 0 ),
@@ -142,11 +144,11 @@ public:
     // is.
     // Else lower by 5%. This is a heuristic for making the alpha shading look
     // good.
-    double tmp_thresh = ( this->m_threshold - ( ( this->m_threshold >=
-                                                  0.05 ) ? 0.05 : 0 ) );
+    double tmp_thresh = ( this->m_threshold() - ( ( this->m_threshold() >=
+                                                    0.05 ) ? 0.05 : 0 ) );
 
-    double alpha_wight = ( m_do_alpha ) ? ( ( prob - tmp_thresh ) /
-                                            ( 1 - tmp_thresh ) ) : 1.0;
+    double alpha_wight = ( m_do_alpha() ) ? ( ( prob - tmp_thresh ) /
+                                              ( 1 - tmp_thresh ) ) : 1.0;
 
     Bound_Box_Params const* bbp = &m_default_params;
     auto iter = m_custum_colors.find( label );
@@ -164,11 +166,11 @@ public:
       cv::rectangle( overlay, r, color, bbp->thickness );
     }
 
-    if( m_draw_text )
+    if( m_draw_text() )
     {
       int fontface = cv::FONT_HERSHEY_SIMPLEX;
-      double scale = m_text_scale;
-      int thickness = m_text_thickness;
+      double scale = m_text_scale();
+      int thickness = m_text_thickness();
       int baseline = 0;
       cv::Point pt( r.tl() + cv::Point(
         0,
@@ -219,7 +221,7 @@ public:
       if( !det_type || det_type->size() == 0 )
       {
         // No type has been assigned. Just filter on threshold
-        if( ( *det )->confidence() < m_threshold )
+        if( ( *det )->confidence() < m_threshold() )
         {
           continue;
         }
@@ -239,13 +241,13 @@ public:
       for( auto n : names )
       {
         double score = det_type->score( n );
-        if( score < m_threshold || !name_selected( n ) )
+        if( score < m_threshold() || !name_selected( n ) )
         {
           continue;
         }
 
         LOG_TRACE(
-          m_parent->logger(),
+          m_parent.logger(),
           "Drawing box for class: " << n << "   score: " << score );
         draw_box( image, *det, n, score, text_only, count );
         text_only = true; // skip box on all subsequent calls
@@ -300,7 +302,7 @@ public:
           // parse error - log something
           m_config_error = true;
           LOG_ERROR(
-            m_parent->logger(),
+            m_parent.logger(),
             "Error parsing custom color specification \"" << cs << "\"" );
 
           return;
@@ -333,7 +335,7 @@ public:
         // parse error - log something
         m_config_error = true;
         LOG_ERROR(
-          m_parent->logger(), "Error parsing custom color specification \""
+          m_parent.logger(), "Error parsing custom color specification \""
             << m_tmp_def_color << "\"" );
         return;
       }
@@ -356,95 +358,24 @@ public:
 }; // end priv class
 
 // ----------------------------------------------------------------------------
+void
 draw_detected_object_set
-::draw_detected_object_set()
-  : d( new priv )
+::initialize()
 {
-  d->m_parent = this;
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
 }
 
 draw_detected_object_set::
 ~draw_detected_object_set()
 {}
 
-// ----------------------------------------------------------------------------
-vital::config_block_sptr
-draw_detected_object_set
-::get_configuration() const
-{
-  // Get base config from base class
-  vital::config_block_sptr config = vital::algorithm::get_configuration();
-
-  config->set_value(
-    "threshold", d->m_threshold, "min threshold for output (float). "
-                                 "Detections with confidence values below this value are not drawn." );
-  config->set_value(
-    "alpha_blend_prob", d->m_do_alpha,
-    "If true, those who are less likely will be more transparent." );
-  config->set_value(
-    "default_line_thickness", d->m_default_params.thickness,
-    "The default line thickness, in pixels." );
-  config->set_value(
-    "default_color", "0 0 255",
-    "The default color for a class (RGB)." );
-  config->set_value(
-    "custom_class_color", "",
-    "List of class/thickness/color seperated by semicolon. "
-    "For example: person/3/255 0 0;car/2/0 255 0. "
-    "Color is in RGB." );
-
-  config->set_value(
-    "select_classes", "*ALL*",
-    "List of classes to display, separated by a semicolon. For example: person;car;clam" );
-  config->set_value(
-    "text_scale", d->m_text_scale, "Scaling for the text label. "
-                                   "Font scale factor that is multiplied by the font-specific base size." );
-  config->set_value(
-    "text_thickness", d->m_text_thickness,
-    "Thickness of the lines used to draw a text." );
-
-  config->set_value(
-    "clip_box_to_image", d->m_clip_box_to_image,
-    "If this option is set to true, the bounding box is clipped to the image bounds." );
-  config->set_value(
-    "draw_text", d->m_draw_text,
-    "If this option is set to true, the class name is drawn next to the detection." );
-  return config;
-}
-
-// ----------------------------------------------------------------------------
 void
 draw_detected_object_set
-::set_configuration( vital::config_block_sptr config_in )
+::set_configuration_internal( vital::config_block_sptr in_config )
 {
-  // Starting with our generated config_block to ensure that assumed values are
-  // present
-  // An alternative is to check for key presence before performing a get_value()
-  // call.
   vital::config_block_sptr config = this->get_configuration();
-
-  kwiver::vital::config_difference cd( config, config_in );
+  kwiver::vital::config_difference cd( config, in_config );
   cd.warn_extra_keys( logger() );
-
-  config->merge_config( config_in );
-
-  d->m_do_alpha                 =
-    config->get_value< bool >( "alpha_blend_prob" );
-  d->m_clip_box_to_image        =
-    config->get_value< bool >( "clip_box_to_image" );
-  d->m_tmp_custom               =
-    config->get_value< std::string >( "custom_class_color" );
-  d->m_tmp_def_color            =
-    config->get_value< std::string >( "default_color" );
-  d->m_default_params.thickness =
-    config->get_value< float >( "default_line_thickness" );
-  d->m_draw_text                = config->get_value< bool >( "draw_text" );
-  d->m_tmp_class_select         =
-    config->get_value< std::string >( "select_classes" );
-  d->m_text_scale               = config->get_value< float >( "text_scale" );
-  d->m_text_thickness           =
-    config->get_value< float >( "text_thickness" );
-  d->m_threshold                = config->get_value< float >( "threshold" );
 
   d->process_config();
 }
@@ -466,6 +397,9 @@ draw_detected_object_set
   kwiver::vital::detected_object_set_sptr detected_set,
   kwiver::vital::image_container_sptr image )
 {
+  //  Update config to get the latest values which could be set via setters
+  d->process_config();
+
   auto result = d->draw_detections( image, detected_set );
   return result;
 }
