@@ -20,7 +20,7 @@ apt-get install -y --no-install-recommends \
 # Python dependencies
 apt-get install -y --no-install-recommends \
     python3 libpython3-dev python3-distutils python3-setuptools python3-pip \
-    python3-venv
+    python3-venv python3-numpy
 
 # Remove unnecessary files
 apt-get clean
