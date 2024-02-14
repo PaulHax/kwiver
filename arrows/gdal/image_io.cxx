@@ -40,7 +40,7 @@ image_io
   VITAL_UNUSED vital::image_container_sptr data ) const
 {
   VITAL_THROW(
-    vital::algorithm_exception, this->type_name(), this->impl_name(),
+    vital::algorithm_exception, this->interface_name(), this->plugin_name(),
     "Saving to file not supported." );
 }
 

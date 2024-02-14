@@ -10,6 +10,8 @@
 
 #include <arrows/gdal/kwiver_algo_gdal_export.h>
 
+#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/image_io.h>
 
 namespace kwiver {
@@ -23,10 +25,13 @@ class KWIVER_ALGO_GDAL_EXPORT image_io
   : public vital::algo::image_io
 {
 public:
-  // No configuration for this class yet
-  /// \cond DoxygenSuppress
-  virtual void set_configuration( vital::config_block_sptr /*config*/ ) {}
+  PLUGGABLE_IMPL(
+    image_io,
+    " A class for using GDAL to read and write images. "
+  )
 
+// No configuration for this class yet
+  /// \cond DoxygenSuppress
   virtual bool
   check_configuration( vital::config_block_sptr /*config*/ ) const
   {
@@ -38,7 +43,7 @@ public:
 private:
   /// Implementation specific load functionality.
   ///
-  /// \param filename the path to the file the load
+  /// \param filename the path to the file to load
   /// \returns an image container refering to the loaded image
   virtual vital::image_container_sptr load_(
     const std::string& filename ) const;
