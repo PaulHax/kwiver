@@ -9,7 +9,7 @@
 
 .ubuntu2004:
     extends: .linux
-    image: "kitware/kwiver:ci-ubuntu20_04-20240213"
+    image: "kitware/kwiver:ci-ubuntu20_04-20240214"
 
 .ubuntu2004_ffmpeg_opencv_python:
     extends:

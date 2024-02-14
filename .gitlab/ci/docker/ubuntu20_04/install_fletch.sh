@@ -3,8 +3,8 @@
 set -e
 
 readonly fletch_repo="https://github.com/Kitware/fletch"
-# snapshot of master branch on 2024.02.13
-readonly fletch_commit="3f39a6966bb94cbd03cf70f1814865d530470973"
+# update for GDAL rpath merge
+readonly fletch_commit="c310f3cee87448a31ffbbb8f24c4bdd828bae071"
 
 readonly fletch_root="$HOME/fletch"
 readonly fletch_src="$fletch_root/src"
@@ -17,8 +17,9 @@ git -C "$fletch_src" checkout "$fletch_commit"
 git -C "$fletch_src" config user.name "kwiver Developers"
 git -C "$fletch_src" config user.email "kwiver-developers@kitware.com"
 
-# https://github.com/Kitware/fletch/pull/742
-git -C "$fletch_src" fetch origin refs/pull/742/head
+# Fix rpath for tiff, gtest, proj, and sqlite
+# https://github.com/Kitware/fletch/pull/743
+git -C "$fletch_src" fetch origin refs/pull/743/head
 git -C "$fletch_src" merge --no-ff FETCH_HEAD
 
 cmake \
