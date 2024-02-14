@@ -21,6 +21,7 @@
 // implementation
 #include <arrows/core/detected_object_set_input_csv.h>
 #include <arrows/core/detected_object_set_input_kw18.h>
+// #include <arrows/core/detected_object_set_input_simulator.h>
 #include <arrows/core/filter_features_magnitude.h>
 #include <arrows/core/filter_features_nonmax.h>
 #include <arrows/core/filter_features_scale.h>
