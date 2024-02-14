@@ -9,9 +9,11 @@
 #include <vital/types/metadata_traits.h>
 #include <vital/util/demangle.h>
 
+#include <pybind11/iostream.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include <fstream>
 #include <memory>
 #include <string>
 
@@ -139,6 +141,18 @@ PYBIND11_MODULE( metadata, m )
     .def_property(
       "timestamp",   &metadata::timestamp,
       &metadata::set_timestamp )
+    .def(
+      "__iter__", []( std::shared_ptr< metadata > self){
+        return py::make_iterator( self->begin(), self->end() );
+      },
+      py::keep_alive< 0, 1 >() /* keep object alive while iterator exists */ )
+    .def_static(
+      "print_metadata",
+      [](py::object fileHandle, std::shared_ptr< metadata > metadata){
+        std::ofstream fout;
+        py::scoped_ostream_redirect stream( fout, fileHandle );
+        kwiver::vital::print_metadata( fout, *metadata.get() );
+      } )
   ;
 
   m.def( "test_equal_content", &test_equal_content )

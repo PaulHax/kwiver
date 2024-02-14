@@ -54,7 +54,8 @@ PYBIND11_MODULE( metadata_map, m )
   py::class_< kv::simple_metadata_map,
     std::shared_ptr< kv::simple_metadata_map >,
     kv::metadata_map >( m, "SimpleMetadataMap" )
-    .def( py::init<>() );
+    .def( py::init<>() )
+    .def( py::init< kv::metadata_map::map_metadata_t >() );
   // Everything will be inherited from metadata_map
 }
 
