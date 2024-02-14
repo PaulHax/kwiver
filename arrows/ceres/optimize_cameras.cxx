@@ -22,108 +22,29 @@ namespace ceres {
 
 // Private implementation class
 class optimize_cameras::priv
-  : public solver_options,
-    public camera_options
 {
 public:
-  priv()
-    : camera_options(),
-      verbose( false ),
-      loss_function_type( TRIVIAL_LOSS ),
-      loss_function_scale( 1.0 )
+  priv( optimize_cameras& parent )
+    : parent( parent )
   {}
 
-  priv( const priv& other )
-    : camera_options( other ),
-      verbose( other.verbose ),
-      loss_function_type( other.loss_function_type ),
-      loss_function_scale( other.loss_function_scale )
-  {}
+  optimize_cameras& parent;
 
-  // verbose output
-  bool verbose;
-  // the robust loss function type to use
-  LossFunctionType loss_function_type;
-  // the scale of the loss function
-  double loss_function_scale;
+  bool
+  c_verbose() const { return parent.c_verbose; }
+  LossFunctionType
+  c_loss_function_type() const { return parent.c_loss_function_type; }
+  double
+  c_loss_function_scale() const { return parent.c_loss_function_scale; }
 };
 
 // ----------------------------------------------------------------------------
-// Constructor
-optimize_cameras
-::optimize_cameras()
-  : d_( new priv )
-{
-  attach_logger( "arrows.ceres.optimize_cameras" );
-}
-
-// Destructor
-optimize_cameras
-::~optimize_cameras()
-{}
-
-// ----------------------------------------------------------------------------
-// Get this algorithm's \link vital::config_block configuration block \endlink
-config_block_sptr
-optimize_cameras
-::get_configuration() const
-{
-  // get base config from base class
-  config_block_sptr config = vital::algo::optimize_cameras::get_configuration();
-  config->set_value(
-    "verbose", d_->verbose,
-    "If true, write status messages to the terminal showing "
-    "optimization progress at each iteration" );
-  config->set_value(
-    "loss_function_type", d_->loss_function_type,
-    "Robust loss function type to use." +
-    ceres_options< ceres::LossFunctionType >() );
-  config->set_value(
-    "loss_function_scale", d_->loss_function_scale,
-    "Robust loss function scale factor." );
-
-  // get the solver options
-  d_->solver_options::get_configuration( config );
-
-  // get the camera configuation options
-  d_->camera_options::get_configuration( config );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-// Set this algorithm's properties via a config block
 void
 optimize_cameras
-::set_configuration( config_block_sptr in_config )
+::initialize()
 {
-  ::ceres::Solver::Options& o = d_->options;
-  // Starting with our generated config_block to ensure that assumed values are
-  // present
-  // An alternative is to check for key presence before performing a get_value()
-  // call.
-  config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  d_->verbose = config->get_value< bool >(
-    "verbose",
-    d_->verbose );
-  o.minimizer_progress_to_stdout = d_->verbose;
-  o.logging_type = d_->verbose ? ::ceres::PER_MINIMIZER_ITERATION
-                               : ::ceres::SILENT;
-  typedef ceres::LossFunctionType clf_t;
-  d_->loss_function_type = config->get_value< clf_t >(
-    "loss_function_type",
-    d_->loss_function_type );
-  d_->loss_function_scale = config->get_value< double >(
-    "loss_function_scale",
-    d_->loss_function_scale );
-
-  // set the camera configuation options
-  d_->solver_options::set_configuration( config );
-
-  // set the camera configuation options
-  d_->camera_options::set_configuration( config );
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
+  attach_logger( "arrows.ceres.optimize_cameras" );
 }
 
 // ----------------------------------------------------------------------------
@@ -133,7 +54,7 @@ optimize_cameras
 ::check_configuration( VITAL_UNUSED config_block_sptr config ) const
 {
   std::string msg;
-  if( !d_->options.IsValid( &msg ) )
+  if( !c_solver_options->options.IsValid( &msg ) )
   {
     LOG_ERROR( logger(), msg);
     return false;
@@ -189,7 +110,7 @@ optimize_cameras
   std::unordered_map< frame_id_t, unsigned int > frame_to_intr_map;
 
   // Extract the raw camera parameter into the provided maps
-  d_->extract_camera_parameters(
+  c_camera_options->extract_camera_parameters(
     cams,
     camera_params,
     camera_intr_params,
@@ -199,13 +120,14 @@ optimize_cameras
   ::ceres::Problem problem;
 
   // enumerate the intrinsics held constant
-  std::vector< int > constant_intrinsics = d_->enumerate_constant_intrinsics();
+  std::vector< int > constant_intrinsics =
+    c_camera_options->enumerate_constant_intrinsics();
 
   // Create the loss function to use
   ::ceres::LossFunction* loss_func =
     LossFunctionFactory(
-      d_->loss_function_type,
-      d_->loss_function_scale );
+      c_loss_function_type,
+      c_loss_function_scale );
   bool loss_func_used = false;
 
   // Add the residuals for each relevant observation
@@ -239,7 +161,7 @@ optimize_cameras
       vector_2d pt = fts->feature->loc();
       problem.AddResidualBlock(
         create_cost_func(
-          d_->lens_distortion_type,
+          c_camera_options->lens_distortion_type,
           pt.x(), pt.y() ),
         loss_func,
         intr_params_ptr,
@@ -249,7 +171,8 @@ optimize_cameras
     }
   }
 
-  const unsigned int ndp = num_distortion_params( d_->lens_distortion_type );
+  const unsigned int ndp =
+    num_distortion_params( c_camera_options->lens_distortion_type );
   for( std::vector< double >& cip : camera_intr_params )
   {
     // apply the constraints
@@ -272,8 +195,8 @@ optimize_cameras
     problem.SetParameterBlockConstant( &lmp.second[ 0 ] );
   }
 
-  if( d_->camera_path_smoothness > 0.0 ||
-      d_->camera_forward_motion_damping > 0.0 )
+  if( c_camera_options->camera_path_smoothness > 0.0 ||
+      c_camera_options->camera_forward_motion_damping > 0.0 )
   {
     // sort the camera parameters in order of frame number
     std::vector< std::pair< vital::frame_id_t, double* > > ordered_params;
@@ -287,18 +210,22 @@ optimize_cameras
     std::sort( ordered_params.begin(), ordered_params.end() );
 
     // Add camera path regularization residuals
-    d_->add_camera_path_smoothness_cost( problem, ordered_params );
+    c_camera_options->add_camera_path_smoothness_cost(
+      problem,
+      ordered_params );
 
     // Add forward motion regularization residuals
-    d_->add_forward_motion_damping_cost(
+    c_camera_options->add_forward_motion_damping_cost(
       problem, ordered_params,
       frame_to_intr_map );
   }
 
   // add costs for priors
-  d_->add_position_prior_cost( problem, camera_params, constraints );
+  c_camera_options->add_position_prior_cost(
+    problem, camera_params,
+    constraints );
 
-  d_->add_intrinsic_priors_cost( problem, camera_intr_params );
+  c_camera_options->add_intrinsic_priors_cost( problem, camera_intr_params );
 
   // If the loss function was added to a residual block, ownership was
   // transfered.  If not then we need to delete it.
@@ -308,14 +235,14 @@ optimize_cameras
   }
 
   ::ceres::Solver::Summary summary;
-  ::ceres::Solve( d_->options, &problem, &summary );
-  if( d_->verbose )
+  ::ceres::Solve( c_solver_options->options, &problem, &summary );
+  if( c_verbose )
   {
     LOG_DEBUG( logger(), "Ceres Full Report:\n" << summary.FullReport() );
   }
 
   // Update the cameras with the optimized values
-  d_->update_camera_parameters(
+  c_camera_options->update_camera_parameters(
     cams, camera_params,
     camera_intr_params, frame_to_intr_map );
   cameras = std::make_shared< simple_camera_map >( cams );
@@ -332,13 +259,16 @@ optimize_cameras
   VITAL_UNUSED kwiver::vital::sfm_constraints_sptr constraints ) const
 {
   // extract camera parameters to optimize
-  const unsigned int ndp = num_distortion_params( d_->lens_distortion_type );
+  const unsigned int ndp =
+    num_distortion_params( c_camera_options->lens_distortion_type );
   std::vector< double > cam_intrinsic_params( 5 + ndp, 0.0 );
   std::vector< double > cam_extrinsic_params( 6 );
-  d_->extract_camera_extrinsics( camera, &cam_extrinsic_params[ 0 ] );
+  c_camera_options->extract_camera_extrinsics(
+    camera,
+    &cam_extrinsic_params[ 0 ] );
 
   camera_intrinsics_sptr K = camera->intrinsics();
-  d_->extract_camera_intrinsics( K, &cam_intrinsic_params[ 0 ] );
+  c_camera_options->extract_camera_intrinsics( K, &cam_intrinsic_params[ 0 ] );
 
   // extract the landmark parameters
   std::vector< std::vector< double > > landmark_params;
@@ -355,13 +285,14 @@ optimize_cameras
   ::ceres::Problem problem;
 
   // enumerate the intrinsics held constant
-  std::vector< int > constant_intrinsics = d_->enumerate_constant_intrinsics();
+  std::vector< int > constant_intrinsics =
+    c_camera_options->enumerate_constant_intrinsics();
 
   // Create the loss function to use
   ::ceres::LossFunction* loss_func =
     LossFunctionFactory(
-      d_->loss_function_type,
-      d_->loss_function_scale );
+      c_loss_function_type,
+      c_loss_function_scale );
 
   // Add the residuals for each relevant observation
   for( unsigned int i = 0; i < features.size(); ++i )
@@ -369,7 +300,7 @@ optimize_cameras
     vector_2d pt = features[ i ]->loc();
     problem.AddResidualBlock(
       create_cost_func(
-        d_->lens_distortion_type,
+        c_camera_options->lens_distortion_type,
         pt.x(), pt.y() ),
       loss_func,
       &cam_intrinsic_params[ 0 ],
@@ -401,24 +332,28 @@ optimize_cameras
   }
 
   ::ceres::Solver::Summary summary;
-  ::ceres::Solve( d_->options, &problem, &summary );
-  if( d_->verbose )
+  ::ceres::Solve( c_solver_options->options, &problem, &summary );
+  if( c_verbose )
   {
     LOG_DEBUG( logger(), "Ceres Full Report:\n" << summary.FullReport() );
   }
 
   // update the cameras from optimized parameters
   // only create a new intrinsics object if the values were not held constant
-  if( d_->optimize_intrinsics() )
+  if( c_camera_options->optimize_intrinsics() )
   {
     auto new_K = std::make_shared< simple_camera_intrinsics >();
-    d_->update_camera_intrinsics( new_K, &cam_intrinsic_params[ 0 ] );
+    c_camera_options->update_camera_intrinsics(
+      new_K,
+      &cam_intrinsic_params[ 0 ] );
     K = new_K;
   }
 
   auto new_camera = std::make_shared< simple_camera_perspective >();
   new_camera->set_intrinsics( K );
-  d_->update_camera_extrinsics( new_camera, &cam_extrinsic_params[ 0 ] );
+  c_camera_options->update_camera_extrinsics(
+    new_camera,
+    &cam_extrinsic_params[ 0 ] );
   camera = new_camera;
 }
 

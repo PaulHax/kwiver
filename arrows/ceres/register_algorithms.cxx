@@ -6,10 +6,11 @@
 /// \brief Ceres algorithm registration implementation
 
 #include <arrows/ceres/kwiver_algo_ceres_plugin_export.h>
-#include <vital/algo/algorithm_factory.h>
+#include <vital/plugin_management/plugin_factory.h>
 
 #include <arrows/ceres/bundle_adjust.h>
 #include <arrows/ceres/optimize_cameras.h>
+#include <arrows/ceres/types.h>
 
 namespace kwiver {
 
@@ -20,44 +21,19 @@ namespace ceres {
 extern "C"
 KWIVER_ALGO_CERES_PLUGIN_EXPORT
 void
-register_factories( kwiver::vital::plugin_loader& vpm )
+register_factories( kwiver::vital::plugin_loader& vpl )
 {
-  static auto const module_name = std::string( "arrows.ceres" );
-  if( vpm.is_module_loaded( module_name ) )
-  {
-    return;
-  }
+  using kvpf = ::kwiver::vital::plugin_factory;
 
-  // add factory               implementation-name       type-to-create
-  auto fact = vpm.ADD_ALGORITHM(
-    "ceres",
-    kwiver::arrows::ceres::bundle_adjust );
-  fact->add_attribute(
-    kwiver::vital::plugin_factory::PLUGIN_DESCRIPTION,
-    "Uses Ceres Solver to bundle adjust camera and landmark parameters." )
-    .add_attribute(
-    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
-    module_name )
-    .add_attribute( kwiver::vital::plugin_factory::PLUGIN_VERSION, "1.0" )
-    .add_attribute(
-      kwiver::vital::plugin_factory::PLUGIN_ORGANIZATION,
-      "Kitware Inc." )
-  ;
+  auto const module_name = std::string( "arrows.ceres" );
 
-  fact = vpm.ADD_ALGORITHM( "ceres", kwiver::arrows::ceres::optimize_cameras );
-  fact->add_attribute(
-    kwiver::vital::plugin_factory::PLUGIN_DESCRIPTION,
-    "Uses Ceres Solver to optimize camera parameters" )
-    .add_attribute(
-    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
-    module_name )
-    .add_attribute( kwiver::vital::plugin_factory::PLUGIN_VERSION, "1.0" )
-    .add_attribute(
-      kwiver::vital::plugin_factory::PLUGIN_ORGANIZATION,
-      "Kitware Inc." )
-  ;
+  auto fact = vpl.add_factory< vital::algo::bundle_adjust,
+    kwiver::arrows::ceres::bundle_adjust >( "ceres" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, module_name );
 
-  vpm.mark_module_as_loaded( module_name );
+  fact = vpl.add_factory< vital::algo::optimize_cameras,
+    kwiver::arrows::ceres::optimize_cameras >( "ceres" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, module_name );
 }
 
 } // end namespace ceres

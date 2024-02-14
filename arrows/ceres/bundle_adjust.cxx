@@ -33,34 +33,17 @@ namespace ceres {
 // ----------------------------------------------------------------------------
 // Private implementation class
 class bundle_adjust::priv
-  : public solver_options,
-    public camera_options
 {
 public:
   // Constructor
-  priv( bundle_adjust* p )
-    : solver_options(),
-      camera_options(),
-      parent( p ),
-      verbose( false ),
-      log_full_report( false ),
-      loss_function_type( TRIVIAL_LOSS ),
-      loss_function_scale( 1.0 ),
-      ceres_callback( this )
-  {
-    options.callbacks.push_back( &ceres_callback );
-  }
 
-  // pointer to the parent bundle_adjust class
-  bundle_adjust* parent;
-  // verbose output
-  bool verbose;
-  // log a full report at the end of optimization
-  bool log_full_report;
-  // the robust loss function type to use
-  LossFunctionType loss_function_type;
-  // the scale of the loss function
-  double loss_function_scale;
+public:
+  priv( bundle_adjust& parent )
+    : parent( parent ),
+      ceres_callback( this )
+  {}
+
+  bundle_adjust& parent;
 
   // the input cameras to update in place
   camera_map::map_camera_t cams;
@@ -88,13 +71,13 @@ public:
     ::ceres::CallbackReturnType
     operator()( const ::ceres::IterationSummary& summary )
     {
-      if( !parent || !parent->parent )
+      if( !parent )
       {
         return ::ceres::SOLVER_CONTINUE;
       }
 
-      bundle_adjust& ba = *parent->parent;
-      if( parent->verbose )
+      bundle_adjust& ba = parent->parent;
+      if( ba.c_verbose )
       {
         if( summary.iteration == 0 )
         {
@@ -126,84 +109,12 @@ public:
 };
 
 // ----------------------------------------------------------------------------
-bundle_adjust
-::bundle_adjust()
-  : d_( new priv( this ) )
-{
-  attach_logger( "arrows.ceres.bundle_adjust" );
-}
-
-bundle_adjust
-::~bundle_adjust()
-{}
-
-// ----------------------------------------------------------------------------
-// Get this algorithm's \link vital::config_block configuration block \endlink
-config_block_sptr
-bundle_adjust
-::get_configuration() const
-{
-  // get base config from base class
-  config_block_sptr config = vital::algo::bundle_adjust::get_configuration();
-  config->set_value(
-    "verbose", d_->verbose,
-    "If true, write status messages to the terminal showing "
-    "optimization progress at each iteration." );
-  config->set_value(
-    "log_full_report", d_->log_full_report,
-    "If true, log a full report of optimization stats at "
-    "the end of optimization." );
-  config->set_value(
-    "loss_function_type", d_->loss_function_type,
-    "Robust loss function type to use." +
-    ceres_options< ceres::LossFunctionType >() );
-  config->set_value(
-    "loss_function_scale", d_->loss_function_scale,
-    "Robust loss function scale factor." );
-
-  // get the solver options
-  d_->solver_options::get_configuration( config );
-
-  // get the camera configuration options
-  d_->camera_options::get_configuration( config );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-// Set this algorithm's properties via a config block
 void
 bundle_adjust
-::set_configuration( config_block_sptr in_config )
+::initialize()
 {
-  ::ceres::Solver::Options& o = d_->options;
-  // Starting with our generated config_block to ensure that assumed values are
-  // present. An alternative is to check for key presence before performing a
-  // get_value() call.
-  config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  d_->verbose = config->get_value< bool >(
-    "verbose",
-    d_->verbose );
-  d_->log_full_report = config->get_value< bool >(
-    "log_full_report",
-    d_->log_full_report );
-  o.minimizer_progress_to_stdout = false;
-  o.logging_type = ::ceres::SILENT;
-  typedef ceres::LossFunctionType clf_t;
-  d_->loss_function_type = config->get_value< clf_t >(
-    "loss_function_type",
-    d_->loss_function_type );
-  d_->loss_function_scale = config->get_value< double >(
-    "loss_function_scale",
-    d_->loss_function_scale );
-
-  // set the camera configuration options
-  d_->solver_options::set_configuration( config );
-
-  // set the camera configuration options
-  d_->camera_options::set_configuration( config );
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
+  attach_logger( "arrows.ceres.bundle_adjust" );
 }
 
 // ----------------------------------------------------------------------------
@@ -213,12 +124,22 @@ bundle_adjust
 ::check_configuration( VITAL_UNUSED config_block_sptr config ) const
 {
   std::string msg;
-  if( !d_->options.IsValid( &msg ) )
+  if( c_solver_options->options.IsValid( &msg ) )
   {
     LOG_ERROR( logger(), msg );
     return false;
   }
   return true;
+}
+
+void
+bundle_adjust
+::set_configuration_internal( vital::config_block_sptr )
+{
+  if( c_solver_options )
+  {
+    c_solver_options->options.callbacks.push_back( &( d_->ceres_callback ) );
+  }
 }
 
 class distance_constraint
@@ -344,7 +265,7 @@ bundle_adjust
   d_->frame_to_intr_map.clear();
 
   // Extract the raw camera parameter into the provided maps
-  d_->extract_camera_parameters(
+  c_camera_options->extract_camera_parameters(
     d_->cams,
     d_->camera_params,
     d_->camera_intr_params,
@@ -354,13 +275,14 @@ bundle_adjust
   ::ceres::Problem problem;
 
   // enumerate the intrinsics held constant
-  std::vector< int > constant_intrinsics = d_->enumerate_constant_intrinsics();
+  std::vector< int > constant_intrinsics =
+    c_camera_options->enumerate_constant_intrinsics();
 
   // Create the loss function to use
   ::ceres::LossFunction* loss_func =
     LossFunctionFactory(
-      d_->loss_function_type,
-      d_->loss_function_scale );
+      c_loss_function_type,
+      c_loss_function_scale );
   bool loss_func_used = false;
 
   // Add the residuals for each relevant observation
@@ -440,7 +362,7 @@ bundle_adjust
       vector_2d pt = fts->feature->loc();
       problem.AddResidualBlock(
         create_cost_func(
-          d_->lens_distortion_type,
+          c_camera_options->lens_distortion_type,
           pt.x(), pt.y() ),
         loss_func,
         intr_params_ptr,
@@ -451,8 +373,8 @@ bundle_adjust
     }
   }
 
-  if( d_->camera_path_smoothness > 0.0 ||
-      d_->camera_forward_motion_damping > 0.0 )
+  if( c_camera_options->camera_path_smoothness > 0.0 ||
+      c_camera_options->camera_forward_motion_damping > 0.0 )
   {
     // sort the camera parameters in order of frame number
     std::vector< std::pair< vital::frame_id_t, double* > > ordered_params;
@@ -466,10 +388,12 @@ bundle_adjust
     std::sort( ordered_params.begin(), ordered_params.end() );
 
     // Add camera path regularization residuals
-    d_->add_camera_path_smoothness_cost( problem, ordered_params );
+    c_camera_options->add_camera_path_smoothness_cost(
+      problem,
+      ordered_params );
 
     // Add forward motion regularization residuals
-    d_->add_forward_motion_damping_cost(
+    c_camera_options->add_forward_motion_damping_cost(
       problem, ordered_params,
       d_->frame_to_intr_map );
   }
@@ -523,9 +447,13 @@ bundle_adjust
 
   // add costs for priors
   int num_position_priors_applied =
-    d_->add_position_prior_cost( problem, d_->camera_params, constraints );
+    c_camera_options->add_position_prior_cost(
+      problem, d_->camera_params,
+      constraints );
 
-  d_->add_intrinsic_priors_cost( problem, d_->camera_intr_params );
+  c_camera_options->add_intrinsic_priors_cost(
+    problem,
+    d_->camera_intr_params );
 
   if( num_position_priors_applied < 3 )
   {
@@ -585,7 +513,8 @@ bundle_adjust
     }
   }
 
-  const unsigned int ndp = num_distortion_params( d_->lens_distortion_type );
+  const unsigned int ndp =
+    num_distortion_params( c_camera_options->lens_distortion_type );
   for( const unsigned int idx : used_intrinsics )
   {
     std::vector< double >& cip = d_->camera_intr_params[ idx ];
@@ -616,8 +545,8 @@ bundle_adjust
   }
 
   ::ceres::Solver::Summary summary;
-  ::ceres::Solve( d_->options, &problem, &summary );
-  if( d_->log_full_report )
+  ::ceres::Solve( c_solver_options->options, &problem, &summary );
+  if( c_log_full_report )
   {
     LOG_DEBUG( logger(), "Ceres Full Report:\n" << summary.FullReport() );
   }
@@ -630,7 +559,7 @@ bundle_adjust
   }
 
   // Update the cameras with the optimized values
-  d_->update_camera_parameters(
+  c_camera_options->update_camera_parameters(
     d_->cams, d_->camera_params,
     d_->camera_intr_params,
     d_->frame_to_intr_map );
@@ -654,7 +583,7 @@ bundle_adjust
 {
   if( this->m_callback )
   {
-    if( !d_->options.update_state_every_iteration )
+    if( !c_solver_options->options.update_state_every_iteration )
     {
       return this->m_callback( nullptr, nullptr, nullptr );
     }
@@ -671,7 +600,7 @@ bundle_adjust
       d_->lms );
 
     // Update the cameras with the optimized values
-    d_->update_camera_parameters(
+    c_camera_options->update_camera_parameters(
       d_->cams, d_->camera_params,
       d_->camera_intr_params,
       d_->frame_to_intr_map );

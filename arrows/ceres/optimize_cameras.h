@@ -11,7 +11,12 @@
 
 #include <arrows/ceres/kwiver_algo_ceres_export.h>
 
+#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/optimize_cameras.h>
+
+#include <arrows/ceres/config_options_helpers.txx>
+#include <arrows/ceres/options.h>
 
 #include <memory>
 
@@ -26,17 +31,29 @@ class KWIVER_ALGO_CERES_EXPORT optimize_cameras
   : public vital::algo::optimize_cameras
 {
 public:
-  /// Constructor
-  optimize_cameras();
-
+  PLUGGABLE_IMPL(
+    optimize_cameras,
+    "Uses Ceres Solver to optimize camera parameters",
+    PARAM_DEFAULT(
+      verbose, bool,
+      "If true, write status messages to the terminal showing "
+      "optimization progress at each iteration", false ),
+    PARAM_DEFAULT(
+      loss_function_type, LossFunctionType,
+      "Robust loss function type to use.", TRIVIAL_LOSS ),
+    PARAM_DEFAULT(
+      loss_function_scale, double,
+      "Robust loss function scale factor.", 1.0 ),
+    PARAM(
+      solver_options, solver_options_sptr,
+      "pointer to the nested config options for solver" ),
+    PARAM(
+      camera_options, camera_options_sptr,
+      "pointer to the nested config options for camera" )
+  )
   /// Destructor
-  virtual ~optimize_cameras();
+  virtual ~optimize_cameras() = default;
 
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's currently configuration is valid
   virtual bool check_configuration( vital::config_block_sptr config ) const;
 
@@ -81,11 +98,13 @@ public:
     const std::vector< vital::landmark_sptr >& landmarks,
     kwiver::vital::sfm_constraints_sptr constraints = nullptr ) const;
 
+protected:
+  void initialize() override;
+
 private:
   /// private implementation class
   class priv;
-
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace ceres
