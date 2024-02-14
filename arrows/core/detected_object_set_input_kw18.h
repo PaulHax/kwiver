@@ -58,7 +58,7 @@ private:
   void initialize() override;
   /// private implementation class
   class priv;
-  KWIVER_UNIQUE_PTR( priv, d_ );
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // namespace core

@@ -76,7 +76,7 @@ void
 detected_object_set_input_kw18
 ::initialize()
 {
-  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
   attach_logger( "arrows.core.filter_features_scale" );
 }
 
@@ -102,25 +102,25 @@ detected_object_set_input_kw18
   kwiver::vital::detected_object_set_sptr& set,
   VITAL_UNUSED std::string& image_name )
 {
-  if( d_->m_first )
+  if( d->m_first )
   {
     // Read in all detections
-    d_->read_all();
-    d_->m_first = false;
+    d->read_all();
+    d->m_first = false;
 
     // set up iterators for returning sets.
-    d_->m_current_idx = d_->m_detected_sets.begin()->first;
-    d_->m_last_idx = d_->m_detected_sets.rbegin()->first;
+    d->m_current_idx = d->m_detected_sets.begin()->first;
+    d->m_last_idx = d->m_detected_sets.rbegin()->first;
   } // end first
 
   // test for end of all loaded detections
-  if( d_->m_current_idx > d_->m_last_idx )
+  if( d->m_current_idx > d->m_last_idx )
   {
     return false;
   }
 
   // return detection set at current index if there is one
-  if( 0 == d_->m_detected_sets.count( d_->m_current_idx ) )
+  if( 0 == d->m_detected_sets.count( d->m_current_idx ) )
   {
     // return empty set
     set = std::make_shared< kwiver::vital::detected_object_set >();
@@ -128,10 +128,10 @@ detected_object_set_input_kw18
   else
   {
     // Return detections for this frame.
-    set = d_->m_detected_sets[ d_->m_current_idx ];
+    set = d->m_detected_sets[ d->m_current_idx ];
   }
 
-  ++d_->m_current_idx;
+  ++d->m_current_idx;
 
   return true;
 }
@@ -141,7 +141,7 @@ void
 detected_object_set_input_kw18
 ::new_stream()
 {
-  d_->m_first = true;
+  d->m_first = true;
 }
 
 // ----------------------------------------------------------------------------
