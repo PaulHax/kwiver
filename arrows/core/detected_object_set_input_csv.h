@@ -36,10 +36,12 @@ public:
     " - 7: confidence\n"
     " - 8,9: class-name, score"
     " (this pair may be omitted or may repeat any number of times)",
-    PARAM_DEFAULT( m_delim, std::string, "no description", "," )
+    PARAM_DEFAULT( delim, std::string, "csv delimeter", "," )
   )
 
   virtual ~detected_object_set_input_csv();
+
+  virtual bool check_configuration( vital::config_block_sptr config ) const;
 
   virtual bool read_set(
     kwiver::vital::detected_object_set_sptr& set,
@@ -47,6 +49,9 @@ public:
 
 private:
   virtual void new_stream();
+
+  void initialize() override;
+  void set_configuration_internal(  vital::config_block_sptr config  ) override;
 
   class priv;
   KWIVER_UNIQUE_PTR( priv, d );

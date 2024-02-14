@@ -19,7 +19,7 @@
 #include <vital/algo/video_input.h>
 
 // implementation
-// #include <arrows/core/detected_object_set_input_csv.h>
+#include <arrows/core/detected_object_set_input_csv.h>
 #include <arrows/core/detected_object_set_input_kw18.h>
 #include <arrows/core/filter_features_magnitude.h>
 #include <arrows/core/filter_features_nonmax.h>
@@ -86,7 +86,11 @@ register_factories( kwiver::vital::plugin_loader& vpl )
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 
   fact = vpl.add_factory< vital::algo::detected_object_set_input,
-    detected_object_set_input_kw18 >( "csv" );
+    detected_object_set_input_kw18 >( "kw18" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::detected_object_set_input,
+    detected_object_set_input_csv >( "csv" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 

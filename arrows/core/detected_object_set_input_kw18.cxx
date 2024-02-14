@@ -85,20 +85,7 @@ detected_object_set_input_kw18
 ::~detected_object_set_input_kw18()
 {}
 
-/*
- *  //
- * ----------------------------------------------------------------------------
- *  detected_object_set_input_kw18
- *  ::detected_object_set_input_kw18()
- *  : d( new detected_object_set_input_kw18::priv( this ) )
- *  {
- *  attach_logger( "arrows.core.detected_object_set_input_kw18" );
- *  }
- *
- *  detected_object_set_input_kw18::
- *  ~detected_object_set_input_kw18()
- *  {}
- */
+// ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
 bool
