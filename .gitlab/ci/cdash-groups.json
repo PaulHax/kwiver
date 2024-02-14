@@ -1,5 +1,5 @@
 {
     "latest-integration-v2": [
-        { "group": "integration-v2", "site": "gitlab-ci", "buildname": "[ubuntu2004_ffmpeg_gdal_opencv_proj_python]" }
+        { "group": "integration-v2", "site": "gitlab-ci", "buildname": "[ubuntu2004_ffmpeg_gdal_opencv_pdal_proj_python]" }
     ]
 }
