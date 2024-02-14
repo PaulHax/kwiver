@@ -12,6 +12,8 @@
 #include <vital/util/tokenize.h>
 #include <vital/vital_config.h>
 
+#include <algorithm> // may be able to remove later
+
 #include <cstdlib>
 #include <map>
 #include <sstream>
@@ -50,7 +52,7 @@ enum
 class detected_object_set_input_kw18::priv
 {
 public:
-  priv( detected_object_set_input_kw18* parent )
+  priv( detected_object_set_input_kw18& parent )
     : m_parent( parent ),
       m_first( true )
   {}
@@ -59,7 +61,7 @@ public:
 
   void read_all();
 
-  detected_object_set_input_kw18* m_parent;
+  detected_object_set_input_kw18& m_parent;
   bool m_first;
 
   int m_current_idx;
@@ -70,23 +72,33 @@ public:
   std::map< int, kwiver::vital::detected_object_set_sptr > m_detected_sets;
 };
 
-// ----------------------------------------------------------------------------
-detected_object_set_input_kw18
-::detected_object_set_input_kw18()
-  : d( new detected_object_set_input_kw18::priv( this ) )
-{
-  attach_logger( "arrows.core.detected_object_set_input_kw18" );
-}
-
-detected_object_set_input_kw18::
-~detected_object_set_input_kw18()
-{}
-
-// ----------------------------------------------------------------------------
 void
 detected_object_set_input_kw18
-::set_configuration( VITAL_UNUSED vital::config_block_sptr config )
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
+  attach_logger( "arrows.core.filter_features_scale" );
+}
+
+// Destructor
+detected_object_set_input_kw18
+::~detected_object_set_input_kw18()
 {}
+
+/*
+ *  //
+ * ----------------------------------------------------------------------------
+ *  detected_object_set_input_kw18
+ *  ::detected_object_set_input_kw18()
+ *  : d( new detected_object_set_input_kw18::priv( this ) )
+ *  {
+ *  attach_logger( "arrows.core.detected_object_set_input_kw18" );
+ *  }
+ *
+ *  detected_object_set_input_kw18::
+ *  ~detected_object_set_input_kw18()
+ *  {}
+ */
 
 // ----------------------------------------------------------------------------
 bool
@@ -103,25 +115,25 @@ detected_object_set_input_kw18
   kwiver::vital::detected_object_set_sptr& set,
   VITAL_UNUSED std::string& image_name )
 {
-  if( d->m_first )
+  if( d_->m_first )
   {
     // Read in all detections
-    d->read_all();
-    d->m_first = false;
+    d_->read_all();
+    d_->m_first = false;
 
     // set up iterators for returning sets.
-    d->m_current_idx = d->m_detected_sets.begin()->first;
-    d->m_last_idx = d->m_detected_sets.rbegin()->first;
+    d_->m_current_idx = d_->m_detected_sets.begin()->first;
+    d_->m_last_idx = d_->m_detected_sets.rbegin()->first;
   } // end first
 
   // test for end of all loaded detections
-  if( d->m_current_idx > d->m_last_idx )
+  if( d_->m_current_idx > d_->m_last_idx )
   {
     return false;
   }
 
   // return detection set at current index if there is one
-  if( 0 == d->m_detected_sets.count( d->m_current_idx ) )
+  if( 0 == d_->m_detected_sets.count( d_->m_current_idx ) )
   {
     // return empty set
     set = std::make_shared< kwiver::vital::detected_object_set >();
@@ -129,10 +141,10 @@ detected_object_set_input_kw18
   else
   {
     // Return detections for this frame.
-    set = d->m_detected_sets[ d->m_current_idx ];
+    set = d_->m_detected_sets[ d_->m_current_idx ];
   }
 
-  ++d->m_current_idx;
+  ++d_->m_current_idx;
 
   return true;
 }
@@ -142,7 +154,7 @@ void
 detected_object_set_input_kw18
 ::new_stream()
 {
-  d->m_first = true;
+  d_->m_first = true;
 }
 
 // ----------------------------------------------------------------------------
@@ -151,7 +163,7 @@ detected_object_set_input_kw18::priv
 ::read_all()
 {
   std::string line;
-  kwiver::vital::data_stream_reader stream_reader( m_parent->stream() );
+  kwiver::vital::data_stream_reader stream_reader( m_parent.stream() );
 
   m_detected_sets.clear();
 

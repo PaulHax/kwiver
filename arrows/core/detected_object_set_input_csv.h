@@ -10,6 +10,8 @@
 
 #include <arrows/core/kwiver_algo_core_export.h>
 
+#include <vital/algo/algorithm.h> // attempt to remove later
+#include <vital/algo/algorithm.txx> // attempt to remove later
 #include <vital/algo/detected_object_set_input.h>
 
 namespace kwiver {
@@ -22,8 +24,8 @@ class KWIVER_ALGO_CORE_EXPORT detected_object_set_input_csv
   : public vital::algo::detected_object_set_input
 {
 public:
-  PLUGIN_INFO(
-    "csv",
+  PLUGGABLE_IMPL(
+    detected_object_set_input_csv,
     "Detected object set reader using CSV format.\n\n"
     " - 1: frame number\n"
     " - 2: file name\n"
@@ -33,13 +35,11 @@ public:
     " - 6: BR-y\n"
     " - 7: confidence\n"
     " - 8,9: class-name, score"
-    " (this pair may be omitted or may repeat any number of times)" )
+    " (this pair may be omitted or may repeat any number of times)",
+    PARAM_DEFAULT( m_delim, std::string, "no description", "," )
+  )
 
-  detected_object_set_input_csv();
   virtual ~detected_object_set_input_csv();
-
-  virtual void set_configuration( vital::config_block_sptr config );
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
 
   virtual bool read_set(
     kwiver::vital::detected_object_set_sptr& set,
@@ -49,8 +49,7 @@ private:
   virtual void new_stream();
 
   class priv;
-
-  std::unique_ptr< priv > d;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // namespace core
