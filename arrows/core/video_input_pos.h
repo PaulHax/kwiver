@@ -42,8 +42,6 @@ public:
       "File extension of metadata files.",
       ".pos" ) );
 
-  /// Constructor
-  video_input_pos();
   virtual ~video_input_pos();
 
   /// Check that the algorithm's currently configuration is valid

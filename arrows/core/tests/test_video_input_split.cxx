@@ -9,7 +9,8 @@
 
 #include <arrows/core/video_input_split.h>
 #include <arrows/tests/test_video_input.h>
-#include <vital/algo/algorithm_factory.h>
+#include <vital/algo/algorithm.txx>
+#include <vital/algo/image_io.h>
 #include <vital/io/metadata_io.h>
 #include <vital/plugin_management/plugin_manager.h>
 
@@ -47,7 +48,10 @@ class video_input_split : public ::testing::Test
 // ----------------------------------------------------------------------------
 TEST_F ( video_input_split, create )
 {
-  EXPECT_NE( nullptr, algo::video_input::create( "split" ) );
+  EXPECT_NE(
+    nullptr,
+    kwiver::vital::create_algorithm< kwiver::vital::algo::video_input >(
+      "split" ) );
 }
 
 // ----------------------------------------------------------------------------
@@ -58,11 +62,11 @@ set_config(
   std::string const& data_dir )
 {
   config->set_value( "image_source:type", "image_list" );
-  if( kwiver::vital::has_algorithm_impl_name( "image_io", "ocv" ) )
+  if( kwiver::vital::has_algorithm_impl_name< algo::image_io >( "ocv" ) )
   {
     config->set_value( "image_source:image_list:image_reader:type", "ocv" );
   }
-  else if( kwiver::vital::has_algorithm_impl_name( "image_io", "vxl" ) )
+  else if( kwiver::vital::has_algorithm_impl_name< algo::image_io >( "vxl" ) )
   {
     config->set_value( "image_source:image_list:image_reader:type", "vxl" );
   }
