@@ -64,9 +64,10 @@ public:
       detection_class, std::string,
       "Label for detection detected object type",
       "detection" ),
-    PARAM(
+    PARAM_DEFAULT(
       image_name, std::string,
-      "Image name to return with each detection set" )
+      "Image name to return with each detection set",
+      "image" )
   )
 
   virtual ~detected_object_set_input_simulator();
