@@ -8,6 +8,7 @@
 #include <test_gtest.h>
 
 #include <arrows/core/video_input_pos.h>
+#include <vital/algo/algorithm.txx>
 #include <vital/io/metadata_io.h>
 #include <vital/plugin_management/plugin_manager.h>
 
@@ -46,7 +47,10 @@ class video_input_pos : public ::testing::Test
 // ----------------------------------------------------------------------------
 TEST_F ( video_input_pos, create )
 {
-  EXPECT_NE( nullptr, algo::video_input::create( "pos" ) );
+  EXPECT_NE(
+    nullptr,
+    kwiver::vital::create_algorithm< kwiver::vital::algo::video_input >(
+      "pos" ) );
 }
 
 // ----------------------------------------------------------------------------

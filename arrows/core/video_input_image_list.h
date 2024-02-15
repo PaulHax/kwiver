@@ -63,7 +63,6 @@ public:
       "Algorithm to use for reading the images" )
   );
 
-  video_input_image_list();
   virtual ~video_input_image_list();
 
   /// Check that the algorithm's currently configuration is valid.

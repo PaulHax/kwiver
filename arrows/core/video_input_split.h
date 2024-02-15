@@ -40,8 +40,6 @@ public:
       "Algorithm pointer to metadata stream" )
   );
 
-  /// Constructor
-  video_input_split();
   virtual ~video_input_split();
 
   /// Check that the algorithm's currently configuration is valid
