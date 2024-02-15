@@ -12,7 +12,7 @@
 #include <vital/util/tokenize.h>
 #include <vital/vital_config.h>
 
-#include <algorithm>
+// #include <algorithm>
 
 #include <cstdlib>
 #include <sstream>
@@ -43,10 +43,10 @@ public:
     : parent( parent ),
       m_first( true ),
       m_frame_number( 0 )
-//      m_delim( "," )
   {}
 
   detected_object_set_input_csv& parent;
+
   // Configuration values
   std::string c_delim() { return parent.c_delim; }
 
@@ -58,7 +58,6 @@ public:
   // --------------------------------------------------------------------------
   bool m_first;
   int m_frame_number;
-  //   std::string m_delim;
 
   std::shared_ptr< kwiver::vital::data_stream_reader > m_stream_reader;
   std::vector< std::string > m_input_buffer;

@@ -10,8 +10,7 @@
 
 #include <arrows/core/kwiver_algo_core_export.h>
 
-#include <vital/algo/algorithm.h> // attempt to remove later
-#include <vital/algo/algorithm.txx> // attempt to remove later
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/detected_object_set_input.h>
 
 namespace kwiver {

@@ -12,8 +12,6 @@
 #include <vital/util/tokenize.h>
 #include <vital/vital_config.h>
 
-#include <algorithm> // may be able to remove later
-
 #include <cstdlib>
 #include <map>
 #include <sstream>
@@ -84,8 +82,6 @@ detected_object_set_input_kw18
 detected_object_set_input_kw18
 ::~detected_object_set_input_kw18()
 {}
-
-// ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
 bool
