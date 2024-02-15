@@ -16,23 +16,10 @@ namespace arrows {
 
 namespace ocv {
 
-// Private implementation class
-class estimate_fundamental_matrix::priv
-{
-public:
-  // Constructor
-  priv()
-    : confidence_threshold( 0.99 )
-  {}
-
-  double confidence_threshold;
-};
-
 // ----------------------------------------------------------------------------
-// Constructor
+void
 estimate_fundamental_matrix
-::estimate_fundamental_matrix()
-  : d_( new priv )
+::initialize()
 {
   attach_logger( "arrows.ocv.estimate_fundamental_matrix" );
 }
@@ -43,35 +30,6 @@ estimate_fundamental_matrix
 {}
 
 // ----------------------------------------------------------------------------
-// Get this algorithm's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-estimate_fundamental_matrix
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config =
-    vital::algo::estimate_fundamental_matrix::get_configuration();
-
-  config->set_value(
-    "confidence_threshold", d_->confidence_threshold,
-    "Confidence that estimated matrix is correct, range (0.0, 1.0]" );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-// Set this algorithm's properties via a config block
-void
-estimate_fundamental_matrix
-::set_configuration( vital::config_block_sptr config )
-{
-  d_->confidence_threshold =
-    config->get_value< double >(
-      "confidence_threshold",
-      d_->confidence_threshold );
-}
-
-// ----------------------------------------------------------------------------
 // Check that the algorithm's configuration vital::config_block is valid
 bool
 estimate_fundamental_matrix
@@ -80,7 +38,7 @@ estimate_fundamental_matrix
   double confidence_threshold =
     config->get_value< double >(
       "confidence_threshold",
-      d_->confidence_threshold );
+      this->get_confidence_threshold() );
   if( confidence_threshold <= 0.0 || confidence_threshold > 1.0 )
   {
     LOG_ERROR(
@@ -130,7 +88,7 @@ estimate_fundamental_matrix
     cv::Mat( points1 ), cv::Mat( points2 ),
     cv::FM_RANSAC,
     inlier_scale,
-    d_->confidence_threshold,
+    this->get_confidence_threshold(),
     inliers_mat );
   inliers.resize( inliers_mat.rows );
   for( unsigned i = 0; i < inliers.size(); ++i )

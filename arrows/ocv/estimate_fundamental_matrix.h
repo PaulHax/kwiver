@@ -24,25 +24,23 @@ class KWIVER_ALGO_OCV_EXPORT estimate_fundamental_matrix
   : public vital::algo::estimate_fundamental_matrix
 {
 public:
-  PLUGIN_INFO(
-    "ocv",
-    "Use OpenCV to estimate a fundimental matrix from feature matches." )
+  // "ocv",
+  PLUGGABLE_IMPL(
+    estimate_fundamental_matrix,
+    "Use OpenCV to estimate a fundimental matrix from feature matches.",
 
-  /// Constructor
-  estimate_fundamental_matrix();
+    PARAM_DEFAULT(
+      confidence_threshold,
+      double,
+      "Confidence that estimated matrix is correct, range (0.0, 1.0]",
+      0.99 )
+  );
 
   /// Destructor
   virtual ~estimate_fundamental_matrix();
 
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
-
   /// Check that the algorithm's configuration config_block is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
   /// Estimate a fundamental matrix from corresponding points
   ///
@@ -56,19 +54,16 @@ public:
   /// estimate
   /// \param [in]  inlier_scale error distance tolerated for matches to be
   /// inliers
-  virtual vital::fundamental_matrix_sptr
+  vital::fundamental_matrix_sptr
   estimate(
     const std::vector< vital::vector_2d >& pts1,
     const std::vector< vital::vector_2d >& pts2,
     std::vector< bool >& inliers,
-    double inlier_scale = 3.0 ) const;
+    double inlier_scale = 3.0 ) const override;
   using vital::algo::estimate_fundamental_matrix::estimate;
 
 private:
-  /// private implementation class
-  class priv;
-
-  const std::unique_ptr< priv > d_;
+  void initialize() override;
 };
 
 } // end namespace ocv

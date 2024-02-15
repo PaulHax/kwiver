@@ -19,8 +19,8 @@ set( ocv_headers_public
   detect_motion_mog2.h
   draw_detected_object_set.h
   draw_tracks.h
-  #estimate_fundamental_matrix.h
-  #estimate_homography.h
+  estimate_fundamental_matrix.h
+  estimate_homography.h
   #estimate_pnp.h
   #extract_descriptors.h
   #extract_descriptors_BRIEF.h
@@ -74,8 +74,8 @@ set( ocv_sources
   detect_motion_mog2.cxx
   draw_detected_object_set.cxx
   draw_tracks.cxx
-  #estimate_fundamental_matrix.cxx
-  #estimate_homography.cxx
+  estimate_fundamental_matrix.cxx
+  estimate_homography.cxx
   #estimate_pnp.cxx
   #extract_descriptors.cxx
   #extract_descriptors_BRIEF.cxx

@@ -23,8 +23,8 @@
 #include <arrows/ocv/detect_features_STAR.h>
 #include <arrows/ocv/draw_detected_object_set.h>
 #include <arrows/ocv/draw_tracks.h>
-// #include <arrows/ocv/estimate_fundamental_matrix.h>
-// #include <arrows/ocv/estimate_homography.h>
+#include <arrows/ocv/estimate_fundamental_matrix.h>
+#include <arrows/ocv/estimate_homography.h>
 // #include <arrows/ocv/estimate_pnp.h>
 // #include <arrows/ocv/resection_camera.h>
 // #include <arrows/ocv/extract_descriptors_BRIEF.h>
@@ -67,19 +67,20 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 #if defined( HAVE_OPENCV_NONFREE )
   cv::initModule_nonfree();
 #endif
-  auto fact =
-    vpm.add_factory< vital::algo::image_io, image_io >( "ocv" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
 
-// kwiver-v2 xxx(needs to be updated/adapted)
-  fact = vpm.add_factory< vital::algo::analyze_tracks,
+  auto fact = vpm.add_factory< vital::algo::analyze_tracks,
     analyze_tracks >( "ocv" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
   fact = vpm.add_factory< vital::algo::draw_tracks, draw_tracks >( "ocv" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
-//  reg.register_algorithm< estimate_fundamental_matrix >();
-//  reg.register_algorithm< estimate_homography >();
-//  reg.register_algorithm< image_io >();
+  fact = vpm.add_factory< vital::algo::estimate_fundamental_matrix,
+    estimate_fundamental_matrix >( "ocv" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+  fact = vpm.add_factory< vital::algo::estimate_homography,
+    estimate_homography >( "ocv" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+  fact = vpm.add_factory< vital::algo::image_io, image_io >( "ocv" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
 //  reg.register_algorithm< inpaint >();
   fact = vpm.add_factory< vital::algo::draw_detected_object_set,
     draw_detected_object_set >( "ocv" );
