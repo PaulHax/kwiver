@@ -19,40 +19,36 @@ namespace core {
 class detected_object_set_output_csv::priv
 {
 public:
-  priv( detected_object_set_output_csv* parent )
-    : m_parent( parent ),
+  priv( detected_object_set_output_csv& parent )
+    : parent( parent ),
       m_first( true ),
-      m_frame_number( 1 ),
-      m_delim( "," )
+      m_frame_number( 1 )
   {}
+
+  detected_object_set_output_csv& parent;
+
+  // Configuration values
+  std::string c_delim() { return parent.c_delim; }
 
   ~priv() {}
 
-  detected_object_set_output_csv* m_parent;
+  // Local values
   bool m_first;
   int m_frame_number;
-  std::string m_delim;
 };
 
 // ----------------------------------------------------------------------------
+void
 detected_object_set_output_csv
-::detected_object_set_output_csv()
-  : d( new detected_object_set_output_csv::priv( this ) )
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
   attach_logger( "arrows.core.detected_object_set_output_csv" );
 }
 
 detected_object_set_output_csv::
 ~detected_object_set_output_csv()
 {}
-
-// ----------------------------------------------------------------------------
-void
-detected_object_set_output_csv
-::set_configuration( vital::config_block_sptr config )
-{
-  d->m_delim = config->get_value< std::string >( "delimiter", d->m_delim );
-}
 
 // ----------------------------------------------------------------------------
 bool
@@ -83,14 +79,15 @@ detected_object_set_output_csv
     const std::string atime( cp );
 
     // Write file header(s)
-    stream() << "# 1: image-index" << d->m_delim
-             << "2:file-name" << d->m_delim
-             << "3:TL-x" << d->m_delim
-             << "4:TL-y" << d->m_delim
-             << "5:BR-x" << d->m_delim
-             << "6:BR-y" << d->m_delim
-             << "7:confidence" << d->m_delim
-             << "{class-name" << d->m_delim << "score}" << d->m_delim << "..."
+    stream() << "# 1: image-index" << d->c_delim()
+             << "2:file-name" << d->c_delim()
+             << "3:TL-x" << d->c_delim()
+             << "4:TL-y" << d->c_delim()
+             << "5:BR-x" << d->c_delim()
+             << "6:BR-y" << d->c_delim()
+             << "7:confidence" << d->c_delim()
+             << "{class-name" << d->c_delim() << "score}" << d->c_delim() <<
+      "..."
              << std::endl
 
       // Provide some provenience to the file. Could have a config
@@ -108,12 +105,12 @@ detected_object_set_output_csv
   for( auto det = set->cbegin(); det != ie; ++det )
   {
     const kwiver::vital::bounding_box_d bbox( ( *det )->bounding_box() );
-    stream() << d->m_frame_number << d->m_delim
-             << image_name << d->m_delim
-             << bbox.min_x() << d->m_delim // 2: TL-x
-             << bbox.min_y() << d->m_delim // 3: TL-y
-             << bbox.max_x() << d->m_delim // 4: BR-x
-             << bbox.max_y() << d->m_delim // 5: BR-y
+    stream() << d->m_frame_number << d->c_delim()
+             << image_name << d->c_delim()
+             << bbox.min_x() << d->c_delim() // 2: TL-x
+             << bbox.min_y() << d->c_delim() // 3: TL-y
+             << bbox.max_x() << d->c_delim() // 4: BR-x
+             << bbox.max_y() << d->c_delim() // 5: BR-y
              << ( *det )->confidence()        // 6: confidence value
     ;
 
@@ -125,7 +122,7 @@ detected_object_set_output_csv
       for( auto name : name_list )
       {
         // Write out the <name> <score> pair
-        stream() << d->m_delim << name << d->m_delim << cm->score( name );
+        stream() << d->c_delim() << name << d->c_delim() << cm->score( name );
       } // end foreach
     }
 
