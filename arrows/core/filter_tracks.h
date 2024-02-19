@@ -9,6 +9,9 @@
 
 #include <vital/algo/filter_tracks.h>
 
+#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
+
 /// \file
 /// \brief Header defining the core filter_tracks algorithm
 
@@ -23,21 +26,24 @@ class KWIVER_ALGO_CORE_EXPORT filter_tracks
   : public vital::algo::filter_tracks
 {
 public:
-  PLUGIN_INFO(
-    "core",
-    "Filter tracks by track length or matrix matrix importance." )
-
-  /// Constructor
-  filter_tracks();
+  PLUGGABLE_IMPL(
+    filter_tracks,
+    "Filter tracks by track length or matrix matrix importance.",
+    PARAM_DEFAULT(
+      min_track_length, unsigned int,
+      "Filter the tracks keeping those covering "
+      "at least this many frames. Set to 0 to disable.",
+      3 ),
+    PARAM_DEFAULT(
+      min_mm_importance, double,
+      "Filter the tracks with match matrix importance score "
+      "below this threshold. Set to 0 to disable.",
+      1.0 )
+  )
 
   /// Destructor
   virtual ~filter_tracks();
 
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's configuration config_block is valid
   virtual bool check_configuration( vital::config_block_sptr config ) const;
 
@@ -49,10 +55,10 @@ public:
   filter( vital::track_set_sptr input ) const;
 
 private:
+  void initialize() override;
   /// private implementation class
   class priv;
-
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace core

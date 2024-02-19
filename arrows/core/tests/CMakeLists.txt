@@ -14,6 +14,7 @@ kwiver_discover_gtests(core csv_io                    LIBRARIES ${test_libraries
 # kwiver_discover_gtests(core detected_object_io        LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(core dynamic_configuration     LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core filter_features           LIBRARIES ${test_libraries})
+kwiver_discover_gtests(core filter_tracks             LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(core feature_descriptor_io     LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(core interpolate_track_spline  LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(core merge_metadata_streams    LIBRARIES ${test_libraries})
