@@ -55,7 +55,7 @@ detected_object_set_input_simulator
 ::initialize()
 {
   KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
-  attach_logger( "arrows.core.detected_object_set_input_csv" );
+  attach_logger( "arrows.core.detected_object_set_input_simulator" );
 }
 
 detected_object_set_input_simulator::
