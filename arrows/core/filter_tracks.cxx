@@ -21,22 +21,23 @@ namespace core {
 class filter_tracks::priv
 {
 public:
-  /// Constructor
-  priv()
-    : min_track_length( 3 ),
-      min_mm_importance( 1.0 )
+  priv( filter_tracks& parent )
+    : parent( parent )
   {}
 
-  unsigned int min_track_length;
-  double min_mm_importance;
+  filter_tracks& parent;
+
+  // Configuration values
+  unsigned int c_min_track_length() { return parent.c_min_track_length; }
+  double c_min_mm_importance() { return parent.c_min_mm_importance; }
 };
 
 // ----------------------------------------------------------------------------
-// Constructor
+void
 filter_tracks
-::filter_tracks()
-  : d_( new priv )
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
   attach_logger( "arrows.core.filter_tracks" );
 }
 
@@ -46,43 +47,6 @@ filter_tracks
 {}
 
 // ----------------------------------------------------------------------------
-// Get this algorithm's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-filter_tracks
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config =
-    vital::algo::filter_tracks::get_configuration();
-
-  config->set_value(
-    "min_track_length", d_->min_track_length,
-    "Filter the tracks keeping those covering "
-    "at least this many frames. Set to 0 to disable." );
-
-  config->set_value(
-    "min_mm_importance", d_->min_mm_importance,
-    "Filter the tracks with match matrix importance score "
-    "below this threshold. Set to 0 to disable." );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-// Set this algorithm's properties via a config block
-void
-filter_tracks
-::set_configuration( vital::config_block_sptr config )
-{
-  d_->min_track_length = config->get_value< unsigned int >(
-    "min_track_length",
-    d_->min_track_length );
-  d_->min_mm_importance = config->get_value< double >(
-    "min_mm_importance",
-    d_->min_mm_importance );
-}
-
-// ----------------------------------------------------------------------------
 // Check that the algorithm's configuration vital::config_block is valid
 bool
 filter_tracks
@@ -90,7 +54,7 @@ filter_tracks
 {
   double min_mm_importance = config->get_value< double >(
     "min_mm_importance",
-    d_->min_mm_importance );
+    d_->c_min_mm_importance() );
   if( min_mm_importance < 0.0 )
   {
     LOG_ERROR(
@@ -108,13 +72,13 @@ vital::track_set_sptr
 filter_tracks
 ::filter( vital::track_set_sptr tracks ) const
 {
-  if( d_->min_track_length > 1 )
+  if( d_->c_min_track_length() > 1 )
   {
     std::vector< kwiver::vital::track_sptr > trks = tracks->tracks();
     std::vector< kwiver::vital::track_sptr > good_trks;
     for( kwiver::vital::track_sptr t : trks )
     {
-      if( t->size() >= d_->min_track_length )
+      if( t->size() >= d_->c_min_track_length() )
       {
         good_trks.push_back( t );
       }
@@ -124,7 +88,7 @@ filter_tracks
       tracks->all_frame_data() );
   }
 
-  if( d_->min_mm_importance > 0 )
+  if( d_->c_min_mm_importance() > 0 )
   {
     // compute the match matrix
     std::vector< vital::frame_id_t > frames;
@@ -141,7 +105,7 @@ filter_tracks
     {
       std::map< vital::track_id_t, double >::const_iterator itr;
       if( ( itr = importance.find( t->id() ) ) != importance.end() &&
-          itr->second >= d_->min_mm_importance )
+          itr->second >= d_->c_min_mm_importance() )
       {
         good_trks.push_back( t );
       }

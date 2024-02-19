@@ -12,6 +12,7 @@
 
 // interface
 #include <vital/algo/filter_features.h>
+#include <vital/algo/filter_tracks.h>
 #include <vital/algo/metadata_map_io.h>
 #include <vital/algo/uv_unwrap_mesh.h>
 #include <vital/algo/video_input.h>
@@ -20,6 +21,7 @@
 #include <arrows/core/filter_features_magnitude.h>
 #include <arrows/core/filter_features_nonmax.h>
 #include <arrows/core/filter_features_scale.h>
+#include <arrows/core/filter_tracks.h>
 #include <arrows/core/metadata_map_io_csv.h>
 #include <arrows/core/uv_unwrap_mesh.h>
 #include <arrows/core/video_input_filter.h>
@@ -74,6 +76,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::filter_features,
     filter_features_nonmax >( "nonmax" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::filter_tracks,
+    filter_tracks >( "core" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 
