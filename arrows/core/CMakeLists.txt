@@ -43,7 +43,7 @@ set( plugin_core_headers
   mesh_operations.h
   metadata_map_io_csv.h
   metadata_stream_from_video.h
-  # read_object_track_set_kw18.h
+  read_object_track_set_kw18.h
   read_track_descriptor_set_csv.h
   render_mesh_depth_map.h
   # track_features_augment_keyframes.h
@@ -120,7 +120,7 @@ set( plugin_core_sources
   mesh_operations.cxx
   metadata_map_io_csv.cxx
   metadata_stream_from_video.cxx
-  # read_object_track_set_kw18.cxx
+  read_object_track_set_kw18.cxx
   read_track_descriptor_set_csv.cxx
   render_mesh_depth_map.cxx
   # track_features_augment_keyframes.cxx

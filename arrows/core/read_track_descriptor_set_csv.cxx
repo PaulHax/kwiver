@@ -27,8 +27,6 @@ public:
     : parent( parent ),
       m_logger( kwiver::vital::get_logger( "read_track_descriptor_set_csv" ) ),
       m_first( true ),
-//      m_batch_load( true ),
-//      m_read_raw_descriptor( true ),
       m_delim( "," ),
       m_sub_delim( " " ),
       m_current_idx( 0 ),
