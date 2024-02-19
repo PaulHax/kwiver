@@ -7,6 +7,7 @@
 
 #include <arrows/core/dynamic_config_none.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>
@@ -51,11 +52,14 @@ TEST ( dynamic_configuration, test_loading )
   // Check config so it will give run-time diagnostic if any config problems are
   // found
   EXPECT_TRUE(
-    algo::dynamic_configuration::check_nested_algo_configuration(
+
+    kwiver::vital::
+    check_nested_algo_configuration< algo::dynamic_configuration >(
       "dyn_cfg", cfg ) );
 
   // Instantiate the configured algorithm
-  algo::dynamic_configuration::set_nested_algo_configuration(
+  kwiver::vital::
+  set_nested_algo_configuration< algo::dynamic_configuration >(
     "dyn_cfg", cfg,
     dcs );
   ASSERT_NE( nullptr, dcs ) << "Failed to create algorithm";
