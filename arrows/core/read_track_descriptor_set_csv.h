@@ -10,6 +10,7 @@
 
 #include <arrows/core/kwiver_algo_core_export.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/read_track_descriptor_set.h>
 
 namespace kwiver {
@@ -22,22 +23,24 @@ class KWIVER_ALGO_CORE_EXPORT read_track_descriptor_set_csv
   : public vital::algo::read_track_descriptor_set
 {
 public:
-  PLUGIN_INFO(
-    "csv",
-    "Track descriptor csv reader" )
+  PLUGGABLE_IMPL(
+    read_track_descriptor_set_csv,
+    "Track descriptor csv reader",
+    PARAM_DEFAULT( batch_load, bool, "batch_load", true ),
+    PARAM_DEFAULT( read_raw_descriptor, bool, "read_raw_descriptor", true ),
+  )
 
-  read_track_descriptor_set_csv();
   virtual ~read_track_descriptor_set_csv();
 
-  virtual void set_configuration( vital::config_block_sptr config );
   virtual bool check_configuration( vital::config_block_sptr config ) const;
 
   virtual bool read_set( kwiver::vital::track_descriptor_set_sptr& set );
 
 private:
-  class priv;
+  void initialize() override;
 
-  std::unique_ptr< priv > d;
+  class priv;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // namespace core
