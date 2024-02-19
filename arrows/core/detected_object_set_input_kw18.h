@@ -10,6 +10,7 @@
 
 #include <arrows/core/kwiver_algo_core_export.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/detected_object_set_input.h>
 
 #include <memory>
@@ -25,8 +26,8 @@ class KWIVER_ALGO_CORE_EXPORT detected_object_set_input_kw18
 {
 public:
   // NOTE: Keep description in sync with detected_object_set_output_kw18
-  PLUGIN_INFO(
-    "kw18",
+  PLUGGABLE_IMPL(
+    detected_object_set_input_kw18,
     "Detected object set reader using kw18 format.\n\n"
     "  - Column(s) 1: Track-id\n"
     "  - Column(s) 2: Track-length (number of detections)\n"
@@ -42,10 +43,8 @@ public:
     "  - Column(s) 18: Timesetamp (-1 if not available)\n"
     "  - Column(s) 19: Track-confidence (-1 if not available)" )
 
-  detected_object_set_input_kw18();
   virtual ~detected_object_set_input_kw18();
 
-  virtual void set_configuration( vital::config_block_sptr config );
   virtual bool check_configuration( vital::config_block_sptr config ) const;
 
   virtual bool read_set(
@@ -55,9 +54,10 @@ public:
 private:
   virtual void new_stream();
 
+  void initialize() override;
+  /// private implementation class
   class priv;
-
-  std::unique_ptr< priv > d;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // namespace core

@@ -50,7 +50,7 @@ enum
 class detected_object_set_input_kw18::priv
 {
 public:
-  priv( detected_object_set_input_kw18* parent )
+  priv( detected_object_set_input_kw18& parent )
     : m_parent( parent ),
       m_first( true )
   {}
@@ -59,7 +59,7 @@ public:
 
   void read_all();
 
-  detected_object_set_input_kw18* m_parent;
+  detected_object_set_input_kw18& m_parent;
   bool m_first;
 
   int m_current_idx;
@@ -70,22 +70,17 @@ public:
   std::map< int, kwiver::vital::detected_object_set_sptr > m_detected_sets;
 };
 
-// ----------------------------------------------------------------------------
+void
 detected_object_set_input_kw18
-::detected_object_set_input_kw18()
-  : d( new detected_object_set_input_kw18::priv( this ) )
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
   attach_logger( "arrows.core.detected_object_set_input_kw18" );
 }
 
-detected_object_set_input_kw18::
-~detected_object_set_input_kw18()
-{}
-
-// ----------------------------------------------------------------------------
-void
+// Destructor
 detected_object_set_input_kw18
-::set_configuration( VITAL_UNUSED vital::config_block_sptr config )
+::~detected_object_set_input_kw18()
 {}
 
 // ----------------------------------------------------------------------------
@@ -151,7 +146,7 @@ detected_object_set_input_kw18::priv
 ::read_all()
 {
   std::string line;
-  kwiver::vital::data_stream_reader stream_reader( m_parent->stream() );
+  kwiver::vital::data_stream_reader stream_reader( m_parent.stream() );
 
   m_detected_sets.clear();
 

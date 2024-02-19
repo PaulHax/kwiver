@@ -12,6 +12,8 @@
 #include <vital/util/tokenize.h>
 #include <vital/vital_config.h>
 
+// #include <algorithm>
+
 #include <cstdlib>
 #include <sstream>
 
@@ -37,12 +39,16 @@ namespace core {
 class detected_object_set_input_csv::priv
 {
 public:
-  priv( detected_object_set_input_csv* parent )
-    : m_parent( parent ),
+  priv( detected_object_set_input_csv& parent )
+    : parent( parent ),
       m_first( true ),
-      m_frame_number( 0 ),
-      m_delim( "," )
+      m_frame_number( 0 )
   {}
+
+  detected_object_set_input_csv& parent;
+
+  // Configuration values
+  std::string c_delim() { return parent.c_delim; }
 
   ~priv() {}
 
@@ -50,10 +56,8 @@ public:
   void add_detection();
 
   // --------------------------------------------------------------------------
-  detected_object_set_input_csv* m_parent;
   bool m_first;
   int m_frame_number;
-  std::string m_delim;
 
   std::shared_ptr< kwiver::vital::data_stream_reader > m_stream_reader;
   std::vector< std::string > m_input_buffer;
@@ -62,10 +66,11 @@ public:
 };
 
 // ----------------------------------------------------------------------------
+void
 detected_object_set_input_csv
-::detected_object_set_input_csv()
-  : d( new detected_object_set_input_csv::priv( this ) )
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
   attach_logger( "arrows.core.detected_object_set_input_csv" );
 }
 
@@ -76,14 +81,13 @@ detected_object_set_input_csv::
 // ----------------------------------------------------------------------------
 void
 detected_object_set_input_csv
-::set_configuration( vital::config_block_sptr config )
+::set_configuration_internal(
+  [[maybe_unused]] vital::config_block_sptr config  )
 {
-  d->m_delim = config->get_value< std::string >( "delimiter", d->m_delim );
-
   // Test for no specification which can happen due to config parsing issues.
-  if( d->m_delim.empty() )
+  if( c_delim.empty() )
   {
-    d->m_delim = " ";
+    c_delim = " ";
   }
 }
 
@@ -178,7 +182,7 @@ detected_object_set_input_csv::priv
 
   m_input_buffer.clear();
   kwiver::vital::tokenize(
-    line, m_input_buffer, m_delim,
+    line, m_input_buffer, c_delim(),
     kwiver::vital::TokenizeNoTrimEmpty );
 
   // Test the minimum number of fields.
