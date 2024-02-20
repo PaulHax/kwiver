@@ -8,6 +8,12 @@
 #include <arrows/vxl/kwiver_algo_vxl_plugin_export.h>
 #include <vital/plugin_management/plugin_manager.h>
 
+// interface
+#include <vital/algo/nearest_neighbors.h>
+
+// implementation
+#include <arrows/vxl/kd_tree.h>
+
 // #include <arrows/vxl/average_frames.h>
 // #include <arrows/vxl/bundle_adjust.h>
 // #include <arrows/vxl/close_loops_homography_guided.h>
@@ -21,7 +27,6 @@
 // #include <arrows/vxl/hashed_image_classifier_filter.h>
 // #include <arrows/vxl/high_pass_filter.h>
 // #include <arrows/vxl/image_io.h>
-// #include <arrows/vxl/kd_tree.h>
 // #include <arrows/vxl/match_features_constrained.h>
 // #include <arrows/vxl/morphology.h>
 // #include <arrows/vxl/optimize_cameras.h>
@@ -47,7 +52,9 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 {
   using kvpf = ::kwiver::vital::plugin_factory;
 
-  using namespace kwiver::arrows::vxl;
+  auto fact =
+    vpl.add_factory< vital::algo::nearest_neighbors, kd_tree >( "vxl_kd_tree" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
 #ifdef VXL_ENABLE_FFMPEG
   // reg.register_algorithm< vidl_ffmpeg_video_input >();

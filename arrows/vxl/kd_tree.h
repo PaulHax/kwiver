@@ -14,6 +14,8 @@
 
 #include <vital/algo/nearest_neighbors.h>
 
+#include <vital/plugin_management/pluggable_macro_magic.h>
+
 namespace kwiver {
 
 namespace arrows {
@@ -25,22 +27,13 @@ class KWIVER_ALGO_VXL_EXPORT kd_tree
   : public kwiver::vital::algo::nearest_neighbors
 {
 public:
-  PLUGIN_INFO(
-    "vxl_kd_tree",
-    "KD Tree search to find nearest points." )
-
-  /// Constructor
-  kd_tree();
+  PLUGGABLE_IMPL(
+    kd_tree,
+    "KD Tree search to find nearest points."
+  )
 
   /// Destructor
   virtual ~kd_tree();
-
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
 
   /// Check that the algorithm's currently configuration is valid
   virtual bool check_configuration( vital::config_block_sptr config ) const;
@@ -88,10 +81,10 @@ public:
     std::vector< int >& indices ) const;
 
 private:
+  void initialize() override;
   /// private implementation class
   class priv;
-
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace vxl
