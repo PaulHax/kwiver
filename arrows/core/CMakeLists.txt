@@ -13,7 +13,7 @@ set( plugin_core_headers
   # colorize.h
   # compute_association_matrix_from_features.h
   # compute_ref_homography_core.h
-  # convert_image_bypass.h
+  convert_image_bypass.h
   create_detection_grid.h
   csv_io.h
   depth_utils.h
@@ -90,7 +90,7 @@ set( plugin_core_sources
   # colorize.cxx
   # compute_association_matrix_from_features.cxx
   # compute_ref_homography_core.cxx
-  # convert_image_bypass.cxx
+  convert_image_bypass.cxx
   create_detection_grid.cxx
   csv_io.cxx
   depth_utils.cxx

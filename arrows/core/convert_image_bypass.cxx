@@ -7,15 +7,37 @@
 
 #include "convert_image_bypass.h"
 
+#include <algorithm>
+
 namespace kwiver {
 
 namespace arrows {
 
 namespace core {
 
-/// Default Constructor
+// Private implementation class
+class convert_image_bypass::priv
+{
+public:
+  priv( convert_image_bypass& parent )
+    : parent( parent )
+  {}
+
+  convert_image_bypass& parent;
+};
+
+// ----------------------------------------------------------------------------
+void
 convert_image_bypass
-::convert_image_bypass()
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
+  attach_logger( "arrows.core.filter_tracks" );
+}
+
+// Destructor
+convert_image_bypass
+::~convert_image_bypass()
 {}
 
 /// Default image converter ( does nothing )

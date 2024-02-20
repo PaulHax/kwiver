@@ -11,6 +11,7 @@ set( test_libraries    vital_algo vital vital_vpm kwiver_algo_core )
 ##############################
 kwiver_discover_gtests(core associate_detections_to_tracks_threshold
                                                       LIBRARIES ${test_libraries})
+kwiver_discover_gtests(core convert_image_bypass      LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core create_detection_grid     LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core csv_io                    LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(core derive_metadata           LIBRARIES ${test_libraries})

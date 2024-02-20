@@ -10,6 +10,7 @@
 
 #include <arrows/core/kwiver_algo_core_export.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/convert_image.h>
 
 namespace kwiver {
@@ -23,12 +24,13 @@ class KWIVER_ALGO_CORE_EXPORT convert_image_bypass
   : public vital::algo::convert_image
 {
 public:
-  PLUGIN_INFO(
-    "bypass",
-    "Performs no conversion and returns the given image container." )
+  PLUGGABLE_IMPL(
+    convert_image_bypass,
+    "Performs no conversion and returns the given image container."
+  )
 
-  /// Default Constructor
-  convert_image_bypass();
+  /// Destructor
+  virtual ~convert_image_bypass();
 
   /// Default image converter ( does nothing )
   ///
@@ -36,6 +38,12 @@ public:
   /// \returns the input image
   virtual vital::image_container_sptr convert(
     vital::image_container_sptr img ) const;
+
+private:
+  void initialize() override;
+  /// private implementation class
+  class priv;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace core
