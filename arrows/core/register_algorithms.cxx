@@ -11,6 +11,7 @@
 #include <vital/plugin_management/plugin_manager.h>
 
 // interface
+#include <vital/algo/associate_detections_to_tracks.h>
 #include <vital/algo/detected_object_set_input.h>
 #include <vital/algo/detected_object_set_output.h>
 #include <vital/algo/dynamic_configuration.h>
@@ -23,6 +24,7 @@
 #include <vital/algo/video_input.h>
 
 // implementation
+#include <arrows/core/associate_detections_to_tracks_threshold.h>
 #include <arrows/core/detected_object_set_input_csv.h>
 #include <arrows/core/detected_object_set_input_kw18.h>
 #include <arrows/core/detected_object_set_input_simulator.h>
@@ -120,6 +122,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::read_object_track_set,
     read_object_track_set_kw18 >( "kw18" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::associate_detections_to_tracks,
+    associate_detections_to_tracks_threshold >( "threshold" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 

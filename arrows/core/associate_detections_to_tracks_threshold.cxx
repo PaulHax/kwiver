@@ -7,6 +7,7 @@
 
 #include "associate_detections_to_tracks_threshold.h"
 
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/detected_object_filter.h>
 #include <vital/exceptions/algorithm.h>
 #include <vital/types/object_track_set.h>
@@ -30,65 +31,34 @@ using namespace kwiver::vital;
 class associate_detections_to_tracks_threshold::priv
 {
 public:
-  /// Constructor
-  priv()
-    : threshold( 0.50 ),
-      higher_is_better( true ),
+  priv( associate_detections_to_tracks_threshold& parent )
+    : parent( parent ),
       m_logger( vital::get_logger(
         "arrows.core.associate_detections_to_tracks_threshold" ) )
   {}
 
-  /// Threshold to apply on the matrix
-  double threshold;
-
-  /// Whether to take values above or below the threshold
-  bool higher_is_better;
+  associate_detections_to_tracks_threshold& parent;
+  // Configuration values
+  double c_threshold() { return parent.c_threshold; }
+  bool c_higher_is_better() { return parent.c_higher_is_better; }
 
   /// Logger handle
   vital::logger_handle_t m_logger;
 };
 
-/// Constructor
+// ----------------------------------------------
+void
 associate_detections_to_tracks_threshold
-::associate_detections_to_tracks_threshold()
-  : d_( new priv )
-{}
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
+  attach_logger( "arrows.core.associate_detections_to_tracks_threshold" );
+}
 
 /// Destructor
 associate_detections_to_tracks_threshold
 ::~associate_detections_to_tracks_threshold() noexcept
 {}
-
-/// Get this alg's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-associate_detections_to_tracks_threshold
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config = algorithm::get_configuration();
-
-  config->set_value(
-    "threshold", d_->threshold,
-    "Threshold to apply on the matrix." );
-
-  config->set_value(
-    "higher_is_better", d_->higher_is_better,
-    "Whether values above or below the threshold indicate a better fit." );
-
-  return config;
-}
-
-/// Set this algo's properties via a config block
-void
-associate_detections_to_tracks_threshold
-::set_configuration( vital::config_block_sptr in_config )
-{
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  d_->threshold = config->get_value< double >( "threshold" );
-  d_->higher_is_better = config->get_value< bool >( "higher_is_better" );
-}
 
 bool
 associate_detections_to_tracks_threshold
@@ -117,7 +87,7 @@ associate_detections_to_tracks_threshold
 
   for( unsigned t = 0; t < all_tracks.size(); ++t )
   {
-    double best_score = ( d_->higher_is_better ? -1 : 1 ) *
+    double best_score = ( d_->c_higher_is_better() ? -1 : 1 ) *
                         std::numeric_limits< double >::max();
 
     unsigned best_index = std::numeric_limits< unsigned >::max();
@@ -126,9 +96,9 @@ associate_detections_to_tracks_threshold
     {
       double value = matrix( t, d );
 
-      if( d_->higher_is_better )
+      if( d_->c_higher_is_better() )
       {
-        if( value >= d_->threshold && value > best_score )
+        if( value >= d_->c_threshold() && value > best_score )
         {
           best_score = value;
           best_index = d;
@@ -136,7 +106,7 @@ associate_detections_to_tracks_threshold
       }
       else
       {
-        if( value <= d_->threshold && value < best_score )
+        if( value <= d_->c_threshold() && value < best_score )
         {
           best_score = value;
           best_index = d;

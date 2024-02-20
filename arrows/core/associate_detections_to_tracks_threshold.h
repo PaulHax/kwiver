@@ -22,34 +22,21 @@ class KWIVER_ALGO_CORE_EXPORT associate_detections_to_tracks_threshold
   : public vital::algo::associate_detections_to_tracks
 {
 public:
-  PLUGIN_INFO(
-    "threshold",
-    "Associate detections to tracks via simple thresholding on the input matrix." )
-
-  /// Default Constructor
-  associate_detections_to_tracks_threshold();
+  PLUGGABLE_IMPL(
+    associate_detections_to_tracks_threshold,
+    "Associate detections to tracks via simple thresholding on the input matrix.",
+    PARAM_DEFAULT(
+      threshold, double,
+      "Threshold to apply on the matrix.",
+      0.50 ),
+    PARAM_DEFAULT(
+      higher_is_better, bool,
+      "Whether values above or below the threshold indicate a better fit.",
+      true )
+  )
 
   /// Destructor
   virtual ~associate_detections_to_tracks_threshold() noexcept;
-
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  ///
-  /// \returns \c config_block containing the configuration for this algorithm
-  ///          and any nested components.
-  virtual vital::config_block_sptr get_configuration() const;
-
-  /// Set this algorithm's properties via a config block
-  ///
-  /// \throws no_such_configuration_value_exception
-  ///    Thrown if an expected configuration value is not present.
-  /// \throws algorithm_configuration_exception
-  ///    Thrown when the algorithm is given an invalid \c config_block or is'
-  ///    otherwise unable to configure itself.
-  ///
-  /// \param config  The \c config_block instance containing the configuration
-  ///                parameters for this algorithm
-  virtual void set_configuration( vital::config_block_sptr config );
 
   /// Check that the algorithm's currently configuration is valid
   ///
@@ -83,10 +70,10 @@ public:
     kwiver::vital::detected_object_set_sptr& unused ) const;
 
 private:
+  void initialize() override;
   /// private implementation class
   class priv;
-
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace core
