@@ -24,71 +24,37 @@ using namespace kwiver::vital;
 class create_detection_grid::priv
 {
 public:
-  /// Constructor
-  priv()
-    : width( 0 ),
-      height( 0 ),
-      x_step( 0 ),
-      y_step( 0 ),
+  priv( create_detection_grid& parent )
+    : parent( parent ),
       m_logger( vital::get_logger(
         "arrows.core.create_detection_grid" ) )
   {}
 
-  double width, height, x_step, y_step;
+  create_detection_grid& parent;
+
+  // Configuration values
+  double c_width() { return parent.c_width; }
+  double c_height() { return parent.c_height; }
+  double c_x_step() { return parent.c_x_step; }
+  double c_y_step() { return parent.c_y_step; }
 
   /// Logger handle
   vital::logger_handle_t m_logger;
 };
 
-/// Constructor
+// ------------------------------------------------
+void
 create_detection_grid
-::create_detection_grid()
-  : d_( new priv )
-{}
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
+  attach_logger( "arrows.core.associate_detections_to_tracks_threshold" );
+}
 
 /// Destructor
 create_detection_grid
 ::~create_detection_grid() noexcept
 {}
-
-/// Get this alg's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-create_detection_grid
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config = algorithm::get_configuration();
-
-  config->set_value(
-    "detection_width", d_->width,
-    "Width of each detection in the output grid." );
-  config->set_value(
-    "detection_height", d_->height,
-    "Height of each detection in the output grid." );
-  config->set_value(
-    "x_step", d_->x_step,
-    "How far apart along the x axis each detection is." );
-  config->set_value(
-    "y_step", d_->y_step,
-    "How far apart along the y axis each detection is." );
-
-  return config;
-}
-
-/// Set this algo's properties via a config block
-void
-create_detection_grid
-::set_configuration( vital::config_block_sptr in_config )
-{
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  d_->width = config->get_value< double >( "detection_width" );
-  d_->height = config->get_value< double >( "detection_height" );
-
-  d_->x_step = config->get_value< double >( "x_step" );
-  d_->y_step = config->get_value< double >( "y_step" );
-}
 
 bool
 create_detection_grid
@@ -117,48 +83,49 @@ create_detection_grid
   const size_t img_width = image_data->width();
   const size_t img_height = image_data->height();
 
-  if( d_->width > img_width || d_->height > img_height )
+  if( d_->c_width() > img_width || d_->c_height() > img_height )
   {
     VITAL_THROW(
       vital::algorithm_configuration_exception,
-      type_name(), impl_name(),
+      this->interface_name(), this->plugin_name(),
       "Detection width and height must be no more than image width and height" );
   }
 
   // Get any non-overlapping grid spaces
   // Note that the last column and row are missing here
-  for( int i = 0; i + d_->width < img_width; i += d_->x_step )
+  for( int i = 0; i + d_->c_width() < img_width; i += d_->c_x_step() )
   {
-    for( int j = 0; j + d_->height < img_height; j += d_->y_step )
+    for( int j = 0; j + d_->c_height() < img_height; j += d_->c_y_step() )
     {
-      vital::bounding_box< double > bbox( i, j, i + d_->width - 1,
-        j + d_->height - 1 );
+      vital::bounding_box< double > bbox( i, j, i + d_->c_width() - 1,
+        j + d_->c_height() - 1 );
       vital::detected_object_sptr det_obj( new vital::detected_object( bbox ) );
       grid->add( det_obj );
     }
   }
 
   // Now get the bottom row
-  for( int i = 0; i + d_->width < img_width; i += d_->x_step )
+  for( int i = 0; i + d_->c_width() < img_width; i += d_->c_x_step() )
   {
-    vital::bounding_box< double > bbox( i, img_height - d_->height,
-      i + d_->width - 1, img_height - 1 );
+    vital::bounding_box< double > bbox( i, img_height - d_->c_height(),
+      i + d_->c_width() - 1, img_height - 1 );
     vital::detected_object_sptr det_obj( new vital::detected_object( bbox ) );
     grid->add( det_obj );
   }
 
   // Now get the bottom column
-  for( int j = 0; j + d_->height < img_height; j += d_->y_step )
+  for( int j = 0; j + d_->c_height() < img_height; j += d_->c_y_step() )
   {
-    vital::bounding_box< double > bbox( img_width - d_->width, j, img_width - 1,
-      j + d_->height - 1 );
+    vital::bounding_box< double > bbox( img_width - d_->c_width(), j,
+      img_width - 1,
+      j + d_->c_height() - 1 );
     vital::detected_object_sptr det_obj( new vital::detected_object( bbox ) );
     grid->add( det_obj );
   }
 
   // Our last special case, the bottom right
-  vital::bounding_box< double > bbox( img_width - d_->width,
-    img_height - d_->height, img_width - 1, img_height - 1 );
+  vital::bounding_box< double > bbox( img_width - d_->c_width(),
+    img_height - d_->c_height(), img_width - 1, img_height - 1 );
   vital::detected_object_sptr det_obj( new vital::detected_object( bbox ) );
   grid->add( det_obj );
 

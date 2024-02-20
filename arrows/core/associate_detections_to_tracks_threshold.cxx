@@ -38,6 +38,7 @@ public:
   {}
 
   associate_detections_to_tracks_threshold& parent;
+
   // Configuration values
   double c_threshold() { return parent.c_threshold; }
   bool c_higher_is_better() { return parent.c_higher_is_better; }

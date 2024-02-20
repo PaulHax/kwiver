@@ -9,6 +9,7 @@
 #include <vital/vital_config.h>
 
 #include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/image_object_detector.h>
 
 namespace kwiver {
@@ -22,34 +23,29 @@ class KWIVER_ALGO_CORE_EXPORT create_detection_grid
   : public vital::algo::image_object_detector
 {
 public:
-  PLUGIN_INFO(
-    "create_detection_grid",
-    "Create a grid of detections across the input image." )
-
-  /// Default Constructor
-  create_detection_grid();
+  PLUGGABLE_IMPL(
+    create_detection_grid,
+    "Create a grid of detections across the input image.",
+    PARAM_DEFAULT(
+      width, double,
+      "Width of each detection in the output grid.",
+      0.0 ),
+    PARAM_DEFAULT(
+      height, double,
+      "Height of each detection in the output grid.",
+      0.0 ),
+    PARAM_DEFAULT(
+      x_step, double,
+      "How far apart along the x axis each detection is.",
+      0.0 ),
+    PARAM_DEFAULT(
+      y_step, double,
+      "How far apart along the y axis each detection is.",
+      0.0 )
+  )
 
   /// Destructor
   virtual ~create_detection_grid() noexcept;
-
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  ///
-  /// \returns \c config_block containing the configuration for this algorithm
-  ///          and any nested components.
-  virtual vital::config_block_sptr get_configuration() const;
-
-  /// Set this algorithm's properties via a config block
-  ///
-  /// \throws no_such_configuration_value_exception
-  ///    Thrown if an expected configuration value is not present.
-  /// \throws algorithm_configuration_exception
-  ///    Thrown when the algorithm is given an invalid \c config_block or is'
-  ///    otherwise unable to configure itself.
-  ///
-  /// \param config  The \c config_block instance containing the configuration
-  ///                parameters for this algorithm
-  virtual void set_configuration( vital::config_block_sptr config );
 
   /// Check that the algorithm's currently configuration is valid
   ///
@@ -73,10 +69,10 @@ public:
   detect( vital::image_container_sptr image_data ) const;
 
 private:
+  void initialize() override;
   /// private implementation class
   class priv;
-
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace core
