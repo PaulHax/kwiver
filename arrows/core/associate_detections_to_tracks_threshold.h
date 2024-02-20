@@ -9,6 +9,7 @@
 #include <vital/vital_config.h>
 
 #include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/associate_detections_to_tracks.h>
 
 namespace kwiver {

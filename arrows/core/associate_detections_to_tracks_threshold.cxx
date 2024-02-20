@@ -7,9 +7,9 @@
 
 #include "associate_detections_to_tracks_threshold.h"
 
-#include <vital/algo/algorithm.txx>
 #include <vital/algo/detected_object_filter.h>
 #include <vital/exceptions/algorithm.h>
+
 #include <vital/types/object_track_set.h>
 #include <vital/vital_config.h>
 

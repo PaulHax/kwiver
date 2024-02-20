@@ -9,6 +9,8 @@ set( test_libraries    vital_algo vital vital_vpm kwiver_algo_core )
 ##############################
 # Algorithms core plugin tests
 ##############################
+kwiver_discover_gtests(core associate_detections_to_tracks_threshold
+                                                      LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core csv_io                    LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(core derive_metadata           LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core detected_object_set_input        LIBRARIES ${test_libraries})
