@@ -20,6 +20,12 @@ namespace core {
 class video_input_metadata_filter::priv
 {
 public:
+  priv( video_input_metadata_filter& parent )
+    : parent( parent )
+  {}
+
+  video_input_metadata_filter& parent;
+
   kv::image_container_scptr current_image_for_transform() const;
 
   kv::metadata_vector transform_frame_metadata(
@@ -28,8 +34,11 @@ public:
 
   kv::metadata_vector transform_current_frame_metadata() const;
 
-  vital::algo::video_input_sptr video_input;
-  vital::algo::metadata_filter_sptr metadata_filter;
+  // processing classes configured in PIMPLE macro
+  vital::algo::video_input_sptr
+  video_input() const { return parent.c_video_input; }
+  vital::algo::metadata_filter_sptr
+  metadata_filter() const { return parent.c_metadata_filter; }
 
   bool filter_uses_image = true;
 };
@@ -40,7 +49,7 @@ video_input_metadata_filter::priv
 ::current_image_for_transform() const
 {
   return ( this->filter_uses_image
-           ? this->video_input->frame_image()
+           ? this->video_input()->frame_image()
            : nullptr );
 }
 
@@ -51,12 +60,12 @@ video_input_metadata_filter::priv
   kv::metadata_vector const& in,
   kv::image_container_scptr const& image ) const
 {
-  if( !metadata_filter )
+  if( !metadata_filter() )
   {
     return in;
   }
 
-  return metadata_filter->filter( in, image );
+  return metadata_filter()->filter( in, image );
 }
 
 // ----------------------------------------------------------------------------
@@ -65,14 +74,16 @@ video_input_metadata_filter::priv
 ::transform_current_frame_metadata() const
 {
   return this->transform_frame_metadata(
-    this->video_input->frame_metadata(), this->current_image_for_transform() );
+    this->video_input()->frame_metadata(),
+    this->current_image_for_transform() );
 }
 
 // ----------------------------------------------------------------------------
+void
 video_input_metadata_filter
-::video_input_metadata_filter()
-  : m_d( new video_input_metadata_filter::priv )
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, m_d );
   attach_logger( "arrows.core.video_input_metadata_filter" );
 }
 
@@ -82,36 +93,15 @@ video_input_metadata_filter
 {}
 
 // ----------------------------------------------------------------------------
-vital::config_block_sptr
-video_input_metadata_filter
-::get_configuration() const
-{
-  auto config = vital::algo::video_input::get_configuration();
 
-  vital::algo::video_input::get_nested_algo_configuration(
-    "video_input", config, m_d->video_input );
-  vital::algo::metadata_filter::get_nested_algo_configuration(
-    "metadata_filter", config, m_d->metadata_filter );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
 void
 video_input_metadata_filter
-::set_configuration( vital::config_block_sptr in_config )
+::set_configuration_internal( [[maybe_unused]] vital::config_block_sptr config )
 {
-  auto config = this->get_configuration();
-  config->merge_config( in_config );
-
-  vital::algo::video_input::set_nested_algo_configuration(
-    "video_input", config, m_d->video_input );
-  vital::algo::metadata_filter::set_nested_algo_configuration(
-    "metadata_filter", config, m_d->metadata_filter );
-
-  if( m_d->metadata_filter )
+  if( m_d->metadata_filter() )
   {
-    auto const& caps = m_d->metadata_filter->get_implementation_capabilities();
+    auto const& caps =
+      m_d->metadata_filter()->get_implementation_capabilities();
     m_d->filter_uses_image =
       caps.capability( vital::algo::metadata_filter::CAN_USE_FRAME_IMAGE );
   }
@@ -124,9 +114,9 @@ video_input_metadata_filter
   vital::config_block_sptr config ) const
 {
   return
-    vital::algo::video_input::check_nested_algo_configuration(
+    vital::check_nested_algo_configuration< vital::algo::video_input >(
     "video_input", config ) &&
-    vital::algo::metadata_filter::check_nested_algo_configuration(
+    vital::check_nested_algo_configuration< vital::algo::video_input >(
     "metadata_filter", config );
 }
 
@@ -135,15 +125,15 @@ void
 video_input_metadata_filter
 ::open( std::string name )
 {
-  if( !m_d->video_input )
+  if( !m_d->video_input() )
   {
     VITAL_THROW(
       kv::algorithm_configuration_exception,
-      type_name(), impl_name(), "invalid video_input." );
+      interface_name(), impl_name(), "invalid video_input." );
   }
-  m_d->video_input->open( name );
+  m_d->video_input()->open( name );
 
-  auto const& vi_caps = m_d->video_input->get_implementation_capabilities();
+  auto const& vi_caps = m_d->video_input()->get_implementation_capabilities();
 
   using vi = vital::algo::video_input;
   using cn = kv::algorithm_capabilities::capability_name_t;
@@ -172,9 +162,9 @@ void
 video_input_metadata_filter
 ::close()
 {
-  if( m_d->video_input )
+  if( m_d->video_input() )
   {
-    m_d->video_input->close();
+    m_d->video_input()->close();
   }
 }
 
@@ -183,12 +173,12 @@ bool
 video_input_metadata_filter
 ::next_frame( kv::timestamp& ts, uint32_t timeout )
 {
-  if( !m_d->video_input )
+  if( !m_d->video_input() )
   {
     return false;
   }
 
-  return m_d->video_input->next_frame( ts, timeout );
+  return m_d->video_input()->next_frame( ts, timeout );
 }
 
 // ----------------------------------------------------------------------------
@@ -199,12 +189,12 @@ video_input_metadata_filter
   kv::timestamp::frame_t frame_number,
   uint32_t timeout )
 {
-  if( !m_d->video_input )
+  if( !m_d->video_input() )
   {
     return false;
   }
 
-  return m_d->video_input->seek_frame( ts, frame_number, timeout );
+  return m_d->video_input()->seek_frame( ts, frame_number, timeout );
 }
 
 // ----------------------------------------------------------------------------
@@ -212,12 +202,12 @@ kv::image_container_sptr
 video_input_metadata_filter
 ::frame_image()
 {
-  if( !m_d->video_input )
+  if( !m_d->video_input() )
   {
     return nullptr;
   }
 
-  return m_d->video_input->frame_image();
+  return m_d->video_input()->frame_image();
 }
 
 // ----------------------------------------------------------------------------
@@ -225,7 +215,7 @@ kv::metadata_vector
 video_input_metadata_filter
 ::frame_metadata()
 {
-  if( !m_d->video_input )
+  if( !m_d->video_input() )
   {
     return {};
   }
@@ -238,11 +228,11 @@ kv::video_raw_image_sptr
 video_input_metadata_filter
 ::raw_frame_image()
 {
-  if( !m_d->video_input )
+  if( !m_d->video_input() )
   {
     return nullptr;
   }
-  return m_d->video_input->raw_frame_image();
+  return m_d->video_input()->raw_frame_image();
 }
 
 // ----------------------------------------------------------------------------
@@ -250,12 +240,12 @@ kv::video_uninterpreted_data_sptr
 video_input_metadata_filter
 ::uninterpreted_frame_data()
 {
-  if( !m_d->video_input )
+  if( !m_d->video_input() )
   {
     return nullptr;
   }
 
-  return m_d->video_input->uninterpreted_frame_data();
+  return m_d->video_input()->uninterpreted_frame_data();
 }
 
 // ----------------------------------------------------------------------------
@@ -263,40 +253,40 @@ kv::metadata_map_sptr
 video_input_metadata_filter
 ::metadata_map()
 {
-  if( !m_d->video_input )
+  if( !m_d->video_input() )
   {
     return std::make_shared< kv::simple_metadata_map >();
   }
 
-  if( !m_d->metadata_filter )
+  if( !m_d->metadata_filter() )
   {
-    return m_d->video_input->metadata_map();
+    return m_d->video_input()->metadata_map();
   }
 
   auto out = vital::metadata_map::map_metadata_t{};
 
   if( m_d->filter_uses_image )
   {
-    if( !m_d->video_input->seekable() )
+    if( !m_d->video_input()->seekable() )
     {
       return std::make_shared< kv::simple_metadata_map >();
     }
 
-    auto const was_at_end = m_d->video_input->end_of_video();
+    auto const was_at_end = m_d->video_input()->end_of_video();
     auto const previous_frame =
-      m_d->video_input->frame_timestamp().get_frame();
+      m_d->video_input()->frame_timestamp().get_frame();
 
     auto ts = kv::timestamp{};
-    if( !m_d->video_input->seek_frame( ts, 0 ) )
+    if( !m_d->video_input()->seek_frame( ts, 0 ) )
     {
       return std::make_shared< kv::simple_metadata_map >();
     }
 
-    while( !m_d->video_input->end_of_video() )
+    while( !m_d->video_input()->end_of_video() )
     {
       out.emplace( ts.get_frame(), m_d->transform_current_frame_metadata() );
 
-      if( !m_d->video_input->next_frame( ts ) )
+      if( !m_d->video_input()->next_frame( ts ) )
       {
         break;
       }
@@ -304,14 +294,14 @@ video_input_metadata_filter
 
     if( !was_at_end )
     {
-      m_d->video_input->seek_frame( ts, previous_frame );
+      m_d->video_input()->seek_frame( ts, previous_frame );
     }
 
     return std::make_shared< kv::simple_metadata_map >( out );
   }
   else
   {
-    auto const& map_ptr = m_d->video_input->metadata_map();
+    auto const& map_ptr = m_d->video_input()->metadata_map();
     if( !map_ptr )
     {
       return nullptr;
@@ -332,17 +322,17 @@ kwiver::vital::video_settings_uptr
 video_input_metadata_filter
 ::implementation_settings() const
 {
-  return m_d->video_input->implementation_settings();
+  return m_d->video_input()->implementation_settings();
 }
 
 // ----------------------------------------------------------------------------
-#define FORWARD_OR( name, fallback )                        \
-auto video_input_metadata_filter::name() const              \
-                   ->decltype( m_d->video_input->name() ) { \
-  if( m_d->video_input )                                    \
-  {                                                         \
-    return m_d->video_input->name();                        \
-  }                                                         \
+#define FORWARD_OR( name, fallback )                          \
+auto video_input_metadata_filter::name() const                \
+                   ->decltype( m_d->video_input()->name() ) { \
+  if( m_d->video_input() )                                    \
+  {                                                           \
+    return m_d->video_input()->name();                        \
+  }                                                           \
   return fallback; }
 
 FORWARD_OR( end_of_video, true )

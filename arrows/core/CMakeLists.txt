@@ -57,7 +57,7 @@ set( plugin_core_headers
   # video_input_buffered_metadata_filter.h
   video_input_filter.h
   video_input_image_list.h
-  # video_input_metadata_filter.h
+  video_input_metadata_filter.h
   video_input_pos.h
   # video_input_splice.h
   video_input_split.h
@@ -131,7 +131,7 @@ set( plugin_core_sources
   video_input_filter.cxx
   video_input_image_list.cxx
   # video_input_buffered_metadata_filter.cxx
-  # video_input_metadata_filter.cxx
+  video_input_metadata_filter.cxx
   video_input_pos.cxx
   # video_input_splice.cxx
   video_input_split.cxx
