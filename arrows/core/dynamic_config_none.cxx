@@ -16,17 +16,6 @@ namespace arrows {
 namespace core {
 
 // ----------------------------------------------------------------------------
-dynamic_config_none
-::dynamic_config_none()
-{}
-
-// ----------------------------------------------------------------------------
-void
-dynamic_config_none
-::set_configuration( VITAL_UNUSED kwiver::vital::config_block_sptr config )
-{}
-
-// ----------------------------------------------------------------------------
 bool
 dynamic_config_none
 ::check_configuration(

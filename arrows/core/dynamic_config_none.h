@@ -12,6 +12,9 @@
 
 #include <vital/algo/dynamic_configuration.h>
 
+#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
+
 namespace kwiver {
 
 namespace arrows {
@@ -23,15 +26,12 @@ class KWIVER_ALGO_CORE_EXPORT dynamic_config_none
   : public vital::algo::dynamic_configuration
 {
 public:
-  PLUGIN_INFO(
-    "none",
+  PLUGGABLE_IMPL(
+    dynamic_config_none,
     "Null implementation of dynamic_configuration.\n\n"
-    "This algorithm always returns an empty configuration block." )
+    "This algorithm always returns an empty configuration block."
+  )
 
-  /// Default constructor
-  dynamic_config_none();
-
-  virtual void set_configuration( kwiver::vital::config_block_sptr config );
   virtual bool check_configuration(
     kwiver::vital::config_block_sptr config ) const;
 
