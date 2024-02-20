@@ -13,6 +13,7 @@
 // interface
 #include <vital/algo/associate_detections_to_tracks.h>
 #include <vital/algo/convert_image.h>
+#include <vital/algo/detect_features.h>
 #include <vital/algo/detected_object_set_input.h>
 #include <vital/algo/detected_object_set_output.h>
 #include <vital/algo/dynamic_configuration.h>
@@ -31,6 +32,7 @@
 #include <arrows/core/convert_image_bypass.h>
 #include <arrows/core/create_detection_grid.h>
 #include <arrows/core/derive_metadata.h>
+#include <arrows/core/detect_features_filtered.h>
 #include <arrows/core/detected_object_set_input_csv.h>
 #include <arrows/core/detected_object_set_input_kw18.h>
 #include <arrows/core/detected_object_set_input_simulator.h>
@@ -144,6 +146,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::metadata_filter,
     derive_metadata >( "derive_metadata" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::detect_features,
+    detect_features_filtered >( "filtered" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 

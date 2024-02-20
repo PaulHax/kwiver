@@ -18,7 +18,7 @@ set( plugin_core_headers
   csv_io.h
   depth_utils.h
   derive_metadata.h
-  # detect_features_filtered.h
+  detect_features_filtered.h
   detected_object_set_input_kw18.h
   # detected_object_set_output_kw18.h
   detected_object_set_input_csv.h
@@ -95,7 +95,7 @@ set( plugin_core_sources
   csv_io.cxx
   depth_utils.cxx
   derive_metadata.cxx
-  # detect_features_filtered.cxx
+  detect_features_filtered.cxx
   detected_object_set_input_kw18.cxx
   # detected_object_set_output_kw18.cxx
   detected_object_set_input_csv.cxx
