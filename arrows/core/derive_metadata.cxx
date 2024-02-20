@@ -13,6 +13,8 @@
 #include <vital/types/metadata_traits.h>
 #include <vital/types/rotation.h>
 
+#include <algorithm>
+
 #include <vital/math_constants.h>
 
 #include <memory>
@@ -449,33 +451,32 @@ compute_wavelength( std::string const& image_source )
 //BEGIN algorithm interface
 
 // ----------------------------------------------------------------------------
-derive_metadata
-::derive_metadata()
+/// Private implementation class
+class derive_metadata::priv
 {
-  this->set_capability( CAN_USE_FRAME_IMAGE, true );
+public:
+  priv( derive_metadata& parent )
+    : parent( parent )
+  {
+    parent.set_capability( CAN_USE_FRAME_IMAGE, true );
+  }
+
+  derive_metadata& parent;
+};
+
+// ----------------------------------------------------------------------------
+void
+derive_metadata
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
+  attach_logger( "arrows.core.derive_metadata" );
 }
 
 // ----------------------------------------------------------------------------
 derive_metadata
 ::~derive_metadata()
 {}
-
-// ----------------------------------------------------------------------------
-vital::config_block_sptr
-derive_metadata
-::get_configuration() const
-{
-  // No configuration; return from base class
-  return vital::algo::metadata_filter::get_configuration();
-}
-
-// ----------------------------------------------------------------------------
-void
-derive_metadata
-::set_configuration( vital::config_block_sptr )
-{
-  // No configuration
-}
 
 // ----------------------------------------------------------------------------
 bool
