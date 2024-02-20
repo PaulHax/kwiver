@@ -10,6 +10,7 @@
 
 #include <arrows/core/kwiver_algo_core_export.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/detected_object_set_output.h>
 
 namespace kwiver {
@@ -23,8 +24,9 @@ class KWIVER_ALGO_CORE_EXPORT detected_object_set_output_csv
 {
 public:
   // NOTE: Keep description in sync with detected_object_set_input_csv
-  PLUGIN_INFO(
-    "csv",
+
+  PLUGGABLE_IMPL(
+    detected_object_set_output_csv,
     "Detected object set writer using CSV format.\n\n"
     " - 1: frame number\n"
     " - 2: file name\n"
@@ -34,12 +36,12 @@ public:
     " - 6: BR-y\n"
     " - 7: confidence\n"
     " - 8,9: class-name, score"
-    " (this pair may be omitted or may repeat any number of times)" )
+    " (this pair may be omitted or may repeat any number of times)",
+    PARAM_DEFAULT( delim, std::string, "csv delimeter", "," )
+  )
 
-  detected_object_set_output_csv();
   virtual ~detected_object_set_output_csv();
 
-  virtual void set_configuration( vital::config_block_sptr config );
   virtual bool check_configuration( vital::config_block_sptr config ) const;
 
   virtual void write_set(
@@ -47,9 +49,10 @@ public:
     std::string const& image_name );
 
 private:
-  class priv;
+  void initialize() override;
 
-  std::unique_ptr< priv > d;
+  class priv;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // namespace core

@@ -12,6 +12,7 @@
 
 // interface
 #include <vital/algo/detected_object_set_input.h>
+#include <vital/algo/detected_object_set_output.h>
 #include <vital/algo/dynamic_configuration.h>
 #include <vital/algo/filter_features.h>
 #include <vital/algo/filter_tracks.h>
@@ -23,6 +24,7 @@
 #include <arrows/core/detected_object_set_input_csv.h>
 #include <arrows/core/detected_object_set_input_kw18.h>
 #include <arrows/core/detected_object_set_input_simulator.h>
+#include <arrows/core/detected_object_set_output_csv.h>
 #include <arrows/core/dynamic_config_none.h>
 #include <arrows/core/filter_features_magnitude.h>
 #include <arrows/core/filter_features_nonmax.h>
@@ -98,6 +100,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::detected_object_set_input,
     detected_object_set_input_simulator >( "simulator" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::detected_object_set_output,
+    detected_object_set_output_csv >( "csv" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 
   fact = vpl.add_factory< vital::algo::dynamic_configuration,
