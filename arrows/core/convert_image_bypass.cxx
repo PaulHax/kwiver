@@ -32,7 +32,7 @@ convert_image_bypass
 ::initialize()
 {
   KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
-  attach_logger( "arrows.core.filter_tracks" );
+  attach_logger( "arrows.core.convert_image_bypass" );
 }
 
 // Destructor

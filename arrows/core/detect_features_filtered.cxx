@@ -43,7 +43,7 @@ detect_features_filtered
 ::initialize()
 {
   KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
-  attach_logger( "arrows.core.video_input_filter" );
+  attach_logger( "arrows.core.detect_features_filtered" );
 
   d_->m_logger = logger();
 }
