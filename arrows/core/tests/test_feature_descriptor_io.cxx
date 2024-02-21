@@ -26,7 +26,9 @@ TEST ( feature_descriptor_io, create )
 {
   kwiver::vital::plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE( nullptr, algo::feature_descriptor_io::create( "core" ) );
+  EXPECT_NE(
+    nullptr,
+    create_algorithm< algo::feature_descriptor_io >( "core" ) );
 }
 
 // ----------------------------------------------------------------------------

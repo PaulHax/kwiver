@@ -9,9 +9,6 @@
 
 #include <vital/vital_config.h>
 
-#include <vital/algo/algorithm.h>
-#include <vital/algo/algorithm.txx>
-
 namespace kwiver {
 
 namespace arrows {
@@ -21,7 +18,6 @@ namespace core {
 class example_detector::priv
 {
 public:
-  // -- CONSTRUCTORS --
   priv( example_detector& parent )
     : parent( parent ),
       m_frame_ct( 0 )

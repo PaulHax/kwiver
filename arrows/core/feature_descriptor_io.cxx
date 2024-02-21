@@ -25,19 +25,22 @@ namespace core {
 class feature_descriptor_io::priv
 {
 public:
-  /// Constructor
-  priv()
-    : write_float_features( false )
+  priv( feature_descriptor_io& parent )
+    : parent( parent )
   {}
 
-  bool write_float_features;
+  feature_descriptor_io& parent;
+
+  // Configuration values
+  bool c_write_float_features() { return parent.c_write_float_features; }
 };
 
-// Constructor
+// -------------------------------------------------------------------------
+void
 feature_descriptor_io
-::feature_descriptor_io()
-  : d_( new priv )
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
   attach_logger( "arrows.core.feature_descriptor_io" );
 }
 
@@ -45,42 +48,6 @@ feature_descriptor_io
 feature_descriptor_io
 ::~feature_descriptor_io()
 {}
-
-// ----------------------------------------------------------------------------
-// Get this algorithm's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-feature_descriptor_io
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config =
-    vital::algo::feature_descriptor_io::get_configuration();
-
-  config->set_value(
-    "write_float_features", d_->write_float_features,
-    "Convert features to use single precision floats "
-    "instead of doubles when writing to save space" );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-// Set this algorithm's properties via a config block
-void
-feature_descriptor_io
-::set_configuration( vital::config_block_sptr in_config )
-{
-  // Starting with our generated vital::config_block to ensure that assumed
-  // values are present
-  // An alternative is to check for key presence before performing a get_value()
-  // call.
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  d_->write_float_features = config->get_value< bool >(
-    "write_float_features",
-    d_->write_float_features );
-}
 
 // ----------------------------------------------------------------------------
 // Check that the algorithm's currently configuration is valid
@@ -395,7 +362,7 @@ feature_descriptor_io
         static_cast< cereal::size_type >( features.size() ) ) );
     uint8_t type_code = code_from_typeid( features[ 0 ]->data_type() );
     // if requested, force the output format to use floats instead of doubles
-    if( d_->write_float_features )
+    if( d_->c_write_float_features() )
     {
       type_code = type_traits< float >::code;
     }
