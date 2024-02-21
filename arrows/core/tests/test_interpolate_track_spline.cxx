@@ -5,10 +5,12 @@
 /// \file
 /// \brief test reading video from a list of images.
 
-#include <test_gtest.h>
-
 #include <arrows/core/interpolate_track_spline.h>
 #include <vital/plugin_management/plugin_manager.h>
+
+#include <gtest/gtest.h>
+
+#include <vital/algo/algorithm.txx>
 
 namespace kv = kwiver::vital;
 namespace kac = kwiver::arrows::core;
@@ -16,17 +18,20 @@ namespace algo = kwiver::vital::algo;
 
 // ----------------------------------------------------------------------------
 int
-main( int argc, char* argv[] )
+main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
-  TEST_LOAD_PLUGINS();
   return RUN_ALL_TESTS();
 }
 
 // ----------------------------------------------------------------------------
 TEST ( interpolate_track_spline, create )
 {
-  EXPECT_NE( nullptr, algo::interpolate_track::create( "spline" ) );
+  using namespace kwiver::vital;
+
+  plugin_manager::instance().load_all_plugins();
+
+  EXPECT_NE( nullptr, create_algorithm< algo::interpolate_track >( "spline" ) );
 }
 
 namespace {

@@ -23,6 +23,7 @@
 #include <vital/algo/filter_tracks.h>
 #include <vital/algo/handle_descriptor_request.h>
 #include <vital/algo/image_object_detector.h>
+#include <vital/algo/interpolate_track.h>
 #include <vital/algo/metadata_filter.h>
 #include <vital/algo/metadata_map_io.h>
 #include <vital/algo/read_object_track_set.h>
@@ -49,6 +50,7 @@
 #include <arrows/core/filter_features_scale.h>
 #include <arrows/core/filter_tracks.h>
 #include <arrows/core/handle_descriptor_request_core.h>
+#include <arrows/core/interpolate_track_spline.h>
 #include <arrows/core/metadata_map_io_csv.h>
 #include <arrows/core/read_object_track_set_kw18.h>
 #include <arrows/core/read_track_descriptor_set_csv.h>
@@ -173,6 +175,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::handle_descriptor_request,
     handle_descriptor_request_core >( "core" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::interpolate_track,
+    interpolate_track_spline >( "spline" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 

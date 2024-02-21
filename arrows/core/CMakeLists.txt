@@ -34,6 +34,7 @@ set( plugin_core_headers
   filter_tracks.h
   handle_descriptor_request_core.h
   # initialize_object_tracks_threshold.h
+  interpolate_track_spline.h
   # keyframe_selector_basic.h
   # match_features_fundamental_matrix.h
   # match_features_homography.h
@@ -111,6 +112,7 @@ set( plugin_core_sources
   filter_tracks.cxx
   handle_descriptor_request_core.cxx
   # initialize_object_tracks_threshold.cxx
+  interpolate_track_spline.cxx
   # keyframe_selector_basic.cxx
   # match_features_fundamental_matrix.cxx
   # match_features_homography.cxx
