@@ -3,6 +3,7 @@
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
 #include <arrows/ocv/estimate_fundamental_matrix.h>
+#include <vital/algo/algorithm.txx>
 
 #include <vital/plugin_management/plugin_manager.h>
 
@@ -29,7 +30,10 @@ TEST ( estimate_fundamental_matrix, create )
 {
   plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE( nullptr, algo::estimate_fundamental_matrix::create( "ocv" ) );
+  EXPECT_NE(
+    nullptr,
+    kwiver::vital::create_algorithm< kwiver::vital::algo::
+      estimate_fundamental_matrix >( "ocv" ) );
 }
 
 // ----------------------------------------------------------------------------

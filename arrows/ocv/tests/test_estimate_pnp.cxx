@@ -3,6 +3,7 @@
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
 #include <arrows/ocv/estimate_pnp.h>
+#include <vital/algo/algorithm.txx>
 
 #include <vital/plugin_management/plugin_manager.h>
 
@@ -33,7 +34,10 @@ TEST ( estimate_pnp, create )
 {
   plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE( nullptr, algo::estimate_pnp::create( "ocv" ) );
+  EXPECT_NE(
+    nullptr,
+    kwiver::vital::create_algorithm< kwiver::vital::algo::estimate_pnp >(
+      "ocv" ) );
 }
 
 // ----------------------------------------------------------------------------

@@ -22,8 +22,8 @@ set( ocv_headers_public
   estimate_fundamental_matrix.h
   estimate_homography.h
   estimate_pnp.h
-  #extract_descriptors.h
-  #extract_descriptors_BRIEF.h
+  extract_descriptors.h
+  extract_descriptors_BRIEF.h
   #extract_descriptors_DAISY.h
   #extract_descriptors_FREAK.h
   #extract_descriptors_LATCH.h
@@ -37,7 +37,7 @@ set( ocv_headers_public
   #hough_circle_detector.h
   image_container.h
   image_io.h
-  #inpaint.h
+  inpaint.h
   mat_image_memory.h
   #match_features.h
   #match_features_bruteforce.h
@@ -77,8 +77,8 @@ set( ocv_sources
   estimate_fundamental_matrix.cxx
   estimate_homography.cxx
   estimate_pnp.cxx
-  #extract_descriptors.cxx
-  #extract_descriptors_BRIEF.cxx
+  extract_descriptors.cxx
+  extract_descriptors_BRIEF.cxx
   #extract_descriptors_DAISY.cxx
   #extract_descriptors_FREAK.cxx
   #extract_descriptors_LATCH.cxx
@@ -92,7 +92,7 @@ set( ocv_sources
   #feature_detect_extract_SURF.cxx
   image_container.cxx
   image_io.cxx
-  #inpaint.cxx
+  inpaint.cxx
   mat_image_memory.cxx
   #match_features.cxx
   #match_features_bruteforce.cxx

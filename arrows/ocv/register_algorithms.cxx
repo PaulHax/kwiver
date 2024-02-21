@@ -27,7 +27,7 @@
 #include <arrows/ocv/estimate_homography.h>
 #include <arrows/ocv/estimate_pnp.h>
 // #include <arrows/ocv/resection_camera.h>
-// #include <arrows/ocv/extract_descriptors_BRIEF.h>
+#include <arrows/ocv/extract_descriptors_BRIEF.h>
 // #include <arrows/ocv/extract_descriptors_DAISY.h>
 // #include <arrows/ocv/extract_descriptors_FREAK.h>
 // #include <arrows/ocv/extract_descriptors_LATCH.h>
@@ -38,7 +38,7 @@
 // #include <arrows/ocv/feature_detect_extract_SURF.h>
 #include <arrows/ocv/image_io.h>
 
-// #include <arrows/ocv/inpaint.h>
+#include <arrows/ocv/inpaint.h>
 // #include <arrows/ocv/match_features_bruteforce.h>
 // #include <arrows/ocv/match_features_flannbased.h>
 // #include <arrows/ocv/merge_images.h>
@@ -81,7 +81,9 @@ register_factories( kwiver::vital::plugin_loader& vpm )
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
   fact = vpm.add_factory< vital::algo::image_io, image_io >( "ocv" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
-//  reg.register_algorithm< inpaint >();
+  fact = vpm.add_factory< vital::algo::merge_images,
+    inpaint >( "ocv_inpainting" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
   fact = vpm.add_factory< vital::algo::draw_detected_object_set,
     draw_detected_object_set >( "ocv" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
@@ -124,11 +126,13 @@ register_factories( kwiver::vital::plugin_loader& vpm )
     detect_features_AGAST >( "ocv_AGAST" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
 #endif
-//
-// #ifdef KWIVER_OCV_HAS_BRIEF
-//  reg.register_algorithm< extract_descriptors_BRIEF >();
-// #endif
-//
+
+#ifdef KWIVER_OCV_HAS_BRIEF
+  fact = vpm.add_factory< vital::algo::extract_descriptors,
+    extract_descriptors_BRIEF >( "ocv_BRIEF" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+#endif
+
 // #ifdef KWIVER_OCV_HAS_DAISY
 //  reg.register_algorithm< extract_descriptors_DAISY >();
 // #endif

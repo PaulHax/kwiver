@@ -9,6 +9,7 @@
 #include <test_random_point.h>
 
 #include <arrows/ocv/estimate_homography.h>
+#include <vital/algo/algorithm.txx>
 
 #include <vital/plugin_management/plugin_manager.h>
 
@@ -40,7 +41,9 @@ TEST ( estimate_homography, create )
 {
   plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE( nullptr, algo::estimate_homography::create( "ocv" ) );
+  EXPECT_NE(
+    nullptr,
+    kwiver::vital::create_algorithm< estimate_homography >( "ocv" ) );
 }
 
 // ----------------------------------------------------------------------------
