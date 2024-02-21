@@ -17,6 +17,8 @@
 #include <vital/algo/filter_features.h>
 #include <vital/algo/filter_tracks.h>
 #include <vital/algo/metadata_map_io.h>
+#include <vital/algo/read_object_track_set.h>
+#include <vital/algo/read_track_descriptor_set.h>
 #include <vital/algo/uv_unwrap_mesh.h>
 #include <vital/algo/video_input.h>
 
@@ -31,6 +33,8 @@
 #include <arrows/core/filter_features_scale.h>
 #include <arrows/core/filter_tracks.h>
 #include <arrows/core/metadata_map_io_csv.h>
+#include <arrows/core/read_object_track_set_kw18.h>
+#include <arrows/core/read_track_descriptor_set_csv.h>
 #include <arrows/core/uv_unwrap_mesh.h>
 #include <arrows/core/video_input_filter.h>
 #include <arrows/core/video_input_image_list.h>
@@ -108,6 +112,14 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::dynamic_configuration,
     dynamic_config_none >( "none" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::read_track_descriptor_set,
+    read_track_descriptor_set_csv >( "csv" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::read_object_track_set,
+    read_object_track_set_kw18 >( "kw18" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 

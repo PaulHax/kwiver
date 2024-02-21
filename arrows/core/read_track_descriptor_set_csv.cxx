@@ -23,21 +23,24 @@ namespace core {
 class read_track_descriptor_set_csv::priv
 {
 public:
-  priv( read_track_descriptor_set_csv* parent )
-    : m_parent( parent ),
+  priv( read_track_descriptor_set_csv& parent )
+    : parent( parent ),
       m_logger( kwiver::vital::get_logger( "read_track_descriptor_set_csv" ) ),
       m_first( true ),
-      m_batch_load( true ),
-      m_read_raw_descriptor( true ),
       m_delim( "," ),
       m_sub_delim( " " ),
       m_current_idx( 0 ),
       m_last_idx( 1 )
   {}
 
+  read_track_descriptor_set_csv& parent;
+
+  // Configuration values
+  bool c_batch_load() { return parent.c_batch_load; }
+  bool c_read_raw_descriptor() { return parent.c_read_raw_descriptor; }
+
   ~priv() {}
 
-  read_track_descriptor_set_csv* m_parent;
   kwiver::vital::logger_handle_t m_logger;
 
   bool m_first;
@@ -64,25 +67,17 @@ public:
 };
 
 // ----------------------------------------------------------------------------
+void
 read_track_descriptor_set_csv
-::read_track_descriptor_set_csv()
-  : d( new read_track_descriptor_set_csv::priv( this ) )
-{}
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+  attach_logger( "arrows.core.read_track_descriptor_set_csv" );
+}
 
 read_track_descriptor_set_csv
 ::~read_track_descriptor_set_csv()
 {}
-
-// ----------------------------------------------------------------------------
-void
-read_track_descriptor_set_csv
-::set_configuration( vital::config_block_sptr config )
-{
-  d->m_batch_load =
-    config->get_value< bool >( "batch_load", d->m_batch_load );
-  d->m_read_raw_descriptor =
-    config->get_value< bool >( "read_raw_descriptor", d->m_batch_load );
-}
 
 // ----------------------------------------------------------------------------
 bool
@@ -138,7 +133,7 @@ read_track_descriptor_set_csv::priv
 ::read_all()
 {
   std::string line;
-  vital::data_stream_reader stream_reader( m_parent->stream() );
+  vital::data_stream_reader stream_reader( parent.stream() );
 
   m_descs_by_frame_id.clear();
   m_all_descs.clear();

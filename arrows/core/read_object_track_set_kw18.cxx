@@ -45,23 +45,25 @@ enum
 class read_object_track_set_kw18::priv
 {
 public:
-  priv( read_object_track_set_kw18* parent )
-    : m_parent( parent ),
+  priv( read_object_track_set_kw18& parent )
+    : parent( parent ),
       m_logger( vital::get_logger( "read_object_track_set_kw18" ) ),
       m_first( true ),
-      m_batch_load( true ),
-      m_delim( " " ),
       m_current_idx( 0 ),
       m_last_idx( 1 )
   {}
 
+  read_object_track_set_kw18& parent;
+
+  // Configuration values
+  bool c_batch_load() { return parent.c_batch_load; }
+  std::string c_delim() { return parent.c_delim; }
+
   ~priv() {}
 
-  read_object_track_set_kw18* m_parent;
+  // Local values
   vital::logger_handle_t m_logger;
   bool m_first;
-  bool m_batch_load;
-  std::string m_delim;
 
   vital::frame_id_t m_current_idx;
   vital::frame_id_t m_last_idx;
@@ -78,23 +80,17 @@ public:
 };
 
 // ----------------------------------------------------------------------------
+void
 read_object_track_set_kw18
-::read_object_track_set_kw18()
-  : d( new read_object_track_set_kw18::priv( this ) )
-{}
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+  attach_logger( "arrows.core.read_object_track_set_kw18" );
+}
 
 read_object_track_set_kw18
 ::~read_object_track_set_kw18()
 {}
-
-// ----------------------------------------------------------------------------
-void
-read_object_track_set_kw18
-::set_configuration( vital::config_block_sptr config )
-{
-  d->m_delim = config->get_value< std::string >( "delimiter", d->m_delim );
-  d->m_batch_load = config->get_value< bool >( "batch_load", d->m_batch_load );
-}
 
 // ----------------------------------------------------------------------------
 bool
@@ -117,7 +113,7 @@ read_object_track_set_kw18
     d->m_first = false;
   }
 
-  if( d->m_batch_load )
+  if( d->c_batch_load() )
   {
     if( !first )
     {
@@ -163,7 +159,7 @@ read_object_track_set_kw18::priv
 ::read_all()
 {
   std::string line;
-  vital::data_stream_reader stream_reader( m_parent->stream() );
+  vital::data_stream_reader stream_reader( parent.stream() );
 
   m_tracks_by_frame_id.clear();
   m_all_tracks.clear();
@@ -176,7 +172,7 @@ read_object_track_set_kw18::priv
     }
 
     std::vector< std::string > col;
-    vital::tokenize( line, col, m_delim, true );
+    vital::tokenize( line, col, c_delim(), true );
 
     if( ( col.size() < 18 ) || ( col.size() > 20 ) )
     {
@@ -239,7 +235,7 @@ read_object_track_set_kw18::priv
     trk->append( ots );
 
     // Add track to indexes
-    if( !m_batch_load )
+    if( !c_batch_load() )
     {
       m_tracks_by_frame_id[ frame_index ].push_back( trk );
       m_last_idx = std::max( m_last_idx, frame_index );
