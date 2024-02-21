@@ -40,6 +40,7 @@
 #include <arrows/core/detected_object_set_output_csv.h>
 #include <arrows/core/dynamic_config_none.h>
 #include <arrows/core/estimate_canonical_transform.h>
+#include <arrows/core/example_detector.h>
 #include <arrows/core/filter_features_magnitude.h>
 #include <arrows/core/filter_features_nonmax.h>
 #include <arrows/core/filter_features_scale.h>
@@ -156,6 +157,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::estimate_canonical_transform,
     estimate_canonical_transform >( "core pca" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::image_object_detector,
+    example_detector >( "example detector" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 

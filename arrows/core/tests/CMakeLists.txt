@@ -21,6 +21,7 @@ kwiver_discover_gtests(core detected_object_io        LIBRARIES ${test_libraries
 kwiver_discover_gtests(core dynamic_configuration     LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core estimate_canonical_transform
                                                       LIBRARIES ${test_libraries})
+kwiver_discover_gtests(core example_detector          LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core filter_features           LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core filter_tracks             LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(core feature_descriptor_io     LIBRARIES ${test_libraries})
