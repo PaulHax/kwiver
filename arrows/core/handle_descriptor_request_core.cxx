@@ -29,63 +29,48 @@ namespace arrows {
 
 namespace core {
 
-/// Default Constructor
-handle_descriptor_request_core
-::handle_descriptor_request_core()
-{}
-
-/// Get this alg's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-handle_descriptor_request_core
-::get_configuration() const
+class handle_descriptor_request_core::priv
 {
-  // get base config from base class
-  vital::config_block_sptr config = algorithm::get_configuration();
+public:
+  priv( handle_descriptor_request_core& parent )
+    : parent( parent )
+  {}
 
-  // Sub-algorithm implementation name + sub_config block
-  // - Feature Detector algorithm
-  algo::image_io::get_nested_algo_configuration(
-    "image_reader", config, reader_ );
+  handle_descriptor_request_core& parent;
 
-  // - Descriptor Extractor algorithm
-  algo::compute_track_descriptors::get_nested_algo_configuration(
-    "descriptor_extractor", config, extractor_ );
+  // processing classes
+  algo::image_io_sptr c_reader() { return parent.c_reader; }
 
-  return config;
-}
+  algo::compute_track_descriptors_sptr
+  c_extractor()
+  {
+    return parent.c_extractor;
+  }
+};
 
-/// Set this algo's properties via a config block
+// ----------------------------------------------------------------------------
 void
 handle_descriptor_request_core
-::set_configuration( vital::config_block_sptr in_config )
+::initialize()
 {
-  // Starting with our generated config_block to ensure that assumed values are
-  // present
-  // An alternative is to check for key presence before performing a get_value()
-  // call.
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  // Setting nested algorithm instances via setter methods instead of directly
-  // assigning to instance property.
-  algo::image_io_sptr df;
-  algo::image_io::set_nested_algo_configuration( "image_reader", config, df );
-  reader_ = df;
-
-  algo::compute_track_descriptors_sptr ed;
-  algo::compute_track_descriptors::set_nested_algo_configuration(
-    "descriptor_extractor", config, ed );
-  extractor_ = ed;
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
+  attach_logger( "arrows.core.handle_descriptor_request_core" );
 }
+
+// ----------------------------------------------------------------------------
+handle_descriptor_request_core
+::~handle_descriptor_request_core()
+{}
 
 bool
 handle_descriptor_request_core
 ::check_configuration( vital::config_block_sptr config ) const
 {
   return (
-    algo::image_io::check_nested_algo_configuration( "image_reader", config )
+    kwiver::vital::check_nested_algo_configuration< algo::image_io >(
+      "image_reader", config )
     &&
-    algo::compute_track_descriptors::check_nested_algo_configuration(
+    kwiver::vital::check_nested_algo_configuration< algo::compute_track_descriptors >(
       "descriptor_extractor", config )
   );
 }
@@ -99,18 +84,18 @@ handle_descriptor_request_core
   std::vector< kwiver::vital::image_container_sptr >& imgs )
 {
   // Verify that all dependent algorithms have been initialized
-  if( !reader_ || !extractor_ )
+  if( !d_->c_reader() || !d_->c_extractor() )
   {
     // Something did not initialize
     VITAL_THROW(
-      vital::algorithm_configuration_exception, this->type_name(),
-      this->impl_name(),
+      vital::algorithm_configuration_exception, this->interface_name(),
+      this->plugin_name(),
       "not all sub-algorithms have been initialized" );
   }
 
   // load images or video if required by query plan
   std::string data_path = request->data_location();
-  kwiver::vital::image_container_sptr image = reader_->load( data_path );
+  kwiver::vital::image_container_sptr image = d_->c_reader()->load( data_path );
 
   if( !image )
   {
@@ -137,7 +122,7 @@ handle_descriptor_request_core
   vital::object_track_set_sptr tracks(
     new vital::object_track_set( trk_vec ) );
 
-  descs = extractor_->compute( fake_ts, image, tracks );
+  descs = d_->c_extractor()->compute( fake_ts, image, tracks );
 
   imgs.clear();
   imgs.push_back( image );
