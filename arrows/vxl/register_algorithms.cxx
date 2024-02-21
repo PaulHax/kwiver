@@ -9,9 +9,11 @@
 #include <vital/plugin_management/plugin_manager.h>
 
 // interface
+#include <vital/algo/image_filter.h>
 #include <vital/algo/nearest_neighbors.h>
 
 // implementation
+#include <arrows/vxl/aligned_edge_detection.h>
 #include <arrows/vxl/kd_tree.h>
 
 // #include <arrows/vxl/average_frames.h>
@@ -52,8 +54,12 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 {
   using kvpf = ::kwiver::vital::plugin_factory;
 
-  auto fact =
-    vpl.add_factory< vital::algo::nearest_neighbors, kd_tree >( "vxl_kd_tree" );
+  auto fact = vpl.add_factory< vital::algo::image_filter,
+    aligned_edge_detection >( "vxl_aligned_edge_detection" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
+
+  fact = vpl.add_factory< vital::algo::nearest_neighbors,
+    kd_tree >( "vxl_kd_tree" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
 #ifdef VXL_ENABLE_FFMPEG

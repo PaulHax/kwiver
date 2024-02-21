@@ -8,7 +8,7 @@ if(NOT KWIVER_ENABLE_KLV)
 endif()
 
 set(vxl_headers_public
-  # aligned_edge_detection.h
+  aligned_edge_detection.h
   # average_frames.h
   bounding_box.h
   # bundle_adjust.h
@@ -40,7 +40,7 @@ set(vxl_headers_public
   )
 
 set(vxl_sources
-  # aligned_edge_detection.cxx
+  aligned_edge_detection.cxx
   # average_frames.cxx
   # bundle_adjust.cxx
   camera.cxx

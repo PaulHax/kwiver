@@ -9,6 +9,8 @@
 
 #include <vital/algo/image_filter.h>
 
+#include <vital/plugin_management/pluggable_macro_magic.h>
+
 namespace kwiver {
 
 namespace arrows {
@@ -20,18 +22,32 @@ class KWIVER_ALGO_VXL_EXPORT aligned_edge_detection
   : public vital::algo::image_filter
 {
 public:
-  PLUGIN_INFO(
-    "vxl_aligned_edge_detection",
-    "Compute axis-aligned edges in an image." )
+  PLUGGABLE_IMPL(
+    aligned_edge_detection,
+    "Compute axis-aligned edges in an image.",
+    PARAM_DEFAULT(
+      threshold, float,
+      "Minimum edge magnitude required to report as an edge "
+      "in any output image.",
+      10.0 ),
+    PARAM_DEFAULT(
+      produce_joint_output, bool,
+      "Set to false if we do not want to spend time computing "
+      "joint edge images comprised of both horizontal and "
+      "vertical information.",
+      true ),
+    PARAM_DEFAULT(
+      smoothing_sigma, double,
+      "Smoothing sigma for the output NMS edge density map.",
+      1.3 ),
+    PARAM_DEFAULT(
+      smoothing_half_step, unsigned,
+      "Smoothing half step for the output NMS edge density map.",
+      2 )
+  )
 
-  aligned_edge_detection();
-  virtual ~aligned_edge_detection();
+  virtual ~aligned_edge_detection() = default;
 
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink.
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block.
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's current configuration is valid.
   virtual bool check_configuration( vital::config_block_sptr config ) const;
 
@@ -40,9 +56,10 @@ public:
     kwiver::vital::image_container_sptr image_data );
 
 private:
+  void initialize() override;
+  /// private implementation class
   class priv;
-
-  std::unique_ptr< priv > const d;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // namespace vxl

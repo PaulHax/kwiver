@@ -29,7 +29,7 @@ namespace vxl {
 class aligned_edge_detection::priv
 {
 public:
-  priv( aligned_edge_detection* parent ) : p{ parent } {}
+  priv( aligned_edge_detection& parent ) : parent{ parent } {}
 
   // Calculate potential edges
   template < typename PixType >
@@ -52,12 +52,16 @@ public:
   vil_image_view< pix_t >
   filter( vil_image_view< pix_t > const& input_image );
 
-  aligned_edge_detection* p;
-  // Internal parameters/settings
-  float threshold = 10;
-  bool produce_joint_output = true;
-  double smoothing_sigma = 1.3;
-  unsigned smoothing_half_step = 2;
+  aligned_edge_detection& parent;
+
+  float
+  c_threshold() const { return parent.c_threshold; }
+  bool
+  c_produce_joint_output() const { return parent.c_produce_joint_output; }
+  double
+  c_smoothing_sigma() const { return parent.c_smoothing_sigma; }
+  unsigned
+  c_smoothing_half_step() const { return parent.c_smoothing_half_step; }
 };
 
 // ----------------------------------------------------------------------------
@@ -73,7 +77,7 @@ aligned_edge_detection::priv
   if( grad_i.ni() != grad_j.ni() || grad_i.nj() != grad_j.nj() )
   {
     LOG_ERROR(
-      p->logger(),
+      parent.logger(),
       "Input gradient image dimensions must be equivalent" );
   }
 
@@ -91,14 +95,14 @@ aligned_edge_detection::priv
       InputType const val_i = grad_i( i, j );
       InputType const val_j = grad_j( i, j );
 
-      if( val_i > threshold )
+      if( val_i > c_threshold() )
       {
         if( val_i >= grad_i( i - 1, j ) && val_i >= grad_i( i + 1, j ) )
         {
           output_i( i, j ) = static_cast< OutputType >( val_i );
         }
       }
-      if( val_j > threshold )
+      if( val_j > c_threshold() )
       {
         if( val_j >= grad_j( i, j - 1 ) && val_j >= grad_j( i, j + 1 ) )
         {
@@ -145,7 +149,7 @@ aligned_edge_detection::priv
   auto const source_nj = input_image.nj();
 
   vil_image_view< pix_t > aligned_edges;
-  if( produce_joint_output )
+  if( c_produce_joint_output() )
   {
     aligned_edges.set_size( source_ni, source_nj, 3 );
   }
@@ -161,7 +165,7 @@ aligned_edge_detection::priv
   calculate_aligned_edges< pix_t >( input_image, i_response, j_response );
 
   // Perform extra op if enabled
-  if( produce_joint_output )
+  if( c_produce_joint_output() )
   {
     auto combined_response = vil_plane( aligned_edges, 2 );
 
@@ -171,7 +175,7 @@ aligned_edge_detection::priv
       j_response,
       combined_response );
 
-    auto half_step = smoothing_half_step;
+    auto half_step = c_smoothing_half_step();
     auto const min_dim = std::min( source_ni, source_nj );
 
     if( 2 * half_step + 1 >= min_dim )
@@ -184,7 +188,7 @@ aligned_edge_detection::priv
       vil_image_view< pix_t > smoothed_response;
       // Smooth the combined response
       vil_gauss_filter_2d(
-        combined_response, smoothed_response, smoothing_sigma, half_step );
+        combined_response, smoothed_response, c_smoothing_sigma(), half_step );
       combined_response.deep_copy( smoothed_response );
     }
   }
@@ -192,68 +196,12 @@ aligned_edge_detection::priv
 }
 
 // ----------------------------------------------------------------------------
-aligned_edge_detection
-::aligned_edge_detection()
-  : d{ new priv{ this } }
-{
-  attach_logger( "arrows.vxl.aligned_edge_detection" );
-}
-
-// ----------------------------------------------------------------------------
-aligned_edge_detection
-::~aligned_edge_detection()
-{}
-
-// ----------------------------------------------------------------------------
-vital::config_block_sptr
-aligned_edge_detection
-::get_configuration() const
-{
-  // Get base config from base class
-  vital::config_block_sptr config = algorithm::get_configuration();
-
-  config->set_value(
-    "threshold",
-    d->threshold,
-    "Minimum edge magnitude required to report as an edge "
-    "in any output image." );
-  config->set_value(
-    "produce_joint_output",
-    d->produce_joint_output,
-    "Set to false if we do not want to spend time computing "
-    "joint edge images comprised of both horizontal and "
-    "vertical information." );
-  config->set_value(
-    "smoothing_sigma",
-    d->smoothing_sigma,
-    "Smoothing sigma for the output NMS edge density map." );
-  config->set_value(
-    "smoothing_half_step",
-    d->smoothing_half_step,
-    "Smoothing half step for the output NMS edge density "
-    "map." );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
 void
 aligned_edge_detection
-::set_configuration( vital::config_block_sptr in_config )
+::initialize()
 {
-  // Start with our generated vital::config_block to ensure that assumed values
-  // are present. An alternative would be to check for key presence before
-  // performing a get_value() call.
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  // Settings for edge detection
-  d->threshold = config->get_value< float >( "threshold" );
-  d->produce_joint_output =
-    config->get_value< bool >( "produce_joint_output" );
-  d->smoothing_sigma = config->get_value< double >( "smoothing_sigma" );
-  d->smoothing_half_step =
-    config->get_value< unsigned >( "smoothing_half_step" );
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+  attach_logger( "arrows.vxl.aligned_edge_detection" );
 }
 
 // ----------------------------------------------------------------------------
