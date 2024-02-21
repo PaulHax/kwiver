@@ -24,12 +24,12 @@ set( ocv_headers_public
   estimate_pnp.h
   extract_descriptors.h
   extract_descriptors_BRIEF.h
-  #extract_descriptors_DAISY.h
-  #extract_descriptors_FREAK.h
-  #extract_descriptors_LATCH.h
-  #extract_descriptors_LUCID.h
+  extract_descriptors_DAISY.h
+  extract_descriptors_FREAK.h
+  extract_descriptors_LATCH.h
+  extract_descriptors_LUCID.h
   feature_set.h
-  #feature_detect_extract_BRISK.h
+  feature_detect_extract_BRISK.h
   #feature_detect_extract_ORB.h
   #feature_detect_extract_SIFT.h
   #feature_detect_extract_SURF.h
@@ -79,14 +79,14 @@ set( ocv_sources
   estimate_pnp.cxx
   extract_descriptors.cxx
   extract_descriptors_BRIEF.cxx
-  #extract_descriptors_DAISY.cxx
-  #extract_descriptors_FREAK.cxx
-  #extract_descriptors_LATCH.cxx
-  #extract_descriptors_LUCID.cxx
+  extract_descriptors_DAISY.cxx
+  extract_descriptors_FREAK.cxx
+  extract_descriptors_LATCH.cxx
+  extract_descriptors_LUCID.cxx
   #detect_heat_map.cxx
   #hough_circle_detector.cxx
   feature_set.cxx
-  #feature_detect_extract_BRISK.cxx
+  feature_detect_extract_BRISK.cxx
   #feature_detect_extract_ORB.cxx
   #feature_detect_extract_SIFT.cxx
   #feature_detect_extract_SURF.cxx

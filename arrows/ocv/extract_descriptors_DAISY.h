@@ -10,6 +10,7 @@
 
 #include <opencv2/opencv_modules.hpp>
 #ifdef HAVE_OPENCV_XFEATURES2D
+#include <opencv2/xfeatures2d.hpp>
 
 #include <memory>
 #include <string>
@@ -27,28 +28,58 @@ class KWIVER_ALGO_OCV_EXPORT extract_descriptors_DAISY
   : public ocv::extract_descriptors
 {
 public:
-  PLUGIN_INFO(
-    "ocv_DAISY",
-    "OpenCV feature-point descriptor extraction via the DAISY algorithm" )
+  PLUGGABLE_IMPL(
+    extract_descriptors_DAISY,
+    "OpenCV feature-point descriptor extraction via the DAISY algorithm",
 
-  /// Constructor
-  extract_descriptors_DAISY();
+    PARAM_DEFAULT(
+      radius, float,
+      "radius of the descriptor at the initial scale",
+      15 ),
+
+    PARAM_DEFAULT(
+      q_radius, int,
+      "amount of radial range division quantity",
+      3 ),
+
+    PARAM_DEFAULT(
+      q_theta, int,
+      "amount of angular range division quantity",
+      3 ),
+
+    PARAM_DEFAULT(
+      q_hist, int,
+      "amount of gradient orientations range division quantity",
+      8 ),
+
+    PARAM_DEFAULT(
+      norm,
+      int,
+      "descriptor normalization type. valid choices:\n" +
+      list_norm_options,
+      cv::xfeatures2d::DAISY::NRM_NONE ),
+
+    PARAM_DEFAULT(
+      interpolation, bool,
+      "", true ),
+
+    PARAM_DEFAULT(
+      use_orientation, bool,
+      "", false ),
+  );
 
   /// Destructor
   virtual ~extract_descriptors_DAISY();
 
-  /// Get this algorithm's \link kwiver::vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's configuration config_block is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
 private:
-  class priv;
+  static const std::string list_norm_options;
 
-  std::unique_ptr< priv > p_;
+  void initialize() override;
+  void update_extractor_parameters() const override;
+  void set_configuration_internal( vital::config_block_sptr config ) override;
 };
 
 #define KWIVER_OCV_HAS_DAISY

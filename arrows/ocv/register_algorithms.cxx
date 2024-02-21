@@ -28,11 +28,11 @@
 #include <arrows/ocv/estimate_pnp.h>
 // #include <arrows/ocv/resection_camera.h>
 #include <arrows/ocv/extract_descriptors_BRIEF.h>
-// #include <arrows/ocv/extract_descriptors_DAISY.h>
-// #include <arrows/ocv/extract_descriptors_FREAK.h>
-// #include <arrows/ocv/extract_descriptors_LATCH.h>
-// #include <arrows/ocv/extract_descriptors_LUCID.h>
-// #include <arrows/ocv/feature_detect_extract_BRISK.h>
+#include <arrows/ocv/extract_descriptors_DAISY.h>
+#include <arrows/ocv/extract_descriptors_FREAK.h>
+#include <arrows/ocv/extract_descriptors_LATCH.h>
+#include <arrows/ocv/extract_descriptors_LUCID.h>
+#include <arrows/ocv/feature_detect_extract_BRISK.h>
 // #include <arrows/ocv/feature_detect_extract_ORB.h>
 // #include <arrows/ocv/feature_detect_extract_SIFT.h>
 // #include <arrows/ocv/feature_detect_extract_SURF.h>
@@ -87,9 +87,10 @@ register_factories( kwiver::vital::plugin_loader& vpm )
   fact = vpm.add_factory< vital::algo::draw_detected_object_set,
     draw_detected_object_set >( "ocv" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
-//
-//  reg.register_algorithm< detect_features_BRISK >();
-//  reg.register_algorithm< detect_features_FAST >();
+
+  fact = vpm.add_factory< vital::algo::detect_features,
+    detect_features_BRISK >( "ocv_BRISK" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
   fact = vpm.add_factory< vital::algo::detect_features,
     detect_features_FAST >( "ocv_FAST" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
@@ -103,9 +104,13 @@ register_factories( kwiver::vital::plugin_loader& vpm )
   fact = vpm.add_factory< vital::algo::detect_features,
     detect_features_simple_blob >( "ocv_simple_blob" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
-//
-//  reg.register_algorithm< extract_descriptors_BRISK >();
-//  reg.register_algorithm< extract_descriptors_ORB >();
+
+  fact = vpm.add_factory< vital::algo::extract_descriptors,
+    extract_descriptors_BRISK >( "ocv_BRISK" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+  fact = vpm.add_factory< vital::algo::extract_descriptors,
+    extract_descriptors_ORB >( "ocv_ORB" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
 //
 //  reg.register_algorithm< match_features_bruteforce >();
 //  reg.register_algorithm< match_features_flannbased >();
@@ -133,22 +138,30 @@ register_factories( kwiver::vital::plugin_loader& vpm )
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
 #endif
 
-// #ifdef KWIVER_OCV_HAS_DAISY
-//  reg.register_algorithm< extract_descriptors_DAISY >();
-// #endif
-//
-// #ifdef KWIVER_OCV_HAS_FREAK
-//    reg.register_algorithm< extract_descriptors_FREAK >();
-// #endif
-//
-// #ifdef KWIVER_OCV_HAS_LATCH
-//   reg.register_algorithm< extract_descriptors_LATCH >();
-// #endif
-//
-// #ifdef KWIVER_OCV_HAS_LUCID
-//  reg.register_algorithm< extract_descriptors_LUCID >();
-// #endif
-//
+#ifdef KWIVER_OCV_HAS_DAISY
+  fact = vpm.add_factory< vital::algo::extract_descriptors,
+    extract_descriptors_DAISY >( "ocv_DAISY" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+#endif
+
+#ifdef KWIVER_OCV_HAS_FREAK
+  fact = vpm.add_factory< vital::algo::extract_descriptors,
+    extract_descriptors_FREAK >( "ocv_FREAK" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+#endif
+
+#ifdef KWIVER_OCV_HAS_LATCH
+  fact = vpm.add_factory< vital::algo::extract_descriptors,
+    extract_descriptors_LATCH >( "ocv_LATCH" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+#endif
+
+#ifdef KWIVER_OCV_HAS_LUCID
+  fact = vpm.add_factory< vital::algo::extract_descriptors,
+    extract_descriptors_LUCID >( "ocv_LUCID" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+#endif
+
 #ifdef KWIVER_OCV_HAS_MSD
   fact = vpm.add_factory< vital::algo::detect_features,
     detect_features_MSD >( "ocv_MSD" );
