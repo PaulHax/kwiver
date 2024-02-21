@@ -25,7 +25,7 @@ set( plugin_core_headers
   detected_object_set_output_csv.h
   detected_object_set_input_simulator.h
   dynamic_config_none.h
-  # estimate_canonical_transform.h
+  estimate_canonical_transform.h
   # example_detector.h
   # feature_descriptor_io.h
   filter_features_magnitude.h
@@ -102,7 +102,7 @@ set( plugin_core_sources
   detected_object_set_output_csv.cxx
   detected_object_set_input_simulator.cxx
   dynamic_config_none.cxx
-  # estimate_canonical_transform.cxx
+  estimate_canonical_transform.cxx
   # example_detector.cxx
   # feature_descriptor_io.cxx
   filter_features_magnitude.cxx
