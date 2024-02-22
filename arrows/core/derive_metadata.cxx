@@ -449,6 +449,13 @@ compute_wavelength( std::string const& image_source )
 ///////////////////////////////////////////////////////////////////////////////
 
 //BEGIN algorithm interface
+// ----------------------------------------------------------------------------
+void
+derive_metadata
+::initialize()
+{
+  this->set_capability( CAN_USE_FRAME_IMAGE, true );
+}
 
 // ----------------------------------------------------------------------------
 bool

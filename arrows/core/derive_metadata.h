@@ -30,6 +30,8 @@ public:
     "from other metadata."
   )
 
+  virtual ~derive_metadata() = default;
+
   bool check_configuration( vital::config_block_sptr config ) const override;
 
   /// Fills in metadata values which can be calculated from other metadata.
@@ -41,6 +43,9 @@ public:
   kwiver::vital::metadata_vector filter(
     kwiver::vital::metadata_vector const& input_metadata,
     kwiver::vital::image_container_scptr const& input_image ) override;
+
+private:
+  void initialize() override;
 };
 
 } // namespace core
