@@ -62,7 +62,7 @@ set( plugin_core_headers
   # video_input_splice.h
   video_input_split.h
   write_object_track_set_kw18.h
-  # write_track_descriptor_set_csv.h
+  write_track_descriptor_set_csv.h
 
   interpolate_track_spline.h
   match_features_homography.h
@@ -141,7 +141,7 @@ set( plugin_core_sources
   # video_input_splice.cxx
   video_input_split.cxx
   write_object_track_set_kw18.cxx
-  # write_track_descriptor_set_csv.cxx
+  write_track_descriptor_set_csv.cxx
 
   # interpolate_track_spline.cxx
   # match_features_homography.cxx

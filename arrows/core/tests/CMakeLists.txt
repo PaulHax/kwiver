@@ -50,3 +50,5 @@ kwiver_discover_gtests(core video_input_pos           LIBRARIES ${test_libraries
 kwiver_discover_gtests(core video_input_split         LIBRARIES ${test_libraries} ARGUMENTS "${kwiver_test_data_directory}")
 kwiver_discover_gtests(core write_object_track_set_kw18
                                                       LIBRARIES ${test_libraries})
+kwiver_discover_gtests(core write_track_descriptor_set_csv
+                                                      LIBRARIES ${test_libraries})

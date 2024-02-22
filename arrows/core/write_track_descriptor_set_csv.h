@@ -25,22 +25,24 @@ class KWIVER_ALGO_CORE_EXPORT write_track_descriptor_set_csv
   : public vital::algo::write_track_descriptor_set
 {
 public:
-  PLUGIN_INFO(
-    "csv",
-    "Track descriptor set csv writer." )
+  PLUGGABLE_IMPL(
+    write_track_descriptor_set_csv,
+    "Track descriptor set csv writer.",
+    PARAM_DEFAULT( write_raw_descriptor, bool, "write_raw_descriptor", true ),
+    PARAM_DEFAULT( write_world_loc, bool, "write_world_loc", false )
+  )
 
-  write_track_descriptor_set_csv();
   virtual ~write_track_descriptor_set_csv();
 
-  virtual void set_configuration( vital::config_block_sptr config );
   virtual bool check_configuration( vital::config_block_sptr config ) const;
 
   virtual void write_set( const kwiver::vital::track_descriptor_set_sptr set );
 
 private:
-  class priv;
+  void initialize() override;
 
-  std::unique_ptr< priv > d;
+  class priv;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // namespace core
