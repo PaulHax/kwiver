@@ -10,9 +10,6 @@
 
 #include <arrows/core/kwiver_algo_core_export.h>
 
-// Probably falls under the "lazy-hack" category
-#include <arrows/core/track_set_impl.cxx>
-
 #include <vital/algo/track_features.h>
 #include <vital/types/feature_track_set.h>
 #include <vital/types/image_container.h>

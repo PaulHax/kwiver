@@ -18,6 +18,9 @@
 
 #include <arrows/core/track_set_impl.h>
 
+// need a better solution for the linking error
+#include <arrows/core/track_set_impl.cxx>
+
 #include <vital/algo/close_loops.h>
 #include <vital/algo/detect_features.h>
 #include <vital/algo/extract_descriptors.h>
