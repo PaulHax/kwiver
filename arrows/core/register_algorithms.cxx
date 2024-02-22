@@ -24,6 +24,7 @@
 #include <vital/algo/handle_descriptor_request.h>
 #include <vital/algo/image_object_detector.h>
 #include <vital/algo/interpolate_track.h>
+#include <vital/algo/match_features.h>
 #include <vital/algo/metadata_filter.h>
 #include <vital/algo/metadata_map_io.h>
 #include <vital/algo/read_object_track_set.h>
@@ -54,6 +55,7 @@
 #include <arrows/core/filter_tracks.h>
 #include <arrows/core/handle_descriptor_request_core.h>
 #include <arrows/core/interpolate_track_spline.h>
+#include <arrows/core/match_features_fundamental_matrix.h>
 #include <arrows/core/metadata_map_io_csv.h>
 #include <arrows/core/read_object_track_set_kw18.h>
 #include <arrows/core/read_track_descriptor_set_csv.h>
@@ -197,6 +199,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::write_track_descriptor_set,
     write_track_descriptor_set_csv >( "csv" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::match_features,
+    match_features_fundamental_matrix >( "fundamental matrix guided" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 

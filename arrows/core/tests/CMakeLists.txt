@@ -29,6 +29,8 @@ kwiver_discover_gtests(core handle_descriptor_request_core
                                                       LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core interpolate_track_spline  LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(core merge_metadata_streams    LIBRARIES ${test_libraries})
+kwiver_discover_gtests(core match_features_fundamental_matrix
+                                                      LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core metadata_map_io_csv       LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(core mesh_intersect            LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(core mesh_operations           LIBRARIES ${test_libraries})

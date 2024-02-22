@@ -36,7 +36,7 @@ set( plugin_core_headers
   # initialize_object_tracks_threshold.h
   interpolate_track_spline.h
   # keyframe_selector_basic.h
-  # match_features_fundamental_matrix.h
+  match_features_fundamental_matrix.h
   # match_features_homography.h
   # match_tracks.h
   # merge_metadata_streams.h
@@ -115,7 +115,7 @@ set( plugin_core_sources
   # initialize_object_tracks_threshold.cxx
   interpolate_track_spline.cxx
   # keyframe_selector_basic.cxx
-  # match_features_fundamental_matrix.cxx
+  match_features_fundamental_matrix.cxx
   # match_features_homography.cxx
   # match_tracks.cxx
   # merge_metadata_streams.cxx
