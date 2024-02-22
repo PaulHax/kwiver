@@ -37,7 +37,8 @@ kwiver_discover_gtests(core metadata_stream_from_video
 # kwiver_discover_gtests(core render_mesh_depth_map     LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core read_object_track_set_kw18     LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core read_track_descriptor_set_csv     LIBRARIES ${test_libraries})
-# kwiver_discover_gtests(core track_set_impl            LIBRARIES ${test_libraries})
+kwiver_discover_gtests(core track_features_core       LIBRARIES ${test_libraries})
+kwiver_discover_gtests(core track_set_impl            LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(core transfer_bbox_with_depth_map
 #                                                       LIBRARIES ${test_libraries} ARGUMENTS "${kwiver_test_data_directory}")
 # kwiver_discover_gtests(core triangle_scan_iterator    LIBRARIES ${test_libraries})
