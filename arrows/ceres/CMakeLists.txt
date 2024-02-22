@@ -10,11 +10,11 @@ set( ceres_headers_public
   camera_intrinsic_prior.h
   camera_position.h
   camera_smoothness.h
+  options.h
+  types.h
   )
 set( ceres_headers_private
   lens_distortion.h
-  options.h
-  types.h
   )
 
 kwiver_install_headers(

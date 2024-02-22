@@ -29,7 +29,10 @@ TEST ( optimize_cameras, create )
 {
   plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE( nullptr, algo::optimize_cameras::create( "ceres" ) );
+  EXPECT_NE(
+    nullptr,
+    kwiver::vital::create_algorithm< kwiver::vital::algo::optimize_cameras >(
+      "ceres" ) );
 }
 
 // ----------------------------------------------------------------------------

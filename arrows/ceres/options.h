@@ -8,6 +8,8 @@
 #ifndef KWIVER_ARROWS_CERES_CAMERA_OPTIONS_H_
 #define KWIVER_ARROWS_CERES_CAMERA_OPTIONS_H_
 
+#include <arrows/ceres/kwiver_algo_ceres_export.h>
+
 #include <arrows/ceres/types.h>
 #include <arrows/mvg/camera_options.h>
 #include <vital/config/config_block.h>
@@ -24,7 +26,7 @@ namespace ceres {
 ///
 /// PIMPL class should inherit from this class
 /// to share these options with that algorithm.
-class solver_options
+class KWIVER_ALGO_CERES_EXPORT solver_options
 {
 public:
   solver_options() = default;
@@ -40,11 +42,13 @@ public:
   ::ceres::Solver::Options options;
 };
 
+typedef std::shared_ptr< solver_options > solver_options_sptr;
+
 /// Camera options class
 ///
 /// PIMPL class should inherit from this class
 /// to share these options with that algorithm.
-struct camera_options : public mvg::camera_options
+struct KWIVER_ALGO_CERES_EXPORT camera_options : public mvg::camera_options
 {
   using cam_param_map_t =
     std::unordered_map< vital::frame_id_t, std::vector< double > >;
@@ -68,7 +72,7 @@ struct camera_options : public mvg::camera_options
   add_position_prior_cost(
     ::ceres::Problem& problem,
     cam_param_map_t& ext_params,
-    vital::sfm_constraints_sptr constraints );
+    vital::sfm_constraints_sptr constraints ) const;
 
   /// Add the camera intrinsic priors costs to the Ceres problem.
   void add_intrinsic_priors_cost(
@@ -206,6 +210,8 @@ struct camera_options : public mvg::camera_options
 KWIVER_ALGO_CERES_EXPORT
 unsigned int
 num_distortion_params( mvg::LensDistortionType type );
+
+typedef std::shared_ptr< camera_options > camera_options_sptr;
 
 } // namespace ceres
 

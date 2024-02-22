@@ -23,8 +23,8 @@ struct is_shared_ptr< std::shared_ptr< T > >: std::true_type {};
 } // namespace detail
 
 // --------------------------------------------------------------------------------------------
-// A helper for getting a value from a config block. This specialization is for
-// all types but std::shared_ptr. The value is returned via \p value
+// A helper for setting a value in a config block. This specialization is for
+// all types but std::shared_ptr.
 template < typename ValueType,
   typename std::enable_if_t< !detail::is_shared_ptr< ValueType >::value,
     bool > = true >
@@ -37,7 +37,8 @@ set_config_helper(
 }
 
 // --------------------------------------------------------------------------------------------
-// A helper for getting a value to a config block. This specialization is for
+// A helper for retrieving a value from a config block. This specialization is
+// for
 // all types except std::shared_ptr
 template < typename ValueType,
   typename std::enable_if_t< !detail::is_shared_ptr< ValueType >::value,
@@ -49,7 +50,8 @@ get_config_helper( config_block_sptr config, config_block_key_t const& key )
 }
 
 // --------------------------------------------------------------------------------------------
-// A helper for getting a value from a config block. This specialization is for
+// A helper for retrieving a value from a config block. This specialization is
+// for
 // all types except std::shared_ptr with a default value
 template < typename ValueType,
   typename std::enable_if_t< !detail::is_shared_ptr< ValueType >::value,

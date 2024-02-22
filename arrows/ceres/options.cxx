@@ -166,7 +166,7 @@ camera_options
 ::add_position_prior_cost(
   ::ceres::Problem& problem,
   cam_param_map_t& ext_params,
-  sfm_constraints_sptr constraints )
+  sfm_constraints_sptr constraints ) const
 {
   int num_priors_applied = 0;
   if( !constraints )

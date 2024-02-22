@@ -35,7 +35,10 @@ TEST ( bundle_adjust, create )
 {
   plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE( nullptr, algo::bundle_adjust::create( "ceres" ) );
+  EXPECT_NE(
+    nullptr,
+    kwiver::vital::create_algorithm< kwiver::vital::algo::bundle_adjust >(
+      "ceres" ) );
 }
 
 // ----------------------------------------------------------------------------
@@ -154,7 +157,7 @@ test_ba_using_distortion(
   Eigen::VectorXd const& dc,
   double estimate_tolerance = 0.0 )
 {
-  ceres::bundle_adjust ba;
+  kwiver::arrows::ceres::bundle_adjust ba;
   cfg->set_value( "verbose", "true" );
   ba.set_configuration( cfg );
 
@@ -313,7 +316,7 @@ TEST_P ( bundle_adjust_with_lens_distortion, use_coefficients )
   auto const k = GetParam();
   auto const& dc = distortion_coefficients( k );
 
-  ceres::bundle_adjust ba;
+  kwiver::arrows::ceres::bundle_adjust ba;
   config_block_sptr cfg = ba.get_configuration();
   cfg->set_value( "lens_distortion_type", distortion_type( k ) );
   cfg->set_value( "optimize_dist_k1", false );
@@ -337,7 +340,7 @@ TEST_P ( bundle_adjust_with_lens_distortion, estimate_coefficients )
   auto const k = GetParam();
   auto const& dc = distortion_coefficients( k );
 
-  ceres::bundle_adjust ba;
+  kwiver::arrows::ceres::bundle_adjust ba;
   config_block_sptr cfg = ba.get_configuration();
   cfg->set_value( "lens_distortion_type", distortion_type( k ) );
   cfg->set_value( "optimize_dist_k1", true );
@@ -369,7 +372,7 @@ test_ba_intrinsic_sharing(
   camera_map_sptr cameras,
   kwiver::vital::config_block_sptr cfg )
 {
-  ceres::bundle_adjust ba;
+  kwiver::arrows::ceres::bundle_adjust ba;
   ba.set_configuration( cfg );
 
   // create landmarks at the corners of a cube
@@ -437,7 +440,7 @@ make_intrinsics_unique( camera_map_sptr cameras )
 // Test bundle adjustment with forcing unique intrinsics
 TEST ( bundle_adjust, unique_intrinsics )
 {
-  ceres::bundle_adjust ba;
+  kwiver::arrows::ceres::bundle_adjust ba;
   config_block_sptr cfg = ba.get_configuration();
   cfg->set_value( "verbose", "true" );
   cfg->set_value( "camera_intrinsic_share_type", "FORCE_UNIQUE_INTRINSICS" );
@@ -455,7 +458,7 @@ TEST ( bundle_adjust, unique_intrinsics )
 // Test bundle adjustment with forcing common intrinsics
 TEST ( bundle_adjust, common_intrinsics )
 {
-  ceres::bundle_adjust ba;
+  kwiver::arrows::ceres::bundle_adjust ba;
   config_block_sptr cfg = ba.get_configuration();
   cfg->set_value( "verbose", "true" );
   cfg->set_value( "camera_intrinsic_share_type", "FORCE_COMMON_INTRINSICS" );
@@ -477,7 +480,7 @@ TEST ( bundle_adjust, common_intrinsics )
 // Test bundle adjustment with multiple shared intrinics models
 TEST ( bundle_adjust, auto_share_intrinsics )
 {
-  ceres::bundle_adjust ba;
+  kwiver::arrows::ceres::bundle_adjust ba;
   config_block_sptr cfg = ba.get_configuration();
   cfg->set_value( "verbose", "true" );
 
@@ -509,7 +512,7 @@ test_ba_data_scales(
   kwiver::vital::config_block_sptr cfg,
   double scale = 1.0 )
 {
-  ceres::bundle_adjust ba;
+  kwiver::arrows::ceres::bundle_adjust ba;
   ba.set_configuration( cfg );
 
   // The intrinsic camera parameters to use
@@ -557,7 +560,7 @@ test_ba_data_scales(
 // Test bundle adjustment with different data scales
 TEST ( bundle_adjust, data_scales )
 {
-  ceres::bundle_adjust ba;
+  kwiver::arrows::ceres::bundle_adjust ba;
   config_block_sptr cfg = ba.get_configuration();
   cfg->set_value( "verbose", "true" );
   cfg->set_value( "camera_intrinsic_share_type", "FORCE_COMMON_INTRINSICS" );
@@ -576,7 +579,7 @@ test_ba_camera_smoothing(
   kwiver::vital::config_block_sptr cfg,
   double scale = 1.0 )
 {
-  ceres::bundle_adjust ba;
+  kwiver::arrows::ceres::bundle_adjust ba;
   ba.set_configuration( cfg );
 
   // create landmarks at the corners of a cube
@@ -617,7 +620,7 @@ test_ba_camera_smoothing(
 // Test bundle adjustment with camera path smoothness
 TEST ( bundle_adjust, camera_path_smoothness )
 {
-  ceres::bundle_adjust ba;
+  kwiver::arrows::ceres::bundle_adjust ba;
   config_block_sptr cfg = ba.get_configuration();
   cfg->set_value( "verbose", "true" );
   cfg->set_value( "camera_intrinsic_share_type", "FORCE_COMMON_INTRINSICS" );
@@ -653,7 +656,7 @@ TEST ( bundle_adjust, camera_path_smoothness )
 // Test bundle adjustment with camera forward motion damping
 TEST ( bundle_adjust, camera_forward_motion_damping )
 {
-  ceres::bundle_adjust ba;
+  kwiver::arrows::ceres::bundle_adjust ba;
   config_block_sptr cfg = ba.get_configuration();
   cfg->set_value( "verbose", "true" );
   // forward motion damping only applies to unique intrinsics
@@ -694,7 +697,7 @@ test_ba_min_hfov(
   kwiver::vital::config_block_sptr cfg,
   double scale = 1.0 )
 {
-  ceres::bundle_adjust ba;
+  kwiver::arrows::ceres::bundle_adjust ba;
   ba.set_configuration( cfg );
 
   // create landmarks at the corners of a cube
@@ -745,7 +748,7 @@ test_ba_min_hfov(
 // Test bundle adjustment with minimum horizontal FOV
 TEST ( bundle_adjust, minimum_hfov )
 {
-  ceres::bundle_adjust ba;
+  kwiver::arrows::ceres::bundle_adjust ba;
   config_block_sptr cfg = ba.get_configuration();
   cfg->set_value( "verbose", "true" );
   cfg->set_value( "camera_intrinsic_share_type", "FORCE_COMMON_INTRINSICS" );
