@@ -7,16 +7,13 @@
 
 #include "convert_image_bypass.h"
 
+#include <algorithm>
+
 namespace kwiver {
 
 namespace arrows {
 
 namespace core {
-
-/// Default Constructor
-convert_image_bypass
-::convert_image_bypass()
-{}
 
 /// Default image converter ( does nothing )
 vital::image_container_sptr

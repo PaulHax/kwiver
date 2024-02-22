@@ -3,7 +3,7 @@
 set(CMAKE_FOLDER "Arrows/Core")
 
 set( plugin_core_headers
-  # associate_detections_to_tracks_threshold.h
+  associate_detections_to_tracks_threshold.h
   # class_probablity_filter.h
   # close_loops_appearance_indexed.h
   # close_loops_bad_frames_only.h
@@ -13,12 +13,12 @@ set( plugin_core_headers
   # colorize.h
   # compute_association_matrix_from_features.h
   # compute_ref_homography_core.h
-  # convert_image_bypass.h
-  # create_detection_grid.h
+  convert_image_bypass.h
+  create_detection_grid.h
   csv_io.h
   depth_utils.h
-  # derive_metadata.h
-  # detect_features_filtered.h
+  derive_metadata.h
+  detect_features_filtered.h
   detected_object_set_input_kw18.h
   # detected_object_set_output_kw18.h
   detected_object_set_input_csv.h
@@ -80,7 +80,7 @@ kwiver_install_headers(
   )
 
 set( plugin_core_sources
-  # associate_detections_to_tracks_threshold.cxx
+  associate_detections_to_tracks_threshold.cxx
   # class_probablity_filter.cxx
   # close_loops_appearance_indexed.cxx
   # close_loops_bad_frames_only.cxx
@@ -90,12 +90,12 @@ set( plugin_core_sources
   # colorize.cxx
   # compute_association_matrix_from_features.cxx
   # compute_ref_homography_core.cxx
-  # convert_image_bypass.cxx
-  # create_detection_grid.cxx
+  convert_image_bypass.cxx
+  create_detection_grid.cxx
   csv_io.cxx
   depth_utils.cxx
-  # derive_metadata.cxx
-  # detect_features_filtered.cxx
+  derive_metadata.cxx
+  detect_features_filtered.cxx
   detected_object_set_input_kw18.cxx
   # detected_object_set_output_kw18.cxx
   detected_object_set_input_csv.cxx

@@ -9,8 +9,11 @@
 #define KWIVER_ARROWS_CORE_DETECT_FEATURES_FILTERED_H_
 
 #include <vital/algo/detect_features.h>
+#include <vital/algo/filter_features.h>
 
 #include <arrows/core/kwiver_algo_core_export.h>
+#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
 
 namespace kwiver {
 
@@ -23,22 +26,21 @@ class KWIVER_ALGO_CORE_EXPORT detect_features_filtered
   : public kwiver::vital::algo::detect_features
 {
 public:
-  PLUGIN_INFO(
-    "filtered",
+  PLUGGABLE_IMPL(
+    detect_features_filtered,
     "Wrapper that runs a feature detector and "
-    "applies a filter to the detector output" )
-
-  /// Constructor
-  detect_features_filtered();
+    "applies a filter to the detector output",
+    PARAM(
+      feature_detector, vital::algo::detect_features_sptr,
+      "detector" ),
+    PARAM(
+      feature_filter, vital::algo::filter_features_sptr,
+      "filter" )
+  )
 
   /// Destructor
   virtual ~detect_features_filtered();
 
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's configuration config_block is valid
   virtual bool check_configuration( vital::config_block_sptr config ) const;
 
@@ -59,10 +61,10 @@ public:
     vital::image_container_sptr mask = vital::image_container_sptr() ) const;
 
 private:
+  void initialize() override;
   /// private implementation class
   class priv;
-
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace core

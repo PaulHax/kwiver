@@ -10,6 +10,8 @@
 
 #include <arrows/core/kwiver_algo_core_export.h>
 
+#include <vital/algo/algorithm.txx>
+
 #include <vital/algo/metadata_filter.h>
 
 namespace kwiver {
@@ -22,16 +24,12 @@ class KWIVER_ALGO_CORE_EXPORT derive_metadata
   : public vital::algo::metadata_filter
 {
 public:
-  derive_metadata();
-  virtual ~derive_metadata();
-
-  PLUGIN_INFO(
-    "derive_metadata",
+  PLUGGABLE_IMPL(
+    derive_metadata,
     "Fills in metadata values which can be calculated "
-    "from other metadata." )
+    "from other metadata."
+  )
 
-  vital::config_block_sptr get_configuration() const override;
-  void set_configuration( vital::config_block_sptr config ) override;
   bool check_configuration( vital::config_block_sptr config ) const override;
 
   /// Fills in metadata values which can be calculated from other metadata.

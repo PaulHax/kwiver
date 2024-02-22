@@ -5,6 +5,7 @@
 /// \file
 /// \brief Implementation of detect_feature_filtered algorithm
 #include "detect_features_filtered.h"
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/filter_features.h>
 
 using namespace kwiver::vital;
@@ -19,28 +20,31 @@ namespace core {
 class detect_features_filtered::priv
 {
 public:
-  /// Constructor
-  priv()
-    : feature_detector( nullptr ),
-      feature_filter( nullptr )
+  priv( detect_features_filtered& parent )
+    : parent( parent )
   {}
 
-  /// The feature detector algorithm to use
-  vital::algo::detect_features_sptr feature_detector;
+  detect_features_filtered& parent;
 
-  /// The feature filter algorithm to use
-  vital::algo::filter_features_sptr feature_filter;
+  // Processing classes
+  vital::algo::detect_features_sptr feature_detector()
+  { return parent.c_feature_detector; }
+  vital::algo::filter_features_sptr feature_filter()
+  { return parent.c_feature_filter; }
 
+  // Local state
   vital::logger_handle_t m_logger;
 };
 
 // ----------------------------------------------------------------------------
 // Constructor
+void
 detect_features_filtered
-::detect_features_filtered()
-  : d_( new priv )
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
   attach_logger( "arrows.core.detect_features_filtered" );
+
   d_->m_logger = logger();
 }
 
@@ -50,47 +54,15 @@ detect_features_filtered
 {}
 
 // ----------------------------------------------------------------------------
-// Get this algorithm's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-detect_features_filtered
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config =
-    vital::algo::detect_features::get_configuration();
-
-  // nested algorithm configurations
-  vital::algo::detect_features
-  ::get_nested_algo_configuration( "detector", config, d_->feature_detector );
-  vital::algo::filter_features
-  ::get_nested_algo_configuration( "filter", config, d_->feature_filter );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-// Set this algorithm's properties via a config block
-void
-detect_features_filtered
-::set_configuration( vital::config_block_sptr config )
-{
-  // nested algorithm configurations
-  vital::algo::detect_features
-  ::set_nested_algo_configuration( "detector", config, d_->feature_detector );
-  vital::algo::filter_features
-  ::set_nested_algo_configuration( "filter", config, d_->feature_filter );
-}
-
-// ----------------------------------------------------------------------------
 // Check that the algorithm's configuration vital::config_block is valid
 bool
 detect_features_filtered
 ::check_configuration( vital::config_block_sptr config ) const
 {
-  bool detector_valid = vital::algo::detect_features
-                        ::check_nested_algo_configuration( "detector", config );
-  bool filter_valid = vital::algo::filter_features
-                      ::check_nested_algo_configuration( "filter", config );
+  bool detector_valid = check_nested_algo_configuration< vital::algo::detect_features >(
+    "detector", config );
+  bool filter_valid = check_nested_algo_configuration< vital::algo::filter_features >(
+    "filter", config );
   return detector_valid && filter_valid;
 }
 
@@ -101,21 +73,21 @@ detect_features_filtered
   vital::image_container_sptr image_data,
   vital::image_container_sptr mask ) const
 {
-  if( !d_->feature_detector )
+  if( !d_->feature_detector() )
   {
     LOG_ERROR(logger(), "Nested feature detector not initialized." );
     return nullptr;
   }
 
-  auto features = d_->feature_detector->detect( image_data, mask );
+  auto features = d_->feature_detector()->detect( image_data, mask );
 
-  if( !d_->feature_filter )
+  if( !d_->feature_filter() )
   {
     LOG_WARN(logger(), "Nested feature filter not initialized." );
   }
   else
   {
-    return d_->feature_filter->filter( features );
+    return d_->feature_filter()->filter( features );
   }
   return features;
 }
