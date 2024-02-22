@@ -451,34 +451,6 @@ compute_wavelength( std::string const& image_source )
 //BEGIN algorithm interface
 
 // ----------------------------------------------------------------------------
-/// Private implementation class
-class derive_metadata::priv
-{
-public:
-  priv( derive_metadata& parent )
-    : parent( parent )
-  {
-    parent.set_capability( CAN_USE_FRAME_IMAGE, true );
-  }
-
-  derive_metadata& parent;
-};
-
-// ----------------------------------------------------------------------------
-void
-derive_metadata
-::initialize()
-{
-  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
-  attach_logger( "arrows.core.derive_metadata" );
-}
-
-// ----------------------------------------------------------------------------
-derive_metadata
-::~derive_metadata()
-{}
-
-// ----------------------------------------------------------------------------
 bool
 derive_metadata
 ::check_configuration( vital::config_block_sptr ) const

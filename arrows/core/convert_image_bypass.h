@@ -29,21 +29,12 @@ public:
     "Performs no conversion and returns the given image container."
   )
 
-  /// Destructor
-  virtual ~convert_image_bypass();
-
   /// Default image converter ( does nothing )
   ///
   /// \param [in] img image to be converted
   /// \returns the input image
   virtual vital::image_container_sptr convert(
     vital::image_container_sptr img ) const;
-
-private:
-  void initialize() override;
-  /// private implementation class
-  class priv;
-  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace core

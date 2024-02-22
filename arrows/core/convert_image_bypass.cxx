@@ -15,31 +15,6 @@ namespace arrows {
 
 namespace core {
 
-// Private implementation class
-class convert_image_bypass::priv
-{
-public:
-  priv( convert_image_bypass& parent )
-    : parent( parent )
-  {}
-
-  convert_image_bypass& parent;
-};
-
-// ----------------------------------------------------------------------------
-void
-convert_image_bypass
-::initialize()
-{
-  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
-  attach_logger( "arrows.core.convert_image_bypass" );
-}
-
-// Destructor
-convert_image_bypass
-::~convert_image_bypass()
-{}
-
 /// Default image converter ( does nothing )
 vital::image_container_sptr
 convert_image_bypass
