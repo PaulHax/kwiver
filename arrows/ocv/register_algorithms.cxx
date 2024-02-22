@@ -33,7 +33,7 @@
 #include <arrows/ocv/extract_descriptors_LATCH.h>
 #include <arrows/ocv/extract_descriptors_LUCID.h>
 #include <arrows/ocv/feature_detect_extract_BRISK.h>
-// #include <arrows/ocv/feature_detect_extract_ORB.h>
+#include <arrows/ocv/feature_detect_extract_ORB.h>
 // #include <arrows/ocv/feature_detect_extract_SIFT.h>
 // #include <arrows/ocv/feature_detect_extract_SURF.h>
 #include <arrows/ocv/image_io.h>
@@ -100,7 +100,9 @@ register_factories( kwiver::vital::plugin_loader& vpm )
   fact = vpm.add_factory< vital::algo::detect_features,
     detect_features_MSER >( "ocv_MSER" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
-//  reg.register_algorithm< detect_features_ORB >();
+  fact = vpm.add_factory< vital::algo::detect_features,
+    detect_features_ORB >( "ocv_ORB" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
   fact = vpm.add_factory< vital::algo::detect_features,
     detect_features_simple_blob >( "ocv_simple_blob" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
