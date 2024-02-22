@@ -30,7 +30,7 @@ public:
     "from other metadata."
   )
 
-  virtual ~derive_metadata();
+  virtual ~derive_metadata() = default;
 
   bool check_configuration( vital::config_block_sptr config ) const override;
 

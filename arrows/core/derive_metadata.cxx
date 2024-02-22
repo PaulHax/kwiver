@@ -457,10 +457,6 @@ derive_metadata
   this->set_capability( CAN_USE_FRAME_IMAGE, true );
 }
 
-derive_metadata
-::~derive_metadata()
-{}
-
 // ----------------------------------------------------------------------------
 bool
 derive_metadata
