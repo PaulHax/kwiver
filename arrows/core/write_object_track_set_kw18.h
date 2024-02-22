@@ -13,6 +13,9 @@
 
 #include <vital/algo/write_object_track_set.h>
 
+#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
+
 #include <memory>
 
 namespace kwiver {
@@ -25,14 +28,14 @@ class KWIVER_ALGO_CORE_EXPORT write_object_track_set_kw18
   : public vital::algo::write_object_track_set
 {
 public:
-  PLUGIN_INFO(
-    "kw18",
-    "Object track set kw18 writer." )
+  PLUGGABLE_IMPL(
+    write_object_track_set_kw18,
+    "Object track set kw18 writer.",
+    PARAM_DEFAULT( delim, std::string, "delimeter", "," )
+  )
 
-  write_object_track_set_kw18();
   ~write_object_track_set_kw18();
 
-  void set_configuration( vital::config_block_sptr config ) override;
   bool check_configuration( vital::config_block_sptr config ) const override;
 
   void write_set(
@@ -43,9 +46,10 @@ public:
   void close() override;
 
 private:
+  void initialize() override;
+  /// private implementation class
   class priv;
-
-  std::unique_ptr< priv > d;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // namespace core

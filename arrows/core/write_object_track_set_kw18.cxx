@@ -35,17 +35,21 @@ namespace core {
 class write_object_track_set_kw18::priv
 {
 public:
-  priv( write_object_track_set_kw18* parent )
-    : m_parent( parent ),
+  priv( write_object_track_set_kw18& parent )
+    : parent( parent ),
       m_logger( kwiver::vital::get_logger( "write_object_track_set_kw18" ) ),
       m_first( true ),
-      m_frame_number( 1 ),
-      m_delim( "," )
+      m_frame_number( 1 )
   {}
 
   ~priv() {}
 
-  write_object_track_set_kw18* m_parent;
+  write_object_track_set_kw18& parent;
+
+  // Configuration values
+  std::string c_delim() { return parent.c_delim; }
+
+  // Local values
   kwiver::vital::logger_handle_t m_logger;
   bool m_first;
   int m_frame_number;
@@ -54,10 +58,13 @@ public:
 };
 
 // ----------------------------------------------------------------------------
+void
 write_object_track_set_kw18
-::write_object_track_set_kw18()
-  : d( new write_object_track_set_kw18::priv( this ) )
-{}
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+  attach_logger( "arrows.core.write_object_track_set_kw18" );
+}
 
 write_object_track_set_kw18
 ::~write_object_track_set_kw18()
@@ -114,14 +121,6 @@ write_object_track_set_kw18
   }
 
   write_object_track_set::close();
-}
-
-// ----------------------------------------------------------------------------
-void
-write_object_track_set_kw18
-::set_configuration( vital::config_block_sptr config )
-{
-  d->m_delim = config->get_value< std::string >( "delimiter", d->m_delim );
 }
 
 // ----------------------------------------------------------------------------
