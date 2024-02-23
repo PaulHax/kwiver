@@ -16,7 +16,8 @@ kwiver_discover_gtests(core create_detection_grid     LIBRARIES ${test_libraries
 kwiver_discover_gtests(core csv_io                    LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core derive_metadata           LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core detect_features_filtered  LIBRARIES ${test_libraries})
-kwiver_discover_gtests(core detected_object_set_input        LIBRARIES ${test_libraries})
+kwiver_discover_gtests(core detected_object_set_input
+                                                      LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core detected_object_io        LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core dynamic_configuration     LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core estimate_canonical_transform
@@ -29,18 +30,21 @@ kwiver_discover_gtests(core handle_descriptor_request_core
                                                       LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core interpolate_track_spline  LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(core merge_metadata_streams    LIBRARIES ${test_libraries})
-kwiver_discover_gtests(core match_features_fundamental_matrix
-                                                      LIBRARIES ${test_libraries})
+kwiver_discover_gtests(core match_features            LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core metadata_map_io_csv       LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(core mesh_intersect            LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(core mesh_operations           LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core metadata_stream_from_video
                                                       LIBRARIES ${test_libraries})
+kwiver_discover_gtests(core read_object_track_set_kw18
+                                                      LIBRARIES ${test_libraries})
+kwiver_discover_gtests(core read_track_descriptor_set_csv
+                                                      LIBRARIES ${test_libraries})
+
 # kwiver_discover_gtests(core render_mesh_depth_map     LIBRARIES ${test_libraries})
-kwiver_discover_gtests(core read_object_track_set_kw18     LIBRARIES ${test_libraries})
-kwiver_discover_gtests(core read_track_descriptor_set_csv     LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core track_features_core       LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core track_set_impl            LIBRARIES ${test_libraries})
+# kwiver_discover_gtests(core track_set_impl            LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(core transfer_bbox_with_depth_map
 #                                                       LIBRARIES ${test_libraries} ARGUMENTS "${kwiver_test_data_directory}")
 # kwiver_discover_gtests(core triangle_scan_iterator    LIBRARIES ${test_libraries})

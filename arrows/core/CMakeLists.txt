@@ -37,8 +37,8 @@ set( plugin_core_headers
   interpolate_track_spline.h
   # keyframe_selector_basic.h
   match_features_fundamental_matrix.h
-  # match_features_homography.h
-  # match_tracks.h
+  match_features_homography.h
+  match_tracks.h
   # merge_metadata_streams.h
   # mesh_intersect.h
   mesh_operations.h
@@ -63,12 +63,6 @@ set( plugin_core_headers
   video_input_split.h
   write_object_track_set_kw18.h
   write_track_descriptor_set_csv.h
-
-  interpolate_track_spline.h
-  match_features_homography.h
-  match_matrix.h
-  track_features_core.h
-  track_set_impl.h
   )
 
 kwiver_install_headers(
@@ -116,7 +110,8 @@ set( plugin_core_sources
   interpolate_track_spline.cxx
   # keyframe_selector_basic.cxx
   match_features_fundamental_matrix.cxx
-  # match_features_homography.cxx
+  match_features_homography.cxx
+  match_matrix.cxx
   # match_tracks.cxx
   # merge_metadata_streams.cxx
   # mesh_intersect.cxx
@@ -142,12 +137,6 @@ set( plugin_core_sources
   video_input_split.cxx
   write_object_track_set_kw18.cxx
   write_track_descriptor_set_csv.cxx
-
-  # interpolate_track_spline.cxx
-  # match_features_homography.cxx
-  match_matrix.cxx
-  # track_features_core.cxx
-  # track_set_impl.cxx
   )
 
 kwiver_add_library( kwiver_algo_core

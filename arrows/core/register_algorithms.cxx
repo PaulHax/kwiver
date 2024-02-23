@@ -56,6 +56,7 @@
 #include <arrows/core/handle_descriptor_request_core.h>
 #include <arrows/core/interpolate_track_spline.h>
 #include <arrows/core/match_features_fundamental_matrix.h>
+#include <arrows/core/match_features_homography.h>
 #include <arrows/core/metadata_map_io_csv.h>
 #include <arrows/core/read_object_track_set_kw18.h>
 #include <arrows/core/read_track_descriptor_set_csv.h>
@@ -203,6 +204,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::match_features,
     match_features_fundamental_matrix >( "fundamental matrix guided" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::match_features,
+    match_features_homography >( "homography" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 

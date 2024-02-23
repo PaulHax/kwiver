@@ -37,24 +37,12 @@ public:
 
   // Configuration values
   double c_inlier_scale() { return parent.c_inlier_scale; }
-
-  int
-  c_min_required_inlier_count()
-  {
-    return parent.c_min_required_inlier_count;
-  }
-
-  double
-  c_min_required_inlier_percent()
-  {
-    return parent.c_min_required_inlier_percent;
-  }
-
-  double
-  c_motion_filter_percentile()
-  {
-    return parent.c_motion_filter_percentile;
-  }
+  int c_min_required_inlier_count()
+  { return parent.c_min_required_inlier_count; }
+  double c_min_required_inlier_percent()
+  { return parent.c_min_required_inlier_percent; }
+  double c_motion_filter_percentile()
+  { return parent.c_motion_filter_percentile; }
 
   // processing classes
   vital::algo::match_features_sptr c_matcher() { return parent.c_matcher; }
