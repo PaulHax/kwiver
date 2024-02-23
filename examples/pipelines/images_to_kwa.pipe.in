@@ -30,7 +30,6 @@ process stabilize
 # Algorithm to use for 'descriptor_extractor'.
 # Must be one of the following options:
 #   - ocv
-#   - viscl
   track_features:core:descriptor_extractor:type = ocv
 
 # The OpenCV cv::Algorithm type to use for 'extractor'.
@@ -60,7 +59,6 @@ process stabilize
 # Must be one of the following options:
 #   - homography_guided
 #   - ocv
-#   - viscl
   track_features:core:feature_matcher:type = homography_guided
 
 
