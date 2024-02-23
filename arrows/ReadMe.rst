@@ -20,8 +20,6 @@ Directory Structure and Provided Functionality
                       and fundamental matrix estimation, image IO, and more.
 `<arrows/proj>`_      Geographic conversion functions implemented with PROJ_.
 `<arrows/uuid>`_      [*Experimental*] Implementation of unique IDs using libuuid
-`<arrows/viscl>`_     [*Experimental*] Algorithms using VisCL to implement
-                      algorithms in OpenCL
 `<arrows/vxl>`_       Algorithms implemnted using the VXL_ libraries.
                       Includes bundle adjustment, homography estimation, video
                       file reading, and more.

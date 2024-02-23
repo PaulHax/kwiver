@@ -45,7 +45,6 @@ process extractor
 # Algorithm to use for 'descriptor_extractor'.
 # Must be one of the following options:
 #   - ocv
-#   - viscl
   :descriptor_extractor:type ocv
 
 # The OpenCV cv::Algorithm type to use for 'extractor'.
@@ -65,7 +64,6 @@ process matcher
 # Must be one of the following options:
 #   - homography_guided
 #   - ocv
-#   - viscl
   feature_matcher:type = homography_guided
 
 

@@ -58,12 +58,6 @@ if ( KWIVER_ENABLE_CUDA )
   add_subdirectory( cuda )
 endif()
 
-# Add VisCL plugin if enabled
-#  needs VXL
-if( KWIVER_ENABLE_VISCL )
-  add_subdirectory( viscl )
-endif()
-
 # if burnout is enabled
 if( KWIVER_ENABLE_BURNOUT )
   add_subdirectory( burnout )

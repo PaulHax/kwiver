@@ -33,9 +33,7 @@ The provided Arrows are:
    core
    burnout
    ceres
-   matlab
    opencv
    proj
    uuid
-   viscl
    vxl

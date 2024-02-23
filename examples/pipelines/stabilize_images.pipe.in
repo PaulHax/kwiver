@@ -40,7 +40,6 @@ process stabilize
 #   - ocv_ORB
 #   - ocv_SIFT
 #   - ocv_SURF
-#   - viscl
     descriptor_extractor:type = ocv_SURF
 
 # The OpenCV cv::Algorithm type to use for 'extractor'.
@@ -66,7 +65,6 @@ process stabilize
 #   - ocv_ORB
 #   - ocv_SIFT
 #   - ocv_SURF
-#   - viscl
     feature_detector:type                                                = ocv_SURF
 
 # The OpenCV cv::Algorithm type to use for 'detector'.
@@ -85,7 +83,6 @@ process stabilize
 #   - ocv_brute_force
 #   - ocv_flann_based
 #   - fundamental_matrix_guided
-#   - viscl
 #   - vxl_constrained
     feature_matcher:type                                                 = homography_guided
 
@@ -96,7 +93,6 @@ process stabilize
 #   - ocv_brute_force
 #   - ocv_flann_based
 #   - fundamental_matrix_guided
-#   - viscl
 #   - vxl_constrained
       feature_matcher1:type               = ocv_flann_based
 
@@ -160,7 +156,6 @@ process stabilize
 #   - ocv_brute_force
 #   - ocv_flann_based
 #   - fundamental_matrix_guided
-#   - viscl
 #   - vxl_constrained
       feature_matcher:type = homography_guided
 
@@ -171,7 +166,6 @@ process stabilize
 #   - ocv_brute_force
 #   - ocv_flann_based
 #   - fundamental_matrix_guided
-#   - viscl
 #   - vxl_constrained
         feature_matcher1:type = ocv_flann_based
 
@@ -239,7 +233,6 @@ process stabilize
 #   - ocv_brute_force
 #   - ocv_flann_based
 #   - fundamental_matrix_guided
-#   - viscl
 #   - vxl_constrained
         feature_matcher1:type = ocv_flann_based
 
