@@ -64,11 +64,6 @@ if( KWIVER_ENABLE_VISCL )
   add_subdirectory( viscl )
 endif()
 
-# if matlab is enabled
-if( KWIVER_ENABLE_MATLAB )
-  add_subdirectory( matlab )
-endif()
-
 # if burnout is enabled
 if( KWIVER_ENABLE_BURNOUT )
   add_subdirectory( burnout )

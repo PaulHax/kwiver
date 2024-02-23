@@ -13,7 +13,6 @@ Directory Structure and Provided Functionality
                       dependencies beyond what Vital uses (Eigen).
 `<arrows/super3d>`_   Depth estimation from video, uses VXL
 `<arrows/ffmpeg>`_    Video support through the FFmpeg library.
-`<arrows/matlab>`_    An interface for running Matlab code KWIVER
 `<arrows/mvg>`_       Multi-View Geometry algorithms with no additional
                       dependencies.
 `<arrows/ocv>`_       Algorithms implemented using OpenCV_.
