@@ -20,7 +20,7 @@ set( plugin_core_headers
   derive_metadata.h
   detect_features_filtered.h
   detected_object_set_input_kw18.h
-  # detected_object_set_output_kw18.h
+  detected_object_set_output_kw18.h
   detected_object_set_input_csv.h
   detected_object_set_output_csv.h
   detected_object_set_input_simulator.h
@@ -93,7 +93,7 @@ set( plugin_core_sources
   derive_metadata.cxx
   detect_features_filtered.cxx
   detected_object_set_input_kw18.cxx
-  # detected_object_set_output_kw18.cxx
+  detected_object_set_output_kw18.cxx
   detected_object_set_input_csv.cxx
   detected_object_set_output_csv.cxx
   detected_object_set_input_simulator.cxx
