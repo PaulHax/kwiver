@@ -9,8 +9,8 @@
 #define VITAL_DESCRIPTOR_H_
 
 #include <vital/exceptions.h>
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 #include <vital/vital_types.h>
 
 #include <iostream>
@@ -284,15 +284,17 @@ protected:
 };
 
 /// return the hamming_distance between two descriptors
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 int hamming_distance( vital::descriptor_sptr d1, vital::descriptor_sptr d2 );
 
 // ----------------------------------------------------------------------------
 /// output stream operator for a feature
-VITAL_EXPORT std::ostream& operator<<( std::ostream& s, const descriptor& d );
+VITAL_TYPES_EXPORT std::ostream& operator<<(
+  std::ostream& s,
+  const descriptor& d );
 
 /// input stream operator for a feature
-VITAL_EXPORT std::istream& operator>>( std::istream& s, descriptor& d );
+VITAL_TYPES_EXPORT std::istream& operator>>( std::istream& s, descriptor& d );
 
 } // namespace vital
 

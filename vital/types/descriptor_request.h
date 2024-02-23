@@ -14,8 +14,8 @@
 #include "track_descriptor.h"
 #include "uid.h"
 
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 
 #include <memory>
 #include <string>
@@ -29,7 +29,7 @@ namespace vital {
 ///
 /// This is used by some arbitrary GUI or other input to request and return
 /// computed descriptors on some region of arbitrary input imagery.
-class VITAL_EXPORT descriptor_request
+class VITAL_TYPES_EXPORT descriptor_request
 {
 public:
   descriptor_request();

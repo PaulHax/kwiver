@@ -10,7 +10,7 @@
 
 #include <vital/types/class_map.h>
 
-#include <vital/vital_export.h>
+#include <vital/types/vital_types_export.h>
 
 namespace kwiver {
 
@@ -18,7 +18,7 @@ namespace vital {
 
 struct detected_object_type_tag {};
 
-extern template class VITAL_EXPORT class_map< detected_object_type_tag >;
+extern template class VITAL_TYPES_EXPORT class_map< detected_object_type_tag >;
 
 using detected_object_type = class_map< detected_object_type_tag >;
 

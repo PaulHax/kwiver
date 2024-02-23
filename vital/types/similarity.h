@@ -26,7 +26,7 @@ namespace vital {
 /// A similarity transformation is one that includes a scaling, rotation,
 /// and translation
 template < typename T >
-class VITAL_EXPORT similarity_
+class VITAL_TYPES_EXPORT similarity_
 {
 public:
   /// Default Constructor
@@ -139,13 +139,15 @@ typedef similarity_< float > similarity_f;
 
 /// output stream operator for a similarity transformation
 template < typename T >
-VITAL_EXPORT std::ostream&  operator<<(
+VITAL_TYPES_EXPORT std::ostream&  operator<<(
   std::ostream& s,
   const similarity_< T >& t );
 
 /// input stream operator for a similarity transformation
 template < typename T >
-VITAL_EXPORT std::istream&  operator>>( std::istream& s, similarity_< T >& t );
+VITAL_TYPES_EXPORT std::istream&  operator>>(
+  std::istream& s,
+  similarity_< T >& t );
 
 } // namespace vital
 

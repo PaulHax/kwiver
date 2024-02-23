@@ -10,8 +10,8 @@
 
 #include <vital/config/config_block.h>
 #include <vital/types/polygon.h>
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 
 #include <unordered_map>
 
@@ -27,7 +27,7 @@ namespace vital {
 /// may be directly accessed, or the polygon in a specific CRS may be requested.
 /// Requests for a specific CRS are cached, so that CRS conversion does not need
 /// to be performed every time.
-class VITAL_EXPORT geo_polygon
+class VITAL_TYPES_EXPORT geo_polygon
 {
 public:
   typedef kwiver::vital::polygon geo_raw_polygon_t;
@@ -76,20 +76,20 @@ protected:
   mutable std::unordered_map< int, geo_raw_polygon_t > m_poly;
 };
 
-template <> VITAL_EXPORT geo_polygon config_block_get_value_cast(
+template <> VITAL_TYPES_EXPORT geo_polygon config_block_get_value_cast(
   config_block_value_t const& value );
 
-template <> VITAL_EXPORT config_block_value_t config_block_set_value_cast(
+template <> VITAL_TYPES_EXPORT config_block_value_t config_block_set_value_cast(
   geo_polygon const& value );
 
-VITAL_EXPORT::std::ostream& operator<<(
+VITAL_TYPES_EXPORT::std::ostream& operator<<(
   ::std::ostream& str,
   geo_polygon const& obj );
 
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 bool operator==( geo_polygon const& lhs, geo_polygon const& rhs );
 
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 bool operator!=( geo_polygon const& lhs, geo_polygon const& rhs );
 
 } // namespace vital

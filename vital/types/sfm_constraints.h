@@ -7,8 +7,8 @@
 /// to be
 ///       used in SfM.
 
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 
 #include <vital/types/local_geo_cs.h>
 #include <vital/types/metadata_map.h>
@@ -21,7 +21,7 @@ namespace kwiver {
 
 namespace vital {
 
-class VITAL_EXPORT sfm_constraints
+class VITAL_TYPES_EXPORT sfm_constraints
 {
 public:
   sfm_constraints();

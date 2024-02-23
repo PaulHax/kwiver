@@ -8,7 +8,7 @@
 #ifndef VITAL_COVARIANCE_H_
 #define VITAL_COVARIANCE_H_
 
-#include <vital/vital_export.h>
+#include <vital/types/vital_types_export.h>
 
 #include <iostream>
 

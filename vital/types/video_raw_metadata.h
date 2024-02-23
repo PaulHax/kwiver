@@ -8,7 +8,7 @@
 #ifndef VITAL_VIDEO_RAW_METADATA_H_
 #define VITAL_VIDEO_RAW_METADATA_H_
 
-#include <vital/vital_export.h>
+#include <vital/types/vital_types_export.h>
 
 #include <memory>
 
@@ -18,7 +18,7 @@ namespace vital {
 
 // ----------------------------------------------------------------------------
 /// Base class for holding a single frame of unprocessed metadata.
-struct VITAL_EXPORT video_raw_metadata
+struct VITAL_TYPES_EXPORT video_raw_metadata
 {
   virtual ~video_raw_metadata();
 };

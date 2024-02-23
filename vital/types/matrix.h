@@ -5,8 +5,8 @@
 /// \file
 /// \brief Typedefs for Eigen matrices
 
-#ifndef VITAL_MATRIX_H_
-#define VITAL_MATRIX_H_
+#ifndef VITAL_TYPES_MATRIX_H_
+#define VITAL_TYPES_MATRIX_H_
 
 #include <Eigen/Core>
 
@@ -38,4 +38,4 @@ typedef Eigen::Matrix< float, 4, 4 >  matrix_4x4f;
 
 }   // end namespace vital
 
-#endif // VITAL_MATRIX_H_
+#endif // VITAL_TYPES_MATRIX_H_

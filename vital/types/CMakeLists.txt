@@ -119,6 +119,9 @@ kwiver_add_library(
 add_dependencies( vital_types kwiver_configure )
 
 target_link_libraries( vital_types
+  PRIVATE
+            vital_logger
+            vital_util
   PUBLIC    Eigen3::Eigen
             vital_config
   )

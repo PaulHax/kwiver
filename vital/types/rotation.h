@@ -5,13 +5,13 @@
 /// \file
 /// \brief Header for \link kwiver::vital::rotation_ rotation_<T> \endlink class
 
-#ifndef VITAL_ROTATION_H_
-#define VITAL_ROTATION_H_
+#ifndef VITAL_TYPES_ROTATION_H_
+#define VITAL_TYPES_ROTATION_H_
 
 #include <iostream>
 #include <vector>
 
-#include <vital/vital_export.h>
+#include <vital/types/vital_types_export.h>
 
 #include "vector.h"
 #include <Eigen/Geometry>
@@ -25,7 +25,7 @@ namespace vital {
 ///
 /// Internally, rotation is stored in quaternion form
 template < typename T >
-class VITAL_EXPORT rotation_
+class VITAL_TYPES_EXPORT rotation_
 {
 public:
   /// Default Constructor
@@ -170,13 +170,15 @@ typedef rotation_< float > rotation_f;
 
 /// output stream operator for a rotation
 template < typename T >
-VITAL_EXPORT std::ostream&  operator<<(
+VITAL_TYPES_EXPORT std::ostream&  operator<<(
   std::ostream& s,
   const rotation_< T >& r );
 
 /// input stream operator for a rotation
 template < typename T >
-VITAL_EXPORT std::istream&  operator>>( std::istream& s, rotation_< T >& r );
+VITAL_TYPES_EXPORT std::istream&  operator>>(
+  std::istream& s,
+  rotation_< T >& r );
 
 // Generate an interpolated rotation between \c A and \c B by a given fraction
 /// \c f must be 0 < \c f < 1
@@ -190,7 +192,7 @@ VITAL_EXPORT std::istream&  operator>>( std::istream& s, rotation_< T >& r );
 /// \returns A rotation in between A and B to a degree proportional to the given
 ///          fraction.
 template < typename T >
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 rotation_< T >
 interpolate_rotation( rotation_< T > const& A, rotation_< T > const& B, T f );
 
@@ -208,7 +210,7 @@ interpolate_rotation( rotation_< T > const& A, rotation_< T > const& B, T f );
 /// \returns A vector of \c n evenly interpolated rotations in order between A
 ///          and B.
 template < typename T >
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 void interpolated_rotations(
   rotation_< T > const& A, rotation_< T > const& B,
   size_t n, std::vector< rotation_< T > >& interp_rots );
@@ -228,7 +230,7 @@ void interpolated_rotations(
 /// \returns A copy of \c r with the x axis pointing north, y axis pointing
 ///          east, and z axis pointing down.
 template < typename T >
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 rotation_< T >
 enu_to_ned( rotation_< T > const& r );
 
@@ -247,7 +249,7 @@ enu_to_ned( rotation_< T > const& r );
 /// \returns A copy of \c r with the x axis pointing east, y axis pointing
 ///          north, and z axis pointing up.
 template < typename T >
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 rotation_< T >
 ned_to_enu( rotation_< T > const& r );
 
@@ -266,7 +268,7 @@ ned_to_enu( rotation_< T > const& r );
 ///
 /// \returns The total rotation of the sensor in East-North-Up coordinates
 template < typename T >
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 rotation_< T >
 uas_ypr_to_rotation(
   T platform_yaw, T platform_pitch, T platform_roll,
@@ -276,4 +278,4 @@ uas_ypr_to_rotation(
 
 }   // end namespace vital
 
-#endif // VITAL_ROTATION_H_
+#endif // VITAL_TYPES_ROTATION_H_

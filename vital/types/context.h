@@ -8,7 +8,7 @@
 #ifndef VITAL_CONTEXT_H_
 #define VITAL_CONTEXT_H_
 
-#include <vital/vital_export.h>
+#include <vital/types/vital_types_export.h>
 
 #include <memory>
 #include <mutex>
@@ -33,7 +33,7 @@ template < typename... Args > class signal;
 /// \warning
 /// Destroying a context from within a connected slot is a logic error and will
 /// likely cause the program to deadlock or exhibit undefined behavior.
-class VITAL_EXPORT context
+class VITAL_TYPES_EXPORT context
 {
 public:
   context();

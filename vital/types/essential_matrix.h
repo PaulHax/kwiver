@@ -5,11 +5,11 @@
 /// \file
 /// \brief Core essential matrix class definition
 
-#ifndef VITAL_ESSENTIAL_MATRIX_H_
-#define VITAL_ESSENTIAL_MATRIX_H_
+#ifndef VITAL_TYPES_ESSENTIAL_MATRIX_H_
+#define VITAL_TYPES_ESSENTIAL_MATRIX_H_
 
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 #include <vital/vital_types.h>
 
 #include <vital/types/matrix.h>
@@ -35,7 +35,7 @@ typedef std::shared_ptr< essential_matrix > essential_matrix_sptr;
 // ----------------------------------------------------------------------------
 
 /// Abstract base essential matrix representation class
-class VITAL_EXPORT essential_matrix
+class VITAL_TYPES_EXPORT essential_matrix
 {
 public:
   /// Destructor
@@ -70,7 +70,7 @@ public:
 
 /// Representation of a templated Eigen-based essential matrix
 template < typename T >
-class VITAL_EXPORT essential_matrix_
+class VITAL_TYPES_EXPORT essential_matrix_
   : public essential_matrix
 {
 public:
@@ -161,13 +161,13 @@ typedef essential_matrix_< float > essential_matrix_f;
 // ----------------------------------------------------------------------------
 
 /// Output stream operator for \p essential_matrix base-class
-VITAL_EXPORT std::ostream& operator<<(
+VITAL_TYPES_EXPORT std::ostream& operator<<(
   std::ostream& s,
   essential_matrix const& e );
 
 /// essential_matrix_<T> output stream operator
 template < typename T >
-VITAL_EXPORT std::ostream& operator<<(
+VITAL_TYPES_EXPORT std::ostream& operator<<(
   std::ostream& s,
   essential_matrix_< T > const& e );
 
@@ -175,4 +175,4 @@ VITAL_EXPORT std::ostream& operator<<(
 
 }   // end namespace vital
 
-#endif // VITAL_ESSENTIAL_MATRIX_H_
+#endif // VITAL_TYPES_ESSENTIAL_MATRIX_H_

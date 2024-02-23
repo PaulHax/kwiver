@@ -8,8 +8,8 @@
 #ifndef VITAL_TRANSFORM_2D_H_
 #define VITAL_TRANSFORM_2D_H_
 
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 #include <vital/vital_types.h>
 
 #include <vital/types/vector.h>
@@ -27,7 +27,7 @@ typedef std::shared_ptr< transform_2d > transform_2d_sptr;
 
 // ----------------------------------------------------------------------------
 /// Abstract base transformation representation class
-class VITAL_EXPORT transform_2d
+class VITAL_TYPES_EXPORT transform_2d
 {
 public:
   /// Destructor

@@ -27,7 +27,7 @@ typedef std::shared_ptr< homography > homography_sptr;
 // ----------------------------------------------------------------------------
 
 /// Abstract base homography transformation representation class
-class VITAL_EXPORT homography : public transform_2d
+class VITAL_TYPES_EXPORT homography : public transform_2d
 {
 public:
   /// Destructor
@@ -71,7 +71,7 @@ public:
 ///
 /// \tparam T Coordinate point data type
 template < typename T >
-class VITAL_EXPORT homography_
+class VITAL_TYPES_EXPORT homography_
   : public homography
 {
 public:
@@ -179,11 +179,13 @@ protected:
 // ----------------------------------------------------------------------------
 
 /// Output stream operator for \p homography base-class
-VITAL_EXPORT std::ostream& operator<<( std::ostream& s, homography const& h );
+VITAL_TYPES_EXPORT std::ostream& operator<<(
+  std::ostream& s,
+  homography const& h );
 
 /// homography_<T> output stream operator
 template < typename T >
-VITAL_EXPORT std::ostream& operator<<(
+VITAL_TYPES_EXPORT std::ostream& operator<<(
   std::ostream& s,
   homography_< T > const& h );
 

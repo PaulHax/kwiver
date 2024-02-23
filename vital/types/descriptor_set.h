@@ -11,7 +11,7 @@
 #include "descriptor.h"
 #include <vital/logger/logger.h>
 #include <vital/set.h>
-#include <vital/vital_export.h>
+#include <vital/types/vital_types_export.h>
 
 namespace kwiver {
 
@@ -23,7 +23,7 @@ namespace vital {
 /// for returning a vector of descriptors.  There is a simple derived class
 /// that stores the data as a vector of descriptors and returns it.  Other
 /// derived classes can store the data in other formats and convert on demand.
-class VITAL_EXPORT descriptor_set
+class VITAL_TYPES_EXPORT descriptor_set
   : public set< descriptor_sptr >
 {
 public:
@@ -51,7 +51,7 @@ typedef std::shared_ptr< descriptor_set > descriptor_set_sptr;
 
 // ----------------------------------------------------------------------------
 /// A concrete descriptor set that simply wraps a vector of descriptors.
-class VITAL_EXPORT simple_descriptor_set
+class VITAL_TYPES_EXPORT simple_descriptor_set
   : public descriptor_set
 {
 public:

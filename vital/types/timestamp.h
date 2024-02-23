@@ -9,7 +9,7 @@
 #include <ostream>
 #include <stdint.h>
 
-#include <vital/vital_export.h>
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_types.h>
 
 namespace kwiver {
@@ -34,7 +34,7 @@ namespace vital {
 /// value.  If both do not have time but both have frame numbers, they
 /// are ordered by frame number. If the timestamps do not have some way
 /// of being compared, all relational operators return false.
-class VITAL_EXPORT timestamp
+class VITAL_TYPES_EXPORT timestamp
 {
 public:
   typedef kwiver::vital::frame_id_t frame_t;

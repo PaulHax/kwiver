@@ -84,7 +84,7 @@ pointcloud_< T >
 
 /// \cond DoxygenSuppress
 #define INSTANTIATE_POINTCLOUD( \
-  T ) template class VITAL_EXPORT pointcloud_< T >;
+  T ) template class VITAL_TYPES_EXPORT pointcloud_< T >;
 
 INSTANTIATE_POINTCLOUD( double );
 INSTANTIATE_POINTCLOUD( float );

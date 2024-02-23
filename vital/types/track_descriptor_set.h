@@ -5,8 +5,8 @@
 #ifndef VITAL_TRACK_DESCRIPTOR_SET_
 #define VITAL_TRACK_DESCRIPTOR_SET_
 
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 
 #include <vital/types/track_descriptor.h>
 

@@ -16,8 +16,8 @@
 #include <vital/types/timestamp.h>
 #include <vital/types/track_set.h>
 
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 #include <vital/vital_types.h>
 
 #include <vital/range/transform.h>
@@ -31,7 +31,7 @@ namespace vital {
 
 // ----------------------------------------------------------------------------
 /// A derived track_state for object tracks
-class VITAL_EXPORT object_track_state : public track_state
+class VITAL_TYPES_EXPORT object_track_state : public track_state
 {
 public:
   object_track_state() = default;
@@ -157,7 +157,7 @@ private:
 
 // ----------------------------------------------------------------------------
 /// A collection of object tracks
-class VITAL_EXPORT object_track_set : public track_set
+class VITAL_TYPES_EXPORT object_track_set : public track_set
 {
 public:
   /// Default Constructor

@@ -15,8 +15,8 @@
 #include <vital/types/metadata_tags.h>
 #include <vital/types/metadata_traits.h>
 #include <vital/types/timestamp.h>
+#include <vital/types/vital_types_export.h>
 #include <vital/util/visit.h>
-#include <vital/vital_export.h>
 
 #include <iostream>
 #include <map>
@@ -94,14 +94,14 @@ convert_data( VITAL_UNUSED vital_metadata_tag tag, T const& data )
 
 // ----------------------------------------------------------------------------
 template <>
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 metadata_value
 convert_data< any >( vital_metadata_tag tag, any const& data );
 
 } // namespace metadata_detail
 
 // ----------------------------------------------------------------------------
-class VITAL_EXPORT metadata_item
+class VITAL_TYPES_EXPORT metadata_item
 {
 public:
   /// \throws logic_error If \p data's type does not match \p tag.
@@ -238,7 +238,7 @@ private:
 /// directly about its type and the data will have to be retrieved from
 /// the \c any object carefully.
 ///
-class VITAL_EXPORT metadata
+class VITAL_TYPES_EXPORT metadata
 {
 public:
 // The design for this collection requires that the elements in the
@@ -455,10 +455,10 @@ private:
 using metadata_sptr = std::shared_ptr< metadata >;
 using metadata_vector = std::vector< metadata_sptr >;
 
-VITAL_EXPORT std::ostream& print_metadata(
+VITAL_TYPES_EXPORT std::ostream& print_metadata(
   std::ostream& str,
   metadata const& metadata );
-VITAL_DEPRECATED_EXPORT
+VITAL_TYPES_DEPRECATED_EXPORT
 bool test_equal_content(
   vital::metadata const& lhs,
   vital::metadata const& rhs );

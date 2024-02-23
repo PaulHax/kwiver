@@ -13,7 +13,7 @@ namespace kwiver {
 
 namespace vital {
 
-template < typename T > VITAL_EXPORT
+template < typename T > VITAL_TYPES_EXPORT
 image_pixel_traits::pixel_type const image_pixel_traits_of< T >::static_type;
 
 template struct image_pixel_traits_of< char >;
@@ -30,7 +30,7 @@ template struct image_pixel_traits_of< unsigned long long >;
 template struct image_pixel_traits_of< float >;
 template struct image_pixel_traits_of< double >;
 
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 image_pixel_traits::pixel_type const image_pixel_traits_of< bool >::static_type;
 
 template <> struct image_pixel_traits_of< bool >;

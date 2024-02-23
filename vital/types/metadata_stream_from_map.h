@@ -18,7 +18,7 @@ namespace vital {
 
 // ----------------------------------------------------------------------------
 /// Stream that reads from an in-memory map that it does not own.
-class VITAL_EXPORT metadata_istream_from_map : public metadata_istream
+class VITAL_TYPES_EXPORT metadata_istream_from_map : public metadata_istream
 {
 public:
   using map_t = std::map< frame_id_t, metadata_vector >;
@@ -48,7 +48,7 @@ private:
 
 // ----------------------------------------------------------------------------
 /// Stream that writes to an in-memory map that it does not own.
-class VITAL_EXPORT metadata_ostream_from_map : public metadata_ostream
+class VITAL_TYPES_EXPORT metadata_ostream_from_map : public metadata_ostream
 {
 public:
   using map_t = std::map< frame_id_t, metadata_vector >;

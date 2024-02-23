@@ -8,8 +8,8 @@
 #ifndef VITAL_DETECTED_OBJECT_H_
 #define VITAL_DETECTED_OBJECT_H_
 
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 
 #include <map>
 #include <memory>
@@ -46,7 +46,7 @@ using detected_object_scptr = std::shared_ptr< detected_object const >;
 /// There is one object of this type for each detected object. These
 /// objects are defined by a bounding box in the image space. Each
 /// object has an optional classification object attached.
-class VITAL_EXPORT detected_object
+class VITAL_TYPES_EXPORT detected_object
 {
 public:
   using vector_t = std::vector< detected_object_sptr >;

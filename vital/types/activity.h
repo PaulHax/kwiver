@@ -12,7 +12,7 @@
 #include <vital/types/object_track_set.h>
 #include <vital/types/timestamp.h>
 
-#include <vital/vital_export.h>
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_types.h>
 
 namespace kwiver {
@@ -23,7 +23,7 @@ namespace vital {
 /// @brief Activity class.
 ///
 /// This class represents an activity.
-class VITAL_EXPORT activity
+class VITAL_TYPES_EXPORT activity
 {
 public:
   /// @brief Create an empty activity

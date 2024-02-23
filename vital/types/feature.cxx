@@ -114,10 +114,10 @@ operator>>( std::istream& s, feature_< T >& f )
 
 /// \cond DoxygenSuppress
 #define INSTANTIATE_FEATURE( T )                       \
-template class VITAL_EXPORT feature_< T >;             \
-template VITAL_EXPORT std::ostream&                    \
+template class VITAL_TYPES_EXPORT feature_< T >;       \
+template VITAL_TYPES_EXPORT std::ostream&              \
 operator<<( std::ostream& s, feature_< T > const& f ); \
-template VITAL_EXPORT std::istream&                    \
+template VITAL_TYPES_EXPORT std::istream&              \
 operator>>( std::istream& s, feature_< T >& f )
 
 INSTANTIATE_FEATURE( double );

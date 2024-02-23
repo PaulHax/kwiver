@@ -8,8 +8,8 @@
 #ifndef VITAL_FUNDAMENTAL_MATRIX_H_
 #define VITAL_FUNDAMENTAL_MATRIX_H_
 
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 #include <vital/vital_types.h>
 
 #include <vital/types/matrix.h>
@@ -34,7 +34,7 @@ typedef std::shared_ptr< fundamental_matrix > fundamental_matrix_sptr;
 // ----------------------------------------------------------------------------
 
 /// Abstract base fundamental matrix representation class
-class VITAL_EXPORT fundamental_matrix
+class VITAL_TYPES_EXPORT fundamental_matrix
 {
 public:
   /// Destructor
@@ -58,7 +58,7 @@ public:
 
 /// Representation of a templated Eigen-based fundamental matrix
 template < typename T >
-class VITAL_EXPORT fundamental_matrix_
+class VITAL_TYPES_EXPORT fundamental_matrix_
   : public fundamental_matrix
 {
 public:
@@ -114,7 +114,7 @@ typedef fundamental_matrix_< float > fundamental_matrix_f;
 // ----------------------------------------------------------------------------
 
 /// Output stream operator for \p fundamental_matrix base-class
-VITAL_EXPORT std::ostream& operator<<(
+VITAL_TYPES_EXPORT std::ostream& operator<<(
   std::ostream& s,
   fundamental_matrix const& f );
 

@@ -16,7 +16,7 @@
 #include <vector>
 
 #include <vital/types/vector.h>
-#include <vital/vital_export.h>
+#include <vital/types/vital_types_export.h>
 
 namespace kwiver {
 
@@ -186,7 +186,7 @@ public:
 };
 
 /// compute the vector normal to the plane defined by 3 vertices
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 vector_3d mesh_tri_normal(
   const vector_3d& a,
   const vector_3d& b,
@@ -281,7 +281,7 @@ public:
 };
 
 /// Abstract base class for a collection of faces
-class VITAL_EXPORT mesh_face_array_base
+class VITAL_TYPES_EXPORT mesh_face_array_base
 {
 public:
   /// Destructor
@@ -377,7 +377,7 @@ protected:
 };
 
 /// An array of mesh faces of arbitrary size
-class VITAL_EXPORT mesh_face_array : public mesh_face_array_base
+class VITAL_TYPES_EXPORT mesh_face_array : public mesh_face_array_base
 {
   std::vector< std::vector< unsigned int > > faces_;
 
@@ -615,7 +615,7 @@ public:
 /// Merge the two face arrays
 ///
 /// Shift the mesh indices in \param f2 by \param ind_shift
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 std::unique_ptr< mesh_face_array_base >
 merge_face_arrays(
   const mesh_face_array_base& f1,
@@ -625,7 +625,7 @@ merge_face_arrays(
 // ----------------------------------------------------------------------------
 // Mesh edges
 
-class VITAL_EXPORT mesh_half_edge
+class VITAL_TYPES_EXPORT mesh_half_edge
 {
   friend class mesh_half_edge_set;
 
@@ -684,7 +684,7 @@ private:
 };
 
 /// A collection of indexed half edges
-class VITAL_EXPORT mesh_half_edge_set
+class VITAL_TYPES_EXPORT mesh_half_edge_set
 {
 public:
   /// Default Constructor
@@ -1093,7 +1093,7 @@ private:
 // Mesh
 
 /// A simple indexed mesh
-class VITAL_EXPORT mesh
+class VITAL_TYPES_EXPORT mesh
 {
 public:
   /// Default Constructor

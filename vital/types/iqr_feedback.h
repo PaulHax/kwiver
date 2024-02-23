@@ -14,8 +14,8 @@
 #include "track_descriptor.h"
 #include "uid.h"
 
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 
 #include <memory>
 #include <string>
@@ -26,7 +26,7 @@ namespace vital {
 
 // ----------------------------------------------------------------------------
 /// A representation of iterative query refinement feedback.
-class VITAL_EXPORT iqr_feedback
+class VITAL_TYPES_EXPORT iqr_feedback
 {
 public:
   iqr_feedback();

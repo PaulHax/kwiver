@@ -25,7 +25,7 @@ namespace vital {
 using ground_control_point_id_t = uint32_t;
 
 /// A representation of a 3D ground control point.
-class VITAL_EXPORT ground_control_point
+class VITAL_TYPES_EXPORT ground_control_point
 {
 public:
   /// Constructor
@@ -137,14 +137,15 @@ protected:
  */
 
 /// output stream operator for a ground_control_point
-VITAL_EXPORT std::ostream& operator<<(
+VITAL_TYPES_EXPORT std::ostream& operator<<(
   std::ostream& s,
   ground_control_point const& m );
 
 /// input stream operator for a ground_control_point
 // The input stream operator is commented since geo_point doesn't have an
 // input stream operator defined blocking this class' operator
-// VITAL_EXPORT std::istream& operator>>(std::istream& s, ground_control_point&
+// VITAL_TYPES_EXPORT std::istream& operator>>(std::istream& s,
+// ground_control_point&
 // m);
 
 /// alias for a ground_control_point shared pointer
@@ -152,7 +153,7 @@ using ground_control_point_sptr = std::shared_ptr< ground_control_point >;
 
 // ----------------------------------------------------------------------------
 /// A mapping between IDs and ground control points
-class VITAL_EXPORT ground_control_point_map
+class VITAL_TYPES_EXPORT ground_control_point_map
 {
 public:
   /// alias for std::map from integer IDs to ground control points

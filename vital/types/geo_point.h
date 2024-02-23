@@ -9,8 +9,8 @@
 #define KWIVER_VITAL_GEO_POINT_H_
 
 #include <vital/types/vector.h>
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 
 #include <unordered_map>
 
@@ -37,7 +37,7 @@ namespace vital {
 ///
 /// \see https://en.wikipedia.org/wiki/Spatial_reference_system,
 ///      http://www.epsg.org/, https://epsg-registry.org/
-class VITAL_EXPORT geo_point
+class VITAL_TYPES_EXPORT geo_point
 {
 public:
   using geo_3d_point_t = kwiver::vital::vector_3d;
@@ -91,14 +91,14 @@ protected:
   mutable std::unordered_map< int, geo_3d_point_t > m_loc;
 };
 
-VITAL_EXPORT::std::ostream& operator<<(
+VITAL_TYPES_EXPORT::std::ostream& operator<<(
   ::std::ostream& str,
   geo_point const& obj );
 
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 bool operator==( geo_point const& lhs, geo_point const& rhs );
 
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 bool operator!=( geo_point const& lhs, geo_point const& rhs );
 
 } // namespace vital
