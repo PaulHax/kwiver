@@ -8,7 +8,6 @@
  */
 
 #include <arrows/mvg/applets/kwiver_algo_mvg_applets_export.h>
-#include <vital/applets/applet_registrar.h>
 #include <vital/plugin_management/plugin_loader.h>
 
 #include <arrows/mvg/applets/bundle_adjust_tool.h>
@@ -25,21 +24,37 @@ namespace mvg {
 extern "C"
 KWIVER_ALGO_MVG_APPLETS_EXPORT
 void
-register_factories( kwiver::vital::plugin_loader& vpm )
+register_factories( kwiver::vital::plugin_loader& vpl )
 {
-  kwiver::applet_registrar reg( vpm, "arrows.mvg.applets" );
+  using namespace kwiver::tools;
+  using kvpf = ::kwiver::vital::plugin_factory;
 
-  if( reg.is_module_loaded() )
-  {
-    return;
-  }
+  // make sure the attributes are the same for all applets
+  auto set_fact_attributes = [](::kwiver::vital::plugin_factory_handle_t fact){
+                               fact->add_attribute(
+                                 kvpf::PLUGIN_DESCRIPTION,
+                                 "Kviwer algorithm mvg applets" )
+                                                                                  .
+                                 add_attribute(
+                                   kvpf::PLUGIN_MODULE_NAME,
+                                   "arrows.mvg.applets" )
+                                                                                  .
+                                 add_attribute(
+                                   kvpf::ALGORITHM_CATEGORY,
+                                   kvpf::APPLET_CATEGORY );
+                             };
 
-  // -- register applets --
-  reg.register_tool< bundle_adjust_tool >();
-  reg.register_tool< init_cameras_landmarks >();
-  reg.register_tool< track_features >();
-
-  reg.mark_module_as_loaded();
+  auto fact =
+    vpl.add_factory< kwiver_applet,
+      bundle_adjust_tool >( "bundle-adjust-tool" );
+  set_fact_attributes( fact );
+  fact =
+    vpl.add_factory< kwiver_applet,
+      init_cameras_landmarks >( "init-cameras-landmarks" );
+  set_fact_attributes( fact );
+  fact =
+    vpl.add_factory< kwiver_applet, track_features >( "track-features" );
+  set_fact_attributes( fact );
 }
 
 } // end namespace mvg

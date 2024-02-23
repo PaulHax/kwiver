@@ -9,6 +9,7 @@
 
 #include <kwiversys/SystemTools.hxx>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/initialize_cameras_landmarks.h>
 #include <vital/algo/video_input.h>
 #include <vital/applets/applet_config.h>
@@ -90,12 +91,14 @@ config_valid = false
       main_logger ) &&
     config_valid;
 
-  if( !video_input::check_nested_algo_configuration( "video_reader", config ) )
+  if( !kv::check_nested_algo_configuration< video_input >(
+    "video_reader",
+    config ) )
   {
     KWIVER_CONFIG_FAIL( "video_reader configuration check failed" );
   }
 
-  if( !initialize_cameras_landmarks::check_nested_algo_configuration(
+  if( !kv::check_nested_algo_configuration< initialize_cameras_landmarks >(
     "initializer", config ) )
   {
     KWIVER_CONFIG_FAIL( "initializer configuration check failed" );
@@ -111,9 +114,9 @@ config_valid = false
 class init_cameras_landmarks::priv
 {
 public:
-  priv( init_cameras_landmarks* parent ) : p( parent ) {}
+  priv( init_cameras_landmarks& parent_ ) : parent( parent_ ) {}
 
-  init_cameras_landmarks* p = nullptr;
+  init_cameras_landmarks& parent;
   camera_map_sptr camera_map_ptr;
   landmark_map_sptr landmark_map_ptr;
   feature_track_set_sptr feature_track_set_ptr;
@@ -264,9 +267,9 @@ public:
       "ignore_metadata", ignore_metadata,
       "Do not scan the video file for metadata." );
 
-    initialize_cameras_landmarks::get_nested_algo_configuration(
+    kv::get_nested_algo_configuration< initialize_cameras_landmarks >(
       "initializer", config, nullptr );
-    video_input::get_nested_algo_configuration(
+    kv::get_nested_algo_configuration< video_input >(
       "video_reader", config, nullptr );
     return config;
   }
@@ -275,7 +278,7 @@ public:
   initialize()
   {
     // Create algorithm from configuration
-    initialize_cameras_landmarks::set_nested_algo_configuration(
+    kv::set_nested_algo_configuration< initialize_cameras_landmarks >(
       "initializer", config, algorithm );
   }
 
@@ -324,7 +327,7 @@ public:
     {
       video_input_sptr video_reader;
       video_file = config->get_value< std::string >( "video_source" );
-      video_input::set_nested_algo_configuration(
+      kv::set_nested_algo_configuration< video_input >(
         "video_reader", config, video_reader );
       video_reader->open( video_file );
       if( video_reader->get_implementation_capabilities()
@@ -558,7 +561,7 @@ init_cameras_landmarks
 {
   try
   {
-    switch( d->process_command_line( command_args() ) )
+    switch( d_->process_command_line( command_args() ) )
     {
       case priv::HELP:
         std::cout << m_cmd_options->help();
@@ -571,48 +574,48 @@ init_cameras_landmarks
         ;
     }
 
-    if( d->config == nullptr )
+    if( d_->config == nullptr )
     {
       return EXIT_FAILURE;
     }
 
-    if( d->algorithm == nullptr )
+    if( d_->algorithm == nullptr )
     {
-      d->initialize();
+      d_->initialize();
     }
 
-    if( d->feature_track_set_ptr == nullptr )
+    if( d_->feature_track_set_ptr == nullptr )
     {
-      d->load_tracks();
-      if( d->feature_track_set_ptr == nullptr )
+      d_->load_tracks();
+      if( d_->feature_track_set_ptr == nullptr )
       {
         LOG_ERROR(main_logger, "There are no feature tracks." );
         return EXIT_FAILURE;
       }
     }
 
-    if( d->sfm_constraint_ptr == nullptr )
+    if( d_->sfm_constraint_ptr == nullptr )
     {
-      d->load_sfm_constraint();
+      d_->load_sfm_constraint();
     }
 
-    d->run_algorithm();
+    d_->run_algorithm();
 
-    d->recenter_to_landmarks();
+    d_->recenter_to_landmarks();
 
-    if( !d->write_cameras() )
+    if( !d_->write_cameras() )
     {
       return EXIT_FAILURE;
     }
 
-    if( !d->write_landmarks() )
+    if( !d_->write_landmarks() )
     {
       return EXIT_FAILURE;
     }
 
-    if( d->write_geo_origin() )
+    if( d_->write_geo_origin() )
     {
-      LOG_INFO(main_logger, "Saved geo-origin to " << d->geo_origin_file);
+      LOG_INFO(main_logger, "Saved geo-origin to " << d_->geo_origin_file);
     }
 
     return EXIT_SUCCESS;
@@ -661,13 +664,12 @@ init_cameras_landmarks
 }
 
 // ============================================================================
+void
 init_cameras_landmarks
-::init_cameras_landmarks()
-  : d( new priv( this ) )
-{}
-
-init_cameras_landmarks::
-~init_cameras_landmarks() = default;
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
+}
 
 } // namespace mvg
 

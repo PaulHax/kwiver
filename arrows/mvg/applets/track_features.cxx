@@ -4,6 +4,7 @@
 
 #include "track_features.h"
 
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/compute_ref_homography.h>
 #include <vital/algo/track_features.h>
 #include <vital/algo/video_input.h>
@@ -76,20 +77,20 @@ config_valid = false
       main_logger ) &&
     config_valid;
 
-  if( !kv::algo::video_input::check_nested_algo_configuration(
+  if( !kv::check_nested_algo_configuration< kva::video_input >(
     "video_reader",
     config ) )
   {
     KWIVER_CONFIG_FAIL( "video_reader configuration check failed" );
   }
-  if( !kv::algo::video_input::check_nested_algo_configuration(
+  if( !kv::check_nested_algo_configuration< kva::video_input >(
     "mask_reader",
     config ) )
   {
     KWIVER_CONFIG_FAIL( "mask_reader configuration check failed" );
   }
 
-  if( !kv::algo::track_features::check_nested_algo_configuration(
+  if( !kv::check_nested_algo_configuration< kva::track_features >(
     "feature_tracker", config ) )
   {
     KWIVER_CONFIG_FAIL( "feature_tracker configuration check failed" );
@@ -201,9 +202,9 @@ select_frames(
 class track_features::priv
 {
 public:
-  priv( track_features* parent ) : p( parent ) {}
+  priv( track_features& parent_ ) : parent( parent_ ) {}
 
-  track_features* p;
+  track_features& parent;
   kva::video_input_sptr video_reader = nullptr;
   kva::video_input_sptr mask_reader = nullptr;
   kva::track_features_sptr feature_tracker = nullptr;
@@ -377,18 +378,15 @@ public:
       "is false we error upon seeing a multi-channel mask "
       "image." );
 
-    kva::video_input::get_nested_algo_configuration(
-      "video_reader", config,
-      kva::video_input_sptr() );
-    kva::video_input::get_nested_algo_configuration(
-      "mask_reader", config,
-      kva::video_input_sptr() );
-    kva::track_features::get_nested_algo_configuration(
-      "feature_tracker", config,
-      kva::track_features_sptr() );
-    kva::compute_ref_homography::get_nested_algo_configuration(
-      "output_homography_generator",
-      config, kva::compute_ref_homography_sptr() );
+    kv::get_nested_algo_configuration<
+      kva::video_input >( "video_reader", config, nullptr );
+    kv::get_nested_algo_configuration<
+      kva::video_input >( "mask_reader", config, nullptr );
+    kv::get_nested_algo_configuration<
+      kva::track_features >( "feature_tracker", config, nullptr );
+    kv::get_nested_algo_configuration<
+      kva::compute_ref_homography >(
+      "output_homography_generator", config, nullptr );
 
     return config;
   }
@@ -396,13 +394,13 @@ public:
   void
   initialize()
   {
-    kva::video_input::set_nested_algo_configuration(
+    kv::set_nested_algo_configuration< kva::video_input >(
       "video_reader", config, video_reader );
-    kva::video_input::set_nested_algo_configuration(
+    kv::set_nested_algo_configuration< kva::video_input >(
       "mask_reader", config, mask_reader );
-    kva::track_features::set_nested_algo_configuration(
+    kv::set_nested_algo_configuration< kva::track_features >(
       "feature_tracker", config, feature_tracker );
-    kva::compute_ref_homography::set_nested_algo_configuration(
+    kv::set_nested_algo_configuration< kva::compute_ref_homography >(
       "output_homography_generator", config, out_homog_generator );
   }
 
@@ -596,7 +594,7 @@ track_features
 {
   try
   {
-    switch( d->process_command_line( command_args() ) )
+    switch( d_->process_command_line( command_args() ) )
     {
       case priv::HELP:
         std::cout << m_cmd_options->help();
@@ -609,14 +607,14 @@ track_features
         ;
     }
 
-    if( d->config == nullptr )
+    if( d_->config == nullptr )
     {
       return EXIT_FAILURE;
     }
 
-    d->initialize();
+    d_->initialize();
 
-    if( !d->run_algorithm() )
+    if( !d_->run_algorithm() )
     {
       return EXIT_FAILURE;
     }
@@ -651,7 +649,7 @@ track_features
   m_cmd_options->positional_help(
     "\n  video-file  - name of input video file."
     "\n  track-file  - name of output track file "
-    "(default: " + d->track_file + ")" );
+    "(default: " + d_->track_file + ")" );
 
   m_cmd_options->add_options()
   ( "h,help",     "Display applet usage" )
@@ -679,13 +677,12 @@ track_features
 }
 
 // ============================================================================
+void
 track_features
-::track_features()
-  : d( new priv( this ) )
-{}
-
-track_features::
-~track_features() = default;
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
+}
 
 } // namespace mvg
 

@@ -11,6 +11,7 @@
 #include <kwiversys/Directory.hxx>
 #include <kwiversys/SystemTools.hxx>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/bundle_adjust.h>
 #include <vital/algo/triangulate_landmarks.h>
 #include <vital/algo/video_input.h>
@@ -108,12 +109,14 @@ config_valid = false
     validate_optional_output_file( "geo_origin_filename", *config, logger ) &&
     config_valid;
 
-  if( !video_input::check_nested_algo_configuration( "video_reader", config ) )
+  if( !kv::check_nested_algo_configuration< video_input >(
+    "video_reader",
+    config ) )
   {
     KWIVER_CONFIG_FAIL( "video_reader configuration check failed" );
   }
 
-  if( !bundle_adjust::check_nested_algo_configuration(
+  if( !kv::check_nested_algo_configuration< bundle_adjust >(
     "bundle_adjust",
     config ) )
   {
@@ -472,9 +475,9 @@ GCP_helper
 // ----------------------------------------------------------------------------
 struct bundle_adjust_tool::priv
 {
-  priv( bundle_adjust_tool* parent ) : p( parent ) {}
+  priv( bundle_adjust_tool& parent_ ) : parent( parent_ ) {}
 
-  bundle_adjust_tool* p = nullptr;
+  bundle_adjust_tool& parent;
   camera_map_sptr camera_map_ptr;
   landmark_map_sptr landmark_map_ptr;
   feature_track_set_sptr feature_track_set_ptr;
@@ -646,9 +649,9 @@ struct bundle_adjust_tool::priv
       "ignore_metadata", ignore_metadata,
       "Do not scan the video file for metadata." );
 
-    bundle_adjust::get_nested_algo_configuration(
+    kv::get_nested_algo_configuration< bundle_adjust >(
       "bundle_adjust", config, nullptr );
-    video_input::get_nested_algo_configuration(
+    kv::get_nested_algo_configuration< video_input >(
       "video_reader", config, nullptr );
     return config;
   }
@@ -657,10 +660,10 @@ struct bundle_adjust_tool::priv
   initialize()
   {
     // Create algo_bundle_adjust from configuration
-    bundle_adjust::set_nested_algo_configuration(
+    kv::set_nested_algo_configuration(
       "bundle_adjust", config, algo_bundle_adjust );
     // Create algo_triangulate_landmarks from configuration
-    triangulate_landmarks::set_nested_algo_configuration(
+    kv::set_nested_algo_configuration(
       "triangulator", config, algo_triangulate_landmarks );
   }
 
@@ -1089,7 +1092,7 @@ bundle_adjust_tool::priv
   {
     video_input_sptr video_reader;
     video_file = config->get_value< std::string >( "video_source" );
-    video_input::set_nested_algo_configuration(
+    kv::set_nested_algo_configuration(
       "video_reader", config, video_reader );
     video_reader->open( video_file );
     if( video_reader->get_implementation_capabilities()
@@ -1199,7 +1202,7 @@ bundle_adjust_tool
 {
   try
   {
-    switch( d->process_command_line( command_args() ) )
+    switch( d_->process_command_line( command_args() ) )
     {
       case priv::HELP:
         std::cout << m_cmd_options->help();
@@ -1212,51 +1215,51 @@ bundle_adjust_tool
         ;
     }
 
-    if( d->config == nullptr )
+    if( d_->config == nullptr )
     {
       return EXIT_FAILURE;
     }
 
-    if( d->algo_bundle_adjust == nullptr )
+    if( d_->algo_bundle_adjust == nullptr )
     {
-      d->initialize();
+      d_->initialize();
     }
 
-    if( d->feature_track_set_ptr == nullptr )
+    if( d_->feature_track_set_ptr == nullptr )
     {
-      d->load_tracks();
+      d_->load_tracks();
     }
     // TODO optionally load landmarks
-    if( d->sfm_constraint_ptr == nullptr )
+    if( d_->sfm_constraint_ptr == nullptr )
     {
-      d->load_sfm_constraint();
+      d_->load_sfm_constraint();
     }
 
-    if( d->camera_map_ptr == nullptr )
+    if( d_->camera_map_ptr == nullptr )
     {
-      d->load_cameras();
+      d_->load_cameras();
     }
 
-    if( !d->hasGCP() )
+    if( !d_->hasGCP() )
     {
-      d->load_GCP();
+      d_->load_GCP();
     }
 
-    d->run_algorithm();
+    d_->run_algorithm();
 
-    if( !d->write_cameras() )
+    if( !d_->write_cameras() )
     {
       return EXIT_FAILURE;
     }
 
-    if( !d->write_landmarks() )
+    if( !d_->write_landmarks() )
     {
       return EXIT_FAILURE;
     }
 
-    if( d->write_geo_origin() )
+    if( d_->write_geo_origin() )
     {
-      LOG_INFO( logger, "Saved geo-origin to " << d->geo_origin_file );
+      LOG_INFO( logger, "Saved geo-origin to " << d_->geo_origin_file );
     }
 
     return EXIT_SUCCESS;
@@ -1308,15 +1311,12 @@ bundle_adjust_tool
 }
 
 // ============================================================================
+void
 bundle_adjust_tool
-::bundle_adjust_tool()
-  : d( new priv( this ) )
-{}
-
-// ----------------------------------------------------------------------------
-bundle_adjust_tool
-::~bundle_adjust_tool()
-{}
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
+}
 
 } // mvg
 

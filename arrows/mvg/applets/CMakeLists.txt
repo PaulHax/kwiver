@@ -30,6 +30,6 @@ kwiver_add_plugin( kwiver_algo_mvg_applets
   SOURCES      ${sources} ${headers}
   PRIVATE      kwiver_algo_core
                kwiver_algo_mvg
-               kwiver_tools_applet
+               vital_applets
                kwiversys
 )
