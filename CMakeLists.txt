@@ -71,6 +71,8 @@ if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
   else()
     message(FATAL_ERROR "KWIVER requires Visual Studio 2015 or greater")
   endif()
+  # for pluggable macro magic to work we need a compliant preprocessor.
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:preprocessor")
 endif()
 
 # prepend our CMake resources
