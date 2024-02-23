@@ -12,6 +12,7 @@
 
 // interface
 #include <vital/algo/associate_detections_to_tracks.h>
+#include <vital/algo/compute_ref_homography.h>
 #include <vital/algo/convert_image.h>
 #include <vital/algo/detect_features.h>
 #include <vital/algo/detected_object_set_input.h>
@@ -37,6 +38,7 @@
 
 // implementation
 #include <arrows/core/associate_detections_to_tracks_threshold.h>
+#include <arrows/core/compute_ref_homography_core.h>
 #include <arrows/core/convert_image_bypass.h>
 #include <arrows/core/create_detection_grid.h>
 #include <arrows/core/derive_metadata.h>
@@ -208,6 +210,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::match_features,
     match_features_homography >( "homography" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::compute_ref_homography,
+    compute_ref_homography_core >( "core" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 

@@ -12,7 +12,7 @@ set( plugin_core_headers
   # close_loops_multi_method.h
   # colorize.h
   # compute_association_matrix_from_features.h
-  # compute_ref_homography_core.h
+  compute_ref_homography_core.h
   convert_image_bypass.h
   create_detection_grid.h
   csv_io.h
@@ -85,7 +85,7 @@ set( plugin_core_sources
   # close_loops_multi_method.cxx
   # colorize.cxx
   # compute_association_matrix_from_features.cxx
-  # compute_ref_homography_core.cxx
+  compute_ref_homography_core.cxx
   convert_image_bypass.cxx
   create_detection_grid.cxx
   csv_io.cxx

@@ -11,6 +11,8 @@
 #include <arrows/core/kwiver_algo_core_export.h>
 
 #include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
+
 #include <vital/algo/compute_ref_homography.h>
 #include <vital/types/feature_track_set.h>
 #include <vital/types/homography.h>
@@ -38,37 +40,51 @@ class KWIVER_ALGO_CORE_EXPORT compute_ref_homography_core
   : public vital::algo::compute_ref_homography
 {
 public:
-  PLUGIN_INFO(
-    "core",
-    "Default online sequential-frame reference homography estimator." )
-
-  /// Default Constructor
-  compute_ref_homography_core();
+  PLUGGABLE_IMPL(
+    compute_ref_homography_core,
+    "Default online sequential-frame reference homography estimator.",
+    PARAM_DEFAULT(
+      use_backproject_error,
+      bool,
+      "Should we remove extra points if the backproject error is high?",
+      false ),
+    PARAM_DEFAULT(
+      backproject_threshold_sqr,
+      double,
+      "Backprojection threshold in terms of L2 distance squared "
+      "(number of pixels)",
+      16.0 ),
+    PARAM_DEFAULT(
+      forget_track_threshold,
+      unsigned,
+      "After how many frames should we forget all info about a track?",
+      5 ),
+    PARAM_DEFAULT(
+      min_track_length,
+      unsigned,
+      "Minimum track length to use for homography regression",
+      1 ),
+    PARAM_DEFAULT(
+      inlier_scale,
+      double,
+      "The acceptable error distance (in pixels) between warped "
+      "and measured points to be considered an inlier match.",
+      2.0 ),
+    PARAM_DEFAULT(
+      minimum_inliers, unsigned,
+      "Minimum number of matches required between source and "
+      "reference planes for valid homography estimation.",
+      4 ),
+    PARAM_DEFAULT(
+      allow_ref_frame_regression, bool,
+      "Allow for the possibility of a frame, N, to have a "
+      "reference frame, A, when a frame M < N has a reference frame B > A "
+      "(assuming frames were sequentially iterated over with this algorithm).",
+      true )
+  )
 
   /// Default Destructor
   virtual ~compute_ref_homography_core();
-
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  ///
-  /// This base virtual function implementation returns an empty configuration
-  /// block whose name is set to \c this->type_name.
-  ///
-  /// \returns \c config_block containing the configuration for this algorithm
-  ///          and any nested components.
-  virtual vital::config_block_sptr get_configuration() const;
-
-  /// Set this algorithm's properties via a config block
-  ///
-  /// \throws no_such_configuration_value_exception
-  ///    Thrown if an expected configuration value is not present.
-  /// \throws algorithm_configuration_exception
-  ///    Thrown when the algorithm is given an invalid \c config_block or is'
-  ///    otherwise unable to configure itself.
-  ///
-  /// \param config  The \c config_block instance containing the configuration
-  ///                parameters for this algorithm
-  virtual void set_configuration( vital::config_block_sptr config );
 
   /// Check that the algorithm's currently configuration is valid
   ///
@@ -95,10 +111,10 @@ public:
     vital::feature_track_set_sptr tracks ) const;
 
 private:
-  /// Class storing internal variables
+  void initialize() override;
+  /// private implementation class
   class priv;
-
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace core
