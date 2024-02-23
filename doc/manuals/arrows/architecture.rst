@@ -33,7 +33,6 @@ The provided Arrows are:
    core
    burnout
    ceres
-   darknet
    matlab
    opencv
    proj

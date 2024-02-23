@@ -20,7 +20,7 @@ Execution
 ---------
 
 Run the following command from the kwiver build\bin directory (bin/release on windows)
-Relativly point to the darknet_image.pipe or darknet_video.pipe file like this::
+Relativly point to the .pipe file like this::
 
   # Windows Example :
   kwiver runner ..\..\examples\pipelines\example_detector_on_image.pipe

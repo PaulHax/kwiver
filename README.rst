@@ -318,7 +318,6 @@ NOAA Fisheries Strategic Initiative on Automated Image Analysis.
 .. _`Ceres Solver`: http://ceres-solver.org/
 .. _CDash: http://www.cdash.org/
 .. _cmake_link: http://www.cmake.org/
-.. _Darknet: https://pjreddie.com/darknet/yolo/
 .. _Eigen: http://eigen.tuxfamily.org/
 .. _Fletch: https://github.com/Kitware/fletch
 .. _Google Test: https://github.com/google/googletest
