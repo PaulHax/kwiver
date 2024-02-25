@@ -10,10 +10,12 @@
 
 // interface
 #include <vital/algo/image_filter.h>
+#include <vital/algo/image_io.h>
 #include <vital/algo/nearest_neighbors.h>
 
 // implementation
 #include <arrows/vxl/aligned_edge_detection.h>
+#include <arrows/vxl/image_io.h>
 #include <arrows/vxl/kd_tree.h>
 
 // #include <arrows/vxl/average_frames.h>
@@ -28,7 +30,6 @@
 // #include <arrows/vxl/estimate_similarity_transform.h>
 // #include <arrows/vxl/hashed_image_classifier_filter.h>
 // #include <arrows/vxl/high_pass_filter.h>
-// #include <arrows/vxl/image_io.h>
 // #include <arrows/vxl/match_features_constrained.h>
 // #include <arrows/vxl/morphology.h>
 // #include <arrows/vxl/optimize_cameras.h>
@@ -56,6 +57,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   auto fact = vpl.add_factory< vital::algo::image_filter,
     aligned_edge_detection >( "vxl_aligned_edge_detection" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
+
+  fact = vpl.add_factory< vital::algo::image_io,
+    image_io >( "vxl" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::nearest_neighbors,

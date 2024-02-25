@@ -610,12 +610,19 @@ VITAL_CONFIG_EXPORT
 std::string config_block_get_value_cast( config_block_value_t const& value );
 
 // ------------------------------------------------------------------
-/// Specialization for std::array
+/// Specializations for std::array
+// TODO: look at generic/partial specialization for std::array of general type
+//       and size
 // template<typename Tp, size_t Nm>
 template <>
 VITAL_CONFIG_EXPORT
 std::array< double,
   3 > config_block_get_value_cast( config_block_value_t const& value );
+
+template <>
+VITAL_CONFIG_EXPORT
+std::array< unsigned,
+  2 > config_block_get_value_cast( config_block_value_t const& value );
 
 // ----------------------------------------------------------------------------
 // Internally cast the value.
@@ -895,6 +902,20 @@ config_block_set_value_cast( std::array< double, 3 > const& value )
   std::stringstream str;
 
   std::copy_n( value.begin(), 3, std::ostream_iterator< double >( str, " " ) );
+
+  return str.str();
+}
+
+template <>
+inline
+config_block_value_t
+config_block_set_value_cast( std::array< unsigned, 2 > const& value )
+{
+  std::stringstream str;
+
+  std::copy_n(
+    value.begin(), 2,
+    std::ostream_iterator< unsigned >( str, " " ) );
 
   return str.str();
 }

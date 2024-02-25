@@ -9,8 +9,6 @@
 
 #include <vital/algo/image_filter.h>
 
-#include <vital/plugin_management/pluggable_macro_magic.h>
-
 namespace kwiver {
 
 namespace arrows {

@@ -10,7 +10,6 @@
 #include <vital/exceptions/image.h>
 #include <vital/io/eigen_io.h>
 #include <vital/types/metadata_traits.h>
-#include <vital/types/vector.h>
 #include <vital/vital_config.h>
 
 #include <arrows/vxl/image_container.h>
@@ -43,7 +42,7 @@ convert_image_helper(
   const vil_image_view< inP >& src,
   vil_image_view< outP >& dest,
   VITAL_UNUSED bool force_byte, bool auto_stretch,
-  bool manual_stretch, const vector_2d& intensity_range )
+  bool manual_stretch, const array2 intensity_range )
 {
   vil_image_view< double > temp;
   // The maximum value is extended by almost one such that dest_maxv still
@@ -89,7 +88,7 @@ convert_image_helper(
   const vil_image_view< inP >& src,
   vil_image_view< vxl_byte >& dest,
   VITAL_UNUSED bool force_byte, bool auto_stretch,
-  bool manual_stretch, const vector_2d& intensity_range )
+  bool manual_stretch, const array2 intensity_range )
 {
   if( auto_stretch )
   {
@@ -116,7 +115,7 @@ convert_image_helper(
   vil_image_view< outP >& dest,
   VITAL_UNUSED bool force_byte, bool auto_stretch,
   bool manual_stretch,
-  VITAL_UNUSED const vector_2d& intensity_range )
+  VITAL_UNUSED const array2 intensity_range )
 {
   // special case for bool because manual stretching limits do not
   // make sense and trigger compiler warnings on some platforms.
@@ -137,7 +136,7 @@ convert_image_helper(
   const vil_image_view< bool >& src,
   vil_image_view< vxl_byte >& dest,
   bool force_byte, bool auto_stretch,
-  bool manual_stretch, const vector_2d& intensity_range )
+  bool manual_stretch, const array2 intensity_range )
 {
   convert_image_helper< vxl_byte >(
     src, dest, force_byte, auto_stretch,
@@ -154,7 +153,7 @@ convert_image_helper(
   VITAL_UNUSED bool force_byte,
   VITAL_UNUSED bool auto_stretch,
   VITAL_UNUSED bool manual_stretch,
-  VITAL_UNUSED const vector_2d& intensity_range )
+  VITAL_UNUSED const array2 intensity_range )
 {
   // special case for bool because stretch does not make sense for bool to bool
   // conversion
@@ -285,13 +284,22 @@ class image_io::priv
 {
 public:
   // Constructor
-  priv()
-    : force_byte( false ),
-      auto_stretch( false ),
-      manual_stretch( false ),
-      split_channels( false ),
-      intensity_range( 0, 255 )
+  priv( image_io& parent )
+    : parent( parent )
   {}
+
+  image_io& parent;
+
+  bool
+  c_force_byte() const { return parent.c_force_byte; }
+  bool
+  c_auto_stretch() const { return parent.c_auto_stretch; }
+  bool
+  c_manual_stretch() const { return parent.c_manual_stretch; }
+  array2
+  c_intensity_range() const { return parent.c_intensity_range; }
+  bool
+  c_split_channels() const { return parent.c_split_channels; }
 
   template < typename inP, typename outP >
   void
@@ -301,10 +309,10 @@ public:
   {
     convert_image_helper(
       src, dest,
-      this->force_byte,
-      this->auto_stretch,
-      this->manual_stretch,
-      this->intensity_range );
+      c_force_byte(),
+      c_auto_stretch(),
+      c_manual_stretch(),
+      c_intensity_range() );
   }
 
   // Load a single image, potentially saved as individual planes
@@ -320,12 +328,6 @@ public:
   convert_and_save(
     vil_image_view< pix_t >& img_pix_t,
     std::string const& filename );
-
-  bool force_byte;
-  bool auto_stretch;
-  bool manual_stretch;
-  bool split_channels;
-  vector_2d intensity_range;
 };
 
 // ----------------------------------------------------------------------------
@@ -337,11 +339,11 @@ image_io::priv
   std::shared_ptr< metadata > md,
   std::string const& filename )
 {
-  if( split_channels )
+  if( c_split_channels() )
   {
     img_pix_t = load_external_planes( filename, img_pix_t );
   }
-  if( force_byte )
+  if( c_force_byte() )
   {
     vil_image_view< vxl_byte > img;
     convert_image( img_pix_t, img );
@@ -369,26 +371,25 @@ image_io::priv
   vil_image_view< pix_t >& img_pix_t,
   std::string const& filename )
 {
-  if( force_byte )
+  if( c_force_byte() )
   {
     vil_image_view< vxl_byte > img;
     convert_image( img_pix_t, img );
-    save_image( img, filename, split_channels );
+    save_image( img, filename, c_split_channels() );
   }
   else
   {
     vil_image_view< pix_t > img;
     convert_image( img_pix_t, img );
-    save_image( img, filename, split_channels );
+    save_image( img, filename, c_split_channels() );
   }
 }
 
-// ----------------------------------------------------------------------------
-// Constructor
+void
 image_io
-::image_io()
-  : d_( new priv )
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
   attach_logger( "arrows.vxl.image_io" );
 }
 
@@ -398,88 +399,6 @@ image_io
 {}
 
 // ----------------------------------------------------------------------------
-// Get this algorithm's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-image_io
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config = vital::algo::image_io::get_configuration();
-
-  config->set_value(
-    "force_byte", d_->force_byte,
-    "When loading, convert the loaded data into a byte "
-    "(unsigned char) image regardless of the source data type. "
-    "Stretch the dynamic range according to the stretch options "
-    "before converting. When saving, convert to a byte image "
-    "before writing out the image" );
-
-  config->set_value(
-    "auto_stretch", d_->auto_stretch,
-    "Dynamically stretch the range of the input data such that "
-    "the minimum and maximum pixel values in the data map to "
-    "the minimum and maximum support values for that pixel "
-    "type, or 0.0 and 1.0 for floating point types.  If using "
-    "the force_byte option value map between 0 and 255. "
-    "Warning, this can result in brightness and constrast "
-    "varying between images." );
-
-  config->set_value(
-    "manual_stretch", d_->manual_stretch,
-    "Manually stretch the range of the input data by "
-    "specifying the minimum and maximum values of the data "
-    "to map to the full byte range" );
-
-  if( d_->manual_stretch )
-  {
-    config->set_value(
-      "intensity_range", d_->intensity_range.transpose(),
-      "The range of intensity values (min, max) to stretch into "
-      "the byte range.  This is most useful when e.g. 12-bit "
-      "data is encoded in 16-bit pixels" );
-  }
-
-  config->set_value(
-    "split_channels", d_->split_channels,
-    "When writing out images, if it contains more than one image "
-    "plane, write each plane out as a seperate image file. Also, "
-    "when enabled at read time, support images written out in via "
-    "this method." );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-// Set this algorithm's properties via a config block
-void
-image_io
-::set_configuration( vital::config_block_sptr in_config )
-{
-  // Starting with our generated vital::config_block to ensure that assumed
-  // values are present
-  // An alternative is to check for key presence before performing a get_value()
-  // call.
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  d_->force_byte = config->get_value< bool >(
-    "force_byte",
-    d_->force_byte );
-  d_->auto_stretch = config->get_value< bool >(
-    "auto_stretch",
-    d_->auto_stretch );
-  d_->manual_stretch = config->get_value< bool >(
-    "manual_stretch",
-    d_->manual_stretch );
-  d_->split_channels = config->get_value< bool >(
-    "split_channels",
-    d_->split_channels );
-  d_->intensity_range = config->get_value< vector_2d >(
-    "intensity_range",
-    d_->intensity_range.transpose() );
-}
-
-// ----------------------------------------------------------------------------
 // Check that the algorithm's currently configuration is valid
 bool
 image_io
@@ -487,20 +406,20 @@ image_io
 {
   double auto_stretch = config->get_value< bool >(
     "auto_stretch",
-    d_->auto_stretch );
+    c_auto_stretch );
   double manual_stretch = config->get_value< bool >(
     "manual_stretch",
-    d_->manual_stretch );
+    c_manual_stretch );
   if( auto_stretch && manual_stretch )
   {
     LOG_ERROR( logger(), "can not enable both manual and auto stretching" );
     return false;
   }
-  if( manual_stretch )
+  if( c_manual_stretch )
   {
-    vector_2d range = config->get_value< vector_2d >(
+    array2 range = config->get_value< array2 >(
       "intensity_range",
-      d_->intensity_range.transpose() );
+      c_intensity_range );
     if( range[ 0 ] >= range[ 1 ] )
     {
       LOG_ERROR(
@@ -552,7 +471,7 @@ image_io
 #undef DO_CASE
 
     default:
-      if( d_->auto_stretch )
+      if( c_auto_stretch )
       {
         // automatically stretch to fill the byte range using the
         // minimum and maximum pixel values
@@ -563,7 +482,7 @@ image_io
         img_ptr->set_metadata( md );
         return img_ptr;
       }
-      else if( d_->manual_stretch )
+      else if( c_manual_stretch )
       {
         std::stringstream msg;
         msg << "Unable to manually stretch pixel type: "
@@ -620,16 +539,16 @@ image_io
 #undef DO_CASE
 
     default:
-      if( d_->auto_stretch )
+      if( c_auto_stretch )
       {
         // automatically stretch to fill the byte range using the
         // minimum and maximum pixel values
         vil_image_view< vxl_byte > img;
         img = vil_convert_stretch_range( vxl_byte(), view );
-        save_image( img, filename, d_->split_channels );
+        save_image( img, filename, c_split_channels );
         return;
       }
-      else if( d_->manual_stretch )
+      else if( c_manual_stretch )
       {
         std::stringstream msg;
         msg <<  "Unable to manually stretch pixel type: "
@@ -640,7 +559,7 @@ image_io
       {
         vil_image_view< vxl_byte > img;
         img = vil_convert_cast( vxl_byte(), view );
-        save_image( img, filename, d_->split_channels );
+        save_image( img, filename, c_split_channels );
         return;
       }
   }
