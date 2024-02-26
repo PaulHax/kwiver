@@ -34,8 +34,8 @@
 #include <arrows/ocv/extract_descriptors_LUCID.h>
 #include <arrows/ocv/feature_detect_extract_BRISK.h>
 #include <arrows/ocv/feature_detect_extract_ORB.h>
-// #include <arrows/ocv/feature_detect_extract_SIFT.h>
-// #include <arrows/ocv/feature_detect_extract_SURF.h>
+#include <arrows/ocv/feature_detect_extract_SIFT.h>
+#include <arrows/ocv/feature_detect_extract_SURF.h>
 #include <arrows/ocv/image_io.h>
 
 #include <arrows/ocv/inpaint.h>
@@ -150,6 +150,7 @@ register_factories( kwiver::vital::plugin_loader& vpm )
   fact = vpm.add_factory< vital::algo::extract_descriptors,
     extract_descriptors_FREAK >( "ocv_FREAK" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+    << << << < HEAD
 #endif
 
 #ifdef KWIVER_OCV_HAS_LATCH
@@ -169,23 +170,31 @@ register_factories( kwiver::vital::plugin_loader& vpm )
     detect_features_MSD >( "ocv_MSD" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
 #endif
-//
-// #ifdef KWIVER_OCV_HAS_SIFT
-//  reg.register_algorithm< detect_features_SIFT >();
-//  reg.register_algorithm< extract_descriptors_SIFT >();
-// #endif
-//
+
+#ifdef KWIVER_OCV_HAS_SIFT
+  fact = vpm.add_factory< vital::algo::detect_features,
+    detect_features_SIFT >( "ocv_SIFT" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+  fact = vpm.add_factory< vital::algo::extract_descriptors,
+    extract_descriptors_SIFT >( "ocv_SIFT" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+#endif
+
 #ifdef KWIVER_OCV_HAS_STAR
   fact = vpm.add_factory< vital::algo::detect_features,
     detect_features_STAR >( "ocv_STAR" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
 #endif
-//
-// #ifdef KWIVER_OCV_HAS_SURF
-//  reg.register_algorithm< detect_features_SURF >();
-//  reg.register_algorithm< extract_descriptors_SURF >();
-// #endif
-//
+
+#ifdef KWIVER_OCV_HAS_SURF
+  fact = vpm.add_factory< vital::algo::detect_features,
+    detect_features_SURF >( "ocv_SURF" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+  fact = vpm.add_factory< vital::algo::extract_descriptors,
+    extract_descriptors_SURF >( "ocv_SURF" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+#endif
+
 //  reg.register_algorithm< detect_heat_map >();
 //
 //  reg.register_algorithm< refine_detections_write_to_disk >();

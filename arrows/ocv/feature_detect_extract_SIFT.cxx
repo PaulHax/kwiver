@@ -39,148 +39,71 @@ namespace ocv {
 
 namespace {
 
-/// Common ORB private implementation class
-class priv
+cv::Ptr< cv_SIFT_t >
+create(
+  int n_features, int n_octave_layers, double contrast_threshold,
+  int edge_threshold, double sigma )
 {
-public:
-  // Cosntructor
-  priv()
-    : n_features( 0 ),
-      n_octave_layers( 3 ),
-      contrast_threshold( 0.04 ),
-      edge_threshold( 10 ),
-      sigma( 1.6 )
-  {}
-
-  // Create new algorithm instance from current parameters
-  cv::Ptr< cv_SIFT_t >
-  create() const
-  {
 #if KWIVER_OPENCV_VERSION_MAJOR < 3
-    return cv::Ptr< cv_SIFT_t >(
-      new cv_SIFT_t(
-        n_features, n_octave_layers, contrast_threshold,
-        edge_threshold, sigma )
-    );
-#else
-    return cv_SIFT_t::create(
+  return cv::Ptr< cv_SIFT_t >(
+    new cv_SIFT_t(
       n_features, n_octave_layers, contrast_threshold,
-      edge_threshold, sigma );
+      edge_threshold, sigma )
+  );
+#else
+  return cv_SIFT_t::create(
+    n_features, n_octave_layers, contrast_threshold,
+    edge_threshold, sigma );
 #endif
-  }
+}
 
-#if KWIVER_OPENCV_VERSION_MAJOR < 3
-  // Update algorithm with current parameter, 2.4.x only
-  void
-  update( cv::Ptr< cv_SIFT_t > a ) const
-  {
-    a->set( "nFeatures", n_features );
-    a->set( "nOctaveLayers", n_octave_layers );
-    a->set( "contrastThreshold", contrast_threshold );
-    a->set( "edgeThreshold", edge_threshold );
-    a->set( "sigma", sigma );
-  }
-#endif
+} // namespace
 
-  // Update config block with current parameter values
-  void
-  update_config( config_block_sptr config ) const
-  {
-    config->set_value(
-      "n_features", n_features,
-      "The number of best features to retain. The features "
-      "are ranked by their scores (measured in SIFT algorithm "
-      "as the local contrast" );
-    config->set_value(
-      "n_octave_layers", n_octave_layers,
-      "The number of layers in each octave. 3 is the value "
-      "used in D. Lowe paper. The number of octaves is "
-      "computed automatically from the image resolution." );
-    config->set_value(
-      "contrast_threshold", contrast_threshold,
-      "The contrast threshold used to filter out weak "
-      "features in semi-uniform (low-contrast) regions. The "
-      "larger the threshold, the less features are produced "
-      "by the detector." );
-    config->set_value(
-      "edge_threshold", edge_threshold,
-      "The threshold used to filter out edge-like features. "
-      "Note that the its meaning is different from the "
-      "contrast_threshold, i.e. the larger the "
-      "edge_threshold, the less features are filtered out "
-      "(more features are retained)." );
-    config->set_value(
-      "sigma", sigma,
-      "The sigma of the Gaussian applied to the input image "
-      "at the octave #0. If your image is captured with a "
-      "weak camera with soft lenses, you might want to reduce "
-      "the number." );
-  }
-
-  // Set current values based on config block
-  void
-  set_config( config_block_sptr config )
-  {
-    n_features = config->get_value< int >( "n_features" );
-    n_octave_layers = config->get_value< int >( "n_octave_layers" );
-    contrast_threshold = config->get_value< double >( "contrast_threshold" );
-    edge_threshold = config->get_value< double >( "edge_threshold" );
-    sigma = config->get_value< double >( "sigma" );
-  }
-
-  // Parameters
-  int n_features;
-  int n_octave_layers;
-  double contrast_threshold;
-  double edge_threshold;
-  double sigma;
-};
-
-} // end namespace anonymous
-
-class detect_features_SIFT::priv
-  : public ocv::priv
-{};
-
-class extract_descriptors_SIFT::priv
-  : public ocv::priv
-{};
-
+// --------------------------------------------------------------------
+void
 detect_features_SIFT
-::detect_features_SIFT()
-  : p_( new priv )
+::initialize()
 {
   attach_logger( "arrows.ocv.SIFT" );
-  detector = p_->create();
+  this->detector = create(
+    this->get_n_features(),
+    this->get_n_octave_layers(),
+    this->get_contrast_threshold(),
+    this->get_edge_threshold(),
+    this->get_sigma() );
 }
 
 detect_features_SIFT
 ::~detect_features_SIFT()
 {}
 
-vital::config_block_sptr
+void
 detect_features_SIFT
-::get_configuration() const
+::update_detector_parameters() const
 {
-  config_block_sptr config = detect_features::get_configuration();
-  p_->update_config( config );
-  return config;
+#if KWIVER_OPENCV_VERSION_MAJOR < 3
+  cv::Ptr< cv_SIFT_t > a = this->detector;
+  a->set( "nFeatures", get_n_features() );
+  a->set( "nOctaveLayers", get_n_octave_layers() );
+  a->set( "contrastThreshold", get_contrast_threshold() );
+  a->set( "edgeThreshold", get_edge_threshold() );
+  a->set( "sigma", get_sigma() );
+#else
+  // version 3.x doesn't have parameter update methods
+  detector.constCast< cv::FeatureDetector >() = create(
+    this->get_n_features(),
+    this->get_n_octave_layers(),
+    this->get_contrast_threshold(),
+    this->get_edge_threshold(),
+    this->get_sigma() );
+#endif
 }
 
 void
 detect_features_SIFT
-::set_configuration( vital::config_block_sptr config )
+::set_configuration_internal( VITAL_UNUSED vital::config_block_sptr config )
 {
-  config_block_sptr c = get_configuration();
-  c->merge_config( config );
-  p_->set_config( c );
-
-#if KWIVER_OPENCV_VERSION_MAJOR < 3
-  p_->update( detector );
-#else
-  // version 3.x doesn't have parameter update methods
-  detector = p_->create();
-#endif
+  this->update_detector_parameters();
 }
 
 bool
@@ -190,39 +113,51 @@ detect_features_SIFT
   return true;
 }
 
+// --------------------------------------------------------------------
+void
 extract_descriptors_SIFT
-::extract_descriptors_SIFT()
-  : p_( new priv )
+::initialize()
 {
   attach_logger( "arrows.ocv.SIFT" );
-  extractor = p_->create();
+  this->extractor = create(
+    this->get_n_features(),
+    this->get_n_octave_layers(),
+    this->get_contrast_threshold(),
+    this->get_edge_threshold(),
+    this->get_sigma() );
 }
 
 extract_descriptors_SIFT
 ::~extract_descriptors_SIFT()
 {}
 
-vital::config_block_sptr
+void
 extract_descriptors_SIFT
-::get_configuration() const
+::update_extractor_parameters() const
 {
-  config_block_sptr config = extract_descriptors::get_configuration();
-  p_->update_config( config );
-  return config;
+#if KWIVER_OPENCV_VERSION_MAJOR < 3
+  cv::Ptr< cv_SIFT_t > a = this->detector;
+  a->set( "nFeatures", get_n_features() );
+  a->set( "nOctaveLayers", get_n_octave_layers() );
+  a->set( "contrastThreshold", get_contrast_threshold() );
+  a->set( "edgeThreshold", get_edge_threshold() );
+  a->set( "sigma", get_sigma() );
+#else
+  // version 3.x doesn't have parameter update methods
+  extractor.constCast< cv::DescriptorExtractor >() = create(
+    this->get_n_features(),
+    this->get_n_octave_layers(),
+    this->get_contrast_threshold(),
+    this->get_edge_threshold(),
+    this->get_sigma() );
+#endif
 }
 
 void
 extract_descriptors_SIFT
-::set_configuration( vital::config_block_sptr config )
+::set_configuration_internal( VITAL_UNUSED vital::config_block_sptr config )
 {
-  config_block_sptr c = get_configuration();
-  c->merge_config( config );
-  p_->set_config( c );
-#if KWIVER_OPENCV_VERSION_MAJOR < 3
-  p_->update( extractor );
-#else
-  extractor = p_->create();
-#endif
+  this->update_extractor_parameters();
 }
 
 bool

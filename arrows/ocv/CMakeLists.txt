@@ -31,8 +31,8 @@ set( ocv_headers_public
   feature_set.h
   feature_detect_extract_BRISK.h
   feature_detect_extract_ORB.h
-  #feature_detect_extract_SIFT.h
-  #feature_detect_extract_SURF.h
+  feature_detect_extract_SIFT.h
+  feature_detect_extract_SURF.h
   #detect_heat_map.h
   #hough_circle_detector.h
   image_container.h
@@ -88,8 +88,8 @@ set( ocv_sources
   feature_set.cxx
   feature_detect_extract_BRISK.cxx
   feature_detect_extract_ORB.cxx
-  #feature_detect_extract_SIFT.cxx
-  #feature_detect_extract_SURF.cxx
+  feature_detect_extract_SIFT.cxx
+  feature_detect_extract_SURF.cxx
   image_container.cxx
   image_io.cxx
   inpaint.cxx

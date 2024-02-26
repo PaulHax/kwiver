@@ -27,56 +27,102 @@ class KWIVER_ALGO_OCV_EXPORT detect_features_SIFT
   : public ocv::detect_features
 {
 public:
-  PLUGIN_INFO(
-    "ocv_SIFT",
-    "OpenCV feature detection via the SIFT algorithm" )
-
-  /// Constructor
-  detect_features_SIFT();
+  PLUGGABLE_IMPL(
+    detect_features_SIFT,
+    "OpenCV feature detection via the SIFT algorithm",
+    PARAM_DEFAULT(
+      n_features, int,
+      "The number of best features to retain. The features "
+      "are ranked by their scores (measured in SIFT algorithm "
+      "as the local contrast", 0 ),
+    PARAM_DEFAULT(
+      n_octave_layers, int,
+      "The number of layers in each octave. 3 is the value "
+      "used in D. Lowe paper. The number of octaves is "
+      "computed automatically from the image resolution.",
+      3 ),
+    PARAM_DEFAULT(
+      contrast_threshold, double,
+      "The contrast threshold used to filter out weak "
+      "features in semi-uniform (low-contrast) regions. The "
+      "larger the threshold, the less features are produced "
+      "by the detector.",
+      0.04 ),
+    PARAM_DEFAULT(
+      edge_threshold, int,
+      "The threshold used to filter out edge-like features. "
+      "Note that the its meaning is different from the "
+      "contrast_threshold, i.e. the larger the "
+      "edge_threshold, the less features are filtered out "
+      "(more features are retained).", 10 ),
+    PARAM_DEFAULT(
+      sigma, double,
+      "The sigma of the Gaussian applied to the input image "
+      "at the octave #0. If your image is captured with a "
+      "weak camera with soft lenses, you might want to reduce "
+      "the number.", 1.6 )
+  );
 
   /// Destructor
   virtual ~detect_features_SIFT();
 
-  /// Get this algorithm's \link kwiver::vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
-  /// Check that the algorithm's configuration vital::config_block is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
 private:
-  class priv;
-
-  std::unique_ptr< priv > const p_;
+  void initialize() override;
+  void set_configuration_internal( vital::config_block_sptr config ) override;
+  void update_detector_parameters()  const override;
 };
 
 class KWIVER_ALGO_OCV_EXPORT extract_descriptors_SIFT
   : public ocv::extract_descriptors
 {
 public:
-  PLUGIN_INFO(
-    "ocv_SIFT",
-    "OpenCV feature-point descriptor extraction via the SIFT algorithm" )
-
-  /// Constructor
-  extract_descriptors_SIFT();
+  PLUGGABLE_IMPL(
+    extract_descriptors_SIFT,
+    "OpenCV feature detection via the SIFT algorithm",
+    PARAM_DEFAULT(
+      n_features, int,
+      "The number of best features to retain. The features "
+      "are ranked by their scores (measured in SIFT algorithm "
+      "as the local contrast", 0 ),
+    PARAM_DEFAULT(
+      n_octave_layers, int,
+      "The number of layers in each octave. 3 is the value "
+      "used in D. Lowe paper. The number of octaves is "
+      "computed automatically from the image resolution.",
+      3 ),
+    PARAM_DEFAULT(
+      contrast_threshold, double,
+      "The contrast threshold used to filter out weak "
+      "features in semi-uniform (low-contrast) regions. The "
+      "larger the threshold, the less features are produced "
+      "by the detector.",
+      0.04 ),
+    PARAM_DEFAULT(
+      edge_threshold, int,
+      "The threshold used to filter out edge-like features. "
+      "Note that the its meaning is different from the "
+      "contrast_threshold, i.e. the larger the "
+      "edge_threshold, the less features are filtered out "
+      "(more features are retained).", 10 ),
+    PARAM_DEFAULT(
+      sigma, double,
+      "The sigma of the Gaussian applied to the input image "
+      "at the octave #0. If your image is captured with a "
+      "weak camera with soft lenses, you might want to reduce "
+      "the number.", 1.6 )
+  );
 
   /// Destructor
   virtual ~extract_descriptors_SIFT();
 
-  /// Get this algorithm's \link kwiver::vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
-  /// Check that the algorithm's configuration vital::config_block is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
 private:
-  class priv;
-
-  std::unique_ptr< priv > const p_;
+  void initialize() override;
+  void set_configuration_internal( vital::config_block_sptr config ) override;
+  void update_extractor_parameters()  const override;
 };
 
 #define KWIVER_OCV_HAS_SIFT
