@@ -29,39 +29,6 @@ namespace arrows {
 
 namespace core {
 
-class handle_descriptor_request_core::priv
-{
-public:
-  priv( handle_descriptor_request_core& parent )
-    : parent( parent )
-  {}
-
-  handle_descriptor_request_core& parent;
-
-  // processing classes
-  algo::image_io_sptr c_reader() { return parent.c_reader; }
-
-  algo::compute_track_descriptors_sptr
-  c_extractor()
-  {
-    return parent.c_extractor;
-  }
-};
-
-// ----------------------------------------------------------------------------
-void
-handle_descriptor_request_core
-::initialize()
-{
-  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
-  attach_logger( "arrows.core.handle_descriptor_request_core" );
-}
-
-// ----------------------------------------------------------------------------
-handle_descriptor_request_core
-::~handle_descriptor_request_core()
-{}
-
 bool
 handle_descriptor_request_core
 ::check_configuration( vital::config_block_sptr config ) const
@@ -84,7 +51,7 @@ handle_descriptor_request_core
   std::vector< kwiver::vital::image_container_sptr >& imgs )
 {
   // Verify that all dependent algorithms have been initialized
-  if( !d_->c_reader() || !d_->c_extractor() )
+  if( !c_reader || !c_extractor )
   {
     // Something did not initialize
     VITAL_THROW(
@@ -95,7 +62,7 @@ handle_descriptor_request_core
 
   // load images or video if required by query plan
   std::string data_path = request->data_location();
-  kwiver::vital::image_container_sptr image = d_->c_reader()->load( data_path );
+  kwiver::vital::image_container_sptr image = c_reader->load( data_path );
 
   if( !image )
   {
@@ -122,7 +89,7 @@ handle_descriptor_request_core
   vital::object_track_set_sptr tracks(
     new vital::object_track_set( trk_vec ) );
 
-  descs = d_->c_extractor()->compute( fake_ts, image, tracks );
+  descs = c_extractor->compute( fake_ts, image, tracks );
 
   imgs.clear();
   imgs.push_back( image );

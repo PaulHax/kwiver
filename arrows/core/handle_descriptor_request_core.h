@@ -39,9 +39,6 @@ public:
       "descriptor_extractor" )
   )
 
-  /// Destructor
-  virtual ~handle_descriptor_request_core();
-
   /// Check that the algorithm's currently configuration is valid
   ///
   /// This checks solely within the provided \c config_block and not against
@@ -58,19 +55,6 @@ public:
     kwiver::vital::descriptor_request_sptr request,
     kwiver::vital::track_descriptor_set_sptr& desc,
     std::vector< kwiver::vital::image_container_sptr >& imgs );
-
-private:
-// Not sure we need this definitions anymore with the macro
-  /// The feature detector algorithm to use
-//  vital::algo::image_io_sptr reader_;
-
-  /// The descriptor extractor algorithm to use
-//  vital::algo::compute_track_descriptors_sptr extractor_;
-
-  void initialize() override;
-  /// private implementation class
-  class priv;
-  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace core

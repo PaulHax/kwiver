@@ -29,5 +29,5 @@ TEST ( example_detector, create )
 
   EXPECT_NE(
     nullptr,
-    create_algorithm< algo::image_object_detector >( "example detector" ) );
+    create_algorithm< algo::image_object_detector >( "example_detector" ) );
 }

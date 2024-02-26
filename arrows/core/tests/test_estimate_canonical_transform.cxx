@@ -29,5 +29,5 @@ TEST ( estimate_canonical_transform, create )
 
   EXPECT_NE(
     nullptr,
-    create_algorithm< algo::estimate_canonical_transform >( "core pca" ) );
+    create_algorithm< algo::estimate_canonical_transform >( "core_pca" ) );
 }

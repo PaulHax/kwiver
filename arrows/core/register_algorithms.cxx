@@ -164,11 +164,11 @@ register_factories( kwiver::vital::plugin_loader& vpl )
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 
   fact = vpl.add_factory< vital::algo::estimate_canonical_transform,
-    estimate_canonical_transform >( "core pca" );
+    estimate_canonical_transform >( "core_pca" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 
   fact = vpl.add_factory< vital::algo::image_object_detector,
-    example_detector >( "example detector" );
+    example_detector >( "example_detector" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 
   fact = vpl.add_factory< vital::algo::feature_descriptor_io,
