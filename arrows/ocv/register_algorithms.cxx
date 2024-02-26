@@ -41,9 +41,9 @@
 #include <arrows/ocv/inpaint.h>
 // #include <arrows/ocv/match_features_bruteforce.h>
 // #include <arrows/ocv/match_features_flannbased.h>
-// #include <arrows/ocv/merge_images.h>
+#include <arrows/ocv/merge_images.h>
 // #include <arrows/ocv/hough_circle_detector.h>
-// #include <arrows/ocv/refine_detections_write_to_disk.h>
+#include <arrows/ocv/refine_detections_write_to_disk.h>
 #include <arrows/ocv/split_image.h>
 // #include <arrows/ocv/track_features_klt.h>
 #include <arrows/ocv/detect_motion_3frame_differencing.h>
@@ -197,10 +197,13 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 
 //  reg.register_algorithm< detect_heat_map >();
 //
-//  reg.register_algorithm< refine_detections_write_to_disk >();
+  fact = vpm.add_factory< vital::algo::refine_detections,
+    refine_detections_write_to_disk >( "ocv" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
   fact = vpm.add_factory< vital::algo::split_image, split_image >( "ocv" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
-//  reg.register_algorithm< merge_images >();
+  fact = vpm.add_factory< vital::algo::merge_images, merge_images >( "ocv" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
 //  reg.register_algorithm< track_features_klt >();
   fact = vpm.add_factory< vital::algo::estimate_pnp, estimate_pnp >( "ocv" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );

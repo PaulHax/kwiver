@@ -22,8 +22,8 @@ class KWIVER_ALGO_OCV_EXPORT merge_images
   : public vital::algo::merge_images
 {
 public:
-  PLUGIN_INFO(
-    "ocv",
+  PLUGGABLE_IMPL(
+    merge_images,
     "Merge two images into one using opencv functions.\n\n"
     "The channels from the first image are added to the "
     "output image first, followed by the channels from the "
@@ -31,16 +31,12 @@ public:
     "parameters."
   )
 
-  /// Constructor
-  merge_images();
-
   /// Destructor
   virtual ~merge_images() = default;
 
-  void
-  set_configuration( kwiver::vital::config_block_sptr ) override {}
   bool
-  check_configuration( kwiver::vital::config_block_sptr config ) const override
+  check_configuration(
+    VITAL_UNUSED kwiver::vital::config_block_sptr config ) const override
   { return true; }
 
   /// Merge images

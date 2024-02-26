@@ -36,72 +36,10 @@ namespace ocv {
 
 using ST = kwiversys::SystemTools;
 
-// ----------------------------------------------------------------------------
-// Private implementation class
-class refine_detections_write_to_disk::priv
-{
-public:
-  // Constructor
-  priv()
-    : pattern( "detection_%10d.png" ),
-      id( 0 )
-  {}
-
-  // Destructor
-  ~priv()
-  {}
-
-  // Parameters
-  std::string pattern;
-
-  // Variables
-  unsigned id;
-};
-
-// ----------------------------------------------------------------------------
-// Constructor
-refine_detections_write_to_disk
-::refine_detections_write_to_disk()
-  : d_( new priv() )
-{}
-
 // Destructor
 refine_detections_write_to_disk
 ::~refine_detections_write_to_disk()
 {}
-
-// ----------------------------------------------------------------------------
-// Get this algorithm's vital::config_block configuration block
-vital::config_block_sptr
-refine_detections_write_to_disk
-::get_configuration() const
-{
-  vital::config_block_sptr config =
-    vital::algo::refine_detections::get_configuration();
-
-  config->set_value(
-    "pattern", d_->pattern,
-    "The output pattern for writing images to disk. "
-    "Parameters that may be included in the pattern are (in formatting order)"
-    "the id (an integer), the source image filename (a string), "
-    "and four values for the chip coordinate: "
-    "top left x, top left y, width, height (all floating point numbers). "
-    "A possible full pattern would be '%d-%s-%f-%f-%f-%f.png'. "
-    "The pattern must contain the correct file extension." );
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-// Set this algorithm's properties via a config block
-void
-refine_detections_write_to_disk
-::set_configuration( vital::config_block_sptr in_config )
-{
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  d_->pattern = config->get_value< std::string >( "pattern" );
-}
 
 // ----------------------------------------------------------------------------
 // Check that the algorithm's currently configuration is valid
@@ -149,15 +87,16 @@ refine_detections_write_to_disk
 
     // Generate output filename
     std::string ofn = kwiver::vital::string_format(
-      d_->pattern,
-      d_->id++, filename.c_str(),
+      this->get_pattern(),
+      this->id++, filename.c_str(),
       bbox.upper_left()[ 0 ], bbox.upper_left()[ 1 ],
       bbox.width(), bbox.height() );
     if( ofn.empty() )
     {
       LOG_ERROR(
         logger(),
-        "Could not format output file name: \"" << d_->pattern << "\"" );
+        "Could not format output file name: \"" << this->get_pattern() <<
+          "\"" );
       return detections;
     }
 
