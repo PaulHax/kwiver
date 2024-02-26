@@ -14,8 +14,11 @@
 #include <vital/types/feature_track_set.h>
 #include <vital/types/image_container.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/close_loops.h>
 #include <vital/config/config_block.h>
+
+#include <vital/algo/match_features.h>
 
 namespace kwiver {
 
@@ -30,38 +33,26 @@ class KWIVER_ALGO_CORE_EXPORT close_loops_exhaustive
   : public vital::algo::close_loops
 {
 public:
-  PLUGIN_INFO(
-    "exhaustive",
+  PLUGGABLE_IMPL(
+    close_loops_exhaustive,
     "Exhaustive matching of all frame pairs, "
-    "or all frames within a moving window." )
-
-  /// Default Constructor
-  close_loops_exhaustive();
+    "or all frames within a moving window.",
+    PARAM_DEFAULT(
+      match_req, size_t,
+      "The required number of features needed to be matched for a success.",
+      100 ),
+    PARAM_DEFAULT(
+      num_look_back, int,
+      "Maximum number of frames to search in the past for matching to "
+      "(-1 looks back to the beginning).",
+      -1 ),
+    PARAM(
+      matcher, kwiver::vital::algo::match_features_sptr,
+      "feature_matcher" )
+  )
 
   /// Destructor
   virtual ~close_loops_exhaustive() noexcept;
-
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  ///
-  /// This base virtual function implementation returns an empty configuration
-  /// block whose name is set to \c this->type_name.
-  ///
-  /// \returns \c config_block containing the configuration for this algorithm
-  ///          and any nested components.
-  virtual vital::config_block_sptr get_configuration() const;
-
-  /// Set this algorithm's properties via a config block
-  ///
-  /// \throws no_such_configuration_value_exception
-  ///    Thrown if an expected configuration value is not present.
-  /// \throws algorithm_configuration_exception
-  ///    Thrown when the algorithm is given an invalid \c config_block or is'
-  ///    otherwise unable to configure itself.
-  ///
-  /// \param config  The \c config_block instance containing the configuration
-  ///                parameters for this algorithm
-  virtual void set_configuration( vital::config_block_sptr config );
 
   /// Check that the algorithm's currently configuration is valid
   ///
@@ -90,10 +81,10 @@ public:
     vital::image_container_sptr mask = vital::image_container_sptr() ) const;
 
 private:
+  void initialize() override;
   /// private implementation class
   class priv;
-
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace core
