@@ -32,17 +32,17 @@ stages:
 
 ## Basic builds
 
-ubuntu2004-ceres-ffmpeg-gdal-opencv-pdal-proj-python:build:
+ubuntu2004-ceres-ffmpeg-gdal-opencv-pdal-proj-python-vxl:build:
     extends:
-        - .ubuntu2004_ceres_ffmpeg_gdal_opencv_pdal_proj_python
+        - .ubuntu2004_ceres_ffmpeg_gdal_opencv_pdal_proj_python_vxl
         - .cmake_build_linux
         - .linux_builder_tags
         - .cmake_build_artifacts
         - .rules
 
-ubuntu2004-ceres-ffmpeg-gdal-opencv-pdal-proj-python:test:
+ubuntu2004-ceres-ffmpeg-gdal-opencv-pdal-proj-python-vxl:test:
     extends:
-        - .ubuntu2004_ceres_ffmpeg_gdal_opencv_pdal_proj_python
+        - .ubuntu2004_ceres_ffmpeg_gdal_opencv_pdal_proj_python_vxl
         - .cmake_test_linux
         - .linux_tester_tags
         - .cmake_test_artifacts
@@ -50,6 +50,6 @@ ubuntu2004-ceres-ffmpeg-gdal-opencv-pdal-proj-python:test:
     variables:
         RUN_DEPENDENT: "true"
     dependencies:
-        - ubuntu2004-ceres-ffmpeg-gdal-opencv-pdal-proj-python:build
+        - ubuntu2004-ceres-ffmpeg-gdal-opencv-pdal-proj-python-vxl:build
     needs:
-        - ubuntu2004-ceres-ffmpeg-gdal-opencv-pdal-proj-python:build
+        - ubuntu2004-ceres-ffmpeg-gdal-opencv-pdal-proj-python-vxl:build
