@@ -37,7 +37,7 @@ public:
       metadata_filter,
       vital::algo::metadata_filter_sptr,
       "Algorithm pointer to metadata filter" )
-  );
+  )
 
   virtual ~video_input_metadata_filter();
 
