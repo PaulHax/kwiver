@@ -34,7 +34,7 @@ public:
 
   close_loops_keyframe& parent;
 
-  // this
+  /// number of feature matches required for acceptance
   int c_match_req() { return parent.c_match_req; }
 
   /// number of adjacent frames to match

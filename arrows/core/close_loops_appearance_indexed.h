@@ -13,7 +13,13 @@
 #include <vital/algo/close_loops.h>
 #include <vital/vital_config.h>
 
+#include <vital/algo/algorithm.txx>
+
 #include <arrows/core/kwiver_algo_core_export.h>
+
+#include <vital/algo/estimate_fundamental_matrix.h>
+#include <vital/algo/match_descriptor_sets.h>
+#include <vital/algo/match_features.h>
 
 namespace kwiver {
 
@@ -26,12 +32,50 @@ class KWIVER_ALGO_CORE_EXPORT close_loops_appearance_indexed
   : public kwiver::vital::algo::close_loops
 {
 public:
-  PLUGIN_INFO(
-    "appearance_indexed",
-    "Uses bag of words index to close loops." )
+  PLUGGABLE_IMPL(
+    close_loops_appearance_indexed,
+    "Uses bag of words index to close loops.",
+    PARAM_DEFAULT(
+      min_loop_inlier_matches, unsigned,
+      "The minimum number of inlier feature matches to accept a loop "
+      "connection and join tracks",
+      128 ),
+    PARAM_DEFAULT(
+      geometric_verification_inlier_threshold, double,
+      "inlier threshold for fundamental matrix based geometric verification "
+      "of loop closure in pixels",
+      2.0 ),
+    PARAM_DEFAULT(
+      max_loop_attempts_per_frame, int,
+      "The maximum number of loop closure attempts to make per frame",
+      200 ),
+    PARAM_DEFAULT(
+      tracks_in_common_to_skip_loop_closing, int,
+      "If this or more tracks are in common between two frames then don't try "
+      "to complete a loop with them",
+      0 ),
+    PARAM_DEFAULT(
+      skip_loop_detection_track_i_over_u_threshold, float,
+      "skip loop detection if intersection over union of track ids in two "
+      "frames is greater than this",
+      0.5 ),
+    PARAM_DEFAULT(
+      min_loop_inlier_fraction, float,
+      "Inlier fraction must be this high to accept a loop completion",
+      0.5 ),
+    PARAM(
+      matcher, vital::algo::match_features_sptr,
+      "match_features" ),
+    PARAM(
+      bow, vital::algo::match_descriptor_sets_sptr,
+      "bag_of_words_matching" ),
+    PARAM(
+      f_estimator, vital::algo::estimate_fundamental_matrix_sptr,
+      "fundamental_mat_estimator" )
+  )
 
-  /// Default constructor
-  close_loops_appearance_indexed();
+  /// Destructor
+  virtual ~close_loops_appearance_indexed();
 
   /// Find loops in a feature_track_set
 
@@ -51,28 +95,6 @@ public:
     kwiver::vital::image_container_sptr mask = kwiver::vital::
     image_container_sptr() ) const;
 
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  ///
-  /// This base virtual function implementation returns an empty configuration
-  /// block whose name is set to \c this->type_name.
-  ///
-  /// \returns \c config_block containing the configuration for this algorithm
-  ///         and any nested components.
-  virtual vital::config_block_sptr get_configuration() const;
-
-  /// Set this algorithm's properties via a config block
-  ///
-  /// \throws no_such_configuration_value_exception
-  ///   Thrown if an expected configuration value is not present.
-  /// \throws algorithm_configuration_exception
-  ///   Thrown when the algorithm is given an invalid \c config_block or is'
-  ///   otherwise unable to configure itself.
-  ///
-  /// \param config  The \c config_block instance containing the configuration
-  ///               parameters for this algorithm
-  virtual void set_configuration( vital::config_block_sptr config );
-
   /// Check that the algorithm's currently configuration is valid
   ///
   /// This checks solely within the provided \c config_block and not against
@@ -84,11 +106,11 @@ public:
   /// \returns true if the configuration check passed and false if it didn't.
   virtual bool check_configuration( vital::config_block_sptr config ) const;
 
-protected:
-  /// the feature m_detector algorithm
+private:
+  void initialize() override;
+  /// private implementation class
   class priv;
-
-  std::shared_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace core

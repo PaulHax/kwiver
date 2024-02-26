@@ -42,6 +42,7 @@
 
 // implementation
 #include <arrows/core/associate_detections_to_tracks_threshold.h>
+#include <arrows/core/close_loops_appearance_indexed.h>
 #include <arrows/core/close_loops_bad_frames_only.h>
 #include <arrows/core/close_loops_exhaustive.h>
 #include <arrows/core/close_loops_keyframe.h>
@@ -258,6 +259,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::close_loops,
     close_loops_bad_frames_only >( "bad_frames_only" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::close_loops,
+    close_loops_appearance_indexed >( "appearance_indexed" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 
