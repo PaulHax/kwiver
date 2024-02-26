@@ -46,7 +46,7 @@ set( ocv_headers_public
   #merge_images.h
   #refine_detections_write_to_disk.h
   #resection_camera.h
-  #split_image.h
+  split_image.h
   #track_features_klt.h
   )
 kwiver_install_headers(
@@ -101,7 +101,7 @@ set( ocv_sources
   #merge_images.cxx
   #refine_detections_write_to_disk.cxx
   #resection_camera.cxx
-  #split_image.cxx
+  split_image.cxx
   #track_features_klt.cxx
   )
 

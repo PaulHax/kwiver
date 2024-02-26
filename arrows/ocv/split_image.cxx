@@ -20,11 +20,6 @@ namespace arrows {
 
 namespace ocv {
 
-/// Constructor
-split_image
-::split_image()
-{}
-
 /// Destructor
 split_image
 ::~split_image()
