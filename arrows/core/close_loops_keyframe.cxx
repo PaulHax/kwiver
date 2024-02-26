@@ -28,42 +28,41 @@ using namespace kwiver::vital;
 class close_loops_keyframe::priv
 {
 public:
-  /// Constructor
-  priv()
-    : match_req( 100 ),
-      search_bandwidth( 10 ),
-      min_keyframe_misses( 5 ),
-      stop_after_match( false )
+  priv( close_loops_keyframe& parent )
+    : parent( parent )
   {}
 
-  /// number of feature matches required for acceptance
-  int match_req;
+  close_loops_keyframe& parent;
+
+  // this
+  int c_match_req() { return parent.c_match_req; }
 
   /// number of adjacent frames to match
-  int search_bandwidth;
+  int c_search_bandwidth() { return parent.c_search_bandwidth; }
 
   /// minimum number of keyframe misses before creating a new keyframe
-  unsigned int min_keyframe_misses;
+  unsigned int c_min_keyframe_misses() { return parent.c_min_keyframe_misses; }
 
   /// stop matching against additional keyframes if at least one succeeds
-  bool stop_after_match;
+  bool c_stop_after_match() { return parent.c_stop_after_match; }
+
+  /// The feature matching algorithm to use
+  vital::algo::match_features_sptr c_matcher()
+  { return parent.c_matcher; }
 
   /// histogram of matches associated with each frame
   std::map< frame_id_t, unsigned int > frame_matches;
 
   /// a collection of recent frame that didn't match any keyframe
   std::vector< frame_id_t > keyframe_misses;
-
-  /// The feature matching algorithm to use
-  vital::algo::match_features_sptr matcher;
 };
 
 // ----------------------------------------------------------------------------
-/// Constructor
+void
 close_loops_keyframe
-::close_loops_keyframe()
-  : d_( new priv )
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
   attach_logger( "arrows.core.close_loops_keyframe" );
 }
 
@@ -73,77 +72,12 @@ close_loops_keyframe
 {}
 
 // ----------------------------------------------------------------------------
-/// Get this alg's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-close_loops_keyframe
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config = algorithm::get_configuration();
-
-  // Sub-algorithm implementation name + sub_config block
-  // - Feature Matcher algorithm
-  algo::match_features::get_nested_algo_configuration(
-    "feature_matcher",
-    config, d_->matcher );
-
-  config->set_value(
-    "match_req", d_->match_req,
-    "The required number of features needed to be matched for a success." );
-
-  config->set_value(
-    "search_bandwidth", d_->search_bandwidth,
-    "number of adjacent frames to match to (must be at least 1)" );
-
-  config->set_value(
-    "min_keyframe_misses", d_->min_keyframe_misses,
-    "minimum number of keyframe match misses before creating a new keyframe. "
-    "A match miss occures when the current frame does not match any existing "
-    "keyframe (must be at least 1)" );
-
-  config->set_value(
-    "stop_after_match", d_->stop_after_match,
-    "If set, stop matching additional keyframes after at least "
-    "one match is found and then one fails to match.  This "
-    "prevents making many comparions to keyframes that are "
-    "likely to fail, but it also misses unexpected matches "
-    "that could make the tracks stronger." );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-/// Set this algo's properties via a config block
-void
-close_loops_keyframe
-::set_configuration( vital::config_block_sptr in_config )
-{
-  // Starting with our generated config_block to ensure that assumed values are
-  // present
-  // An alternative is to check for key presence before performing a get_value()
-  // call.
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  // Setting nested algorithm configuration
-  algo::match_features::set_nested_algo_configuration(
-    "feature_matcher",
-    config, d_->matcher );
-
-  d_->match_req = config->get_value< int >( "match_req" );
-  d_->search_bandwidth = config->get_value< int >( "search_bandwidth" );
-  d_->min_keyframe_misses =
-    config->get_value< unsigned int >( "min_keyframe_misses" );
-  d_->stop_after_match = config->get_value< bool >( "stop_after_match" );
-}
-
-// ----------------------------------------------------------------------------
 bool
 close_loops_keyframe
 ::check_configuration( vital::config_block_sptr config ) const
 {
   return (
-    algo::match_features::check_nested_algo_configuration(
+    check_nested_algo_configuration< algo::match_features >(
       "feature_matcher",
       config ) &&
     config->get_value< int >( "search_bandwidth" ) >= 1 &&
@@ -181,9 +115,9 @@ close_loops_keyframe
   // compute the last frame we need to match to within the search bandwidth
   // the conditional accounts for the boundary case at startup
   auto last_frame_itr = frames.rend();
-  if( frames.size() > static_cast< size_t >( d_->search_bandwidth ) )
+  if( frames.size() > static_cast< size_t >( d_->c_search_bandwidth() ) )
   {
-    last_frame_itr = frames.rbegin() + d_->search_bandwidth;
+    last_frame_itr = frames.rbegin() + d_->c_search_bandwidth();
   }
 
   // the first frame is always a key frame (for now)
@@ -217,7 +151,7 @@ close_loops_keyframe
   // threads
   auto match_func = [=](frame_id_t f){
                       return match_tracks(
-                        d_->matcher, input, current_set,
+                        d_->c_matcher(), input, current_set,
                         current_features, current_descriptors, f );
                     };
 
@@ -277,7 +211,7 @@ close_loops_keyframe
     auto const& matches = all_matches[ *f ].get();
     int num_matched = static_cast< int >( matches.size() );
     int num_linked = 0;
-    if( num_matched >= d_->match_req )
+    if( num_matched >= d_->c_match_req() )
     {
       for( auto const& m : matches )
       {
@@ -332,7 +266,7 @@ close_loops_keyframe
     auto const& matches = all_matches[ *k_itr ].get();
     int num_matched = static_cast< int >( matches.size() );
     int num_linked = 0;
-    if( num_matched >= d_->match_req )
+    if( num_matched >= d_->c_match_req() )
     {
       for( auto const& m : matches )
       {
@@ -354,16 +288,16 @@ close_loops_keyframe
     // keyframe
     // but this key frame did not match, then exit the loop early and don't
     // match any more key frames.
-    if( d_->stop_after_match &&
-        max_keyframe_matched >= d_->match_req &&
-        num_matched < d_->match_req )
+    if( d_->c_stop_after_match() &&
+        max_keyframe_matched >= d_->c_match_req() &&
+        num_matched < d_->c_match_req() )
     {
       break;
     }
   } // end for
 
   // keep track of frames that matched no keyframes
-  if( max_keyframe_matched < d_->match_req )
+  if( max_keyframe_matched < d_->c_match_req() )
   {
     d_->keyframe_misses.push_back( frame_number );
     LOG_DEBUG(
@@ -374,7 +308,7 @@ close_loops_keyframe
   // If we've seen enough keyframe misses and the first miss has passed outside
   // of the search bandwidth, then add a new key frame by selecting the frame
   // since the first miss that has been most successful at matching.
-  if( d_->keyframe_misses.size() > d_->min_keyframe_misses &&
+  if( d_->keyframe_misses.size() > d_->c_min_keyframe_misses() &&
       d_->keyframe_misses.front() < *last_frame_itr )
   {
     auto hitr = d_->frame_matches.find( d_->keyframe_misses.front() );
@@ -390,7 +324,7 @@ close_loops_keyframe
       }
     }
     // the new key frame must have the required number of matches on average
-    if( max_matches > static_cast< unsigned int >( d_->match_req ) )
+    if( max_matches > static_cast< unsigned int >( d_->c_match_req() ) )
     {
       // create the new keyframe and clear the list of misses
       LOG_INFO(logger(), "creating new keyframe on frame " << max_id);

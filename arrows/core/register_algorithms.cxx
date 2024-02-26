@@ -12,6 +12,7 @@
 
 // interface
 #include <vital/algo/associate_detections_to_tracks.h>
+#include <vital/algo/close_loops.h>
 #include <vital/algo/compute_association_matrix.h>
 #include <vital/algo/compute_ref_homography.h>
 #include <vital/algo/convert_image.h>
@@ -41,6 +42,7 @@
 
 // implementation
 #include <arrows/core/associate_detections_to_tracks_threshold.h>
+#include <arrows/core/close_loops_keyframe.h>
 #include <arrows/core/compute_association_matrix_from_features.h>
 #include <arrows/core/compute_ref_homography_core.h>
 #include <arrows/core/convert_image_bypass.h>
@@ -242,6 +244,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::initialize_object_tracks,
     initialize_object_tracks_threshold >( "threshold" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::close_loops,
+    close_loops_keyframe >( "keyframe" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 
