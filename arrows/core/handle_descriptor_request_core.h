@@ -39,6 +39,9 @@ public:
       "descriptor_extractor" )
   )
 
+  /// Destructor
+  virtual ~handle_descriptor_request_core() = default;
+
   /// Check that the algorithm's currently configuration is valid
   ///
   /// This checks solely within the provided \c config_block and not against
@@ -55,6 +58,9 @@ public:
     kwiver::vital::descriptor_request_sptr request,
     kwiver::vital::track_descriptor_set_sptr& desc,
     std::vector< kwiver::vital::image_container_sptr >& imgs );
+
+private:
+  void initialize() override;
 };
 
 } // end namespace core

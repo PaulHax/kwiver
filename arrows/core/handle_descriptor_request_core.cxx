@@ -29,6 +29,14 @@ namespace arrows {
 
 namespace core {
 
+// ----------------------------------------------------------------------------
+void
+handle_descriptor_request_core
+::initialize()
+{
+  attach_logger( "arrows.core.handle_descriptor_request_core" );
+}
+
 bool
 handle_descriptor_request_core
 ::check_configuration( vital::config_block_sptr config ) const
