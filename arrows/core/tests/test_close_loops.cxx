@@ -48,7 +48,7 @@ TEST ( close_loops_bad_frames_only, create )
 }
 
 // ----------------------------------------------------------------------------
-TEST ( close_loops_bad_exhaustive, create )
+TEST ( close_loops_exhaustive, create )
 {
   using namespace kwiver::vital;
 
@@ -60,7 +60,7 @@ TEST ( close_loops_bad_exhaustive, create )
 }
 
 // ----------------------------------------------------------------------------
-TEST ( close_loops_bad_keyframe, create )
+TEST ( close_loops_keyframe, create )
 {
   using namespace kwiver::vital;
 
