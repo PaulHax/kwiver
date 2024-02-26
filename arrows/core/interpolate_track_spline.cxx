@@ -18,6 +18,11 @@ namespace core {
 class interpolate_track_spline::priv
 {
 public:
+  priv( interpolate_track_spline& parent )
+    : parent( parent )
+  {}
+
+  interpolate_track_spline& parent;
 };
 
 namespace {
@@ -50,20 +55,17 @@ lerp( bounding_box_d const& a, bounding_box_d const& b, double k )
 } // end anonymous namespace
 
 // ----------------------------------------------------------------------------
-interpolate_track_spline
-::interpolate_track_spline()
-  : d_( new priv )
-{}
-
-// ----------------------------------------------------------------------------
-interpolate_track_spline
-::~interpolate_track_spline()
-{}
-
-// ----------------------------------------------------------------------------
 void
 interpolate_track_spline
-::set_configuration( vital::config_block_sptr /*in_config*/ )
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
+  attach_logger( "arrows.core.interpolate_track_spline" );
+}
+
+// Destructor
+interpolate_track_spline
+::~interpolate_track_spline()
 {}
 
 // ----------------------------------------------------------------------------

@@ -12,6 +12,9 @@
 
 #include <vital/algo/feature_descriptor_io.h>
 
+#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
+
 namespace kwiver {
 
 namespace arrows {
@@ -23,22 +26,20 @@ class KWIVER_ALGO_CORE_EXPORT feature_descriptor_io
   : public vital::algo::feature_descriptor_io
 {
 public:
-  PLUGIN_INFO(
-    "core",
+  PLUGGABLE_IMPL(
+    feature_descriptor_io,
     "Read and write features and descriptor"
-    " to binary files using Cereal serialization." )
-
-  /// Constructor
-  feature_descriptor_io();
+    " to binary files using Cereal serialization.",
+    PARAM_DEFAULT(
+      write_float_features, bool,
+      "Convert features to use single precision floats "
+      "instead of doubles when writing to save space",
+      false )
+  )
 
   /// Destructor
   virtual ~feature_descriptor_io();
 
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's currently configuration is valid
   virtual bool check_configuration( vital::config_block_sptr config ) const;
 
@@ -69,10 +70,10 @@ private:
     vital::feature_set_sptr feat,
     vital::descriptor_set_sptr desc ) const;
 
+  void initialize() override;
   /// private implementation class
   class priv;
-
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace core

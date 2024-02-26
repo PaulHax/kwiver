@@ -44,125 +44,47 @@ namespace core {
 class track_features_core::priv
 {
 public:
-  /// Constructor
-  priv()
-    : features_dir( "" )
+  priv( track_features_core& parent )
+    : parent( parent )
   {}
 
-  config_path_t features_dir;
+  track_features_core& parent;
 
-  /// The feature detector algorithm to use
-  vital::algo::detect_features_sptr detector;
+  // Configuration values
+  config_path_t features_dir() { return parent.c_features_dir; }
 
-  /// The descriptor extractor algorithm to use
-  vital::algo::extract_descriptors_sptr extractor;
+  // processing classes
+  vital::algo::detect_features_sptr detector() { return parent.c_detector; }
 
-  /// The file I/O for feature descriptor caching
-  vital::algo::feature_descriptor_io_sptr feature_io;
+  vital::algo::extract_descriptors_sptr
+  extractor()
+  {
+    return parent.c_extractor;
+  }
 
-  /// The feature matching algorithm to use
-  vital::algo::match_features_sptr matcher;
+  vital::algo::feature_descriptor_io_sptr
+  feature_io()
+  {
+    return parent.c_feature_io;
+  }
 
-  /// The loop closure algorithm to use
-  vital::algo::close_loops_sptr closer;
+  vital::algo::match_features_sptr matcher() { return parent.c_matcher; }
+  vital::algo::close_loops_sptr closer() { return parent.c_closer; }
 };
 
-/// Default Constructor
+// ----------------------------------------------------------------------------
+void
 track_features_core
-::track_features_core()
-  : d_( new priv )
-{}
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
+  attach_logger( "arrows.core.track_features_core" );
+}
 
 /// Destructor
 track_features_core
-::~track_features_core() noexcept
+::~track_features_core() // noexcept
 {}
-
-/// Get this alg's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-track_features_core
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config = algorithm::get_configuration();
-
-  config->set_value(
-    "features_dir", d_->features_dir,
-    "Path to a directory in which to read or write the feature "
-    "detection and description files.\n"
-    "Using this directory requires a feature_io algorithm." );
-
-  // Sub-algorithm implementation name + sub_config block
-  // - Feature Detector algorithm
-  algo::detect_features::
-  get_nested_algo_configuration( "feature_detector", config, d_->detector );
-
-  // - Descriptor Extractor algorithm
-  algo::extract_descriptors::
-  get_nested_algo_configuration(
-    "descriptor_extractor", config,
-    d_->extractor );
-
-  // - Feature Descriptor I/O algorithm
-  algo::feature_descriptor_io::
-  get_nested_algo_configuration( "feature_io", config, d_->feature_io );
-
-  // - Feature Matcher algorithm
-  algo::match_features::
-  get_nested_algo_configuration( "feature_matcher", config, d_->matcher );
-
-  // - Loop closure algorithm
-  algo::close_loops::
-  get_nested_algo_configuration( "loop_closer", config, d_->closer );
-
-  return config;
-}
-
-/// Set this algo's properties via a config block
-void
-track_features_core
-::set_configuration( vital::config_block_sptr in_config )
-{
-  // Starting with our generated config_block to ensure that assumed values are
-  // present
-  // An alternative is to check for key presence before performing a get_value()
-  // call.
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  d_->features_dir = config->get_value< config_path_t >(
-    "features_dir",
-    d_->features_dir );
-
-  // Setting nested algorithm instances via setter methods instead of directly
-  // assigning to instance property.
-  algo::detect_features_sptr df;
-  algo::detect_features::set_nested_algo_configuration(
-    "feature_detector",
-    config, df );
-  d_->detector = df;
-
-  algo::extract_descriptors_sptr ed;
-  algo::extract_descriptors::set_nested_algo_configuration(
-    "descriptor_extractor", config, ed );
-  d_->extractor = ed;
-
-  algo::feature_descriptor_io_sptr fi;
-  algo::feature_descriptor_io::set_nested_algo_configuration(
-    "feature_io",
-    config, fi );
-  d_->feature_io = fi;
-
-  algo::match_features_sptr mf;
-  algo::match_features::set_nested_algo_configuration(
-    "feature_matcher",
-    config, mf );
-  d_->matcher = mf;
-
-  algo::close_loops_sptr cl;
-  algo::close_loops::set_nested_algo_configuration( "loop_closer", config, cl );
-  d_->closer = cl;
-}
 
 bool
 track_features_core
@@ -172,7 +94,7 @@ track_features_core
   // this algorithm is optional
   if( config->has_value( "loop_closer" ) &&
       config->get_value< std::string >( "loop_closer" ) != "" &&
-      !algo::close_loops::check_nested_algo_configuration(
+      !check_nested_algo_configuration< algo::close_loops >(
         "loop_closer",
         config ) )
   {
@@ -195,20 +117,20 @@ track_features_core
   // this algorithm is optional
   if( config->has_value( "feature_io" ) &&
       config->get_value< std::string >( "feature_io" ) != "" &&
-      !algo::feature_descriptor_io::check_nested_algo_configuration(
+      !check_nested_algo_configuration< algo::feature_descriptor_io >(
         "feature_io", config ) )
   {
     config_valid = false;
   }
   return (
-    algo::detect_features::check_nested_algo_configuration(
+    check_nested_algo_configuration< algo::detect_features >(
       "feature_detector",
       config )
     &&
-    algo::extract_descriptors::check_nested_algo_configuration(
+    check_nested_algo_configuration< algo::extract_descriptors >(
       "descriptor_extractor", config )
     &&
-    algo::match_features::check_nested_algo_configuration(
+    check_nested_algo_configuration< algo::match_features >(
       "feature_matcher",
       config )
     &&
@@ -226,12 +148,12 @@ track_features_core
   image_container_sptr mask ) const
 {
   // verify that all dependent algorithms have been initialized
-  if( !d_->detector || !d_->extractor || !d_->matcher )
+  if( !d_->detector() || !d_->extractor() || !d_->matcher() )
   {
     // Something did not initialize
     VITAL_THROW(
-      vital::algorithm_configuration_exception, this->type_name(),
-      this->impl_name(),
+      vital::algorithm_configuration_exception, this->interface_name(),
+      this->plugin_name(),
       "not all sub-algorithms have been initialized" );
   }
 
@@ -272,16 +194,16 @@ track_features_core
   // see if there are existing features cached on disk
   if( ( !curr_feat || curr_feat->size() == 0 ||
         !curr_desc || curr_desc->size() == 0 ) &&
-      d_->feature_io && d_->features_dir != "" )
+      d_->feature_io() && d_->features_dir() != "" )
   {
     metadata_sptr md = image_data->get_metadata();
     std::string basename = basename_from_metadata( md, frame_number );
-    path_t kwfd_file = d_->features_dir + "/" + basename + ".kwfd";
+    path_t kwfd_file = d_->features_dir() + "/" + basename + ".kwfd";
     if( ST::FileExists( kwfd_file ) )
     {
       feature_set_sptr feat;
       descriptor_set_sptr desc;
-      d_->feature_io->load( kwfd_file, feat, desc );
+      d_->feature_io()->load( kwfd_file, feat, desc );
       if( feat && feat->size() > 0 && desc && desc->size() > 0 )
       {
         LOG_DEBUG(
@@ -327,23 +249,23 @@ track_features_core
   {
     LOG_DEBUG( logger(), "Computing new features on frame " << frame_number);
     // detect features on the current frame
-    curr_feat = d_->detector->detect( image_data, mask );
+    curr_feat = d_->detector()->detect( image_data, mask );
     features_computed = true;
   }
   if( !curr_desc || curr_desc->size() == 0 )
   {
     LOG_DEBUG( logger(), "Computing new descriptors on frame " << frame_number);
     // extract descriptors on the current frame
-    curr_desc = d_->extractor->extract( image_data, curr_feat, mask );
+    curr_desc = d_->extractor()->extract( image_data, curr_feat, mask );
     features_computed = true;
   }
 
   // cache features if they were just computed and feature I/O is enabled
-  if( features_computed && d_->feature_io && d_->features_dir != "" )
+  if( features_computed && d_->feature_io() && d_->features_dir() != "" )
   {
     metadata_sptr md = image_data->get_metadata();
     std::string basename = basename_from_metadata( md, frame_number );
-    path_t kwfd_file = d_->features_dir + "/" + basename + ".kwfd";
+    path_t kwfd_file = d_->features_dir() + "/" + basename + ".kwfd";
 
     // make the enclosing directory if it does not already exist
     const kwiver::vital::path_t fd_dir = ST::GetFilenamePath( kwfd_file );
@@ -354,7 +276,7 @@ track_features_core
         LOG_ERROR( logger(), "Unable to create directory: " << fd_dir );
       }
     }
-    d_->feature_io->save( kwfd_file, curr_feat, curr_desc );
+    d_->feature_io()->save( kwfd_file, curr_feat, curr_desc );
     LOG_DEBUG(
       logger(), "Saved features on frame " << frame_number
                                            << " to " << kwfd_file );
@@ -391,11 +313,11 @@ track_features_core
     auto new_track_set = std::make_shared< feature_track_set >(
       tsi_uptr( new frame_index_track_set_impl( new_tracks ) ) );
 
-    if( d_->closer )
+    if( d_->closer() )
     {
       // call loop closure on the first frame to establish this
       // frame as the first frame for loop closing purposes
-      return d_->closer->stitch(
+      return d_->closer()->stitch(
         frame_number,
         new_track_set,
         image_data, mask );
@@ -436,7 +358,7 @@ track_features_core
   descriptor_set_sptr prev_desc = active_set->frame_descriptors( prev_frame );
 
   // match features to from the previous to the current frame
-  match_set_sptr mset = d_->matcher->match(
+  match_set_sptr mset = d_->matcher()->match(
     prev_feat, prev_desc,
     curr_feat, curr_desc );
   if( !mset )
@@ -518,9 +440,9 @@ track_features_core
   }
 
   // run loop closure if enabled
-  if( d_->closer )
+  if( d_->closer() )
   {
-    updated_track_set = d_->closer->stitch(
+    updated_track_set = d_->closer()->stitch(
       frame_number,
       updated_track_set,
       image_data, mask );

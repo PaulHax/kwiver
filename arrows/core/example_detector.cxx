@@ -18,76 +18,40 @@ namespace core {
 class example_detector::priv
 {
 public:
-  // -- CONSTRUCTORS --
-  priv()
-    : m_center_x( 100.0 ),
-      m_center_y( 100.0 ),
-      m_height( 200.0 ),
-      m_width( 200.0 ),
-      m_dx( 0.0 ),
-      m_dy( 0.0 ),
+  priv( example_detector& parent )
+    : parent( parent ),
       m_frame_ct( 0 )
   {}
+
+  example_detector& parent;
+
+  // Configuration values
+  double c_center_x() { return parent.c_center_x; }
+  double c_center_y() { return parent.c_center_y; }
+  double c_height() { return parent.c_height; }
+  double c_width() { return parent.c_width; }
+  double c_dx() { return parent.c_dx; }
+  double c_dy() { return parent.c_dy; }
 
   ~priv()
   {}
 
-  double m_center_x;
-  double m_center_y;
-  double m_height;
-  double m_width;
-  double m_dx;
-  double m_dy;
+  // Local value
   int m_frame_ct;
 }; // end class example_detector::priv
 
 // ----------------------------------------------------------------------------
+void
 example_detector
-::example_detector()
-  : d( new priv )
-{}
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+  attach_logger( "arrows.core.example_detector" );
+}
 
 example_detector::
 ~example_detector()
 {}
-
-// ----------------------------------------------------------------------------
-vital::config_block_sptr
-example_detector
-::get_configuration() const
-{
-  // Get base config from base class
-  vital::config_block_sptr config = vital::algorithm::get_configuration();
-
-  config->set_value(
-    "center_x", d->m_center_x,
-    "Bounding box center x coordinate." );
-  config->set_value(
-    "center_y", d->m_center_y,
-    "Bounding box center y coordinate." );
-  config->set_value( "height", d->m_height, "Bounding box height." );
-  config->set_value( "width", d->m_width, "Bounding box width." );
-  config->set_value( "dx", d->m_dx, "Bounding box x translation per frame." );
-  config->set_value( "dy", d->m_dy, "Bounding box y translation per frame." );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-void
-example_detector
-::set_configuration( vital::config_block_sptr config_in )
-{
-  auto config = get_configuration();
-  config->merge_config( config_in );
-
-  d->m_center_x     = config->get_value< double >( "center_x" );
-  d->m_center_y     = config->get_value< double >( "center_y" );
-  d->m_height       = config->get_value< double >( "height" );
-  d->m_width        = config->get_value< double >( "width" );
-  d->m_dx           = config->get_value< double >( "dx" );
-  d->m_dy           = config->get_value< double >( "dy" );
-}
 
 // ----------------------------------------------------------------------------
 bool
@@ -106,10 +70,10 @@ example_detector
   const double ct = static_cast< double >( d->m_frame_ct );
 
   kwiver::vital::bounding_box_d bbox(
-    d->m_center_x + ct * d->m_dx - d->m_width / 2.0,
-    d->m_center_y + ct * d->m_dy - d->m_height / 2.0,
-    d->m_center_x + ct * d->m_dx + d->m_width / 2.0,
-    d->m_center_y + ct * d->m_dy + d->m_height / 2.0 );
+    d->c_center_x() + ct * d->c_dx() - d->c_width() / 2.0,
+    d->c_center_y() + ct * d->c_dy() - d->c_height() / 2.0,
+    d->c_center_x() + ct * d->c_dx() + d->c_width() / 2.0,
+    d->c_center_y() + ct * d->c_dy() + d->c_height() / 2.0 );
 
   ++d->m_frame_ct;
 

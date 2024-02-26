@@ -25,15 +25,16 @@ set( plugin_core_headers
   detected_object_set_output_csv.h
   detected_object_set_input_simulator.h
   dynamic_config_none.h
-  # estimate_canonical_transform.h
-  # example_detector.h
-  # feature_descriptor_io.h
+  estimate_canonical_transform.h
+  example_detector.h
+  feature_descriptor_io.h
   filter_features_magnitude.h
   filter_features_nonmax.h
   filter_features_scale.h
   filter_tracks.h
-  # handle_descriptor_request_core.h
+  handle_descriptor_request_core.h
   # initialize_object_tracks_threshold.h
+  interpolate_track_spline.h
   # keyframe_selector_basic.h
   # match_features_fundamental_matrix.h
   # match_features_homography.h
@@ -47,7 +48,8 @@ set( plugin_core_headers
   read_track_descriptor_set_csv.h
   render_mesh_depth_map.h
   # track_features_augment_keyframes.h
-  # track_features_core.h
+  track_features_core.h
+  track_set_impl.h
   # transfer_bbox_with_depth_map.h
   # transform_detected_object_set.h
   triangle_scan_iterator.h
@@ -102,15 +104,16 @@ set( plugin_core_sources
   detected_object_set_output_csv.cxx
   detected_object_set_input_simulator.cxx
   dynamic_config_none.cxx
-  # estimate_canonical_transform.cxx
-  # example_detector.cxx
-  # feature_descriptor_io.cxx
+  estimate_canonical_transform.cxx
+  example_detector.cxx
+  feature_descriptor_io.cxx
   filter_features_magnitude.cxx
   filter_features_nonmax.cxx
   filter_features_scale.cxx
   filter_tracks.cxx
-  # handle_descriptor_request_core.cxx
+  handle_descriptor_request_core.cxx
   # initialize_object_tracks_threshold.cxx
+  interpolate_track_spline.cxx
   # keyframe_selector_basic.cxx
   # match_features_fundamental_matrix.cxx
   # match_features_homography.cxx
@@ -124,7 +127,8 @@ set( plugin_core_sources
   read_track_descriptor_set_csv.cxx
   render_mesh_depth_map.cxx
   # track_features_augment_keyframes.cxx
-  # track_features_core.cxx
+  track_features_core.cxx
+  track_set_impl.cxx
   # transfer_bbox_with_depth_map.cxx
   # transform_detected_object_set.cxx
   triangle_scan_iterator.cxx

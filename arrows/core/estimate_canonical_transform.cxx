@@ -25,78 +25,30 @@ class estimate_canonical_transform::priv
 {
 public:
   /// Constructor
-  priv()
-    : estimate_scale( true ),
-      height_percentile( 0.05 )
+  priv( estimate_canonical_transform& parent )
+    : parent( parent )
   {}
 
-  priv( const priv& other )
-    : estimate_scale( other.estimate_scale ),
-      height_percentile( other.height_percentile )
-  {}
+  estimate_canonical_transform& parent;
 
-  bool estimate_scale;
-  double height_percentile;
+  // Configuration values
+  bool c_estimate_scale() { return parent.c_estimate_scale; }
+  double c_height_percentile() { return parent.c_height_percentile; }
 };
 
 // ----------------------------------------------------------------------------
-// Constructor
+void
 estimate_canonical_transform
-::estimate_canonical_transform()
-  : d_( new priv )
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
   attach_logger( "arrows.core.estimate_canonical_transform" );
 }
-
-// Copy Constructor
-estimate_canonical_transform
-::estimate_canonical_transform( const estimate_canonical_transform& other )
-  : d_( new priv( *other.d_ ) )
-{}
 
 // Destructor
 estimate_canonical_transform
 ::~estimate_canonical_transform()
 {}
-
-// ----------------------------------------------------------------------------
-// Get this algorithm's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-estimate_canonical_transform
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config =
-    vital::algo::estimate_canonical_transform::get_configuration();
-
-  config->set_value(
-    "estimate_scale", d_->estimate_scale,
-    "Estimate the scale to normalize the data. "
-    "If disabled the estimate transform is rigid" );
-
-  config->set_value(
-    "height_percentile", d_->height_percentile,
-    "Shift the ground plane along the normal axis such that "
-    "this percentage of landmarks are below the ground. Values "
-    "are in the range [0.0, 1.0).  If the value is outside "
-    "this range use the mean height instead." );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-// Set this algorithm's properties via a config block
-void
-estimate_canonical_transform
-::set_configuration( vital::config_block_sptr config )
-{
-  d_->estimate_scale = config->get_value< bool >(
-    "estimate_scale",
-    d_->estimate_scale );
-  d_->height_percentile = config->get_value< double >(
-    "height_percentile",
-    d_->height_percentile );
-}
 
 // ----------------------------------------------------------------------------
 // Check that the algorithm's configuration vital::config_block is valid
@@ -167,7 +119,7 @@ estimate_canonical_transform
     }
   }
 
-  if( d_->height_percentile >= 0.0 && d_->height_percentile < 1.0 )
+  if( d_->c_height_percentile() >= 0.0 && d_->c_height_percentile() < 1.0 )
   {
     const vital::vector_3d z = rot.col( 2 );
     std::vector< double > heights;
@@ -178,12 +130,12 @@ estimate_canonical_transform
     }
     std::sort( heights.begin(), heights.end() );
 
-    const unsigned idx = static_cast< unsigned >( d_->height_percentile *
+    const unsigned idx = static_cast< unsigned >( d_->c_height_percentile() *
                                                   heights.size() );
     center += heights[ idx ] * z;
   }
 
-  if( !d_->estimate_scale )
+  if( !d_->c_estimate_scale() )
   {
     s = 1.0;
   }

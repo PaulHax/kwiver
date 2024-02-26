@@ -9,6 +9,9 @@
 
 #include <vital/algo/image_object_detector.h>
 
+#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
+
 namespace kwiver {
 
 namespace arrows {
@@ -19,15 +22,37 @@ class KWIVER_ALGO_CORE_EXPORT example_detector
   : public vital::algo::image_object_detector
 {
 public:
-  PLUGIN_INFO(
-    "example_detector",
-    "Simple example detector that just creates a user-specified bounding box." )
+  PLUGGABLE_IMPL(
+    example_detector,
+    "Simple example detector that just creates a user-specified bounding box.",
+    PARAM_DEFAULT(
+      center_x, double,
+      "Bounding box center x coordinate.",
+      100.0 ),
+    PARAM_DEFAULT(
+      center_y, double,
+      "Bounding box center y coordinate.",
+      100.0 ),
+    PARAM_DEFAULT(
+      height, double,
+      "Bounding box height.",
+      200.0 ),
+    PARAM_DEFAULT(
+      width, double,
+      "Bounding box width.",
+      200.0 ),
+    PARAM_DEFAULT(
+      dx, double,
+      "Bounding box x translation per frame.",
+      0.0 ),
+    PARAM_DEFAULT(
+      dy, double,
+      "Bounding box y translation per frame.",
+      0.0 )
+  )
 
-  example_detector();
   virtual ~example_detector();
 
-  virtual vital::config_block_sptr get_configuration() const;
-  virtual void set_configuration( vital::config_block_sptr config_in );
   virtual bool check_configuration( vital::config_block_sptr config ) const;
 
   // Main detection method
@@ -35,9 +60,10 @@ public:
     vital::image_container_sptr image_data ) const;
 
 private:
+  void initialize() override;
+  /// private implementation class
   class priv;
-
-  const std::unique_ptr< priv > d;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // namespace core

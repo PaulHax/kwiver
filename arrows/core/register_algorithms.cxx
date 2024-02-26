@@ -17,13 +17,18 @@
 #include <vital/algo/detected_object_set_input.h>
 #include <vital/algo/detected_object_set_output.h>
 #include <vital/algo/dynamic_configuration.h>
+#include <vital/algo/estimate_canonical_transform.h>
+#include <vital/algo/feature_descriptor_io.h>
 #include <vital/algo/filter_features.h>
 #include <vital/algo/filter_tracks.h>
+#include <vital/algo/handle_descriptor_request.h>
 #include <vital/algo/image_object_detector.h>
+#include <vital/algo/interpolate_track.h>
 #include <vital/algo/metadata_filter.h>
 #include <vital/algo/metadata_map_io.h>
 #include <vital/algo/read_object_track_set.h>
 #include <vital/algo/read_track_descriptor_set.h>
+#include <vital/algo/track_features.h>
 #include <vital/algo/uv_unwrap_mesh.h>
 #include <vital/algo/video_input.h>
 
@@ -38,13 +43,19 @@
 #include <arrows/core/detected_object_set_input_simulator.h>
 #include <arrows/core/detected_object_set_output_csv.h>
 #include <arrows/core/dynamic_config_none.h>
+#include <arrows/core/estimate_canonical_transform.h>
+#include <arrows/core/example_detector.h>
+#include <arrows/core/feature_descriptor_io.h>
 #include <arrows/core/filter_features_magnitude.h>
 #include <arrows/core/filter_features_nonmax.h>
 #include <arrows/core/filter_features_scale.h>
 #include <arrows/core/filter_tracks.h>
+#include <arrows/core/handle_descriptor_request_core.h>
+#include <arrows/core/interpolate_track_spline.h>
 #include <arrows/core/metadata_map_io_csv.h>
 #include <arrows/core/read_object_track_set_kw18.h>
 #include <arrows/core/read_track_descriptor_set_csv.h>
+#include <arrows/core/track_features_core.h>
 #include <arrows/core/uv_unwrap_mesh.h>
 #include <arrows/core/video_input_filter.h>
 #include <arrows/core/video_input_image_list.h>
@@ -150,6 +161,30 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::detect_features,
     detect_features_filtered >( "filtered" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::estimate_canonical_transform,
+    estimate_canonical_transform >( "core_pca" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::image_object_detector,
+    example_detector >( "example_detector" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::feature_descriptor_io,
+    feature_descriptor_io >( "core" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::handle_descriptor_request,
+    handle_descriptor_request_core >( "core" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::interpolate_track,
+    interpolate_track_spline >( "spline" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::track_features,
+    track_features_core >( "core" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 

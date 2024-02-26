@@ -27,19 +27,13 @@ class KWIVER_ALGO_CORE_EXPORT interpolate_track_spline
   : public vital::algo::interpolate_track
 {
 public:
-  PLUGIN_INFO(
-    "spline",
-    "Fill in missing object track intervals using spline-based interpolation." )
-
-  /// Default Constructor
-  interpolate_track_spline();
+  PLUGGABLE_IMPL(
+    interpolate_track_spline,
+    "Fill in missing object track intervals using spline-based interpolation."
+  )
 
   /// Destructor
   virtual ~interpolate_track_spline();
-
-  /// Set this algo's properties via a config block
-  virtual void set_configuration(
-    vital::config_block_sptr config ) override;
 
   /// Check that the algorithm's currently configuration is valid
   virtual bool check_configuration(
@@ -49,11 +43,11 @@ public:
   virtual kwiver::vital::track_sptr interpolate(
     kwiver::vital::track_sptr init_states ) override;
 
-protected:
+private:
+  void initialize() override;
   /// private implementation class
   class priv;
-
-  std::unique_ptr< priv > const d_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // namespace core
