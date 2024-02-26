@@ -26,7 +26,6 @@
 #include <arrows/ocv/estimate_fundamental_matrix.h>
 #include <arrows/ocv/estimate_homography.h>
 #include <arrows/ocv/estimate_pnp.h>
-// #include <arrows/ocv/resection_camera.h>
 #include <arrows/ocv/extract_descriptors_BRIEF.h>
 #include <arrows/ocv/extract_descriptors_DAISY.h>
 #include <arrows/ocv/extract_descriptors_FREAK.h>
@@ -37,17 +36,18 @@
 #include <arrows/ocv/feature_detect_extract_SIFT.h>
 #include <arrows/ocv/feature_detect_extract_SURF.h>
 #include <arrows/ocv/image_io.h>
+#include <arrows/ocv/resection_camera.h>
 
 #include <arrows/ocv/inpaint.h>
 // #include <arrows/ocv/match_features_bruteforce.h>
 // #include <arrows/ocv/match_features_flannbased.h>
-#include <arrows/ocv/merge_images.h>
-// #include <arrows/ocv/hough_circle_detector.h>
-#include <arrows/ocv/refine_detections_write_to_disk.h>
-#include <arrows/ocv/split_image.h>
-// #include <arrows/ocv/track_features_klt.h>
 #include <arrows/ocv/detect_motion_3frame_differencing.h>
 #include <arrows/ocv/detect_motion_mog2.h>
+#include <arrows/ocv/hough_circle_detector.h>
+#include <arrows/ocv/merge_images.h>
+#include <arrows/ocv/refine_detections_write_to_disk.h>
+#include <arrows/ocv/split_image.h>
+#include <arrows/ocv/track_features_klt.h>
 
 // #include <arrows/ocv/detect_heat_map.h>
 
@@ -117,7 +117,9 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 //  reg.register_algorithm< match_features_bruteforce >();
 //  reg.register_algorithm< match_features_flannbased >();
 //
-//  reg.register_algorithm< hough_circle_detector >();
+  fact = vpm.add_factory< vital::algo::image_object_detector,
+    hough_circle_detector >( "hough_circle" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
   fact = vpm.add_factory< vital::algo::detect_motion,
     detect_motion_3frame_differencing >( "ocv_3frame_differencing" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
@@ -204,10 +206,14 @@ register_factories( kwiver::vital::plugin_loader& vpm )
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
   fact = vpm.add_factory< vital::algo::merge_images, merge_images >( "ocv" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
-//  reg.register_algorithm< track_features_klt >();
+  fact = vpm.add_factory< vital::algo::track_features,
+    track_features_klt >( "ocv_KLT" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
   fact = vpm.add_factory< vital::algo::estimate_pnp, estimate_pnp >( "ocv" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
-//  reg.register_algorithm< resection_camera >();
+  fact = vpm.add_factory< vital::algo::resection_camera,
+    resection_camera >( "ocv" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
 //
 //  reg.mark_module_as_loaded();
 }

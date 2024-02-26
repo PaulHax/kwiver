@@ -6,6 +6,7 @@ set(CMAKE_FOLDER "Arrows/OCV")
 set( ocv_headers_public
   analyze_tracks.h
   camera_intrinsics.h
+  config_options_helpers.txx
   descriptor_set.h
   detect_features.h
   detect_features_AGAST.h
@@ -34,7 +35,7 @@ set( ocv_headers_public
   feature_detect_extract_SIFT.h
   feature_detect_extract_SURF.h
   #detect_heat_map.h
-  #hough_circle_detector.h
+  hough_circle_detector.h
   image_container.h
   image_io.h
   inpaint.h
@@ -45,9 +46,10 @@ set( ocv_headers_public
   #match_set.h
   merge_images.h
   refine_detections_write_to_disk.h
-  #resection_camera.h
+  resection_camera_options.h
+  resection_camera.h
   split_image.h
-  #track_features_klt.h
+  track_features_klt.h
   )
 kwiver_install_headers(
   SUBDIR     arrows/ocv
@@ -84,7 +86,7 @@ set( ocv_sources
   extract_descriptors_LATCH.cxx
   extract_descriptors_LUCID.cxx
   #detect_heat_map.cxx
-  #hough_circle_detector.cxx
+  hough_circle_detector.cxx
   feature_set.cxx
   feature_detect_extract_BRISK.cxx
   feature_detect_extract_ORB.cxx
@@ -100,9 +102,10 @@ set( ocv_sources
   #match_set.cxx
   merge_images.cxx
   refine_detections_write_to_disk.cxx
-  #resection_camera.cxx
+  resection_camera.cxx
+  resection_camera_options.cxx
   split_image.cxx
-  #track_features_klt.cxx
+  track_features_klt.cxx
   )
 
 kwiver_add_library( kwiver_algo_ocv
@@ -115,10 +118,9 @@ target_compile_definitions( kwiver_algo_ocv
 target_link_libraries( kwiver_algo_ocv
   PUBLIC               vital_algo
                        ${OpenCV_LIBS}
+                       kwiver_algo_mvg
   PRIVATE              kwiversys
                        kwiver_algo_core
-# kwiver-v2 xxx(bring it back once we have mvg arrow)
-                       #kwiver_algo_mvg
   )
 
 algorithms_create_plugin( kwiver_algo_ocv
