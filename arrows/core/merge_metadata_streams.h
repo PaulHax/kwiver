@@ -12,6 +12,9 @@
 
 #include <vital/algo/metadata_filter.h>
 
+#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
+
 namespace kwiver {
 
 namespace arrows {
@@ -23,20 +26,21 @@ class KWIVER_ALGO_CORE_EXPORT merge_metadata_streams
   : public vital::algo::metadata_filter
 {
 public:
-  merge_metadata_streams();
-  virtual ~merge_metadata_streams();
+  PLUGGABLE_IMPL(
+    merge_metadata_streams,
+    "Combines multiple metadata streams into exactly one."
+  )
 
-  PLUGIN_INFO(
-    "merge_metadata_streams",
-    "Combines multiple metadata streams into exactly one." )
+  virtual ~merge_metadata_streams() = default;
 
-  vital::config_block_sptr get_configuration() const override;
-  void set_configuration( vital::config_block_sptr config ) override;
   bool check_configuration( vital::config_block_sptr config ) const override;
 
   vital::metadata_vector filter(
     vital::metadata_vector const& input_metadata,
     vital::image_container_scptr const& input_image ) override;
+
+private:
+  void initialize() override;
 };
 
 } // namespace core

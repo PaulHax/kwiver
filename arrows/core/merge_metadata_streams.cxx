@@ -17,30 +17,13 @@ namespace arrows {
 namespace core {
 
 // ----------------------------------------------------------------------------
-merge_metadata_streams
-::merge_metadata_streams()
-{
-  this->set_capability( CAN_USE_FRAME_IMAGE, false );
-}
-
-// ----------------------------------------------------------------------------
-merge_metadata_streams
-::~merge_metadata_streams()
-{}
-
-// ----------------------------------------------------------------------------
-vital::config_block_sptr
-merge_metadata_streams
-::get_configuration() const
-{
-  return metadata_filter::get_configuration();
-}
-
-// ----------------------------------------------------------------------------
 void
 merge_metadata_streams
-::set_configuration( vital::config_block_sptr )
-{}
+::initialize()
+{
+  attach_logger( "arrows.core.merge_metadata_streams" );
+  this->set_capability( CAN_USE_FRAME_IMAGE, false );
+}
 
 // ----------------------------------------------------------------------------
 bool
