@@ -26,6 +26,7 @@
 #include <vital/algo/handle_descriptor_request.h>
 #include <vital/algo/image_object_detector.h>
 #include <vital/algo/interpolate_track.h>
+#include <vital/algo/keyframe_selection.h>
 #include <vital/algo/match_features.h>
 #include <vital/algo/metadata_filter.h>
 #include <vital/algo/metadata_map_io.h>
@@ -59,6 +60,7 @@
 #include <arrows/core/filter_tracks.h>
 #include <arrows/core/handle_descriptor_request_core.h>
 #include <arrows/core/interpolate_track_spline.h>
+#include <arrows/core/keyframe_selector_basic.h>
 #include <arrows/core/match_features_fundamental_matrix.h>
 #include <arrows/core/match_features_homography.h>
 #include <arrows/core/merge_metadata_streams.h>
@@ -225,6 +227,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::metadata_filter,
     merge_metadata_streams >( "merge_metadata_streams" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::keyframe_selection,
+    keyframe_selector_basic >( "basic" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 

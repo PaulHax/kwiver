@@ -33,7 +33,7 @@ kwiver_discover_gtests(core feature_descriptor_io     LIBRARIES ${test_libraries
 kwiver_discover_gtests(core handle_descriptor_request_core
                                                       LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core interpolate_track_spline  LIBRARIES ${test_libraries})
-# kwiver_discover_gtests(core merge_metadata_streams    LIBRARIES ${test_libraries})
+kwiver_discover_gtests(core keyframe_selector_basic   LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core match_features            LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core merge_metadata_streams    LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core metadata_map_io_csv       LIBRARIES ${test_libraries})

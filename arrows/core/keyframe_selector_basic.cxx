@@ -19,44 +19,28 @@ namespace core {
 class keyframe_selector_basic::priv
 {
 public:
-  priv()
-    : keyframe_min_feature_count( 50 ),
-      fraction_tracks_lost_to_necessitate_new_keyframe( 0.3f )
+  priv( keyframe_selector_basic& parent )
+    : parent( parent )
   {}
 
   virtual ~priv() {}
 
-  /// Set our parameters based on the given config block
-  void
-  set_config( const vital::config_block_sptr& config )
+  keyframe_selector_basic& parent;
+
+  // Configuration values
+  float
+  c_fraction_tracks_lost_to_necessitate_new_keyframe() const
   {
-    if( config->has_value(
-      "fraction_tracks_lost_to_necessitate_new_keyframe" ) )
-    {
-      fraction_tracks_lost_to_necessitate_new_keyframe = config->get_value< float >(
-        "fraction_tracks_lost_to_necessitate_new_keyframe" );
-    }
-    if( config->has_value( "keyframe_min_feature_count" ) )
-    {
-      keyframe_min_feature_count = config->get_value< size_t >(
-        "keyframe_min_feature_count" );
-    }
+    return parent.c_fraction_tracks_lost_to_necessitate_new_keyframe;
   }
 
-  /// Set current parameter values to the given config block
-  void
-  update_config( vital::config_block_sptr& config ) const
+  size_t
+  c_keyframe_min_feature_count() const
   {
-    config->set_value(
-      "fraction_tracks_lost_to_necessitate_new_keyframe",
-      fraction_tracks_lost_to_necessitate_new_keyframe,
-      "if this fraction of more of features is lost then select a new keyframe" );
-    config->set_value(
-      "keyframe_min_feature_count",
-      keyframe_min_feature_count,
-      "minimum number of features required for a frame to become a keyframe" );
+    return parent.c_keyframe_min_feature_count;
   }
 
+// ----------------------------------------------------------------------------
   bool
   check_configuration( vital::config_block_sptr config ) const
   {
@@ -65,7 +49,7 @@ public:
     float test_fraction_tracks_lost_to_necessitate_new_keyframe =
       config->get_value< float >(
         "fraction_tracks_lost_to_necessitate_new_keyframe",
-        fraction_tracks_lost_to_necessitate_new_keyframe );
+        c_fraction_tracks_lost_to_necessitate_new_keyframe() );
 
     if( !( 0 < test_fraction_tracks_lost_to_necessitate_new_keyframe &&
            test_fraction_tracks_lost_to_necessitate_new_keyframe <= 1.0 ) )
@@ -78,7 +62,7 @@ public:
     }
 
     int test_keyframe_min_feature_count = config->get_value< int >(
-      "keyframe_min_feature_count", keyframe_min_feature_count );
+      "keyframe_min_feature_count", c_keyframe_min_feature_count() );
 
     if( test_keyframe_min_feature_count < 0 )
     {
@@ -100,9 +84,6 @@ public:
 
   bool a_keyframe_was_selected(
     kwiver::vital::track_set_sptr tracks );
-
-  size_t keyframe_min_feature_count;
-  float fraction_tracks_lost_to_necessitate_new_keyframe;
 
   kwiver::vital::logger_handle_t m_logger;
 };
@@ -128,7 +109,7 @@ keyframe_selector_basic::priv
     }
 
     bool is_keyframe = false;
-    if( tracks->num_active_tracks( frame ) >= keyframe_min_feature_count )
+    if( tracks->num_active_tracks( frame ) >= c_keyframe_min_feature_count() )
     {
       is_keyframe = true;
     }
@@ -184,13 +165,13 @@ keyframe_selector_basic::priv
         last_keyframe_id,
         next_candidate_keyframe_id );
     if( percentage_tracked >
-        ( 1.0 - fraction_tracks_lost_to_necessitate_new_keyframe ) )
+        ( 1.0 - c_fraction_tracks_lost_to_necessitate_new_keyframe() ) )
     {
       is_keyframe = false;
     }
 
     // ok we could make this a keyframe.  Does it have enough features?
-    if( active_tracks.size() < keyframe_min_feature_count )
+    if( active_tracks.size() < c_keyframe_min_feature_count() )
     {
       is_keyframe = false;
     }
@@ -216,42 +197,16 @@ keyframe_selector_basic::priv
   return !keyframes.empty();
 }
 
-/// Default Constructor
-keyframe_selector_basic
-::keyframe_selector_basic()
-{
-  d_ = std::make_shared< keyframe_selector_basic::priv >();
-
-  attach_logger( "arrows.core.keyframe_selector_basic" );
-  d_->m_logger = this->logger();
-}
-
-/// Get this alg's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-keyframe_selector_basic
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config = algorithm::get_configuration();
-
-  d_->update_config( config );
-
-  return config;
-}
-
-/// Set this algo's properties via a config block
+// -----------------------------------------------------------------------------
 void
 keyframe_selector_basic
-::set_configuration( vital::config_block_sptr in_config )
+::initialize()
 {
-  // Starting with our generated config_block to ensure that assumed values are
-  // present.  An alternative is to check for key presence before performing a
-  // get_value() call.
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-  d_->set_config( in_config );
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
+  attach_logger( "arrows.core.keyframe_selector_basic" );
 }
 
+// ----------------------------------------------------------------------------
 bool
 keyframe_selector_basic
 ::check_configuration( vital::config_block_sptr config ) const
