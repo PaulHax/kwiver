@@ -9,8 +9,9 @@
 
 #include <arrows/core/video_input_splice.h>
 #include <arrows/tests/test_video_input.h>
+#include <vital/algo/algorithm.txx>
+#include <vital/algo/image_io.h>
 
-#include <vital/algo/algorithm_factory.h>
 #include <vital/io/metadata_io.h>
 #include <vital/plugin_management/plugin_manager.h>
 #include <vital/vital_config.h>
@@ -49,7 +50,9 @@ class video_input_splice : public ::testing::Test
 // ----------------------------------------------------------------------------
 TEST_F ( video_input_splice, create )
 {
-  EXPECT_NE( nullptr, algo::video_input::create( "splice" ) );
+  EXPECT_NE(
+    nullptr,
+    kwiver::vital::create_algorithm< algo::video_input >( "splice" ) );
 }
 
 // ----------------------------------------------------------------------------
@@ -64,11 +67,11 @@ set_config(
     std::string block_name = "video_source_" + std::to_string( n ) + ":";
 
     config->set_value( block_name + "type", "image_list" );
-    if( kwiver::vital::has_algorithm_impl_name( "image_io", "ocv" ) )
+    if( kwiver::vital::has_algorithm_impl_name< algo::image_io >( "ocv" ) )
     {
       config->set_value( block_name + "image_list:image_reader:type", "ocv" );
     }
-    else if( kwiver::vital::has_algorithm_impl_name( "image_io", "vxl" ) )
+    else if( kwiver::vital::has_algorithm_impl_name< algo::image_io >( "vxl" ) )
     {
       config->set_value( block_name + "image_list:image_reader:type", "vxl" );
     }

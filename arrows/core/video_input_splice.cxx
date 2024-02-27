@@ -31,15 +31,17 @@ source_name( size_t n )
 class video_input_splice::priv
 {
 public:
-  priv()
-    : c_frame_skip( 1 ),
+  priv( video_input_splice& parent )
+    : parent( parent ),
       d_has_timeout( false ),
       d_is_seekable( false ),
       d_frame_offset( 0 )
   {}
 
+  video_input_splice& parent;
+
   // Configuration values
-  unsigned int c_frame_skip;
+  unsigned int c_frame_skip() { return parent.c_frame_skip; }
 
   std::vector< std::string > d_search_path;
   bool d_has_timeout;
@@ -59,11 +61,12 @@ public:
 };
 
 // ----------------------------------------------------------------------------
+void
 video_input_splice
-::video_input_splice()
-  : d( new video_input_splice::priv )
+::initialize()
 {
-  attach_logger( "video_input_splice" );
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+  attach_logger( "arrows.core.video_input_splice" );
 }
 
 // ----------------------------------------------------------------------------
@@ -72,40 +75,12 @@ video_input_splice
 {}
 
 // ----------------------------------------------------------------------------
-vital::config_block_sptr
-video_input_splice
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config =
-    vital::algo::video_input::get_configuration();
-
-  config->set_value(
-    "output_nth_frame", d->c_frame_skip,
-    "Only outputs every nth frame of the video starting at the first frame. The output "
-    "of num_frames still reports the total frames in the video but skip_frame is valid "
-    "every nth frame only and there are metadata_map entries for only every nth frame." );
-
-  size_t n = 1;
-  for( auto const& vs : d->d_video_sources )
-  {
-    vital::algo::video_input::
-    get_nested_algo_configuration( source_name( n ), config, vs );
-  }
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
 void
 video_input_splice
-::set_configuration( vital::config_block_sptr in_config )
+::set_configuration_internal( vital::config_block_sptr in_config )
 {
   vital::config_block_sptr config = this->get_configuration();
   config->merge_config( in_config );
-
-  d->c_frame_skip = config->get_value< vital::timestamp::frame_t >(
-    "output_nth_frame", d->c_frame_skip );
 
   // Extract string and create vector of directories
   std::string path = config->get_value< std::string >( "path", "" );
@@ -135,7 +110,7 @@ video_input_splice
       d->d_video_sources.push_back( vital::algo::video_input_sptr() );
     }
 
-    vital::algo::video_input::set_nested_algo_configuration(
+    kwiver::vital::set_nested_algo_configuration< vital::algo::video_input >(
       source_name( n ), config, d->d_video_sources[ n - 1 ] );
 
     auto& caps = d->d_video_sources[ n - 1 ]->get_implementation_capabilities();
@@ -178,8 +153,9 @@ video_input_splice
   size_t n = 1;
   while( config->has_value( source_name( n ) ) )
   {
-    status = status && vital::algo::video_input::
-             check_nested_algo_configuration( source_name( n ), config );
+    status = status &&
+             kwiver::vital::check_nested_algo_configuration< vital::algo::video_input >(
+      source_name( n ), config );
   }
 
   return status;
@@ -356,7 +332,7 @@ video_input_splice
         }
       }
     }
-  }while( ( frame_number - 1 ) % d->c_frame_skip != 0 && status );
+  }while( ( frame_number - 1 ) % d->c_frame_skip() != 0 && status );
 
   ts.set_frame( frame_number );
   return status;
@@ -375,7 +351,7 @@ video_input_splice
   bool status = false;
 
   // Check if requested frame would have been skipped
-  if( ( frame_number - 1 ) % d->c_frame_skip != 0 )
+  if( ( frame_number - 1 ) % d->c_frame_skip() != 0 )
   {
     return false;
   }
