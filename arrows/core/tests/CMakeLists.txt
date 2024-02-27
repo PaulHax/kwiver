@@ -62,8 +62,12 @@ kwiver_discover_gtests(core transform_detected_object_set
                                                       LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(core triangle_scan_iterator    LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core uv_unwrap_mesh            LIBRARIES ${test_libraries})
+kwiver_discover_gtests(core video_input_buffered_metadata_filter
+                                                      LIBRARIES ${test_libraries} ARGUMENTS "${kwiver_test_data_directory}")
 kwiver_discover_gtests(core video_input_filter        LIBRARIES ${test_libraries} ARGUMENTS "${kwiver_test_data_directory}")
 kwiver_discover_gtests(core video_input_image_list    LIBRARIES ${test_libraries} ARGUMENTS "${kwiver_test_data_directory}")
+kwiver_discover_gtests(core video_input_metadata_filter
+                                                      LIBRARIES ${test_libraries} ARGUMENTS "${kwiver_test_data_directory}")
 kwiver_discover_gtests(core video_input_pos           LIBRARIES ${test_libraries} ARGUMENTS "${kwiver_test_data_directory}")
 kwiver_discover_gtests(core video_input_splice        LIBRARIES ${test_libraries} ARGUMENTS "${kwiver_test_data_directory}")
 kwiver_discover_gtests(core video_input_split         LIBRARIES ${test_libraries} ARGUMENTS "${kwiver_test_data_directory}")

@@ -67,19 +67,6 @@ video_input_buffered_metadata_filter::priv::frame_info
 {}
 
 // ----------------------------------------------------------------------------
-
-/*
- *  video_input_buffered_metadata_filter::priv
- *  ::priv()
- *  : video_input{ nullptr },
- *   filter{},
- *   frames{},
- *   frame_metadata{},
- *   use_image{ true }
- *  {}
- */
-
-// ----------------------------------------------------------------------------
 void
 video_input_buffered_metadata_filter
 ::initialize()

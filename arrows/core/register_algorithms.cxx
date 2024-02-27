@@ -126,7 +126,7 @@ register_factories( kwiver::vital::plugin_loader& vpl )
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 
   fact = vpl.add_factory< vital::algo::video_input,
-    video_input_buffered_metadata_filter >( "buffered metadata filter" );
+    video_input_buffered_metadata_filter >( "buffered_metadata_filter" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 
   fact = vpl.add_factory< vital::algo::video_input,
