@@ -15,6 +15,14 @@
 
 #include <vital/types/feature_track_set.h>
 
+// Later check which of these can be removed
+#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
+
+#include <vital/algo/detect_features.h>
+#include <vital/algo/extract_descriptors.h>
+#include <vital/exceptions/image.h>
+
 namespace kwiver {
 
 namespace arrows {
@@ -31,38 +39,20 @@ class KWIVER_ALGO_CORE_EXPORT track_features_augment_keyframes
   : public vital::algo::track_features
 {
 public:
-  PLUGIN_INFO(
-    "augment_keyframes",
+  PLUGGABLE_IMPL(
+    track_features_augment_keyframes,
     "If the current frame is a keyframe, detect and describe "
-    "additional features and create new tracks on this frame." )
-
-  /// Default constructor
-  track_features_augment_keyframes();
+    "additional features and create new tracks on this frame.",
+    PARAM(
+      extractor, vital::algo::extract_descriptors_sptr,
+      "Extractor" ),
+    PARAM(
+      extractor_name, vital::algo::extract_descriptors_sptr,
+      "Extractor name" )
+  )
 
   /// Destructor
   virtual ~track_features_augment_keyframes() noexcept;
-
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  ///
-  /// This base virtual function implementation returns an empty configuration
-  /// block whose name is set to \c this->type_name.
-  ///
-  /// \returns \c config_block containing the configuration for this algorithm
-  ///          and any nested components.
-  vital::config_block_sptr get_configuration() const override;
-
-  /// Set this algorithm's properties via a config block
-  ///
-  /// \throws no_such_configuration_value_exception
-  ///    Thrown if an expected configuration value is not present.
-  /// \throws algorithm_configuration_exception
-  ///    Thrown when the algorithm is given an invalid \c config_block or is'
-  ///    otherwise unable to configure itself.
-  ///
-  /// \param config  The \c config_block instance containing the configuration
-  ///                parameters for this algorithm
-  void set_configuration( vital::config_block_sptr config ) override;
 
   /// Check that the algorithm's currently configuration is valid
   ///
@@ -106,11 +96,11 @@ public:
     kwiver::vital::image_container_sptr image_data,
     kwiver::vital::image_container_sptr mask = {} ) const override;
 
-protected:
-  /// the feature detector algorithm
+private:
+  void initialize() override;
+  /// private implementation class
   class priv;
-
-  std::shared_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace core
