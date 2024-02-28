@@ -38,7 +38,7 @@ vital::metadata_vector
 merge_metadata_streams
 ::filter(
   vital::metadata_vector const& input_metadata,
-  vital::image_container_scptr const& input_image )
+  [[maybe_unused]] vital::image_container_scptr const& input_image )
 {
   auto const result = std::make_shared< vital::metadata >();
 
