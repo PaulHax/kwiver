@@ -26,21 +26,23 @@ class KWIVER_ALGO_VXL_EXPORT estimate_essential_matrix
   : public vital::algo::estimate_essential_matrix
 {
 public:
-  PLUGIN_INFO(
-    "vxl",
-    "Use VXL (vpgl) to estimate an essential matrix." )
-
-  /// Constructor
-  estimate_essential_matrix();
+  PLUGGABLE_IMPL(
+    estimate_essential_matrix,
+    "Use VXL (vpgl) to estimate an essential matrix.",
+    PARAM_DEFAULT(
+      verbose, bool,
+      "If true, write status messages to the terminal showing "
+      "debugging information",
+      false ),
+    PARAM_DEFAULT(
+      num_ransac_samples, unsigned,
+      "The number of samples to use in RANSAC",
+      512 )
+  )
 
   /// Destructor
-  virtual ~estimate_essential_matrix();
+  virtual ~estimate_essential_matrix() = default;
 
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's currently configuration is valid
   virtual bool check_configuration( vital::config_block_sptr config ) const;
 
@@ -66,10 +68,10 @@ public:
   using vital::algo::estimate_essential_matrix::estimate;
 
 private:
+  void initialize() override;
   /// private implementation class
   class priv;
-
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace vxl

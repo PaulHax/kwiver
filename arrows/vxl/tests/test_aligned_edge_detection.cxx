@@ -9,6 +9,7 @@
 #include <arrows/vxl/image_container.h>
 #include <arrows/vxl/image_io.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <vil/vil_plane.h>
@@ -61,6 +62,18 @@ aligned_edge_detection
   std::string test_file = data_dir + "/" + test_image;
   ka::vxl::image_io io;
   input_image = io.load( test_file );
+}
+
+// ----------------------------------------------------------------------------
+TEST_F ( aligned_edge_detection, create )
+{
+  kwiver::vital::plugin_manager::instance().load_all_plugins();
+
+  EXPECT_NE(
+    nullptr,
+    kwiver::vital::create_algorithm< kwiver::vital::algo::image_filter >(
+      "vxl_aligned_edge_detection" )
+  );
 }
 
 // ----------------------------------------------------------------------------

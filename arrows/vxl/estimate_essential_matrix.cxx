@@ -30,58 +30,24 @@ class estimate_essential_matrix::priv
 {
 public:
   /// Constructor
-  priv()
-    : verbose( false ),
-      num_ransac_samples( 512 )
+  priv( estimate_essential_matrix& parent )
+    : parent( parent )
   {}
 
-  bool verbose;
-  unsigned num_ransac_samples;
+  estimate_essential_matrix& parent;
+
+  bool
+  c_verbose() const { return parent.c_verbose; }
+  unsigned
+  c_num_ransac_samples() const { return parent.c_num_ransac_samples; }
 };
 
-/// Constructor
-estimate_essential_matrix
-::estimate_essential_matrix()
-  : d_( new priv )
-{}
-
-/// Destructor
-estimate_essential_matrix
-::~estimate_essential_matrix()
-{}
-
-/// Get this algorithm's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-estimate_essential_matrix
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config =
-    vital::algo::estimate_essential_matrix::get_configuration();
-
-  config->set_value(
-    "verbose", d_->verbose,
-    "If true, write status messages to the terminal showing "
-    "debugging information" );
-
-  config->set_value(
-    "num_ransac_samples", d_->num_ransac_samples,
-    "The number of samples to use in RANSAC" );
-
-  return config;
-}
-
-/// Set this algorithm's properties via a config block
 void
 estimate_essential_matrix
-::set_configuration( vital::config_block_sptr config )
+::initialize()
 {
-  d_->verbose = config->get_value< bool >(
-    "verbose",
-    d_->verbose );
-  d_->num_ransac_samples = config->get_value< unsigned >(
-    "num_ransac_samples",
-    d_->num_ransac_samples );
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
+  attach_logger( "arrows.vxl.estimate_essential_matrix" );
 }
 
 /// Check that the algorithm's currently configuration is valid
@@ -118,8 +84,9 @@ estimate_essential_matrix
   }
 
   double sq_scale = inlier_scale * inlier_scale;
-  vpgl_em_compute_5_point_ransac< double > em( d_->num_ransac_samples, sq_scale,
-    d_->verbose );
+  vpgl_em_compute_5_point_ransac< double > em( d_->c_num_ransac_samples(),
+    sq_scale,
+    d_->c_verbose() );
   vpgl_essential_matrix< double > best_em;
   em.compute( right_points, vcal1, left_points, vcal2, best_em );
 

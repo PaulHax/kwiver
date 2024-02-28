@@ -26,14 +26,15 @@ class KWIVER_ALGO_VXL_EXPORT optimize_cameras
   : public vital::algo::optimize_cameras
 {
 public:
-  PLUGIN_INFO(
-    "vxl",
+  PLUGGABLE_IMPL(
+    optimize_cameras,
     "Use VXL (vpgl) to optimize camera parameters for fixed "
-    "landmarks and tracks." )
+    "landmarks and tracks.",
+  )
+
+  virtual ~optimize_cameras() = default;
 
   /// \cond DoxygenSuppress
-  virtual void set_configuration( vital::config_block_sptr /*config*/ ) {}
-
   virtual bool
   check_configuration( vital::config_block_sptr /*config*/ ) const
   {
@@ -63,6 +64,9 @@ public:
     const std::vector< vital::feature_sptr >& features,
     const std::vector< vital::landmark_sptr >& landmarks,
     kwiver::vital::sfm_constraints_sptr constraints = nullptr ) const;
+
+private:
+  void initialize() override;
 };
 
 } // end namespace vxl

@@ -7,6 +7,7 @@
 
 #include <arrows/vxl/estimate_similarity_transform.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <vital/exceptions.h>
@@ -35,7 +36,11 @@ TEST ( estimate_similarity, create )
 {
   plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE( nullptr, algo::estimate_similarity_transform::create( "vxl" ) );
+  EXPECT_NE(
+    nullptr,
+    kwiver::vital::create_algorithm< kwiver::vital::algo::
+      estimate_similarity_transform >( "vxl" )
+  );
 }
 
 // ----------------------------------------------------------------------------

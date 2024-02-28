@@ -5,6 +5,7 @@
 #include <test_eigen.h>
 #include <test_scene.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <arrows/mvg/epipolar_geometry.h>
@@ -28,7 +29,11 @@ TEST ( estimate_essential_matrix, create )
 {
   plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE( nullptr, algo::estimate_essential_matrix::create( "vxl" ) );
+  EXPECT_NE(
+    nullptr,
+    kwiver::vital::create_algorithm< kwiver::vital::algo::
+      estimate_essential_matrix >( "vxl" )
+  );
 }
 
 // ----------------------------------------------------------------------------

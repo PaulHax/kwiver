@@ -69,6 +69,14 @@ opt_orient_pos(
 
 } // namespace
 
+// ----------------------------------------------------------------------------
+void
+optimize_cameras
+::initialize()
+{
+  attach_logger( "arrows.vxl.optimize_cameras" );
+}
+
 /// Optimize a single camera given corresponding features and landmarks
 void
 optimize_cameras

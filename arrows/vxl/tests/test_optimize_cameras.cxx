@@ -4,6 +4,7 @@
 
 #include <arrows/vxl/optimize_cameras.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>
@@ -29,7 +30,7 @@ TEST ( optimize_cameras, create )
 {
   plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE( nullptr, algo::optimize_cameras::create( "vxl" ) );
+  EXPECT_NE( nullptr, create_algorithm< algo::optimize_cameras >( "vxl" ) );
 }
 
 // ----------------------------------------------------------------------------
