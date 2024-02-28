@@ -30,7 +30,7 @@ TEST ( match_features_fundamental_matrix, create )
 
   EXPECT_NE(
     nullptr,
-    create_algorithm< algo::match_features >( "fundamental matrix guided" ) );
+    create_algorithm< algo::match_features >( "fundamental_matrix_guided" ) );
 }
 
 // ----------------------------------------------------------------------------

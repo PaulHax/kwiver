@@ -29,5 +29,5 @@ TEST ( compute_association_matrix_from_features, create )
 
   EXPECT_NE(
     nullptr,
-    create_algorithm< algo::compute_association_matrix >( "from features" ) );
+    create_algorithm< algo::compute_association_matrix >( "from_features" ) );
 }

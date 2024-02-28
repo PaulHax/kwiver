@@ -207,7 +207,7 @@ register_factories( kwiver::vital::plugin_loader& vpl )
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 
   fact = vpl.add_factory< vital::algo::match_features,
-    match_features_fundamental_matrix >( "fundamental matrix guided" );
+    match_features_fundamental_matrix >( "fundamental_matrix_guided" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 
   fact = vpl.add_factory< vital::algo::match_features,
@@ -219,7 +219,7 @@ register_factories( kwiver::vital::plugin_loader& vpl )
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 
   fact = vpl.add_factory< vital::algo::compute_association_matrix,
-    compute_association_matrix_from_features >( "from features" );
+    compute_association_matrix_from_features >( "from_features" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 
