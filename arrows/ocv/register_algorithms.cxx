@@ -39,7 +39,7 @@
 #include <arrows/ocv/resection_camera.h>
 
 #include <arrows/ocv/inpaint.h>
-// #include <arrows/ocv/match_features_bruteforce.h>
+#include <arrows/ocv/match_features_bruteforce.h>
 // #include <arrows/ocv/match_features_flannbased.h>
 #include <arrows/ocv/detect_motion_3frame_differencing.h>
 #include <arrows/ocv/detect_motion_mog2.h>
@@ -113,13 +113,19 @@ register_factories( kwiver::vital::plugin_loader& vpm )
   fact = vpm.add_factory< vital::algo::extract_descriptors,
     extract_descriptors_ORB >( "ocv_ORB" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
-//
-//  reg.register_algorithm< match_features_bruteforce >();
-//  reg.register_algorithm< match_features_flannbased >();
-//
   fact = vpm.add_factory< vital::algo::image_object_detector,
     hough_circle_detector >( "hough_circle" );
+  fact = vpm.add_factory< vital::algo::extract_descriptors,
+    extract_descriptors_ORB >( "ocv_ORB" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+
+  fact = vpm.add_factory< vital::algo::match_features,
+    match_features_bruteforce >( "ocv_brute_force" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+  fact = vpm.add_factory< vital::algo::match_features,
+    match_features_flannbased >( "ocv_flann_based" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+
   fact = vpm.add_factory< vital::algo::detect_motion,
     detect_motion_3frame_differencing >( "ocv_3frame_differencing" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );

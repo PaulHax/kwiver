@@ -40,10 +40,10 @@ set( ocv_headers_public
   image_io.h
   inpaint.h
   mat_image_memory.h
-  #match_features.h
-  #match_features_bruteforce.h
+  match_features.h
+  match_features_bruteforce.h
   #match_features_flannbased.h
-  #match_set.h
+  match_set.h
   merge_images.h
   refine_detections_write_to_disk.h
   resection_camera_options.h
@@ -96,10 +96,10 @@ set( ocv_sources
   image_io.cxx
   inpaint.cxx
   mat_image_memory.cxx
-  #match_features.cxx
-  #match_features_bruteforce.cxx
+  match_features.cxx
+  match_features_bruteforce.cxx
   #match_features_flannbased.cxx
-  #match_set.cxx
+  match_set.cxx
   merge_images.cxx
   refine_detections_write_to_disk.cxx
   resection_camera.cxx
