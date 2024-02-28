@@ -67,7 +67,7 @@
 #include <arrows/core/metadata_map_io_csv.h>
 #include <arrows/core/read_object_track_set_kw18.h>
 #include <arrows/core/read_track_descriptor_set_csv.h>
-// #include <arrows/core/track_features_augment_keyframes.h>
+#include <arrows/core/track_features_augment_keyframes.h>
 #include <arrows/core/track_features_core.h>
 #include <arrows/core/uv_unwrap_mesh.h>
 #include <arrows/core/video_input_filter.h>
@@ -234,9 +234,9 @@ register_factories( kwiver::vital::plugin_loader& vpl )
     keyframe_selector_basic >( "basic" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 
-//  fact = vpl.add_factory< vital::algo::track_features,
-//    track_features_augment_keyframes >( "augment_keyframes" );
-//  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+  fact = vpl.add_factory< vital::algo::track_features,
+    track_features_augment_keyframes >( "augment_keyframes" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 
 } // end namespace core

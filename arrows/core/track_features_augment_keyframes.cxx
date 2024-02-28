@@ -31,9 +31,11 @@ public:
   track_features_augment_keyframes& parent;
 
   /// Configuration Values
-  vital::algo::extract_descriptors_sptr c_extractor()
+  vital::algo::extract_descriptors_sptr
+  c_extractor() const
   { return parent.c_extractor; }
-  vital::algo::extract_descriptors_sptr c_extractor_name()
+  std::string
+  c_extractor_name() const
   { return parent.c_extractor_name; }
 
   // Local value

@@ -15,8 +15,6 @@
 
 #include <vital/types/feature_track_set.h>
 
-// Later check which of these can be removed
-#include <vital/algo/algorithm.h>
 #include <vital/algo/algorithm.txx>
 
 #include <vital/algo/detect_features.h>
@@ -46,9 +44,10 @@ public:
     PARAM(
       extractor, vital::algo::extract_descriptors_sptr,
       "Extractor" ),
-    PARAM(
-      extractor_name, vital::algo::extract_descriptors_sptr,
-      "Extractor name" )
+    PARAM_DEFAULT(
+      extractor_name, std::string,
+      "Extractor name",
+      "kf_only_descriptor_extractor" )
   )
 
   /// Destructor
