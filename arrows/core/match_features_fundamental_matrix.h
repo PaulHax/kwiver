@@ -12,9 +12,15 @@
 
 #include <vital/algo/filter_features.h>
 
+#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
+
 #include <vital/algo/estimate_fundamental_matrix.h>
 #include <vital/algo/match_features.h>
 #include <vital/config/config_block.h>
+
+#include <vital/types/fundamental_matrix.h>
+#include <vital/types/match_set.h>
 
 namespace kwiver {
 
@@ -39,21 +45,46 @@ class KWIVER_ALGO_CORE_EXPORT match_features_fundamental_matrix
   : public vital::algo::match_features
 {
 public:
-  PLUGIN_INFO(
-    "fundamental_matrix_guided",
+  PLUGGABLE_IMPL(
+    match_features_fundamental_matrix,
     "Use an estimated fundamental matrix as a geometric filter"
-    " to remove outlier matches." )
-
-  /// Default Constructor
-  match_features_fundamental_matrix();
+    " to remove outlier matches.",
+    PARAM_DEFAULT(
+      inlier_scale, double,
+      "The acceptable error distance (in pixels) between a measured point "
+      "and its epipolar line to be considered an inlier match.",
+      10.0 ),
+    PARAM_DEFAULT(
+      min_required_inlier_count, int,
+      "The minimum required inlier point count. If there are less "
+      "than this many inliers, no matches will be returned.",
+      0 ),
+    PARAM_DEFAULT(
+      min_required_inlier_percent, double,
+      "The minimum required percentage of inlier points. If the "
+      "percentage of points considered inliers is less than this "
+      "amount, no matches will be returned.",
+      0.0 ),
+    PARAM_DEFAULT(
+      motion_filter_percentile, double,
+      "If less than 1.0, find this percentile of the motion "
+      "magnitude and filter matches with motion larger than "
+      "twice this value.  This helps remove outlier matches "
+      "when the motion between images is small.",
+      0.75 ),
+    PARAM(
+      matcher,
+      vital::algo::match_features_sptr,
+      "feature_matcher" ),
+    PARAM(
+      f_estimator,
+      vital::algo::estimate_fundamental_matrix_sptr,
+      "fundamental_matrix_estimator" )
+  )
 
   /// Destructor
   virtual ~match_features_fundamental_matrix();
 
-  /// Get this alg's \link vital::config_block configuration block \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algo's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's currently configuration is valid
   virtual bool check_configuration( vital::config_block_sptr config ) const;
 
@@ -70,10 +101,10 @@ public:
     vital::feature_set_sptr feat2, vital::descriptor_set_sptr desc2 ) const;
 
 private:
+  void initialize() override;
   /// private implementation class
   class priv;
-
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace algo

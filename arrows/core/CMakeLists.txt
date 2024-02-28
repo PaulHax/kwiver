@@ -11,8 +11,8 @@ set( plugin_core_headers
   # close_loops_keyframe.h
   # close_loops_multi_method.h
   # colorize.h
-  # compute_association_matrix_from_features.h
-  # compute_ref_homography_core.h
+  compute_association_matrix_from_features.h
+  compute_ref_homography_core.h
   convert_image_bypass.h
   create_detection_grid.h
   csv_io.h
@@ -36,9 +36,9 @@ set( plugin_core_headers
   # initialize_object_tracks_threshold.h
   interpolate_track_spline.h
   # keyframe_selector_basic.h
-  # match_features_fundamental_matrix.h
-  # match_features_homography.h
-  # match_tracks.h
+  match_features_fundamental_matrix.h
+  match_features_homography.h
+  match_tracks.h
   # merge_metadata_streams.h
   # mesh_intersect.h
   mesh_operations.h
@@ -61,14 +61,8 @@ set( plugin_core_headers
   video_input_pos.h
   # video_input_splice.h
   video_input_split.h
-  # write_object_track_set_kw18.h
-  # write_track_descriptor_set_csv.h
-
-  interpolate_track_spline.h
-  match_features_homography.h
-  match_matrix.h
-  track_features_core.h
-  track_set_impl.h
+  write_object_track_set_kw18.h
+  write_track_descriptor_set_csv.h
   )
 
 kwiver_install_headers(
@@ -90,8 +84,8 @@ set( plugin_core_sources
   # close_loops_keyframe.cxx
   # close_loops_multi_method.cxx
   # colorize.cxx
-  # compute_association_matrix_from_features.cxx
-  # compute_ref_homography_core.cxx
+  compute_association_matrix_from_features.cxx
+  compute_ref_homography_core.cxx
   convert_image_bypass.cxx
   create_detection_grid.cxx
   csv_io.cxx
@@ -115,8 +109,9 @@ set( plugin_core_sources
   # initialize_object_tracks_threshold.cxx
   interpolate_track_spline.cxx
   # keyframe_selector_basic.cxx
-  # match_features_fundamental_matrix.cxx
-  # match_features_homography.cxx
+  match_features_fundamental_matrix.cxx
+  match_features_homography.cxx
+  match_matrix.cxx
   # match_tracks.cxx
   # merge_metadata_streams.cxx
   # mesh_intersect.cxx
@@ -140,14 +135,8 @@ set( plugin_core_sources
   video_input_pos.cxx
   # video_input_splice.cxx
   video_input_split.cxx
-  # write_object_track_set_kw18.cxx
-  # write_track_descriptor_set_csv.cxx
-
-  # interpolate_track_spline.cxx
-  # match_features_homography.cxx
-  match_matrix.cxx
-  # track_features_core.cxx
-  # track_set_impl.cxx
+  write_object_track_set_kw18.cxx
+  write_track_descriptor_set_csv.cxx
   )
 
 kwiver_add_library( kwiver_algo_core

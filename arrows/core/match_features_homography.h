@@ -12,6 +12,8 @@
 
 #include <vital/algo/filter_features.h>
 
+#include <vital/algo/algorithm.txx>
+
 #include <vital/algo/estimate_homography.h>
 #include <vital/algo/match_features.h>
 #include <vital/config/config_block.h>
@@ -49,21 +51,49 @@ class KWIVER_ALGO_CORE_EXPORT match_features_homography
   : public vital::algo::match_features
 {
 public:
-  PLUGIN_INFO(
-    "homography_guided",
+  PLUGGABLE_IMPL(
+    match_features_homography,
     "Use an estimated homography as a geometric filter"
-    " to remove outlier matches." )
-
-  /// Default Constructor
-  match_features_homography();
+    " to remove outlier matches.",
+    PARAM_DEFAULT(
+      inlier_scale, double,
+      "The acceptable error distance (in pixels) between warped "
+      "and measured points to be considered an inlier match. "
+      "Note that this scale is multiplied by the average scale of "
+      "the features being matched at each stage.",
+      1.0 ),
+    PARAM_DEFAULT(
+      min_required_inlier_count, int,
+      "The minimum required inlier point count. If there are less "
+      "than this many inliers, no matches will be output.",
+      0 ),
+    PARAM_DEFAULT(
+      min_required_inlier_percent, double,
+      "The minimum required percentage of inlier points. If the "
+      "percentage of points considered inliers is less than this "
+      "amount, no matches will be output.",
+      0.0 ),
+    PARAM(
+      h_estimator,
+      vital::algo::estimate_homography_sptr,
+      "homography_estimator" ),
+    PARAM(
+      matcher1,
+      vital::algo::match_features_sptr,
+      "feature_matcher1" ),
+    PARAM(
+      matcher2,
+      vital::algo::match_features_sptr,
+      "feature_matcher2" ),
+    PARAM(
+      feature_filter,
+      vital::algo::filter_features_sptr,
+      "filter_features" )
+  )
 
   /// Destructor
   virtual ~match_features_homography();
 
-  /// Get this alg's \link vital::config_block configuration block \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algo's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's currently configuration is valid
   virtual bool check_configuration( vital::config_block_sptr config ) const;
 
@@ -79,48 +109,11 @@ public:
     vital::feature_set_sptr feat1, vital::descriptor_set_sptr desc1,
     vital::feature_set_sptr feat2, vital::descriptor_set_sptr desc2 ) const;
 
-  /// Set the feature matching algorithms to use
-  void
-  set_first_feature_matcher( vital::algo::match_features_sptr alg )
-  {
-    matcher1_ = alg;
-  }
-
-  /// Set the optional second pass feature matching algorithm to use
-  void
-  set_second_feature_matcher( vital::algo::match_features_sptr alg )
-  {
-    matcher2_ = alg;
-  }
-
-  /// Set the optional feature filter to use
-  void
-  set_feature_filter( vital::algo::filter_features_sptr alg )
-  {
-    feature_filter_ = alg;
-  }
-
-  /// Set the homography estimation algorithm to use
-  void
-  set_homography_estimator( vital::algo::estimate_homography_sptr alg )
-  {
-    h_estimator_ = alg;
-  }
-
 private:
+  void initialize() override;
   /// private implementation class
   class priv;
-
-  const std::unique_ptr< priv > d_;
-
-  /// The feature matching algorithms to use
-  vital::algo::match_features_sptr matcher1_, matcher2_;
-
-  /// The homography estimation algorithm to use
-  vital::algo::estimate_homography_sptr h_estimator_;
-
-  /// The feature set filter algorithm to use
-  vital::algo::filter_features_sptr feature_filter_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace algo

@@ -29,77 +29,45 @@ using namespace kwiver::vital;
 class compute_association_matrix_from_features::priv
 {
 public:
-  /// Constructor
-  priv()
-    : m_max_distance( -1.0 ),
+  priv( compute_association_matrix_from_features& parent )
+    : parent( parent ),
       m_logger( vital::get_logger(
         "compute_association_matrix_from_features" ) )
   {}
 
+  compute_association_matrix_from_features& parent;
+
   /// Raw pixel distance threshold
-  double m_max_distance;
+  double c_max_distance() { return parent.c_max_distance; }
 
   /// The feature matching algorithm to use
-  vital::algo::detected_object_filter_sptr m_filter;
+  vital::algo::detected_object_filter_sptr c_filter()
+  { return parent.c_filter; }
 
   /// Logger handle
   vital::logger_handle_t m_logger;
 };
 
-/// Constructor
+// ----------------------------------------------------------------------------
+void
 compute_association_matrix_from_features
-::compute_association_matrix_from_features()
-  : d_( new priv )
-{}
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
+  attach_logger( "arrows.core.compute_association_matrix_from_features" );
+}
 
 /// Destructor
 compute_association_matrix_from_features
 ::~compute_association_matrix_from_features() noexcept
 {}
 
-/// Get this alg's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-compute_association_matrix_from_features
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config = algorithm::get_configuration();
-
-  // Maximum allowed pixel distance for matches
-  config->set_value(
-    "max_distance", d_->m_max_distance,
-    "Maximum allowed pixel distance for matches. Is expressed "
-    "in raw pixel distance." );
-
-  // Sub-algorithm implementation name + sub_config block
-  // - Feature filter algorithm
-  algo::detected_object_filter::get_nested_algo_configuration(
-    "filter", config, d_->m_filter );
-
-  return config;
-}
-
-/// Set this algo's properties via a config block
-void
-compute_association_matrix_from_features
-::set_configuration( vital::config_block_sptr in_config )
-{
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  algo::detected_object_filter::set_nested_algo_configuration(
-    "filter",
-    config, d_->m_filter );
-
-  d_->m_max_distance = config->get_value< double >( "max_distance" );
-}
-
 bool
 compute_association_matrix_from_features
 ::check_configuration( vital::config_block_sptr config ) const
 {
   return (
-    algo::detected_object_filter::check_nested_algo_configuration(
+    check_nested_algo_configuration< algo::detected_object_filter >(
       "filter",
       config )
   );
@@ -116,7 +84,7 @@ compute_association_matrix_from_features
   kwiver::vital::matrix_d& matrix,
   kwiver::vital::detected_object_set_sptr& considered ) const
 {
-  considered = d_->m_filter->filter( detections );
+  considered = d_->c_filter()->filter( detections );
 
   auto filtered_dets = considered;
   auto filtered_tracks = tracks->tracks();
@@ -150,9 +118,9 @@ compute_association_matrix_from_features
 
           if( trk_state->detection() )
           {
-            double dist = d_->m_max_distance;
+            double dist = d_->c_max_distance();
 
-            if( d_->m_max_distance > 0.0 )
+            if( d_->c_max_distance() > 0.0 )
             {
               auto center1 = trk_state->detection()->bounding_box().center();
               auto center2 = det->bounding_box().center();
@@ -164,7 +132,7 @@ compute_association_matrix_from_features
               dist = std::sqrt( dist );
             }
 
-            if( d_->m_max_distance <= 0.0 || dist < d_->m_max_distance )
+            if( d_->c_max_distance() <= 0.0 || dist < d_->c_max_distance() )
             {
               trk_features = trk_state->detection()->descriptor();
             }

@@ -21,48 +21,41 @@ namespace core {
 class write_track_descriptor_set_csv::priv
 {
 public:
-  priv( write_track_descriptor_set_csv* parent )
-    : m_parent( parent ),
+  priv( write_track_descriptor_set_csv& parent )
+    : parent( parent ),
       m_logger( kwiver::vital::get_logger( "write_track_descriptor_set_csv" ) ),
       m_first( true ),
-      m_write_raw_descriptor( true ),
-      m_write_world_loc( false ),
       m_delim( "," ),
       m_sub_delim( " " )
   {}
 
+  write_track_descriptor_set_csv& parent;
+
+  // Configuration values
+  bool c_write_raw_descriptor() { return parent.c_write_raw_descriptor; }
+  bool c_write_world_loc() { return parent.c_write_world_loc; }
+
   ~priv() {}
 
-  write_track_descriptor_set_csv* m_parent;
+  // Local values
   kwiver::vital::logger_handle_t m_logger;
   bool m_first;
-  bool m_write_raw_descriptor;
-  bool m_write_world_loc;
   std::string m_delim;
   std::string m_sub_delim;
 };
 
 // ----------------------------------------------------------------------------
+void
 write_track_descriptor_set_csv
-::write_track_descriptor_set_csv()
-  : d( new write_track_descriptor_set_csv::priv( this ) )
-{}
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+  attach_logger( "arrows.core.write_track_descriptor_set_csv" );
+}
 
 write_track_descriptor_set_csv
 ::~write_track_descriptor_set_csv()
 {}
-
-// ----------------------------------------------------------------------------
-void
-write_track_descriptor_set_csv
-::set_configuration( vital::config_block_sptr config )
-{
-  d->m_write_raw_descriptor =
-    config->get_value< bool >(
-      "write_raw_descriptor",
-      d->m_write_raw_descriptor );
-  config->get_value< bool >( "write_world_loc", d->m_write_world_loc );
-}
 
 // ----------------------------------------------------------------------------
 bool
@@ -111,7 +104,7 @@ write_track_descriptor_set_csv
     }
     stream() << d->m_delim;
 
-    if( d->m_write_raw_descriptor )
+    if( d->c_write_raw_descriptor() )
     {
       auto raw_sptr = desc->get_descriptor();
       stream() << raw_sptr->size() << d->m_delim;
@@ -140,7 +133,7 @@ write_track_descriptor_set_csv
       stream() << h.get_image_location().max_x() << d->m_sub_delim;
       stream() << h.get_image_location().max_y() << d->m_sub_delim;
 
-      if( d->m_write_world_loc )
+      if( d->c_write_world_loc() )
       {
         stream() << h.get_world_location().min_x() << d->m_sub_delim;
         stream() << h.get_world_location().min_y() << d->m_sub_delim;

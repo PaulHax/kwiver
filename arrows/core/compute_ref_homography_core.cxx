@@ -111,39 +111,45 @@ reset_active_flags( track_info_buffer_sptr buffer )
 class compute_ref_homography_core::priv
 {
 public:
-  priv()
-    : use_backproject_error( false ),
-      backproject_threshold_sqr( 16.0 ),
-      forget_track_threshold( 5 ),
-      min_track_length( 1 ),
-      inlier_scale( 2.0 ),
-      minimum_inliers( 4 ),
+  priv( compute_ref_homography_core& parent )
+    : parent( parent ),
       frames_since_reset( 0 ),
-      allow_ref_frame_regression( true ),
       min_ref_frame( 0 )
   {}
 
   ~priv()
   {}
 
-  /// Should we remove extra points if the backproject error is high?
-  bool use_backproject_error;
+  compute_ref_homography_core& parent;
 
-  /// Backprojection threshold in terms of L2 distance (number of pixels)
-  double backproject_threshold_sqr;
+  // Configuration values
+  double c_use_backproject_error() { return parent.c_use_backproject_error; }
 
-  /// After how many frames should we forget all info about a track?
-  unsigned forget_track_threshold;
+  double
+  c_backproject_threshold_sqr()
+  {
+    return parent.c_backproject_threshold_sqr;
+  }
 
-  /// Minimum track length to use for homography regression
-  unsigned min_track_length;
+  unsigned
+  c_forget_track_threshold()
+  {
+    return parent.c_forget_track_threshold;
+  }
 
-  /// The scale of inlier points used for homography calculation
-  double inlier_scale;
+  unsigned c_min_track_length() { return parent.c_min_track_length; }
+  double
+  c_inlier_scale() const { return parent.c_inlier_scale; }
+  unsigned
+  c_minimum_inliers() const { return parent.c_minimum_inliers; }
 
-  /// Minimum points number of matching points between source and reference
-  /// images when computing homography
-  unsigned minimum_inliers;
+  bool
+  c_allow_ref_frame_regression()
+  {
+    return parent.c_allow_ref_frame_regression;
+  }
+
+  // Local values
 
   /// Buffer storing track extensions
   track_info_buffer_sptr buffer;
@@ -184,14 +190,14 @@ public:
 
     // Make sure that we have at least the minimum number of points to match
     // between source and destination
-    if( pts_src.size() < this->minimum_inliers ||
-        pts_dst.size() < this->minimum_inliers )
+    if( pts_src.size() < this->c_minimum_inliers() ||
+        pts_dst.size() < this->c_minimum_inliers() )
     {
       LOG_WARN(
         m_logger,
         "Insufficient point pairs given to match. " <<
           "Given " << pts_src.size() << " but require at least " <<
-          this->minimum_inliers );
+          this->c_minimum_inliers() );
       is_bad_homog = true;
     }
     else
@@ -199,7 +205,7 @@ public:
       std::vector< bool > inliers;
       tmp_h = this->h_estimator->estimate(
         pts_src, pts_dst, inliers,
-        this->inlier_scale );
+        this->c_inlier_scale() );
 
       // Check for positive inlier count
       unsigned inlier_count = 0;
@@ -213,12 +219,12 @@ public:
       LOG_INFO(
         m_logger,
         "Inliers after estimation: " << inlier_count );
-      if( inlier_count < this->minimum_inliers )
+      if( inlier_count < this->c_minimum_inliers() )
       {
         LOG_WARN(
           m_logger,
           "Insufficient inliers after estimation. Require " <<
-            this->minimum_inliers );
+            this->c_minimum_inliers() );
         is_bad_homog = true;
       }
     }
@@ -259,100 +265,17 @@ public:
 };
 
 // ----------------------------------------------------------------------------
+void
 compute_ref_homography_core
-::compute_ref_homography_core()
-  : d_( new priv() )
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
   attach_logger( "arrows.core.compute_ref_homography_core" );
-  d_->m_logger = this->logger();
 }
 
 compute_ref_homography_core
 ::~compute_ref_homography_core()
 {}
-
-// ----------------------------------------------------------------------------
-vital::config_block_sptr
-compute_ref_homography_core
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config = algorithm::get_configuration();
-
-  // Sub-algorithm implementation name + sub_config block
-  // - Homography estimator algorithm
-  algo::estimate_homography::get_nested_algo_configuration(
-    "estimator", config,
-    d_->h_estimator );
-
-  // Other parameters
-  config->set_value(
-    "use_backproject_error", d_->use_backproject_error,
-    "Should we remove extra points if the backproject error is high?" );
-  config->set_value(
-    "backproject_threshold", std::sqrt( d_->backproject_threshold_sqr ),
-    "Backprojection threshold in terms of L2 distance (number of pixels)" );
-  config->set_value(
-    "forget_track_threshold", d_->forget_track_threshold,
-    "After how many frames should we forget all info about a track?" );
-  config->set_value(
-    "min_track_length", d_->min_track_length,
-    "Minimum track length to use for homography regression" );
-  config->set_value(
-    "inlier_scale", d_->inlier_scale,
-    "The acceptable error distance (in pixels) between warped "
-    "and measured points to be considered an inlier match." );
-
-  // parameterize number of matching points threshold (currently locked to >= 4)
-  config->set_value(
-    "min_matches_threshold", d_->minimum_inliers,
-    "Minimum number of matches required between source and "
-    "reference planes for valid homography estimation." );
-  config->set_value(
-    "allow_ref_frame_regression", d_->allow_ref_frame_regression,
-    "Allow for the possibility of a frame, N, to have a "
-    "reference frame, A, when a frame M < N has a reference "
-    "frame B > A (assuming frames were sequentially iterated "
-    "over with this algorithm)." );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-void
-compute_ref_homography_core
-::set_configuration( vital::config_block_sptr in_config )
-{
-  // Starting with our generated config_block to ensure that assumed values are
-  // present
-  // An alternative is to check for key presence before performing a get_value()
-  // call.
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  // Setting nested algorithm instances via setter methods instead of directly
-  // assigning to instance property.
-  algo::estimate_homography::set_nested_algo_configuration(
-    "estimator", config,
-    d_->h_estimator );
-
-  // Read other parameters
-  d_->use_backproject_error =
-    config->get_value< bool >( "use_backproject_error" );
-  d_->backproject_threshold_sqr =
-    config->get_value< double >( "backproject_threshold" );
-  d_->forget_track_threshold =
-    config->get_value< unsigned >( "forget_track_threshold" );
-  d_->min_track_length = config->get_value< unsigned >( "min_track_length" );
-  d_->inlier_scale = config->get_value< double >( "inlier_scale" );
-  d_->minimum_inliers = config->get_value< int >( "min_matches_threshold" );
-  d_->allow_ref_frame_regression =
-    config->get_value< bool >( "allow_ref_frame_regression" );
-
-  // Square the threshold ahead of time for efficiency
-  d_->backproject_threshold_sqr = d_->backproject_threshold_sqr *
-                                  d_->backproject_threshold_sqr;
-}
 
 // ----------------------------------------------------------------------------
 bool
@@ -361,7 +284,7 @@ compute_ref_homography_core
 {
   return
     (
-    algo::estimate_homography::check_nested_algo_configuration(
+    check_nested_algo_configuration< algo::estimate_homography >(
       "estimator",
       config )
     );
@@ -424,7 +347,7 @@ compute_ref_homography_core
 
   for( track_info_t& ti : *( d_->buffer ) )
   {
-    if( ti.active || ++ti.missed_count < d_->forget_track_threshold )
+    if( ti.active || ++ti.missed_count < d_->c_forget_track_threshold() )
     {
       new_buffer->push_back( ti );
     }
@@ -478,7 +401,7 @@ compute_ref_homography_core
   // Accept tracks that either stretch back to the reset point, or satisfy the
   // minimum track length parameter.
   size_t track_size_thresh = std::min(
-    d_->min_track_length,
+    d_->c_min_track_length(),
     d_->frames_since_reset + 1 );
 
   // Collect cur/ref points from track infos that have earliest-frame references
@@ -564,12 +487,12 @@ compute_ref_homography_core
       }
       // Test back-projection on active tracks that we did not just set ref_loc
       // of.
-      else if( d_->use_backproject_error && ti.active )
+      else if( d_->c_use_backproject_error() && ti.active )
       {
         vector_2d warped = output->homography()->map( fts->feature->loc() );
         double dist_sqr = ( warped - ti.ref_loc ).squaredNorm();
 
-        if( dist_sqr > d_->backproject_threshold_sqr )
+        if( dist_sqr > d_->c_backproject_threshold_sqr() )
         {
           ti.is_good = false;
         }
