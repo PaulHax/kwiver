@@ -34,7 +34,7 @@ set( ocv_headers_public
   feature_detect_extract_ORB.h
   feature_detect_extract_SIFT.h
   feature_detect_extract_SURF.h
-  #detect_heat_map.h
+  detect_heat_map.h
   hough_circle_detector.h
   image_container.h
   image_io.h
@@ -42,7 +42,7 @@ set( ocv_headers_public
   mat_image_memory.h
   match_features.h
   match_features_bruteforce.h
-  #match_features_flannbased.h
+  match_features_flannbased.h
   match_set.h
   merge_images.h
   refine_detections_write_to_disk.h
@@ -85,7 +85,7 @@ set( ocv_sources
   extract_descriptors_FREAK.cxx
   extract_descriptors_LATCH.cxx
   extract_descriptors_LUCID.cxx
-  #detect_heat_map.cxx
+  detect_heat_map.cxx
   hough_circle_detector.cxx
   feature_set.cxx
   feature_detect_extract_BRISK.cxx
@@ -98,7 +98,7 @@ set( ocv_sources
   mat_image_memory.cxx
   match_features.cxx
   match_features_bruteforce.cxx
-  #match_features_flannbased.cxx
+  match_features_flannbased.cxx
   match_set.cxx
   merge_images.cxx
   refine_detections_write_to_disk.cxx

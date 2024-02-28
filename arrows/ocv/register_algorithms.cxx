@@ -38,18 +38,20 @@
 #include <arrows/ocv/image_io.h>
 #include <arrows/ocv/resection_camera.h>
 
-#include <arrows/ocv/inpaint.h>
-#include <arrows/ocv/match_features_bruteforce.h>
-// #include <arrows/ocv/match_features_flannbased.h>
+#include <arrows/ocv/detect_heat_map.h>
+#include <arrows/ocv/detect_motion_3frame_differencing.h>
 #include <arrows/ocv/detect_motion_3frame_differencing.h>
 #include <arrows/ocv/detect_motion_mog2.h>
+#include <arrows/ocv/detect_motion_mog2.h>
 #include <arrows/ocv/hough_circle_detector.h>
+#include <arrows/ocv/inpaint.h>
+#include <arrows/ocv/match_features_bruteforce.h>
+#include <arrows/ocv/match_features_flannbased.h>
+#include <arrows/ocv/merge_images.h>
 #include <arrows/ocv/merge_images.h>
 #include <arrows/ocv/refine_detections_write_to_disk.h>
 #include <arrows/ocv/split_image.h>
 #include <arrows/ocv/track_features_klt.h>
-
-// #include <arrows/ocv/detect_heat_map.h>
 
 namespace kwiver {
 
@@ -158,7 +160,6 @@ register_factories( kwiver::vital::plugin_loader& vpm )
   fact = vpm.add_factory< vital::algo::extract_descriptors,
     extract_descriptors_FREAK >( "ocv_FREAK" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
-    << << << < HEAD
 #endif
 
 #ifdef KWIVER_OCV_HAS_LATCH
@@ -203,8 +204,10 @@ register_factories( kwiver::vital::plugin_loader& vpm )
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
 #endif
 
-//  reg.register_algorithm< detect_heat_map >();
-//
+  fact = vpm.add_factory< vital::algo::image_object_detector,
+    detect_heat_map >( "detect_heat_map" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+
   fact = vpm.add_factory< vital::algo::refine_detections,
     refine_detections_write_to_disk >( "ocv" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
