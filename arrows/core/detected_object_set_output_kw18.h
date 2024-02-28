@@ -44,12 +44,14 @@ public:
     "  - Column(s) 18: Timesetamp (-1 if not available)\n"
     "  - Column(s) 19: Track-confidence (-1 if not available)",
     PARAM_DEFAULT( write_tot, bool, "write_tot", false ),
-    PARAM(
+    PARAM_DEFAULT(
       tot_field1_ids, std::string,
-      "Comma seperated list of ids used for TOT field 1." ),
-    PARAM(
+      "Comma seperated list of ids used for TOT field 1.",
+      "" ),
+    PARAM_DEFAULT(
       tot_field2_ids, std::string,
-      "Comma seperated list of ids used for TOT field 2." )
+      "Comma seperated list of ids used for TOT field 2.",
+      "" )
   )
 
   virtual ~detected_object_set_output_kw18();
