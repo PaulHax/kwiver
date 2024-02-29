@@ -29,20 +29,26 @@ class initialize_object_tracks_threshold::priv
 {
 public:
   /// Constructor
-  priv()
-    : max_new_tracks( 10000 ),
+  priv( initialize_object_tracks_threshold& parent )
+    : parent( parent ),
       m_logger( vital::get_logger(
         "arrows.core.initialize_object_tracks_threshold" ) )
   {}
 
+  initialize_object_tracks_threshold& parent;
+
   /// Maximum number of tracks to initialize
-  unsigned max_new_tracks;
+  unsigned c_max_new_tracks() { return parent.c_max_new_tracks; }
+
+  /// The feature matching algorithm to use
+  vital::algo::detected_object_filter_sptr
+  c_filter()
+  {
+    return parent.c_filter;
+  }
 
   /// Next track ID to assign - make unique across all processes
   static std::atomic< unsigned > next_track_id;
-
-  /// The feature matching algorithm to use
-  vital::algo::detected_object_filter_sptr filter;
 
   /// Logger handle
   vital::logger_handle_t m_logger;
@@ -52,58 +58,25 @@ public:
 std::atomic< unsigned >
 initialize_object_tracks_threshold::priv::next_track_id( 1 );
 
-/// Constructor
+void
 initialize_object_tracks_threshold
-::initialize_object_tracks_threshold()
-  : d_( new priv )
-{}
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
+  attach_logger( "arrows.core.initialize_object_tracks_threshold" );
+}
 
 /// Destructor
 initialize_object_tracks_threshold
 ::~initialize_object_tracks_threshold() noexcept
 {}
 
-/// Get this alg's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-initialize_object_tracks_threshold
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config = algorithm::get_configuration();
-
-  // Sub-algorithm implementation name + sub_config block
-  // - Feature filter algorithm
-  algo::detected_object_filter::get_nested_algo_configuration(
-    "filter", config, d_->filter );
-
-  config->set_value(
-    "max_new_tracks", d_->max_new_tracks,
-    "Maximum number of new tracks to initialize on a single frame." );
-
-  return config;
-}
-
-/// Set this algo's properties via a config block
-void
-initialize_object_tracks_threshold
-::set_configuration( vital::config_block_sptr in_config )
-{
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  algo::detected_object_filter::set_nested_algo_configuration(
-    "filter",
-    config, d_->filter );
-
-  d_->max_new_tracks = config->get_value< unsigned >( "max_new_tracks" );
-}
-
 bool
 initialize_object_tracks_threshold
 ::check_configuration( vital::config_block_sptr config ) const
 {
   return (
-    algo::detected_object_filter::check_nested_algo_configuration(
+    check_nested_algo_configuration< algo::detected_object_filter >(
       "filter",
       config )
   );
@@ -117,12 +90,12 @@ initialize_object_tracks_threshold
   kwiver::vital::image_container_sptr /*image*/,
   kwiver::vital::detected_object_set_sptr detections ) const
 {
-  auto filtered = d_->filter->filter( detections );
+  auto filtered = d_->c_filter()->filter( detections );
   std::vector< vital::track_sptr > output;
 
   unsigned max_tracks = std::min(
     static_cast< unsigned >( filtered->size() ),
-    d_->max_new_tracks );
+    d_->c_max_new_tracks() );
 
   for( unsigned i = 0; i < max_tracks; i++ )
   {

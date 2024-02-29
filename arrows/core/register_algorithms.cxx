@@ -25,6 +25,7 @@
 #include <vital/algo/filter_tracks.h>
 #include <vital/algo/handle_descriptor_request.h>
 #include <vital/algo/image_object_detector.h>
+#include <vital/algo/initialize_object_tracks.h>
 #include <vital/algo/interpolate_track.h>
 #include <vital/algo/keyframe_selection.h>
 #include <vital/algo/match_features.h>
@@ -59,6 +60,7 @@
 #include <arrows/core/filter_features_scale.h>
 #include <arrows/core/filter_tracks.h>
 #include <arrows/core/handle_descriptor_request_core.h>
+#include <arrows/core/initialize_object_tracks_threshold.h>
 #include <arrows/core/interpolate_track_spline.h>
 #include <arrows/core/keyframe_selector_basic.h>
 #include <arrows/core/match_features_fundamental_matrix.h>
@@ -236,6 +238,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::track_features,
     track_features_augment_keyframes >( "augment_keyframes" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::initialize_object_tracks,
+    initialize_object_tracks_threshold >( "threshold" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 
