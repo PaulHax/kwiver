@@ -9,15 +9,14 @@ set(test_libraries      vital vital_vpm kwiver_algo_ocv)
 ##############################
 # Algorithms OpenCV tests
 ##############################
-# kwiver-v2 xxx(enable as we bring more classes)
-#kwiver_discover_gtests(ocv algo_config                 LIBRARIES ${test_libraries})
-#kwiver_discover_gtests(ocv bounding_box                LIBRARIES ${test_libraries})
-#kwiver_discover_gtests(ocv descriptor_set              LIBRARIES ${test_libraries})
-#kwiver_discover_gtests(ocv distortion                  LIBRARIES ${test_libraries})
-#kwiver_discover_gtests(ocv feature_set                 LIBRARIES ${test_libraries})
+kwiver_discover_gtests(ocv algo_config                 LIBRARIES ${test_libraries})
+kwiver_discover_gtests(ocv bounding_box                LIBRARIES ${test_libraries})
+kwiver_discover_gtests(ocv descriptor_set              LIBRARIES ${test_libraries})
+kwiver_discover_gtests(ocv distortion                  LIBRARIES ${test_libraries})
+kwiver_discover_gtests(ocv feature_set                 LIBRARIES ${test_libraries})
 kwiver_discover_gtests(ocv image                       LIBRARIES ${test_libraries})
-#kwiver_discover_gtests(ocv inpaint                     LIBRARIES ${test_libraries} ARGUMENTS "${kwiver_test_data_directory}")
-#kwiver_discover_gtests(ocv match_set                   LIBRARIES ${test_libraries})
+kwiver_discover_gtests(ocv inpaint                     LIBRARIES ${test_libraries} ARGUMENTS "${kwiver_test_data_directory}")
+kwiver_discover_gtests(ocv match_set                   LIBRARIES ${test_libraries})
 
 
 # Additional tests that depend on the MVG arrow
@@ -27,5 +26,5 @@ if (KWIVER_ENABLE_MVG)
   kwiver_discover_gtests(ocv estimate_fundamental_matrix LIBRARIES ${test_libraries})
   kwiver_discover_gtests(ocv estimate_homography         LIBRARIES ${test_libraries})
   kwiver_discover_gtests(ocv estimate_pnp                LIBRARIES ${test_libraries})
-#  kwiver_discover_gtests(ocv resection_camera            LIBRARIES ${test_libraries})
+  kwiver_discover_gtests(ocv resection_camera            LIBRARIES ${test_libraries})
 endif()
