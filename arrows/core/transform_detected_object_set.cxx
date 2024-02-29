@@ -20,11 +20,21 @@ namespace arrows {
 namespace core {
 
 // ----------------------------------------------------------------------------
-transform_detected_object_set
-::transform_detected_object_set()
-  : src_camera_krtd_file_name( "" ),
-    dest_camera_krtd_file_name( "" )
-{}
+class transform_detected_object_set::priv
+{
+public:
+  priv( transform_detected_object_set& parent )
+    : parent( parent )
+  {}
+
+  transform_detected_object_set& parent;
+
+  // Configuration values
+  std::string c_src_camera_krtd_file_name()
+  { return parent.c_src_camera_krtd_file_name; }
+  std::string c_dest_camera_krtd_file_name()
+  { return parent.c_dest_camera_krtd_file_name; }
+};
 
 // ----------------------------------------------------------------------------
 transform_detected_object_set
@@ -36,36 +46,24 @@ transform_detected_object_set
 {}
 
 // ----------------------------------------------------------------------------
-vital::config_block_sptr
+void
 transform_detected_object_set
-::get_configuration() const
-{
-  // Get base config from base class
-  vital::config_block_sptr config = vital::algorithm::get_configuration();
+::initialize()
+{}
 
-  config->set_value(
-    "src_camera_krtd_file_name", src_camera_krtd_file_name,
-    "Source camera KRTD file name path" );
-
-  config->set_value(
-    "dest_camera_krtd_file_name", dest_camera_krtd_file_name,
-    "Destination camera KRTD file name path" );
-
-  return config;
-}
+// ----------------------------------------------------------------------------
+transform_detected_object_set
+::~transform_detected_object_set()
+{}
 
 // ----------------------------------------------------------------------------
 void
 transform_detected_object_set
-::set_configuration( vital::config_block_sptr config_in )
+::set_configuration_internal( vital::config_block_sptr config_in )
 {
   vital::config_block_sptr config = this->get_configuration();
 
   config->merge_config( config_in );
-  this->src_camera_krtd_file_name =
-    config->get_value< std::string >( "src_camera_krtd_file_name" );
-  this->dest_camera_krtd_file_name =
-    config->get_value< std::string >( "dest_camera_krtd_file_name" );
 
   this->src_camera =
     kwiver::vital::read_krtd_file( this->src_camera_krtd_file_name );
