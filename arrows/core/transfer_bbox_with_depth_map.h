@@ -11,6 +11,9 @@
 #include <vital/algo/image_io.h>
 #include <vital/io/camera_io.h>
 
+#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
+
 using namespace kwiver::vital;
 
 namespace kwiver {
@@ -50,26 +53,36 @@ class KWIVER_ALGO_CORE_EXPORT transfer_bbox_with_depth_map
   : public vital::algo::detected_object_filter
 {
 public:
-  PLUGIN_INFO(
-    "transfer_bbox_with_depth_map",
+  PLUGGABLE_IMPL(
+    transfer_bbox_with_depth_map,
     "Transforms detected object set bounding boxes based on source "
     "and destination cameras with respect the source cameras depth "
-    "map.\n\n" )
+    "map.\n\n",
+    PARAM_DEFAULT(
+      src_camera_krtd_file_name, std::string,
+      "Source camera KRTD file name path",
+      "" ),
+    PARAM_DEFAULT(
+      dest_camera_krtd_file_name, std::string,
+      "Destination camera KRTD file name path",
+      "" ),
+    PARAM_DEFAULT(
+      src_camera_depth_map_file_name, std::string,
+      "Source camera depth map file name path",
+      "" ),
+    PARAM(
+      image_reader, std::shared_ptr< vital::algo::image_io >,
+      "image_reader" )
+  )
 
-  /// Default constructor
-  transfer_bbox_with_depth_map();
+  /// Destructor
+  virtual ~transfer_bbox_with_depth_map() noexcept;
 
   /// Constructor taking source and destination cameras directly
   transfer_bbox_with_depth_map(
     kwiver::vital::camera_perspective_sptr src_cam,
     kwiver::vital::camera_perspective_sptr dest_cam,
     kwiver::vital::image_container_sptr src_cam_depth_map );
-
-  /// Get this algorithm's configuration block
-  virtual vital::config_block_sptr get_configuration() const;
-
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
 
   /// Check that the algorithm's currently configuration is valid
   virtual bool check_configuration( vital::config_block_sptr config ) const;
@@ -78,12 +91,12 @@ public:
   virtual vital::detected_object_set_sptr
   filter( vital::detected_object_set_sptr const input_set ) const;
 
-private:
-  std::string src_camera_krtd_file_name;
-  std::string dest_camera_krtd_file_name;
-  std::string src_camera_depth_map_file_name;
+protected:
+  void initialize() override;
+  void set_configuration_internal( vital::config_block_sptr config ) override;
 
-  std::shared_ptr< vital::algo::image_io > image_reader;
+private:
+  class priv;
 
   kwiver::vital::camera_perspective_sptr src_camera;
   kwiver::vital::camera_perspective_sptr dest_camera;
