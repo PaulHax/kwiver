@@ -117,9 +117,6 @@ register_factories( kwiver::vital::plugin_loader& vpm )
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
   fact = vpm.add_factory< vital::algo::image_object_detector,
     hough_circle_detector >( "hough_circle" );
-  fact = vpm.add_factory< vital::algo::extract_descriptors,
-    extract_descriptors_ORB >( "ocv_ORB" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
 
   fact = vpm.add_factory< vital::algo::match_features,
     match_features_bruteforce >( "ocv_brute_force" );
@@ -134,10 +131,10 @@ register_factories( kwiver::vital::plugin_loader& vpm )
   fact = vpm.add_factory< vital::algo::detect_motion,
     detect_motion_mog2 >( "ocv_mog2" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
-//
-//  // Conditional algorithms
-//  // Source ``KWIVER_OCV_HAS_*`` symbol definitions can be found in the header
-//  //  files of the algorithms referred to.
+
+// Conditional algorithms
+// Source ``KWIVER_OCV_HAS_*`` symbol definitions can be found in the header
+//  files of the algorithms referred to.
 #ifdef KWIVER_OCV_HAS_AGAST
   fact = vpm.add_factory< vital::algo::detect_features,
     detect_features_AGAST >( "ocv_AGAST" );
@@ -223,8 +220,6 @@ register_factories( kwiver::vital::plugin_loader& vpm )
   fact = vpm.add_factory< vital::algo::resection_camera,
     resection_camera >( "ocv" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
-//
-//  reg.mark_module_as_loaded();
 }
 
 } // end namespace ocv
