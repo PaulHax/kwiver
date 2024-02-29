@@ -202,33 +202,54 @@ mask_bounding_box(
 class detect_heat_map::priv
 {
 public:
-  double m_threshold;
-  int m_force_bbox_width, m_force_bbox_height;
+  double
+  m_threshold() const { return parent.get_threshold(); }
+  int
+  m_force_bbox_width() const { return parent.get_force_bbox_width(); }
+  int
+  m_force_bbox_height() const { return parent.get_force_bbox_height(); }
+  int
+  m_bbox_buffer() const { return parent.get_bbox_buffer(); }
+  int
+  m_min_area() const { return parent.get_min_area(); }
+  int
+  m_max_area() const { return parent.get_max_area(); }
+  double
+  m_min_fill_fraction() const { return parent.get_min_fill_fraction(); }
+  std::string
+  m_class_name() const { return parent.get_class_name(); }
+  std::string
+  m_score_mode() const { return parent.get_score_mode(); }
+  int
+  m_max_boxes() const { return parent.get_max_boxes(); }
+  int
+  m_pyr_red_levels() const { return parent.get_pyr_red_levels(); }
+
+  double
+  m_fixed_score() const
+  {
+    // Extract a numerical score from the score_mode string if possible.
+    char* p;
+    double converted = strtod( this->m_score_mode().c_str(), &p );
+    if( !( *p ) )
+    {
+      // d_->m_score_mode = "fixed"; // we keep the value unchanged so we can
+      // report it in get_configuration where m_fixed_score does not exist
+      return converted;
+    }
+    return -1;
+  }
+
+  // ----
   bool m_force_bbox_size;
-  int m_bbox_buffer;
-  int m_min_area, m_max_area;
-  double m_min_fill_fraction;
-  double m_fixed_score;
-  std::string m_class_name, m_score_mode;
-  int m_max_boxes, m_pyr_red_levels;
   kwiver::vital::logger_handle_t m_logger;
   kwiver::vital::wall_timer m_timer;
 
+  detect_heat_map& parent;
+
   /// Constructor
-  priv()
-    : m_threshold( -1 ),
-      m_force_bbox_width( -1 ),
-      m_force_bbox_height( -1 ),
-      m_force_bbox_size( false ),
-      m_bbox_buffer( 0 ),
-      m_min_area( 1 ),
-      m_max_area( 10000000 ),
-      m_min_fill_fraction( 0.25 ),
-      m_fixed_score( -1 ),
-      m_class_name( "unspecified" ),
-      m_score_mode( "1" ),
-      m_max_boxes( 1000000 ),
-      m_pyr_red_levels( 0 )
+  priv( detect_heat_map& parent )
+    : parent( parent )
   {}
 
   // --------------------------------------------------------------------------
@@ -237,10 +258,10 @@ public:
   {
     if( m_force_bbox_size )
     {
-      if( m_threshold != -1 )
+      if( m_threshold() != -1 )
       {
         cv::Mat mask;
-        cv::threshold( heat_map, mask, m_threshold, 1, cv::THRESH_BINARY );
+        cv::threshold( heat_map, mask, m_threshold(), 1, cv::THRESH_BINARY );
         return get_bbox_fixed_size( mask );
       }
       else
@@ -264,11 +285,11 @@ public:
 
     LOG_TRACE(
       m_logger, "Creating bounding boxes of fixed size (" <<
-        std::to_string( m_force_bbox_width ) << " x " <<
-        std::to_string( m_force_bbox_height ) << ")" );
+        std::to_string( m_force_bbox_width() ) << " x " <<
+        std::to_string( m_force_bbox_height() ) << ")" );
 
-    if( heat_map.rows < m_force_bbox_height ||
-        heat_map.cols < m_force_bbox_width )
+    if( heat_map.rows < m_force_bbox_height() ||
+        heat_map.cols < m_force_bbox_width() )
     {
       VITAL_THROW(
         invalid_value, std::string( "Forced bounding box size exceeds" ) +
@@ -279,18 +300,18 @@ public:
     // For a bounding box 'centered' on pixel indices (x,y), the upper left
     // corner coordinates will be (x-hr1f, y-vr1f), and the lower right corner
     // will have coordinates (x+hr2f, y+vr2f) inclusive.
-    int hr1f = m_force_bbox_width / 2;
-    int vr1f = m_force_bbox_height / 2;
-    int hr2f = m_force_bbox_width - 1 - hr1f;
-    int vr2f = m_force_bbox_height - 1 - vr1f;
+    int hr1f = m_force_bbox_width() / 2;
+    int vr1f = m_force_bbox_height() / 2;
+    int hr2f = m_force_bbox_width() - 1 - hr1f;
+    int vr2f = m_force_bbox_height() - 1 - vr1f;
 
     // Width and height of the reduced-size one that is used to accommodate
     // bbox_buffer. For this reduced version of the bounding box 'centered' on
     // pixel indices (x,y), the upper left corner coordinates will be
     // (x-hr1, y-vr1), and the lower right corner will have coordinates
     // (x+hr2, y+vr2)
-    int bbox_w_red = m_force_bbox_width - m_bbox_buffer;
-    int bbox_h_red = m_force_bbox_height - m_bbox_buffer;
+    int bbox_w_red = m_force_bbox_width() - m_bbox_buffer();
+    int bbox_h_red = m_force_bbox_height() - m_bbox_buffer();
     int hr1 = bbox_w_red / 2;
     int vr1 = bbox_h_red / 2;
     // int hr2 = bbox_w_red-1-hr1;
@@ -386,7 +407,7 @@ public:
               std::to_string( bbox.max_y() ) << ")" );
 
           auto dot = std::make_shared< detected_object_type >();
-          dot->set_score( m_class_name, val );
+          dot->set_score( m_class_name(), val );
           detected_objects->add(
             std::make_shared< kwiver::vital::detected_object >(
               bbox, val,
@@ -404,10 +425,10 @@ public:
   get_bbox_fixed_size( cv::Mat const& heat_map0 )
   {
     cv::Mat heat_map;
-    int bbox_height = m_force_bbox_height;
-    int bbox_width = m_force_bbox_width;
-    int bbox_buffer_w = m_bbox_buffer;
-    int bbox_buffer_h = m_bbox_buffer;
+    int bbox_height = m_force_bbox_height();
+    int bbox_width = m_force_bbox_width();
+    int bbox_buffer_w = m_bbox_buffer();
+    int bbox_buffer_h = m_bbox_buffer();
 
     LOG_TRACE(
       m_logger, "Creating bounding boxes of fixed size (" <<
@@ -429,10 +450,10 @@ public:
 
     m_timer.start();
     // Reduce heat map by 2^pyr_levels and consider coarser placement of bboxes
-    if( m_pyr_red_levels > 0 )
+    if( m_pyr_red_levels() > 0 )
     {
       cv::normalize( heat_map0, heat_map, 0, 255, cv::NORM_MINMAX, CV_8UC1 );
-      for( int i = 0; i < m_pyr_red_levels; ++i )
+      for( int i = 0; i < m_pyr_red_levels(); ++i )
       {
         cv::pyrDown( heat_map, heat_map );
       }
@@ -586,7 +607,7 @@ public:
           std::to_string( bbox.max_y() ) << ")" );
 
       auto dot = std::make_shared< detected_object_type >();
-      dot->set_score( m_class_name, max_val );
+      dot->set_score( m_class_name(), max_val );
       detected_objects->add(
         std::make_shared< kwiver::vital::detected_object >(
           bbox, max_val, dot ) );
@@ -597,7 +618,7 @@ public:
       heat_map( cv_bbox ) = 0;
 
       ++cntr;
-      if( cntr == m_max_boxes )
+      if( cntr == m_max_boxes() )
       {
         break;
       }
@@ -612,7 +633,7 @@ public:
   get_bbox_ccomponents( cv::Mat const& heat_map )
   {
     cv::Mat mask;
-    cv::threshold( heat_map, mask, m_threshold, 1, cv::THRESH_BINARY );
+    cv::threshold( heat_map, mask, m_threshold(), 1, cv::THRESH_BINARY );
 
     auto detected_objects = std::make_shared< detected_object_set >();
 
@@ -629,17 +650,17 @@ public:
       cv::Point( 0, 0 ) );
 
     auto dot = std::make_shared< detected_object_type >();
-    dot->set_score( m_class_name, m_fixed_score );
+    dot->set_score( m_class_name(), m_fixed_score() );
 
     for( unsigned j = 0; j < contours.size(); ++j )
     {
       // LOG_DEBUG( logger(), "Contour " << j << ": " <<
       // std::to_string(contourArea(contours[j], false)));
       double area = cv::contourArea( contours[ j ] );
-      if( area >= m_min_area && area <= m_max_area )
+      if( area >= m_min_area() && area <= m_max_area() )
       {
         cv::Rect cv_bbox = cv::boundingRect( contours[ j ] );
-        if( area >= cv_bbox.width * cv_bbox.height * m_min_fill_fraction )
+        if( area >= cv_bbox.width * cv_bbox.height * m_min_fill_fraction() )
         {
           kwiver::vital::bounding_box_d bbox( cv_bbox.x, cv_bbox.y,
             cv_bbox.x + cv_bbox.width,
@@ -648,7 +669,7 @@ public:
           detected_objects->add(
             std::make_shared< kwiver::vital::detected_object >(
               bbox,
-              m_fixed_score,
+              m_fixed_score(),
               dot ) );
         }
       }
@@ -660,11 +681,11 @@ public:
   // --------------------------------------------------------------------------
 };
 
-/// Constructor
+void
 detect_heat_map
-::detect_heat_map()
-  : d_( new priv )
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
   attach_logger( "arrows.ocv.detect_heat_map" );
   d_->m_logger = logger();
 }
@@ -674,113 +695,23 @@ detect_heat_map
 ::~detect_heat_map() noexcept
 {}
 
-/// Get this alg's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-detect_heat_map
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config = algorithm::get_configuration();
-
-  config->set_value(
-    "threshold", d_->m_threshold,
-    "Threshold value applied to each pixel of the heat map to "
-    "turn it into a binary mask. Any pixels with value "
-    "strictly greater than this threshold will be turned on "
-    "in the mask. Detection objects will be associated with "
-    "connected-component regions of above-threshold pixels. "
-    "The default threshold of -1 indicates that further "
-    "processing will be done on the full-range heat map "
-    "image. This mode of processing requires that "
-    "'force_bbox_width' and 'force_bbox_height' be set." );
-  config->set_value(
-    "force_bbox_width", d_->m_force_bbox_width,
-    "Create bounding boxes of this fixed width." );
-  config->set_value(
-    "force_bbox_height", d_->m_force_bbox_height,
-    "Create bounding boxes of this fixed height." );
-  config->set_value(
-    "score_mode", d_->m_score_mode,
-    "Mode in which a score is attributed to each detected"
-    "object. A numerical value indicates that all detected"
-    "objects will be assigned this fixed score. No other"
-    "modes are defined at this time." );
-  config->set_value(
-    "bbox_buffer", d_->m_bbox_buffer,
-    "If a bounding box of fixed height and width is specified,"
-    "the default bbox_buffer of 0 indicates that the bounding"
-    "boxes will tightly crop features in the heat map, and "
-    "multiple, non-overlapping bounding boxes will be created "
-    "to cover large, extended heat-map features. With a value "
-    "greater than 0, generated bounding boxes will tend to "
-    "have that number of pixels of buffer from the heat-map "
-    "features. Also, setting bbox_buffer causes the generated "
-    "bounding boxes to tend to overlap by this number of "
-    "pixels when multiple boxes are required to cover and "
-    "extended heat-map feature." );
-  config->set_value(
-    "min_area", d_->m_min_area,
-    "Minimum area of above-threshold pixels in a connected "
-    "cluster allowed. Area is approximately equal to the "
-    "number of pixels in the cluster." );
-  config->set_value(
-    "max_area", d_->m_max_area,
-    "Maximum area of above-threshold pixels in a connected "
-    "cluster allowed. Area is approximately equal to the "
-    "number of pixels in the cluster." );
-  config->set_value(
-    "min_fill_fraction", d_->m_min_fill_fraction,
-    "Fraction of the bounding box filled with above threshold "
-    "pixels." );
-  config->set_value( "class_name", d_->m_class_name, "Detection class name." );
-  config->set_value(
-    "max_boxes", d_->m_max_boxes, "Maximum number of "
-                                  "bounding boxes to generate. If exceeded, the top "
-                                  "'max_boxes' ones will be returned" );
-  config->set_value(
-    "pyr_red_levels", d_->m_pyr_red_levels, "Levels of image "
-                                            "pyramid reduction (decimation) on the heat map before "
-                                            "box selection. This improves speed at the expense of "
-                                            "coarseness of bounding box placement. " );
-
-  return config;
-}
-
 /// Set this algo's properties via a config block
 void
 detect_heat_map
-::set_configuration( vital::config_block_sptr in_config )
+::set_configuration_internal( VITAL_UNUSED vital::config_block_sptr in_config )
 {
-  // Starting with our generated config_block to ensure that assumed values are
-  // present
-  // An alternative is to check for key presence before performing a get_value()
-  // call.
   vital::config_block_sptr config = this->get_configuration();
 
   kwiver::vital::config_difference cd( config, in_config );
   cd.warn_extra_keys( logger() );
 
-  config->merge_config( in_config );
-
-  d_->m_threshold          = config->get_value< int >( "threshold" );
-  d_->m_force_bbox_width   = config->get_value< int >( "force_bbox_width" );
-  d_->m_force_bbox_height  = config->get_value< int >( "force_bbox_height" );
-  d_->m_bbox_buffer        = config->get_value< int >( "bbox_buffer" );
-  d_->m_min_area           = config->get_value< int >( "min_area" );
-  d_->m_max_area           = config->get_value< int >( "max_area" );
-  d_->m_min_fill_fraction  = config->get_value< double >( "min_fill_fraction" );
-  d_->m_class_name         = config->get_value< std::string >( "class_name" );
-  d_->m_score_mode         = config->get_value< std::string >( "score_mode" );
-  d_->m_max_boxes          = config->get_value< int >( "max_boxes" );
-  d_->m_pyr_red_levels     = config->get_value< int >( "pyr_red_levels" );
-
-  if( ( d_->m_force_bbox_width == -1  && d_->m_force_bbox_height != -1 ) ||
-      ( d_->m_force_bbox_width != -1  && d_->m_force_bbox_height == -1 ) ||
-      ( d_->m_force_bbox_width != -1  && d_->m_force_bbox_width <= 0 )   ||
-      ( d_->m_force_bbox_height != -1 && d_->m_force_bbox_height <= 0 ) )
+  if( ( d_->m_force_bbox_width() == -1  && d_->m_force_bbox_height() != -1 ) ||
+      ( d_->m_force_bbox_width() != -1  && d_->m_force_bbox_height() == -1 ) ||
+      ( d_->m_force_bbox_width() != -1  && d_->m_force_bbox_width() <= 0 )   ||
+      ( d_->m_force_bbox_height() != -1 && d_->m_force_bbox_height() <= 0 ) )
   {
     VITAL_THROW(
-      algorithm_configuration_exception, type_name(), impl_name(),
+      algorithm_configuration_exception, interface_name(), impl_name(),
       "'force_bbox_width' and "
       "'force_bbox_height' must both be "
       "-1, indicating that a particular "
@@ -791,20 +722,20 @@ detect_heat_map
       "enforced." );
   }
 
-  if( d_->m_force_bbox_width > 0  && d_->m_force_bbox_height > 0 )
+  if( d_->m_force_bbox_width() > 0  && d_->m_force_bbox_height() > 0 )
   {
-    if( d_->m_force_bbox_width - d_->m_bbox_buffer <= 0 )
+    if( d_->m_force_bbox_width() - d_->m_bbox_buffer() <= 0 )
     {
       VITAL_THROW(
-        algorithm_configuration_exception, type_name(), impl_name(),
+        algorithm_configuration_exception, interface_name(), impl_name(),
         "(force_bbox_width - bbox_buffer) "
         "must be positive." );
     }
 
-    if( d_->m_force_bbox_height - d_->m_bbox_buffer <= 0 )
+    if( d_->m_force_bbox_height() - d_->m_bbox_buffer() <= 0 )
     {
       VITAL_THROW(
-        algorithm_configuration_exception, type_name(), impl_name(),
+        algorithm_configuration_exception, interface_name(), impl_name(),
         "(force_bbox_height - "
         "bbox_buffer) must be "
         "positive." );
@@ -812,55 +743,45 @@ detect_heat_map
 
     d_->m_force_bbox_size = true;
   }
-  else if( d_->m_threshold == -1 )
+  else if( d_->m_threshold() == -1 )
   {
     VITAL_THROW(
-      algorithm_configuration_exception, type_name(), impl_name(),
+      algorithm_configuration_exception, interface_name(), impl_name(),
       "If 'force_bbox_width' and "
       "'force_bbox_height' are not set,"
       "then a positive 'threshold' is "
       "required." );
   }
 
-  if( d_->m_threshold < 0 && d_->m_threshold != -1 )
+  if( d_->m_threshold() < 0 && d_->m_threshold() != -1 )
   {
     VITAL_THROW(
-      algorithm_configuration_exception, type_name(), impl_name(),
+      algorithm_configuration_exception, interface_name(), impl_name(),
       "'threshold' must be non-negative "
       "in order for valid thresholding "
       "or equal to -1, indicating that "
       "no thresholding will be done." );
   }
 
-  LOG_DEBUG( logger(), "threshold: " << std::to_string( d_->m_threshold ) );
+  LOG_DEBUG( logger(), "threshold: " << std::to_string( d_->m_threshold() ) );
   LOG_DEBUG(
     logger(),
-    "force_bbox_width: " << std::to_string( d_->m_force_bbox_width ) );
+    "force_bbox_width: " << std::to_string( d_->m_force_bbox_width() ) );
   LOG_DEBUG(
     logger(),
-    "force_bbox_height: " << std::to_string( d_->m_force_bbox_height ) );
-  LOG_DEBUG( logger(), "bbox_buffer: " << std::to_string( d_->m_bbox_buffer ) );
-  LOG_DEBUG( logger(), "min_area: " << std::to_string( d_->m_min_area ) );
-  LOG_DEBUG( logger(), "max_area: " << std::to_string( d_->m_max_area ) );
+    "force_bbox_height: " << std::to_string( d_->m_force_bbox_height() ) );
   LOG_DEBUG(
     logger(),
-    "min_fill_fraction: " << std::to_string( d_->m_min_fill_fraction ) );
-  LOG_DEBUG( logger(), "class_name: " << d_->m_class_name );
+    "bbox_buffer: " << std::to_string( d_->m_bbox_buffer() ) );
+  LOG_DEBUG( logger(), "min_area: " << std::to_string( d_->m_min_area() ) );
+  LOG_DEBUG( logger(), "max_area: " << std::to_string( d_->m_max_area() ) );
+  LOG_DEBUG(
+    logger(),
+    "min_fill_fraction: " << std::to_string( d_->m_min_fill_fraction() ) );
+  LOG_DEBUG( logger(), "class_name: " << d_->m_class_name() );
 
-  // Extract a numerical score from the score_mode string if possible.
-  char* p;
-  double converted = strtod( d_->m_score_mode.c_str(), &p );
-  if( !( *p ) )
-  {
-    d_->m_score_mode = "fixed";
-    d_->m_fixed_score = converted;
-  }
-
-  LOG_DEBUG( logger(), "score_mode: " << d_->m_score_mode );
-  if( d_->m_score_mode == "fixed" )
-  {
-    LOG_DEBUG( logger(), "fixed_score: " << d_->m_fixed_score );
-  }
+  LOG_DEBUG( logger(), "score_mode: " << d_->m_score_mode() );
+  LOG_DEBUG( logger(), "fixed_score: " << d_->m_fixed_score() );
 }
 
 bool
