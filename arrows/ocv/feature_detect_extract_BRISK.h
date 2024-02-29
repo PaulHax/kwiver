@@ -24,56 +24,76 @@ class KWIVER_ALGO_OCV_EXPORT detect_features_BRISK
   : public ocv::detect_features
 {
 public:
-  PLUGIN_INFO(
-    "ocv_BRISK",
-    "OpenCV feature detection via the BRISK algorithm" )
+  PLUGGABLE_IMPL(
+    detect_features_BRISK,
+    "OpenCV feature detection via the BRISK algorithm",
 
-  /// Constructor
-  detect_features_BRISK();
+    PARAM_DEFAULT(
+      threshold, int,
+      "AGAST detection threshold score.",
+      30 ),
+
+    PARAM_DEFAULT(
+      octaves, int,
+      "detection octaves. Use 0 to do single scale.",
+      3 ),
+
+    PARAM_DEFAULT(
+      pattern_scale, float,
+      "apply this scale to the pattern used for sampling the "
+      "neighbourhood of a keypoint.",
+      1.0f )
+  );
 
   /// Destructor
   virtual ~detect_features_BRISK();
 
-  /// Get this algorithm's \link kwiver::vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's configuration vital::config_block is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
 private:
-  class priv;
-
-  std::unique_ptr< priv > const p_;
+  void initialize() override;
+  void set_configuration_internal( vital::config_block_sptr config ) override;
+  void update_detector_parameters() const override;
+  cv::Ptr< cv::BRISK > create() const;
 };
 
 class KWIVER_ALGO_OCV_EXPORT extract_descriptors_BRISK
   : public ocv::extract_descriptors
 {
 public:
-  PLUGIN_INFO(
-    "ocv_BRISK",
-    "OpenCV feature-point descriptor extraction via the BRISK algorithm" )
+  PLUGGABLE_IMPL(
+    extract_descriptors_BRISK,
+    "OpenCV feature-point descriptor extraction via the BRISK algorithm",
 
-  /// Constructor
-  extract_descriptors_BRISK();
+    PARAM_DEFAULT(
+      threshold, int,
+      "AGAST detection threshold score.",
+      30 ),
+
+    PARAM_DEFAULT(
+      octaves, int,
+      "detection octaves. Use 0 to do single scale.",
+      3 ),
+
+    PARAM_DEFAULT(
+      pattern_scale, float,
+      "apply this scale to the pattern used for sampling the "
+      "neighbourhood of a keypoint.",
+      1.0f )
+  );
 
   /// Destructor
   virtual ~extract_descriptors_BRISK();
 
-  /// Get this algorithm's \link kwiver::vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's configuration vital::config_block is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
 private:
-  class priv;
-
-  std::unique_ptr< priv > const p_;
+  void initialize() override;
+  void set_configuration_internal( vital::config_block_sptr config ) override;
+  void update_extractor_parameters() const override;
+  cv::Ptr< cv::BRISK > create() const;
 };
 
 } // end namespace ocv
