@@ -8,6 +8,7 @@
 #include "track_features_klt.h"
 // #include <arrows/core/merge_tracks.h>
 #include <arrows/ocv/image_container.h>
+#include <vital/algo/algorithm.txx>
 
 #include <algorithm>
 #include <iostream>
@@ -18,7 +19,6 @@
 #include <string>
 #include <vector>
 
-#include <vital/algo/detect_features.h>
 #include <vital/logger/logger.h>
 
 #include <vital/exceptions/algorithm.h>
@@ -44,18 +44,12 @@ class track_features_klt::priv
 {
 public:
   /// Constructor
-  priv()
+  priv( track_features_klt& parent )
     : last_detect_num_features( 0 ),
-      redetect_threshold( 0.7 ),
-      exclusionary_radius_image_frac( 0.01 ),
-      win_size( 41 ),
-      half_win_size( win_size / 2 ),
       tracked_feat_mask_downsample_fact( 1 ),
       exclude_rad_pixels( 1 ),
       erp2( 1 ),
-      max_pyramid_level( 3 ),
-      target_number_of_features( 2048 ),
-      l1_err_thresh( 10 )
+      parent( parent )
   {}
 
   // sets up a mask based on the points.  We query this mask to find out if a
@@ -67,7 +61,7 @@ public:
   {
     exclude_rad_pixels =
       std::max< int >(
-        1, exclusionary_radius_image_frac *
+        1, exclusionary_radius_image_frac() *
         std::min( image_data->width(), image_data->height() ) );
 
     int log_tracked_feat_mask_downsample_fact =
@@ -138,99 +132,6 @@ public:
       pt.x() / tracked_feat_mask_downsample_fact ) != 0;
   }
 
-  /// Set current parameter values to the given config block
-  void
-  update_config( vital::config_block_sptr& config ) const
-  {
-    config->set_value(
-      "redetect_frac_lost_threshold", redetect_threshold,
-      "redetect if fraction of features tracked from last "
-      "detection drops below this level" );
-
-    int grid_rows, grid_cols;
-
-    dist_image.get_grid_size( grid_rows, grid_cols );
-
-    config->set_value(
-      "grid_rows", grid_rows,
-      "rows in feature distribution enforcing grid" );
-
-    config->set_value(
-      "grid_cols", grid_cols,
-      "colums in feature distribution enforcing grid" );
-
-    config->set_value(
-      "new_feat_exclusionary_radius_image_fraction",
-      exclusionary_radius_image_frac,
-      "do not place new features any closer than this fraction of image min "
-      "dimension to existing features" );
-
-    config->set_value(
-      "win_size", win_size,
-      "klt image patch side length (it's a square)" );
-
-    config->set_value(
-      "max_pyramid_level", max_pyramid_level,
-      "maximum pyramid level used in klt feature tracking" );
-
-    config->set_value(
-      "target_number_of_features", target_number_of_features,
-      "number of features that detector tries to find.  May be "
-      "more or less depending on image content.  The algorithm "
-      "attempts to distribute this many features evenly across "
-      "the image. If texture is locally weak few feautres may be "
-      "extracted in a local area reducing the total detected "
-      "feature count." );
-
-    config->set_value(
-      "klt_path_l1_difference_thresh", l1_err_thresh,
-      "patches with average l1 difference greater than this threshold "
-      "will be discarded." );
-  }
-
-  /// Set our parameters based on the given config block
-  void
-  set_config( const vital::config_block_sptr& config )
-  {
-    redetect_threshold =
-      config->get_value< double >(
-        "redetect_frac_lost_threshold",
-        redetect_threshold );
-
-    int grid_rows, grid_cols;
-    dist_image.get_grid_size( grid_rows, grid_cols );
-
-    grid_rows = config->get_value< int >( "grid_rows", grid_rows );
-
-    grid_cols = config->get_value< int >( "grid_cols", grid_cols );
-
-    dist_image.set_grid_size( grid_rows, grid_cols );
-
-    last_detect_distImage.set_grid_size( grid_rows, grid_cols );
-
-    exclusionary_radius_image_frac =
-      config->get_value< float >(
-        "new_feat_exclusionary_radius_image_fraction",
-        exclusionary_radius_image_frac );
-
-    win_size = config->get_value< int >( "win_size", win_size );
-
-    half_win_size = win_size / 2;
-
-    max_pyramid_level = config->get_value< int >(
-      "max_pyramid_level",
-      max_pyramid_level );
-
-    target_number_of_features =
-      config->get_value< int >(
-        "target_number_of_features",
-        target_number_of_features );
-
-    l1_err_thresh = config->get_value< float >(
-      "klt_path_l1_difference_thresh",
-      l1_err_thresh );
-  }
-
   bool
   check_configuration( vital::config_block_sptr config ) const
   {
@@ -248,6 +149,8 @@ public:
         "new_feat_exclusionary_radius_image_fraction" );
 
     int test_win_size = config->get_value< int >( "win_size" );
+
+    int max_pyramid_level = config->get_value< int >( "max_pyramid_level" );
 
     if( !( 0 < test_redetect_threshold && test_redetect_threshold <= 1.0 ) )
     {
@@ -452,27 +355,50 @@ public:
   detection_data_map det_data_map;
   frame_id_t prev_frame_num;
   size_t last_detect_num_features;
-  float redetect_threshold;
   cv::Mat tracked_feature_location_mask;
-  float exclusionary_radius_image_frac;
   kwiver::vital::logger_handle_t m_logger;
   feature_distribution_image dist_image;
   feature_distribution_image last_detect_distImage;
-  int win_size;
-  int half_win_size;
   int tracked_feat_mask_downsample_fact;
   int exclude_rad_pixels;
   int erp2;
-  int max_pyramid_level;
-  int target_number_of_features;
-  float l1_err_thresh;
+
+  track_features_klt& parent;
+
+  float
+  redetect_threshold() const
+  {
+    return parent.get_redetect_frac_lost_threshold();
+  }
+
+  float
+  exclusionary_radius_image_frac() const
+  {
+    return parent.get_new_feat_exclusionary_radius_image_fraction();
+  }
+
+  int
+  win_size() const { return parent.get_win_size(); }
+  int
+  half_win_size() const { return parent.get_win_size() / 2; }
+  int
+  max_pyramid_level() const { return parent.get_max_pyramid_level(); }
+
+  int
+  target_number_of_features() const
+  {
+    return parent.get_target_number_of_features();
+  }
+
+  float
+  l1_err_thresh() const { return parent.get_klt_path_l1_difference_thresh(); }
 };
 
-/// Default Constructor
+void
 track_features_klt
-::track_features_klt()
-  : d_( new priv )
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
   attach_logger( "arrows.ocv.track_features_klt" );
   d_->m_logger = this->logger();
 }
@@ -482,50 +408,19 @@ track_features_klt
 ::~track_features_klt() noexcept
 {}
 
-/// Get this alg's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
+bool
 track_features_klt
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config = algorithm::get_configuration();
-
-  // Sub-algorithm implementation name + sub_config block
-  // - Feature Detector algorithm
-  algo::detect_features::
-  get_nested_algo_configuration( "feature_detector", config, d_->detector );
-
-  d_->update_config( config );
-
-  return config;
-}
-
-/// Set this algo's properties via a config block
-void
-track_features_klt
-::set_configuration( vital::config_block_sptr in_config )
+::check_configuration( vital::config_block_sptr in_config ) const
 {
   // Starting with our generated config_block to ensure that assumed values are
-  // present.  An alternative is to check for key presence before performing a
-  // get_value() call.
+  // present
+  // An alternative is to check for key presence before performing a get_value()
+  // call.
   vital::config_block_sptr config = this->get_configuration();
   config->merge_config( in_config );
 
-  // Setting nested algorithm instances via setter methods instead of directly
-  // assigning to instance property.
-  algo::detect_features_sptr df;
-  algo::detect_features::set_nested_algo_configuration(
-    "feature_detector", config, df );
-  d_->detector = df;
-  d_->set_config( config );
-}
-
-bool
-track_features_klt
-::check_configuration( vital::config_block_sptr config ) const
-{
   bool success( true );
-  success = algo::detect_features::check_nested_algo_configuration(
+  success = kwiver::vital::check_nested_algo_configuration< algo::detect_features >(
     "feature_detector", config ) && success;
   success = d_->check_configuration( config ) && success;
   return success;
@@ -552,7 +447,7 @@ track_features_klt
     // Something did not initialize
     VITAL_THROW(
       vital::algorithm_configuration_exception,
-      this->type_name(), this->impl_name(),
+      this->interface_name(), this->impl_name(),
       "not all sub-algorithms have been initialized" );
   }
 
@@ -594,10 +489,10 @@ track_features_klt
   // setup stuff complete
 
   // build pyramid for the current image
-  auto win_size = cv::Size( d_->win_size, d_->win_size );
+  auto win_size = cv::Size( d_->win_size(), d_->win_size() );
   cv::buildOpticalFlowPyramid(
     cv_img, cur_pyramid, win_size,
-    d_->max_pyramid_level );
+    d_->max_pyramid_level() );
 
   feature_track_set_sptr cur_tracks = prev_tracks;  // no clone here.  It is
                                                     // done in the process.
@@ -658,7 +553,7 @@ track_features_klt
 
     cv::calcOpticalFlowPyrLK(
       d_->prev_pyramid, cur_pyramid, prev_points,
-      tracked_points, status, err, win_size, d_->max_pyramid_level );
+      tracked_points, status, err, win_size, d_->max_pyramid_level() );
 
     // ok, now we do the tracking for each active track back to the frame where
     // it was detected
@@ -673,10 +568,10 @@ track_features_klt
       vector_2f tp( tracked_points[ kf_feat_i ].x,
         tracked_points[ kf_feat_i ].y );
       if( !status[ kf_feat_i ] ||
-          tp.x() <= d_->half_win_size ||
-          tp.y() <= d_->half_win_size ||
-          tp.x() >= image_data->width() - d_->half_win_size ||
-          tp.y() >= image_data->height() - d_->half_win_size )
+          tp.x() <= d_->half_win_size() ||
+          tp.y() <= d_->half_win_size() ||
+          tp.x() >= image_data->width() - d_->half_win_size() ||
+          tp.y() >= image_data->height() - d_->half_win_size() )
       {
         // skip features that tracked to outside of the image (or the border)
         // or didn't track properly
@@ -742,7 +637,7 @@ track_features_klt
       cv::calcOpticalFlowPyrLK(
         det_pyr, cur_pyramid, det_points,
         det_tracked_points, det_status, det_err, win_size,
-        d_->max_pyramid_level, criteria, flags );
+        d_->max_pyramid_level(), criteria, flags );
 
       for( unsigned int det_kf_feat_i = 0; det_kf_feat_i != det_points.size();
            ++det_kf_feat_i )
@@ -751,12 +646,12 @@ track_features_klt
         vector_2f tp( det_tracked_points[ det_kf_feat_i ].x,
           det_tracked_points[ det_kf_feat_i ].y );
         if( !det_status[ det_kf_feat_i ] ||
-            ( d_->l1_err_thresh > 0 &&
-              det_err[ det_kf_feat_i ] > d_->l1_err_thresh ) ||
-            tp.x() <= d_->half_win_size ||
-            tp.y() <= d_->half_win_size ||
-            tp.x() >= image_data->width() - d_->half_win_size ||
-            tp.y() >= image_data->height() - d_->half_win_size )
+            ( d_->l1_err_thresh() > 0 &&
+              det_err[ det_kf_feat_i ] > d_->l1_err_thresh() ) ||
+            tp.x() <= d_->half_win_size() ||
+            tp.y() <= d_->half_win_size() ||
+            tp.x() >= image_data->width() - d_->half_win_size() ||
+            tp.y() >= image_data->height() - d_->half_win_size() )
         {
           status[ kf_feat_i ] = 0;
           continue;
@@ -812,7 +707,7 @@ track_features_klt
   // did we track enough features from the previous frame?
   bool detect_new_features =
     next_points.size() <=
-    size_t( d_->redetect_threshold * double( d_->last_detect_num_features ) );
+    size_t( d_->redetect_threshold() * double( d_->last_detect_num_features ) );
 
   // set the feature distribution image where the features were tracked to this
   // image.
@@ -823,7 +718,7 @@ track_features_klt
     // now check the distribution of features in the image
     if( d_->dist_image.should_redetect(
       d_->last_detect_distImage,
-      d_->redetect_threshold * 0.5 ) )
+      d_->redetect_threshold() * 0.5 ) )
     {
       // this will never be called on the first image so it will work.
       LOG_DEBUG(logger(), "detecting new feature because of distribution" );
@@ -874,7 +769,7 @@ track_features_klt
     int target_feat_per_bin =
       static_cast< int >(
         std::ceil(
-          static_cast< double >( d_->target_number_of_features ) /
+          static_cast< double >( d_->target_number_of_features() ) /
           static_cast< double >( dist_im_rows * dist_im_cols ) ) );
 
     typedef std::vector< feature_sptr >::const_reverse_iterator feat_itr;
@@ -885,10 +780,10 @@ track_features_klt
         continue;
       }
 
-      if( ( *fit )->loc().x() < d_->win_size ||
-          ( *fit )->loc().y() < d_->win_size ||
-          ( *fit )->loc().x() > image_data->width() - d_->win_size ||
-          ( *fit )->loc().y() > image_data->height() - d_->win_size )
+      if( ( *fit )->loc().x() < d_->win_size() ||
+          ( *fit )->loc().y() < d_->win_size() ||
+          ( *fit )->loc().x() > image_data->width() - d_->win_size() ||
+          ( *fit )->loc().y() > image_data->height() - d_->win_size() )
       {
         continue;  // mask out features at the edge of the image.
       }
