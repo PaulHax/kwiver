@@ -22,23 +22,45 @@ class KWIVER_ALGO_OCV_EXPORT detect_features_FAST
   : public ocv::detect_features
 {
 public:
-  PLUGIN_INFO(
-    "ocv_FAST",
-    "OpenCV feature detection via the FAST algorithm" )
+  PLUGGABLE_IMPL(
+    detect_features_FAST,
+    "OpenCV feature detection via the FAST algorithm",
 
-  /// Constructor
-  detect_features_FAST();
+    PARAM_DEFAULT(
+      threshold, int,
+      "Integer threshold on difference between intensity of "
+      "the central pixel and pixels of a circle around this "
+      "pixel", 10 ),
 
+    PARAM_DEFAULT(
+      nonmaxSuppression, bool,
+      "Integer threshold on difference between intensity of "
+      "the central pixel and pixels of a circle around this "
+      "pixel", true ),
+
+    PARAM_DEFAULT(
+      target_num_features_detected,  int,
+      "algorithm tries to output approximately this many features. "
+      "Disable by setting to negative value.", 2500 )
+#if KWIVER_OPENCV_VERSION_MAJOR >= 3
+    ,
+    PARAM_DEFAULT(
+      neighborhood_type,
+      int,
+      "one of the three neighborhoods as defined in the paper: "
+      "TYPE_5_8="  KWIVER_STRINGIFY( cv::FastFeatureDetector::TYPE_5_8 ) ","
+                                                                         "TYPE_7_12="
+      KWIVER_STRINGIFY( cv::FastFeatureDetector::TYPE_7_12 ) ", "
+                                                             "TYPE_9_16="
+      KWIVER_STRINGIFY( cv::FastFeatureDetector::TYPE_9_16 ) ".",
+      cv::FastFeatureDetector::TYPE_9_16 )
+#endif
+  );
   /// Destructor
   virtual ~detect_features_FAST();
 
-  /// Get this algorithm's \link kwiver::vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's configuration vital::config_block is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
   /// Extract a set of image features from the provided image
   ///
@@ -56,15 +78,20 @@ public:
   ///            indicate regions to consider. Only the first channel will be
   ///            considered.
   /// \returns a set of image features
-  virtual vital::feature_set_sptr
+  vital::feature_set_sptr
   detect(
     vital::image_container_sptr image_data,
-    vital::image_container_sptr mask = vital::image_container_sptr() ) const;
+    vital::image_container_sptr mask = vital::image_container_sptr() ) const
+  override;
 
 private:
+  void set_configuration_internal( vital::config_block_sptr config ) override;
+  void update_detector_parameters() const override;
+  void initialize() override;
+
   class priv;
 
-  std::unique_ptr< priv > const p_;
+  KWIVER_UNIQUE_PTR( priv, p_ );
 };
 
 } // end namespace ocv
