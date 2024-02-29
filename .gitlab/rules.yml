@@ -6,9 +6,9 @@
         # Release jobs never run on MRs
         - if: '$CI_MERGE_REQUEST_ID && $IS_FOR_RELEASE == "true"'
           when: never
-        # MRs use manual triggers.
+        # MRs run automatically. Use "manual" to require a trigger.
         - if: '$CI_MERGE_REQUEST_ID'
-          when: manual
+          when: on_success
         # Non-protected branches without tags have no pipelines (MR source branches).
         - if: '$CI_COMMIT_REF_PROTECTED != "true" && $CI_COMMIT_TAG == ""'
           when: never
