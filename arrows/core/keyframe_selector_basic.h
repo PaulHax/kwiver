@@ -70,6 +70,9 @@ public:
   virtual kwiver::vital::track_set_sptr
   select( kwiver::vital::track_set_sptr tracks ) const;
 
+protected:
+  void set_configuration_internal( vital::config_block_sptr config ) override;
+
 private:
   void initialize() override;
   /// private implementation class

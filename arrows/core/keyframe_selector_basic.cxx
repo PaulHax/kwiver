@@ -40,7 +40,6 @@ public:
     return parent.c_keyframe_min_feature_count;
   }
 
-// ----------------------------------------------------------------------------
   bool
   check_configuration( vital::config_block_sptr config ) const
   {
@@ -204,6 +203,23 @@ keyframe_selector_basic
 {
   KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
   attach_logger( "arrows.core.keyframe_selector_basic" );
+}
+
+// ----------------------------------------------------------------------------
+void
+keyframe_selector_basic
+::set_configuration_internal( vital::config_block_sptr config )
+{
+  if( config->has_value( "fraction_tracks_lost_to_necessitate_new_keyframe" ) )
+  {
+    c_fraction_tracks_lost_to_necessitate_new_keyframe = config->get_value< float >(
+      "fraction_tracks_lost_to_necessitate_new_keyframe" );
+  }
+  if( config->has_value( "keyframe_min_feature_count" ) )
+  {
+    c_keyframe_min_feature_count = config->get_value< size_t >(
+      "keyframe_min_feature_count" );
+  }
 }
 
 // ----------------------------------------------------------------------------
