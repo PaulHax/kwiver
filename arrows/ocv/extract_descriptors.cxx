@@ -39,6 +39,7 @@ extract_descriptors
 
   cv::Mat desc;
   cv::Mat mask;
+  this->update_extractor_parameters();
   extractor->detectAndCompute( img, mask, kpts, desc, true );
 
   // keypoint order may have changed.  We must output keypoints.

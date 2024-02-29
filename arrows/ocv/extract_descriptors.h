@@ -41,6 +41,10 @@ public:
   const;
 
 protected:
+  // update the extractor based on the latest parameter value of the algorithm
+  // which could be set either via config block or a parameter setter.
+  virtual void update_extractor_parameters() const = 0;
+
   /// the descriptor extractor algorithm
   cv::Ptr< cv::DescriptorExtractor > extractor;
 };
