@@ -31,9 +31,10 @@ template < typename ValueType,
 void
 set_config_helper(
   config_block_sptr config, const std::string& value_name,
-  const ValueType& value )
+  const ValueType& value,
+  config_block_description_t const& description  = config_block_description_t() )
 {
-  config->set_value< ValueType >( value_name, value );
+  config->set_value< ValueType >( value_name, value, description );
 }
 
 // --------------------------------------------------------------------------------------------

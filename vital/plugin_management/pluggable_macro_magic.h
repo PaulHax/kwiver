@@ -155,8 +155,12 @@ kwiver::vital::set_config_helper< type >(                                   \
                                    default )                    \
 IF_ELSE( HAS_ARGS( default ) )                                  \
 (                                                               \
-  cb.set_value( #name, default, description_str ); ,            \
-  cb.set_value( #name, type(), description_str );               \
+  kwiver::vital::set_config_helper< type >(                     \
+  cb, #name, default,                                           \
+  description_str ); ,                                          \
+  kwiver::vital::set_config_helper< type >(                     \
+  cb, #name, type(),                                            \
+  description_str );                                            \
 )
 
 // ----------------------------------------------------------------------------
@@ -199,12 +203,15 @@ static ::kwiver::vital::pluggable_sptr from_config(              \
   );                                                             \
 }
 
-#define PLUGGABLE_STATIC_GET_DEFAULT( ... )            \
-public:                                                 \
-static void get_default_config(                        \
-  [[maybe_unused]] ::kwiver::vital::config_block& cb ) \
-{                                                      \
-  MAP( PARAM_CONFIG_DEFAULT_SET, EMPTY, __VA_ARGS__ )  \
+#define PLUGGABLE_STATIC_GET_DEFAULT( ... )                \
+public:                                                     \
+static void get_default_config(                            \
+  [[maybe_unused]] ::kwiver::vital::config_block& config ) \
+{                                                          \
+  kwiver::vital::config_block_sptr cb =                    \
+    kwiver::vital::config_block::empty_config();           \
+  MAP( PARAM_CONFIG_DEFAULT_SET, EMPTY, __VA_ARGS__ )      \
+  config.merge_config( cb );                               \
 }
 
 #define PLUGGABLE_GET_CONFIGURATION( ... )                              \

@@ -35,17 +35,6 @@ namespace kwiver {
 
 namespace vital {
 
-namespace detail {
-
-// A helper to detect when a type is a std::vector
-template < typename T >
-struct is_vector : std::false_type {};
-
-template < typename T >
-struct is_vector< std::vector< T > >: std::true_type {};
-
-} // namespace detail
-
 template < typename R >
 R config_block_get_value_cast_default( config_block_value_t const& value );
 
@@ -816,32 +805,12 @@ config_block_set_value_cast_default( T const& value )
 /// \param value The value to convert.
 /// \tparam T Type to be converted.
 /// \returns The value of \p value as a string.
-template < typename T,
-  typename std::enable_if_t< !detail::is_vector< T >::value, bool > = true
->
+template < typename T >
 inline
 config_block_value_t
 config_block_set_value_cast( T const& value )
 {
   return config_block_set_value_cast_default< T >( value );
-}
-
-template < typename T,
-  typename std::enable_if_t< detail::is_vector< T >::value, bool > = true
->
-inline
-config_block_value_t
-config_block_set_value_cast( T const& value )
-{
-  std::stringstream str;
-  using ItemType = typename T::value_type;
-
-  for( const auto& item : value )
-  {
-    str << config_block_set_value_cast< ItemType >( item ) << " ";
-  }
-
-  return str.str();
 }
 
 // ----------------------------------------------------------------------------
