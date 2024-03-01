@@ -20,8 +20,8 @@ if [ ! -d "$fletch_src" ]; then
   git -C "$fletch_src" config user.email "kwiver-developers@kitware.com"
 
   # Fix rpath for cmake projects
-  # https://github.com/Kitware/fletch/pull/745
-  git -C "$fletch_src" fetch origin refs/pull/745/head
+  # https://github.com/Kitware/fletch/pull/746
+  git -C "$fletch_src" fetch origin refs/pull/746/head
   git -C "$fletch_src" merge --no-ff FETCH_HEAD -m "x"
 fi
 
