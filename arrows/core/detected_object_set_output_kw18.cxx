@@ -65,7 +65,32 @@ public:
   int m_frame_number;
 
   std::unique_ptr< std::ofstream > m_tot_writer;
-  std::vector< std::string > m_parsed_tot_ids1, m_parsed_tot_ids2;
+
+  // we need to recalculate these values each time because between invocations
+  // of set/get configuration parent.set_path() will make these out of sync.
+  std::vector< std::string >
+  m_parsed_tot_ids1()
+  {
+    auto const& field1_ids = parent.c_tot_field1_ids;
+    std::vector< std::string > result;
+    kwiver::vital::tokenize(
+      field1_ids, result, ",;",
+      kwiver::vital::TokenizeTrimEmpty  );
+
+    return result;
+  }
+
+  std::vector< std::string >
+  m_parsed_tot_ids2()
+  {
+    auto const& field2_ids = parent.c_tot_field2_ids;
+    std::vector< std::string > result;
+    kwiver::vital::tokenize(
+      field2_ids, result, ",;",
+      kwiver::vital::TokenizeTrimEmpty  );
+
+    return result;
+  }
 };
 
 // ----------------------------------------------------------------------------
@@ -84,19 +109,6 @@ detected_object_set_output_kw18::
   {
     d->m_tot_writer->close();
   }
-}
-
-// ----------------------------------------------------------------------------
-void
-detected_object_set_output_kw18
-::set_configuration_internal( [[maybe_unused]] vital::config_block_sptr config )
-{
-  vital::tokenize(
-    d->c_tot_field1_ids(), d->m_parsed_tot_ids1, ",;",
-    kwiver::vital::TokenizeTrimEmpty );
-  vital::tokenize(
-    d->c_tot_field2_ids(), d->m_parsed_tot_ids2, ",;",
-    kwiver::vital::TokenizeTrimEmpty );
 }
 
 // ----------------------------------------------------------------------------
@@ -219,7 +231,7 @@ detected_object_set_output_kw18
 
       double f1 = 0.0, f2 = 0.0, f3 = 0.0;
 
-      for( auto const& id : d->m_parsed_tot_ids1 )
+      for( auto const& id : d->m_parsed_tot_ids1() )
       {
         if( clf->has_class_name( id ) )
         {
@@ -227,7 +239,7 @@ detected_object_set_output_kw18
         }
       }
 
-      for( auto const& id : d->m_parsed_tot_ids2 )
+      for( auto const& id : d->m_parsed_tot_ids2() )
       {
         if( clf->has_class_name( id ) )
         {

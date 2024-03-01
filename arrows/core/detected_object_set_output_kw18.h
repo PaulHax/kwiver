@@ -62,11 +62,8 @@ public:
     const kwiver::vital::detected_object_set_sptr set,
     std::string const& image_name );
 
-protected:
-  void initialize() override;
-  void set_configuration_internal( vital::config_block_sptr config ) override;
-
 private:
+  void initialize() override;
   /// private implementation class
   class priv;
   KWIVER_UNIQUE_PTR( priv, d );
