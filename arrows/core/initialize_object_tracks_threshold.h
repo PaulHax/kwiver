@@ -9,7 +9,10 @@
 #include <vital/vital_config.h>
 
 #include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/initialize_object_tracks.h>
+
+#include <vital/algo/detected_object_filter.h>
 
 namespace kwiver {
 
@@ -22,34 +25,20 @@ class KWIVER_ALGO_CORE_EXPORT initialize_object_tracks_threshold
   : public vital::algo::initialize_object_tracks
 {
 public:
-  PLUGIN_INFO(
-    "threshold",
-    "Perform thresholding on detection confidence values to create tracks." )
-
-  /// Default Constructor
-  initialize_object_tracks_threshold();
+  PLUGGABLE_IMPL(
+    initialize_object_tracks_threshold,
+    "Perform thresholding on detection confidence values to create tracks.",
+    PARAM_DEFAULT(
+      max_new_tracks, unsigned,
+      "Maximum number of new tracks to initialize on a single frame.",
+      10000 ),
+    PARAM(
+      filter, vital::algo::detected_object_filter_sptr,
+      "filter" )
+  )
 
   /// Destructor
   virtual ~initialize_object_tracks_threshold() noexcept;
-
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  ///
-  /// \returns \c config_block containing the configuration for this algorithm
-  ///          and any nested components.
-  virtual vital::config_block_sptr get_configuration() const;
-
-  /// Set this algorithm's properties via a config block
-  ///
-  /// \throws no_such_configuration_value_exception
-  ///    Thrown if an expected configuration value is not present.
-  /// \throws algorithm_configuration_exception
-  ///    Thrown when the algorithm is given an invalid \c config_block or is'
-  ///    otherwise unable to configure itself.
-  ///
-  /// \param config  The \c config_block instance containing the configuration
-  ///                parameters for this algorithm
-  virtual void set_configuration( vital::config_block_sptr config );
 
   /// Check that the algorithm's currently configuration is valid
   ///
@@ -75,10 +64,10 @@ public:
     kwiver::vital::detected_object_set_sptr detections ) const;
 
 private:
+  void initialize() override;
   /// private implementation class
   class priv;
-
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace core

@@ -2,7 +2,7 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <arrows/core/track_features_core.h>
+#include <arrows/core/keyframe_selector_basic.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>
@@ -21,11 +21,11 @@ main( int argc, char** argv )
 }
 
 // ----------------------------------------------------------------------------
-TEST ( track_features_core, create )
+TEST ( keyframe_selector_basic, create )
 {
   using namespace kwiver::vital;
 
   plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE( nullptr, create_algorithm< algo::track_features >( "core" ) );
+  EXPECT_NE( nullptr, create_algorithm< algo::keyframe_selection >( "basic" ) );
 }

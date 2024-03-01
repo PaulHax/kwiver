@@ -32,9 +32,12 @@ kwiver_discover_gtests(core filter_tracks             LIBRARIES ${test_libraries
 kwiver_discover_gtests(core feature_descriptor_io     LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core handle_descriptor_request_core
                                                       LIBRARIES ${test_libraries})
+kwiver_discover_gtests(core initialize_object_tracks_threshold
+                                                      LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core interpolate_track_spline  LIBRARIES ${test_libraries})
-# kwiver_discover_gtests(core merge_metadata_streams    LIBRARIES ${test_libraries})
+kwiver_discover_gtests(core keyframe_selector_basic   LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core match_features            LIBRARIES ${test_libraries})
+kwiver_discover_gtests(core merge_metadata_streams    LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core metadata_map_io_csv       LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(core mesh_intersect            LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(core mesh_operations           LIBRARIES ${test_libraries})
@@ -46,7 +49,7 @@ kwiver_discover_gtests(core read_track_descriptor_set_csv
                                                       LIBRARIES ${test_libraries})
 
 # kwiver_discover_gtests(core render_mesh_depth_map     LIBRARIES ${test_libraries})
-kwiver_discover_gtests(core track_features_core       LIBRARIES ${test_libraries})
+kwiver_discover_gtests(core track_features            LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core track_set_impl            LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(core track_set_impl            LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(core transfer_bbox_with_depth_map

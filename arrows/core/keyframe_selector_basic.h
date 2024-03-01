@@ -11,7 +11,7 @@
 #include <arrows/core/kwiver_algo_core_export.h>
 #include <vital/vital_config.h>
 
-#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/keyframe_selection.h>
 
 namespace kwiver {
@@ -28,37 +28,21 @@ class KWIVER_ALGO_CORE_EXPORT keyframe_selector_basic
   : public vital::algo::keyframe_selection
 {
 public:
-  PLUGIN_INFO(
-    "basic",
-    "A simple implementation of keyframe selection based on statistics"
-    " of KLT tracks" )
-
-  /// Default Constructor
-  keyframe_selector_basic();
+  PLUGGABLE_IMPL(
+    keyframe_selector_basic,
+    "A simple implementation of keyframe selection based on statistics "
+    "of KLT tracks",
+    PARAM_DEFAULT(
+      fraction_tracks_lost_to_necessitate_new_keyframe, float,
+      "If this fraction of more of features is lost then select a new keyframe",
+      0.3 ),
+    PARAM_DEFAULT(
+      keyframe_min_feature_count, size_t,
+      "Minimum number of features required for a frame to become a keyframe",
+      50 )
+  )
 
   virtual ~keyframe_selector_basic() {}
-
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  ///
-  /// This base virtual function implementation returns an empty configuration
-  /// block whose name is set to \c this->type_name.
-  ///
-  /// \returns \c config_block containing the configuration for this algorithm
-  ///         and any nested components.
-  virtual vital::config_block_sptr get_configuration() const;
-
-  /// Set this algorithm's properties via a config block
-  ///
-  /// \throws no_such_configuration_value_exception
-  ///   Thrown if an expected configuration value is not present.
-  /// \throws algorithm_configuration_exception
-  ///   Thrown when the algorithm is given an invalid \c config_block or is'
-  ///   otherwise unable to configure itself.
-  ///
-  /// \param config  The \c config_block instance containing the configuration
-  ///               parameters for this algorithm
-  virtual void set_configuration( vital::config_block_sptr config );
 
   /// Check that the algorithm's currently configuration is valid
   ///
@@ -87,9 +71,13 @@ public:
   select( kwiver::vital::track_set_sptr tracks ) const;
 
 protected:
-  class priv;
+  void set_configuration_internal( vital::config_block_sptr config ) override;
 
-  std::shared_ptr< priv > d_;
+private:
+  void initialize() override;
+  /// private implementation class
+  class priv;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace core

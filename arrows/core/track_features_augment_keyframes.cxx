@@ -23,17 +23,23 @@ namespace core {
 class track_features_augment_keyframes::priv
 {
 public:
-  /// The descriptor extractor algorithm to use
-  vital::algo::extract_descriptors_sptr extractor;
-
-  const std::string detector_name;
-
-  const std::string extractor_name;
-
-  priv()
-    : detector_name( "kf_only_feature_detector" ),
-      extractor_name( "kf_only_descriptor_extractor" )
+  priv( track_features_augment_keyframes& parent )
+    : parent( parent ),
+      detector_name( "kf_only_feature_detector" )
   {}
+
+  track_features_augment_keyframes& parent;
+
+  /// Configuration Values
+  vital::algo::extract_descriptors_sptr
+  c_extractor() const
+  { return parent.c_extractor; }
+  std::string
+  c_extractor_name() const
+  { return parent.c_extractor_name; }
+
+  // Local value
+  const std::string detector_name;
 };
 
 /// Augment existing tracks with additional feature if a keyframe
@@ -61,7 +67,7 @@ track_features_augment_keyframes
 
   // describe the features.  Note this will recalculate the feature angles.
   vital::descriptor_set_sptr new_desc =
-    d_->extractor->extract( image_data, new_feat, mask );
+    d_->c_extractor()->extract( image_data, new_feat, mask );
 
   std::vector< feature_sptr > vf = new_feat->features();
   std::vector< descriptor_sptr > df = new_desc->descriptors();
@@ -90,52 +96,19 @@ track_features_augment_keyframes
   return tracks;
 }
 
+// ----------------------------------------------------------------------------
+void
 track_features_augment_keyframes
-::track_features_augment_keyframes()
-  : d_( new priv )
-{}
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
+  attach_logger( "arrows.core.track_features_augment_keyframes" );
+}
 
 /// Destructor
 track_features_augment_keyframes
 ::~track_features_augment_keyframes() noexcept
 {}
-
-/// Get this alg's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-track_features_augment_keyframes
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config = algorithm::get_configuration();
-
-  // Sub-algorithm implementation name + sub_config block
-  // - Descriptor Extractor algorithm
-  algo::extract_descriptors::
-  get_nested_algo_configuration( d_->extractor_name, config, d_->extractor );
-
-  return config;
-}
-
-/// Set this algo's properties via a config block
-void
-track_features_augment_keyframes
-::set_configuration( vital::config_block_sptr in_config )
-{
-  // Starting with our generated config_block to ensure that assumed values are
-  // present
-  // An alternative is to check for key presence before performing a get_value()
-  // call.
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  // Setting nested algorithm instances via setter methods instead of directly
-  // assigning to instance property.
-  algo::extract_descriptors_sptr ed;
-  algo::extract_descriptors::set_nested_algo_configuration(
-    d_->extractor_name,
-    config, ed );
-  d_->extractor = ed;
-}
 
 bool
 track_features_augment_keyframes
@@ -143,11 +116,11 @@ track_features_augment_keyframes
 {
   bool config_valid = true;
 
-  config_valid = algo::detect_features::check_nested_algo_configuration(
+  config_valid = check_nested_algo_configuration< algo::detect_features >(
     d_->detector_name, config ) && config_valid;
 
-  config_valid = algo::extract_descriptors::check_nested_algo_configuration(
-    d_->extractor_name, config ) && config_valid;
+  config_valid = check_nested_algo_configuration< algo::extract_descriptors >(
+    d_->c_extractor_name(), config ) && config_valid;
 
   return config_valid;
 }

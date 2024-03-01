@@ -33,13 +33,13 @@ set( plugin_core_headers
   filter_features_scale.h
   filter_tracks.h
   handle_descriptor_request_core.h
-  # initialize_object_tracks_threshold.h
+  initialize_object_tracks_threshold.h
   interpolate_track_spline.h
-  # keyframe_selector_basic.h
+  keyframe_selector_basic.h
   match_features_fundamental_matrix.h
   match_features_homography.h
   match_tracks.h
-  # merge_metadata_streams.h
+  merge_metadata_streams.h
   # mesh_intersect.h
   mesh_operations.h
   metadata_map_io_csv.h
@@ -47,7 +47,7 @@ set( plugin_core_headers
   read_object_track_set_kw18.h
   read_track_descriptor_set_csv.h
   render_mesh_depth_map.h
-  # track_features_augment_keyframes.h
+  track_features_augment_keyframes.h
   track_features_core.h
   track_set_impl.h
   # transfer_bbox_with_depth_map.h
@@ -106,14 +106,14 @@ set( plugin_core_sources
   filter_features_scale.cxx
   filter_tracks.cxx
   handle_descriptor_request_core.cxx
-  # initialize_object_tracks_threshold.cxx
+  initialize_object_tracks_threshold.cxx
   interpolate_track_spline.cxx
-  # keyframe_selector_basic.cxx
+  keyframe_selector_basic.cxx
   match_features_fundamental_matrix.cxx
   match_features_homography.cxx
   match_matrix.cxx
   # match_tracks.cxx
-  # merge_metadata_streams.cxx
+  merge_metadata_streams.cxx
   # mesh_intersect.cxx
   mesh_operations.cxx
   metadata_map_io_csv.cxx
@@ -121,7 +121,7 @@ set( plugin_core_sources
   read_object_track_set_kw18.cxx
   read_track_descriptor_set_csv.cxx
   render_mesh_depth_map.cxx
-  # track_features_augment_keyframes.cxx
+  track_features_augment_keyframes.cxx
   track_features_core.cxx
   track_set_impl.cxx
   # transfer_bbox_with_depth_map.cxx
