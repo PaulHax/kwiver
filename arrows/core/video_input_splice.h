@@ -37,7 +37,10 @@ public:
       "The output of num_frames still reports the total frames in the video "
       "but skip_frame is valid every nth frame only and there are metadata_map "
       "entries for only every nth frame.",
-      1 )
+      1 ),
+    PARAM(
+      video_source, std::vector< vital::algo::video_input_sptr >,
+      "Video sources" )
   )
 
   virtual ~video_input_splice();
