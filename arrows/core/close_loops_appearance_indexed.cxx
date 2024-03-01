@@ -641,7 +641,7 @@ close_loops_appearance_indexed
 {
   KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
   attach_logger( "arrows.core.close_loops_appearance_indexed" );
-  d_->m_logger = this->logger(); // is this still needed?
+  d_->m_logger = this->logger();
 }
 
 /// Destructor
