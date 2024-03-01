@@ -411,3 +411,23 @@ TEST_F ( video_input_splice, test_capabilities )
               << std::endl;
   }
 }
+// ----------------------------------------------------------------------------
+TEST_F ( video_input_splice, test_config_file )
+{
+  auto config = kwiver::vital::config_block::empty_config();
+
+  if( !set_config( config, data_dir ) )
+  {
+    return;
+  }
+
+  kwiver::arrows::core::video_input_splice vis;
+
+  EXPECT_TRUE( vis.check_configuration( config ) );
+  vis.set_configuration( config );
+
+  auto vis_config = vis.get_configuration();
+  auto diff = config->difference_config( vis_config );
+  // set and get should produce the same configuration
+  EXPECT_TRUE( diff->available_values().empty() );
+}
