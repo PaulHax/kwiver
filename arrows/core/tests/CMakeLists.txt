@@ -24,7 +24,6 @@ kwiver_discover_gtests(core detected_object_set_input
                                                       LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core detected_object_set_output
                                                       LIBRARIES ${test_libraries})
-kwiver_discover_gtests(core dynamic_configuration     LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core detected_object_io        LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core dynamic_configuration     LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core estimate_canonical_transform
