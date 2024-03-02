@@ -44,31 +44,61 @@ namespace core {
 class detected_object_set_output_kw18::priv
 {
 public:
-  priv( detected_object_set_output_kw18* parent )
-    : m_parent( parent ),
+  priv( detected_object_set_output_kw18& parent )
+    : parent( parent ),
       m_first( true ),
-      m_frame_number( 1 ),
-      m_write_tot( false )
+      m_frame_number( 1 )
   {}
 
   ~priv() {}
 
   void read_all();
 
-  detected_object_set_output_kw18* m_parent;
+  detected_object_set_output_kw18& parent;
+
+  // Configuration values
+  bool c_write_tot() { return parent.c_write_tot; }
+  std::string c_tot_field1_ids() { return parent.c_tot_field1_ids; }
+  std::string c_tot_field2_ids() { return parent.c_tot_field2_ids; }
+
   bool m_first;
   int m_frame_number;
-  bool m_write_tot;
+
   std::unique_ptr< std::ofstream > m_tot_writer;
-  std::string m_tot_field1_ids, m_tot_field2_ids;
-  std::vector< std::string > m_parsed_tot_ids1, m_parsed_tot_ids2;
+
+  // we need to recalculate these values each time because between invocations
+  // of set/get configuration parent.set_path() will make these out of sync.
+  std::vector< std::string >
+  m_parsed_tot_ids1()
+  {
+    auto const& field1_ids = parent.c_tot_field1_ids;
+    std::vector< std::string > result;
+    kwiver::vital::tokenize(
+      field1_ids, result, ",;",
+      kwiver::vital::TokenizeTrimEmpty  );
+
+    return result;
+  }
+
+  std::vector< std::string >
+  m_parsed_tot_ids2()
+  {
+    auto const& field2_ids = parent.c_tot_field2_ids;
+    std::vector< std::string > result;
+    kwiver::vital::tokenize(
+      field2_ids, result, ",;",
+      kwiver::vital::TokenizeTrimEmpty  );
+
+    return result;
+  }
 };
 
 // ----------------------------------------------------------------------------
+void
 detected_object_set_output_kw18
-::detected_object_set_output_kw18()
-  : d( new detected_object_set_output_kw18::priv( this ) )
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
   attach_logger( "arrows.core.detected_object_set_output_kw18" );
 }
 
@@ -82,64 +112,16 @@ detected_object_set_output_kw18::
 }
 
 // ----------------------------------------------------------------------------
-void
-detected_object_set_output_kw18
-::set_configuration( vital::config_block_sptr config_in )
-{
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( config_in );
-
-  d->m_write_tot = config->get_value< bool >( "write_tot", d->m_write_tot );
-
-  d->m_tot_field1_ids = config->get_value< std::string >(
-    "tot_field1_ids",
-    d->m_tot_field1_ids );
-  d->m_tot_field2_ids = config->get_value< std::string >(
-    "tot_field2_ids",
-    d->m_tot_field2_ids );
-
-  vital::tokenize(
-    d->m_tot_field1_ids, d->m_parsed_tot_ids1, ",;",
-    kwiver::vital::TokenizeTrimEmpty );
-  vital::tokenize(
-    d->m_tot_field2_ids, d->m_parsed_tot_ids2, ",;",
-    kwiver::vital::TokenizeTrimEmpty );
-}
-
-// ----------------------------------------------------------------------------
-vital::config_block_sptr
-detected_object_set_output_kw18
-::get_configuration() const
-{
-  // get base config from base class
-  kwiver::vital::config_block_sptr config = algorithm::get_configuration();
-
-  // Class parameters
-  config->set_value(
-    "write_tot", d->m_write_tot,
-    "Write a file in the vpView TOT format alongside "
-    "the computed tracks." );
-  config->set_value(
-    "tot_field1_ids", d->m_tot_field1_ids,
-    "Comma seperated list of ids used for TOT field 1." );
-  config->set_value(
-    "tot_field2_ids", d->m_tot_field2_ids,
-    "Comma seperated list of ids used for TOT field 2." );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
 bool
 detected_object_set_output_kw18
 ::check_configuration( VITAL_UNUSED vital::config_block_sptr config ) const
 {
-  if( d->m_write_tot && d->m_tot_field1_ids.empty() )
+  if( d->c_write_tot() && d->c_tot_field1_ids().empty() )
   {
     return false;
   }
 
-  if( d->m_write_tot && d->m_tot_field2_ids.empty() )
+  if( d->c_write_tot() && d->c_tot_field2_ids().empty() )
   {
     return false;
   }
@@ -201,7 +183,7 @@ detected_object_set_output_kw18
 
     d->m_first = false;
 
-    if( d->m_write_tot )
+    if( d->c_write_tot() )
     {
       std::size_t ext_ind = filename().find_last_of( "." );
       std::string tot_fn = filename().substr( 0, ext_ind ) + ".txt";
@@ -243,13 +225,13 @@ detected_object_set_output_kw18
              << std::endl;
 
     // optionally write tot to corresponding file
-    if( d->m_write_tot )
+    if( d->c_write_tot() )
     {
       vital::detected_object_type_sptr clf = ( *det )->type();
 
       double f1 = 0.0, f2 = 0.0, f3 = 0.0;
 
-      for( auto const& id : d->m_parsed_tot_ids1 )
+      for( auto const& id : d->m_parsed_tot_ids1() )
       {
         if( clf->has_class_name( id ) )
         {
@@ -257,7 +239,7 @@ detected_object_set_output_kw18
         }
       }
 
-      for( auto const& id : d->m_parsed_tot_ids2 )
+      for( auto const& id : d->m_parsed_tot_ids2() )
       {
         if( clf->has_class_name( id ) )
         {
