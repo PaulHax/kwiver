@@ -12,6 +12,7 @@
 #include "vital/algo/draw_detected_object_set.h"
 #include "vital/algo/image_io.h"
 #include "vital/algo/image_object_detector.h"
+#include <vital/algo/algorithm.txx>
 
 #include "vital/plugin_management/plugin_manager.h"
 
@@ -38,20 +39,20 @@ how_to_part_02_detections()
 
   // First, Load an image (see how_to_part_01_images)
   kwiver::vital::algo::image_io_sptr ocv_io =
-    kwiver::vital::algo::image_io::create( "ocv" );
+    kwiver::vital::create_algorithm< kwiver::vital::algo::image_io >( "ocv" );
   kwiver::vital::image_container_sptr ocv_img =
     ocv_io->load( "./soda_circles.jpg" );
 
   // Now let's run a detection algorithm that comes with kwiver
   kwiver::vital::algo::image_object_detector_sptr detector =
-    kwiver::vital::algo::image_object_detector::create( "hough_circle" );
+    kwiver::vital::create_algorithm< kwiver::vital::algo::image_object_detector >( "hough_circle" );
   kwiver::vital::detected_object_set_sptr hough_detections =
     detector->detect( ocv_img );
 
   // We can take this detection set and create a new image with the detections
   // overlaid on the image
   kwiver::vital::algo::draw_detected_object_set_sptr drawer =
-    kwiver::vital::algo::draw_detected_object_set::create( "ocv" );
+    kwiver::vital::create_algorithm< kwiver::vital::algo::draw_detected_object_set >( "ocv" );
   drawer->set_configuration( drawer->get_configuration() ); // This will default
 
   // the configuration
@@ -165,9 +166,9 @@ how_to_part_02_detections()
   cv::destroyWindow( "Detections" );
 
   kwiver::vital::algo::detected_object_set_output_sptr kpf_writer =
-    kwiver::vital::algo::detected_object_set_output::create( "kpf_output" );
+    kwiver::vital::create_algorithm< kwiver::vital::algo::detected_object_set_output >( "kpf_output" );
   kwiver::vital::algo::detected_object_set_input_sptr kpf_reader =
-    kwiver::vital::algo::detected_object_set_input::create( "kpf_input" );
+    kwiver::vital::create_algorithm< kwiver::vital::algo::detected_object_set_input >( "kpf_input" );
   if( kpf_writer == nullptr )
   {
     std::cerr <<

@@ -11,7 +11,7 @@
 
 #include <arrows/vxl/kd_tree.h>
 
-#include <vital/algo/algorithm_factory.h>
+#include <vital/algo/algorithm.txx>
 #include <vital/plugin_management/plugin_manager.h>
 #include <vital/vital_config.h>
 
@@ -85,7 +85,9 @@ TEST ( kd_tree, create )
 {
   plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE( nullptr, algo::nearest_neighbors::create( "vxl_kd_tree" ) );
+  EXPECT_NE(
+    nullptr,
+    create_algorithm< algo::nearest_neighbors >( "vxl_kd_tree" ) );
 }
 
 // ----------------------------------------------------------------------------
@@ -95,7 +97,7 @@ TEST_F ( kd_tree_test, find_nearest )
 
   search_tree.build( points );
 
-  int K = 3;
+  size_t K = 3;
 
   std::vector< int > nearest_single_indices;
   std::vector< double > nearest_single_distances;

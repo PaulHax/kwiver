@@ -8,6 +8,7 @@
 #include "vital/algo/image_filter.h"
 #include "vital/algo/image_io.h"
 #include "vital/algo/split_image.h"
+#include <vital/algo/algorithm.txx>
 
 #include "vital/plugin_management/plugin_manager.h"
 
@@ -76,9 +77,9 @@ how_to_part_01_images()
 
   // The main image libraries used in KWIVER are the OpenCV and VXL libraries
   kwiver::vital::algo::image_io_sptr ocv_io =
-    kwiver::vital::algo::image_io::create( "ocv" );
+    kwiver::vital::create_algorithm< kwiver::vital::algo::image_io >( "ocv" );
   kwiver::vital::algo::image_io_sptr vxl_io =
-    kwiver::vital::algo::image_io::create( "vxl" );
+    kwiver::vital::create_algorithm< kwiver::vital::algo::image_io >( "vxl" );
 
   // The image_io interface is simple, and has a load and save method
   // These methods will operate on the vital object image_container
@@ -141,9 +142,11 @@ how_to_part_01_images()
 
   // These algorithms split an image in half (left and right)
   kwiver::vital::algo::split_image_sptr ocv_split =
-    kwiver::vital::algo::split_image::create( "ocv" );
+    kwiver::vital::create_algorithm< kwiver::vital::algo::split_image >(
+      "ocv" );
   kwiver::vital::algo::split_image_sptr vxl_split =
-    kwiver::vital::algo::split_image::create( "vxl" );
+    kwiver::vital::create_algorithm< kwiver::vital::algo::split_image >(
+      "vxl" );
 
   std::vector< kwiver::vital::image_container_sptr > ocv_imgs =
     ocv_split->split( vxl_img );

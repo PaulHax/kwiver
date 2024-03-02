@@ -7,7 +7,6 @@
  * \brief Implementation of detect_feature_filtered algorithm
  */
 #include "kd_tree.h"
-#include <vital/algo/nearest_neighbors.h>
 
 #include <rsdl/rsdl_dist.h>
 #include <rsdl/rsdl_kd_tree.h>
@@ -25,8 +24,11 @@ namespace vxl {
 class kd_tree::priv
 {
 public:
-  /// Constructor
-  priv() {}
+  priv( kd_tree& parent )
+    : parent( parent )
+  {}
+
+  kd_tree& parent;
 
   vital::logger_handle_t m_logger;
 
@@ -34,11 +36,11 @@ public:
 };
 
 // ----------------------------------------------------------------------------
-// Constructor
+void
 kd_tree
-::kd_tree()
-  : d_( new priv )
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
   attach_logger( "arrows.vxl.kd_tree" );
   d_->m_logger = logger();
 }
@@ -49,27 +51,9 @@ kd_tree
 {}
 
 // ------------------------------------------------------------------
-vital::config_block_sptr
-kd_tree
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config =
-    vital::algo::nearest_neighbors::get_configuration();
-
-  return config;
-}
-
-// ------------------------------------------------------------------
-void
-kd_tree
-::set_configuration( vital::config_block_sptr in_config )
-{}
-
-// ------------------------------------------------------------------
 bool
 kd_tree
-::check_configuration( vital::config_block_sptr config ) const
+::check_configuration( VITAL_UNUSED vital::config_block_sptr config ) const
 {
   return true;
 }

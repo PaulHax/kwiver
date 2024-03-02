@@ -14,6 +14,7 @@
 #include <arrows/vxl/image_io.h>
 
 #include <kwiversys/SystemTools.hxx>
+#include <vital/algo/algorithm.txx>
 #include <vital/plugin_management/plugin_manager.h>
 #include <vital/util/transform_image.h>
 
@@ -46,6 +47,17 @@ class image_io : public ::testing::Test
 {
   TEST_ARG( data_dir );
 };
+
+// ----------------------------------------------------------------------------
+TEST_F ( image_io, create )
+{
+  kwiver::vital::plugin_manager::instance().load_all_plugins();
+
+  EXPECT_NE(
+    nullptr,
+    kwiver::vital::create_algorithm< kwiver::vital::algo::image_io >( "vxl" )
+  );
+}
 
 // ----------------------------------------------------------------------------
 TEST_F ( image_io, save_plane )

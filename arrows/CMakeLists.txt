@@ -45,7 +45,7 @@ if( KWIVER_ENABLE_VXL )
   # Super3D depends on VXL
   option( KWIVER_ENABLE_SUPER3D
     "Enable SUPER3D dependent code and plugins (Arrows)"
-    ON
+    OFF
     )
 
   # Add super3d plugin if enabled
