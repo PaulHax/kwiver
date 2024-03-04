@@ -45,11 +45,6 @@ target_link_libraries( kwiver_algo_ceres
   PRIVATE              ceres
                        kwiver_algo_mvg
   )
-if(NOT CERES_USES_MINIGLOG)
-  target_link_libraries( kwiver_algo_ceres
-    PRIVATE              glog
-    )
-endif()
 
 algorithms_create_plugin( kwiver_algo_ceres
   register_algorithms.cxx
