@@ -154,8 +154,26 @@ TEST ( filter_tracks, create )
 // ----------------------------------------------------------------------------
 TEST ( filter_tracks, track_ids )
 {
-  // Define the expected track IDs from filtering 'set_tracks'
-  // Track IDs 0-13 should be filtered to 1, 4, 5, 6 and 8
+  // `set_tracks` should be filtered to track ids: 1, 4, 5, 6 and 8
+  // based on default configuration parameters;
+  // Length >= 3 and Importance Score >=1.0
+
+  // Track ID: Length, Importance Score
+  // Track 0: 1, 0.125
+  // Track 1: 5, 2.66667
+  // Track 2: 2, 0.416667
+  // Track 3: 1, 0.125
+  // Track 4: 5, 2.66667
+  // Track 5: 4, 1.625
+  // Track 6: 5, 2.66667
+  // Track 7: 2, 0.416667
+  // Track 8: 4, 1.54167
+  // Track 9: 3, 0.833333
+  // Track 10: 3, 0.833333
+  // Track 11: 3, 0.833333
+  // Track 12: 1, 0.125
+  // Track 13: 1, 0.125
+
   std::set< track_id_t > expected_track_ids = { 1, 4, 5, 6, 8 };
 
   // Get the track IDs from the filtered track set
