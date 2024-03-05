@@ -5,6 +5,10 @@
 #include <arrows/core/filter_tracks.h>
 #include <vital/plugin_management/plugin_manager.h>
 
+#include <arrows/core/match_matrix.h>
+#include <test_tracks.h>
+#include <vital/tests/test_track_set.h>
+
 #include <gtest/gtest.h>
 
 #include <algorithm>
@@ -20,12 +24,181 @@ main( int argc, char** argv )
   return RUN_ALL_TESTS();
 }
 
+namespace {
+
+// ----------------------------------------------------------------------------
+// Helper function to generate deterministic track set
+track_set_sptr
+gen_set_tracks(
+  unsigned frames = 100,
+  unsigned max_tracks_per_frame = 1000 )
+{
+  // Manually terminate tracks on frames 1, 2 and 4
+  track_id_t track_id = 0;
+  std::vector< track_sptr > all_tracks, active_tracks;
+  for( unsigned f = 0; f < frames; ++f )
+  {
+    // Create tracks as needed to get enough on this frame
+    while( active_tracks.size() < max_tracks_per_frame )
+    {
+      auto t = track::create();
+      t->set_id( track_id++ );
+      active_tracks.push_back( t );
+      all_tracks.push_back( t );
+    }
+
+    // Add a state for each track to this frame
+    for( auto t : active_tracks )
+    {
+      t->append( std::make_shared< track_state >( f ) );
+    }
+
+    if( f == 0 )
+    {
+      // Terminate tracks 0 and 3 on frame 1
+      std::vector< track_sptr > next_tracks;
+      for( auto t : active_tracks )
+      {
+        if( t->id() != 0 && t->id() != 3 )
+        {
+          next_tracks.push_back( t );
+        }
+      }
+      active_tracks.swap( next_tracks );
+    }
+
+    if( f == 1 )
+    {
+      // Terminate tracks 2 and 7 on frame 2
+      std::vector< track_sptr > next_tracks;
+      for( auto t : active_tracks )
+      {
+        if( t->id() != 2 && t->id() != 7 )
+        {
+          next_tracks.push_back( t );
+        }
+      }
+      active_tracks.swap( next_tracks );
+    }
+
+    if( f == 3 )
+    {
+      // Terminate tracks 5 and 9 on frame 4
+      std::vector< track_sptr > next_tracks;
+      for( auto t : active_tracks )
+      {
+        if( t->id() != 5 && t->id() != 9 )
+        {
+          next_tracks.push_back( t );
+        }
+      }
+      active_tracks.swap( next_tracks );
+    }
+  }
+  return std::make_shared< track_set >( all_tracks );
+}
+
+// ----------------------------------------------------------------------------
+// Establish constants and values for randomly generated track set
+
+// Generate instance of filter function
+filter_tracks filter_fn;
+
+// Declare empty frames object
+std::vector< frame_id_t > frames;
+
+// These parameters can be varied for further testing
+const unsigned int num_frames = 100;
+const unsigned int max_tracks = 1000;
+
+track_set_sptr test_tracks =
+  kwiver::testing::generate_tracks( num_frames, max_tracks );
+
+// Compute values for filtered large track set
+track_set_sptr filtered_large_trk_set =
+  filter_fn.filter( test_tracks );
+
+// Calculate filtered match matrix
+Eigen::SparseMatrix< unsigned int > filtered_large_mm =
+  kwiver::arrows::match_matrix( filtered_large_trk_set, frames );
+
+// Compute filtered importance scores
+std::map< track_id_t, double > filtered_large_importance_scores =
+  kwiver::arrows::match_matrix_track_importance(
+    filtered_large_trk_set,
+    frames, filtered_large_mm );
+
+// ----------------------------------------------------------------------------
+// Establish constants and values for small, deterministic track set
+// DO NOT EDIT these two constants, might cause unit tests to fail
+const unsigned int set_num_frames = 5;
+const unsigned int set_max_tracks = 8;
+
+track_set_sptr set_tracks =
+  gen_set_tracks( set_num_frames, set_max_tracks );
+
+// compute values for filtered track stet
+track_set_sptr filtered_small_trk_set =
+  filter_fn.filter( set_tracks );
+
+} // end namespace anonymous
+
 // ----------------------------------------------------------------------------
 TEST ( filter_tracks, create )
 {
-  using namespace kwiver::vital;
-
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE( nullptr, create_algorithm< algo::filter_tracks >( "core" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( filter_tracks, track_ids )
+{
+  // Define the expected track IDs from filtering 'set_tracks'
+  // Track IDs 0-13 should be filtered to 1, 4, 5, 6 and 8
+  std::set< track_id_t > expected_track_ids = { 1, 4, 5, 6, 8 };
+
+  // Get the track IDs from the filtered track set
+  std::set< track_id_t > filtered_track_ids;
+  for( const auto& track : filtered_small_trk_set->tracks() )
+  {
+    filtered_track_ids.insert( track->id() );
+  }
+
+  EXPECT_EQ( filtered_track_ids, expected_track_ids );
+
+  // Check number of filtered tracks from larger, random track set
+  EXPECT_LE(
+    filtered_large_trk_set->all_track_ids().size(),
+    test_tracks->size() );
+}
+
+// ----------------------------------------------------------------------------
+// Test that tracks are filtered out according to config parameters
+TEST ( filter_tracks, config_params )
+{
+  algo::filter_tracks_sptr filter_algo =
+    create_algorithm< algo::filter_tracks >( "core" );
+
+  // Get the configuration of the filter_tracks algorithm
+  config_block_sptr config = filter_algo->get_configuration();
+
+  // Get the value of min_mm_importance parameter from the configuration
+  const double threshold = config->get_value< double >( "min_mm_importance" );
+
+  // Get the value of min_track_length parameter from the configuration
+  const unsigned int min_track_length = config->get_value< unsigned int >(
+    "min_track_length" );
+
+  // Check that the importance score is greater than the threshold
+  for( const auto& entry : filtered_large_importance_scores )
+  {
+    EXPECT_GT( entry.second, threshold );
+  }
+
+  // Check that each filtered track has length >= to config value
+  for( const auto& track : filtered_large_trk_set->tracks() )
+  {
+    EXPECT_GE( track->size(), min_track_length );
+  }
 }
