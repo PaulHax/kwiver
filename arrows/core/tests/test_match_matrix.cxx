@@ -12,16 +12,10 @@
 
 using namespace kwiver::vital;
 
-// This can be removed prior to merging with source code
-void view_set_matrix();
-
 // ----------------------------------------------------------------------------
 int
 main( int argc, char** argv )
 {
-  // This can be removed prior to merging with source code
-  view_set_matrix();
-
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
 }
@@ -30,16 +24,12 @@ namespace {
 
 // ----------------------------------------------------------------------------
 // Helper function to generate deterministic track set
+// Manually terminates tracks on frames 1, 2 and 4
 kwiver::vital::track_set_sptr
 gen_set_tracks(
   unsigned frames = 100,
-  unsigned max_tracks_per_frame = 1000,
-  unsigned min_tracks_per_frame = 500,
-  double termination_fraction = 0.01,
-  double skip_fraction = 0.01,
-  double frame_drop_fraction = 0.01 )
+  unsigned max_tracks_per_frame = 1000 )
 {
-  // Manually terminate tracks on frames 1, 2 and 4
   track_id_t track_id = 0;
   std::vector< track_sptr > all_tracks, active_tracks;
   for( unsigned f = 0; f < frames; ++f )
@@ -112,7 +102,8 @@ gen_test_matrix()
   Eigen::Matrix< unsigned int, 5, 5 > dense_matrix;
 
   // Manually calculated matrix from gen_set_tracks()
-  dense_matrix << 8, 6, 4, 4, 3,
+  dense_matrix <<
+    8, 6, 4, 4, 3,
     6, 8, 6, 6, 4,
     4, 6, 8, 8, 6,
     4, 6, 8, 8, 6,
@@ -184,20 +175,18 @@ matrix_values(
 // ----------------------------------------------------------------------------
 // Establish constants and create variables for test_tracks
 
-// These parameters can be varied for further testing
+// These two parameters can be varied for further testing
 const unsigned int num_frames = 100;
 const unsigned int max_tracks = 1000;
 
 track_set_sptr test_tracks =
   kwiver::testing::generate_tracks( num_frames, max_tracks );
 
-const auto trks = test_tracks->tracks();
-
 std::set< frame_id_t > frame_ids = test_tracks->all_frame_ids();
 std::vector< frame_id_t > frames =
   std::vector< frame_id_t >( frame_ids.begin(), frame_ids.end() );
 
-// Frames might dropped in track set generation
+// Frames might be dropped in track set generation
 int actual_num_frames = test_tracks->all_frame_ids().size();
 
 Eigen::SparseMatrix< unsigned int > matched_matrix =
@@ -212,8 +201,6 @@ const unsigned int set_max_tracks = 8;
 
 track_set_sptr set_tracks =
   gen_set_tracks( set_num_frames, set_max_tracks );
-
-const auto set_trks = set_tracks->tracks();
 
 std::set< frame_id_t > set_frame_ids = set_tracks->all_frame_ids();
 std::vector< frame_id_t > set_frames =
@@ -253,7 +240,7 @@ TEST ( match_matrix, diagonal_values )
 {
   std::vector< unsigned int > tracks_in_frame( actual_num_frames, 0 );
 
-  for( const auto& t : trks )
+  for( const auto& t : test_tracks->tracks() )
   {
     std::set< frame_id_t > t_frames = t->all_frame_ids();
     for( const auto& fid : t_frames )
@@ -324,51 +311,4 @@ TEST ( importance_score, score_values )
   {
     EXPECT_NEAR( set_scores[ i ], score_values[ i ], tolerance );
   }
-}
-
-// ----------------------------------------------------------------------------
-// Function to view results for a small track set
-// Used for visual inspection, manual calculations and de-bugging
-// Can be removed before merging with source code
-void
-view_set_matrix()
-{
-  std::cout << "Deterministic track set" << std::endl;
-
-  // Frames might be dropped in track set generation
-  int actual_set_num_frames = set_tracks->all_frame_ids().size();
-
-  // View each frame and associated tracks
-  for( frame_id_t f_id = 0; f_id < actual_set_num_frames; ++f_id )
-  {
-    std::cout << "Frame " << f_id << " - Tracks: ";
-
-    for( const auto& t : set_trks )
-    {
-      // Get all frames covered by this track
-      std::set< frame_id_t > t_frames = t->all_frame_ids();
-
-      // Check if the desired frame is in the set of
-      // frames covered by the track
-      if( t_frames.find( f_id ) != t_frames.end() )
-      {
-        std::cout << t->id() << " ";
-      }
-    }
-
-    std::cout << std::endl;
-  }
-
-  std::cout << '\n';
-
-  std::cout << "Deterministic matched matrix\n" << set_matrix << std::endl;
-
-  std::cout << "Track Importance Scores:\n";
-  for( const auto& entry : set_importance_scores )
-  {
-    std::cout << "Track ID: " << entry.first << ", Score: " << entry.second <<
-      "\n";
-  }
-
-  std::cout << '\n';
 }
