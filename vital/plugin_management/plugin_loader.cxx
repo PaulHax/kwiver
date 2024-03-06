@@ -181,14 +181,18 @@ plugin_loader
         if( concrete_type == inst )
         {
           // EXACTLY the same concrete type is being registered.
-          str << "Factory for \"" << interface_type << "\" : \""
-              << demangle( concrete_type ) <<
-            "\" already has been registered by "
-              << prev_file << ".  This factory from "
-              << m_impl->m_current_filename << " will not be registered."
-              << "Using the existing factory";
+          // Only log if the paths are different.
+          if( prev_file != m_impl->m_current_filename )
+          {
+            str << "Factory for \"" << interface_type << "\" : \""
+                << demangle( concrete_type ) <<
+              "\" already has been registered by "
+                << prev_file << ".  This factory from "
+                << m_impl->m_current_filename << " will not be registered."
+                << "Using the existing factory";
 
-          LOG_WARN( this->m_logger, str.str() );
+            LOG_WARN( this->m_logger, str.str() );
+          }
           return afact;
         }
         else
@@ -401,7 +405,7 @@ plugin_loader_impl
     "Loading plugins from directory: " << dir_path );
 
   kwiversys::Directory dir;
-  dir.Load( dir_path );
+  dir.Load( ST::CollapseFullPath( dir_path ) );
 
   unsigned long num_files = dir.GetNumberOfFiles();
 
