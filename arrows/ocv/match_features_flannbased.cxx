@@ -17,10 +17,8 @@ class match_features_flannbased::priv
 {
 public:
   /// Constructor
-  priv()
-    : cross_check( true ),
-      cross_check_k( 1 ),
-      binary_descriptors( false )
+  priv( match_features_flannbased& parent )
+    : parent( parent )
   {
     this->create();
   }
@@ -33,7 +31,7 @@ public:
   create()
   {
     // cross version compatible
-    if( binary_descriptors )
+    if( binary_descriptors() )
     {
       matcher = cv::Ptr< cv::FlannBasedMatcher >(
         new cv::FlannBasedMatcher(
@@ -61,10 +59,10 @@ public:
     std::vector< std::vector< cv::DMatch > > matches12, matches21;
     matcher->knnMatch(
       descriptors1, descriptors2,
-      matches12, cross_check_k );
+      matches12, cross_check_k() );
     matcher->knnMatch(
       descriptors2, descriptors1,
-      matches21, cross_check_k );
+      matches21, cross_check_k() );
     for( size_t m = 0; m < matches12.size(); m++ )
     {
       bool find_cross_check = false;
@@ -88,16 +86,23 @@ public:
   }
 
   /// Parameters
-  bool cross_check;
-  unsigned cross_check_k;
-  bool binary_descriptors;
+  bool
+  cross_check() const { return parent.get_cross_check(); }
+  unsigned
+  cross_check_k() const { return parent.get_cross_check_k(); }
+  bool
+  binary_descriptors() const { return parent.get_binary_descriptors(); }
+
   cv::Ptr< cv::FlannBasedMatcher > matcher;
+
+  match_features_flannbased& parent;
 }; // end match_features_flannbased::priv
 
+void
 match_features_flannbased
-::match_features_flannbased()
-  : p_( new priv )
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, p_ );
   attach_logger( "arrows.ocv.match_features_flannbased" );
 }
 
@@ -105,37 +110,10 @@ match_features_flannbased
 ::~match_features_flannbased()
 {}
 
-vital::config_block_sptr
-match_features_flannbased
-::get_configuration() const
-{
-  vital::config_block_sptr config = match_features::get_configuration();
-
-  config->set_value(
-    "cross_check", p_->cross_check,
-    "If cross-check filtering should be performed." );
-  config->set_value(
-    "cross_check_k", p_->cross_check_k,
-    "Number of neighbors to use when cross checking" );
-  config->set_value(
-    "binary_descriptors", p_->binary_descriptors,
-    "If false assume float descriptors (use L2 KDTree). "
-    "If true assume binary descriptors (use LSH)." );
-
-  return config;
-}
-
 void
 match_features_flannbased
-::set_configuration( vital::config_block_sptr in_config )
+::set_configuration_internal( VITAL_UNUSED vital::config_block_sptr in_config )
 {
-  vital::config_block_sptr config = get_configuration();
-  config->merge_config( in_config );
-
-  p_->cross_check = config->get_value< bool >( "cross_check" );
-  p_->cross_check_k = config->get_value< unsigned >( "cross_check_k" );
-  p_->binary_descriptors = config->get_value< bool >( "binary_descriptors" );
-
   p_->create();
 }
 
@@ -164,7 +142,7 @@ match_features_flannbased
   const cv::Mat& descriptors1, const cv::Mat& descriptors2,
   std::vector< cv::DMatch >& matches ) const
 {
-  if( p_->cross_check )
+  if( p_->cross_check() )
   {
     p_->cross_check_match( descriptors1, descriptors2, matches );
   }

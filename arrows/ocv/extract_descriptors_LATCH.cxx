@@ -19,98 +19,36 @@ namespace arrows {
 
 namespace ocv {
 
-class extract_descriptors_LATCH::priv
+namespace {
+
+cv::Ptr< cv::xfeatures2d::LATCH >
+create( const extract_descriptors_LATCH& parent )
 {
-public:
-  priv()
-    : bytes( 32 ),
-      rotation_invariance( true ),
-      half_ssd_size( 3 )
-  {}
+  return cv::xfeatures2d::LATCH::create(
+    parent.get_bytes(), parent.get_rotation_invariance(),
+    parent.get_half_ssd_size() );
+}
 
-  cv::Ptr< cv::xfeatures2d::LATCH >
-  create() const
-  {
-    return cv::xfeatures2d::LATCH::create(
-      bytes, rotation_invariance,
-      half_ssd_size );
-  }
+} // namespace
 
-  void
-  update_config( config_block_sptr config ) const
-  {
-    config->set_value( "bytes", bytes, "" );
-    config->set_value( "rotation_invariance", rotation_invariance, "" );
-    config->set_value( "half_ssd_size", half_ssd_size, "" );
-  }
-
-  void
-  set_config( config_block_sptr config )
-  {
-    bytes = config->get_value< int >( "bytes" );
-    rotation_invariance = config->get_value< bool >( "rotation_invariance" );
-    half_ssd_size = config->get_value< int >( "half_ssd_size" );
-  }
-
-  bool
-  check_config( config_block_sptr config, logger_handle_t const& log ) const
-  {
-    bool valid = true;
-
-    // Bytes can only be one of the following values
-    int bytes_ = config->get_value< int >( "bytes" );
-    if( !( bytes_ == 1 ||
-           bytes_ == 2 ||
-           bytes_ == 4 ||
-           bytes_ == 8 ||
-           bytes_ == 16 ||
-           bytes_ == 32 ||
-           bytes_ == 64 ) )
-    {
-      LOG_ERROR(
-        log, "bytes value must be one of [1, 2, 4, 8, 16, 32, 64]. "
-             "Given: " << bytes_ );
-      valid = false;
-    }
-
-    return valid;
-  }
-
-  // Parameters
-  int bytes;
-  bool rotation_invariance;
-  int half_ssd_size;
-};
-
+void
 extract_descriptors_LATCH
-::extract_descriptors_LATCH()
-  : p_( new priv )
+::initialize()
 {
   attach_logger( "arrows.ocv.LATCH" );
-  extractor = p_->create();
+  extractor = create( *this );
 }
 
 extract_descriptors_LATCH
 ::~extract_descriptors_LATCH()
 {}
 
-vital::config_block_sptr
-extract_descriptors_LATCH
-::get_configuration() const
-{
-  config_block_sptr config = ocv::extract_descriptors::get_configuration();
-  p_->update_config( config );
-  return config;
-}
-
 void
 extract_descriptors_LATCH
-::set_configuration( vital::config_block_sptr config )
+::set_configuration_internal( VITAL_UNUSED vital::config_block_sptr config )
 {
   config_block_sptr c = get_configuration();
   c->merge_config( config );
-  p_->set_config( c );
-  extractor = p_->create();
 }
 
 bool
@@ -119,7 +57,33 @@ extract_descriptors_LATCH
 {
   config_block_sptr c = get_configuration();
   c->merge_config( config );
-  return p_->check_config( c, logger() );
+
+  bool valid = true;
+
+  // Bytes can only be one of the following values
+  int bytes_ = c->get_value< int >( "bytes" );
+  if( !( bytes_ == 1 ||
+         bytes_ == 2 ||
+         bytes_ == 4 ||
+         bytes_ == 8 ||
+         bytes_ == 16 ||
+         bytes_ == 32 ||
+         bytes_ == 64 ) )
+  {
+    LOG_ERROR(
+      logger(), "bytes value must be one of [1, 2, 4, 8, 16, 32, 64]. "
+                "Given: " << bytes_ );
+    valid = false;
+  }
+
+  return valid;
+}
+
+void
+extract_descriptors_LATCH
+::update_extractor_parameters() const
+{
+  extractor.constCast< cv::DescriptorExtractor >() = create( *this );
 }
 
 } // end namespace ocv

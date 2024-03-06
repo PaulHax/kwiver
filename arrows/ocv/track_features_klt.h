@@ -10,6 +10,8 @@
 
 #include <arrows/ocv/kwiver_algo_ocv_export.h>
 
+#include <vital/algo/algorithm.txx>
+#include <vital/algo/detect_features.h>
 #include <vital/algo/track_features.h>
 #include <vital/types/feature_track_set.h>
 #include <vital/types/image_container.h>
@@ -25,37 +27,59 @@ class KWIVER_ALGO_OCV_EXPORT track_features_klt
   : public vital::algo::track_features
 {
 public:
-  PLUGIN_INFO(
-    "ocv_KLT",
-    "OpenCV Lucas Kanade feature tracker" )
+  PLUGGABLE_IMPL(
+    track_features_klt,
+    "OpenCV Lucas Kanade feature tracker",
 
-  /// Default Constructor
-  track_features_klt();
+    PARAM_DEFAULT(
+      redetect_frac_lost_threshold, float,
+      "redetect if fraction of features tracked from last "
+      "detection drops below this level", 0.7 ),
+
+    PARAM_DEFAULT(
+      grid_rows, int,
+      "rows in feature distribution enforcing grid", 0 ),
+
+    PARAM_DEFAULT(
+      grid_cols, int,
+      "colums in feature distribution enforcing grid", 0 ),
+
+    PARAM_DEFAULT(
+      new_feat_exclusionary_radius_image_fraction,
+      float,
+      "do not place new features any closer than this fraction of image min "
+      "dimension to existing features", 0.01 ),
+
+    PARAM_DEFAULT(
+      win_size, int,
+      "klt image patch side length (it's a square)", 41 ),
+
+    PARAM_DEFAULT(
+      max_pyramid_level, int,
+      "maximum pyramid level used in klt feature tracking", 3 ),
+
+    PARAM_DEFAULT(
+      target_number_of_features, int,
+      "number of features that detector tries to find.  May be "
+      "more or less depending on image content.  The algorithm "
+      "attempts to distribute this many features evenly across "
+      "the image. If texture is locally weak few feautres may be "
+      "extracted in a local area reducing the total detected "
+      "feature count.", 2048 ),
+
+    PARAM_DEFAULT(
+      klt_path_l1_difference_thresh, int,
+      "patches with average l1 difference greater than this threshold "
+      "will be discarded.", 10 ),
+
+    PARAM(
+      detector, vital::algo::detect_features_sptr,
+      "feature_detector configuration" )
+
+  )
 
   /// Destructor
   virtual ~track_features_klt() noexcept;
-
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  ///
-  /// This base virtual function implementation returns an empty configuration
-  /// block whose name is set to \c this->type_name.
-  ///
-  /// \returns \c config_block containing the configuration for this algorithm
-  ///          and any nested components.
-  vital::config_block_sptr get_configuration() const override;
-
-  /// Set this algorithm's properties via a config block
-  ///
-  /// \throws no_such_configuration_value_exception
-  ///    Thrown if an expected configuration value is not present.
-  /// \throws algorithm_configuration_exception
-  ///    Thrown when the algorithm is given an invalid \c config_block or is'
-  ///    otherwise unable to configure itself.
-  ///
-  /// \param config  The \c config_block instance containing the configuration
-  ///                parameters for this algorithm
-  void set_configuration( vital::config_block_sptr config ) override;
 
   /// Check that the algorithm's currently configuration is valid
   ///
@@ -90,10 +114,10 @@ public:
     vital::image_container_sptr mask = {} ) const override;
 
 private:
+  void initialize() override;
   /// private implementation class
   class priv;
-
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace ocv

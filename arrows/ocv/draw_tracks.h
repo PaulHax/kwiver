@@ -23,9 +23,75 @@ class KWIVER_ALGO_OCV_EXPORT draw_tracks
   : public vital::algo::draw_tracks
 {
 public:
-  PLUGIN_INFO(
-    "ocv",
-    "Use OpenCV to draw tracked features on the images." )
+  PLUGGABLE_IMPL(
+    draw_tracks,
+    "Use OpenCV to draw tracked features on the images.",
+
+    PARAM_DEFAULT(
+      draw_track_ids,
+      bool,
+      "Draw track ids next to each feature point.",
+      true ),
+
+    PARAM_DEFAULT(
+      draw_untracked_features,
+      bool,
+      "Draw untracked feature points in error_color.",
+      true ),
+
+    PARAM_DEFAULT(
+      draw_match_lines,
+      bool,
+      "Draw lines between tracked features on the current frame "
+      "to any past frames.",
+      false ),
+
+    PARAM_DEFAULT(
+      draw_shift_lines,
+      bool,
+      "Draw lines showing the movement of the feature in the image "
+      "plane from the last frame to the current one drawn on every "
+      "single image individually.",
+      false ),
+
+    PARAM_DEFAULT(
+      draw_comparison_lines,
+      bool,
+      "If more than 1 track set is input to this class, should we "
+      "draw comparison lines between tracks with the same ids in "
+      "both input sets?",
+      true ),
+
+    PARAM_DEFAULT(
+      swap_comparison_set,
+      bool,
+      "If we are using a comparison track set, swap it and the input "
+      "track set, so that the comparison set becomes the main set "
+      "being displayed.",
+      false ),
+
+    PARAM_DEFAULT(
+      write_images_to_disk,
+      bool,
+      "Should images be written out to disk?",
+      true ),
+
+    PARAM_DEFAULT(
+      pattern,
+      std::string,
+      "The output pattern for writing images to disk.",
+      "feature_tracks_%05d.png" ),
+
+    PARAM_DEFAULT(
+      past_frames_to_show,
+      std::string,
+      "A comma seperated list of past frames to show. For example: "
+      "a value of \"3, 1\" will cause the GUI to generate a window "
+      "3 frames wide, with the first frame being 2 frames behind the "
+      "current frame, the second 1 frame behind, and the third being "
+      "the current frame.",
+      "" )
+  );
 
   /// Constructor
   draw_tracks();
@@ -33,13 +99,7 @@ public:
   /// Destructor
   virtual ~draw_tracks();
 
-  /// Get this algorithm's \link kwiver::vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
-  /// Check that the algorithm's currently configuration is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
   /// Draw features tracks on top of the input images.
   ///
@@ -54,17 +114,18 @@ public:
   /// \param [in] image_data a list of images the tracks were computed over
   /// \param [in] comparison_set optional comparison track set
   /// \returns a pointer to the last image generated
-  virtual vital::image_container_sptr
+  vital::image_container_sptr
   draw(
     vital::track_set_sptr display_set,
     vital::image_container_sptr_list image_data,
-    vital::track_set_sptr comparison_set = vital::track_set_sptr() );
+    vital::track_set_sptr comparison_set = vital::track_set_sptr() ) override;
 
 private:
+  void initialize() override;
   /// private implementation class
   class priv;
 
-  const std::unique_ptr< priv > d;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // end namespace ocv

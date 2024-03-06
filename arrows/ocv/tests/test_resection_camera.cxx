@@ -6,6 +6,8 @@
 
 #include <vital/plugin_management/plugin_manager.h>
 
+#include <vital/algo/algorithm.txx>
+
 #include <gtest/gtest.h>
 
 using namespace kwiver::vital;
@@ -32,7 +34,9 @@ main( int argc, char** argv )
 TEST ( resection_camera, create )
 {
   plugin_manager::instance().load_all_plugins();
-  EXPECT_NE( nullptr, algo::resection_camera::create( "ocv" ) );
+  EXPECT_NE(
+    nullptr,
+    kwiver::vital::create_algorithm< algo::resection_camera >( "ocv" ) );
 }
 
 // ----------------------------------------------------------------------------

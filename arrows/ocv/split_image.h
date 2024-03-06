@@ -25,27 +25,23 @@ class KWIVER_ALGO_OCV_EXPORT split_image
   : public vital::algo::split_image
 {
 public:
-  PLUGIN_INFO(
-    "ocv",
+  PLUGGABLE_IMPL(
+    split_image,
     "Split an image  into multiple smaller images using opencv functions" )
-
-  /// Constructor
-  split_image();
 
   /// Destructor
   virtual ~split_image();
 
-  virtual void set_configuration( kwiver::vital::config_block_sptr ) {}
-
-  virtual bool
-  check_configuration( kwiver::vital::config_block_sptr config ) const
+  bool
+  check_configuration(
+    VITAL_UNUSED kwiver::vital::config_block_sptr config ) const override
   {
     return true;
   }
 
   /// Split image
-  virtual std::vector< kwiver::vital::image_container_sptr >
-  split( kwiver::vital::image_container_sptr img ) const;
+  std::vector< kwiver::vital::image_container_sptr >
+  split( kwiver::vital::image_container_sptr img ) const override;
 };
 
 } // end namespace ocv

@@ -17,154 +17,86 @@ namespace arrows {
 
 namespace ocv {
 
-class detect_features_simple_blob::priv
+namespace {
+
+cv::SimpleBlobDetector::Params
+create_config( const detect_features_simple_blob& parent )
 {
-public:
-  /// Constructor
-  priv()
-    : p()
-  {}
-
-  /// Create new algorithm based on current parameter values
-  cv::Ptr< cv::SimpleBlobDetector >
-  create() const
-  {
-#if KWIVER_OPENCV_VERSION_MAJOR < 3
-    return cv::Ptr< cv::SimpleBlobDetector >(
-      new cv::SimpleBlobDetector( p )
-    );
-#else
-    return cv::SimpleBlobDetector::create( p );
-#endif
-  }
-
-  /// Update config block with current parameters and values
-  void
-  update_config( config_block_sptr config ) const
-  {
-    config->set_value(
-      "threshold_step", p.thresholdStep,
-      "Defines stepping between min and max threshold when "
-      "converting the source image to binary images by "
-      "applying thresholding with several thresholds from "
-      "min_threshold (inclusive) to max_threshold (exclusive) "
-      " with distance threshold_step between neighboring "
-      "thresholds." );
-    config->set_value( "threshold_min", p.minThreshold );
-    config->set_value( "threshold_max", p.maxThreshold );
-    config->set_value( "min_repeatability", p.minRepeatability );
-    config->set_value(
-      "min_dist_between_blocks", p.minDistBetweenBlobs,
-      "Close centers form one group that corresponds to one "
-      "blob, controlled by this distance value." );
-
-    config->set_value(
-      "filter_by_color", p.filterByColor,
-      "Enable blob filtering by intensity of the binary image "
-      "at the center of the blob to blob_color. If they "
-      "differ, the blob is filtered out. Use blob_color = 0 "
-      "to extract dark blobs and blob_color = 255 to extract "
-      "light blobs" );
-    config->set_value( "blob_color", p.blobColor );
-
-    config->set_value(
-      "filter_by_area", p.filterByArea,
-      "Enable blob filtering by area to those between "
-      "min_area (inclusive) and max_area (exclusive)." );
-    config->set_value( "min_area", p.minArea );
-    config->set_value( "max_area", p.maxArea );
-
-    config->set_value(
-      "filter_by_circularity", p.filterByCircularity,
-      "Enable blob filtering by circularity to those between "
-      "min_circularity (inclusive) and max_circularity "
-      "(exclusive)." );
-    config->set_value( "min_circularity", p.minCircularity );
-    config->set_value( "max_circularity", p.maxCircularity );
-
-    config->set_value(
-      "filter_by_inertia", p.filterByInertia,
-      "Enable blob filtering by the ratio of inertia between "
-      "min_inertia_ratio (inclusive) and max_inertia_ratio "
-      "(exclusive)." );
-    config->set_value( "min_inertia_ratio", p.minInertiaRatio );
-    config->set_value( "max_inertia_ratio", p.maxInertiaRatio );
-
-    config->set_value(
-      "filter_by_convexity", p.filterByConvexity,
-      "Enable filtering by convexity where blobs have "
-      "convexity (area / area of blob convex hull) between "
-      "min_convexity (inclusive) and max_convexity "
-      "(exclusive)." );
-    config->set_value( "min_convexity", p.minConvexity );
-    config->set_value( "max_convexity", p.maxConvexity );
-  }
-
-  /// Set the current parameter values based on the given config block
-  void
-  set_config( config_block_sptr config )
-  {
-    p.thresholdStep = config->get_value< float >( "threshold_step" );
-    p.minThreshold = config->get_value< float >( "threshold_min" );
-    p.maxThreshold = config->get_value< float >( "threshold_max" );
-    p.minRepeatability =
-      config->get_value< std::size_t >( "min_repeatability" );
-    p.minDistBetweenBlobs =
-      config->get_value< float >( "min_dist_between_blocks" );
-
-    p.filterByColor = config->get_value< bool >( "filter_by_color" );
-    p.blobColor = config->get_value< unsigned char >( "blob_color" );
-
-    p.filterByArea = config->get_value< bool >( "filter_by_area" );
-    p.minArea = config->get_value< float >( "min_area" );
-    p.maxArea = config->get_value< float >( "max_area" );
-
-    p.filterByCircularity =
-      config->get_value< bool >( "filter_by_circularity" );
-    p.minCircularity = config->get_value< float >( "min_circularity" );
-    p.maxCircularity = config->get_value< float >( "max_circularity" );
-
-    p.filterByInertia = config->get_value< bool >( "filter_by_inertia" );
-    p.minInertiaRatio = config->get_value< float >( "min_inertia_ratio" );
-    p.maxInertiaRatio = config->get_value< float >( "max_inertia_ratio" );
-
-    p.filterByConvexity = config->get_value< bool >( "filter_by_convexity" );
-    p.minConvexity = config->get_value< float >( "min_convexity" );
-    p.maxConvexity = config->get_value< float >( "max_convexity" );
-  }
-
   cv::SimpleBlobDetector::Params p;
-};
+  p.thresholdStep = parent.get_threshold_step();
+  p.minThreshold = parent.get_threshold_min();
+  p.maxThreshold = parent.get_threshold_max();
+  p.minRepeatability = parent.get_min_repeatability();
+  p.minDistBetweenBlobs = parent.get_min_dist_between_blocks();
 
+  p.filterByColor = parent.get_filter_by_color();
+  p.blobColor = parent.get_blob_color();
+
+  p.filterByArea = parent.get_filter_by_area();
+  p.minArea = parent.get_min_area();
+  p.maxArea = parent.get_max_area();
+
+  p.filterByCircularity = parent.get_filter_by_circularity();
+  p.minCircularity = parent.get_min_circularity();
+  p.maxCircularity = parent.get_max_circularity();
+
+  p.filterByInertia = parent.get_filter_by_inertia();
+  p.minInertiaRatio = parent.get_min_inertia_ratio();
+  p.maxInertiaRatio = parent.get_max_inertia_ratio();
+
+  p.filterByConvexity = parent.get_filter_by_convexity();
+  p.minConvexity = parent.get_min_convexity();
+  p.maxConvexity = parent.get_max_convexity();
+  return p;
+}
+
+/// Create new algorithm based on current parameter values
+cv::Ptr< cv::SimpleBlobDetector >
+create( const cv::SimpleBlobDetector::Params& p )
+{
+#if KWIVER_OPENCV_VERSION_MAJOR < 3
+  return cv::Ptr< cv::SimpleBlobDetector >(
+    new cv::SimpleBlobDetector( p )
+  );
+#else
+  return cv::SimpleBlobDetector::create( p );
+#endif
+}
+
+} // namespace
+
+
+// --------------------------------------------------------
+const cv::SimpleBlobDetector::Params detect_features_simple_blob::default_params {};
+
+void
 detect_features_simple_blob
-::detect_features_simple_blob()
-  : p_( new priv )
+::initialize()
 {
   attach_logger( "arrows.ocv.simple_blob_detector" );
-  detector = p_->create();
+
+
+  auto params = create_config( *this );
+  detector = create( params );
 }
 
 detect_features_simple_blob
 ::~detect_features_simple_blob()
 {}
 
-vital::config_block_sptr
+void
 detect_features_simple_blob
-::get_configuration() const
+::set_configuration_internal( VITAL_UNUSED vital::config_block_sptr config )
 {
-  config_block_sptr config = ocv::detect_features::get_configuration();
-  p_->update_config( config );
-  return config;
+  this->update_detector_parameters();
 }
 
 void
 detect_features_simple_blob
-::set_configuration( vital::config_block_sptr config )
+::update_detector_parameters() const
 {
-  config_block_sptr c = get_configuration();
-  c->merge_config( config );
-  p_->set_config( c );
-  detector = p_->create();
+  auto params = create_config( *this );
+  detector.constCast< cv::Feature2D >() = create( params );
 }
 
 bool

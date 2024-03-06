@@ -8,6 +8,7 @@
 #include <arrows/ocv/kwiver_algo_ocv_export.h>
 
 #include <vital/algo/merge_images.h>
+#include <vital/util/enum_converter.h>
 
 namespace kwiver {
 
@@ -23,18 +24,33 @@ class KWIVER_ALGO_OCV_EXPORT inpaint
   : public vital::algo::merge_images
 {
 public:
-  PLUGIN_INFO(
-    "ocv_inpainting",
-    "Inpaint pixels specified by non-zero mask values." )
+  enum inpainting_method
+  {
+    METHOD_mask,
+    METHOD_navier_stokes,
+  };
 
-  inpaint();
+  PLUGGABLE_IMPL(
+    inpaint,
+    "Inpaint pixels specified by non-zero mask values.",
+
+    PARAM_DEFAULT(
+      inpaint_method,
+      std::string,
+      "Inpainting method, possible values: "  +
+      method_converter().element_name_string(),
+      method_converter().to_string( METHOD_navier_stokes ) ),
+
+    PARAM_DEFAULT(
+      radius,
+      float,
+      "Radius parameter for the inpainting method",
+      3.0 )
+
+  );
+
   virtual ~inpaint();
 
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  vital::config_block_sptr get_configuration() const override;
-  /// Set this algorithm's properties via a config block
-  void set_configuration( vital::config_block_sptr config ) override;
   /// Check that the algorithm's currently configuration is valid
   bool check_configuration( vital::config_block_sptr config ) const override;
 
@@ -43,10 +59,12 @@ public:
     kwiver::vital::image_container_sptr image,
     kwiver::vital::image_container_sptr mask ) const override;
 
-private:
-  class priv;
+  ENUM_CONVERTER(
+    method_converter, inpainting_method, { "mask", METHOD_mask },
+    { "navier_stokes", METHOD_navier_stokes } )
 
-  std::unique_ptr< priv > const d;
+private:
+  void initialize() override;
 };
 
 } // namespace ocv

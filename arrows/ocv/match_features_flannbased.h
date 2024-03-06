@@ -25,35 +25,46 @@ class KWIVER_ALGO_OCV_EXPORT match_features_flannbased
   : public ocv::match_features
 {
 public:
-  PLUGIN_INFO(
-    "ocv_flann_based",
-    "OpenCV feature matcher using FLANN (Approximate Nearest Neighbors)." )
+  PLUGGABLE_IMPL(
+    match_features_flannbased,
+    "OpenCV feature matcher using FLANN (Approximate Nearest Neighbors).",
 
-  /// Constructor
-  match_features_flannbased();
+    PARAM_DEFAULT(
+      cross_check, bool,
+      "If cross-check filtering should be performed.",
+      true ),
+
+    PARAM_DEFAULT(
+      cross_check_k, int,
+      "Number of neighbors to use when cross checking",
+      1 ),
+
+    PARAM_DEFAULT(
+      binary_descriptors, bool,
+      "if false assume float descriptors (use l2 kdtree). "
+      "if true assume binary descriptors (use lsh).",
+      false )
+  );
 
   /// Destructor
   virtual ~match_features_flannbased();
 
-  /// Get this algorithm's \link kwiver::vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's configuration vital::config_block is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
 protected:
   /// Perform matching based on the underlying OpenCV implementation
-  virtual void ocv_match(
+  void ocv_match(
     const cv::Mat& descriptors1,
     const cv::Mat& descriptors2,
-    std::vector< cv::DMatch >& matches ) const;
+    std::vector< cv::DMatch >& matches ) const override;
 
 private:
+  void initialize() override;
+  void set_configuration_internal( vital::config_block_sptr config ) override;
   class priv;
 
-  std::unique_ptr< priv > const p_;
+  KWIVER_UNIQUE_PTR( priv, p_ );
 };
 
 } // end namespace ocv

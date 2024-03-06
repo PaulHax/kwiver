@@ -23,38 +23,40 @@ class KWIVER_ALGO_OCV_EXPORT analyze_tracks
   : public vital::algo::analyze_tracks
 {
 public:
-  PLUGIN_INFO(
-    "ocv",
-    "Use OpenCV to analyze statistics of feature tracks." )
-
-  /// Constructor
-  analyze_tracks();
+  PLUGGABLE_IMPL(
+    analyze_tracks,
+    "Use OpenCV to analyze statistics of feature tracks.",
+    PARAM_DEFAULT(
+      output_summary, bool,
+      "Output a summary descriptor of high-level properties.",
+      true ),
+    PARAM_DEFAULT(
+      output_pt_matrix, bool,
+      "Output a matrix showing details about the percentage of "
+      "features tracked for every frame, from each frame to "
+      "some list of frames in the past.",
+      true ),
+    PARAM_DEFAULT(
+      frames_to_compare, std::string,
+      "A comma seperated list of frame difference intervals we want "
+      "to use for the pt matrix. For example, if \"1, 4\" the pt "
+      "matrix will contain comparisons between the current frame and "
+      "last frame in addition to four frames ago.",
+      "1,5,10,50" ) );
 
   /// Destructor
   virtual ~analyze_tracks();
 
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's currently configuration is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
-
+  bool check_configuration( vital::config_block_sptr config ) const override;
   /// Output various information about the tracks stored in the input set.
   ///
   /// \param [in] track_set the tracks to analyze
   /// \param [in] stream an output stream to write data onto
-  virtual void
+  void
   print_info(
     vital::track_set_sptr track_set,
-    stream_t& stream = std::cout ) const;
-
-private:
-  /// private implementation class
-  class priv;
-
-  const std::unique_ptr< priv > d_;
+    stream_t& stream = std::cout ) const override;
 };
 
 } // end namespace ocv

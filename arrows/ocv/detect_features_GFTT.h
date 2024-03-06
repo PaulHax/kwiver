@@ -23,28 +23,27 @@ class KWIVER_ALGO_OCV_EXPORT detect_features_GFTT
   : public ocv::detect_features
 {
 public:
-  PLUGIN_INFO(
-    "ocv_GFTT",
-    "OpenCV feature detection via the GFTT algorithm" )
-
-  /// Constructor
-  detect_features_GFTT();
+  PLUGGABLE_IMPL(
+    detect_features_GFTT,
+    "OpenCV feature detection via the GFTT algorithm",
+    PARAM_DEFAULT( max_corners, int, "max_corners", 1000 ),
+    PARAM_DEFAULT( quality_level, double, "quality_level", 0.01 ),
+    PARAM_DEFAULT( min_distance, double, "min_distance", 1.0 ),
+    PARAM_DEFAULT( block_size, int, "block_size", 3 ),
+    PARAM_DEFAULT( use_harris_detector, bool, "use_harris_detector", false ),
+    PARAM_DEFAULT( k, double, "k", 0.04 )
+  );
 
   /// Destructor
   virtual ~detect_features_GFTT();
 
-  /// Get this algorithm's \link kwiver::vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's configuration vital::config_block is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
 private:
-  class priv;
-
-  std::unique_ptr< priv > const p_;
+  void set_configuration_internal( vital::config_block_sptr config ) override;
+  void update_detector_parameters() const override;
+  void initialize() override;
 };
 
 } // end namespace ocv

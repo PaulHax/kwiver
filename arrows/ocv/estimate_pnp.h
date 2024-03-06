@@ -25,25 +25,25 @@ class KWIVER_ALGO_OCV_EXPORT estimate_pnp
   : public vital::algo::estimate_pnp
 {
 public:
-  PLUGIN_INFO(
-    "ocv",
-    "Estimate camera pose with perspective N point method" )
+  PLUGGABLE_IMPL(
+    estimate_pnp,
+    "Estimate camera pose with perspective N point method",
 
-  /// Constructor
-  estimate_pnp();
+    PARAM_DEFAULT(
+      confidence_threshold, double,
+      "Confidence that estimated matrix is correct, range (0.0, 1.0]",
+      0.99 ),
+
+    PARAM_DEFAULT(
+      max_iterations, int,
+      "maximum number of iterations to run PnP [1, INT_MAX]",
+      10000 ) );
 
   /// Destructor
   virtual ~estimate_pnp();
 
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
-
   /// Check that the algorithm's configuration config_block is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
   /// Estimate the camera's pose from the 3D points and their corresponding
   /// projections
@@ -54,19 +54,12 @@ public:
   /// \param [in]  cal the intrinsic parameters of the camera
   /// \param [out] inliers for each point, the value is true if
   ///                     this pair is an inlier to the estimate
-  virtual
   kwiver::vital::camera_perspective_sptr
   estimate(
     const std::vector< vital::vector_2d >& pts2d,
     const std::vector< vital::vector_3d >& pts3d,
     const kwiver::vital::camera_intrinsics_sptr cal,
-    std::vector< bool >& inliers ) const;
-
-private:
-  /// private implementation class
-  class priv;
-
-  const std::unique_ptr< priv > d_;
+    std::vector< bool >& inliers ) const override;
 };
 
 } // end namespace ocv

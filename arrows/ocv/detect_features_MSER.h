@@ -23,28 +23,78 @@ class KWIVER_ALGO_OCV_EXPORT detect_features_MSER
   : public detect_features
 {
 public:
-  PLUGIN_INFO(
-    "ocv_MSER",
-    "OpenCV feature detection via the MSER algorithm" )
+  PLUGGABLE_IMPL(
+    detect_features_MSER,
+    "OpenCV feature detection via the MSER algorithm",
 
-  /// Constructor
-  detect_features_MSER();
+    PARAM_DEFAULT(
+      delta,
+      int,
+      "Compares (size[i] - size[i-delta]) / size[i-delta]",
+      5 ),
+
+    PARAM_DEFAULT(
+      min_area,
+      int,
+      "Prune areas smaller than this",
+      60 ),
+    PARAM_DEFAULT(
+      max_area,
+      int,
+      "Prune areas larger than this",
+      14400 ),
+    PARAM_DEFAULT(
+      max_variation,
+      double,
+      "Prune areas that have similar size to its children",
+      0.25 ),
+    PARAM_DEFAULT(
+      min_diversity,
+      double,
+      "For color images, trace back to cut off MSER with "
+      "diversity less than min_diversity",
+      0.2 ),
+    PARAM_DEFAULT(
+      max_evolution,
+      int,
+      "The color images, the evolution steps.",
+      200 ),
+    PARAM_DEFAULT(
+      area_threshold,
+      double,
+      "For color images, the area threshold to cause "
+      "re-initialization",
+      1.01 ),
+    PARAM_DEFAULT(
+      min_margin,
+      double,
+      "For color images, ignore too-small regions.",
+      0.003 ),
+    PARAM_DEFAULT(
+      edge_blur_size,
+      int,
+      "For color images, the aperture size for edge blur",
+      5 )
+#if KWIVER_OPENCV_VERSION_MAJOR >= 3
+    ,
+    PARAM_DEFAULT(
+      pass2only,
+      bool,
+      "Undocumented",
+      false )
+#endif
+  );
 
   /// Destructor
   virtual ~detect_features_MSER();
 
-  /// Get this algorithm's \link kwiver::vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's configuration vital::config_block is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
 private:
-  class priv;
-
-  std::unique_ptr< priv > p_;
+  void update_detector_parameters() const override;
+  void set_configuration_internal( vital::config_block_sptr config ) override;
+  void initialize() override;
 };
 
 } // end namespace ocv

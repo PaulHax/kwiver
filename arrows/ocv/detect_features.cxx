@@ -36,6 +36,8 @@ detect_features
   cv::Mat cv_mask;
   std::vector< cv::KeyPoint > keypoints;
 
+  this->update_detector_parameters();
+
   // Only initialize a mask image if the given mask image container contained
   // valid data.
   if( mask && mask->size() > 0 )

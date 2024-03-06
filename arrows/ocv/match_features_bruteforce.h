@@ -25,35 +25,49 @@ class KWIVER_ALGO_OCV_EXPORT match_features_bruteforce
   : public match_features
 {
 public:
-  PLUGIN_INFO(
-    "ocv_brute_force",
-    "OpenCV feature matcher using brute force matching (exhaustive search)." )
+  PLUGGABLE_IMPL(
+    match_features_bruteforce,
+    "OpenCV feature matcher using brute force matching (exhaustive search).",
 
-  /// Constructor
-  match_features_bruteforce();
+    PARAM_DEFAULT(
+      cross_check, bool,
+      "Perform cross checking when finding matches to filter "
+      "through only the consistent pairs. This is an "
+      "alternative to the ratio test used by D. Lowe in the "
+      "SIFT paper.",
+      false ),
+
+    PARAM_DEFAULT(
+      norm_type, int,
+      std::string(
+        "normalization type enum value. this should be one of the enum values:" )
+      +
+      list_enum_values
+      ,
+      cv::NORM_L2 )
+
+  );
 
   /// Destructor
   virtual ~match_features_bruteforce();
 
-  /// Get this algorithm's \link kwiver::vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's configuration vital::config_block is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
 protected:
   /// Perform matching based on the underlying OpenCV implementation
-  virtual void ocv_match(
+  void ocv_match(
     const cv::Mat& descriptors1,
     const cv::Mat& descriptors2,
-    std::vector< cv::DMatch >& matches ) const;
+    std::vector< cv::DMatch >& matches ) const override;
 
 private:
-  class priv;
+  void initialize() override;
+  void set_configuration_internal( vital::config_block_sptr config ) override;
 
-  std::unique_ptr< priv > const p_;
+  cv::Ptr< cv::BFMatcher > matcher;
+
+  static const char* list_enum_values;
 };
 
 } // end namespace ocv

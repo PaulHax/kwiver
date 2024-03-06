@@ -21,74 +21,35 @@ namespace arrows {
 
 namespace ocv {
 
-class extract_descriptors_LUCID::priv
+namespace {
+
+cv::Ptr< cv::xfeatures2d::LUCID >
+create( const extract_descriptors_LUCID& parent )
 {
-public:
-  priv()
-    : lucid_kernel( 1 ),
-      blur_kernel( 1 )
-  {}
+  return cv::xfeatures2d::LUCID::create(
+    parent.get_lucid_kernel(),
+    parent.get_blur_kernel() );
+}
 
-  cv::Ptr< cv::xfeatures2d::LUCID >
-  create() const
-  {
-    return cv::xfeatures2d::LUCID::create( lucid_kernel, blur_kernel );
-  }
+} // namespace
 
-  void
-  update_config( config_block_sptr config ) const
-  {
-    config->set_value(
-      "lucid_kernel", lucid_kernel,
-      "kernel for descriptor construction, where 1=3x3, "
-      "2=5x5, 3=7x7 and so forth" );
-    config->set_value(
-      "blur_kernel", blur_kernel,
-      "kernel for blurring image prior to descriptor "
-      "construction, where 1=3x3, 2=5x5, 3=7x7 and so forth" );
-  }
-
-  void
-  set_config( config_block_sptr config )
-  {
-    lucid_kernel = config->get_value< int >( "lucid_kernel" );
-    blur_kernel = config->get_value< int >( "blur_kernel" );
-  }
-
-  // Parameters
-  int lucid_kernel;
-  int blur_kernel;
-};
-
+void
 extract_descriptors_LUCID
-::extract_descriptors_LUCID()
-  : p_( new priv )
+::initialize()
 {
   attach_logger( "arrows.ocv.LUCID" );
-  extractor = p_->create();
+  extractor = create( *this );
 }
 
 extract_descriptors_LUCID
 ::~extract_descriptors_LUCID()
 {}
 
-vital::config_block_sptr
-extract_descriptors_LUCID
-::get_configuration() const
-{
-  config_block_sptr config = ocv::extract_descriptors::get_configuration();
-  p_->update_config( config );
-  return config;
-}
-
 void
 extract_descriptors_LUCID
-::set_configuration( vital::config_block_sptr config )
+::set_configuration_internal( VITAL_UNUSED vital::config_block_sptr config )
 {
-  config_block_sptr c = get_configuration();
-  c->merge_config( config );
-  p_->set_config( c );
-  extractor = p_->create();
+  this->update_extractor_parameters();
 }
 
 bool
@@ -96,6 +57,13 @@ extract_descriptors_LUCID
 ::check_configuration( VITAL_UNUSED vital::config_block_sptr config ) const
 {
   return true;
+}
+
+void
+extract_descriptors_LUCID
+::update_extractor_parameters() const
+{
+  extractor.constCast< cv::DescriptorExtractor >() = create( *this );
 }
 
 } // end namespace ocv

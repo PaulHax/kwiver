@@ -19,25 +19,51 @@ class KWIVER_ALGO_OCV_EXPORT hough_circle_detector
   : public vital::algo::image_object_detector
 {
 public:
-  PLUGIN_INFO(
-    "hough_circle",
-    "Hough circle detector" )
+  PLUGGABLE_IMPL(
+    hough_circle_detector,
+    "Hough circle detector",
 
-  hough_circle_detector();
-  virtual ~hough_circle_detector();
+    PARAM_DEFAULT(
+      dp, double,
+      "Inverse ratio of the accumulator resolution to the image resolution. "
+      "For example, if dp=1 , the accumulator has the same resolution as the input image. "
+      "If dp=2 , the accumulator has half as big width and height.", 1 ),
 
-  virtual vital::config_block_sptr get_configuration() const;
-  virtual void set_configuration( vital::config_block_sptr config );
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+    PARAM_DEFAULT(
+      min_dist, double,
+      "Minimum distance between the centers of the detected circles. "
+      "If the parameter is too small, multiple neighbor circles may be falsely "
+      "detected in addition to a true one. If it is too large, some circles may be missed.",
+      100 ),
+
+    PARAM_DEFAULT(
+      param1, double,
+      "First method-specific parameter. In case of CV_HOUGH_GRADIENT , "
+      "it is the higher threshold of the two passed to the Canny() edge detector "
+      "(the lower one is twice smaller).", 200 ),
+
+    PARAM_DEFAULT(
+      param2, double,
+      "Second method-specific parameter. In case of CV_HOUGH_GRADIENT , "
+      "it is the accumulator threshold for the circle centers at the detection stage. "
+      "The smaller it is, the more false circles may be detected. Circles, "
+      "corresponding to the larger accumulator values, will be returned first.",
+      100 ),
+
+    PARAM_DEFAULT(
+      min_radius, int,
+      "Minimum circle radius.", 0 ),
+
+    PARAM_DEFAULT( max_radius, int, "Maximum circle radius.", 0 )
+  );
+
+  virtual ~hough_circle_detector() = default;
+
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
   // Main detection method
-  virtual vital::detected_object_set_sptr detect(
-    vital::image_container_sptr image_data ) const;
-
-private:
-  class priv;
-
-  const std::unique_ptr< priv > d;
+  vital::detected_object_set_sptr detect(
+    vital::image_container_sptr image_data ) const override;
 };
 
 } // namespace ocv

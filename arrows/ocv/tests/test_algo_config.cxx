@@ -24,6 +24,7 @@
 #include <arrows/ocv/extract_descriptors.h>
 #include <arrows/ocv/match_features.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/exceptions.h>
 #include <vital/logger/logger.h>
 #include <vital/plugin_management/plugin_manager.h>
@@ -75,7 +76,7 @@ TEST_P ( algo_config, defaults )
 
   LOG_INFO( log, "Testing configuration for algorithm instance @" << a.get() );
   LOG_INFO(
-    log, "-- Algorithm info: " << a->type_name() << "::"
+    log, "-- Algorithm info: " << a->interface_name() << "::"
                                << a->impl_name() );
 
   kwiver::vital::config_block_sptr c = a->get_configuration();
@@ -113,13 +114,13 @@ TEST_P ( algo_config, empty_config )
   // should pass (see test "ocv_algo_config_defaults")
   LOG_INFO( log, "Checking empty config for algorithm instance @" << a.get() );
   LOG_INFO(
-    log, "-- Algorithm info: " << a->type_name() << "::"
+    log, "-- Algorithm info: " << a->interface_name() << "::"
                                << a->impl_name() );
 
   kwiver::vital::config_block_sptr
     empty_conf = kwiver::vital::config_block::empty_config();
   EXPECT_TRUE( a->check_configuration( empty_conf ) )
-    << a->type_name() + "::" + a->impl_name();
+    << a->interface_name() + "::" + a->impl_name();
 
   // Should be able to set an empty config as defaults should take over.
   LOG_INFO(log, "-- setting empty config" );
@@ -131,8 +132,10 @@ TEST_P ( algo_config, empty_config )
 }
 
 // ----------------------------------------------------------------------------
-#define ALGORITHM( t, n ) \
-algorithm_test{ n, []{ return algo::t::create( n ); } }
+#define ALGORITHM( t, n )                                                                \
+algorithm_test{ n, []{                                                                   \
+                  return kwiver::vital::create_algorithm< kwiver::vital::algo::t >( n ); \
+                } }
 
 auto detect_features_algorithms = [](){
                                     return ::testing::Values(

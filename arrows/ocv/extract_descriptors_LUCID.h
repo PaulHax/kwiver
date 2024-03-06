@@ -27,28 +27,35 @@ class KWIVER_ALGO_OCV_EXPORT extract_descriptors_LUCID
   : public ocv::extract_descriptors
 {
 public:
-  PLUGIN_INFO(
-    "ocv_LUCID",
-    "OpenCV feature-point descriptor extraction via the LUCID algorithm" )
+  // "ocv_LUCID",
 
-  /// Constructor
-  extract_descriptors_LUCID();
+  PLUGGABLE_IMPL(
+    extract_descriptors_LUCID,
+    "OpenCV feature-point descriptor extraction via the LUCID algorithm",
+
+    PARAM_DEFAULT(
+      lucid_kernel, int,
+      "kernel for descriptor construction, where 1=3x3, "
+      "2=5x5, 3=7x7 and so forth",
+      1 ),
+
+    PARAM_DEFAULT(
+      blur_kernel, int,
+      "kernel for blurring image prior to descriptor "
+      "construction, where 1=3x3, 2=5x5, 3=7x7 and so forth",
+      1 )
+  );
 
   /// Destructor
   virtual ~extract_descriptors_LUCID();
 
-  /// Get this algorithm's \link kwiver::vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's configuration config_block is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
 private:
-  class priv;
-
-  std::unique_ptr< priv > p_;
+  void initialize() override;
+  void set_configuration_internal( vital::config_block_sptr config ) override;
+  void update_extractor_parameters() const override;
 };
 
 #define KWIVER_OCV_HAS_LUCID

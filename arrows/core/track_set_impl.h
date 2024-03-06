@@ -43,102 +43,102 @@ public:
   virtual ~frame_index_track_set_impl() = default;
 
   /// Return the number of tracks in the set
-  virtual size_t size() const;
+  size_t size() const override;
 
   /// Return whether or not there are any tracks in the set
-  virtual bool empty() const;
+  bool empty() const override;
 
   /// Return true if the set contains a specific track
-  virtual bool contains( vital::track_sptr t ) const;
+  bool contains( vital::track_sptr t ) const override;
 
   /// Assign a vector of track shared pointers to this container
-  virtual void set_tracks( std::vector< vital::track_sptr > const& tracks );
+  void set_tracks( std::vector< vital::track_sptr > const& tracks ) override;
 
   /// Insert a track shared pointer into this container
   //@{
-  virtual void insert( vital::track_sptr const& t );
-  virtual void insert( vital::track_sptr&& t );
+  void insert( vital::track_sptr const& t ) override;
+  void insert( vital::track_sptr&& t ) override;
   //@}
 
   /// Notify the container that a new state has been added to an existing track
-  virtual void notify_new_state( vital::track_state_sptr ts );
+  void notify_new_state( vital::track_state_sptr ts ) override;
 
   /// Notify the container that a state has been removed from an existing track
-  virtual void notify_removed_state( vital::track_state_sptr ts );
+  void notify_removed_state( vital::track_state_sptr ts ) override;
 
   /// Remove a track from the set and return true if successful
-  virtual bool remove( vital::track_sptr t );
+  bool remove( vital::track_sptr t ) override;
 
   /// Return a vector of track shared pointers
-  virtual std::vector< vital::track_sptr > tracks() const;
+  std::vector< vital::track_sptr > tracks() const override;
 
   /// Return the set of all frame IDs covered by these tracks
-  virtual std::set< vital::frame_id_t > all_frame_ids() const;
+  std::set< vital::frame_id_t > all_frame_ids() const override;
 
   /// Return the set of all track IDs in this track set
-  virtual std::set< vital::track_id_t > all_track_ids() const;
+  std::set< vital::track_id_t > all_track_ids() const override;
 
   /// Return the first (smallest) frame number containing tracks
-  virtual vital::frame_id_t first_frame() const;
+  vital::frame_id_t first_frame() const override;
 
   /// Return the last (largest) frame number containing tracks
-  virtual vital::frame_id_t last_frame() const;
+  vital::frame_id_t last_frame() const override;
 
   /// Return the track in this set with the specified id.
-  virtual vital::track_sptr const get_track( vital::track_id_t tid ) const;
+  vital::track_sptr const get_track( vital::track_id_t tid ) const override;
 
   /// Return all tracks active on a frame.
-  virtual std::vector< vital::track_sptr >
-  active_tracks( vital::frame_id_t offset = -1 ) const;
+  std::vector< vital::track_sptr >
+  active_tracks( vital::frame_id_t offset = -1 ) const override;
 
   /// Return all tracks inactive on a frame.
-  virtual std::vector< vital::track_sptr >
-  inactive_tracks( vital::frame_id_t offset = -1 ) const;
+  std::vector< vital::track_sptr >
+  inactive_tracks( vital::frame_id_t offset = -1 ) const override;
 
   /// Return all tracks newly initialized on the given frame.
-  virtual std::vector< vital::track_sptr >
-  new_tracks( vital::frame_id_t offset = -1 ) const;
+  std::vector< vital::track_sptr >
+  new_tracks( vital::frame_id_t offset = -1 ) const override;
 
   /// Return all tracks terminated on the given frame.
-  virtual std::vector< vital::track_sptr >
-  terminated_tracks( vital::frame_id_t offset = -1 ) const;
+  std::vector< vital::track_sptr >
+  terminated_tracks( vital::frame_id_t offset = -1 ) const override;
 
   /// Return the percentage of tracks successfully tracked between two frames.
-  virtual double percentage_tracked(
+  double percentage_tracked(
     vital::frame_id_t offset1 = -2,
-    vital::frame_id_t offset2 = -1 ) const;
+    vital::frame_id_t offset2 = -1 ) const override;
 
   /// Return a vector of state data corresponding to the tracks on the given
   /// frame.
-  virtual std::vector< vital::track_state_sptr >
-  frame_states( vital::frame_id_t offset = -1 ) const;
+  std::vector< vital::track_state_sptr >
+  frame_states( vital::frame_id_t offset = -1 ) const override;
 
   /// Returns all frame data as map of frame index to track_set_frame_data
-  virtual vital::track_set_frame_data_map_t
-  all_frame_data() const
+  vital::track_set_frame_data_map_t
+  all_frame_data() const override
   {
     return frame_data_;
   }
 
   /// Return the additional data associated with all tracks on the given frame
-  virtual vital::track_set_frame_data_sptr
-  frame_data( vital::frame_id_t offset = -1 ) const;
+  vital::track_set_frame_data_sptr
+  frame_data( vital::frame_id_t offset = -1 ) const override;
 
   /// Removes the frame data for the frame offset
-  virtual bool remove_frame_data( vital::frame_id_t offset );
+  bool remove_frame_data( vital::frame_id_t offset ) override;
 
   /// Set additional frame data associated with all tracks for all frames
-  virtual bool
-  set_frame_data( vital::track_set_frame_data_map_t const& fmap )
+  bool
+  set_frame_data( vital::track_set_frame_data_map_t const& fmap ) override
   {
     frame_data_ = fmap;
     return true;
   }
 
   /// Set additional data associated with all tracks on the given frame
-  virtual bool set_frame_data(
+  bool set_frame_data(
     vital::track_set_frame_data_sptr data,
-    vital::frame_id_t offset = -1 );
+    vital::frame_id_t offset = -1 ) override;
 
   vital::track_set_implementation_uptr clone(
     vital::clone_type = vital::clone_type::DEEP ) const override;

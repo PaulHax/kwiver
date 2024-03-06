@@ -20,11 +20,6 @@ namespace arrows {
 
 namespace ocv {
 
-/// Constructor
-merge_images
-::merge_images()
-{}
-
 /// Merge images
 kwiver::vital::image_container_sptr
 merge_images

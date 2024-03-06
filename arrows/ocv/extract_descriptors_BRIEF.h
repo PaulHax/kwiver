@@ -27,29 +27,32 @@ class KWIVER_ALGO_OCV_EXPORT extract_descriptors_BRIEF
   : public extract_descriptors
 {
 public:
-  PLUGIN_INFO(
-    "ocv_BRIEF",
-    "OpenCV feature-point descriptor extraction via the BRIEF algorithm" )
-
-  /// Constructor
-  extract_descriptors_BRIEF();
+  PLUGGABLE_IMPL(
+    extract_descriptors_BRIEF,
+    "OpenCV feature-point descriptor extraction via the BRIEF algorithm",
+    PARAM_DEFAULT(
+      bytes, int,
+      "Length of descriptor in bytes. It can be equal 16, 32 "
+      "or 64 bytes.",
+      32 )
+#if KWIVER_OPENCV_VERSION_MAJOR >= 3
+    ,
+    PARAM_DEFAULT(
+      use_orientation, bool,
+      "sample patterns using keypoints orientation, disabled "
+      "by default.",
+      false )
+#endif
+  );
 
   /// Destructor
   virtual ~extract_descriptors_BRIEF();
 
-  /// Get this algorithm's \link kwiver::vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
-  /// Check that the algorithm's configuration config_block is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
 private:
-  /// private implementation class
-  class priv;
-
-  std::unique_ptr< priv > const p_;
+  void initialize() override;
+  void update_extractor_parameters() const override;
 };
 
 #define KWIVER_OCV_HAS_BRIEF

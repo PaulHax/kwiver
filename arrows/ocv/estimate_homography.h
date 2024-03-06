@@ -23,16 +23,12 @@ class KWIVER_ALGO_OCV_EXPORT estimate_homography
   : public vital::algo::estimate_homography
 {
 public:
-  PLUGIN_INFO(
-    "ocv",
+  PLUGGABLE_IMPL(
+    estimate_homography,
     "Use OpenCV to estimate a homography from feature matches." )
 
-  // No configuration yet for this class
-  /// \cond DoxygenSuppress
-  virtual void set_configuration( vital::config_block_sptr /*config*/ ) {}
-
-  virtual bool
-  check_configuration( vital::config_block_sptr /*config*/ ) const
+  bool
+  check_configuration( vital::config_block_sptr /*config*/ ) const override
   {
     return true;
   }
@@ -50,12 +46,12 @@ public:
   ///                      this pair is an inlier to the homography estimate
   /// \param [in]  inlier_scale error distance tolerated for matches to be
   /// inliers
-  virtual vital::homography_sptr
+  vital::homography_sptr
   estimate(
     const std::vector< vital::vector_2d >& pts1,
     const std::vector< vital::vector_2d >& pts2,
     std::vector< bool >& inliers,
-    double inlier_scale = 1.0 ) const;
+    double inlier_scale = 1.0 ) const override;
   using vital::algo::estimate_homography::estimate;
 };
 
