@@ -9,7 +9,7 @@
 
 .ubuntu2004:
     extends: .linux
-    image: "kitware/kwiver:ci-ubuntu20_04-20240229"
+    image: "kitware/kwiver:ci-ubuntu20_04-20240304"
 
 .ubuntu2004_ceres_ffmpeg_gdal_opencv_pdal_proj_python_vxl:
     extends:
