@@ -33,8 +33,53 @@ namespace core {
 class close_loops_appearance_indexed::priv
 {
 public:
-  priv();
+  priv( close_loops_appearance_indexed& parent )
+    : parent( parent )
+  {}
 
+  close_loops_appearance_indexed& parent;
+
+  // --------------------------------------------------------------------------
+  // Values configured by PLUGGABLE_IMPL macro
+
+  /// The feature matching algorithm to use
+  vital::algo::match_features_sptr c_matcher() { return parent.c_matcher; }
+
+  /// The bag of words matching image finder
+  vital::algo::match_descriptor_sets_sptr c_bow() { return parent.c_bow; }
+
+  /// The fundamental matrix estimator for geometric verification
+  vital::algo::estimate_fundamental_matrix_sptr c_f_estimator()
+  { return parent.c_f_estimator; }
+
+  /// The minimum number of inliers required for a putative loop to be accepted
+  unsigned c_min_loop_inlier_matches()
+  { return parent.c_min_loop_inlier_matches; }
+
+  /// Inlier threshold for fundamental matrix geometric verification
+  double c_geometric_verification_inlier_threshold()
+  { return parent.c_geometric_verification_inlier_threshold; }
+
+  /// The maximum number of times to attempt to complete a loop with each
+  // new frame
+  int c_max_loop_attempts_per_frame()
+  { return parent.c_max_loop_attempts_per_frame; }
+
+  // If this or more tracks ids are shared between two frames then don't
+  // attempt to close the loop
+  int c_tracks_in_common_to_skip_loop_closing()
+  { return parent.c_tracks_in_common_to_skip_loop_closing; }
+
+  // if intersect over union of track ids between two frames are greater than
+  // this then don't try to close the loop
+  float c_skip_loop_detection_track_i_over_u_threshold()
+  { return parent.c_skip_loop_detection_track_i_over_u_threshold; }
+
+  // Must have this inlier fraction to accept a loop completion
+  float c_min_loop_inlier_fraction()
+  { return parent.c_min_loop_inlier_fraction; }
+
+  // --------------------------------------------------------------------------
   typedef std::pair< feature_track_state_sptr,
     feature_track_state_sptr > fs_match;
   typedef std::vector< fs_match > matches_vec;
@@ -77,56 +122,12 @@ public:
   /// The logger handle
   kwiver::vital::logger_handle_t m_logger;
 
-  /// The feature matching algorithm to use
-  vital::algo::match_features_sptr m_matcher;
-
-  /// The bag of words matching image finder
-  vital::algo::match_descriptor_sets_sptr m_bow;
-
-  /// The fundamental matrix estimator for geometric verification
-  vital::algo::estimate_fundamental_matrix_sptr m_f_estimator;
-
-  /// The minimum number of inliers required for a putative loop to be accepted
-  unsigned m_min_loop_inlier_matches;
-
   /// The function used to calculate the distance between two descriptors
   std::function< float( descriptor_sptr,
                         descriptor_sptr ) > desc_dist = hamming_distance;
-
-  /// Inlier threshold for fundamental matrix geometric verification
-  double m_geometric_verification_inlier_threshold;
-
-  /// The maximum number of times to attempt to complete a loop with each new
-  /// frame
-  int m_max_loop_attempts_per_frame;
-
-  // If this or more tracks ids are shared between two frames then don't attempt
-  // to close the loop
-  int m_tracks_in_common_to_skip_loop_closing;
-
-  // if intersect over union of track ids between two frames are greather than
-  // this then don't try to close the loop.
-  float m_skip_loop_detection_track_i_over_u_threshold;
-
-  // Must have this inlier fraction to accept a loop completion
-  float m_min_loop_inlier_fraction;
 };
 
 // ----------------------------------------------------------------------------
-
-close_loops_appearance_indexed::priv
-::priv()
-  : m_f_estimator(),
-    m_min_loop_inlier_matches( 128 ),
-    m_geometric_verification_inlier_threshold( 2.0 ),
-    m_max_loop_attempts_per_frame( 200 ),
-    m_tracks_in_common_to_skip_loop_closing( 0 ),
-    m_skip_loop_detection_track_i_over_u_threshold( 0.5 ),
-    m_min_loop_inlier_fraction( 0.5 )
-{}
-
-// ----------------------------------------------------------------------------
-
 close_loops_appearance_indexed::priv::node_id_to_feat_map
 close_loops_appearance_indexed::priv
 ::make_node_map( const std::vector< feature_track_state_sptr >& feats )
@@ -256,7 +257,7 @@ close_loops_appearance_indexed::priv
     double i_over_u = static_cast< double >( tracks_in_common.size() ) /
                       static_cast< double >( union_of_tracks.size() );
 
-    if( i_over_u > m_skip_loop_detection_track_i_over_u_threshold )
+    if( i_over_u > c_skip_loop_detection_track_i_over_u_threshold() )
     {
       continue;
     }
@@ -265,7 +266,7 @@ close_loops_appearance_indexed::priv
     //  Don't match.
 
     ++num_failed_loop_attempts_in_a_row;
-    if( num_failed_loop_attempts_in_a_row > m_max_loop_attempts_per_frame )
+    if( num_failed_loop_attempts_in_a_row > c_max_loop_attempts_per_frame() )
     {
       break;
     }
@@ -316,7 +317,7 @@ close_loops_appearance_indexed::priv
       }
     }
 
-    if( validated_matches.size() < m_min_loop_inlier_matches )
+    if( validated_matches.size() < c_min_loop_inlier_matches() )
     {
       continue;
     }
@@ -338,7 +339,7 @@ close_loops_appearance_indexed::priv
 
     std::vector< bool > inliers;
     // do geometric verification here
-    if( m_f_estimator )
+    if( c_f_estimator() )
     {
       std::vector< vector_2d > pts_right, pts_left;
       for( auto& m : validated_matches )
@@ -347,9 +348,9 @@ close_loops_appearance_indexed::priv
         pts_left.push_back( m.second->feature->loc() );
       }
 
-      auto F = m_f_estimator->estimate(
+      auto F = c_f_estimator()->estimate(
         pts_right, pts_left, inliers,
-        m_geometric_verification_inlier_threshold );
+        c_geometric_verification_inlier_threshold() );
 
       if( !F )
       {
@@ -364,8 +365,8 @@ close_loops_appearance_indexed::priv
       float inlier_fraction = static_cast< double >( num_inliers ) /
                               static_cast< double >( validated_matches.size() );
 
-      if( num_inliers < m_min_loop_inlier_matches ||
-          inlier_fraction < m_min_loop_inlier_fraction )
+      if( num_inliers < c_min_loop_inlier_matches() ||
+          inlier_fraction < c_min_loop_inlier_fraction() )
       {
         continue;
       }
@@ -448,7 +449,7 @@ close_loops_appearance_indexed::priv
     feat2 = fi2->features;
     desc2 = fi2->descriptors;
 
-    match_set_sptr mset = m_matcher->match( feat1, desc1, feat2, desc2 );
+    match_set_sptr mset = c_matcher()->match( feat1, desc1, feat2, desc2 );
     if( !mset )
     {
       LOG_WARN(
@@ -461,7 +462,7 @@ close_loops_appearance_indexed::priv
 
     std::vector< match > vm = mset->matches();
 
-    if( vm.size() < m_min_loop_inlier_matches )
+    if( vm.size() < c_min_loop_inlier_matches() )
     {
       continue;
     }
@@ -595,7 +596,7 @@ close_loops_appearance_indexed::priv
   kwiver::vital::feature_track_set_sptr feat_tracks,
   kwiver::vital::frame_id_t frame_number )
 {
-  if( !m_bow )
+  if( !c_bow() )
   {
     return feat_tracks;
   }
@@ -626,7 +627,7 @@ close_loops_appearance_indexed::priv
     auto desc = feat_tracks->frame_descriptors( frame_number );
 
     putative_matching_images =
-      m_bow->query_and_append( desc, frame_number );
+      c_bow()->query_and_append( desc, frame_number );
   }
   return verify_and_add_image_matches_node_id_guided(
     feat_tracks, frame_number,
@@ -634,14 +635,19 @@ close_loops_appearance_indexed::priv
 }
 
 // ----------------------------------------------------------------------------
-
+void
 close_loops_appearance_indexed
-::close_loops_appearance_indexed()
+::initialize()
 {
-  d_ = std::make_shared< priv >();
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
   attach_logger( "arrows.core.close_loops_appearance_indexed" );
   d_->m_logger = this->logger();
 }
+
+/// Destructor
+close_loops_appearance_indexed
+::~close_loops_appearance_indexed()
+{}
 
 // ----------------------------------------------------------------------------
 
@@ -657,127 +663,6 @@ close_loops_appearance_indexed
 }
 
 // ----------------------------------------------------------------------------
-
-/// Get this alg's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-close_loops_appearance_indexed
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config = algorithm::get_configuration();
-
-  // Sub-algorithm implementation name + sub_config block
-  // - Feature Detector algorithm
-
-  algo::match_features::
-  get_nested_algo_configuration( "match_features", config, d_->m_matcher );
-
-  algo::match_descriptor_sets::
-  get_nested_algo_configuration( "bag_of_words_matching", config, d_->m_bow );
-
-  // nested algorithm configurations
-  vital::algo::estimate_fundamental_matrix
-  ::get_nested_algo_configuration(
-    "fundamental_mat_estimator",
-    config, d_->m_f_estimator );
-
-  config->set_value(
-    "min_loop_inlier_matches",
-    d_->m_min_loop_inlier_matches,
-    "the minimum number of inlier feature matches to accept a loop connection and join tracks" );
-
-  config->set_value(
-    "geometric_verification_inlier_threshold",
-    d_->m_geometric_verification_inlier_threshold,
-    "inlier threshold for fundamental matrix based geometric verification of loop closure in pixels" );
-
-  config->set_value(
-    "max_loop_attempts_per_frame",
-    d_->m_max_loop_attempts_per_frame,
-    "the maximum number of loop closure attempts to make per frame" );
-
-  config->set_value(
-    "tracks_in_common_to_skip_loop_closing",
-    d_->m_tracks_in_common_to_skip_loop_closing,
-    "if this or more tracks are in common between two frames then don't try to complete a loop with them" );
-
-  config->set_value(
-    "m_skip_loop_detection_track_i_over_u_threshold",
-    d_->m_skip_loop_detection_track_i_over_u_threshold,
-    "skip loop detection if intersection over union of track ids in two frames is greater than this" );
-
-  config->set_value(
-    "min_loop_inlier_fraction",
-    d_->m_min_loop_inlier_fraction,
-    "inlier fraction must be this high to accept a loop completion" );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-
-/// Set this algo's properties via a config block
-void
-close_loops_appearance_indexed
-::set_configuration( vital::config_block_sptr in_config )
-{
-  // Starting with our generated config_block to ensure that assumed values
-  // are present.  An alternative is to check for key presence before
-  // performing a get_value() call.
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  // Setting nested algorithm instances via setter methods instead of directly
-  // assigning to instance property.
-
-  algo::match_features_sptr mf;
-  algo::match_features::set_nested_algo_configuration(
-    "match_features", config, mf );
-  d_->m_matcher = mf;
-
-  algo::match_descriptor_sets_sptr bow;
-  algo::match_descriptor_sets::set_nested_algo_configuration(
-    "bag_of_words_matching", config, bow );
-  d_->m_bow = bow;
-
-  vital::algo::estimate_fundamental_matrix
-  ::set_nested_algo_configuration(
-    "fundamental_mat_estimator",
-    config, d_->m_f_estimator );
-
-  d_->m_min_loop_inlier_matches =
-    config->get_value< int >(
-      "min_loop_inlier_matches",
-      d_->m_min_loop_inlier_matches );
-
-  d_->m_geometric_verification_inlier_threshold =
-    config->get_value< double >(
-      "geometric_verification_inlier_threshold",
-      d_->m_geometric_verification_inlier_threshold );
-
-  d_->m_max_loop_attempts_per_frame =
-    config->get_value< int >(
-      "max_loop_attempts_per_frame",
-      d_->m_max_loop_attempts_per_frame );
-
-  d_->m_tracks_in_common_to_skip_loop_closing =
-    config->get_value< int >(
-      "tracks_in_common_to_skip_loop_closing",
-      d_->m_tracks_in_common_to_skip_loop_closing );
-
-  d_->m_skip_loop_detection_track_i_over_u_threshold =
-    config->get_value< float >(
-      "skip_loop_detection_track_i_over_u_threshold",
-      d_->m_skip_loop_detection_track_i_over_u_threshold );
-
-  d_->m_min_loop_inlier_fraction =
-    config->get_value< float >(
-      "m_min_loop_inlier_fraction",
-      d_->m_min_loop_inlier_fraction );
-}
-
-// ----------------------------------------------------------------------------
-
 bool
 close_loops_appearance_indexed
 ::check_configuration( vital::config_block_sptr config ) const
@@ -785,11 +670,11 @@ close_loops_appearance_indexed
   bool config_valid = true;
 
   config_valid =
-    algo::match_features::check_nested_algo_configuration(
+    check_nested_algo_configuration< algo::match_features >(
       "match_features", config ) && config_valid;
 
   config_valid =
-    algo::match_descriptor_sets::check_nested_algo_configuration(
+    check_nested_algo_configuration< algo::match_descriptor_sets >(
       "bag_of_words_matching", config ) && config_valid;
 
   int min_loop_matches =

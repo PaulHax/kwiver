@@ -12,6 +12,10 @@
 
 #include <vital/algo/close_loops.h>
 
+#include <vital/algo/algorithm.txx>
+
+#include <vital/algo/match_features.h>
+
 namespace kwiver {
 
 namespace arrows {
@@ -25,37 +29,38 @@ class KWIVER_ALGO_CORE_EXPORT close_loops_keyframe
   : public vital::algo::close_loops
 {
 public:
-  PLUGIN_INFO(
-    "keyframe",
-    "Establishes keyframes matches to all keyframes." )
-
-  /// Default Constructor
-  close_loops_keyframe();
+  PLUGGABLE_IMPL(
+    close_loops_keyframe,
+    "Establishes keyframes matches to all keyframes.",
+    PARAM_DEFAULT(
+      match_req, int,
+      "The required number of features needed to be matched for a success.",
+      100 ),
+    PARAM_DEFAULT(
+      search_bandwidth, int,
+      "Number of adjacent frames to match to (must be at least 1).",
+      10 ),
+    PARAM_DEFAULT(
+      min_keyframe_misses, unsigned int,
+      "Minimum number of keyframe match misses before creating a new keyframe. "
+      "A match miss occurs when the current frame does not match any existing "
+      "keyframe (must be at least 1).",
+      5 ),
+    PARAM_DEFAULT(
+      stop_after_match, bool,
+      "If set, stop matching additional keyframes after at least "
+      "one match is found and then one fails to match.  This "
+      "prevents making many comparisons to keyframes that are "
+      "likely to fail, but it also misses unexpected matches "
+      "that could make the tracks stronger.",
+      false ),
+    PARAM(
+      matcher, kwiver::vital::algo::match_features_sptr,
+      "feature_matcher" )
+  )
 
   /// Destructor
   virtual ~close_loops_keyframe() noexcept;
-
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  ///
-  /// This base virtual function implementation returns an empty configuration
-  /// block whose name is set to \c this->type_name.
-  ///
-  /// \returns \c config_block containing the configuration for this algorithm
-  ///          and any nested components.
-  virtual vital::config_block_sptr get_configuration() const;
-
-  /// Set this algorithm's properties via a config block
-  ///
-  /// \throws no_such_configuration_value_exception
-  ///    Thrown if an expected configuration value is not present.
-  /// \throws algorithm_configuration_exception
-  ///    Thrown when the algorithm is given an invalid \c config_block or is'
-  ///    otherwise unable to configure itself.
-  ///
-  /// \param config  The \c config_block instance containing the configuration
-  ///                parameters for this algorithm
-  virtual void set_configuration( vital::config_block_sptr config );
 
   /// Check that the algorithm's currently configuration is valid
   ///
@@ -84,10 +89,10 @@ public:
     vital::image_container_sptr mask = vital::image_container_sptr() ) const;
 
 private:
+  void initialize() override;
   /// private implementation class
   class priv;
-
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 } // end namespace core

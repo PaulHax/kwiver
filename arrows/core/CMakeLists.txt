@@ -5,10 +5,10 @@ set(CMAKE_FOLDER "Arrows/Core")
 set( plugin_core_headers
   associate_detections_to_tracks_threshold.h
   # class_probablity_filter.h
-  # close_loops_appearance_indexed.h
-  # close_loops_bad_frames_only.h
-  # close_loops_exhaustive.h
-  # close_loops_keyframe.h
+  close_loops_appearance_indexed.h
+  close_loops_bad_frames_only.h
+  close_loops_exhaustive.h
+  close_loops_keyframe.h
   # close_loops_multi_method.h
   # colorize.h
   compute_association_matrix_from_features.h
@@ -78,10 +78,10 @@ kwiver_install_headers(
 set( plugin_core_sources
   associate_detections_to_tracks_threshold.cxx
   # class_probablity_filter.cxx
-  # close_loops_appearance_indexed.cxx
-  # close_loops_bad_frames_only.cxx
-  # close_loops_exhaustive.cxx
-  # close_loops_keyframe.cxx
+  close_loops_appearance_indexed.cxx
+  close_loops_bad_frames_only.cxx
+  close_loops_exhaustive.cxx
+  close_loops_keyframe.cxx
   # close_loops_multi_method.cxx
   # colorize.cxx
   compute_association_matrix_from_features.cxx
@@ -112,7 +112,7 @@ set( plugin_core_sources
   match_features_fundamental_matrix.cxx
   match_features_homography.cxx
   match_matrix.cxx
-  # match_tracks.cxx
+  match_tracks.cxx
   merge_metadata_streams.cxx
   # mesh_intersect.cxx
   mesh_operations.cxx

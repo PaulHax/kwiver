@@ -17,6 +17,8 @@
 #include <vital/algo/match_features.h>
 #include <vital/config/config_block.h>
 
+#include <vital/algo/algorithm.txx>
+
 namespace kwiver {
 
 namespace arrows {
@@ -33,38 +35,40 @@ class KWIVER_ALGO_CORE_EXPORT close_loops_bad_frames_only
   : public vital::algo::close_loops
 {
 public:
-  PLUGIN_INFO(
-    "bad_frames_only",
+  PLUGGABLE_IMPL(
+    close_loops_bad_frames_only,
     "Attempts short-term loop closure based on percentage "
-    "of feature points tracked." )
-
-  /// Default Constructor
-  close_loops_bad_frames_only();
-
+    "of feature points tracked.",
+    PARAM_DEFAULT(
+      enabled, bool,
+      "Should bad frame detection be enabled? This option will attempt to "
+      "bridge the gap between frames which don't meet certain criteria "
+      "(percentage of feature points tracked) and will instead attempt "
+      "to match features on the current frame against past frames to "
+      "meet this criteria. This is useful when there can be bad frames.",
+      true ),
+    PARAM_DEFAULT(
+      percent_match_req, double,
+      "The required percentage of features needed to be matched for a "
+      "stitch to be considered successful (value must be between 0.0 and "
+      "1.0).",
+      0.35 ),
+    PARAM_DEFAULT(
+      new_shot_length, unsigned,
+      "Number of frames for a new shot to be considered valid before "
+      "attempting to stitch to prior shots.",
+      2 ),
+    PARAM_DEFAULT(
+      max_search_length, unsigned,
+      "Maximum number of frames to search in the past for matching to "
+      "the end of the last shot.",
+      5 ),
+    PARAM(
+      matcher, kwiver::vital::algo::match_features_sptr,
+      "feature_matcher" )
+  )
   /// Destructor
   virtual ~close_loops_bad_frames_only() = default;
-
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  ///
-  /// This base virtual function implementation returns an empty configuration
-  /// block whose name is set to \c this->type_name.
-  ///
-  /// \returns \c config_block containing the configuration for this algorithm
-  ///          and any nested components.
-  virtual vital::config_block_sptr get_configuration() const;
-
-  /// Set this algorithm's properties via a config block
-  ///
-  /// \throws no_such_configuration_value_exception
-  ///    Thrown if an expected configuration value is not present.
-  /// \throws algorithm_configuration_exception
-  ///    Thrown when the algorithm is given an invalid \c config_block or is'
-  ///    otherwise unable to configure itself.
-  ///
-  /// \param config  The \c config_block instance containing the configuration
-  ///                parameters for this algorithm
-  virtual void set_configuration( vital::config_block_sptr config );
 
   /// Check that the algorithm's currently configuration is valid
   ///
@@ -93,20 +97,8 @@ public:
     vital::image_container_sptr mask = vital::image_container_sptr() ) const;
 
 protected:
-  /// Is bad frame detection enabled?
-  bool enabled_;
-
-  /// Stitching percent feature match required
-  double percent_match_req_;
-
-  /// Stitching required new valid shot size in frames
-  unsigned new_shot_length_;
-
-  /// Max search length for bad frame detection in frames
-  unsigned max_search_length_;
-
-  /// The feature matching algorithm to use
-  vital::algo::match_features_sptr matcher_;
+  void initialize() override;
+  void set_configuration_internal( vital::config_block_sptr config ) override;
 };
 
 } // end namespace algo
