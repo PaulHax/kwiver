@@ -102,12 +102,9 @@ setup(
     # within the package module space.
     cmake_install_dir=f"./{PACKAGE_SRC}/{PACKAGE_NAME}",
     cmake_args=[
-        "-DCMAKE_BUILD_TYPE=Release",
-        "-DKWIVER_BUILD_SHARED=OFF",
         "-DKWIVER_ENABLE_PYTHON=ON",
         "-DKWIVER_PYTHON_MAJOR_VERSION=3",
         "-DPYBIND11_PYTHON_VERSION=3",
-        "-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON",
         "-DKWIVER_INSTALL_SET_UP_SCRIPT=OFF",
     ],
 )
