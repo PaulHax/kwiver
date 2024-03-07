@@ -11,13 +11,13 @@ set(test_libraries
 ##############################
 # Algorithms VXL tests
 ##############################
-# kwiver_discover_gtests(vxl aligned_edge_detection         LIBRARIES ${test_libraries}  ARGUMENTS "${kwiver_test_data_directory}")
+kwiver_discover_gtests(vxl aligned_edge_detection         LIBRARIES ${test_libraries}  ARGUMENTS "${kwiver_test_data_directory}")
 # kwiver_discover_gtests(vxl average_frames                 LIBRARIES ${test_libraries}  ARGUMENTS "${kwiver_test_data_directory}")
 kwiver_discover_gtests(vxl bounding_box                   LIBRARIES ${test_libraries})
 kwiver_discover_gtests(vxl camera                         LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(vxl color_commonality_filter       LIBRARIES ${test_libraries}  ARGUMENTS "${kwiver_test_data_directory}")
 # kwiver_discover_gtests(vxl estimate_homography            LIBRARIES ${test_libraries})
-# kwiver_discover_gtests(vxl estimate_similarity            LIBRARIES ${test_libraries})
+kwiver_discover_gtests(vxl estimate_similarity            LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(vxl hashed_image_classifier_filter LIBRARIES ${test_libraries}  ARGUMENTS "${kwiver_test_data_directory}")
 # kwiver_discover_gtests(vxl high_pass_filter               LIBRARIES ${test_libraries}  ARGUMENTS "${kwiver_test_data_directory}")
 # kwiver_discover_gtests(vxl image                          LIBRARIES ${test_libraries})
@@ -35,9 +35,9 @@ endif()
 list(APPEND test_libraries kwiver_algo_mvg)
 
 # kwiver_discover_gtests(vxl bundle_adjust               LIBRARIES ${test_libraries})
-# kwiver_discover_gtests(vxl estimate_essential_matrix   LIBRARIES ${test_libraries})
+kwiver_discover_gtests(vxl estimate_essential_matrix   LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(vxl estimate_fundamental_matrix LIBRARIES ${test_libraries})
-# kwiver_discover_gtests(vxl optimize_cameras            LIBRARIES ${test_libraries})
+kwiver_discover_gtests(vxl optimize_cameras            LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(vxl triangulate_landmarks       LIBRARIES ${test_libraries})
 
 # This test is really for an algorithm in MVG, but it's here

@@ -26,6 +26,14 @@ namespace arrows {
 
 namespace vxl {
 
+// ----------------------------------------------------------------------------
+void
+estimate_similarity_transform
+::initialize()
+{
+  attach_logger( "arrows.vxl.estimate_similarity_transform" );
+}
+
 /// Estimate the similarity transform between two corresponding point sets
 similarity_d
 estimate_similarity_transform
@@ -39,7 +47,7 @@ estimate_similarity_transform
     sstr << "from and to sets for similarity estimation are not of equivalent "
          << "size! (from: " << from.size() << ", to: " << to.size() << ")";
     VITAL_THROW(
-      algorithm_exception, this->type_name(), this->impl_name(),
+      algorithm_exception, this->interface_name(), this->plugin_name(),
       sstr.str() );
   }
   else if( from.size() < 3 )
@@ -48,7 +56,7 @@ estimate_similarity_transform
     sstr << "At least 3 or more point pairs must be give in order to estimate "
          << "the similarity transformation. Given: " << from.size();
     VITAL_THROW(
-      algorithm_exception, this->type_name(), this->impl_name(),
+      algorithm_exception, this->interface_name(), this->plugin_name(),
       sstr.str() );
   }
 

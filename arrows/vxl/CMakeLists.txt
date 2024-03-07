@@ -22,7 +22,7 @@ set(vxl_headers_public
   estimate_essential_matrix.h
   # estimate_fundamental_matrix.h
   # estimate_homography.h
-  # estimate_similarity_transform.h
+  estimate_similarity_transform.h
   # hashed_image_classifier_filter.h
   # high_pass_filter.h
   image_container.h
@@ -30,7 +30,7 @@ set(vxl_headers_public
   kd_tree.h
   # match_features_constrained.h
   # morphology.h
-  # optimize_cameras.h
+  optimize_cameras.h
   # pixel_feature_extractor.h
   polygon.h
   # split_image.h
@@ -50,10 +50,10 @@ set(vxl_sources
   # compute_homography_overlap.cxx
   # convert_image.cxx
   # estimate_canonical_transform.cxx
-  # estimate_essential_matrix.cxx
+  estimate_essential_matrix.cxx
   # estimate_fundamental_matrix.cxx
   # estimate_homography.cxx
-  # estimate_similarity_transform.cxx
+  estimate_similarity_transform.cxx
   # hashed_image_classifier.cxx
   # hashed_image_classifier_filter.cxx
   # high_pass_filter.cxx
@@ -62,7 +62,7 @@ set(vxl_sources
   kd_tree.cxx
   # match_features_constrained.cxx
   # morphology.cxx
-  # optimize_cameras.cxx
+  optimize_cameras.cxx
   # pixel_feature_extractor.cxx
   polygon.cxx
   # split_image.cxx
