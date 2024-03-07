@@ -13,8 +13,6 @@ namespace kwiver {
 
 namespace vital {
 
-namespace types {
-
 // ----------------------------------------------------------------------------
 attribute_set_exception
 ::attribute_set_exception( std::string const& str )
@@ -126,8 +124,6 @@ attribute_set
 
   return *( ix->second );
 }
-
-} // namespace types
 
 } // namespace vital
 

@@ -23,8 +23,6 @@ namespace kwiver {
 
 namespace vital {
 
-namespace types {
-
 // ----------------------------------------------------------------------------
 class VITAL_EXPORT attribute_set_exception
   : public vital_exception
@@ -208,8 +206,6 @@ public:
 private:
   attribute_map_t m_attr_map;
 }; // end class attribute_set
-
-} // namespace types
 
 } // namespace vital
 
