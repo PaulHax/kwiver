@@ -44,7 +44,7 @@ merge_metadata_streams
 
   // Remove any null objects
   vital::metadata_vector sorted_metadata;
-  for( auto const metadata : input_metadata )
+  for( auto const& metadata : input_metadata )
   {
     if( metadata )
     {
