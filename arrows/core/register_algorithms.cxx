@@ -17,6 +17,7 @@
 #include <vital/algo/compute_ref_homography.h>
 #include <vital/algo/convert_image.h>
 #include <vital/algo/detect_features.h>
+#include <vital/algo/detected_object_filter.h>
 #include <vital/algo/detected_object_set_input.h>
 #include <vital/algo/detected_object_set_output.h>
 #include <vital/algo/dynamic_configuration.h>
@@ -77,6 +78,8 @@
 #include <arrows/core/read_track_descriptor_set_csv.h>
 #include <arrows/core/track_features_augment_keyframes.h>
 #include <arrows/core/track_features_core.h>
+#include <arrows/core/transfer_bbox_with_depth_map.h>
+#include <arrows/core/transform_detected_object_set.h>
 #include <arrows/core/uv_unwrap_mesh.h>
 #include <arrows/core/video_input_filter.h>
 #include <arrows/core/video_input_image_list.h>
@@ -268,6 +271,14 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::close_loops,
     close_loops_appearance_indexed >( "appearance_indexed" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::detected_object_filter,
+    transfer_bbox_with_depth_map >( "transfer_bbox_with_depth_map" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::detected_object_filter,
+    transform_detected_object_set >( "transform_detected_object_set" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 

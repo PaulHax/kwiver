@@ -10,6 +10,9 @@
 #include <vital/algo/detected_object_filter.h>
 #include <vital/io/camera_io.h>
 
+#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
+
 using namespace kwiver::vital;
 
 namespace kwiver {
@@ -23,27 +26,27 @@ class KWIVER_ALGO_CORE_EXPORT transform_detected_object_set
   : public vital::algo::detected_object_filter
 {
 public:
-  PLUGIN_INFO(
-    "transform_detected_object_set",
+  PLUGGABLE_IMPL(
+    transform_detected_object_set,
     "Transforms a detected object set based on source and "
-    "destination cameras.\n\n" )
+    "destination cameras.\n\n",
+    PARAM_DEFAULT(
+      src_camera_krtd_file_name, std::string,
+      "Source camera KRTD file name path",
+      "" ),
+    PARAM_DEFAULT(
+      dest_camera_krtd_file_name, std::string,
+      "Destination camera KRTD file name path",
+      "" )
+  )
 
-  /// Default constructor
-  transform_detected_object_set();
+  /// Default destructor
+  virtual ~transform_detected_object_set();
 
   /// Constructor taking source and destination cameras directly
   transform_detected_object_set(
     kwiver::vital::camera_perspective_sptr src_cam,
     kwiver::vital::camera_perspective_sptr dest_cam );
-
-  /// Default destructor
-  virtual ~transform_detected_object_set() = default;
-
-  /// Get this algorithm's configuration block
-  virtual vital::config_block_sptr get_configuration() const;
-
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
 
   /// Check that the algorithm's currently configuration is valid
   virtual bool check_configuration( vital::config_block_sptr config ) const;
@@ -52,7 +55,13 @@ public:
   virtual vital::detected_object_set_sptr
   filter( vital::detected_object_set_sptr const input_set ) const;
 
+protected:
+  void initialize() override;
+  void set_configuration_internal( vital::config_block_sptr config ) override;
+
 private:
+  class priv;
+
   std::string src_camera_krtd_file_name;
   std::string dest_camera_krtd_file_name;
 

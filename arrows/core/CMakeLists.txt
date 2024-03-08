@@ -50,8 +50,8 @@ set( plugin_core_headers
   track_features_augment_keyframes.h
   track_features_core.h
   track_set_impl.h
-  # transfer_bbox_with_depth_map.h
-  # transform_detected_object_set.h
+  transfer_bbox_with_depth_map.h
+  transform_detected_object_set.h
   triangle_scan_iterator.h
   uv_unwrap_mesh.h
   # video_input_buffered_metadata_filter.h
@@ -124,8 +124,8 @@ set( plugin_core_sources
   track_features_augment_keyframes.cxx
   track_features_core.cxx
   track_set_impl.cxx
-  # transfer_bbox_with_depth_map.cxx
-  # transform_detected_object_set.cxx
+  transfer_bbox_with_depth_map.cxx
+  transform_detected_object_set.cxx
   triangle_scan_iterator.cxx
   uv_unwrap_mesh.cxx
   video_input_filter.cxx

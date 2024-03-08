@@ -189,9 +189,25 @@ transfer_bbox_with_depth_map_stationary_camera(
 }
 
 // ----------------------------------------------------------------------------
-transfer_bbox_with_depth_map
-::transfer_bbox_with_depth_map()
-{}
+class transfer_bbox_with_depth_map::priv
+{
+public:
+  priv( transfer_bbox_with_depth_map& parent )
+    : parent( parent )
+  {}
+
+  transfer_bbox_with_depth_map& parent;
+
+  // Configuration values
+  std::string c_src_camera_krtd_file_name()
+  { return parent.c_src_camera_krtd_file_name; }
+  std::string c_dest_camera_krtd_file_name()
+  { return parent.c_dest_camera_krtd_file_name; }
+  std::string c_src_camera_depth_map_file_name()
+  { return parent.c_src_camera_depth_map_file_name; }
+  std::shared_ptr< vital::algo::image_io > c_image_reader()
+  { return parent.c_image_reader; }
+};
 
 // ----------------------------------------------------------------------------
 transfer_bbox_with_depth_map
@@ -205,57 +221,36 @@ transfer_bbox_with_depth_map
 {}
 
 // ----------------------------------------------------------------------------
-vital::config_block_sptr
+void
 transfer_bbox_with_depth_map
-::get_configuration() const
-{
-  // Get base config from base class
-  vital::config_block_sptr config = vital::algorithm::get_configuration();
+::initialize()
+{}
 
-  config->set_value(
-    "src_camera_krtd_file_name", src_camera_krtd_file_name,
-    "Source camera KRTD file name path" );
-
-  config->set_value(
-    "dest_camera_krtd_file_name", dest_camera_krtd_file_name,
-    "Destination camera KRTD file name path" );
-
-  config->set_value(
-    "src_camera_depth_map_file_name",
-    src_camera_depth_map_file_name,
-    "Source camera depth map file name path" );
-
-  vital::algo::image_io::
-  get_nested_algo_configuration( "image_reader", config, image_reader );
-
-  return config;
-}
+// ----------------------------------------------------------------------------
+transfer_bbox_with_depth_map
+::~transfer_bbox_with_depth_map()
+{}
 
 // ----------------------------------------------------------------------------
 void
 transfer_bbox_with_depth_map
-::set_configuration( vital::config_block_sptr config_in )
+::set_configuration_internal( vital::config_block_sptr config_in )
 {
   vital::config_block_sptr config = this->get_configuration();
 
   config->merge_config( config_in );
-  this->src_camera_krtd_file_name =
-    config->get_value< std::string >( "src_camera_krtd_file_name" );
-  this->dest_camera_krtd_file_name =
-    config->get_value< std::string >( "dest_camera_krtd_file_name" );
-  this->src_camera_depth_map_file_name =
-    config->get_value< std::string >( "src_camera_depth_map_file_name" );
 
   // Setup actual reader algorithm
-  vital::algo::image_io::
-  set_nested_algo_configuration( "image_reader", config, image_reader );
+  set_nested_algo_configuration< vital::algo::image_io >(
+    "image_reader", config, c_image_reader );
 
   this->src_camera =
-    kwiver::vital::read_krtd_file( this->src_camera_krtd_file_name );
+    kwiver::vital::read_krtd_file( this->c_src_camera_krtd_file_name );
   this->dest_camera =
-    kwiver::vital::read_krtd_file( this->dest_camera_krtd_file_name );
+    kwiver::vital::read_krtd_file( this->c_dest_camera_krtd_file_name );
 
-  this->depth_map = image_reader->load( this->src_camera_depth_map_file_name );
+  this->depth_map =
+    c_image_reader->load( this->c_src_camera_depth_map_file_name );
 }
 
 // ----------------------------------------------------------------------------
