@@ -38,13 +38,23 @@ public:
 
   filter_features_scale& parent;
 
+  // Configuration Parameters
+  double
+  c_top_fraction() const { return parent.c_top_fraction; }
+  unsigned int
+  c_min_features() const { return parent.c_min_features; }
+  unsigned int
+  c_max_features() const { return parent.c_max_features; }
+
+  vital::logger_handle_t m_logger;
+
 // ----------------------------------------------------------------------------
   feature_set_sptr
   filter( feature_set_sptr feat, std::vector< unsigned int >& ind ) const
   {
     const std::vector< feature_sptr >& feat_vec = feat->features();
     ind.clear();
-    if( feat_vec.size() <= min_features )
+    if( feat_vec.size() <= c_min_features() )
     {
       ind.resize( feat_vec.size() );
       for( unsigned int i = 0; i < ind.size(); ++i )
@@ -64,11 +74,11 @@ public:
 
     // compute threshold
     unsigned int cutoff = std::max(
-      min_features,
-      static_cast< unsigned int >( top_fraction * indices.size() ) );
-    if( max_features > 0 )
+      c_min_features(),
+      static_cast< unsigned int >( c_top_fraction() * indices.size() ) );
+    if( c_max_features() > 0 )
     {
-      cutoff = std::min( cutoff, max_features );
+      cutoff = std::min( cutoff, c_max_features() );
     }
 
     // partially sort on descending feature scale
@@ -93,11 +103,6 @@ public:
     return std::make_shared< vital::simple_feature_set >(
       vital::simple_feature_set( filtered ) );
   }
-
-  double top_fraction;
-  unsigned int min_features;
-  unsigned int max_features;
-  vital::logger_handle_t m_logger;
 };
 
 // ----------------------------------------------------------------------------
@@ -121,7 +126,7 @@ filter_features_scale
 {
   double top_fraction = config->get_value< double >(
     "top_fraction",
-    d_->top_fraction );
+    d_->c_top_fraction() );
   if( top_fraction <= 0.0 || top_fraction > 1.0 )
   {
     LOG_ERROR(
@@ -132,9 +137,9 @@ filter_features_scale
   }
 
   unsigned int min_features =
-    config->get_value< unsigned int >( "min_features", d_->min_features );
+    config->get_value< unsigned int >( "min_features", d_->c_min_features() );
   unsigned int max_features =
-    config->get_value< unsigned int >( "max_features", d_->max_features );
+    config->get_value< unsigned int >( "max_features", d_->c_max_features() );
   if( max_features > 0 && max_features < min_features )
   {
     LOG_ERROR(

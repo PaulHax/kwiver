@@ -170,13 +170,32 @@ public:
 
   filter_features_nonmax& parent;
 
+  // Configuration Values
+  double c_suppression_radius() { return parent.c_suppression_radius; }
+  unsigned int
+  c_resolution() const { return parent.c_resolution; }
+
+  unsigned int
+  c_num_features_target() const
+  {
+    return parent.c_num_features_target;
+  }
+
+  unsigned int
+  c_num_features_range() const
+  {
+    return parent.c_num_features_range;
+  }
+
+  vital::logger_handle_t m_logger;
+
   // --------------------------------------------------------------------------
   feature_set_sptr
   filter( feature_set_sptr feat_set, std::vector< unsigned int >& ind ) const
   {
     const std::vector< feature_sptr >& feat_vec = feat_set->features();
 
-    if( feat_vec.size() <= num_features_target )
+    if( feat_vec.size() <= c_num_features_target() )
     {
       return feat_set;
     }
@@ -226,20 +245,20 @@ public:
     const double& w = bbox.sizes()[ 0 ];
     const double& h = bbox.sizes()[ 1 ];
     const double wph = w + h;
-    const double m = num_features_target - 1;
+    const double m = c_num_features_target() - 1;
     double high_radius = ( wph + std::sqrt( wph * wph + 4 * m * w * h ) ) /
                          ( 2 * m );
     double low_radius = 0.0;
 
     // initial guess for radius, if not specified
-    if( suppression_radius <= 0.0 )
+    if( c_suppression_radius() <= 0.0 )
     {
-      suppression_radius = high_radius / 2.0;
+      c_suppression_radius() = high_radius / 2.0;
     }
 
-    nonmax_suppressor suppressor( suppression_radius,
+    nonmax_suppressor suppressor( c_suppression_radius(),
       bbox, scale_min, scale_steps,
-      resolution );
+      c_resolution() );
 
     // binary search of radius to find the target number of features
     std::vector< feature_sptr > filtered;
@@ -263,19 +282,20 @@ public:
         }
       }
       // if not using a target number of features, keep this result
-      if( num_features_target == 0 )
+      if( c_num_features_target() == 0 )
       {
         break;
       }
 
       // adjust the bounds to continue binary search
-      if( filtered.size() < num_features_target )
+      if( filtered.size() < c_num_features_target() )
       {
-        high_radius = suppression_radius;
+        high_radius = c_suppression_radius();
       }
-      else if( filtered.size() > num_features_target + num_features_range )
+      else if( filtered.size() >
+               c_num_features_target() + c_num_features_range() )
       {
-        low_radius = suppression_radius;
+        low_radius = c_suppression_radius();
       }
       else
       {
@@ -291,30 +311,23 @@ public:
                                                    "Suppression radius is too small to continue." );
         break;
       }
-      suppression_radius = new_suppression_radius;
-      suppressor.set_radius( suppression_radius );
+      c_suppression_radius() = new_suppression_radius;
+      suppressor.set_radius( c_suppression_radius() );
       LOG_DEBUG(
         m_logger, "Found " << filtered.size() << " features.  "
                                                  "Changing suppression radius to "
-                           << suppression_radius);
+                           << c_suppression_radius() );
     }
 
     LOG_INFO(
       m_logger, "Reduced " << feat_vec.size() << " features to "
                            << filtered.size() <<
         " features with non-max radius "
-                           << suppression_radius);
+                           << c_suppression_radius() );
 
     return std::make_shared< vital::simple_feature_set >(
       vital::simple_feature_set( filtered ) );
   }
-
-  // configuration paramters
-  mutable double suppression_radius;
-  unsigned int resolution;
-  unsigned int num_features_target;
-  unsigned int num_features_range;
-  vital::logger_handle_t m_logger;
 
 private:
 };
@@ -340,7 +353,7 @@ filter_features_nonmax
 ::check_configuration( vital::config_block_sptr config ) const
 {
   unsigned int resolution =
-    config->get_value< unsigned int >( "resolution", d_->resolution );
+    config->get_value< unsigned int >( "resolution", d_->c_resolution() );
   if( resolution < 1 )
   {
     LOG_ERROR(logger(), "resolution must be at least 1" );
