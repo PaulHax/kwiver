@@ -2,23 +2,27 @@
 
 set(CMAKE_FOLDER "Arrows/MVG")
 
-set( plugin_mvg_headers
-  algo/hierarchical_bundle_adjust.h
-  algo/integrate_depth_maps.h
-  algo/initialize_cameras_landmarks.h
-  algo/initialize_cameras_landmarks_basic.h
-  algo/triangulate_landmarks.h
+set( plugin_mvg_headers )
+set( plugin_mvg_sources )
+set( plugin_mvg_classes
+  algo/hierarchical_bundle_adjust
+  algo/integrate_depth_maps
+  algo/initialize_cameras_landmarks
+  algo/initialize_cameras_landmarks_basic
+  algo/triangulate_landmarks
 
-  camera_options.h
-  epipolar_geometry.h
-  interpolate_camera.h
-  necker_reverse.h
-  metrics.h
-  projected_track_set.h
-  sfm_utils.h
-  transform.h
-  triangulate.h
+  camera_options
+  epipolar_geometry
+  interpolate_camera
+  necker_reverse
+  metrics
+  projected_track_set
+  sfm_utils
+  transform
+  triangulate
   )
+
+kwiver_expand_class_list( "${plugin_mvg_classes}" plugin_mvg_headers plugin_mvg_sources )
 
 kwiver_install_headers(
   SUBDIR     arrows/mvg
@@ -28,24 +32,6 @@ kwiver_install_headers(
 kwiver_install_headers(
   ${CMAKE_CURRENT_BINARY_DIR}/kwiver_algo_mvg_export.h
   NOPATH   SUBDIR     arrows/mvg
-  )
-
-set( plugin_mvg_sources
-  algo/hierarchical_bundle_adjust.cxx
-  algo/integrate_depth_maps.cxx
-  algo/initialize_cameras_landmarks.cxx
-  algo/initialize_cameras_landmarks_basic.cxx
-  algo/triangulate_landmarks.cxx
-
-  camera_options.cxx
-  epipolar_geometry.cxx
-  interpolate_camera.cxx
-  necker_reverse.cxx
-  metrics.cxx
-  projected_track_set.cxx
-  sfm_utils.cxx
-  transform.cxx
-  triangulate.cxx
   )
 
 # Address MSVC fatal error C1128:
