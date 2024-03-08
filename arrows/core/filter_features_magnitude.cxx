@@ -46,13 +46,13 @@ public:
 
   vital::logger_handle_t m_logger;
 
-  // ----------------------------------------------------------------------
+  // -------------------------------------------------------------------------
   feature_set_sptr
   filter( feature_set_sptr feat, std::vector< unsigned int >& ind ) const
   {
     const std::vector< feature_sptr >& feat_vec = feat->features();
     ind.clear();
-    if( feat_vec.size() <= c_min_features() )
+    if( feat_vec.size() <= parent.c_min_features )
     {
       ind.resize( feat_vec.size() );
       for( unsigned int i = 0; i < ind.size(); ++i )
@@ -72,8 +72,8 @@ public:
 
     // compute threshold
     unsigned int cutoff = std::max(
-      c_min_features(),
-      static_cast< unsigned int >( c_top_fraction() * indices.size() ) );
+      parent.c_min_features,
+      static_cast< unsigned int >( parent.c_top_fraction * indices.size() ) );
 
     // partially sort on descending feature magnitude
     std::nth_element(

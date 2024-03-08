@@ -38,7 +38,7 @@ public:
 
   filter_features_scale& parent;
 
-  // Configuration Parameters
+  // Configuration Parameters for access outside this class, if ever
   double
   c_top_fraction() const { return parent.c_top_fraction; }
   unsigned int
@@ -54,7 +54,7 @@ public:
   {
     const std::vector< feature_sptr >& feat_vec = feat->features();
     ind.clear();
-    if( feat_vec.size() <= c_min_features() )
+    if( feat_vec.size() <= parent.c_min_features )
     {
       ind.resize( feat_vec.size() );
       for( unsigned int i = 0; i < ind.size(); ++i )
@@ -74,11 +74,11 @@ public:
 
     // compute threshold
     unsigned int cutoff = std::max(
-      c_min_features(),
-      static_cast< unsigned int >( c_top_fraction() * indices.size() ) );
-    if( c_max_features() > 0 )
+      parent.c_min_features,
+      static_cast< unsigned int >( parent.c_top_fraction * indices.size() ) );
+    if( parent.c_max_features > 0 )
     {
-      cutoff = std::min( cutoff, c_max_features() );
+      cutoff = std::min( cutoff, parent.c_max_features );
     }
 
     // partially sort on descending feature scale

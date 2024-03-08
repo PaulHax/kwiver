@@ -171,7 +171,8 @@ public:
   filter_features_nonmax& parent;
 
   // Configuration Values
-  double c_suppression_radius() { return parent.c_suppression_radius; }
+  double
+  c_suppression_radius() const { return parent.c_suppression_radius; }
   unsigned int
   c_resolution() const { return parent.c_resolution; }
 
@@ -195,7 +196,7 @@ public:
   {
     const std::vector< feature_sptr >& feat_vec = feat_set->features();
 
-    if( feat_vec.size() <= c_num_features_target() )
+    if( feat_vec.size() <= parent.c_num_features_target )
     {
       return feat_set;
     }
@@ -245,20 +246,20 @@ public:
     const double& w = bbox.sizes()[ 0 ];
     const double& h = bbox.sizes()[ 1 ];
     const double wph = w + h;
-    const double m = c_num_features_target() - 1;
+    const double m = parent.c_num_features_target - 1;
     double high_radius = ( wph + std::sqrt( wph * wph + 4 * m * w * h ) ) /
                          ( 2 * m );
     double low_radius = 0.0;
 
     // initial guess for radius, if not specified
-    if( c_suppression_radius() <= 0.0 )
+    if( parent.c_suppression_radius <= 0.0 )
     {
-      c_suppression_radius() = high_radius / 2.0;
+      parent.c_suppression_radius = high_radius / 2.0;
     }
 
-    nonmax_suppressor suppressor( c_suppression_radius(),
+    nonmax_suppressor suppressor( parent.c_suppression_radius,
       bbox, scale_min, scale_steps,
-      c_resolution() );
+      parent.c_resolution );
 
     // binary search of radius to find the target number of features
     std::vector< feature_sptr > filtered;
@@ -282,20 +283,20 @@ public:
         }
       }
       // if not using a target number of features, keep this result
-      if( c_num_features_target() == 0 )
+      if( parent.c_num_features_target == 0 )
       {
         break;
       }
 
       // adjust the bounds to continue binary search
-      if( filtered.size() < c_num_features_target() )
+      if( filtered.size() < parent.c_num_features_target )
       {
-        high_radius = c_suppression_radius();
+        high_radius = parent.c_suppression_radius;
       }
       else if( filtered.size() >
-               c_num_features_target() + c_num_features_range() )
+               parent.c_num_features_target + parent.c_num_features_range )
       {
-        low_radius = c_suppression_radius();
+        low_radius = parent.c_suppression_radius;
       }
       else
       {
@@ -311,19 +312,19 @@ public:
                                                    "Suppression radius is too small to continue." );
         break;
       }
-      c_suppression_radius() = new_suppression_radius;
-      suppressor.set_radius( c_suppression_radius() );
+      parent.c_suppression_radius = new_suppression_radius;
+      suppressor.set_radius( parent.c_suppression_radius );
       LOG_DEBUG(
         m_logger, "Found " << filtered.size() << " features.  "
                                                  "Changing suppression radius to "
-                           << c_suppression_radius() );
+                           << parent.c_suppression_radius);
     }
 
     LOG_INFO(
       m_logger, "Reduced " << feat_vec.size() << " features to "
                            << filtered.size() <<
         " features with non-max radius "
-                           << c_suppression_radius() );
+                           << parent.c_suppression_radius);
 
     return std::make_shared< vital::simple_feature_set >(
       vital::simple_feature_set( filtered ) );

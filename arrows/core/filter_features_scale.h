@@ -33,11 +33,11 @@ public:
       "Fraction of largest scale keypoints to keep, range (0.0, 1.0]",
       0.2 ),
     PARAM_DEFAULT(
-      min_features, int,
+      min_features, unsigned int,
       "Minimum number of features to keep",
       100 ),
     PARAM_DEFAULT(
-      max_features, int,
+      max_features, unsigned int,
       "Maximum number of features to keep, use 0 for unlimited",
       1000 ),
   )
