@@ -23,78 +23,6 @@ main( int argc, char** argv )
 namespace {
 
 // ----------------------------------------------------------------------------
-// Helper function to generate deterministic track set
-// Manually terminates tracks on frames 1, 2 and 4
-kwiver::vital::track_set_sptr
-gen_set_tracks(
-  unsigned frames = 100,
-  unsigned max_tracks_per_frame = 1000 )
-{
-  track_id_t track_id = 0;
-  std::vector< track_sptr > all_tracks, active_tracks;
-  for( unsigned f = 0; f < frames; ++f )
-  {
-    // Create tracks as needed to get enough on this frame
-    while( active_tracks.size() < max_tracks_per_frame )
-    {
-      auto t = track::create();
-      t->set_id( track_id++ );
-      active_tracks.push_back( t );
-      all_tracks.push_back( t );
-    }
-
-    // Add a state for each track to this frame
-    for( auto t : active_tracks )
-    {
-      t->append( std::make_shared< track_state >( f ) );
-    }
-
-    if( f == 0 )
-    {
-      // Terminate tracks 0 and 3 on frame 1
-      std::vector< track_sptr > next_tracks;
-      for( auto t : active_tracks )
-      {
-        if( t->id() != 0 && t->id() != 3 )
-        {
-          next_tracks.push_back( t );
-        }
-      }
-      active_tracks.swap( next_tracks );
-    }
-
-    if( f == 1 )
-    {
-      // Terminate tracks 2 and 7 on frame 2
-      std::vector< track_sptr > next_tracks;
-      for( auto t : active_tracks )
-      {
-        if( t->id() != 2 && t->id() != 7 )
-        {
-          next_tracks.push_back( t );
-        }
-      }
-      active_tracks.swap( next_tracks );
-    }
-
-    if( f == 3 )
-    {
-      // Terminate tracks 5 and 9 on frame 4
-      std::vector< track_sptr > next_tracks;
-      for( auto t : active_tracks )
-      {
-        if( t->id() != 5 && t->id() != 9 )
-        {
-          next_tracks.push_back( t );
-        }
-      }
-      active_tracks.swap( next_tracks );
-    }
-  }
-  return std::make_shared< track_set >( all_tracks );
-}
-
-// ----------------------------------------------------------------------------
 // Function to generate match matrix with known values
 Eigen::SparseMatrix< unsigned int >
 gen_test_matrix()
@@ -194,13 +122,14 @@ Eigen::SparseMatrix< unsigned int > matched_matrix =
 
 // ----------------------------------------------------------------------------
 // Establish constants and create variables for set_tracks
+// set_tracks are a determnistic track set
 
 // DO NOT EDIT these two constants, might cause unit tests to fail
 const unsigned int set_num_frames = 5;
 const unsigned int set_max_tracks = 8;
 
 track_set_sptr set_tracks =
-  gen_set_tracks( set_num_frames, set_max_tracks );
+  kwiver::testing::gen_set_tracks( set_num_frames, set_max_tracks );
 
 std::set< frame_id_t > set_frame_ids = set_tracks->all_frame_ids();
 std::vector< frame_id_t > set_frames =

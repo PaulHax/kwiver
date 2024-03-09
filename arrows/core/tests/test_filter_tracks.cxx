@@ -27,78 +27,6 @@ main( int argc, char** argv )
 namespace {
 
 // ----------------------------------------------------------------------------
-// Helper function to generate deterministic track set
-track_set_sptr
-gen_set_tracks(
-  unsigned frames = 100,
-  unsigned max_tracks_per_frame = 1000 )
-{
-  // Manually terminate tracks on frames 1, 2 and 4
-  track_id_t track_id = 0;
-  std::vector< track_sptr > all_tracks, active_tracks;
-  for( unsigned f = 0; f < frames; ++f )
-  {
-    // Create tracks as needed to get enough on this frame
-    while( active_tracks.size() < max_tracks_per_frame )
-    {
-      auto t = track::create();
-      t->set_id( track_id++ );
-      active_tracks.push_back( t );
-      all_tracks.push_back( t );
-    }
-
-    // Add a state for each track to this frame
-    for( auto t : active_tracks )
-    {
-      t->append( std::make_shared< track_state >( f ) );
-    }
-
-    if( f == 0 )
-    {
-      // Terminate tracks 0 and 3 on frame 1
-      std::vector< track_sptr > next_tracks;
-      for( auto t : active_tracks )
-      {
-        if( t->id() != 0 && t->id() != 3 )
-        {
-          next_tracks.push_back( t );
-        }
-      }
-      active_tracks.swap( next_tracks );
-    }
-
-    if( f == 1 )
-    {
-      // Terminate tracks 2 and 7 on frame 2
-      std::vector< track_sptr > next_tracks;
-      for( auto t : active_tracks )
-      {
-        if( t->id() != 2 && t->id() != 7 )
-        {
-          next_tracks.push_back( t );
-        }
-      }
-      active_tracks.swap( next_tracks );
-    }
-
-    if( f == 3 )
-    {
-      // Terminate tracks 5 and 9 on frame 4
-      std::vector< track_sptr > next_tracks;
-      for( auto t : active_tracks )
-      {
-        if( t->id() != 5 && t->id() != 9 )
-        {
-          next_tracks.push_back( t );
-        }
-      }
-      active_tracks.swap( next_tracks );
-    }
-  }
-  return std::make_shared< track_set >( all_tracks );
-}
-
-// ----------------------------------------------------------------------------
 // Establish constants and values for randomly generated track set
 
 // Generate instance of filter function
@@ -135,7 +63,7 @@ const unsigned int set_num_frames = 5;
 const unsigned int set_max_tracks = 8;
 
 track_set_sptr set_tracks =
-  gen_set_tracks( set_num_frames, set_max_tracks );
+  kwiver::testing::gen_set_tracks( set_num_frames, set_max_tracks );
 
 // compute values for filtered track stet
 track_set_sptr filtered_small_trk_set =
@@ -154,10 +82,11 @@ TEST ( filter_tracks, create )
 // ----------------------------------------------------------------------------
 TEST ( filter_tracks, track_ids )
 {
-  // `set_tracks` should be filtered to track ids: 1, 4, 5, 6 and 8
+  // Filter `set_tracks` should remain with track ids: 1, 4, 5, 6 and 8
   // based on default configuration parameters;
   // Length >= 3 and Importance Score >=1.0
 
+  // These are the "set_tracks" that are to be filtered
   // Track ID: Length, Importance Score
   // Track 0: 1, 0.125
   // Track 1: 5, 2.66667
