@@ -11,7 +11,7 @@
 #include <kwiversys/Directory.hxx>
 #include <kwiversys/SystemTools.hxx>
 
-#include <vital/algo/algorithm_factory.h>
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/integrate_depth_maps.h>
 #include <vital/algo/pointcloud_io.h>
 #include <vital/applets/applet_config.h>
@@ -146,7 +146,7 @@ config_valid = false
       "output_mesh_file", *config,
       main_logger, false ) && config_valid;
 
-  if( !integrate_depth_maps::check_nested_algo_configuration(
+  if( !kv::check_nested_algo_configuration< integrate_depth_maps >(
     "integrate_depth_maps",
     config ) )
   {
@@ -163,7 +163,7 @@ config_valid = false
 class fuse_depth::priv
 {
 public:
-  priv() {}
+  priv( const fuse_depth& ) {}
 
   integrate_depth_maps_sptr integrate_algo;
   kv::config_block_sptr config;
@@ -285,7 +285,7 @@ public:
     typedef kwiver::tools::kwiver_applet kvt;
 
     bool has_cuda =
-      kwiver::vital::has_algorithm_impl_name( "integrate_depth_maps", "cuda" );
+      kwiver::vital::has_algorithm_impl_name< integrate_depth_maps >( "cuda" );
 
     auto main_config = kvt::find_configuration( "applets/fuse_depth.conf" );
 
@@ -329,7 +329,7 @@ public:
   void
   initialize()
   {
-    integrate_depth_maps::set_nested_algo_configuration(
+    kv::set_nested_algo_configuration< integrate_depth_maps >(
       "integrate_depth_maps",
       config,
       integrate_algo );
@@ -468,7 +468,8 @@ public:
           inPts->GetPoint( i, points[ i ].data() );
         }
 
-        auto pc_io = vital::algo::pointcloud_io::create( "pdal" );
+        auto pc_io =
+          kv::create_algorithm< vital::algo::pointcloud_io >( "pdal" );
         if( !pc_io )
         {
           LOG_ERROR(
@@ -681,13 +682,12 @@ fuse_depth
 }
 
 // ----------------------------------------------------------------------------
+void
 fuse_depth
-::fuse_depth()
-  : d( new priv() )
-{}
-
-fuse_depth::
-~fuse_depth() = default;
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+}
 
 } // namespace vtk
 

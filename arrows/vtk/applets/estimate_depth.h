@@ -21,20 +21,21 @@ class KWIVER_ALGO_VTK_APPLETS_EXPORT estimate_depth
   : public kwiver::tools::kwiver_applet
 {
 public:
-  estimate_depth();
-  virtual ~estimate_depth();
+  virtual ~estimate_depth() = default;
 
-  PLUGIN_INFO(
-    "estimate-depth",
+  PLUGGABLE_IMPL(
+    estimate_depth,
     "Depth estimation utility" );
 
   int run() override;
   void add_command_options() override;
 
+protected:
+  void initialize() override;
+
 private:
   class priv;
-
-  std::unique_ptr< priv > d;
+  KWIVER_UNIQUE_PTR( priv, d );
 }; // end of class
 
 } // namespace vtk

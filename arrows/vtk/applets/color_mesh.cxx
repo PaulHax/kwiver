@@ -6,6 +6,7 @@
 
 #include <arrows/core/colorize.h>
 #include <arrows/vtk/mesh_coloration.h>
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/pointcloud_io.h>
 #include <vital/algo/video_input.h>
 #include <vital/applets/applet_config.h>
@@ -91,7 +92,7 @@ config_valid = false
         main_logger ) && config_valid;
   }
 
-  if( !kv::algo::video_input::check_nested_algo_configuration(
+  if( !kv::check_nested_algo_configuration< kv::algo::video_input >(
     "video_reader",
     config ) )
   {
@@ -115,7 +116,7 @@ config_valid = false
 class color_mesh::priv : public kwiver::arrows::vtk::mesh_coloration
 {
 public:
-  priv() = default;
+  priv( const color_mesh& /*parent*/ ) {}
 
   kva::video_input_sptr video_reader_ = nullptr;
   kva::video_input_sptr mask_reader_ = nullptr;
@@ -338,10 +339,10 @@ public:
       "color_masked", false,
       "Color masked points if parameter is true." );
 
-    kva::video_input::get_nested_algo_configuration(
+    kv::get_nested_algo_configuration< kva::video_input >(
       "video_reader", config,
       kva::video_input_sptr() );
-    kva::video_input::get_nested_algo_configuration(
+    kv::get_nested_algo_configuration< kva::video_input >(
       "mask_reader", config,
       kva::video_input_sptr() );
     return config;
@@ -350,9 +351,9 @@ public:
   void
   initialize()
   {
-    kva::video_input::set_nested_algo_configuration(
+    kv::set_nested_algo_configuration< kva::video_input >(
       "video_reader", config_, video_reader_ );
-    kva::video_input::set_nested_algo_configuration(
+    kv::set_nested_algo_configuration< kva::video_input >(
       "mask_reader", config_, mask_reader_ );
   }
 
@@ -524,7 +525,7 @@ public:
       }
     }
 
-    auto pc_io = vital::algo::pointcloud_io::create( "pdal" );
+    auto pc_io = kv::create_algorithm< vital::algo::pointcloud_io >( "pdal" );
     if( !pc_io )
     {
       LOG_ERROR(main_logger, "Could not find pointcloud_io algorithm pdal" );
@@ -704,14 +705,12 @@ color_mesh
           "input-mesh", "video-file", "cameras-dir", "output-mesh" } );
 }
 
-// ----------------------------------------------------------------------------
+void
 color_mesh
-::color_mesh()
-  : d( new priv() )
-{}
-
-color_mesh::
-~color_mesh() = default;
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+}
 
 } // namespace vtk
 

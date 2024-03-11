@@ -18,20 +18,21 @@ class KWIVER_ALGO_VTK_APPLETS_EXPORT fuse_depth
   : public kwiver::tools::kwiver_applet
 {
 public:
-  fuse_depth();
-  virtual ~fuse_depth();
+  virtual ~fuse_depth() = default;
 
-  PLUGIN_INFO(
-    "fuse-depth",
+  PLUGGABLE_IMPL(
+    fuse_depth,
     "Fuse depth maps from multiple cameras into a single surface" );
 
   int run() override;
   void add_command_options() override;
 
+protected:
+  void initialize() override;
+
 private:
   class priv;
-
-  std::unique_ptr< priv > d;
+  KWIVER_UNIQUE_PTR( priv, d );
 }; // end of class
 
 } // namespace vtk

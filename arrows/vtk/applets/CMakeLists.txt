@@ -46,7 +46,6 @@ kwiver_add_plugin( kwiver_algo_vtk_applets
   PRIVATE      kwiver_algo_core
                kwiver_algo_mvg
                kwiver_algo_vtk
-               kwiver_tools_applet
                kwiversys
                ${VTK_targets}
   )

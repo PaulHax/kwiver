@@ -6,6 +6,7 @@
 
 #include <arrows/core/depth_utils.h>
 #include <arrows/vtk/depth_utils.h>
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/compute_depth.h>
 #include <vital/algo/video_input.h>
 #include <vital/applets/applet_config.h>
@@ -82,14 +83,14 @@ config_valid = false
     "output_depths_directory",
     *config, main_logger ) && config_valid;
 
-  if( !kva::video_input::check_nested_algo_configuration(
+  if( !kv::check_nested_algo_configuration< kva::video_input >(
     "video_reader",
     config ) )
   {
     KWIVER_CONFIG_FAIL( "video_reader configuration check failed" );
   }
 
-  if( !kva::compute_depth::check_nested_algo_configuration(
+  if( !kv::check_nested_algo_configuration< kva::compute_depth >(
     "compute_depth",
     config ) )
   {
@@ -98,7 +99,7 @@ config_valid = false
 
   if( config->has_value( "mask_source" ) )
   {
-    if( !kva::video_input::check_nested_algo_configuration(
+    if( !kv::check_nested_algo_configuration< kva::video_input >(
       "mask_reader",
       config ) )
     {
@@ -116,7 +117,7 @@ config_valid = false
 class estimate_depth::priv
 {
 public:
-  priv()
+  priv( const estimate_depth& )
     : has_mask( false ),
       input_cameras_directory( "results/krtd" ),
       input_landmarks_file( "results/landmarks.ply" ),
@@ -288,13 +289,13 @@ public:
       "output_depths_directory", output_depths_directory,
       "Path to a directory to write depth estimations." );
 
-    kva::video_input::get_nested_algo_configuration(
+    kv::get_nested_algo_configuration< kva::video_input >(
       "video_reader", config,
       kva::video_input_sptr() );
-    kva::video_input::get_nested_algo_configuration(
+    kv::get_nested_algo_configuration< kva::video_input >(
       "mask_reader", config,
       kva::video_input_sptr() );
-    kva::compute_depth::get_nested_algo_configuration(
+    kv::get_nested_algo_configuration< kva::compute_depth >(
       "compute_depth", config,
       kva::compute_depth_sptr() );
     return config;
@@ -304,15 +305,15 @@ public:
   initialize()
   {
     // Create algorithm from configuration
-    compute_depth::set_nested_algo_configuration(
+    kv::set_nested_algo_configuration< compute_depth >(
       "compute_depth",
       config,
       depth_algo );
-    video_input::set_nested_algo_configuration(
+    kv::set_nested_algo_configuration< video_input >(
       "video_reader",
       config,
       video_reader );
-    video_input::set_nested_algo_configuration(
+    kv::set_nested_algo_configuration< video_input >(
       "mask_reader",
       config,
       mask_reader );
@@ -730,13 +731,12 @@ estimate_depth
 }
 
 // ----------------------------------------------------------------------------
+void
 estimate_depth
-::estimate_depth()
-  : d( new priv() )
-{}
-
-estimate_depth::
-~estimate_depth() = default;
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+}
 
 } // namespace vtk
 
