@@ -34,8 +34,8 @@ namespace kpf {
 class detected_object_set_output_kpf::priv
 {
 public:
-  priv( detected_object_set_output_kpf* parent )
-    : m_parent( parent ),
+  priv( detected_object_set_output_kpf& parent )
+    : parent( parent ),
       m_frame_number( 1 )
   {}
 
@@ -43,41 +43,22 @@ public:
 
   void read_all();
 
-  detected_object_set_output_kpf* m_parent;
+  detected_object_set_output_kpf& parent;
   int m_frame_number;
 };
 
 // ----------------------------------------------------------------------------
+void
 detected_object_set_output_kpf
-::detected_object_set_output_kpf()
-  : d( new detected_object_set_output_kpf::priv( this ) )
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
   attach_logger( "arrows.kpf.detected_object_set_output_kpf" );
 }
 
 detected_object_set_output_kpf::
 ~detected_object_set_output_kpf()
 {}
-
-// ----------------------------------------------------------------------------
-void
-detected_object_set_output_kpf
-::set_configuration( vital::config_block_sptr config_in )
-{
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( config_in );
-}
-
-// ----------------------------------------------------------------------------
-vital::config_block_sptr
-detected_object_set_output_kpf
-::get_configuration() const
-{
-  // get base config from base class
-  kwiver::vital::config_block_sptr config = algorithm::get_configuration();
-
-  return config;
-}
 
 // ----------------------------------------------------------------------------
 bool
