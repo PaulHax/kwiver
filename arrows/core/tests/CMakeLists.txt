@@ -73,3 +73,5 @@ kwiver_discover_gtests(core write_track_descriptor_set_csv
                                                       LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(core video_input_split         LIBRARIES ${test_libraries} ARGUMENTS "${kwiver_test_data_directory}")
 kwiver_discover_gtests(core match_matrix              LIBRARIES ${test_libraries})
+add_executable (fn_tester my_function_tester.cxx)
+target_link_libraries (fn_tester PRIVATE ${test_libraries})

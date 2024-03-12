@@ -50,6 +50,9 @@ public:
   feature_set_sptr
   filter( feature_set_sptr feat, std::vector< unsigned int >& ind ) const
   {
+// Debug - remove later
+    std::cout << "Magnitude Point A reached";
+
     const std::vector< feature_sptr >& feat_vec = feat->features();
     ind.clear();
     if( feat_vec.size() <= parent.c_min_features )

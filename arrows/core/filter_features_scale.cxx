@@ -38,7 +38,7 @@ public:
 
   filter_features_scale& parent;
 
-  // Configuration Parameters for access outside this class, if ever
+  // Configuration Parameters for access outside this class
   double
   c_top_fraction() const { return parent.c_top_fraction; }
   unsigned int

@@ -16,16 +16,8 @@
 
 #include <random>
 
-#include <vital/types/track_set.h>
-
 #include <vital/types/feature.h>
 #include <vital/types/feature_set.h>
-
-#include <vital/types/track_descriptor_set.h>
-
-#include <vital/algo/filter_features.h>
-
-#include <algorithm>
 
 namespace kwiver {
 
@@ -41,15 +33,15 @@ namespace testing {
 // Generate a feature set with specified parameters
 kwiver::vital::feature_set_sptr
 generate_feature_set(
-  size_t num_features = 100,
+  size_t num_features = 500,
   double loc_min_x = 0.0,
   double loc_max_x = 100.0,
   double loc_min_y = 0.0,
   double loc_max_y = 100.0,
   double mag_min = 0.0,
-  double mag_max = 10.0,
+  double mag_max = 1.0,
   double scale_min = 1.0,
-  double scale_max = 2.0,
+  double scale_max = 1.1,
   double angle_min = 0.0,
   double angle_max = 180.0 )
 {
@@ -74,17 +66,22 @@ generate_feature_set(
     double scale = scale_dist( rng );
     double angle = angle_dist( rng );
 
-    // Create a feature with the generated parameters
+    // Define feature parameters
+    Eigen::Vector2d loc( loc_x, loc_y );  // Image coordinates
+    double magnitude = mag;
+    kwiver::vital::rgb_color color( 255, 0, 0 );  // Red color
+
+    // Create a feature object
     auto feature = std::make_shared< kwiver::vital::feature_d >(
-      Eigen::Vector2d( loc_x, loc_y ), mag, scale, angle );
+      loc, magnitude, scale, angle, color );
 
     // Add the feature to the vector
     features.push_back( feature );
   }
 
   // Create a simple_feature_set from the vector of features
-  auto feature_set =
-    std::make_shared< kwiver::vital::simple_feature_set >( features );
+  auto feature_set = std::make_shared< kwiver::vital::simple_feature_set >(
+    features );
 
   return feature_set;
 }

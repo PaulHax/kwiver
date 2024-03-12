@@ -196,16 +196,25 @@ public:
   {
     const std::vector< feature_sptr >& feat_vec = feat_set->features();
 
+    // debugging
+    std::cout << "point A reached" << "\n";
+
     if( feat_vec.size() <= parent.c_num_features_target )
     {
       return feat_set;
     }
+
+    // debugging
+    std::cout << "point B reached" << "\n";
 
     //  Create a new vector with the index and magnitude for faster sorting
     using ud_pair = std::pair< unsigned int, double >;
 
     std::vector< ud_pair > indices;
     indices.reserve( feat_vec.size() );
+
+    // debugging
+    std::cout << "point C reached" << "\n";
 
     Eigen::AlignedBox< double, 2 > bbox;
     Eigen::AlignedBox< double, 1 > scale_box;
@@ -217,9 +226,18 @@ public:
       scale_box.extend( Eigen::Matrix< double, 1, 1 >( feat->scale() ) );
     }
 
+    // debugging
+    std::cout << "point D reached" << "\n";
+
     const double scale_min = std::log2( scale_box.min()[ 0 ] );
     const double scale_range = std::log2( scale_box.max()[ 0 ] ) - scale_min;
     const unsigned scale_steps = static_cast< unsigned >( scale_range + 1 );
+
+    // debugging
+    std::cout << "scale_min: " << scale_min << "\n";
+    std::cout << "scale_range: " << scale_range << "\n";
+    std::cout << "scale_steps: " << scale_steps << "\n";
+
     LOG_DEBUG(m_logger, "Using " << scale_steps << " scale steps" );
     if( scale_steps > 20 )
     {
@@ -229,11 +247,17 @@ public:
       return nullptr;
     }
 
+// debugging
+    std::cout << "point F reached" << "\n";
+
     if( !bbox.sizes().allFinite() )
     {
       LOG_ERROR(m_logger, "Not all features are finite" );
       return nullptr;
     }
+
+// debugging
+    std::cout << "point G reached" << "\n";
 
     // sort on descending feature magnitude
     std::sort(
