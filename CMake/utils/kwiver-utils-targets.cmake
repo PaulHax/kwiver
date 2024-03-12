@@ -207,6 +207,18 @@ function(kwiver_add_executable name)
     )
 endfunction()
 
+#+
+# expand a list of classes for passing to add_library.
+# Macro is used intentionally to operate in the caller's scope.
+#-
+macro(kwiver_expand_class_list class_list header_var source_var)
+  foreach(_kvu_class IN ITEMS ${class_list})
+    list(APPEND ${header_var} "${_kvu_class}.h")
+    list(APPEND ${source_var} "${_kvu_class}.cxx")
+  endforeach()
+endmacro()
+
+
 
 #+
 # Add a library to KWIVER

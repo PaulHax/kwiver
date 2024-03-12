@@ -4,18 +4,24 @@
 set(CMAKE_FOLDER "Arrows/Ceres")
 
 set( ceres_headers_public
-  bundle_adjust.h
-  optimize_cameras.h
-  reprojection_error.h
   camera_intrinsic_prior.h
   camera_position.h
   camera_smoothness.h
-  options.h
-  types.h
   )
 set( ceres_headers_private
   lens_distortion.h
   )
+
+set( ceres_sources )
+set( ceres_classes
+  bundle_adjust
+  optimize_cameras
+  options
+  reprojection_error
+  types
+  )
+
+kwiver_expand_class_list("${ceres_classes}" ceres_headers_public ceres_sources)
 
 kwiver_install_headers(
   SUBDIR     arrows/ceres
@@ -27,13 +33,6 @@ kwiver_install_headers(
   NOPATH   SUBDIR     arrows/ceres
   )
 
-set( ceres_sources
-  options.cxx
-  bundle_adjust.cxx
-  optimize_cameras.cxx
-  reprojection_error.cxx
-  types.cxx
-  )
 
 kwiver_add_library( kwiver_algo_ceres
   ${ceres_headers_public}
