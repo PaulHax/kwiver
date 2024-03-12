@@ -36,14 +36,6 @@ register_factories( kwiver::vital::plugin_loader& vpm )
     detected_object_set_output_kpf >( "kpf" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_kpf" );
 
-//    .add_attribute(
-//    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
-//    module_name )
-//    .add_attribute( kwiver::vital::plugin_factory::PLUGIN_VERSION, "1.0" )
-//    .add_attribute(
-//      kwiver::vital::plugin_factory::PLUGIN_ORGANIZATION,
-//      "Kitware Inc." )
-
   vpm.mark_module_as_loaded( module_name );
 }
 

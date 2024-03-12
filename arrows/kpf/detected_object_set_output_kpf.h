@@ -10,10 +10,6 @@
 
 #include <arrows/kpf/kwiver_algo_kpf_export.h>
 
-#include <algorithm>
-#include <vital/algo/algorithm.h>
-#include <vital/algo/algorithm.txx>
-
 #include <vital/algo/detected_object_set_output.h>
 
 namespace kwiver {
