@@ -194,7 +194,7 @@ protected:
     }
     for( auto const& timestamp : timestamps )
     {
-      for( auto const packet : muxer.receive_frame() )
+      for( auto const& packet : muxer.receive_frame() )
       {
         packets1.emplace_back( klv_timed_packet{ packet, timestamp } );
       }
@@ -222,7 +222,7 @@ protected:
     }
     for( auto const& timestamp : timestamps )
     {
-      for( auto const packet : muxer2.receive_frame() )
+      for( auto const& packet : muxer2.receive_frame() )
       {
         packets2.emplace_back( klv_timed_packet{ packet, timestamp } );
       }
@@ -244,7 +244,7 @@ protected:
     for( auto const& timestamp : timestamps )
     {
       muxer.send_frame( timestamp.get_time_usec() );
-      for( auto const packet : muxer.receive_frame() )
+      for( auto const& packet : muxer.receive_frame() )
       {
         packets1.emplace_back( klv_timed_packet{ packet, timestamp } );
       }
@@ -269,7 +269,7 @@ protected:
     for( auto const& timestamp : timestamps )
     {
       muxer2.send_frame( timestamp.get_time_usec() );
-      for( auto const packet : muxer2.receive_frame() )
+      for( auto const& packet : muxer2.receive_frame() )
       {
         packets2.emplace_back( klv_timed_packet{ packet, timestamp } );
       }

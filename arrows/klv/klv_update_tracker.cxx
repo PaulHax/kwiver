@@ -68,7 +68,7 @@ klv_update_tracker< Key >
   }
 
   std::set< klv_value > new_value;
-  for( auto const entry : set.all_at( key.tag ) )
+  for( auto const& entry : set.all_at( key.tag ) )
   {
     new_value.emplace( entry.second );
   }
@@ -98,7 +98,7 @@ klv_update_tracker< Key >
   else
   {
     value_t new_value = { timestamp, std::set< klv_value >{} };
-    for( auto const entry : set.all_at( key.tag ) )
+    for( auto const& entry : set.all_at( key.tag ) )
     {
       new_value.value.emplace( entry.second );
     }
