@@ -45,11 +45,28 @@ register_factories( kwiver::vital::plugin_loader& vpm )
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
-    kwiver::arrows::serialize::protobuf::track >( "kwiver::track" );
+    kwiver::arrows::serialize::protobuf::activity_type >(
+           "kwiver::activity_type" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
-    kwiver::arrows::serialize::protobuf::metadata >( "kwiver::metadata" );
+    kwiver::arrows::serialize::protobuf::bounding_box >(
+           "kwiver::bounding_box" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    kwiver::arrows::serialize::protobuf::detected_object >(
+           "kwiver::detected_object" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    kwiver::arrows::serialize::protobuf::detected_object_set >(
+           "kwiver::detected_object_set" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    kwiver::arrows::serialize::protobuf::detected_object_type >(
+           "kwiver::detected_object_type" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
@@ -58,6 +75,20 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 
   fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::image >( "kwiver:mask" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    kwiver::arrows::serialize::protobuf::metadata >( "kwiver::metadata" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    kwiver::arrows::serialize::protobuf::object_track_set >(
+           "kwiver::object_track_set" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    kwiver::arrows::serialize::protobuf::object_track_state >(
+           "kwiver::object_track_state" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
@@ -77,75 +108,20 @@ register_factories( kwiver::vital::plugin_loader& vpm )
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
+    kwiver::arrows::serialize::protobuf::timestamp >( "kwiver::timestamp" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
+    kwiver::arrows::serialize::protobuf::track >( "kwiver::track" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+
+  fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::track_state >( "kwiver::track_state" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::track_set >( "kwiver::track_set" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
-
-  fact = vpm.add_factory< vital::algo::data_serializer,
-    kwiver::arrows::serialize::protobuf::timestamp >( "kwiver::timestamp" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
-
-  fact = vpm.add_factory< vital::algo::data_serializer,
-    kwiver::arrows::serialize::protobuf::object_track_state >(
-           "kwiver::object_track_state" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
-
-  fact = vpm.add_factory< vital::algo::data_serializer,
-    kwiver::arrows::serialize::protobuf::object_track_set >(
-           "kwiver::object_track_set" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
-
-  fact = vpm.add_factory< vital::algo::data_serializer,
-    kwiver::arrows::serialize::protobuf::detected_object_type >(
-           "kwiver::detected_object_type" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
-
-  fact = vpm.add_factory< vital::algo::data_serializer,
-    kwiver::arrows::serialize::protobuf::detected_object_set >(
-           "kwiver::detected_object_set" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
-
-  fact = vpm.add_factory< vital::algo::data_serializer,
-    kwiver::arrows::serialize::protobuf::detected_object >(
-           "kwiver::detected_object" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
-
-  fact = vpm.add_factory< vital::algo::data_serializer,
-    kwiver::arrows::serialize::protobuf::bounding_box >(
-           "kwiver::bounding_box" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
-
-  fact = vpm.add_factory< vital::algo::data_serializer,
-    kwiver::arrows::serialize::protobuf::activity_type >(
-           "kwiver::activity_type" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
-
-/*
- *  using namespace kwiver::arrows::serialize::protobuf;
- *
- *  reg.register_algorithm< bounding_box >();
- *  reg.register_algorithm< activity_type >();
- *  reg.register_algorithm< detected_object_type >();
- *  reg.register_algorithm< detected_object >();
- *  reg.register_algorithm< detected_object_set >();
- *  reg.register_algorithm< timestamp >();
- *  reg.register_algorithm< metadata >();
- *  reg.register_algorithm< image >();
- *  reg.register_algorithm< image >( "kwiver:mask" );
- *  reg.register_algorithm< string >();
- *  reg.register_algorithm< track_state >();
- *  reg.register_algorithm< object_track_state >();
- *  reg.register_algorithm< track >();
- *  reg.register_algorithm< track_set >();
- *  reg.register_algorithm< object_track_set >();
- *  reg.register_algorithm< string >( "kwiver:file_name" );
- *  reg.register_algorithm< string >( "kwiver:image_name" );
- *  reg.register_algorithm< string >( "kwiver:video_name" );
- *
- */
 }
 
 } // end namespace protobuf
