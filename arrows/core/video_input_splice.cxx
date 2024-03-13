@@ -41,7 +41,7 @@ public:
   video_input_splice& parent;
 
   // Configuration values
-  unsigned int c_frame_skip() { return parent.c_frame_skip; }
+  unsigned int c_output_nth_frame() { return parent.c_output_nth_frame; }
 
   std::vector< std::string > d_search_path;
   bool d_has_timeout;
@@ -334,7 +334,7 @@ video_input_splice
         }
       }
     }
-  }while( ( frame_number - 1 ) % d->c_frame_skip() != 0 && status );
+  }while( ( frame_number - 1 ) % d->c_output_nth_frame() != 0 && status );
 
   ts.set_frame( frame_number );
   return status;
@@ -353,7 +353,7 @@ video_input_splice
   bool status = false;
 
   // Check if requested frame would have been skipped
-  if( ( frame_number - 1 ) % d->c_frame_skip() != 0 )
+  if( ( frame_number - 1 ) % d->c_output_nth_frame() != 0 )
   {
     return false;
   }

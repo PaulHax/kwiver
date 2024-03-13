@@ -336,7 +336,7 @@ TEST_F ( video_input_splice, next_frame_nth_frame_output )
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  config->set_value( "frame_skip", nth_frame_output );
+  config->set_value( "output_nth_frame", nth_frame_output );
 
   if( !set_config( config, data_dir ) )
   {
@@ -362,7 +362,7 @@ TEST_F ( video_input_splice, seek_frame_nth_frame_output )
   // Make config block
   auto config = kwiver::vital::config_block::empty_config();
 
-  config->set_value( "frame_skip", nth_frame_output );
+  config->set_value( "output_nth_frame", nth_frame_output );
 
   if( !set_config( config, data_dir ) )
   {
