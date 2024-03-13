@@ -20,16 +20,19 @@ class KWIVER_SERIALIZE_PROTOBUF_EXPORT metadata
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO(
-    "kwiver:metadata",
-    "Serializes a metadata vector using protobuf notation." );
+  PLUGGABLE_IMPL(
+    metadata,
+    "Serializes a metadata vector using protobuf notation."
+  );
 
-  metadata();
   virtual ~metadata();
 
   std::shared_ptr< std::string > serialize(
     const vital::any& element ) override;
   vital::any deserialize( const std::string& message ) override;
+
+protected:
+  void initialize() override;
 };
 
 } // namespace protobuf

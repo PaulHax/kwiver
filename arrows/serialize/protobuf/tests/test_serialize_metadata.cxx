@@ -81,5 +81,5 @@ TEST ( serialize_metadata, metadata )
     kwiver::vital::any_cast< kwiver::vital::metadata_vector >( meta_dser_any );
 
   // test for equality
-  EXPECT_TRUE( test_equal_content( *meta_sptr, *meta_dser[ 0 ] ) );
+  EXPECT_TRUE( *meta_sptr == *meta_dser[ 0 ] );
 }

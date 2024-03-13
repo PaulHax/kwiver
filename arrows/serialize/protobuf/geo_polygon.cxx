@@ -17,8 +17,9 @@ namespace serialize {
 namespace protobuf {
 
 // ----------------------------------------------------------------------------
+void
 geo_polygon
-::geo_polygon()
+::initialize()
 {
   // Verify that the version of the library that we linked against is
   // compatible with the version of the headers we compiled against.

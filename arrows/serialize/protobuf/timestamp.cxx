@@ -20,8 +20,9 @@ namespace serialize {
 namespace protobuf {
 
 // ----------------------------------------------------------------------------
+void
 timestamp
-::timestamp()
+::initialize()
 {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 }

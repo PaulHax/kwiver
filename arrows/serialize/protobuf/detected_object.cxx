@@ -20,8 +20,9 @@ namespace serialize {
 namespace protobuf {
 
 // ----------------------------------------------------------------------------
+void
 detected_object
-::detected_object()
+::initialize()
 {
   // Verify that the version of the library that we linked against is
   // compatible with the version of the headers we compiled against.

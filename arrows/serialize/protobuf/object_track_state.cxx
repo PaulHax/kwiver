@@ -18,8 +18,9 @@ namespace serialize {
 namespace protobuf {
 
 // ----------------------------------------------------------------------------
+void
 object_track_state
-::object_track_state()
+::initialize()
 {
   // Verify that the version of the library that we linked against is
   // compatible with the version of the headers we compiled against.
