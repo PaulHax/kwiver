@@ -8,6 +8,7 @@
 
 #include <kwiversys/SystemTools.hxx>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/range/iota.h>
 
 #include "vtkCellData.h"
@@ -119,7 +120,7 @@ mesh_coloration
   std::string const& video_path )
 {
   video_path_ = video_path;
-  video_input::set_nested_algo_configuration(
+  kwiver::vital::set_nested_algo_configuration< video_input >(
     BLOCK_VR, video_config, video_reader_ );
 }
 
@@ -133,8 +134,9 @@ mesh_coloration
   mask_path_ = mask_path;
 
   auto const has_mask = !mask_path_.empty();
-  if( has_mask && !video_input::check_nested_algo_configuration(
-    BLOCK_MR, mask_config ) )
+  if( has_mask &&
+      !kwiver::vital::check_nested_algo_configuration< video_input >(
+        BLOCK_MR, mask_config ) )
   {
     LOG_ERROR(
       logger_,
@@ -143,7 +145,7 @@ mesh_coloration
   }
   if( has_mask )
   {
-    video_input::set_nested_algo_configuration(
+    kwiver::vital::set_nested_algo_configuration< video_input >(
       BLOCK_MR, mask_config, mask_reader_ );
   }
 }

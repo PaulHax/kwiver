@@ -11,12 +11,12 @@
     extends: .linux
     image: "kitware/kwiver:ci-ubuntu20_04-20240304"
 
-.ubuntu2004_ceres_ffmpeg_gdal_opencv_pdal_proj_python_vxl:
+.ubuntu2004_arrows:
     extends:
         - .ubuntu2004
 
     variables:
-        CMAKE_CONFIGURATION: ubuntu2004_ceres_ffmpeg_gdal_opencv_pdal_proj_python_vxl
+        CMAKE_CONFIGURATION: ubuntu2004_ceres_ffmpeg_gdal_opencv_pdal_proj_python_vtk_vxl
 
 .linux_builder_tags:
     tags:

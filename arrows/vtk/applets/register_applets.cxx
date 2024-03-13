@@ -6,7 +6,6 @@
 /// \brief register vtk applets into a plugin
 
 #include <arrows/vtk/applets/kwiver_algo_vtk_applets_export.h>
-#include <vital/applets/applet_registrar.h>
 #include <vital/plugin_management/plugin_loader.h>
 
 #ifdef VTK_ENABLE_COLOR_MESH
@@ -25,23 +24,38 @@ namespace vtk {
 extern "C"
 KWIVER_ALGO_VTK_APPLETS_EXPORT
 void
-register_factories( kwiver::vital::plugin_loader& vpm )
+register_factories( kwiver::vital::plugin_loader& vpl )
 {
-  kwiver::applet_registrar reg( vpm, "arrows.vtk.applets" );
+  using namespace kwiver::tools;
+  using kvpf = ::kwiver::vital::plugin_factory;
 
-  if( reg.is_module_loaded() )
-  {
-    return;
-  }
-
-  // -- register applets --
+  // make sure the attributes are the same for all applets
+  auto set_fact_attributes = [](::kwiver::vital::plugin_factory_handle_t fact){
+                               fact->add_attribute(
+                                 kvpf::PLUGIN_DESCRIPTION,
+                                 "Kviwer arrow vtk applets" )
+                                                                                  .
+                                 add_attribute(
+                                   kvpf::PLUGIN_MODULE_NAME,
+                                   "arrows.vtk.applets" )
+                                                                                  .
+                                 add_attribute(
+                                   kvpf::ALGORITHM_CATEGORY,
+                                   kvpf::APPLET_CATEGORY );
+                             };
+  auto fact =
+    vpl.add_factory< kwiver_applet,
+      estimate_depth >( "estimate-depth" );
+  set_fact_attributes( fact );
+  fact =
+    vpl.add_factory< kwiver_applet, fuse_depth >( "fuse-depth" );
+  set_fact_attributes( fact );
 #ifdef VTK_ENABLE_COLOR_MESH
-  reg.register_tool< color_mesh >();
+  fact =
+    vpl.add_factory< kwiver_applet,
+      color_mesh >( "color-mesh" );
+  set_fact_attributes( fact );
 #endif
-  reg.register_tool< estimate_depth >();
-  reg.register_tool< fuse_depth >();
-
-  reg.mark_module_as_loaded();
 }
 
 } // end namespace vtk

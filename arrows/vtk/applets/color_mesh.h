@@ -18,20 +18,20 @@ class KWIVER_ALGO_VTK_APPLETS_EXPORT color_mesh
   : public kwiver::tools::kwiver_applet
 {
 public:
-  color_mesh();
-  virtual ~color_mesh();
+  virtual ~color_mesh() = default;
 
-  PLUGIN_INFO(
-    "color-mesh",
-    "Color a mesh from a video and cameras" );
-
+  PLUGGABLE_IMPL(
+    color_mesh,
+    "Color a mesh from a video and cameras" )
   int run() override;
   void add_command_options() override;
 
+protected:
+  void initialize() override;
+
 private:
   class priv;
-
-  const std::unique_ptr< priv > d;
+  KWIVER_UNIQUE_PTR( priv, d );
 }; // end of class
 
 } // namespace vtk
