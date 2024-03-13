@@ -9,8 +9,7 @@ kwiver_add_python_library(
   _pluggable
   "${THIS_MODULE}"
   SOURCES module_pluggable.cxx
-  PRIVATE pybind11::pybind11
-          vital
+  PRIVATE vital
 )
 ################################################################################
 # Plugin library
@@ -18,11 +17,18 @@ kwiver_add_python_library(
 # This library provides the hooks into Python interpreter land to register a
 # number of factories for python implementations discovered.
 #
+
+set(libraries_to_link pybind11::embed pybind11::pybind11)
+if(NOT SKBUILD)
+  # libraries included in a wheel should not link to Python::Python directly
+  # When used from python, libpython is already loaded so the plugin is able to find the required symbols.
+  set(libraries_to_link "${libraries_to_link}" Python::Python)
+endif()
+
 kwiver_add_plugin(
   plugins_from_python
   SOURCES   register.cxx
-  PRIVATE   ${PYTHON_LIBRARIES}  # makes use of python library functions
-            pybind11::pybind11
+  PRIVATE   ${libraries_to_link}
             vital
   SUBDIR    ${kwiver_plugin_module_subdir}
 )
