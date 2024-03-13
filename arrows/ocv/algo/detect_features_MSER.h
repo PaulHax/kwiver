@@ -23,6 +23,17 @@ class KWIVER_ALGO_OCV_EXPORT detect_features_MSER
   : public detect_features
 {
 public:
+#if KWIVER_OPENCV_VERSION_MAJOR >= 3
+#define DETECT_FEATURES_MSER_EXTRA_PARAMETERS \
+,                                             \
+PARAM_DEFAULT(                                \
+    pass2only,                                \
+    bool,                                     \
+    "Undocumented",                           \
+    false )
+#else
+#define DETECT_FEATURES_MSER_EXTRA_PARAMETERS
+#endif
   PLUGGABLE_IMPL(
     detect_features_MSER,
     "OpenCV feature detection via the MSER algorithm",
@@ -75,14 +86,7 @@ public:
       int,
       "For color images, the aperture size for edge blur",
       5 )
-#if KWIVER_OPENCV_VERSION_MAJOR >= 3
-    ,
-    PARAM_DEFAULT(
-      pass2only,
-      bool,
-      "Undocumented",
-      false )
-#endif
+    DETECT_FEATURES_MSER_EXTRA_PARAMETERS
   );
 
   /// Destructor
@@ -102,5 +106,7 @@ private:
 } // end namespace arrows
 
 } // end namespace kwiver
+
+#undef DETECT_FEATURES_MSER_EXTRA_PARAMETERS
 
 #endif // KWIVER_ARROWS_DETECT_FEATURES_MSER_H_

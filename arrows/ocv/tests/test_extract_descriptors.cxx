@@ -66,6 +66,18 @@ TEST ( extract_descriptors_LUCID, create )
     nullptr, create_algorithm< algo::extract_descriptors >( "ocv_LUCID" ) );
 }
 
+#if KWIVER_OPENCV_VERSION_MAJOR >= 3
+#define EXTRACT_DESCRIPTORS_BRIEF_EXTRA_PARAMETERS         \
+,                                                          \
+PARAM_DEFAULT(                                             \
+  use_orientation, bool,                                   \
+  "sample patterns using keypoints orientation, disabled " \
+  "by default.",                                           \
+  false )
+#else
+#define EXTRACT_DESCRIPTORS_BRIEF_EXTRA_PARAMETERS
+#endif
+
 // ----------------------------------------------------------------------------
 TEST ( extract_descriptors_BRIEF, default_config )
 {
@@ -77,14 +89,7 @@ TEST ( extract_descriptors_BRIEF, default_config )
       "Length of descriptor in bytes. It can be equal 16, 32 "
       "or 64 bytes.",
       32 )
-#if KWIVER_OPENCV_VERSION_MAJOR >= 3
-    ,
-    PARAM_DEFAULT(
-      use_orientation, bool,
-      "sample patterns using keypoints orientation, disabled "
-      "by default.",
-      false )
-#endif
+    EXTRACT_DESCRIPTORS_BRIEF_EXTRA_PARAMETERS
   );
 }
 

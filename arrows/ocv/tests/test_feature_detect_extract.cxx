@@ -82,6 +82,14 @@ TEST ( feature_detect_extract_BRISK, default_config )
   );
 }
 
+#if KWIVER_OPENCV_VERSION_MAJOR >= 3
+#define FEATURE_DETECT_EXTRACT_ORB_EXTRA_PARAMETERS \
+,                                                   \
+PARAM_DEFAULT( fast_threshold, int, "Undocumented", 20 )
+#else
+#define FEATURE_DETECT_EXTRACT_ORB_EXTRA_PARAMETERS
+#endif
+
 // ----------------------------------------------------------------------------
 TEST ( feature_detect_extract_ORB, default_config )
 {
@@ -168,10 +176,7 @@ TEST ( feature_detect_extract_ORB, default_config )
       "be larger.",
       31 )
 
-#if KWIVER_OPENCV_VERSION_MAJOR >= 3
-    ,
-    PARAM_DEFAULT( fast_threshold, int, "Undocumented", 20 )
-#endif
+    FEATURE_DETECT_EXTRACT_ORB_EXTRA_PARAMETERS
   );
 }
 

@@ -22,6 +22,23 @@ class KWIVER_ALGO_OCV_EXPORT detect_features_FAST
   : public ocv::detect_features
 {
 public:
+#if KWIVER_OPENCV_VERSION_MAJOR >= 3
+#define DETECT_FEATURES_FAST_EXTRA_PARAMETERS                                       \
+,                                                                                   \
+PARAM_DEFAULT(                                                                      \
+    neighborhood_type,                                                              \
+    int,                                                                            \
+    "one of the three neighborhoods as defined in the paper: "                      \
+    "TYPE_5_8="  KWIVER_STRINGIFY( cv::FastFeatureDetector::TYPE_5_8 ) ","          \
+                                                                       "TYPE_7_12=" \
+    KWIVER_STRINGIFY( cv::FastFeatureDetector::TYPE_7_12 ) ", "                     \
+                                                           "TYPE_9_16="             \
+    KWIVER_STRINGIFY( cv::FastFeatureDetector::TYPE_9_16 ) ".",                     \
+    static_cast< int >( cv::FastFeatureDetector::TYPE_9_16 ) )
+#else
+#define DETECT_FEATURES_FAST_EXTRA_PARAMETERS
+#endif
+
   PLUGGABLE_IMPL(
     detect_features_FAST,
     "OpenCV feature detection via the FAST algorithm",
@@ -42,19 +59,7 @@ public:
       target_num_features_detected,  int,
       "algorithm tries to output approximately this many features. "
       "Disable by setting to negative value.", 2500 )
-#if KWIVER_OPENCV_VERSION_MAJOR >= 3
-    ,
-    PARAM_DEFAULT(
-      neighborhood_type,
-      int,
-      "one of the three neighborhoods as defined in the paper: "
-      "TYPE_5_8="  KWIVER_STRINGIFY( cv::FastFeatureDetector::TYPE_5_8 ) ","
-                                                                         "TYPE_7_12="
-      KWIVER_STRINGIFY( cv::FastFeatureDetector::TYPE_7_12 ) ", "
-                                                             "TYPE_9_16="
-      KWIVER_STRINGIFY( cv::FastFeatureDetector::TYPE_9_16 ) ".",
-      static_cast< int >( cv::FastFeatureDetector::TYPE_9_16 ) )
-#endif
+    DETECT_FEATURES_FAST_EXTRA_PARAMETERS
   );
   /// Destructor
   virtual ~detect_features_FAST();
@@ -99,5 +104,7 @@ private:
 } // end namespace arrows
 
 } // end namespace kwiver
+
+#undef DETECT_FEATURES_FAST_EXTRA_PARAMETERS
 
 #endif // KWIVER_ARROWS_DETECT_FEATURES_FAST_H_
