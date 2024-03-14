@@ -42,86 +42,86 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 
   auto fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::activity >( "kwiver::activity" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.serialize.protobuf" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::activity_type >(
            "kwiver::activity_type" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.serialize.protobuf" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::bounding_box >(
            "kwiver::bounding_box" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.serialize.protobuf" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::detected_object >(
            "kwiver::detected_object" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.serialize.protobuf" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::detected_object_set >(
            "kwiver::detected_object_set" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.serialize.protobuf" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::detected_object_type >(
            "kwiver::detected_object_type" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.serialize.protobuf" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::image >( "kwiver::image" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.serialize.protobuf" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::image >( "kwiver:mask" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.serialize.protobuf" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::metadata >( "kwiver::metadata" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.serialize.protobuf" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::object_track_set >(
            "kwiver::object_track_set" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.serialize.protobuf" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::object_track_state >(
            "kwiver::object_track_state" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.serialize.protobuf" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::string >( "kwiver::string" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.serialize.protobuf" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::string >( "kwiver:file_name" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.serialize.protobuf" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::string >( "kwiver:image_name" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.serialize.protobuf" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::string >( "kwiver:video_name" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.serialize.protobuf" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::timestamp >( "kwiver::timestamp" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.serialize.protobuf" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::track >( "kwiver::track" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.serialize.protobuf" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::track_state >( "kwiver::track_state" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.serialize.protobuf" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
     kwiver::arrows::serialize::protobuf::track_set >( "kwiver::track_set" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_serialize" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.serialize.protobuf" );
 }
 
 } // end namespace protobuf
