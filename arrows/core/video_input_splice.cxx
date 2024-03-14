@@ -105,12 +105,6 @@ video_input_splice
 
   while( source_config->available_values().size() > 0 )
   {
-    //// Make sure the corresponding sources exists
-    // while( d->d_video_sources().size() < n )
-    // {
-    //  d->d_video_sources().push_back( vital::algo::video_input_sptr() );
-    // }
-
     kwiver::vital::set_nested_algo_configuration< vital::algo::video_input >(
       source_name( n ), config, d->d_video_sources()[ n - 1 ] );
 
