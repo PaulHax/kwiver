@@ -53,3 +53,12 @@ ubuntu2004-arrows:test:
         - ubuntu2004-arrows:build
     needs:
         - ubuntu2004-arrows:build
+
+# python wheels
+wheel-linux-python38-x86_64:build:
+    extends:
+        - .wheel_linux38_x86_64
+        - .cmake_build_wheel_linux
+        - .linux_builder_tags
+        - .cmake_wheel_artifacts
+        - .rules
