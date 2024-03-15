@@ -36,7 +36,7 @@ list(APPEND test_libraries kwiver_algo_mvg)
 
 kwiver_discover_gtests(vxl bundle_adjust               LIBRARIES ${test_libraries})
 kwiver_discover_gtests(vxl estimate_essential_matrix   LIBRARIES ${test_libraries})
-# kwiver_discover_gtests(vxl estimate_fundamental_matrix LIBRARIES ${test_libraries})
+kwiver_discover_gtests(vxl estimate_fundamental_matrix LIBRARIES ${test_libraries})
 kwiver_discover_gtests(vxl optimize_cameras            LIBRARIES ${test_libraries})
 # kwiver_discover_gtests(vxl triangulate_landmarks       LIBRARIES ${test_libraries})
 

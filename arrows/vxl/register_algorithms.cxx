@@ -24,6 +24,7 @@
 #include <arrows/vxl/convert_image.h>
 #include <arrows/vxl/estimate_canonical_transform.h>
 #include <arrows/vxl/estimate_essential_matrix.h>
+#include <arrows/vxl/estimate_fundamental_matrix.h>
 #include <arrows/vxl/estimate_similarity_transform.h>
 #include <arrows/vxl/image_io.h>
 #include <arrows/vxl/kd_tree.h>
@@ -32,7 +33,6 @@
 // #include <arrows/vxl/bundle_adjust.h>
 // #include <arrows/vxl/close_loops_homography_guided.h>
 // #include <arrows/vxl/color_commonality_filter.h>
-// #include <arrows/vxl/estimate_fundamental_matrix.h>
 // #include <arrows/vxl/estimate_homography.h>
 // #include <arrows/vxl/hashed_image_classifier_filter.h>
 // #include <arrows/vxl/high_pass_filter.h>
@@ -82,6 +82,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::estimate_canonical_transform,
     estimate_canonical_transform >( "vxl_estimate_canonical_transform" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
+
+  fact = vpl.add_factory< vital::algo::estimate_fundamental_matrix,
+    estimate_fundamental_matrix >( "vxl_estimate_fundamental_matrix" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::estimate_essential_matrix,

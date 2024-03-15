@@ -8,7 +8,6 @@
 #include "estimate_fundamental_matrix.h"
 
 #include <vital/types/feature.h>
-#include <vital/util/enum_converter.h>
 #include <vital/vital_config.h>
 
 #include <arrows/mvg/epipolar_geometry.h>
@@ -28,78 +27,29 @@ namespace arrows {
 
 namespace vxl {
 
-namespace {
-
-enum method_t { EST_7_POINT, EST_8_POINT, };
-
-} // namespace
-
+// ----------------------------------------------------------------------------
 /// Private implementation class
 class estimate_fundamental_matrix::priv
 {
 public:
   /// Constructor
-  priv()
-    : precondition( true ),
-      method( EST_8_POINT )
-  {}
+  priv( estimate_fundamental_matrix& parent ) : parent( parent ) {}
 
-  bool precondition;
-  method_t method;
+  estimate_fundamental_matrix& parent;
+
+  bool
+  c_precondition() const { return parent.c_precondition; }
+  const std::string&
+  c_method() const { return parent.c_method; }
 };
 
-// Define the enum converter
-ENUM_CONVERTER(
-  method_converter, method_t,
-  { "EST_7_POINT",   EST_7_POINT },
-  { "EST_8_POINT",   EST_8_POINT } )
-
-/// Constructor
-estimate_fundamental_matrix
-::estimate_fundamental_matrix()
-  : d_( new priv )
-{}
-
-/// Destructor
-estimate_fundamental_matrix
-::~estimate_fundamental_matrix()
-{}
-
-/// Get this algorithm's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-estimate_fundamental_matrix
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config =
-    vital::algo::estimate_fundamental_matrix::get_configuration();
-
-  config->set_value(
-    "precondition", d_->precondition,
-    "If true, precondition the data before estimating the "
-    "fundamental matrix" );
-
-  config->set_value(
-    "method", method_converter().to_string( d_->method ),
-    "Fundamental matrix estimation method to use. "
-    "(Note: does not include RANSAC).  Choices are: " +
-    method_converter().element_name_string() );
-
-  return config;
-}
-
-/// Set this algorithm's properties via a config block
+// ----------------------------------------------------------------------------
 void
 estimate_fundamental_matrix
-::set_configuration( vital::config_block_sptr config )
+::initialize()
 {
-  d_->precondition = config->get_value< bool >(
-    "precondition",
-    d_->precondition );
-
-  d_->method = config->get_enum_value< method_converter >(
-    "method",
-    d_->method );
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+  attach_logger( "arrows.vxl.estimate_fundamental_matrix" );
 }
 
 /// Check that the algorithm's current configuration is valid
@@ -110,6 +60,7 @@ estimate_fundamental_matrix
   return true;
 }
 
+// ----------------------------------------------------------------------------
 /// Estimate an essential matrix from corresponding points
 fundamental_matrix_sptr
 estimate_fundamental_matrix
@@ -130,15 +81,15 @@ estimate_fundamental_matrix
   }
 
   vpgl_fundamental_matrix< double > vfm;
-  if( d_->method == EST_8_POINT )
+  if( method_converter().from_string( d->c_method() ) == EST_8_POINT )
   {
-    vpgl_fm_compute_8_point fm_compute( d_->precondition );
+    vpgl_fm_compute_8_point fm_compute( d->c_precondition() );
     fm_compute.compute( right_points, left_points, vfm );
   }
   else
   {
     std::vector< vpgl_fundamental_matrix< double >* > vfms;
-    vpgl_fm_compute_7_point fm_compute( d_->precondition );
+    vpgl_fm_compute_7_point fm_compute( d->c_precondition() );
     fm_compute.compute( right_points, left_points, vfms );
     // TODO use the multiple solutions in a RANSAC framework
     // For now, only keep the first solution

@@ -4,6 +4,7 @@
 
 #include <arrows/vxl/estimate_fundamental_matrix.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>
@@ -29,7 +30,9 @@ TEST ( estimate_fundamental_matrix, create )
 {
   plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE( nullptr, algo::estimate_fundamental_matrix::create( "vxl" ) );
+  EXPECT_NE(
+    nullptr,
+    create_algorithm< algo::estimate_fundamental_matrix >( "vxl" ) );
 }
 
 // ----------------------------------------------------------------------------
