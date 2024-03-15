@@ -10,9 +10,12 @@
 
 #include <arrows/super3d/kwiver_algo_super3d_export.h>
 
+#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/compute_depth.h>
 #include <vital/types/vector.h>
 #include <vital/vital_config.h>
+#include <vnl/vnl_double_3.h>
 
 namespace kwiver {
 
@@ -20,22 +23,53 @@ namespace arrows {
 
 namespace super3d {
 
-/// A class for bundle adjustment of feature tracks using VXL
+/// A class for depth map estimation
 class KWIVER_ALGO_SUPER3D_EXPORT compute_depth
   : public vital::algo::compute_depth
 {
 public:
-  /// Constructor
-  compute_depth();
-
+  PLUGGABLE_IMPL(
+    compute_depth,
+    "Compute depth maps from image sequences, using vxl",
+    PARAM_DEFAULT(
+      iterations, int,
+      "Number of iterations to run optimizer", 2000 ),
+    PARAM_DEFAULT(
+      theta0, double,
+      "Begin value of quadratic relaxation term", 1.0 ),
+    PARAM_DEFAULT(
+      theta_end, double,
+      "End value of quadratic relaxation term", 0.001 ),
+    PARAM_DEFAULT(
+      lambda, double,
+      "Weight of the data term", 0.65 ),
+    PARAM_DEFAULT(
+      gw_alpha, double,
+      "gradient weighting term", 20 ),
+    PARAM_DEFAULT(
+      epsilon, double,
+      "Huber norm term, trade off between L1 and L2 norms", 0.01 ),
+    PARAM_DEFAULT(
+      world_plane_normal, vnl_double_3,
+      "up direction in world space", vnl_double_3( 0, 0, 1 ) ),
+    PARAM_DEFAULT(
+      callback_interval, int,
+      "number of iterations between updates (-1 turns off updates)", -1 ),
+    PARAM_DEFAULT(
+      uncertainty_in_callback, bool,
+      "If true, compute the uncertainty in each callback for a "
+      "live preview at additional computational cost. "
+      "Otherwise, uncertainty is only computed at the end.", false ),
+    PARAM_DEFAULT(
+      depth_sample_rate, double,
+      "Specifies the maximum sampling rate, in pixels, of the "
+      "depth steps projected into support views.  This rate "
+      "determines the number of depth slices in the cost "
+      "volume.  Smaller values create more depth slices.", 0.5 )
+  )
   /// Destructor
-  virtual ~compute_depth();
+  virtual ~compute_depth() = default;
 
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's currently configuration is valid
   virtual bool check_configuration( vital::config_block_sptr config ) const;
 
@@ -70,11 +104,13 @@ public:
   /// Set callback for receiving incremental updates
   virtual void set_callback( callback_t cb );
 
+protected:
+  void initialize() override;
+
 private:
   /// private implementation class
   class priv;
-
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 };
 
 }  // end namespace super3d

@@ -41,20 +41,13 @@ class compute_depth::priv
 {
 public:
   /// Constructor
-  priv()
-    : theta0( 1.0 ),
-      theta_end( 0.001 ),
-      lambda( 0.65 ),
-      gw_alpha( 20 ),
-      epsilon( 0.01 ),
-      iterations( 2000 ),
-      world_plane_normal( 0.0, 0.0, 1.0 ),
-      depth_sample_rate( 0.5 ),
-      callback_interval( -1 ),    // default is no callback
-      uncertainty_in_callback( false ),
+  priv( compute_depth& parent )
+    : parent( parent ),
       callback( NULL ),
       m_logger( vital::get_logger( "arrows.super3d.compute_depth" ) )
   {}
+
+  compute_depth& parent;
 
   bool iterative_update_callback( depth_refinement_monitor::update_data data );
   bool cost_volume_update_callback( unsigned int slice_num );
@@ -65,16 +58,16 @@ public:
     double d_min, double d_max,
     vital::bounding_box< int > const& roi );
 
-  double theta0;
-  double theta_end;
-  double lambda;
-  double gw_alpha;
-  double epsilon;
-  unsigned int iterations;
-  vnl_double_3 world_plane_normal;
-  double depth_sample_rate;
-  int callback_interval;
-  bool uncertainty_in_callback;
+  double c_theta0() { return parent.c_theta0; }
+  double c_theta_end() { return parent.c_theta_end; }
+  double c_lambda() { return parent.c_lambda; }
+  double c_gw_alpha() { return parent.c_gw_alpha; }
+  double c_epsilon() { return parent.c_epsilon; }
+  unsigned int c_iterations() { return parent.c_iterations; }
+  vnl_double_3 c_world_plane_normal() { return parent.c_world_plane_normal; }
+  double c_depth_sample_rate() { return parent.c_depth_sample_rate; }
+  int c_callback_interval() { return parent.c_callback_interval; }
+  bool c_uncertainty_in_callback() { return parent.c_uncertainty_in_callback; }
 
   double depth_min, depth_max;
   unsigned int num_slices;
@@ -92,103 +85,11 @@ public:
 // *****************************************************************************
 
 /// Constructor
-compute_depth
-::compute_depth()
-  : d_( new priv )
-{}
-
-// *****************************************************************************
-
-/// Destructor
-compute_depth::~compute_depth()
-{}
-
-// *****************************************************************************
-
-/// Get this algorithm's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-compute_depth
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config =
-    vital::algo::compute_depth::get_configuration();
-  config->set_value(
-    "iterations", d_->iterations,
-    "Number of iterations to run optimizer" );
-  config->set_value(
-    "theta0", d_->theta0,
-    "Begin value of quadratic relaxation term" );
-  config->set_value(
-    "theta_end", d_->theta_end,
-    "End value of quadratic relaxation term" );
-  config->set_value(
-    "lambda", d_->lambda,
-    "Weight of the data term" );
-  config->set_value(
-    "gw_alpha", d_->gw_alpha,
-    "gradient weighting term" );
-  config->set_value(
-    "epsilon", d_->epsilon,
-    "Huber norm term, trade off between L1 and L2 norms" );
-  config->set_value(
-    "world_plane_normal", "0 0 1",
-    "up direction in world space" );
-  config->set_value(
-    "callback_interval", d_->callback_interval,
-    "number of iterations between updates (-1 turns off updates)" );
-  config->set_value(
-    "uncertainty_in_callback", d_->uncertainty_in_callback,
-    "If true, compute the uncertainty in each callback for a "
-    "live preview at additional computational cost. "
-    "Otherwise, uncertainty is only computed at the end." );
-  config->set_value(
-    "depth_sample_rate", d_->depth_sample_rate,
-    "Specifies the maximum sampling rate, in pixels, of the "
-    "depth steps projected into support views.  This rate "
-    "determines the number of depth slices in the cost "
-    "volume.  Smaller values create more depth slices." );
-
-  return config;
-}
-
-// *****************************************************************************
-
-/// Set this algorithm's properties via a config block
 void
 compute_depth
-::set_configuration( vital::config_block_sptr in_config )
+::initialize()
 {
-  // Starting with our generated vital::config_block to ensure that
-  // assumed values are present. An alternative is to check for key
-  // presence before performing a get_value() call.
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  d_->iterations = config->get_value< unsigned int >(
-    "iterations",
-    d_->iterations );
-  d_->theta0 = config->get_value< double >( "theta0", d_->theta0 );
-  d_->theta_end = config->get_value< double >( "theta_end", d_->theta_end );
-  d_->lambda = config->get_value< double >( "lambda", d_->lambda );
-  d_->gw_alpha = config->get_value< double >( "gw_alpha", d_->gw_alpha );
-  d_->epsilon = config->get_value< double >( "epsilon", d_->epsilon );
-  d_->callback_interval = config->get_value< double >(
-    "callback_interval",
-    d_->callback_interval );
-  d_->uncertainty_in_callback =
-    config->get_value< bool >(
-      "uncertainty_in_callback",
-      d_->uncertainty_in_callback );
-  d_->depth_sample_rate = config->get_value< double >(
-    "depth_sample_rate",
-    d_->depth_sample_rate );
-
-  std::istringstream ss( config->get_value< std::string >(
-    "world_plane_normal",
-    "0 0 1" ) );
-  ss >> d_->world_plane_normal;
-  d_->world_plane_normal.normalize();
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
 }
 
 // *****************************************************************************
@@ -219,7 +120,7 @@ compute_depth::priv
 
   return std::unique_ptr< world_space >(
     new world_angled_frustum(
-      cam, world_plane_normal,
+      cam, c_world_plane_normal(),
       d_min, d_max, roi.width(), roi.height() ) );
 }
 
@@ -338,7 +239,7 @@ compute_depth
       depth_min, depth_max, roi );
 
   double depth_sampling = compute_depth_sampling( *ws, cameras ) /
-                          d_->depth_sample_rate;
+                          c_depth_sample_rate;
   d_->num_slices = static_cast< unsigned int >( depth_sampling );
 
   d_->ref_cam = cameras[ ref_frame ];
@@ -359,7 +260,7 @@ compute_depth
   }
 
   LOG_DEBUG(d_->m_logger, "Computing g weighting" );
-  compute_g( frames[ ref_frame ], g, d_->gw_alpha, 1.0, ref_mask );
+  compute_g( frames[ ref_frame ], g, c_gw_alpha, 1.0, ref_mask );
 
   LOG_DEBUG(d_->m_logger, "Refining Depth" );
 
@@ -369,8 +270,8 @@ compute_depth
   if( !d_->callback )
   {
     refine_depth(
-      d_->cost_volume, g, height_map, d_->iterations,
-      d_->theta0, d_->theta_end, d_->lambda, d_->epsilon );
+      d_->cost_volume, g, height_map, c_iterations,
+      c_theta0, c_theta_end, c_lambda, c_epsilon );
   }
   else
   {
@@ -378,10 +279,10 @@ compute_depth
                return this->d_->iterative_update_callback( data );
              };
     depth_refinement_monitor* drm =
-      new depth_refinement_monitor( f, d_->callback_interval );
+      new depth_refinement_monitor( f, c_callback_interval );
     refine_depth(
-      d_->cost_volume, g, height_map, d_->iterations,
-      d_->theta0, d_->theta_end, d_->lambda, d_->epsilon, drm );
+      d_->cost_volume, g, height_map, c_iterations,
+      c_theta0, c_theta_end, c_lambda, c_epsilon, drm );
     delete drm;
   }
 
@@ -426,7 +327,7 @@ compute_depth::priv
     {
       vil_image_view< double > depth;
       double depth_scale = this->depth_max - this->depth_min;
-      if( this->uncertainty_in_callback )
+      if( this->c_uncertainty_in_callback() )
       {
         auto uncertainty = compute_uncertainty(
           data.current_result,
@@ -455,10 +356,10 @@ compute_depth::priv
     }
 
     unsigned percent_complete = 50 + ( 50 * data.num_iterations ) /
-                                this->iterations;
+                                this->c_iterations();
     std::stringstream ss;
     ss << "Depth refinement iteration " << data.num_iterations
-       << " of " << this->iterations;
+       << " of " << this->c_iterations();
 
     return this->callback( result, ss.str(), percent_complete, result_u );
   }
