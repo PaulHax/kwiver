@@ -9,6 +9,8 @@
 
 #include <vital/algo/estimate_canonical_transform.h>
 
+#include <vital/util/enum_converter.h>
+
 /// \file
 /// \brief Header defining the VXL estimate_canonical_transform algorithm
 
@@ -17,6 +19,8 @@ namespace kwiver {
 namespace arrows {
 
 namespace vxl {
+
+enum rrel_methodtypes { RANSAC, LMS, IRLS, };
 
 /// Algorithm for estimating a canonical transform for cameras and landmarks
 ///
@@ -35,23 +39,57 @@ class KWIVER_ALGO_VXL_EXPORT estimate_canonical_transform
   : public vital::algo::estimate_canonical_transform
 {
 public:
-  PLUGIN_INFO(
-    "vxl_plane",
-    "Use VXL (rrel) to robustly estimate a ground plane for a canonical transform." )
+  PLUGGABLE_IMPL(
+    estimate_canonical_transform,
+    "Use VXL (rrel) to robustly estimate a ground plane for a canonical transform.",
+    PARAM_DEFAULT(
+      estimate_scale, bool,
+      "Estimate the scale to normalize the data. "
+      "If disabled the estimate transform is rigid",
+      true ),
+    PARAM_DEFAULT(
+      trace_level, int,
+      "Integer value controlling the verbosity of the "
+      "plane search algorithms (0->no output, 3->max output).",
+      0 ),
+    PARAM_DEFAULT(
+      rrel_method, std::string,
+      "The robust estimation algorithm to use for plane "
+      "fitting. Options are: " +
+      rrel_converter().element_name_string(),
+      rrel_converter().to_string( IRLS ) ),
+    PARAM_DEFAULT(
+      desired_prob_good, double,
+      "The desired probability of finding the correct plane fit.",
+      0.99 ),
+    PARAM_DEFAULT(
+      max_outlier_frac, double,
+      "The maximum fraction of the landmarks that is expected "
+      "outliers to the ground plane.",
+      0.75 ),
+    PARAM_DEFAULT(
+      prior_inlier_scale, double,
+      "The initial estimate of inlier scale for RANSAC "
+      "fitting of the ground plane.",
+      0.1 ),
+    PARAM_DEFAULT(
+      irls_max_iterations, int,
+      "The maximum number if iterations when using IRLS",
+      15 ),
+    PARAM_DEFAULT(
+      irls_iterations_for_scale, int,
+      "The number of IRLS iterations in which to estimate scale",
+      2 ),
+    PARAM_DEFAULT(
+      irls_conv_tolerance, double,
+      "The convergence tolerance for IRLS",
+      1e-4 )
+  )
 
-  /// Constructor
-  estimate_canonical_transform();
+  virtual ~estimate_canonical_transform() = default;
 
-  /// Destructor
-  virtual ~estimate_canonical_transform();
-
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
   /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
-  /// Check that the algorithm's configuration config_block is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
   /// Estimate a canonical similarity transform for cameras and points
   ///
@@ -67,11 +105,18 @@ public:
     kwiver::vital::camera_map_sptr const cameras,
     kwiver::vital::landmark_map_sptr const landmarks ) const;
 
+  ENUM_CONVERTER(
+    rrel_converter, rrel_methodtypes,
+    { "RANSAC", RANSAC },
+    { "LMS", LMS },
+    { "IRLS", IRLS } );
+
 private:
+  void initialize() override;
   /// private implementation class
   class priv;
 
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // end namespace vxl
