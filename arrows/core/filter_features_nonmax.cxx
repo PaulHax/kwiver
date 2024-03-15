@@ -188,8 +188,6 @@ public:
     return parent.c_num_features_range;
   }
 
-  vital::logger_handle_t m_logger;
-
   // --------------------------------------------------------------------------
   feature_set_sptr
   filter( feature_set_sptr feat_set, std::vector< unsigned int >& ind ) const
@@ -238,11 +236,11 @@ public:
     std::cout << "scale_range: " << scale_range << "\n";
     std::cout << "scale_steps: " << scale_steps << "\n";
 
-    LOG_DEBUG(m_logger, "Using " << scale_steps << " scale steps" );
+    LOG_DEBUG(parent.logger(), "Using " << scale_steps << " scale steps" );
     if( scale_steps > 20 )
     {
       LOG_ERROR(
-        m_logger, "Scale range is too large.  Log2 scales from "
+        parent.logger(), "Scale range is too large.  Log2 scales from "
           << scale_box.min() << " to " << scale_box.max() );
       return nullptr;
     }
@@ -252,7 +250,7 @@ public:
 
     if( !bbox.sizes().allFinite() )
     {
-      LOG_ERROR(m_logger, "Not all features are finite" );
+      LOG_ERROR(parent.logger(), "Not all features are finite" );
       return nullptr;
     }
 
@@ -332,23 +330,23 @@ public:
       if( new_suppression_radius < 0.25 )
       {
         LOG_DEBUG(
-          m_logger, "Found " << filtered.size() << " features.  "
-                                                   "Suppression radius is too small to continue." );
+          parent.logger(), "Found " << filtered.size() << " features.  "
+                                                          "Suppression radius is too small to continue." );
         break;
       }
       parent.c_suppression_radius = new_suppression_radius;
       suppressor.set_radius( parent.c_suppression_radius );
       LOG_DEBUG(
-        m_logger, "Found " << filtered.size() << " features.  "
-                                                 "Changing suppression radius to "
-                           << parent.c_suppression_radius);
+        parent.logger(), "Found " << filtered.size() << " features.  "
+                                                        "Changing suppression radius to "
+                                  << parent.c_suppression_radius);
     }
 
     LOG_INFO(
-      m_logger, "Reduced " << feat_vec.size() << " features to "
-                           << filtered.size() <<
+      parent.logger(), "Reduced " << feat_vec.size() << " features to "
+                                  << filtered.size() <<
         " features with non-max radius "
-                           << parent.c_suppression_radius);
+                                  << parent.c_suppression_radius);
 
     return std::make_shared< vital::simple_feature_set >(
       vital::simple_feature_set( filtered ) );

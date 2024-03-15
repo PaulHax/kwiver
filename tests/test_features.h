@@ -11,13 +11,15 @@
  * These functions are shared by various tests
  */
 
-#ifndef KWIVER_TEST_TEST_FEATURES_H_
-#define KWIVER_TEST_TEST_FEATURES_H_
+#ifndef KWIVER_TEST_TEST_FEATURES_A_H_
+#define KWIVER_TEST_TEST_FEATURES_A_H_
 
 #include <random>
 
 #include <vital/types/feature.h>
 #include <vital/types/feature_set.h>
+
+using namespace kwiver::vital;
 
 namespace kwiver {
 
@@ -30,60 +32,67 @@ namespace testing {
 // ..
 // ..
 
-// Generate a feature set with specified parameters
-kwiver::vital::feature_set_sptr
-generate_feature_set(
-  size_t num_features = 500,
-  double loc_min_x = 0.0,
-  double loc_max_x = 100.0,
-  double loc_min_y = 0.0,
-  double loc_max_y = 100.0,
-  double mag_min = 0.0,
-  double mag_max = 1.0,
-  double scale_min = 1.0,
-  double scale_max = 1.1,
-  double angle_min = 0.0,
-  double angle_max = 180.0 )
+template < typename T >
+feature_set_sptr
+make_n_features( size_t num_feat )
 {
-  // Create an empty vector of features
-  std::vector< kwiver::vital::feature_sptr > features;
-
-  // Create random number generator
-  std::default_random_engine rng( std::random_device{}() );
-  std::uniform_real_distribution< double > loc_dist_x( loc_min_x, loc_max_x );
-  std::uniform_real_distribution< double > loc_dist_y( loc_min_y, loc_max_y );
-  std::uniform_real_distribution< double > mag_dist( mag_min, mag_max );
-  std::uniform_real_distribution< double > scale_dist( scale_min, scale_max );
-  std::uniform_real_distribution< double > angle_dist( angle_min, angle_max );
-
-  // Generate random features and add them to the vector
-  for( size_t i = 0; i < num_features; ++i )
+  std::vector< feature_sptr > feat;
+  for( unsigned i = 0; i < num_feat; ++i )
   {
-    // Generate random feature parameters
-    double loc_x = loc_dist_x( rng );
-    double loc_y = loc_dist_y( rng );
-    double mag = mag_dist( rng );
-    double scale = scale_dist( rng );
-    double angle = angle_dist( rng );
-
-    // Define feature parameters
-    Eigen::Vector2d loc( loc_x, loc_y );  // Image coordinates
-    double magnitude = mag;
-    kwiver::vital::rgb_color color( 255, 0, 0 );  // Red color
-
-    // Create a feature object
-    auto feature = std::make_shared< kwiver::vital::feature_d >(
-      loc, magnitude, scale, angle, color );
-
-    // Add the feature to the vector
-    features.push_back( feature );
+    T v = static_cast< T >( i ) / num_feat;
+    auto f = std::make_shared< feature_< T > >();
+    T x = v * 1000, y = v * 1000 + 5;
+    f->set_loc( Eigen::Matrix< T, 2, 1 >( x, y ) );
+    f->set_scale( 1.0 + v );
+    f->set_magnitude( 1 - v );
+    f->set_angle( v * 3.14159f );
+    f->set_color(
+      rgb_color(
+        static_cast< uint8_t >( i ),
+        static_cast< uint8_t >( i + 5 ),
+        static_cast< uint8_t >( i + 10 ) ) );
+    f->set_covar( covariance_< 2, T >( v ) );
+    feat.push_back( f );
   }
 
-  // Create a simple_feature_set from the vector of features
-  auto feature_set = std::make_shared< kwiver::vital::simple_feature_set >(
-    features );
+  return std::make_shared< simple_feature_set >( feat );
+}
 
-  return feature_set;
+// Create a set of 10 features with known and
+// unordered scale and magnitude values
+
+template < typename T >
+feature_set_sptr
+make_10_features()
+{
+  unsigned num_feat = 10;
+
+  std::vector< double > scale = {
+    1.0, 2.0, 1.8, 1.2, 1.1, 1.3, 1.7, 1.2, 1.1, 1.1 };
+
+  std::vector< double > mag = {
+    0.7, 0.1, 0.1, 0.2, 0.3, 0.5, 0.8, 0.5, 0.9, 0.1 };
+
+  std::vector< feature_sptr > feat;
+  for( unsigned i = 0; i < num_feat; ++i )
+  {
+    T v = static_cast< T >( i ) / num_feat;
+    auto f = std::make_shared< feature_< T > >();
+    T x = v * 1000, y = v * 1000 + 5;
+    f->set_loc( Eigen::Matrix< T, 2, 1 >( x, y ) );
+    f->set_scale( scale[ i ] );
+    f->set_magnitude( mag[ i ] );
+    f->set_angle( v * 3.14159f );
+    f->set_color(
+      rgb_color(
+        static_cast< uint8_t >( i ),
+        static_cast< uint8_t >( i + 5 ),
+        static_cast< uint8_t >( i + 10 ) ) );
+    f->set_covar( covariance_< 2, T >( v ) );
+    feat.push_back( f );
+  }
+
+  return std::make_shared< simple_feature_set >( feat );
 }
 
 } // end namespace testing

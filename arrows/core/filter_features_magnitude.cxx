@@ -44,8 +44,6 @@ public:
   unsigned int
   c_min_features() const { return parent.c_min_features; }
 
-  vital::logger_handle_t m_logger;
-
   // -------------------------------------------------------------------------
   feature_set_sptr
   filter( feature_set_sptr feat, std::vector< unsigned int >& ind ) const
@@ -93,7 +91,7 @@ public:
     }
 
     LOG_INFO(
-      m_logger,
+      parent.logger(),
       "Reduced " << feat_vec.size() << " features to " << filtered.size() <<
         " features." );
 
