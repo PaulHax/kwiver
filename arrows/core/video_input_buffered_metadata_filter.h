@@ -12,6 +12,11 @@
 
 #include <arrows/core/kwiver_algo_core_export.h>
 
+#include <vital/algo/algorithm.txx>
+
+#include <vital/algo/buffered_metadata_filter.h>
+#include <vital/exceptions.h>
+
 namespace kwiver {
 
 namespace arrows {
@@ -27,16 +32,20 @@ class KWIVER_ALGO_CORE_EXPORT video_input_buffered_metadata_filter
   : public vital::algo::video_input
 {
 public:
-  PLUGIN_INFO(
-    "buffered_metadata_filter",
+  PLUGGABLE_IMPL(
+    video_input_buffered_metadata_filter,
     "A video input that calls another video input and applies a "
-    "buffered filter to the output metadata." )
+    "buffered filter to the output metadata.",
+    PARAM(
+      video_input, kwiver::vital::algo::video_input_sptr,
+      "video_input" ),
+    PARAM(
+      filter, kwiver::vital::algo::buffered_metadata_filter_sptr,
+      "metadata_filter" )
+  )
 
-  video_input_buffered_metadata_filter();
   virtual ~video_input_buffered_metadata_filter();
 
-  vital::config_block_sptr get_configuration() const override;
-  void set_configuration( vital::config_block_sptr config ) override;
   bool check_configuration( vital::config_block_sptr config ) const override;
 
   void open( std::string name ) override;
@@ -66,9 +75,11 @@ public:
   vital::video_settings_uptr implementation_settings() const override;
 
 private:
-  class impl;
-
-  std::unique_ptr< impl > const d;
+  void initialize() override;
+  void set_configuration_internal( vital::config_block_sptr config ) override;
+  /// private implementation class
+  class priv;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // namespace core

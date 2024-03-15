@@ -23,10 +23,18 @@ namespace arrows {
 namespace core {
 
 // ----------------------------------------------------------------------------
-class video_input_buffered_metadata_filter::impl
+class video_input_buffered_metadata_filter::priv
 {
 public:
-  impl();
+  priv( video_input_buffered_metadata_filter& parent )
+    : parent( parent ),
+      frames{},
+      frame_metadata{},
+      use_image{ true }
+
+  {}
+
+  video_input_buffered_metadata_filter& parent;
 
   struct frame_info
   {
@@ -38,8 +46,11 @@ public:
     kv::video_uninterpreted_data_sptr uninterpreted_data;
   };
 
-  kv::algo::video_input_sptr video_input;
-  kv::algo::buffered_metadata_filter_sptr filter;
+  // Configuration values
+  kv::algo::video_input_sptr c_video_input() { return parent.c_video_input; }
+  kv::algo::buffered_metadata_filter_sptr c_filter()
+  { return parent.c_filter; }
+
   std::list< frame_info > frames;
   kv::metadata_vector frame_metadata;
 
@@ -47,7 +58,7 @@ public:
 };
 
 // ----------------------------------------------------------------------------
-video_input_buffered_metadata_filter::impl::frame_info
+video_input_buffered_metadata_filter::priv::frame_info
 ::frame_info( kv::algo::video_input& input )
   : timestamp{ input.frame_timestamp() },
     image{ input.frame_image() },
@@ -56,20 +67,12 @@ video_input_buffered_metadata_filter::impl::frame_info
 {}
 
 // ----------------------------------------------------------------------------
-video_input_buffered_metadata_filter::impl
-::impl()
-  : video_input{ nullptr },
-    filter{},
-    frames{},
-    frame_metadata{},
-    use_image{ true }
-{}
-
-// ----------------------------------------------------------------------------
+void
 video_input_buffered_metadata_filter
-::video_input_buffered_metadata_filter() : d{ new impl }
+::initialize()
 {
-  attach_logger( "klv.video_input_buffered_metadata_filter" );
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+  attach_logger( "arrows.core.video_input_buffered_metadata_filter" );
 }
 
 // ----------------------------------------------------------------------------
@@ -78,37 +81,14 @@ video_input_buffered_metadata_filter
 {}
 
 // ----------------------------------------------------------------------------
-kv::config_block_sptr
-video_input_buffered_metadata_filter
-::get_configuration() const
-{
-  auto config = kv::algo::video_input::get_configuration();
-
-  kv::algo::video_input::get_nested_algo_configuration(
-    "video_input", config, d->video_input );
-  kv::algo::buffered_metadata_filter::get_nested_algo_configuration(
-    "metadata_filter", config, d->filter );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
 void
 video_input_buffered_metadata_filter
-::set_configuration( kv::config_block_sptr in_config )
+::set_configuration_internal( [[maybe_unused]] vital::config_block_sptr config )
 {
-  auto config = get_configuration();
-  config->merge_config( in_config );
-
-  kv::algo::video_input::set_nested_algo_configuration(
-    "video_input", config, d->video_input );
-  kv::algo::buffered_metadata_filter::set_nested_algo_configuration(
-    "metadata_filter", config, d->filter );
-
-  if( d->filter )
+  if( d->c_filter() )
   {
     d->use_image =
-      d->filter->get_implementation_capabilities()
+      d->c_filter()->get_implementation_capabilities()
       .capability( kv::algo::buffered_metadata_filter::CAN_USE_FRAME_IMAGE );
   }
 }
@@ -119,9 +99,9 @@ video_input_buffered_metadata_filter
 ::check_configuration( kv::config_block_sptr config ) const
 {
   return
-    kv::algo::video_input::check_nested_algo_configuration(
+    kv::check_nested_algo_configuration< kv::algo::video_input >(
     "video_input", config ) &&
-    kv::algo::buffered_metadata_filter::check_nested_algo_configuration(
+    kv::check_nested_algo_configuration< kv::algo::buffered_metadata_filter >(
     "metadata_filter", config );
 }
 
@@ -130,16 +110,17 @@ void
 video_input_buffered_metadata_filter
 ::open( std::string name )
 {
-  if( !d->video_input )
+  if( !d->c_video_input() )
   {
     VITAL_THROW(
       kv::algorithm_configuration_exception,
-      type_name(), impl_name(), "Invalid video_input." );
+      this->interface_name(), this->plugin_name(), "Invalid video_input." );
   }
 
-  d->video_input->open( name );
+  d->c_video_input()->open( name );
 
-  auto const& capabilities = d->video_input->get_implementation_capabilities();
+  auto const& capabilities =
+    d->c_video_input()->get_implementation_capabilities();
 
   using vi = kv::algo::video_input;
   for( auto const& capability : {
@@ -166,10 +147,10 @@ void
 video_input_buffered_metadata_filter
 ::close()
 {
-  if( d->video_input )
+  if( d->c_video_input() )
   {
-    d->video_input->close();
-    d->video_input.reset();
+    d->c_video_input()->close();
+    d->c_video_input().reset();
   }
 }
 
@@ -179,9 +160,9 @@ video_input_buffered_metadata_filter
 ::end_of_video() const
 {
   return
-    !d->video_input ||
-    ( d->video_input->end_of_video() &&
-      ( !d->filter || !d->filter->available_frames() ) );
+    !d->c_video_input() ||
+    ( d->c_video_input()->end_of_video() &&
+      ( !d->c_filter() || !d->c_filter()->available_frames() ) );
 }
 
 // ----------------------------------------------------------------------------
@@ -189,7 +170,7 @@ bool
 video_input_buffered_metadata_filter
 ::good() const
 {
-  return d->video_input && !d->frames.empty();
+  return d->c_video_input() && !d->frames.empty();
 }
 
 // ----------------------------------------------------------------------------
@@ -205,7 +186,7 @@ size_t
 video_input_buffered_metadata_filter
 ::num_frames() const
 {
-  return d->video_input ? d->video_input->num_frames() : 0;
+  return d->c_video_input() ? d->c_video_input()->num_frames() : 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -225,12 +206,12 @@ video_input_buffered_metadata_filter
     d->frames.pop_front();
   }
 
-  if( !d->filter )
+  if( !d->c_filter() )
   {
     kv::timestamp ts;
-    if( d->video_input->next_frame( ts, timeout ) )
+    if( d->c_video_input()->next_frame( ts, timeout ) )
     {
-      d->frames.emplace_back( *d->video_input );
+      d->frames.emplace_back( *d->c_video_input() );
       out_ts = d->frames.front().timestamp;
       return true;
     }
@@ -239,11 +220,11 @@ video_input_buffered_metadata_filter
 
   // Ensure there is at least one metadata frame to output
   bool video_error = false;
-  while( !d->filter->available_frames() )
+  while( !d->c_filter()->available_frames() )
   {
-    if( d->video_input->end_of_video() || video_error )
+    if( d->c_video_input()->end_of_video() || video_error )
     {
-      if( d->filter->unavailable_frames() && d->filter->flush() )
+      if( d->c_filter()->unavailable_frames() && d->c_filter()->flush() )
       {
         // Found some metadata frames by flushing
         break;
@@ -262,7 +243,7 @@ video_input_buffered_metadata_filter
 
     // Get the next frame from the embedded video input
     kv::timestamp ts;
-    if( !d->video_input->next_frame( ts, timeout ) )
+    if( !d->c_video_input()->next_frame( ts, timeout ) )
     {
       LOG_DEBUG(
         logger(),
@@ -270,9 +251,9 @@ video_input_buffered_metadata_filter
       video_error = true;
       continue;
     }
-    d->frames.emplace_back( *d->video_input );
-    d->filter->send(
-      d->video_input->frame_metadata(),
+    d->frames.emplace_back( *d->c_video_input() );
+    d->c_filter()->send(
+      d->c_video_input()->frame_metadata(),
       d->use_image ? d->frames.back().image : nullptr );
   }
 
@@ -284,7 +265,7 @@ video_input_buffered_metadata_filter
   }
 
   // Return next frame in queue
-  d->frame_metadata = d->filter->receive();
+  d->frame_metadata = d->c_filter()->receive();
   out_ts = d->frames.front().timestamp;
   return true;
 }
@@ -375,7 +356,8 @@ kv::video_settings_uptr
 video_input_buffered_metadata_filter
 ::implementation_settings() const
 {
-  return d->video_input ? d->video_input->implementation_settings() : nullptr;
+  return d->c_video_input() ? d->c_video_input()->implementation_settings()
+                            : nullptr;
 }
 
 } // namespace core

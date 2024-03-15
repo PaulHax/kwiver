@@ -5,9 +5,12 @@
 #ifndef ARROWS_CORE_VIDEO_INPUT_METADATA_FILTER_H
 #define ARROWS_CORE_VIDEO_INPUT_METADATA_FILTER_H
 
+#include <vital/algo/metadata_filter.h> // including this causes a linking error
 #include <vital/algo/video_input.h>
 
 #include <arrows/core/kwiver_algo_core_export.h>
+
+#include <vital/algo/algorithm.txx>
 
 namespace kwiver {
 
@@ -23,17 +26,22 @@ class KWIVER_ALGO_CORE_EXPORT video_input_metadata_filter
   : public vital::algo::video_input
 {
 public:
-  PLUGIN_INFO(
-    "metadata_filter",
+  PLUGGABLE_IMPL(
+    video_input_metadata_filter,
     "A video input that calls another video input"
-    " and applies a filter to the output metadata." )
+    " and applies a filter to the output metadata.",
+    PARAM(
+      video_input, vital::algo::video_input_sptr,
+      "Algorithm pointer to video input" ),
+    PARAM(
+      metadata_filter,
+      vital::algo::metadata_filter_sptr,
+      "Algorithm pointer to metadata filter" )
+  )
 
-  video_input_metadata_filter();
   virtual ~video_input_metadata_filter();
 
-  vital::config_block_sptr get_configuration() const override;
-  void set_configuration( vital::config_block_sptr config ) override;
-  bool check_configuration( vital::config_block_sptr config ) const override;
+  virtual bool check_configuration( vital::config_block_sptr config ) const;
 
   void open( std::string name ) override;
   void close() override;
@@ -62,10 +70,13 @@ public:
 
   kwiver::vital::video_settings_uptr implementation_settings() const override;
 
-private:
-  class priv;
+  void set_configuration_internal(  vital::config_block_sptr config  ) override;
 
-  std::unique_ptr< priv > const m_d;
+private:
+  void initialize() override;
+  /// private implementation class
+  class priv;
+  KWIVER_UNIQUE_PTR( priv, m_d );
 };
 
 } // namespace core

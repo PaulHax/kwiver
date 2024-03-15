@@ -31,15 +31,17 @@ source_name( size_t n )
 class video_input_splice::priv
 {
 public:
-  priv()
-    : c_frame_skip( 1 ),
+  priv( video_input_splice& parent )
+    : parent( parent ),
       d_has_timeout( false ),
       d_is_seekable( false ),
       d_frame_offset( 0 )
   {}
 
+  video_input_splice& parent;
+
   // Configuration values
-  unsigned int c_frame_skip;
+  unsigned int c_output_nth_frame() { return parent.c_output_nth_frame; }
 
   std::vector< std::string > d_search_path;
   bool d_has_timeout;
@@ -49,7 +51,11 @@ public:
   kwiver::vital::timestamp::frame_t d_frame_offset;
 
   // Vector of video sources
-  std::vector< vital::algo::video_input_sptr > d_video_sources;
+  std::vector< vital::algo::video_input_sptr >&
+  d_video_sources()
+  {
+    return parent.c_video_source;
+  }
 
   // Iterator to the active source
   std::vector< vital::algo::video_input_sptr >::iterator d_active_source;
@@ -59,11 +65,12 @@ public:
 };
 
 // ----------------------------------------------------------------------------
+void
 video_input_splice
-::video_input_splice()
-  : d( new video_input_splice::priv )
+::initialize()
 {
-  attach_logger( "video_input_splice" );
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+  attach_logger( "arrows.core.video_input_splice" );
 }
 
 // ----------------------------------------------------------------------------
@@ -72,41 +79,10 @@ video_input_splice
 {}
 
 // ----------------------------------------------------------------------------
-vital::config_block_sptr
-video_input_splice
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config =
-    vital::algo::video_input::get_configuration();
-
-  config->set_value(
-    "output_nth_frame", d->c_frame_skip,
-    "Only outputs every nth frame of the video starting at the first frame. The output "
-    "of num_frames still reports the total frames in the video but skip_frame is valid "
-    "every nth frame only and there are metadata_map entries for only every nth frame." );
-
-  size_t n = 1;
-  for( auto const& vs : d->d_video_sources )
-  {
-    vital::algo::video_input::
-    get_nested_algo_configuration( source_name( n ), config, vs );
-  }
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
 void
 video_input_splice
-::set_configuration( vital::config_block_sptr in_config )
+::set_configuration_internal( vital::config_block_sptr config )
 {
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  d->c_frame_skip = config->get_value< vital::timestamp::frame_t >(
-    "output_nth_frame", d->c_frame_skip );
-
   // Extract string and create vector of directories
   std::string path = config->get_value< std::string >( "path", "" );
   kwiver::vital::tokenize(
@@ -129,16 +105,11 @@ video_input_splice
 
   while( source_config->available_values().size() > 0 )
   {
-    // Make sure the corresponding sources exists
-    while( d->d_video_sources.size() < n )
-    {
-      d->d_video_sources.push_back( vital::algo::video_input_sptr() );
-    }
+    kwiver::vital::set_nested_algo_configuration< vital::algo::video_input >(
+      source_name( n ), config, d->d_video_sources()[ n - 1 ] );
 
-    vital::algo::video_input::set_nested_algo_configuration(
-      source_name( n ), config, d->d_video_sources[ n - 1 ] );
-
-    auto& caps = d->d_video_sources[ n - 1 ]->get_implementation_capabilities();
+    auto& caps = d->d_video_sources()[ n -
+                                       1 ]->get_implementation_capabilities();
 
     has_eov = has_eov && caps.capability( vi::HAS_EOV );
     has_frame_numbers = has_frame_numbers &&
@@ -178,8 +149,9 @@ video_input_splice
   size_t n = 1;
   while( config->has_value( source_name( n ) ) )
   {
-    status = status && vital::algo::video_input::
-             check_nested_algo_configuration( source_name( n ), config );
+    status = status &&
+             kwiver::vital::check_nested_algo_configuration< vital::algo::video_input >(
+      source_name( n ), config );
   }
 
   return status;
@@ -191,7 +163,7 @@ video_input_splice
 ::open( std::string list_name )
 {
   // Close sources in case they are already open
-  for( auto& vs : d->d_video_sources )
+  for( auto& vs : d->d_video_sources() )
   {
     vs->close();
   }
@@ -213,11 +185,11 @@ video_input_splice
   }
 
   kwiver::vital::data_stream_reader stream_reader( ifs );
-  auto vs_iter = d->d_video_sources.begin();
+  auto vs_iter = d->d_video_sources().begin();
   std::string filepath;
 
   while( stream_reader.getline( filepath ) &&
-         vs_iter != d->d_video_sources.end() )
+         vs_iter != d->d_video_sources().end() )
   {
     if( !kwiversys::SystemTools::FileExists( filepath, true ) )
     {
@@ -229,10 +201,10 @@ video_input_splice
     ++vs_iter;
   }
 
-  d->d_active_source = d->d_video_sources.begin();
+  d->d_active_source = d->d_video_sources().begin();
   d->d_frame_offset = 0;
 
-  if( vs_iter != d->d_video_sources.end() )
+  if( vs_iter != d->d_video_sources().end() )
   {
     LOG_WARN(
       logger(), "Not enough entries in list file. Some of the video "
@@ -253,7 +225,7 @@ video_input_splice
 ::close()
 {
   // Close all the sources
-  for( auto vs : d->d_video_sources )
+  for( auto vs : d->d_video_sources() )
   {
     if( vs )
     {
@@ -269,7 +241,7 @@ bool
 video_input_splice
 ::end_of_video() const
 {
-  return ( d->d_active_source == d->d_video_sources.end() );
+  return ( d->d_active_source == d->d_video_sources().end() );
 }
 
 // ----------------------------------------------------------------------------
@@ -277,7 +249,7 @@ bool
 video_input_splice
 ::good() const
 {
-  if( d->d_active_source != d->d_video_sources.end() && *d->d_active_source )
+  if( d->d_active_source != d->d_video_sources().end() && *d->d_active_source )
   {
     return ( *d->d_active_source )->good();
   }
@@ -302,7 +274,7 @@ video_input_splice
 {
   size_t num_frames = 0;
 
-  for( auto& vs : d->d_video_sources )
+  for( auto& vs : d->d_video_sources() )
   {
     num_frames += vs->num_frames();
   }
@@ -337,7 +309,7 @@ video_input_splice
       {
         d->d_frame_offset += ( *d->d_active_source )->num_frames();
         ++d->d_active_source;
-        if( d->d_active_source != d->d_video_sources.end() )
+        if( d->d_active_source != d->d_video_sources().end() )
         {
           if( ( *d->d_active_source )->seekable() )
           {
@@ -356,7 +328,7 @@ video_input_splice
         }
       }
     }
-  }while( ( frame_number - 1 ) % d->c_frame_skip != 0 && status );
+  }while( ( frame_number - 1 ) % d->c_output_nth_frame() != 0 && status );
 
   ts.set_frame( frame_number );
   return status;
@@ -375,15 +347,15 @@ video_input_splice
   bool status = false;
 
   // Check if requested frame would have been skipped
-  if( ( frame_number - 1 ) % d->c_frame_skip != 0 )
+  if( ( frame_number - 1 ) % d->c_output_nth_frame() != 0 )
   {
     return false;
   }
 
   // Determine which source is responsible for this frame
   size_t frames_prior = 0;
-  for( auto vs_iter = d->d_video_sources.begin();
-       vs_iter != d->d_video_sources.end();
+  for( auto vs_iter = d->d_video_sources().begin();
+       vs_iter != d->d_video_sources().end();
        vs_iter++ )
   {
     if( frame_number <= static_cast< frame_t >(
@@ -449,10 +421,10 @@ kwiver::vital::metadata_map_sptr
 video_input_splice
 ::metadata_map()
 {
-  if( d->d_metadata_map.empty() && d->d_video_sources.size() > 0 )
+  if( d->d_metadata_map.empty() && d->d_video_sources().size() > 0 )
   {
     auto frame_offset = 0;
-    for( auto const& vs : d->d_video_sources )
+    for( auto const& vs : d->d_video_sources() )
     {
       auto curr_metadata = vs->metadata_map()->metadata();
       for( auto const& md : curr_metadata )

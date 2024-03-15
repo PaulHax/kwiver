@@ -5,9 +5,7 @@
 #ifndef CONFIG_CAMERA_HELPERS_TXX
 #define CONFIG_CAMERA_HELPERS_TXX
 
-#include <memory>
-#include <type_traits>
-#include <vital/config/config_block.h>
+#include <vital/config/config_helpers.txx>
 #include <vital/types/camera_intrinsics.h>
 #include <vital/types/vector.h>
 
@@ -153,7 +151,9 @@ template < typename ValueType,
 void
 set_config_helper(
   config_block_sptr config, const std::string& key,
-  const ValueType& value )
+  const ValueType& value,
+  VITAL_UNUSED config_block_description_t const& description  =
+  config_block_description_t() )
 {
   kwiver::vital::get_nested_camera_intrinsics_configuration(
     key, config,

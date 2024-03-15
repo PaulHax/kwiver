@@ -26,7 +26,8 @@ template < typename ValueType,
 void
 set_config_helper(
   vital::config_block_sptr config, const std::string& key,
-  const ValueType& value )
+  const ValueType& value,
+  config_block_description_t const& description  = config_block_description_t() )
 {
   if( value )
   {

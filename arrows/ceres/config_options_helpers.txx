@@ -5,9 +5,7 @@
 #ifndef CONFIG_OPTIONS_HELPERS_TXX
 #define CONFIG_OPTIONS_HELPERS_TXX
 
-#include <memory>
-#include <type_traits>
-#include <vital/config/config_block.h>
+#include <vital/config/config_helpers.txx>
 
 #include <arrows/ceres/options.h>
 #include <arrows/ceres/types.h>
@@ -27,7 +25,9 @@ template < typename ValueType,
 void
 set_config_helper(
   vital::config_block_sptr config, const std::string& key,
-  const ValueType& value )
+  const ValueType& value,
+  VITAL_UNUSED config_block_description_t const& description  =
+  config_block_description_t() )
 {
   if( value )
   {
@@ -64,7 +64,9 @@ template < typename ValueType,
 void
 set_config_helper(
   vital::config_block_sptr config, const std::string& key,
-  const ValueType& value )
+  const ValueType& value,
+  VITAL_UNUSED config_block_description_t const& description  =
+  config_block_description_t() )
 {
   if( value )
   {

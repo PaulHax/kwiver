@@ -14,6 +14,13 @@ namespace kwiver::vital {
 // A helper to detect when a type is a std::shared_ptr
 namespace detail {
 
+// A helper to detect when a type is a std::vector
+template < typename T >
+struct is_vector : std::false_type {};
+
+template < typename T >
+struct is_vector< std::vector< T > >: std::true_type {};
+
 template < typename T >
 struct is_shared_ptr : std::false_type {};
 
@@ -27,13 +34,17 @@ struct is_shared_ptr< std::shared_ptr< T > >: std::true_type {};
 // all types but std::shared_ptr.
 template < typename ValueType,
   typename std::enable_if_t< !detail::is_shared_ptr< ValueType >::value,
-    bool > = true >
+    bool > = true,
+  typename std::enable_if_t< !detail::is_vector< ValueType >::value,
+    bool > = true
+>
 void
 set_config_helper(
   config_block_sptr config, const std::string& value_name,
-  const ValueType& value )
+  const ValueType& value,
+  config_block_description_t const& description  = config_block_description_t() )
 {
-  config->set_value< ValueType >( value_name, value );
+  config->set_value< ValueType >( value_name, value, description );
 }
 
 // --------------------------------------------------------------------------------------------
@@ -42,7 +53,10 @@ set_config_helper(
 // all types except std::shared_ptr
 template < typename ValueType,
   typename std::enable_if_t< !detail::is_shared_ptr< ValueType >::value,
-    bool > = true >
+    bool > = true,
+  typename std::enable_if_t< !detail::is_vector< ValueType >::value,
+    bool > = true
+>
 ValueType
 get_config_helper( config_block_sptr config, config_block_key_t const& key )
 {
@@ -55,6 +69,8 @@ get_config_helper( config_block_sptr config, config_block_key_t const& key )
 // all types except std::shared_ptr with a default value
 template < typename ValueType,
   typename std::enable_if_t< !detail::is_shared_ptr< ValueType >::value,
+    bool > = true,
+  typename std::enable_if_t< !detail::is_vector< ValueType >::value,
     bool > = true >
 ValueType
 get_config_helper(

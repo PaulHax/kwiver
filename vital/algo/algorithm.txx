@@ -318,7 +318,9 @@ template < typename ValueType,
 void
 set_config_helper(
   config_block_sptr config, const std::string& key,
-  const ValueType& value )
+  const ValueType& value,
+  VITAL_UNUSED config_block_description_t const& description  =
+  config_block_description_t() )
 {
   kwiver::vital::get_nested_algo_configuration< typename ValueType::element_type >( key, config, value );
 }
@@ -336,6 +338,84 @@ get_config_helper( config_block_sptr config, config_block_key_t const& key )
   ValueType algo;
   kwiver::vital::set_nested_algo_configuration< typename ValueType::element_type >( key, config, algo );
   return algo;
+}
+
+// ----------------------------------------------------------------------------
+// specializations of set/get_config_helper for std::vector<shared_ptr<
+// algorithm>>
+// for base implementations see config_helpers.txx
+
+// A helper for populating \p key in \p config based on the  configuration of
+// the vector of algorithms given in \p value.
+template < typename ValueType,
+  // is it a vector<> ?
+  typename std::enable_if_t< detail::is_vector< ValueType >::value,
+    bool > = true,
+  // is it a vector< share_ptr > ?
+  typename std::enable_if_t< detail::is_shared_ptr< typename ValueType::value_type >::value, bool > = true,
+  // is it a vector< share_ptr< algorithm> > ?
+  typename std::enable_if_t< std::is_base_of_v< kwiver::vital::algorithm,
+    typename ValueType::value_type::element_type >, bool > = true >
+void
+set_config_helper(
+  config_block_sptr config, const std::string& key,
+  const ValueType& value,
+  VITAL_UNUSED config_block_description_t const& description  =
+  config_block_description_t() )
+{
+  using AlgoType = typename ValueType::value_type::element_type;
+
+  size_t n = 1;
+  auto key_name = [ key ](size_t n){
+                    return key + "_" + std::to_string( n );
+                  };
+  for( auto const& vs : value )
+  {
+    kwiver::vital::get_nested_algo_configuration< AlgoType >(
+      key_name( n ),
+      config, vs );
+    n++;
+  }
+}
+
+// A helper for getting a value from a config block. This specialization is for
+// keys that correspond to nested algorithms.
+template < typename ValueType,
+  // is it a vector<> ?
+  typename std::enable_if_t< detail::is_vector< ValueType >::value,
+    bool > = true,
+  // is it a vector< share_ptr > ?
+  typename std::enable_if_t< detail::is_shared_ptr< typename ValueType::value_type >::value,
+    bool > = true,
+  // is it a vector< share_ptr< algorithm> > ?
+  typename std::enable_if_t< std::is_base_of_v< kwiver::vital::algorithm,
+    typename ValueType::value_type::element_type >, bool > = true >
+ValueType
+get_config_helper( config_block_sptr config, config_block_key_t const& key )
+{
+  using AlgoType = typename ValueType::value_type::element_type;
+
+  ValueType algos;
+
+  auto key_name = [ key ](size_t n){
+                    return key + "_" + std::to_string( n );
+                  };
+
+  size_t n = 1;
+  // get algorithm subblock
+  vital::config_block_sptr item_config = config->subblock( key_name( n ) );
+
+  while( !item_config->available_values().empty() )
+  {
+    std::shared_ptr< AlgoType > algo;
+    kwiver::vital::set_nested_algo_configuration< AlgoType >(
+      key_name( n ),
+      config, algo );
+    algos.push_back( algo );
+
+    item_config = config->subblock( key_name( ++n ) );
+  }
+  return algos;
 }
 
 } // namespace kwiver::vital

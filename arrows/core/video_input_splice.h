@@ -9,6 +9,8 @@
 
 #include <arrows/core/kwiver_algo_core_export.h>
 
+#include <vital/algo/algorithm.txx>
+
 namespace kwiver {
 
 namespace arrows {
@@ -24,20 +26,24 @@ class KWIVER_ALGO_CORE_EXPORT video_input_splice
   : public vital::algo::video_input
 {
 public:
-  PLUGIN_INFO(
-    "splice",
-    "Splices multiple video sources together." );
 
-  /// Constructor
-  video_input_splice();
+public:
+  PLUGGABLE_IMPL(
+    video_input_splice,
+    "Splices multiple video sources together.",
+    PARAM_DEFAULT(
+      output_nth_frame,  unsigned int,
+      "Only outputs every nth frame of the video starting at the first frame. "
+      "The output of num_frames still reports the total frames in the video "
+      "but skip_frame is valid every nth frame only and there are metadata_map "
+      "entries for only every nth frame.",
+      1 ),
+    PARAM(
+      video_source, std::vector< vital::algo::video_input_sptr >,
+      "Video sources" )
+  )
+
   virtual ~video_input_splice();
-
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
 
   /// Check that the algorithm's currently configuration is valid
   virtual bool check_configuration( vital::config_block_sptr config ) const;
@@ -66,11 +72,15 @@ public:
 
   kwiver::vital::video_settings_uptr implementation_settings() const override;
 
+protected:
+  void initialize() override;
+  void set_configuration_internal(
+    vital::config_block_sptr in_config ) override;
+
 private:
   /// private implementation class
   class priv;
-
-  const std::unique_ptr< priv > d;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // namespace core

@@ -81,9 +81,12 @@
 #include <arrows/core/transfer_bbox_with_depth_map.h>
 #include <arrows/core/transform_detected_object_set.h>
 #include <arrows/core/uv_unwrap_mesh.h>
+#include <arrows/core/video_input_buffered_metadata_filter.h>
 #include <arrows/core/video_input_filter.h>
 #include <arrows/core/video_input_image_list.h>
+#include <arrows/core/video_input_metadata_filter.h>
 #include <arrows/core/video_input_pos.h>
+#include <arrows/core/video_input_splice.h>
 #include <arrows/core/video_input_split.h>
 #include <arrows/core/write_object_track_set_kw18.h>
 #include <arrows/core/write_track_descriptor_set_csv.h>
@@ -116,6 +119,18 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::video_input,
     video_input_image_list >( "image_list" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::video_input,
+    video_input_splice >( "splice" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::video_input,
+    video_input_buffered_metadata_filter >( "buffered_metadata_filter" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::video_input,
+    video_input_metadata_filter >( "metadata_filter" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 
   fact = vpl.add_factory< vital::algo::video_input, video_input_pos >( "pos" );
