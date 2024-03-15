@@ -15,10 +15,12 @@
 using namespace kwiver::vital;
 using namespace kwiver::arrows::core;
 
-// ----------------------------------------------------------------------------
-// Establish constants and values for randomly generated track set
+namespace {
 
+// Number of features, used in multiple tests
 int const num_features = 2000;
+
+} // namespace
 
 // ----------------------------------------------------------------------------
 int
@@ -55,20 +57,19 @@ TEST ( filter_features_nonmax, create )
 }
 
 // ---------------------------------------------------------------------------
-// Tests check_configurattion and filter operation with parameters;
+// Test checks configuration, and filter function with parameters;
 // top_fraction, min_features and max_features
 TEST ( filter_features_scale, filter )
 {
   plugin_manager::instance().load_all_plugins();
 
-  // Generate instance of the filter_features_scale algorithm
+  // Generate instance of the filter algorithm
   algo::filter_features_sptr filter_algo = create_algorithm<
     algo::filter_features >( "scale" );
 
-  // Get the configuration of the filter_tracks algorithm
+  // Get the configuration of the algorithm
   config_block_sptr config = filter_algo->get_configuration();
 
-  // Check configuration
   EXPECT_TRUE( filter_algo->check_configuration( config ) );
 
   // Get default parameter values from config block
@@ -80,13 +81,15 @@ TEST ( filter_features_scale, filter )
   feature_set_sptr feature_set =
     kwiver::testing::make_n_features< double >( num_features );
 
-  // run the filter
+  // Run the filter function
   feature_set_sptr filtered_set = filter_algo->filter( feature_set );
 
-  // check that number of featurs matches top_fraction value
+  // Check that number of features matches top_fraction value
+  // default is 0.2
   EXPECT_EQ( top_fraction * num_features, ( filtered_set->features() ).size() );
 
-  // check that number of features is limited by min_features parameter
+  // Check that number of features is limited by min_features parameter
+  // default is 100
   feature_set_sptr min_set =
     kwiver::testing::make_n_features< double >( 200 );
 
@@ -95,6 +98,7 @@ TEST ( filter_features_scale, filter )
   EXPECT_EQ( min_features, ( filtered_min_set->features() ).size() );
 
   // check that number of features is limited by max_features parameter
+  // default is 1000
   feature_set_sptr max_set =
     kwiver::testing::make_n_features< double >( 5200 );
 
@@ -104,17 +108,17 @@ TEST ( filter_features_scale, filter )
 }
 
 // ---------------------------------------------------------------------------
-// Tests check_configurattion and filter operation with parameters;
+// Test checks configuration, and filter function with parameters;
 // top_fraction and min_features
 TEST ( filter_features_magnitude, filter )
 {
   plugin_manager::instance().load_all_plugins();
 
-  // Generate instance of the filter_features_scale algorithm
+  // Generate instance of the filter algorithm
   algo::filter_features_sptr filter_algo = create_algorithm<
     algo::filter_features >( "magnitude" );
 
-  // Get the configuration of the filter_tracks algorithm
+  // Get the configuration of the algorithm
   config_block_sptr config = filter_algo->get_configuration();
 
   // Check configuration
@@ -124,17 +128,18 @@ TEST ( filter_features_magnitude, filter )
   int min_features = config->get_value< int >( "min_features" );
   double top_fraction = config->get_value< double >( "top_fraction" );
 
-  // Generate feature set with 2000 features
   feature_set_sptr feature_set =
     kwiver::testing::make_n_features< double >( num_features );
 
-  // run the filter
+  // Run filter function
   feature_set_sptr filtered_set = filter_algo->filter( feature_set );
 
-  // check that number of featurs matches top_fraction value
+  // Check that number of features matches top_fraction value
+  // default is 0.2
   EXPECT_EQ( top_fraction * num_features, ( filtered_set->features() ).size() );
 
-  // check that number of features is limited by min_features parameter
+  // Check that number of features is limited by min_features parameter
+  // default is 100
   feature_set_sptr min_set =
     kwiver::testing::make_n_features< double >( 200 );
 
@@ -144,13 +149,13 @@ TEST ( filter_features_magnitude, filter )
 }
 
 // ---------------------------------------------------------------------------
-// Tests check_configurattion and filter operation with parameters;
+// Test configuration, and filter operation with parameters;
 // num_features_target and num_features_range
 TEST ( filter_features_nonmax, filter )
 {
   plugin_manager::instance().load_all_plugins();
 
-  // Generate instance of the filter_features_scale algorithm
+  // Generate instance of the filter algorithm
   algo::filter_features_sptr filter_algo = create_algorithm<
     algo::filter_features >( "nonmax" );
 
@@ -268,19 +273,19 @@ TEST ( filter_features_magnitude, filter_10_features )
 }
 
 // ---------------------------------------------------------------------------
-// Tests changing configuration and filtering according to new values
+// Test changing config and filtering with to different values
 TEST ( filter_features_nonmax, change_config )
 {
   plugin_manager::instance().load_all_plugins();
 
-  // Generate instance of the filter_features_scale algorithm
+  // Generate instance of the filter algorithm
   algo::filter_features_sptr filter_algo = create_algorithm<
     algo::filter_features >( "nonmax" );
 
-  // Get the configuration of the filter_tracks algorithm
+  // Get the configuration
   config_block_sptr config = filter_algo->get_configuration();
 
-  // Adjust config to filter 3 from 10 features
+  // Adjust config to different values from default
   config->set_value< int >( "num_features_target", 200 );
   config->set_value< int >( "num_features_range", 20 );
 
@@ -291,7 +296,7 @@ TEST ( filter_features_nonmax, change_config )
   feature_set_sptr feature_set =
     kwiver::testing::make_n_features< double >( num_features );
 
-  // run the filter
+  // Run the filter function
   feature_set_sptr filtered_set = filter_algo->filter( feature_set );
 
   // Get the size of the filtered set of features
