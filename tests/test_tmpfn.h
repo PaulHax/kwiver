@@ -17,23 +17,58 @@
 
 #include <cstdio>
 #include <cstdlib>
-#include <unistd.h>
 
 #ifdef _WIN32
-#define tempnam( d, p ) _tempnam( d, p )
+#include <errno.h>
+#include <fcntl.h>
+#include <io.h>
+#include <sys\types.h>
+#else
+#include <unistd.h>
 #endif
 
 namespace kwiver {
 
 namespace testing {
 
+namespace detail {
+
+inline
+int
+mkstemp( char* templated_string )
+{
+#ifdef _WIN32
+  char* result = _mktemp( templated_string );
+  if( result == NULL )
+  {
+    if( errno == EINVAL )
+    {
+      fprintf( stderr, "Bad parameter for _mktemp" );
+    }
+    else if( errno == EEXIST )
+    {
+      fprintf( stderr, "Out of unique filenames" );
+    }
+    return -1;
+  }
+
+  int fd = _open( result, _O_CREAT );
+  return fd;
+#else
+  return ::mkstemp( templated_string );
+#endif
+}
+
+} // namespace detail
+
 // ----------------------------------------------------------------------------
 
 /** @brief Generate a unique file name in the current working directory.
  *
  * @param prefix Prefix for generated file name.
- * @param suffix Suffix for generated file name, ignored.
+ * @param suffix Suffix for generated file name.
  */
+inline
 std::string
 temp_file_name( char const* prefix, char const* suffix )
 {
@@ -43,7 +78,7 @@ temp_file_name( char const* prefix, char const* suffix )
   std::vector< char > tempFileName( templateName.begin(), templateName.end() );
   tempFileName.push_back( '\0' );
 
-  int fd = mkstemp( tempFileName.data() );
+  int fd = detail::mkstemp( tempFileName.data() );
   if( fd == -1 )
   {
     throw std::runtime_error( "Failed to create temporary file" );
