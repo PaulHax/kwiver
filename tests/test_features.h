@@ -5,14 +5,14 @@
 /**
  * \file
  *
- * \brief Various functions for creating a set of features with attributes
+ * \brief Functions to create a set of features with attributes
  * for testing the filter_features implementations
  *
  * These functions are shared by various tests
  */
 
-#ifndef KWIVER_TEST_TEST_FEATURES_A_H_
-#define KWIVER_TEST_TEST_FEATURES_A_H_
+#ifndef KWIVER_TEST_TEST_FEATURES_H_
+#define KWIVER_TEST_TEST_FEATURES_H_
 
 #include <random>
 
@@ -26,11 +26,8 @@ namespace kwiver {
 namespace testing {
 
 // Generate a set of generic features
-//
-// parameters are:
-// ..
-// ..
-// ..
+// Function spreads feature values evenly over the number of features
+// see <vital/types/feature.h> for parameter descriptions
 
 template < typename T >
 feature_set_sptr
@@ -58,8 +55,8 @@ make_n_features( size_t num_feat )
   return std::make_shared< simple_feature_set >( feat );
 }
 
-// Create a set of 10 features with known and
-// unordered scale and magnitude values
+// Create a set of 10 features with known (unordered )
+// scale and magnitude values for unit testing
 
 template < typename T >
 feature_set_sptr
