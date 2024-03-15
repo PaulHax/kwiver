@@ -11,7 +11,7 @@ set(vxl_headers_public
   aligned_edge_detection.h
   average_frames.h
   bounding_box.h
-  # bundle_adjust.h
+  bundle_adjust.h
   camera.h
   camera_map.h
   # close_loops_homography_guided.h
@@ -42,7 +42,7 @@ set(vxl_headers_public
 set(vxl_sources
   aligned_edge_detection.cxx
   average_frames.cxx
-  # bundle_adjust.cxx
+  bundle_adjust.cxx
   camera.cxx
   camera_map.cxx
   # close_loops_homography_guided.cxx

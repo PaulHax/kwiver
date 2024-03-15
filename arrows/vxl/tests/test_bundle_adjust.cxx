@@ -7,6 +7,7 @@
 
 #include <arrows/vxl/bundle_adjust.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>
@@ -28,7 +29,7 @@ TEST ( bundle_adjust, create )
 {
   plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE( nullptr, algo::bundle_adjust::create( "vxl" ) );
+  EXPECT_NE( nullptr, create_algorithm< algo::bundle_adjust >( "vxl" ) );
 }
 
 // ----------------------------------------------------------------------------

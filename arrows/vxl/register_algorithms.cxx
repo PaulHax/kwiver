@@ -19,6 +19,8 @@
 // implementation
 #include <arrows/vxl/aligned_edge_detection.h>
 #include <arrows/vxl/average_frames.h>
+#include <arrows/vxl/bundle_adjust.h>
+#include <arrows/vxl/close_loops_homography_guided.h>
 #include <arrows/vxl/estimate_essential_matrix.h>
 #include <arrows/vxl/estimate_similarity_transform.h>
 #include <arrows/vxl/image_io.h>
@@ -64,6 +66,14 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::image_filter,
     average_frames >( "vxl_average_frames" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
+
+  fact = vpl.add_factory< vital::algo::bundle_adjust,
+    bundle_adjusts >( "vxl_bundle_adjust" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
+
+  fact = vpl.add_factory< vital::algo::close_loops_homography_guided,
+    close_loops_homography_guided >( "vxl_close_loops_homography_guided" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::estimate_essential_matrix,
