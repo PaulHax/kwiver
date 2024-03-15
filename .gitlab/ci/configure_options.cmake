@@ -34,6 +34,8 @@ configuration_flag(KWIVER_ENABLE_OPENCV "opencv")
 configuration_flag(KWIVER_ENABLE_PDAL "pdal")
 configuration_flag(KWIVER_ENABLE_PROJ "proj")
 configuration_flag(KWIVER_ENABLE_VXL "vxl")
+# super3d goes along with vxl
+configuration_flag(KWIVER_ENABLE_SUPER3D "vxl")
 configuration_flag(KWIVER_ENABLE_VTK "vtk")
 
 # Python settings.

@@ -1,31 +1,26 @@
 
 set(CMAKE_FOLDER "Arrows/Super3D")
 
-set(header_files
-  compute_depth.h
-  cost_volume.h
-  util.h
-  tv_refine_search.h
-  warp_image.h
-  world_angled_frustum.h
-  world_space.h
-  )
-
-set(cxx_files
-  compute_depth.cxx
-  cost_volume.cxx
-  util.cxx
-  tv_refine_search.cxx
+set( plugin_super3d_headers )
+set( plugin_super3d_sources
   warp_image.hxx
-  warp_image.cxx
   warp_image_instances.cxx
-  world_angled_frustum.cxx
-  world_space.cxx
   )
+set( plugin_super3d_classes
+  compute_depth
+  cost_volume
+  tv_refine_search
+  util
+  warp_image
+  world_angled_frustum
+  world_space
+)
+
+kwiver_expand_class_list( "${plugin_super3d_classes}" plugin_super3d_headers plugin_super3d_sources )
 
 kwiver_install_headers(
   SUBDIR     arrows/super3d
-  ${header_files}
+  ${plugin_super3d_headers}
   )
 
 kwiver_install_headers(
@@ -34,8 +29,8 @@ kwiver_install_headers(
   )
 
 kwiver_add_library(kwiver_algo_super3d
-  ${header_files}
-  ${cxx_files}
+  ${plugin_super3d_headers}
+  ${plugin_super3d_sources}
   )
 target_link_libraries(kwiver_algo_super3d
   PUBLIC              vital_algo
@@ -47,3 +42,8 @@ target_link_libraries(kwiver_algo_super3d
 algorithms_create_plugin( kwiver_algo_super3d
   register_algorithms.cxx
   )
+
+
+if (KWIVER_ENABLE_TESTS)
+  add_subdirectory(tests)
+endif(KWIVER_ENABLE_TESTS)
