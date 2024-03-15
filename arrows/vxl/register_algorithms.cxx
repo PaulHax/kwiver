@@ -69,10 +69,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::bundle_adjust,
-    bundle_adjusts >( "vxl_bundle_adjust" );
+    bundle_adjust >( "vxl_bundle_adjust" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
-  fact = vpl.add_factory< vital::algo::close_loops_homography_guided,
+  fact = vpl.add_factory< vital::algo::close_loops,
     close_loops_homography_guided >( "vxl_close_loops_homography_guided" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
