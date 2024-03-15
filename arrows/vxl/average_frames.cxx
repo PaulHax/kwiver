@@ -6,8 +6,6 @@
 
 #include <arrows/vxl/image_container.h>
 
-#include <vital/util/enum_converter.h>
-
 #include <vil/vil_convert.h>
 #include <vil/vil_image_view.h>
 #include <vil/vil_math.h>
@@ -25,19 +23,6 @@ namespace arrows {
 namespace vxl {
 
 namespace {
-
-enum averager_mode
-{
-  AVERAGER_cumulative,
-  AVERAGER_window,
-  AVERAGER_exponential,
-};
-
-ENUM_CONVERTER(
-  averager_converter, averager_mode,
-  { "cumulative", AVERAGER_cumulative },
-  { "window", AVERAGER_window },
-  { "exponential", AVERAGER_exponential } );
 
 // ----------------------------------------------------------------------------
 class online_frame_averager_base
@@ -496,12 +481,20 @@ public:
   using frame_averager_float_sptr =
     std::unique_ptr< online_frame_averager< double > >;
 
-  averager_mode type{ AVERAGER_window };
-  unsigned window_size{ 10 };
-  double exp_weight{ 0.3 };
-  bool round{ false };
-  bool output_variance{ false };
-  double variance_scale{ 0.0 };
+  priv( average_frames& parent ) : parent{ parent } {}
+
+  average_frames& parent;
+
+  const std::string&
+  c_type() const { return parent.c_type; }
+  unsigned
+  c_window_size() const { return parent.c_window_size; }
+  double
+  c_exp_weight() const { return parent.c_exp_weight; }
+  bool
+  c_round() const { return parent.c_round; }
+  bool
+  c_output_variance() const { return parent.c_output_variance; }
 
   // The actual frame averagers
   using averager_ptr = std::unique_ptr< online_frame_averager_base >;
@@ -517,7 +510,7 @@ public:
     auto& averager = frame_averager[ vil_pixel_format_of( PixType{} ) ];
     if( !averager )
     {
-      switch( type )
+      switch( averager_converter().from_string( c_type() ) )
       {
         case AVERAGER_window:
         {
@@ -526,19 +519,21 @@ public:
         }
         case AVERAGER_cumulative:
         {
-          averager.reset( new cumulative_frame_averager< PixType >{ round } );
+          averager.reset(
+            new cumulative_frame_averager< PixType >{ c_round() } );
           break;
         }
         case AVERAGER_exponential:
         {
-          if( exp_weight <= 0 || exp_weight >= 1 )
+          if( c_exp_weight() <= 0 || c_exp_weight() >= 1 )
           {
             throw std::runtime_error{
                     "Invalid exponential averaging coefficient!" };
           }
 
           averager.reset(
-            new exponential_frame_averager< PixType >{ round, exp_weight } );
+            new exponential_frame_averager< PixType >{ c_round(),
+                                                       c_exp_weight() } );
           break;
         }
       }
@@ -556,7 +551,7 @@ public:
   {
     auto* const averager = load_model< PixType >();
 
-    if( !output_variance )
+    if( !c_output_variance() )
     {
       vil_image_view< PixType > output;
       averager->process_frame( input, output );
@@ -573,64 +568,12 @@ public:
 };
 
 // ----------------------------------------------------------------------------
-average_frames
-::average_frames()
-  : d{ new priv{} }
-{
-  attach_logger( "arrows.vxl.average_frames" );
-}
-
-// ----------------------------------------------------------------------------
-average_frames
-::~average_frames()
-{}
-
-// ----------------------------------------------------------------------------
-vital::config_block_sptr
-average_frames
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config = algorithm::get_configuration();
-
-  config->set_value(
-    "type", averager_converter().to_string( d->type ),
-    "Operating mode of this filter, possible values: " +
-    averager_converter().element_name_string() );
-  config->set_value(
-    "window_size", d->window_size,
-    "The window size if computing a windowed moving average." );
-  config->set_value(
-    "exp_weight", d->exp_weight,
-    "Exponential averaging coefficient if computing an exp average." );
-  config->set_value(
-    "round", d->round,
-    "Should we spend a little extra time rounding when possible?" );
-  config->set_value(
-    "output_variance", d->output_variance,
-    "If set, will compute an estimated variance for each pixel which "
-    "will be outputted as either a double-precision or byte image." );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
 void
 average_frames
-::set_configuration( vital::config_block_sptr in_config )
+::initialize()
 {
-  // Start with our generated vital::config_block to ensure that assumed values
-  // are present. An alternative would be to check for key presence before
-  // performing a get_value() call.
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  // Settings for averaging
-  d->type = config->get_enum_value< averager_converter >( "type" );
-  d->window_size = config->get_value< unsigned >( "window_size" );
-  d->exp_weight = config->get_value< double >( "exp_weight" );
-  d->round = config->get_value< bool >( "round" );
-  d->output_variance = config->get_value< bool >( "output_variance" );
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+  attach_logger( "arrows.vxl.average_frames" );
 }
 
 // ----------------------------------------------------------------------------
@@ -638,13 +581,13 @@ bool
 average_frames
 ::check_configuration( vital::config_block_sptr config ) const
 {
-  auto const& type = config->get_enum_value< averager_converter >( "type" );
-  if( !( type == AVERAGER_cumulative || type == AVERAGER_window ||
-         type == AVERAGER_exponential ) )
+  auto const& c_type = config->get_enum_value< averager_converter >( "type" );
+  if( !( c_type == AVERAGER_cumulative || c_type == AVERAGER_window ||
+         c_type == AVERAGER_exponential ) )
   {
     return false;
   }
-  else if( type == AVERAGER_exponential )
+  else if( c_type == AVERAGER_exponential )
   {
     double exp_weight = config->get_value< double >( "exp_weight" );
     if( exp_weight <= 0 || exp_weight > 1 )

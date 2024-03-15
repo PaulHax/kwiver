@@ -18,13 +18,13 @@
 
 // implementation
 #include <arrows/vxl/aligned_edge_detection.h>
+#include <arrows/vxl/average_frames.h>
 #include <arrows/vxl/estimate_essential_matrix.h>
 #include <arrows/vxl/estimate_similarity_transform.h>
 #include <arrows/vxl/image_io.h>
 #include <arrows/vxl/kd_tree.h>
 #include <arrows/vxl/optimize_cameras.h>
 
-// #include <arrows/vxl/average_frames.h>
 // #include <arrows/vxl/bundle_adjust.h>
 // #include <arrows/vxl/close_loops_homography_guided.h>
 // #include <arrows/vxl/color_commonality_filter.h>
@@ -60,6 +60,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   auto fact = vpl.add_factory< vital::algo::image_filter,
     aligned_edge_detection >( "vxl_aligned_edge_detection" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
+
+  fact = vpl.add_factory< vital::algo::image_filter,
+    average_frames >( "vxl_average_frames" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::estimate_essential_matrix,

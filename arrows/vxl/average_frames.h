@@ -9,11 +9,20 @@
 
 #include <vital/algo/image_filter.h>
 
+#include <vital/util/enum_converter.h>
+
 namespace kwiver {
 
 namespace arrows {
 
 namespace vxl {
+
+enum averager_mode
+{
+  AVERAGER_cumulative,
+  AVERAGER_window,
+  AVERAGER_exponential,
+};
 
 /// VXL Frame Averaging Process.
 ///
@@ -23,29 +32,52 @@ class KWIVER_ALGO_VXL_EXPORT average_frames
   : public vital::algo::image_filter
 {
 public:
-  PLUGIN_INFO(
-    "vxl_average",
-    "Use VXL to average frames together." )
+  PLUGGABLE_IMPL(
+    average_frames,
+    "Use VXL to average frames together.",
+    PARAM_DEFAULT(
+      type, std::string,
+      "Operating mode of this filter, possible values: " +
+      averager_converter().element_name_string(),
+      averager_converter().to_string( AVERAGER_window ) ),
+    PARAM_DEFAULT(
+      window_size, unsigned,
+      "The window size if computing a windowed moving average.",
+      10 ),
+    PARAM_DEFAULT(
+      exp_weight, double,
+      "Exponential averaging coefficient if computing an exp average.",
+      0.3 ),
+    PARAM_DEFAULT(
+      round, bool,
+      "Should we spend a little extra time rounding when possible?",
+      false ),
+    PARAM_DEFAULT(
+      output_variance, bool,
+      "If set, will compute an estimated variance for each pixel which "
+      "will be outputted as either a double-precision or byte image.",
+      false )
+  )
 
-  average_frames();
-  virtual ~average_frames();
+  virtual ~average_frames() = default;
 
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink.
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block.
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's currently configuration is valid.
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
   /// Average frames temporally.
   virtual kwiver::vital::image_container_sptr filter(
     kwiver::vital::image_container_sptr image_data );
 
-private:
-  class priv;
+  ENUM_CONVERTER(
+    averager_converter, averager_mode,
+    { "cumulative", AVERAGER_cumulative },
+    { "window", AVERAGER_window },
+    { "exponential", AVERAGER_exponential } );
 
-  const std::unique_ptr< priv > d;
+private:
+  void initialize() override;
+  class priv;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // namespace vxl

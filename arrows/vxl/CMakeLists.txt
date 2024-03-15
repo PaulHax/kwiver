@@ -9,7 +9,7 @@ endif()
 
 set(vxl_headers_public
   aligned_edge_detection.h
-  # average_frames.h
+  average_frames.h
   bounding_box.h
   # bundle_adjust.h
   camera.h
@@ -41,7 +41,7 @@ set(vxl_headers_public
 
 set(vxl_sources
   aligned_edge_detection.cxx
-  # average_frames.cxx
+  average_frames.cxx
   # bundle_adjust.cxx
   camera.cxx
   camera_map.cxx
