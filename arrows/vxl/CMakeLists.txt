@@ -21,7 +21,7 @@ set(vxl_headers_public
   estimate_canonical_transform.h
   estimate_essential_matrix.h
   estimate_fundamental_matrix.h
-  # estimate_homography.h
+  estimate_homography.h
   estimate_similarity_transform.h
   # hashed_image_classifier_filter.h
   # high_pass_filter.h
@@ -52,7 +52,7 @@ set(vxl_sources
   estimate_canonical_transform.cxx
   estimate_essential_matrix.cxx
   estimate_fundamental_matrix.cxx
-  # estimate_homography.cxx
+  estimate_homography.cxx
   estimate_similarity_transform.cxx
   # hashed_image_classifier.cxx
   # hashed_image_classifier_filter.cxx
