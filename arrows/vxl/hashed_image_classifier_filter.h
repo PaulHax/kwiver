@@ -20,29 +20,32 @@ class KWIVER_ALGO_VXL_EXPORT hashed_image_classifier_filter
   : public vital::algo::image_filter
 {
 public:
-  PLUGIN_INFO(
-    "vxl_hashed_image_classifier_filter",
-    "Perform per-pixel classification on an image of features." )
+  PLUGGABLE_IMPL(
+    hashed_image_classifier_filter,
+    "Perform per-pixel classification on an image of features.",
+    PARAM(
+      model_file, std::string,
+      "Model file from which to load weights." ),
+    PARAM_DEFAULT(
+      offset, double,
+      "Value to initialize the response map with.",
+      0.0 )
+  )
 
-  hashed_image_classifier_filter();
-  virtual ~hashed_image_classifier_filter();
+  virtual ~hashed_image_classifier_filter() = default;
 
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink.
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block.
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's currently configuration is valid.
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
   /// Perform per-pixel classification.
   virtual kwiver::vital::image_container_sptr filter(
     kwiver::vital::image_container_sptr image_data );
 
 private:
+  void initialize() override;
   class priv;
 
-  std::unique_ptr< priv > const d;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // namespace vxl
