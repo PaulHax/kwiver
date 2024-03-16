@@ -106,6 +106,18 @@ register_factories( kwiver::vital::plugin_loader& vpl )
     high_pass_filter >( "vxl_high_pass_filter" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
+//  fact = vpl.add_factory< vital::algo::match_features,
+//    match_features_constrained >( "vxl_match_features_constrained" );
+//  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
+
+  fact = vpl.add_factory< vital::algo::estimate_essential_matrix,
+    estimate_essential_matrix >( "vxl" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
+
+  fact = vpl.add_factory< vital::algo::estimate_similarity_transform,
+    estimate_similarity_transform >( "vxl" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
+
   fact = vpl.add_factory< vital::algo::image_io,
     image_io >( "vxl" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );

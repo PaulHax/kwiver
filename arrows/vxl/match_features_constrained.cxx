@@ -31,11 +31,9 @@ class match_features_constrained::priv
 {
 public:
   // Constructor
-  priv()
-    : scale_thresh( 2.0 ),
-      angle_thresh( -1.0 ),
-      radius_thresh( 200.0 )
-  {}
+  priv( match_features_constrained& parent ) : parent( parent ) {}
+
+  match_features_constrained& parent;
 
   // --------------------------------------------------------------------------
   // Compute the minimum angle between two angles in degrees
@@ -93,7 +91,9 @@ public:
       query_pt.set_cartesian(
         vnl_vector_fixed< double,
           3 >( f1->loc().data() ) );
-      kdtree.points_in_radius( query_pt, this->radius_thresh, points, indices );
+      kdtree.points_in_radius(
+        query_pt, this->c_radius_thresh(), points,
+        indices );
 
       int closest = -1;
       double closest_dist = std::numeric_limits< double >::max();
@@ -104,14 +104,14 @@ public:
       {
         int index = indices[ j ];
         vital::feature_sptr f2 = feat2_vec[ index ];
-        if( ( scale_thresh <= 0.0  || std::max(
+        if( ( c_scale_thresh() <= 0.0  || std::max(
           f1->scale(),
           f2->scale() ) / std::min(
                 f1->scale(),
-                f2->scale() ) <= scale_thresh ) &&
-            ( angle_thresh <= 0.0  || angle_dist(
+                f2->scale() ) <= c_scale_thresh() ) &&
+            ( c_angle_thresh() <= 0.0  || angle_dist(
               f2->angle(),
-              f1->angle() ) <= angle_thresh ) )
+              f1->angle() ) <= c_angle_thresh() ) )
         {
           vnl_vector< double > d2( desc2_vec[ index ]->as_double().data(),
             static_cast< unsigned >( desc2_vec[ index ]->size() ) );
@@ -133,70 +133,23 @@ public:
     LOG_INFO( m_logger, "Found " << matches.size() << " matches." );
   }
 
-  double scale_thresh;
-  double angle_thresh;
-  double radius_thresh;
+  double
+  c_scale_thresh() const { return parent.c_scale_thresh; }
+  double
+  c_angle_thresh() const { return parent.c_angle_thresh; }
+  double
+  c_radius_thresh() const { return parent.c_radius_thresh; }
 
   vital::logger_handle_t m_logger;
 };
 
 // ----------------------------------------------------------------------------
-// Constructor
-match_features_constrained
-::match_features_constrained()
-  : d_( new priv )
-{
-  attach_logger( "arrows.vxl.match_features_constrained" );
-  d_->m_logger = logger();
-}
-
-// Destructor
-match_features_constrained
-::~match_features_constrained()
-{}
-
-// ----------------------------------------------------------------------------
-// Get this algorithm's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-match_features_constrained
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config =
-    vital::algo::match_features::get_configuration();
-
-  config->set_value(
-    "scale_thresh", d_->scale_thresh,
-    "Ratio threshold of scales between matching keypoints (>=1.0)"
-    " -1 turns scale thresholding off" );
-
-  config->set_value(
-    "angle_thresh", d_->angle_thresh,
-    "Angle difference threshold between matching keypoints"
-    " -1 turns angle thresholding off" );
-
-  config->set_value(
-    "radius_thresh", d_->radius_thresh,
-    "Search radius for a match in pixels" );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-// Set this algorithm's properties via a config block
 void
 match_features_constrained
-::set_configuration( vital::config_block_sptr config )
+::initialize()
 {
-  d_->scale_thresh = config->get_value< double >(
-    "scale_thresh",
-    d_->scale_thresh );
-  d_->angle_thresh = config->get_value< double >(
-    "angle_thresh",
-    d_->angle_thresh );
-  d_->radius_thresh = config->get_value< double >(
-    "radius_thresh",
-    d_->radius_thresh );
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+  attach_logger( "arrows.vxl.match_features_constrained" );
 }
 
 // ----------------------------------------------------------------------------
@@ -207,21 +160,23 @@ match_features_constrained
 {
   double radius_thresh = config->get_value< double >(
     "radius_thresh",
-    d_->radius_thresh );
+    d->c_radius_thresh() );
   if( radius_thresh <= 0.0 )
   {
-    LOG_ERROR( logger(), "radius_thresh should be > 0.0, is " << radius_thresh);
+    LOG_ERROR(
+      logger(),
+      "radius_thresh should be > 0.0, is " << radius_thresh );
     return false;
   }
 
   double scale_thresh = config->get_value< double >(
     "scale_thresh",
-    d_->scale_thresh );
+    d->c_scale_thresh() );
   if( scale_thresh < 1.0 && scale_thresh >= 0.0 )
   {
     LOG_ERROR(
       logger(), "scale_thresh should be >= 1.0 (or < 0.0 to disable), is "
-        << scale_thresh);
+        << scale_thresh );
     return false;
   }
 
@@ -242,7 +197,7 @@ match_features_constrained
   }
 
   std::vector< vital::match > matches;
-  d_->match( feat1, desc1, feat2, desc2, matches );
+  d->match( feat1, desc1, feat2, desc2, matches );
 
   return std::make_shared< vital::simple_match_set >(
     vital::simple_match_set(

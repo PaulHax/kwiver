@@ -29,7 +29,7 @@ set(vxl_headers_public
   image_container.h
   image_io.h
   kd_tree.h
-# match_features_constrained.h
+  match_features_constrained.h
   morphology.h
   optimize_cameras.h
   pixel_feature_extractor.h
@@ -61,7 +61,7 @@ set(vxl_sources
   image_container.cxx
   image_io.cxx
   kd_tree.cxx
-#  match_features_constrained.cxx
+  match_features_constrained.cxx
   morphology.cxx
   optimize_cameras.cxx
   pixel_feature_extractor.cxx
