@@ -6,8 +6,6 @@
 
 #include <arrows/vxl/image_container.h>
 
-#include <vital/util/enum_converter.h>
-
 #include <vital/range/iota.h>
 
 #include <vil/algo/vil_binary_closing.h>
@@ -25,44 +23,6 @@ namespace arrows {
 namespace vxl {
 
 namespace {
-
-enum morphology_mode
-{
-  MORPHOLOGY_erode,
-  MORPHOLOGY_dilate,
-  MORPHOLOGY_open,
-  MORPHOLOGY_close,
-  MORPHOLOGY_none,
-};
-
-ENUM_CONVERTER(
-  morphology_converter, morphology_mode,
-  { "erode", MORPHOLOGY_erode }, { "dilate", MORPHOLOGY_dilate },
-  { "open", MORPHOLOGY_open }, { "close", MORPHOLOGY_close },
-  { "none", MORPHOLOGY_none } );
-
-enum element_mode
-{
-  ELEMENT_disk,
-  ELEMENT_jline,
-  ELEMENT_iline,
-};
-
-ENUM_CONVERTER(
-  element_converter, element_mode, { "disk", ELEMENT_disk },
-  { "iline", ELEMENT_iline }, { "jline", ELEMENT_jline } );
-
-enum combine_mode
-{
-  COMBINE_none,
-  COMBINE_union,
-  COMBINE_intersection,
-};
-
-ENUM_CONVERTER(
-  combine_converter, combine_mode, { "none", COMBINE_none },
-  { "union", COMBINE_union },
-  { "intersection", COMBINE_intersection } );
 
 // ----------------------------------------------------------------------------
 inline bool
@@ -89,6 +49,10 @@ public:
     vil_image_view< bool >&,
     vil_structuring_element const& );
 
+  priv( morphology& parent ) : parent( parent ) {}
+
+  morphology& parent;
+
   // Set up structuring elements
   void setup_internals();
 
@@ -108,10 +72,14 @@ public:
   bool configured{ false };
   vil_structuring_element morphological_element;
 
-  morphology_mode morphology_type{ MORPHOLOGY_dilate };
-  element_mode element_type{ ELEMENT_disk };
-  combine_mode combine_type{ COMBINE_none };
-  double kernel_radius{ 1.5 };
+  const std::string&
+  c_morphology() const { return parent.c_morphology; }
+  const std::string&
+  c_element_shape() const { return parent.c_element_shape; }
+  const std::string&
+  c_channel_combination() const { return parent.c_channel_combination; }
+  double
+  c_kernel_radius() const { return parent.c_kernel_radius; }
 };
 
 // ----------------------------------------------------------------------------
@@ -121,25 +89,25 @@ morphology::priv
 {
   if( !configured )
   {
-    switch( element_type )
+    switch( element_converter().from_string( c_element_shape() ) )
     {
       case ELEMENT_disk:
       {
-        morphological_element.set_to_disk( kernel_radius );
+        morphological_element.set_to_disk( c_kernel_radius() );
         break;
       }
       case ELEMENT_iline:
       {
         morphological_element.set_to_line_i(
-          -static_cast< int >( kernel_radius ),
-          static_cast< int >( kernel_radius ) );
+          -static_cast< int >( c_kernel_radius() ),
+          static_cast< int >( c_kernel_radius() ) );
         break;
       }
       case ELEMENT_jline:
       {
         morphological_element.set_to_line_j(
-          -static_cast< int >( kernel_radius ),
-          static_cast< int >( kernel_radius ) );
+          -static_cast< int >( c_kernel_radius() ),
+          static_cast< int >( c_kernel_radius() ) );
         break;
       }
     }
@@ -171,7 +139,7 @@ morphology::priv
   vil_image_view< bool > const& input,
   vil_image_view< bool >& output )
 {
-  switch( morphology_type )
+  switch( morphology_converter().from_string( c_morphology() ) )
   {
     case MORPHOLOGY_erode:
     {
@@ -212,7 +180,10 @@ morphology::priv
 
   apply_morphology( input, output );
 
-  if( combine_type == COMBINE_none )
+  int channel_combination =
+    combine_converter().from_string( c_channel_combination() );
+
+  if( channel_combination == COMBINE_none )
   {
     // Don't combine across channels
     return output;
@@ -220,7 +191,7 @@ morphology::priv
 
   // Select whether to do pixel-wise union or intersection
   auto functor =
-    ( combine_type == COMBINE_union
+    ( channel_combination == COMBINE_union
       ? union_functor : intersection_functor );
 
   auto accumulator = vil_plane( output, 0 );
@@ -234,64 +205,12 @@ morphology::priv
 }
 
 // ----------------------------------------------------------------------------
-morphology
-::morphology()
-  : d{ new priv{} }
-{
-  attach_logger( "arrows.vxl.morphology" );
-}
-
-// ----------------------------------------------------------------------------
-morphology::~morphology() = default;
-
-// ----------------------------------------------------------------------------
-vital::config_block_sptr
-morphology
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config = algorithm::get_configuration();
-
-  config->set_value(
-    "morphology", morphology_converter().to_string( d->morphology_type ),
-    "Morphological operation to apply. Possible options are: " +
-    morphology_converter().element_name_string() );
-  config->set_value(
-    "element_shape", element_converter().to_string( d->element_type ),
-    "Shape of the structuring element. Possible options are: " +
-    element_converter().element_name_string() );
-  config->set_value(
-    "kernel_radius", d->kernel_radius,
-    "Radius of morphological kernel." );
-  config->set_value(
-    "channel_combination", combine_converter().to_string( d->combine_type ),
-    "Method for combining multiple binary channels. Possible options are: " +
-    morphology_converter().element_name_string() );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
 void
 morphology
-::set_configuration( vital::config_block_sptr in_config )
+::initialize()
 {
-  // Start with our generated vital::config_block to ensure that assumed values
-  // are present. An alternative would be to check for key presence before
-  // performing a get_value() call.
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  d->morphology_type =
-    config->get_enum_value< morphology_converter >( "morphology" );
-  d->element_type =
-    config->get_enum_value< element_converter >( "element_shape" );
-  d->kernel_radius = config->get_value< double >( "kernel_radius" );
-  d->combine_type =
-    config->get_enum_value< combine_converter >( "channel_combination" );
-
-  // Note that some internal elements must be reset
-  d->configured = false;
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+  attach_logger( "arrows.vxl.morphology" );
 }
 
 // ----------------------------------------------------------------------------
