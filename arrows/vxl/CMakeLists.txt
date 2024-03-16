@@ -32,7 +32,7 @@ set(vxl_headers_public
 # match_features_constrained.h
   morphology.h
   optimize_cameras.h
-  # pixel_feature_extractor.h
+  pixel_feature_extractor.h
   polygon.h
   # split_image.h
   # threshold.h
@@ -64,7 +64,7 @@ set(vxl_sources
 #  match_features_constrained.cxx
   morphology.cxx
   optimize_cameras.cxx
-  # pixel_feature_extractor.cxx
+  pixel_feature_extractor.cxx
   polygon.cxx
   # split_image.cxx
   # threshold.cxx
