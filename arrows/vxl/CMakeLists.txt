@@ -47,7 +47,7 @@ set(vxl_sources
   camera.cxx
   camera_map.cxx
   close_loops_homography_guided.cxx
-  # color_commonality_filter.cxx
+  color_commonality_filter.cxx
   compute_homography_overlap.cxx
   convert_image.cxx
   estimate_canonical_transform.cxx

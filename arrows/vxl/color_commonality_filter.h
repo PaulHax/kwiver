@@ -23,29 +23,54 @@ class KWIVER_ALGO_VXL_EXPORT color_commonality_filter
   : public vital::algo::image_filter
 {
 public:
-  PLUGIN_INFO(
-    "vxl_color_commonality",
-    "Filter image based on color frequency or commonality." )
+  PLUGGABLE_IMPL(
+    color_commonality_filter,
+    "Filter image based on color frequency or commonality.",
+    PARAM_DEFAULT(
+      color_resolution_per_channel, unsigned,
+      "Resolution of the utilized histogram (per channel) if the input "
+      "contains 3 channels. Must be a power of two.",
+      8 ),
+    PARAM_DEFAULT(
+      intensity_resolution, unsigned,
+      "Resolution of the utilized histogram if the input "
+      "contains 1 channel. Must be a power of two.",
+      16 ),
+    PARAM_DEFAULT(
+      output_scale, unsigned,
+      "Scale the output image (typically, values start in the range [0,1]) "
+      "by this amount. Enter 0 for type-specific default.",
+      0 ),
+    PARAM_DEFAULT(
+      grid_image, bool,
+      "Instead of calculating which colors are more common "
+      "in the entire image, should we do it for smaller evenly "
+      "spaced regions?",
+      false ),
+    PARAM_DEFAULT(
+      grid_resolution_height, unsigned,
+      "Divide the height of the image into x regions, if enabled.",
+      5 ),
+    PARAM_DEFAULT(
+      grid_resolution_width, unsigned,
+      "Divide the width of the image into x regions, if enabled.",
+      6 )
+  )
 
-  color_commonality_filter();
-  virtual ~color_commonality_filter();
+  virtual ~color_commonality_filter() = default;
 
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink.
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block.
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's currently configuration is valid.
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
   /// Perform pixel frequency computation for one frame.
   virtual kwiver::vital::image_container_sptr filter(
     kwiver::vital::image_container_sptr image_data );
 
 private:
+  void initialize() override;
   class priv;
 
-  std::unique_ptr< priv > const d;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // namespace vxl

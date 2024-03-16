@@ -21,6 +21,7 @@
 #include <arrows/vxl/average_frames.h>
 #include <arrows/vxl/bundle_adjust.h>
 #include <arrows/vxl/close_loops_homography_guided.h>
+#include <arrows/vxl/color_commonality_filter.h>
 #include <arrows/vxl/convert_image.h>
 #include <arrows/vxl/estimate_canonical_transform.h>
 #include <arrows/vxl/estimate_essential_matrix.h>
@@ -37,7 +38,6 @@
 
 // #include <arrows/vxl/bundle_adjust.h>
 // #include <arrows/vxl/close_loops_homography_guided.h>
-// #include <arrows/vxl/color_commonality_filter.h>
 // #include <arrows/vxl/pixel_feature_extractor.h>
 // #include <arrows/vxl/split_image.h>
 // #include <arrows/vxl/threshold.h>
@@ -77,7 +77,7 @@ register_factories( kwiver::vital::plugin_loader& vpl )
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::image_filter,
-    convert_image >( "vxl_convert_image" );
+    color_commonality_filter >( "vxl_color_commonality_filter" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::estimate_canonical_transform,
