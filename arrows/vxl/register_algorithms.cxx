@@ -28,6 +28,7 @@
 #include <arrows/vxl/estimate_homography.h>
 #include <arrows/vxl/estimate_similarity_transform.h>
 #include <arrows/vxl/hashed_image_classifier_filter.h>
+#include <arrows/vxl/high_pass_filter.h>
 #include <arrows/vxl/image_io.h>
 #include <arrows/vxl/kd_tree.h>
 #include <arrows/vxl/optimize_cameras.h>
@@ -35,7 +36,6 @@
 // #include <arrows/vxl/bundle_adjust.h>
 // #include <arrows/vxl/close_loops_homography_guided.h>
 // #include <arrows/vxl/color_commonality_filter.h>
-// #include <arrows/vxl/high_pass_filter.h>
 // #include <arrows/vxl/match_features_constrained.h>
 // #include <arrows/vxl/morphology.h>
 // #include <arrows/vxl/pixel_feature_extractor.h>
@@ -94,6 +94,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::image_filter,
     hashed_image_classifier_filter >( "vxl_hashed_image_classifier_filter" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
+
+  fact = vpl.add_factory< vital::algo::image_filter,
+    high_pass_filter >( "vxl_high_pass_filter" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::estimate_essential_matrix,

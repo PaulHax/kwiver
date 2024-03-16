@@ -25,7 +25,7 @@ set(vxl_headers_public
   estimate_similarity_transform.h
   hashed_image_classifier.h
   hashed_image_classifier_filter.h
-  # high_pass_filter.h
+  high_pass_filter.h
   image_container.h
   image_io.h
   kd_tree.h
@@ -57,7 +57,7 @@ set(vxl_sources
   estimate_similarity_transform.cxx
   hashed_image_classifier.cxx
   hashed_image_classifier_filter.cxx
-  # high_pass_filter.cxx
+  high_pass_filter.cxx
   image_container.cxx
   image_io.cxx
   kd_tree.cxx
