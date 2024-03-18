@@ -38,12 +38,19 @@ public:
 
   filter_features_magnitude& parent;
 
+  // Configuration values
+  double
+  c_top_fraction() const { return parent.c_top_fraction; }
+  unsigned int
+  c_min_features() const { return parent.c_min_features; }
+
+  // -------------------------------------------------------------------------
   feature_set_sptr
   filter( feature_set_sptr feat, std::vector< unsigned int >& ind ) const
   {
     const std::vector< feature_sptr >& feat_vec = feat->features();
     ind.clear();
-    if( feat_vec.size() <= min_features )
+    if( feat_vec.size() <= parent.c_min_features )
     {
       ind.resize( feat_vec.size() );
       for( unsigned int i = 0; i < ind.size(); ++i )
@@ -63,8 +70,8 @@ public:
 
     // compute threshold
     unsigned int cutoff = std::max(
-      min_features,
-      static_cast< unsigned int >( top_fraction * indices.size() ) );
+      parent.c_min_features,
+      static_cast< unsigned int >( parent.c_top_fraction * indices.size() ) );
 
     // partially sort on descending feature magnitude
     std::nth_element(
@@ -81,17 +88,13 @@ public:
     }
 
     LOG_INFO(
-      m_logger,
+      parent.logger(),
       "Reduced " << feat_vec.size() << " features to " << filtered.size() <<
         " features." );
 
     return std::make_shared< vital::simple_feature_set >(
       vital::simple_feature_set( filtered ) );
   }
-
-  double top_fraction;
-  unsigned int min_features;
-  vital::logger_handle_t m_logger;
 };
 
 // ----------------------------------------------------------------------------
@@ -116,7 +119,7 @@ filter_features_magnitude
 {
   double top_fraction = config->get_value< double >(
     "top_fraction",
-    d_->top_fraction );
+    d_->c_top_fraction() );
   if( top_fraction <= 0.0 || top_fraction > 1.0 )
   {
     LOG_ERROR(

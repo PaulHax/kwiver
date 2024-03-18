@@ -34,7 +34,7 @@ public:
       "Fraction of strongest keypoints to keep, range (0.0, 1.0]",
       0.2 ),
     PARAM_DEFAULT(
-      min_features, int,
+      min_features, unsigned int,
       "Minimum number of features to keep",
       100 )
   )
