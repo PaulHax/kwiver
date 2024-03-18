@@ -23,49 +23,13 @@ namespace arrows {
 
 namespace vxl {
 
-// Private implementation class
-class triangulate_landmarks::priv
-{
-public:
-  // Constructor
-  priv()
-  {}
-
-  // parameters - none yet
-};
-
 // ----------------------------------------------------------------------------
-// Constructor
+void
 triangulate_landmarks
-::triangulate_landmarks()
-  : d_( new priv )
+::initialize()
 {
   attach_logger( "arrows.vxl.triangulate_landmarks" );
 }
-
-// Destructor
-triangulate_landmarks
-::~triangulate_landmarks()
-{}
-
-// ----------------------------------------------------------------------------
-// Get this algorithm's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-triangulate_landmarks
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config =
-    vital::algo::triangulate_landmarks::get_configuration();
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-// Set this algorithm's properties via a config block
-void
-triangulate_landmarks
-::set_configuration( VITAL_UNUSED vital::config_block_sptr in_config )
-{}
 
 // ----------------------------------------------------------------------------
 // Check that the algorithm's currently configuration is valid

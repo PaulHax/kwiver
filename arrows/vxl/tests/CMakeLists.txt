@@ -38,7 +38,7 @@ kwiver_discover_gtests(vxl bundle_adjust               LIBRARIES ${test_librarie
 kwiver_discover_gtests(vxl estimate_essential_matrix   LIBRARIES ${test_libraries})
 kwiver_discover_gtests(vxl estimate_fundamental_matrix LIBRARIES ${test_libraries})
 kwiver_discover_gtests(vxl optimize_cameras            LIBRARIES ${test_libraries})
-# kwiver_discover_gtests(vxl triangulate_landmarks       LIBRARIES ${test_libraries})
+kwiver_discover_gtests(vxl triangulate_landmarks       LIBRARIES ${test_libraries})
 
 # This test is really for an algorithm in MVG, but it's here
 # because the test depends on availability of VXL sub-algorithms

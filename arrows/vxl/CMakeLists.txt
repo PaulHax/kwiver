@@ -36,7 +36,7 @@ set(vxl_headers_public
   polygon.h
   split_image.h
   threshold.h
-  # triangulate_landmarks.h
+  triangulate_landmarks.h
   vil_image_memory.h
   )
 
@@ -68,7 +68,7 @@ set(vxl_sources
   polygon.cxx
   split_image.cxx
   threshold.cxx
-  # triangulate_landmarks.cxx
+  triangulate_landmarks.cxx
   vil_image_memory.cxx
   )
 

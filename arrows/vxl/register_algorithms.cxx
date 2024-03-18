@@ -39,9 +39,7 @@
 #include <arrows/vxl/pixel_feature_extractor.h>
 #include <arrows/vxl/split_image.h>
 #include <arrows/vxl/threshold.h>
-
-// #include <arrows/vxl/bundle_adjust.h>
-// #include <arrows/vxl/triangulate_landmarks.h>
+#include <arrows/vxl/triangulate_landmarks.h>
 
 #ifdef VXL_ENABLE_FFMPEG
 #include <arrows/vxl/vidl_ffmpeg_video_input.h>
@@ -138,6 +136,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::image_filter,
     threshold >( "vxl_threshold" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
+
+  fact = vpl.add_factory< vital::algo::triangulate_landmarks,
+    triangulate_landmarks >( "vxl_triangulate_landmarks" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
 #ifdef VXL_ENABLE_FFMPEG
