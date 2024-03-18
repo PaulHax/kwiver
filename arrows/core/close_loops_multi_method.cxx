@@ -41,64 +41,99 @@ method_names( unsigned count )
   return output;
 }
 
-close_loops_multi_method
-::close_loops_multi_method()
-  : count_( 1 ),
-    methods_( 1 )
-{}
-
-// ----------------------------------------------------------------------------
-vital::config_block_sptr
-close_loops_multi_method
-::get_configuration() const
+/// Private implementation class
+class close_loops_multi_method::priv
 {
-  // Get base config from base class
-  vital::config_block_sptr config = algorithm::get_configuration();
+public:
+  priv( close_loops_multi_method& parent )
+    : parent( parent ),
+      methods_( 1 )
+  {}
 
-  // Internal parameters
-  config->set_value(
-    "count", count_,
-    "Number of close loops methods we want to use." );
+  close_loops_multi_method& parent;
 
-  // Sub-algorithm implementation name + sub_config block
-  std::vector< std::string > method_ids = method_names( count_ );
+  // Configuration value
+  unsigned c_count() { return parent.c_count; }
 
-  for( unsigned i = 0; i < method_ids.size(); i++ )
-  {
-    close_loops::get_nested_algo_configuration(
-      method_ids[ i ], config,
-      methods_[ i ] );
-  }
-
-  return config;
-}
+  /// The close loops methods to use.
+  std::vector< vital::algo::close_loops_sptr > methods_;
+};
 
 // ----------------------------------------------------------------------------
 void
 close_loops_multi_method
-::set_configuration( vital::config_block_sptr in_config )
+::initialize()
 {
-  // Starting with our generated config_block to ensure that assumed values are
-  // present
-  // An alternative is to check for key presence before performing a get_value()
-  // call.
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  // Parse count parameter
-  count_ = config->get_value< unsigned >( "count" );
-  methods_.resize( count_ );
-
-  // Parse methods
-  std::vector< std::string > method_ids = method_names( count_ );
-
-  for( unsigned i = 0; i < method_ids.size(); i++ )
-  {
-    close_loops::set_nested_algo_configuration(
-      method_ids[ i ], config,
-      methods_[ i ] );
-  }
+  attach_logger( "arrows.core.close_loops_multi_method" );
 }
+
+/// Destructor
+close_loops_multi_method
+::~close_loops_multi_method() noexcept
+{}
+
+/*
+ *  //
+ * ----------------------------------------------------------------------------
+ *  vital::config_block_sptr
+ *  close_loops_multi_method
+ *  ::get_configuration() const
+ *  {
+ *  // Get base config from base class
+ *  vital::config_block_sptr config = algorithm::get_configuration();
+ *
+ *  // Internal parameters
+ *  config->set_value(
+ *   "count", count_,
+ *   "Number of close loops methods we want to use." );
+ *
+ *  // Sub-algorithm implementation name + sub_config block
+ *  std::vector< std::string > method_ids = method_names( count_ );
+ *
+ *  for( unsigned i = 0; i < method_ids.size(); i++ )
+ *  {
+ *   close_loops::get_nested_algo_configuration(
+ *     method_ids[ i ], config,
+ *     methods_[ i ] );
+ *  }
+ *
+ *  return config;
+ *  }
+ */
+
+/*
+ *  //
+ * ----------------------------------------------------------------------------
+ *  void
+ *  close_loops_multi_method
+ *  ::set_configuration_internal( [[maybe_unused]] vital::config_block_sptr
+ * config )
+ *  {
+ *  // Starting with our generated config_block to ensure that assumed values
+ * are
+ *  // present
+ *  // An alternative is to check for key presence before performing a
+ * get_value()
+ *  // call.
+ *
+ *  //  vital::config_block_sptr config = this->get_configuration();
+ *  //  config->merge_config( in_config );
+ *
+ *  // Parse count parameter
+ *  unsigned count_ = d->c_count();
+ *  methods_.resize( count_ );
+ *
+ *  // Parse methods
+ *  std::vector< std::string > method_ids = method_names( count_ );
+ *
+ *  for( unsigned i = 0; i < method_ids.size(); i++ )
+ *  {
+ *   close_loops::set_nested_algo_configuration(
+ *     method_ids[ i ], config,
+ *     methods_[ i ] );
+ *  }
+ *  }
+ */
 
 // ----------------------------------------------------------------------------
 bool
@@ -110,7 +145,7 @@ close_loops_multi_method
 
   for( unsigned i = 0; i < method_ids.size(); i++ )
   {
-    if( !close_loops::check_nested_algo_configuration(
+    if( !check_nested_algo_configuration< vital::algo::close_loops >(
       method_ids[ i ],
       config ) )
     {

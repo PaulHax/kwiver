@@ -14,6 +14,7 @@
 #include <vital/types/image_container.h>
 #include <vital/types/track_set.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/close_loops.h>
 #include <vital/algo/match_features.h>
 
@@ -33,37 +34,17 @@ class KWIVER_ALGO_CORE_EXPORT close_loops_multi_method
   : public vital::algo::close_loops
 {
 public:
-  PLUGIN_INFO(
-    "multi_method",
-    "Iteratively run multiple loop closure algorithms." )
-
-  /// Default Constructor
-  close_loops_multi_method();
+  PLUGGABLE_IMPL(
+    close_loops_multi_method,
+    "Iteratively run multiple loop closure algorithms.",
+    PARAM_DEFAULT(
+      count, unsigned,
+      "Number of close loops methods we want to use.",
+      1 )
+  )
 
   /// Destructor
-  virtual ~close_loops_multi_method() = default;
-
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  ///
-  /// This base virtual function implementation returns an empty configuration
-  /// block whose name is set to \c this->type_name.
-  ///
-  /// \returns \c config_block containing the configuration for this algorithm
-  ///          and any nested components.
-  virtual vital::config_block_sptr get_configuration() const;
-
-  /// Set this algorithm's properties via a config block
-  ///
-  /// \throws no_such_configuration_value_exception
-  ///    Thrown if an expected configuration value is not present.
-  /// \throws algorithm_configuration_exception
-  ///    Thrown when the algorithm is given an invalid \c config_block or is'
-  ///    otherwise unable to configure itself.
-  ///
-  /// \param config  The \c config_block instance containing the configuration
-  ///                parameters for this algorithm
-  virtual void set_configuration( vital::config_block_sptr config );
+  virtual ~close_loops_multi_method();
 
   /// Check that the algorithm's currently configuration is valid
   ///
@@ -92,11 +73,16 @@ public:
     vital::image_container_sptr mask = vital::image_container_sptr() ) const;
 
 private:
-  /// Number of close loops methods we want to use.
-  unsigned count_;
-
   /// The close loops methods to use.
   std::vector< vital::algo::close_loops_sptr > methods_;
+
+  void initialize() override;
+
+  /// private implementation class
+  class priv;
+
+// protected:
+//  void set_configuration_internal( vital::config_block_sptr config ) override;
 };
 
 } // end namespace core
