@@ -89,7 +89,7 @@ TEST ( filter_features_scale, filter )
   EXPECT_EQ( top_fraction * num_features, ( filtered_set->features() ).size() );
 
   // Check that number of features is limited by min_features parameter
-  // default is 100
+  // (default = 100) when 200 features are filtered by top 20%
   feature_set_sptr min_set =
     kwiver::testing::make_n_features< double >( 200 );
 
@@ -98,7 +98,7 @@ TEST ( filter_features_scale, filter )
   EXPECT_EQ( min_features, ( filtered_min_set->features() ).size() );
 
   // check that number of features is limited by max_features parameter
-  // default is 1000
+  // (default = 1000) when 5200 features are filtered by top 20%
   feature_set_sptr max_set =
     kwiver::testing::make_n_features< double >( 5200 );
 
@@ -139,7 +139,7 @@ TEST ( filter_features_magnitude, filter )
   EXPECT_EQ( top_fraction * num_features, ( filtered_set->features() ).size() );
 
   // Check that number of features is limited by min_features parameter
-  // default is 100
+  // (default = 100) when 200 features are filtered by top 20%
   feature_set_sptr min_set =
     kwiver::testing::make_n_features< double >( 200 );
 
