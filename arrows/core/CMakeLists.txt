@@ -10,7 +10,7 @@ set( plugin_core_headers
   close_loops_exhaustive.h
   close_loops_keyframe.h
   close_loops_multi_method.h
-  # colorize.h
+  colorize.h
   compute_association_matrix_from_features.h
   compute_ref_homography_core.h
   convert_image_bypass.h
@@ -40,7 +40,7 @@ set( plugin_core_headers
   match_features_homography.h
   match_tracks.h
   merge_metadata_streams.h
-  # mesh_intersect.h
+  mesh_intersect.h
   mesh_operations.h
   metadata_map_io_csv.h
   metadata_stream_from_video.h
@@ -83,7 +83,7 @@ set( plugin_core_sources
   close_loops_exhaustive.cxx
   close_loops_keyframe.cxx
   close_loops_multi_method.cxx
-  # colorize.cxx
+  colorize.cxx
   compute_association_matrix_from_features.cxx
   compute_ref_homography_core.cxx
   convert_image_bypass.cxx
@@ -114,7 +114,7 @@ set( plugin_core_sources
   match_matrix.cxx
   match_tracks.cxx
   merge_metadata_streams.cxx
-  # mesh_intersect.cxx
+  mesh_intersect.cxx
   mesh_operations.cxx
   metadata_map_io_csv.cxx
   metadata_stream_from_video.cxx

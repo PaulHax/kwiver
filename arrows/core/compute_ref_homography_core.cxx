@@ -168,8 +168,6 @@ public:
   /// estimation fails.
   frame_id_t min_ref_frame;
 
-  vital::logger_handle_t m_logger;
-
   /// Estimate the homography between two corresponding points sets
   ///
   /// Check for homography validity.
@@ -194,7 +192,7 @@ public:
         pts_dst.size() < this->c_minimum_inliers() )
     {
       LOG_WARN(
-        m_logger,
+        parent.logger(),
         "Insufficient point pairs given to match. " <<
           "Given " << pts_src.size() << " but require at least " <<
           this->c_minimum_inliers() );
@@ -217,12 +215,12 @@ public:
         }
       }
       LOG_INFO(
-        m_logger,
+        parent.logger(),
         "Inliers after estimation: " << inlier_count );
       if( inlier_count < this->c_minimum_inliers() )
       {
         LOG_WARN(
-          m_logger,
+          parent.logger(),
           "Insufficient inliers after estimation. Require " <<
             this->c_minimum_inliers() );
         is_bad_homog = true;
@@ -241,7 +239,7 @@ public:
         if( !( h_mat.allFinite() && i_mat.allFinite() ) )
         {
           LOG_WARN(
-            m_logger,
+            parent.logger(),
             "Found non-finite values in estimated homography. Bad homography." );
           is_bad_homog = true;
         }
@@ -249,7 +247,7 @@ public:
       catch( ... )
       {
         LOG_WARN(
-          m_logger,
+          parent.logger(),
           "Homography non-invertable. Bad homography." );
         is_bad_homog = true;
       }

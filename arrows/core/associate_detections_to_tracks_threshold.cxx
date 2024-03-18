@@ -32,9 +32,7 @@ class associate_detections_to_tracks_threshold::priv
 {
 public:
   priv( associate_detections_to_tracks_threshold& parent )
-    : parent( parent ),
-      m_logger( vital::get_logger(
-        "arrows.core.associate_detections_to_tracks_threshold" ) )
+    : parent( parent )
   {}
 
   associate_detections_to_tracks_threshold& parent;
@@ -42,9 +40,6 @@ public:
   // Configuration values
   double c_threshold() { return parent.c_threshold; }
   bool c_higher_is_better() { return parent.c_higher_is_better; }
-
-  /// Logger handle
-  vital::logger_handle_t m_logger;
 };
 
 // ----------------------------------------------

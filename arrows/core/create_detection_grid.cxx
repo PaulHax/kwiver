@@ -25,9 +25,7 @@ class create_detection_grid::priv
 {
 public:
   priv( create_detection_grid& parent )
-    : parent( parent ),
-      m_logger( vital::get_logger(
-        "arrows.core.create_detection_grid" ) )
+    : parent( parent )
   {}
 
   create_detection_grid& parent;
@@ -37,9 +35,6 @@ public:
   double c_height() { return parent.c_height; }
   double c_x_step() { return parent.c_x_step; }
   double c_y_step() { return parent.c_y_step; }
-
-  /// Logger handle
-  vital::logger_handle_t m_logger;
 };
 
 // ------------------------------------------------
@@ -48,7 +43,7 @@ create_detection_grid
 ::initialize()
 {
   KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
-  attach_logger( "arrows.core.associate_detections_to_tracks_threshold" );
+  attach_logger( "arrows.core.create_detection_grid" );
 }
 
 /// Destructor
@@ -63,13 +58,13 @@ create_detection_grid
   if( config->get_value< double >( "detection_width" ) <= 0 || config->get_value< double >( "detection_width" ) <= 0 )
   {
     LOG_ERROR(
-      d_->m_logger,
+      d_->parent.logger(),
       "Detection width and height must be positive values" );
     return false;
   }
   if( config->get_value< double >( "x_step" ) <= 0 && config->get_value< double >( "y_step" ) <= 0 )
   {
-    LOG_ERROR(d_->m_logger, "Detection steps must be positive values" );
+    LOG_ERROR(d_->parent.logger(), "Detection steps must be positive values" );
     return false;
   }
   return true;

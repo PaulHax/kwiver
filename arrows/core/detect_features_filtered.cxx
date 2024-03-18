@@ -31,9 +31,6 @@ public:
   { return parent.c_feature_detector; }
   vital::algo::filter_features_sptr feature_filter()
   { return parent.c_feature_filter; }
-
-  // Local state
-  vital::logger_handle_t m_logger;
 };
 
 // ----------------------------------------------------------------------------
@@ -45,7 +42,7 @@ detect_features_filtered
   KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
   attach_logger( "arrows.core.detect_features_filtered" );
 
-  d_->m_logger = logger();
+  d_->parent.logger() = logger();
 }
 
 // Destructor

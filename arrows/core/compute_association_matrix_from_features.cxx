@@ -30,9 +30,7 @@ class compute_association_matrix_from_features::priv
 {
 public:
   priv( compute_association_matrix_from_features& parent )
-    : parent( parent ),
-      m_logger( vital::get_logger(
-        "compute_association_matrix_from_features" ) )
+    : parent( parent )
   {}
 
   compute_association_matrix_from_features& parent;
@@ -43,9 +41,6 @@ public:
   /// The feature matching algorithm to use
   vital::algo::detected_object_filter_sptr c_filter()
   { return parent.c_filter; }
-
-  /// Logger handle
-  vital::logger_handle_t m_logger;
 };
 
 // ----------------------------------------------------------------------------
