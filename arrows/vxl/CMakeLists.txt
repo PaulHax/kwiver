@@ -35,7 +35,7 @@ set(vxl_headers_public
   pixel_feature_extractor.h
   polygon.h
   split_image.h
-  # threshold.h
+  threshold.h
   # triangulate_landmarks.h
   vil_image_memory.h
   )
@@ -67,7 +67,7 @@ set(vxl_sources
   pixel_feature_extractor.cxx
   polygon.cxx
   split_image.cxx
-  # threshold.cxx
+  threshold.cxx
   # triangulate_landmarks.cxx
   vil_image_memory.cxx
   )
