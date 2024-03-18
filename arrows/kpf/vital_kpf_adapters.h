@@ -5,6 +5,9 @@
 /// \file
 /// \brief adapters for writing kpf to and from vital objects
 
+// Base class is defined here
+#include <arrows/kpf/yaml/kpf_canonical_io_adapter.h>
+
 namespace KPF = kwiver::vital::kpf;
 namespace KPFC = KPF::canonical; //
 

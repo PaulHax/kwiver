@@ -22,11 +22,13 @@ class KWIVER_ALGO_KPF_EXPORT detected_object_set_output_kpf
   : public vital::algo::detected_object_set_output
 {
 public:
-  detected_object_set_output_kpf();
-  virtual ~detected_object_set_output_kpf();
+  PLUGGABLE_IMPL(
+    detected_object_set_output_kpf,
+    "Detected object set writer using kpf format."
+  )
 
-  virtual vital::config_block_sptr get_configuration() const;
-  virtual void set_configuration( vital::config_block_sptr config );
+  virtual ~detected_object_set_output_kpf() = default;
+
   virtual bool check_configuration( vital::config_block_sptr config ) const;
 
   virtual void write_set(
@@ -34,9 +36,11 @@ public:
     std::string const& image_name );
 
 private:
-  class priv;
+  void initialize() override;
 
-  std::unique_ptr< priv > d;
+  /// private implementation class
+  class priv;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // namespace kpf

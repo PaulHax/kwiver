@@ -31,8 +31,8 @@ namespace kpf {
 class detected_object_set_input_kpf::priv
 {
 public:
-  priv( detected_object_set_input_kpf* parent )
-    : m_parent( parent ),
+  priv( detected_object_set_input_kpf& parent )
+    : parent( parent ),
       m_first( true )
   {}
 
@@ -40,7 +40,7 @@ public:
 
   void read_all();
 
-  detected_object_set_input_kpf* m_parent;
+  detected_object_set_input_kpf& parent;
   bool m_first;
 
   int m_current_idx;
@@ -52,22 +52,13 @@ public:
 };
 
 // ----------------------------------------------------------------------------
-detected_object_set_input_kpf
-::detected_object_set_input_kpf()
-  : d( new detected_object_set_input_kpf::priv( this ) )
-{
-  attach_logger( "arrows.kpf.detected_object_set_input_kpf" );
-}
-
-detected_object_set_input_kpf::
-~detected_object_set_input_kpf()
-{}
-
-// ----------------------------------------------------------------------------
 void
 detected_object_set_input_kpf
-::set_configuration( VITAL_UNUSED vital::config_block_sptr config )
-{}
+::initialize()
+{
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+  attach_logger( "arrows.kpf.detected_object_set_input_kpf" );
+}
 
 // ----------------------------------------------------------------------------
 bool
@@ -129,7 +120,7 @@ detected_object_set_input_kpf::priv
 {
   m_detected_sets.clear();
 
-  KPF::kpf_yaml_parser_t parser( m_parent->stream() );
+  KPF::kpf_yaml_parser_t parser( parent.stream() );
   KPF::kpf_reader_t reader( parser );
 
   size_t detection_id;
@@ -211,10 +202,10 @@ detected_object_set_input_kpf::priv
     {
       std::cout << "Metadata: '" << m << "'\n";
     }
-    LOG_TRACE( m_parent->logger(), "FLUSHING" );
+    LOG_TRACE( parent.logger(), "FLUSHING" );
     reader.flush();
   }
-  LOG_TRACE( m_parent->logger(), "DONE" );
+  LOG_TRACE( parent.logger(), "DONE" );
 } // read_all
 
 } // namespace kpf
