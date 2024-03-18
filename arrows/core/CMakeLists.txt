@@ -4,7 +4,7 @@ set(CMAKE_FOLDER "Arrows/Core")
 
 set( plugin_core_headers
   associate_detections_to_tracks_threshold.h
-  # class_probablity_filter.h
+  class_probability_filter.h
   close_loops_appearance_indexed.h
   close_loops_bad_frames_only.h
   close_loops_exhaustive.h
@@ -77,7 +77,7 @@ kwiver_install_headers(
 
 set( plugin_core_sources
   associate_detections_to_tracks_threshold.cxx
-  # class_probablity_filter.cxx
+  class_probability_filter.cxx
   close_loops_appearance_indexed.cxx
   close_loops_bad_frames_only.cxx
   close_loops_exhaustive.cxx
