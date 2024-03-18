@@ -60,10 +60,6 @@ detected_object_set_input_kpf
   attach_logger( "arrows.kpf.detected_object_set_input_kpf" );
 }
 
-detected_object_set_input_kpf
-::~detected_object_set_input_kpf()
-{}
-
 // ----------------------------------------------------------------------------
 bool
 detected_object_set_input_kpf

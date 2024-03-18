@@ -24,10 +24,10 @@ class KWIVER_ALGO_KPF_EXPORT detected_object_set_input_kpf
 public:
   PLUGGABLE_IMPL(
     detected_object_set_input_kpf,
-    "Detected object set writer using kpf format.t"
+    "Detected object set writer using kpf format."
   )
 
-  virtual ~detected_object_set_input_kpf();
+  virtual ~detected_object_set_input_kpf() = default;
 
   virtual bool check_configuration( vital::config_block_sptr config ) const;
 

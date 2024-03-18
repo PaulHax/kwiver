@@ -56,10 +56,6 @@ detected_object_set_output_kpf
   attach_logger( "arrows.kpf.detected_object_set_output_kpf" );
 }
 
-detected_object_set_output_kpf::
-~detected_object_set_output_kpf()
-{}
-
 // ----------------------------------------------------------------------------
 bool
 detected_object_set_output_kpf
