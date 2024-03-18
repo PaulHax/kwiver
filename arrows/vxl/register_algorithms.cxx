@@ -37,10 +37,10 @@
 #include <arrows/vxl/morphology.h>
 #include <arrows/vxl/optimize_cameras.h>
 #include <arrows/vxl/pixel_feature_extractor.h>
+#include <arrows/vxl/split_image.h>
 
 // #include <arrows/vxl/bundle_adjust.h>
 // #include <arrows/vxl/close_loops_homography_guided.h>
-// #include <arrows/vxl/split_image.h>
 // #include <arrows/vxl/threshold.h>
 // #include <arrows/vxl/triangulate_landmarks.h>
 
@@ -131,6 +131,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::image_filter,
     pixel_feature_extractor >( "vxl_pixel_feature_extractor" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
+
+  fact = vpl.add_factory< vital::algo::split_image,
+    split_image >( "vxl_split_image" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
 #ifdef VXL_ENABLE_FFMPEG

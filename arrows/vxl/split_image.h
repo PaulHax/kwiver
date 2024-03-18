@@ -25,22 +25,16 @@ class KWIVER_ALGO_VXL_EXPORT split_image
   : public vital::algo::split_image
 {
 public:
-  PLUGIN_INFO(
-    "vxl",
+  PLUGGABLE_IMPL(
+    split_image,
     "Split a larger image into multiple smaller images" )
 
-  /// Constructor
-  split_image();
-
   /// Destructor
-  virtual ~split_image();
+  virtual ~split_image() = default;
 
-  virtual void set_configuration(
-    VITAL_UNUSED kwiver::vital::config_block_sptr ) {}
-
-  virtual bool
+  bool
   check_configuration(
-    VITAL_UNUSED kwiver::vital::config_block_sptr config ) const
+    VITAL_UNUSED kwiver::vital::config_block_sptr config ) const override
   {
     return true;
   }
@@ -48,6 +42,9 @@ public:
   /// Split image
   virtual std::vector< kwiver::vital::image_container_sptr >
   split( kwiver::vital::image_container_sptr img ) const;
+
+private:
+  void initialize() override;
 };
 
 } // end namespace vxl
