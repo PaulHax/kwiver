@@ -1,4 +1,3 @@
-// A
 // This file is part of KWIVER, and is distributed under the
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
@@ -33,7 +32,7 @@
 #include <arrows/vxl/high_pass_filter.h>
 #include <arrows/vxl/image_io.h>
 #include <arrows/vxl/kd_tree.h>
-// #include <arrows/vxl/match_features_constrained.h>
+#include <arrows/vxl/match_features_constrained.h>
 #include <arrows/vxl/morphology.h>
 #include <arrows/vxl/optimize_cameras.h>
 #include <arrows/vxl/pixel_feature_extractor.h>
@@ -63,23 +62,27 @@ register_factories( kwiver::vital::plugin_loader& vpl )
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::image_filter,
-    average_frames >( "vxl_average_frames" );
+    average_frames >( "vxl_average" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::bundle_adjust,
-    bundle_adjust >( "vxl_bundle_adjust" );
+    bundle_adjust >( "vxl" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::close_loops,
-    close_loops_homography_guided >( "vxl_close_loops_homography_guided" );
+    close_loops_homography_guided >( "vxl_homography_guided" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::image_filter,
-    color_commonality_filter >( "vxl_color_commonality_filter" );
+    color_commonality_filter >( "vxl_color_commonality" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
+
+  fact = vpl.add_factory< vital::algo::image_filter,
+    convert_image >( "vxl_convert_image" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::estimate_canonical_transform,
-    estimate_canonical_transform >( "vxl_estimate_canonical_transform" );
+    estimate_canonical_transform >( "vxl_plane" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::estimate_essential_matrix,
@@ -87,15 +90,15 @@ register_factories( kwiver::vital::plugin_loader& vpl )
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::estimate_fundamental_matrix,
-    estimate_fundamental_matrix >( "vxl_estimate_fundamental_matrix" );
+    estimate_fundamental_matrix >( "vxl" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
+
+  fact = vpl.add_factory< vital::algo::estimate_homography,
+    estimate_homography >( "vxl" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::estimate_similarity_transform,
     estimate_similarity_transform >( "vxl" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
-
-  fact = vpl.add_factory< vital::algo::estimate_homography,
-    estimate_homography >( "vxl_estimate_homography" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::image_filter,
@@ -105,10 +108,6 @@ register_factories( kwiver::vital::plugin_loader& vpl )
   fact = vpl.add_factory< vital::algo::image_filter,
     high_pass_filter >( "vxl_high_pass_filter" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
-
-//  fact = vpl.add_factory< vital::algo::match_features,
-//    match_features_constrained >( "vxl_match_features_constrained" );
-//  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::estimate_essential_matrix,
     estimate_essential_matrix >( "vxl" );
@@ -126,9 +125,9 @@ register_factories( kwiver::vital::plugin_loader& vpl )
     kd_tree >( "vxl_kd_tree" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
-//  fact = vpl.add_factory< vital::algo::match_features,
-//    match_features_constrained >( "vxl_match_features_constrained" );
-//  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
+  fact = vpl.add_factory< vital::algo::match_features,
+    match_features_constrained >( "vxl_constrained" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::image_filter,
     morphology >( "vxl_morphology" );
@@ -143,7 +142,7 @@ register_factories( kwiver::vital::plugin_loader& vpl )
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::split_image,
-    split_image >( "vxl_split_image" );
+    split_image >( "vxl" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::image_filter,
@@ -151,7 +150,7 @@ register_factories( kwiver::vital::plugin_loader& vpl )
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
   fact = vpl.add_factory< vital::algo::triangulate_landmarks,
-    triangulate_landmarks >( "vxl_triangulate_landmarks" );
+    triangulate_landmarks >( "vxl" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.vxl" );
 
 #ifdef VXL_ENABLE_FFMPEG
