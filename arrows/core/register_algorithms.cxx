@@ -47,6 +47,7 @@
 #include <arrows/core/close_loops_bad_frames_only.h>
 #include <arrows/core/close_loops_exhaustive.h>
 #include <arrows/core/close_loops_keyframe.h>
+#include <arrows/core/close_loops_multi_method.h>
 #include <arrows/core/compute_association_matrix_from_features.h>
 #include <arrows/core/compute_ref_homography_core.h>
 #include <arrows/core/convert_image_bypass.h>
@@ -286,6 +287,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::close_loops,
     close_loops_appearance_indexed >( "appearance_indexed" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::close_loops,
+    close_loops_appearance_indexed >( "multi_method" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 
   fact = vpl.add_factory< vital::algo::detected_object_filter,

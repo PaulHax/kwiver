@@ -6,6 +6,7 @@
 #include <arrows/core/close_loops_bad_frames_only.h>
 #include <arrows/core/close_loops_exhaustive.h>
 #include <arrows/core/close_loops_keyframe.h>
+#include <arrows/core/close_loops_multi_method.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>
@@ -26,8 +27,6 @@ main( int argc, char** argv )
 // ----------------------------------------------------------------------------
 TEST ( close_loops_appearance_indexed, create )
 {
-  using namespace kwiver::vital;
-
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE(
@@ -38,8 +37,6 @@ TEST ( close_loops_appearance_indexed, create )
 // ----------------------------------------------------------------------------
 TEST ( close_loops_bad_frames_only, create )
 {
-  using namespace kwiver::vital;
-
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE(
@@ -50,8 +47,6 @@ TEST ( close_loops_bad_frames_only, create )
 // ----------------------------------------------------------------------------
 TEST ( close_loops_exhaustive, create )
 {
-  using namespace kwiver::vital;
-
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE(
@@ -62,11 +57,19 @@ TEST ( close_loops_exhaustive, create )
 // ----------------------------------------------------------------------------
 TEST ( close_loops_keyframe, create )
 {
-  using namespace kwiver::vital;
-
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE(
     nullptr, create_algorithm< algo::close_loops >(
       "keyframe" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( close_loops_multi_method, create )
+{
+  plugin_manager::instance().load_all_plugins();
+
+  EXPECT_NE(
+    nullptr, create_algorithm< algo::close_loops >(
+      "multi_method" ) );
 }
