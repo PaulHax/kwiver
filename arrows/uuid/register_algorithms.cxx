@@ -6,7 +6,7 @@
 /// \brief Defaults plugin algorithm registration interface impl
 
 #include <arrows/uuid/kwiver_algo_uuid_plugin_export.h>
-#include <vital/algo/algorithm_factory.h>
+#include <vital/plugin_management/plugin_manager.h>
 
 #include <arrows/uuid/uuid_factory_uuid.h>
 
@@ -21,29 +21,11 @@ KWIVER_ALGO_UUID_PLUGIN_EXPORT
 void
 register_factories( kwiver::vital::plugin_loader& vpm )
 {
-  static auto const module_name = std::string( "arrows.uuid" );
-  if( vpm.is_module_loaded( module_name ) )
-  {
-    return;
-  }
+  using kvpf = ::kwiver::vital::plugin_factory;
 
-  // add factory                  implementation-name       type-to-create
-  auto fact = vpm.ADD_ALGORITHM(
-    "uuid",
-    kwiver::arrows::uuid::uuid_factory_uuid );
-  fact->add_attribute(
-    kwiver::vital::plugin_factory::PLUGIN_DESCRIPTION,
-    "Global UUID generator using system library as source for UUID." )
-    .add_attribute(
-    kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
-    module_name )
-    .add_attribute( kwiver::vital::plugin_factory::PLUGIN_VERSION, "1.0" )
-    .add_attribute(
-      kwiver::vital::plugin_factory::PLUGIN_ORGANIZATION,
-      "Kitware Inc." )
-  ;
-
-  vpm.mark_module_as_loaded( module_name );
+  auto fact = vpm.add_factory< vital::algo::uuid_factory,
+    uuid_factory_uuid >( "uuid" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.uuid" );
 }
 
 } // namespace uuid
