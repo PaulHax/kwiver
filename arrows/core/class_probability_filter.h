@@ -60,14 +60,14 @@ public:
       "If this options is set to true, all classes are passed through this filter "
       "if they are above the selected threshold.",
       true ),
-    PARAM(
+    PARAM_DEFAULT(
       list_of_classes,
       std::string,
       "A list of class names to pass through this filter. "
       "Multiple names are separated by a ';' character. "
       "The keep_all_classes parameter overrides this list of classes. "
-      "So be sure to set that to false if you only want the listed classes."
-    )
+      "So be sure to set that to false if you only want the listed classes.",
+      "" )
   )
 
   virtual ~class_probability_filter() = default;

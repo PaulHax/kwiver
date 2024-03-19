@@ -11,6 +11,7 @@ set( test_libraries    vital_algo vital vital_vpm kwiver_algo_core )
 ##############################
 kwiver_discover_gtests(core associate_detections_to_tracks_threshold
                                                       LIBRARIES ${test_libraries})
+kwiver_discover_gtests(core class_probability_filter  LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core close_loops               LIBRARIES ${test_libraries})
 kwiver_discover_gtests(core compute_association_matrix_from_features
                                                       LIBRARIES ${test_libraries})

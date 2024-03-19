@@ -22,6 +22,26 @@ namespace core {
 using namespace kwiver::vital;
 
 // ----------------------------------------------------------------------------
+// Function to create the set of keep_classes to keep each time it is called
+std::set< std::string >
+keep_classes_set( std::string list_of_classes )
+{
+  std::string parsed;
+  std::set< std::string > m_keep_classes;
+  std::stringstream ss( list_of_classes );
+
+  while( std::getline( ss, parsed, ';' ) )
+  {
+    if( !parsed.empty() )
+    {
+      m_keep_classes.insert( parsed );
+    }
+  }
+
+  return m_keep_classes;
+}
+
+// ----------------------------------------------------------------------------
 class class_probability_filter::priv
 {
 public:
@@ -36,6 +56,12 @@ public:
   double c_threshold() { return parent.c_threshold; }
   std::string c_list_of_classes() { return parent.c_list_of_classes; }
 };
+
+// ----------------------------------------------------------------------------
+void
+class_probability_filter
+::initialize()
+{}
 
 /*
  *  //
@@ -99,7 +125,8 @@ class_probability_filter
   {
     LOG_WARN(
       logger(),
-      "Additional parameters found in config block that are not required or desired: "
+      "Additional parameters found in config block that are not required or "
+      "desired: "
         << kwiver::vital::join( key_list, ", " ) );
   }
 
@@ -132,13 +159,13 @@ class_probability_filter
     }
 
     // Get list of class names that are above threshold
-    auto selected_names = input_dot->class_names( parent.c_threshold );
+    auto selected_names = input_dot->class_names( c_threshold );
 
     // Loop over all selected class names
     for( const std::string& a_name : selected_names )
     {
-      if( parent.c_keep_all_classes ||
-          parent.c_keep_all_classes.count( a_name ) )
+      if( c_keep_all_classes ||
+          ( keep_classes_set( c_list_of_classes ) ).count( a_name ) )
       {
         // insert class-name/score into DOT
         out_dot->set_score( a_name, input_dot->score( a_name ) );
@@ -148,9 +175,9 @@ class_probability_filter
             input_dot->score( a_name ) );
         det_selected = true;
       }
-    } // end foreach class-name
+    } // end for each class-name
 
-    // It this detection has been selected, add it to output list
+    // If this detection has been selected, add it to output list
     // Clone input detection and replace DOT.
     // Add to returned set
     if( det_selected )
@@ -159,7 +186,7 @@ class_probability_filter
       out_det->set_type( out_dot );
       ret_set->add( out_det );
     }
-  } // end foreach detection
+  } // end for each detection
 
   return ret_set;
 } // class_probability_filter::filter
