@@ -16,7 +16,7 @@
         - .ubuntu2004
 
     variables:
-        CMAKE_CONFIGURATION: ubuntu2004_ceres_ffmpeg_gdal_kpf_opencv_pdal_proj_python_qt_vtk_vxl
+        CMAKE_CONFIGURATION: ubuntu2004_ceres_dbow2_ffmpeg_gdal_kpf_opencv_pdal_proj_python_qt_vtk_vxl
 
 .linux_builder_tags:
     tags:

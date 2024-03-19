@@ -35,7 +35,7 @@
  */
 
 #include <arrows/dbow2/kwiver_algo_dbow2_plugin_export.h>
-#include <vital/algo/algorithm_factory.h>
+#include <vital/plugin_management/plugin_manager.h>
 
 #include <opencv2/opencv_modules.hpp>
 #ifdef HAVE_OPENCV_NONFREE
@@ -55,20 +55,15 @@ KWIVER_ALGO_DBOW2_PLUGIN_EXPORT
 void
 register_factories( ::kwiver::vital::plugin_loader& vpm )
 {
-  ::kwiver::vital::algorithm_registrar reg( vpm, "arrows.dbow2" );
-
-  if( reg.is_module_loaded() )
-  {
-    return;
-  }
+  using xvpf = ::kwiver::vital::plugin_factory;
 
 #if defined( HAVE_OPENCV_NONFREE )
   cv::initModule_nonfree();
 #endif
 
-  reg.register_algorithm< ::kwiver::arrows::dbow2::match_descriptor_sets >();
-
-  reg.mark_module_as_loaded();
+  auto fact = vpm.add_factory< vital::algo::match_descriptor_sets,
+    match_descriptor_sets >( "dbow2" );
+  fact->add_attribute( xvpf::PLUGIN_MODULE_NAME, "arrows.dbow2" );
 }
 
 } // end namespace dbow2

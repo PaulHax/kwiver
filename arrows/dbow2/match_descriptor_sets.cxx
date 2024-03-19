@@ -39,7 +39,7 @@
 #include <opencv2/features2d.hpp>
 
 #include <kwiversys/SystemTools.hxx>
-#include <vital/algo/algorithm.h>
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/detect_features.h>
 #include <vital/algo/extract_descriptors.h>
 #include <vital/algo/image_io.h>
@@ -57,7 +57,9 @@ namespace dbow2 {
 class match_descriptor_sets::priv
 {
 public:
-  priv();
+  priv( match_descriptor_sets& parent ) : parent( parent ) {}
+
+  match_descriptor_sets& parent;
 
   void train_vocabulary(
     std::string training_image_list,
@@ -100,41 +102,42 @@ public:
   // The inverted file database
   std::shared_ptr< OrbDatabase > m_db;
 
-  /// The feature m_detector algorithm to use
-  vital::algo::detect_features_sptr m_detector;
+  /// The feature detector algorithm to use
+  vital::algo::detect_features_sptr
+  c_detector() const { return parent.c_detector; }
 
   /// The descriptor extractor algorithm to use
-  vital::algo::extract_descriptors_sptr m_extractor;
+  vital::algo::extract_descriptors_sptr
+  c_extractor() const { return parent.c_extractor; }
 
   // The image io to use
-  vital::algo::image_io_sptr m_image_io;
+  vital::algo::image_io_sptr
+  c_image_io() const { return parent.c_image_io; }
 
   // The path to the training image list
-  std::string training_image_list_path;
+  const std::string&
+  c_training_image_list_path() const
+  {
+    return parent.c_training_image_list_path;
+  }
 
   // The path to the vocabulary
-  std::string vocabulary_path;
+  const std::string&
+  c_vocabulary_path() const { return parent.c_vocabulary_path; }
 
   std::map< DBoW2::EntryId, kwiver::vital::frame_id_t > m_entry_to_frame;
 
-  int m_max_num_candidate_matches_from_vocabulary_tree;
+  int
+  c_max_num_candidate_matches_from_vocabulary_tree() const
+  {
+    return parent.c_max_num_candidate_matches_from_vocabulary_tree;
+  }
 
   // returns node ids this many levels up from the base of the voc tree
-  int m_levels_up;
+  int m_levels_up = 2;
 };
 
 // -----------------------------------------------------------------------------
-
-match_descriptor_sets::priv
-::priv()
-  : training_image_list_path( "" ),
-    vocabulary_path( "kwiver_voc.yml.gz" ),
-    m_max_num_candidate_matches_from_vocabulary_tree( 10 ),
-    m_levels_up( 2 )
-{}
-
-// -----------------------------------------------------------------------------
-
 void
 match_descriptor_sets::priv
 ::setup_voc()
@@ -144,7 +147,7 @@ match_descriptor_sets::priv
     // first time we will make the voc.  Then just load it.
     try
     {
-      load_vocabulary( vocabulary_path );
+      load_vocabulary( c_vocabulary_path() );
     }
     catch( const path_not_a_file& e )
     {
@@ -159,7 +162,7 @@ match_descriptor_sets::priv
 
     if( !m_voc )
     {
-      train_vocabulary( training_image_list_path, vocabulary_path );
+      train_vocabulary( c_training_image_list_path(), c_vocabulary_path() );
     }
 
     m_db = std::make_shared< OrbDatabase >( *m_voc, true, 3 );
@@ -167,7 +170,6 @@ match_descriptor_sets::priv
 }
 
 // -----------------------------------------------------------------------------
-
 void
 match_descriptor_sets::priv
 ::append_to_index(
@@ -215,7 +217,6 @@ match_descriptor_sets::priv
 }
 
 // -----------------------------------------------------------------------------
-
 std::vector< frame_id_t >
 match_descriptor_sets::priv
 ::query(
@@ -258,7 +259,7 @@ match_descriptor_sets::priv
     }
   }
 
-  int max_res = m_max_num_candidate_matches_from_vocabulary_tree;
+  int max_res = c_max_num_candidate_matches_from_vocabulary_tree();
   DBoW2::QueryResults ret;
 
   // add them to the database
@@ -297,7 +298,6 @@ match_descriptor_sets::priv
 }
 
 // -----------------------------------------------------------------------------
-
 void
 match_descriptor_sets::priv
 ::train_vocabulary(
@@ -311,7 +311,6 @@ match_descriptor_sets::priv
 }
 
 // -----------------------------------------------------------------------------
-
 void
 match_descriptor_sets::priv
 ::train(
@@ -346,7 +345,6 @@ match_descriptor_sets::priv
 }
 
 // -----------------------------------------------------------------------------
-
 void
 match_descriptor_sets::priv
 ::load_vocabulary( std::string voc_file_path )
@@ -364,7 +362,6 @@ match_descriptor_sets::priv
 }
 
 // -----------------------------------------------------------------------------
-
 void
 match_descriptor_sets::priv
 ::load_features(
@@ -392,11 +389,11 @@ match_descriptor_sets::priv
 
   while( std::getline( im_list, line ) )
   {
-    image_container_sptr im = m_image_io->load( line );
+    image_container_sptr im = c_image_io()->load( line );
     LOG_INFO(m_logger, "Extracting features for image " + line);
 
-    feature_set_sptr im_features = m_detector->detect( im );
-    descriptor_set_sptr im_descriptors = m_extractor->extract(
+    feature_set_sptr im_features = c_detector()->detect( im );
+    descriptor_set_sptr im_descriptors = c_extractor()->extract(
       im,
       im_features );
 
@@ -417,7 +414,6 @@ match_descriptor_sets::priv
 }
 
 // -----------------------------------------------------------------------------
-
 void
 match_descriptor_sets::priv
 ::descriptor_set_to_vec(
@@ -448,7 +444,6 @@ match_descriptor_sets::priv
 }
 
 // -----------------------------------------------------------------------------
-
 cv::Mat
 match_descriptor_sets::priv
 ::descriptor_to_mat( descriptor_sptr desc ) const
@@ -465,13 +460,12 @@ match_descriptor_sets::priv
 }
 
 // -----------------------------------------------------------------------------
-
+void
 match_descriptor_sets
-::match_descriptor_sets()
-  : d_( new priv )
+::initialize()
 {
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
   attach_logger( "arrows.dbow2.match_descriptor_sets" );
-  d_->m_logger = this->logger();
 }
 
 void
@@ -480,14 +474,14 @@ match_descriptor_sets
   const vital::descriptor_set_sptr desc,
   frame_id_t frame_number )
 {
-  d_->append_to_index( desc, frame_number );
+  d->append_to_index( desc, frame_number );
 }
 
 std::vector< frame_id_t >
 match_descriptor_sets
 ::query( const vital::descriptor_set_sptr desc )
 {
-  return d_->query( desc, -1, false );
+  return d->query( desc, -1, false );
 }
 
 std::vector< frame_id_t >
@@ -496,96 +490,10 @@ match_descriptor_sets
   const vital::descriptor_set_sptr desc,
   frame_id_t frame )
 {
-  return d_->query( desc, frame, true );
+  return d->query( desc, frame, true );
 }
 
 // ------------------------------------------------------------------
-
-vital::config_block_sptr
-match_descriptor_sets
-::get_configuration() const
-{
-  // Get base config from base class
-  vital::config_block_sptr config = vital::algorithm::get_configuration();
-
-  // Sub-algorithm implementation name + sub_config block
-  // - Feature Detector algorithm
-  algo::detect_features::
-  get_nested_algo_configuration( "feature_detector", config, d_->m_detector );
-
-  // - Descriptor Extractor algorithm
-  algo::extract_descriptors::
-  get_nested_algo_configuration(
-    "descriptor_extractor", config,
-    d_->m_extractor );
-
-  algo::image_io::
-  get_nested_algo_configuration( "image_io", config, d_->m_image_io );
-
-  config->set_value(
-    "max_num_candidate_matches_from_vocabulary_tree",
-    d_->m_max_num_candidate_matches_from_vocabulary_tree,
-    "the maximum number of candidate matches to return from the vocabulary tree" );
-
-  config->set_value(
-    "training_image_list_path",
-    d_->training_image_list_path,
-    "path to the list of vocabulary training images" );
-
-  config->set_value(
-    "vocabulary_path",
-    d_->vocabulary_path,
-    "path to the vocabulary file" );
-
-  return config;
-}
-
-// ------------------------------------------------------------------
-
-void
-match_descriptor_sets
-::set_configuration( vital::config_block_sptr config_in )
-{
-  // Starting with our generated config_block to ensure that assumed values are
-  // present
-  // An alternative is to check for key presence before performing a get_value()
-  // call.
-  vital::config_block_sptr config = this->get_configuration();
-
-  config->merge_config( config_in );
-
-  // Setting nested algorithm instances via setter methods instead of directly
-  // assigning to instance property.
-  algo::detect_features_sptr df;
-  algo::detect_features::set_nested_algo_configuration(
-    "feature_detector", config, df );
-  d_->m_detector = df;
-
-  algo::extract_descriptors_sptr ed;
-  algo::extract_descriptors::set_nested_algo_configuration(
-    "descriptor_extractor", config, ed );
-  d_->m_extractor = ed;
-
-  algo::image_io_sptr io;
-  algo::image_io::set_nested_algo_configuration( "image_io", config, io );
-  d_->m_image_io = io;
-
-  d_->m_max_num_candidate_matches_from_vocabulary_tree =
-    config->get_value< int >(
-      "max_num_candidate_matches_from_vocabulary_tree",
-      d_->m_max_num_candidate_matches_from_vocabulary_tree );
-
-  d_->training_image_list_path =
-    config->get_value< std::string >(
-      "training_image_list_path",
-      d_->training_image_list_path );
-
-  d_->vocabulary_path =
-    config->get_value< std::string >( "vocabulary_path", d_->vocabulary_path );
-}
-
-// ------------------------------------------------------------------
-
 bool
 match_descriptor_sets
 ::check_configuration( vital::config_block_sptr config ) const
@@ -593,15 +501,15 @@ match_descriptor_sets
   bool config_valid = true;
 
   config_valid =
-    algo::detect_features::check_nested_algo_configuration(
+    check_nested_algo_configuration< algo::detect_features >(
       "feature_detector", config ) && config_valid;
 
   config_valid =
-    algo::extract_descriptors::check_nested_algo_configuration(
+    check_nested_algo_configuration< algo::extract_descriptors >(
       "descriptor_extractor", config ) && config_valid;
 
   config_valid =
-    algo::image_io::check_nested_algo_configuration( "image_io", config ) &&
+    check_nested_algo_configuration< algo::image_io >( "image_io", config ) &&
     config_valid;
 
   int max_cand_matches =
@@ -611,7 +519,7 @@ match_descriptor_sets
   if( max_cand_matches <= 0 )
   {
     LOG_ERROR(
-      d_->m_logger,
+      d->m_logger,
       "max_num_candidate_matches_from_vocabulary_tree must be a positive "
       "(nonzero) integer" );
     config_valid = false;
@@ -619,17 +527,17 @@ match_descriptor_sets
 
   auto voc_path = config->get_value< std::string >(
     "vocabulary_path",
-    d_->vocabulary_path );
+    d->c_vocabulary_path() );
   auto train_path = config->get_value< std::string >(
     "training_image_list_path",
-    d_->training_image_list_path );
+    d->c_training_image_list_path() );
   if( ( !kwiversys::SystemTools::FileExists( voc_path ) ||
         kwiversys::SystemTools::FileIsDirectory( voc_path ) ) &&
       ( !kwiversys::SystemTools::FileExists( train_path ) ||
         kwiversys::SystemTools::FileIsDirectory( train_path ) ) )
   {
     LOG_ERROR(
-      d_->m_logger,
+      d->m_logger,
       "Could not find a valid vocabulary file or training image list\n"
       "  voc file: " << voc_path << "\n"
                                     "  train list: " << train_path);
