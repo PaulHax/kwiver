@@ -348,70 +348,70 @@ public:
   virtual ~track_set_implementation() = default;
 
   /// Return the number of tracks in the set
-  virtual size_t size() const;
+  size_t size() const override;
 
   /// Return whether or not there are any tracks in the set
-  virtual bool empty() const;
+  bool empty() const override;
 
   /// Notify the container that a new state has been added to an existing track
-  virtual void notify_new_state( track_state_sptr ts );
+  void notify_new_state( track_state_sptr ts ) override;
 
   /// Notify the container that a state has been removed from an existing track
-  virtual void notify_removed_state( track_state_sptr ts );
+  void notify_removed_state( track_state_sptr ts ) override;
 
   /// Merge the pair of tracks \p t1 and \p t2, if possible
-  virtual bool merge_tracks( track_sptr t1, track_sptr t2 );
+  bool merge_tracks( track_sptr t1, track_sptr t2 ) override;
 
   /// Return the set of all frame IDs covered by these tracks
-  virtual std::set< frame_id_t > all_frame_ids() const;
+  std::set< frame_id_t > all_frame_ids() const override;
 
   /// Return the set of all track IDs in this track set
-  virtual std::set< track_id_t > all_track_ids() const;
+  std::set< track_id_t > all_track_ids() const override;
 
   /// Return the first (smallest) frame number containing tracks
-  virtual frame_id_t first_frame() const;
+  frame_id_t first_frame() const override;
 
   /// Return the last (largest) frame number containing tracks
-  virtual frame_id_t last_frame() const;
+  frame_id_t last_frame() const override;
 
   /// Return the track in this set with the specified id.
-  virtual track_sptr const get_track( track_id_t tid ) const;
+  track_sptr const get_track( track_id_t tid ) const override;
 
   /// Return all tracks active on a frame.
-  virtual std::vector< track_sptr > active_tracks(
-    frame_id_t offset = -1 ) const;
+  std::vector< track_sptr > active_tracks(
+    frame_id_t offset = -1 ) const override;
 
   /// Returns all the active track ids on a frame
-  virtual std::set< track_id_t > active_track_ids(
-    frame_id_t offset = -1 ) const;
+  std::set< track_id_t > active_track_ids(
+    frame_id_t offset = -1 ) const override;
 
   /// Return the number of active tracks for a frame
-  virtual size_t num_active_tracks( frame_id_t offset = -1 ) const;
+  size_t num_active_tracks( frame_id_t offset = -1 ) const override;
 
   /// Return all tracks inactive on a frame.
-  virtual std::vector< track_sptr > inactive_tracks(
-    frame_id_t offset = -1 ) const;
+  std::vector< track_sptr > inactive_tracks(
+    frame_id_t offset = -1 ) const override;
 
   /// Return all tracks newly initialized on the given frame.
-  virtual std::vector< track_sptr > new_tracks( frame_id_t offset = -1 ) const;
+  std::vector< track_sptr > new_tracks( frame_id_t offset = -1 ) const override;
 
   /// Return all tracks terminated on the given frame.
-  virtual std::vector< track_sptr > terminated_tracks(
-    frame_id_t offset = -1 ) const;
+  std::vector< track_sptr > terminated_tracks(
+    frame_id_t offset = -1 ) const override;
 
   /// Return the percentage of tracks successfully tracked between the two
   /// frames.
-  virtual double percentage_tracked(
+  double percentage_tracked(
     frame_id_t offset1 = -2,
-    frame_id_t offset2 = -1 ) const;
+    frame_id_t offset2 = -1 ) const override;
 
   /// Return a vector of state data corresponding to the tracks on the given
   /// frame.
-  virtual std::vector< track_state_sptr > frame_states(
-    frame_id_t offset = -1 ) const;
+  std::vector< track_state_sptr > frame_states(
+    frame_id_t offset = -1 ) const override;
 
   /// Convert an offset number to an absolute frame number
-  virtual frame_id_t offset_to_frame( frame_id_t offset ) const;
+  frame_id_t offset_to_frame( frame_id_t offset ) const override;
 
   /// Clone this track set implementation
   virtual track_set_implementation_uptr clone(
@@ -455,22 +455,22 @@ public:
     track_set_frame_data_map_t() );
 
   /// Return the number of tracks in the set
-  virtual size_t
-  size() const
+  size_t
+  size() const override
   {
     return impl_->size();
   }
 
   /// Return whether or not there are any tracks in the set
-  virtual bool
-  empty() const
+  bool
+  empty() const override
   {
     return impl_->empty();
   }
 
   /// Return true if the set contains a specific track
-  virtual bool
-  contains( track_sptr t ) const
+  bool
+  contains( track_sptr t ) const override
   {
     return impl_->contains( t );
   }
@@ -478,22 +478,22 @@ public:
   /// Assign a vector of track shared pointers to this container
   ///
   /// \note this replaces any track that are already in the set
-  virtual void
-  set_tracks( std::vector< track_sptr > const& tracks )
+  void
+  set_tracks( std::vector< track_sptr > const& tracks ) override
   {
     impl_->set_tracks( tracks );
   }
 
   /// Insert a track shared pointer into this container
   //@{
-  virtual void
-  insert( track_sptr const& t )
+  void
+  insert( track_sptr const& t ) override
   {
     impl_->insert( t );
   }
 
-  virtual void
-  insert( track_sptr&& t )
+  void
+  insert( track_sptr&& t ) override
   {
     impl_->insert( std::move( t ) );
   }
@@ -501,172 +501,174 @@ public:
   //@}
 
   /// Notify the container that a new state has been added to an existing track
-  virtual void
-  notify_new_state( track_state_sptr ts )
+  void
+  notify_new_state( track_state_sptr ts ) override
   {
     return impl_->notify_new_state( ts );
   }
 
   /// Notify the container that a state has been removed from an existing track
-  virtual void
-  notify_removed_state( track_state_sptr ts )
+  void
+  notify_removed_state( track_state_sptr ts ) override
   {
     return impl_->notify_removed_state( ts );
   }
 
   /// Remove a track from the set and return true if successful
-  virtual bool
-  remove( track_sptr t )
+  bool
+  remove( track_sptr t ) override
   {
     return impl_->remove( t );
   }
 
   /// Merge the pair of tracks \p t1 and \p t2, if possible
-  virtual bool
-  merge_tracks( track_sptr t1, track_sptr t2 )
+  bool
+  merge_tracks( track_sptr t1, track_sptr t2 ) override
   {
     return impl_->merge_tracks( t1, t2 );
   }
 
   /// Return a vector of track shared pointers
-  virtual std::vector< track_sptr >
-  tracks() const
+  std::vector< track_sptr >
+  tracks() const override
   {
     return impl_->tracks();
   }
 
   /// Return the set of all frame IDs covered by these tracks
-  virtual std::set< frame_id_t >
-  all_frame_ids() const
+  std::set< frame_id_t >
+  all_frame_ids() const override
   {
     return impl_->all_frame_ids();
   }
 
   /// Return the set of all track IDs in this track set
-  virtual std::set< track_id_t >
-  all_track_ids() const
+  std::set< track_id_t >
+  all_track_ids() const override
   {
     return impl_->all_track_ids();
   }
 
   /// Return the first (smallest) frame number containing tracks
-  virtual frame_id_t
-  first_frame() const
+  frame_id_t
+  first_frame() const override
   {
     return impl_->first_frame();
   }
 
   /// Return the last (largest) frame number containing tracks
-  virtual frame_id_t
-  last_frame() const
+  frame_id_t
+  last_frame() const override
   {
     return impl_->last_frame();
   }
 
   /// Return the track in this set with the specified id.
-  virtual track_sptr const
-  get_track( track_id_t tid ) const
+  track_sptr const
+  get_track( track_id_t tid ) const override
   {
     return impl_->get_track( tid );
   }
 
   /// Return all tracks active on a frame.
-  virtual std::vector< track_sptr >
-  active_tracks( frame_id_t offset = -1 ) const
+  std::vector< track_sptr >
+  active_tracks( frame_id_t offset = -1 ) const override
   {
     return impl_->active_tracks( offset );
   }
 
-  virtual std::set< track_id_t >
-  active_track_ids( frame_id_t offset = -1 ) const
+  std::set< track_id_t >
+  active_track_ids( frame_id_t offset = -1 ) const override
   {
     return impl_->active_track_ids( offset );
   }
 
   /// Return number of active tracks for a frame.
-  virtual size_t
-  num_active_tracks( frame_id_t offset = -1 ) const
+  size_t
+  num_active_tracks( frame_id_t offset = -1 ) const override
   {
     return impl_->num_active_tracks( offset );
   }
 
   /// Return all tracks inactive on a frame.
-  virtual std::vector< track_sptr >
-  inactive_tracks( frame_id_t offset = -1 ) const
+  std::vector< track_sptr >
+  inactive_tracks( frame_id_t offset = -1 ) const override
   {
     return impl_->inactive_tracks( offset );
   }
 
   /// Return all tracks newly initialized on the given frame.
-  virtual std::vector< track_sptr >
-  new_tracks( frame_id_t offset = -1 ) const
+  std::vector< track_sptr >
+  new_tracks( frame_id_t offset = -1 ) const override
   {
     return impl_->new_tracks( offset );
   }
 
   /// Return all tracks terminated on the given frame.
-  virtual std::vector< track_sptr >
-  terminated_tracks( frame_id_t offset = -1 ) const
+  std::vector< track_sptr >
+  terminated_tracks( frame_id_t offset = -1 ) const override
   {
     return impl_->terminated_tracks( offset );
   }
 
   /// Return the percentage of tracks successfully tracked between the two
   /// frames.
-  virtual double
-  percentage_tracked( frame_id_t offset1 = -2, frame_id_t offset2 = -1 ) const
+  double
+  percentage_tracked(
+    frame_id_t offset1 = -2,
+    frame_id_t offset2 = -1 ) const override
   {
     return impl_->percentage_tracked( offset1, offset2 );
   }
 
   /// Return a vector of state data corresponding to the tracks on the given
   /// frame.
-  virtual std::vector< track_state_sptr >
-  frame_states( frame_id_t offset = -1 ) const
+  std::vector< track_state_sptr >
+  frame_states( frame_id_t offset = -1 ) const override
   {
     return impl_->frame_states( offset );
   }
 
   /// Returns all frame data as map of frame index to track_set_frame_data
-  virtual track_set_frame_data_map_t
-  all_frame_data() const
+  track_set_frame_data_map_t
+  all_frame_data() const override
   {
     return impl_->all_frame_data();
   }
 
   /// Return the additional data associated with all tracks on the given frame
-  virtual track_set_frame_data_sptr
-  frame_data( frame_id_t offset = -1 ) const
+  track_set_frame_data_sptr
+  frame_data( frame_id_t offset = -1 ) const override
   {
     return impl_->frame_data( offset );
   }
 
   /// Removes the frame data for the frame offset
-  virtual bool
-  remove_frame_data( frame_id_t offset = -1 )
+  bool
+  remove_frame_data( frame_id_t offset = -1 ) override
   {
     return impl_->remove_frame_data( offset );
   }
 
   /// Set additional frame data associated with all tracks for all frames
-  virtual bool
-  set_frame_data( track_set_frame_data_map_t const& fmap )
+  bool
+  set_frame_data( track_set_frame_data_map_t const& fmap ) override
   {
     return impl_->set_frame_data( fmap );
   }
 
   /// Set additional data associated with all tracks on the given frame
-  virtual bool
+  bool
   set_frame_data(
     track_set_frame_data_sptr data,
-    frame_id_t offset = -1 )
+    frame_id_t offset = -1 ) override
   {
     return impl_->set_frame_data( data, offset );
   }
 
   /// Convert an offset number to an absolute frame number
-  virtual frame_id_t
-  offset_to_frame( frame_id_t offset ) const
+  frame_id_t
+  offset_to_frame( frame_id_t offset ) const override
   {
     return impl_->offset_to_frame( offset );
   }
@@ -708,56 +710,58 @@ public:
     track_set_frame_data_map_t() );
 
   /// Return the number of tracks in the set
-  virtual size_t
-  size() const { return data_.size(); }
+  size_t
+  size() const override { return data_.size(); }
 
   /// Return whether or not there are any tracks in the set
-  virtual bool
-  empty() const { return data_.empty(); }
+  bool
+  empty() const override { return data_.empty(); }
 
   /// Return true if the set contains a specific track
-  virtual bool contains( track_sptr t ) const;
+  bool contains( track_sptr t ) const override;
 
   /// Assign a vector of track shared pointers to this container
-  virtual void
-  set_tracks( std::vector< track_sptr > const& tracks )
+  void
+  set_tracks( std::vector< track_sptr > const& tracks ) override
   {
     data_ = tracks;
   }
 
   /// Insert a track shared pointer into this container
-  virtual void insert( track_sptr const& t ) { data_.push_back( t ); }
-  virtual void insert( track_sptr&& t ) { data_.push_back( std::move( t ) ); }
+  void
+  insert( track_sptr const& t ) override { data_.push_back( t ); }
+  void
+  insert( track_sptr&& t ) override { data_.push_back( std::move( t ) ); }
 
   /// Remove a track from the set and return true if successful
-  virtual bool remove( track_sptr t );
+  bool remove( track_sptr t ) override;
 
   /// Return a vector of track shared pointers
-  virtual std::vector< track_sptr >
-  tracks() const { return data_; }
+  std::vector< track_sptr >
+  tracks() const override { return data_; }
 
   /// Returns all frame data as map of frame index to track_set_frame_data
-  virtual track_set_frame_data_map_t
-  all_frame_data() const { return frame_data_; }
+  track_set_frame_data_map_t
+  all_frame_data() const override { return frame_data_; }
 
   /// Return the additional data associated with all tracks on the given frame
-  virtual track_set_frame_data_sptr frame_data( frame_id_t offset = -1 ) const;
+  track_set_frame_data_sptr frame_data( frame_id_t offset = -1 ) const override;
 
   /// Removes the frame data for the frame offset
-  virtual bool remove_frame_data( frame_id_t offset = -1 );
+  bool remove_frame_data( frame_id_t offset = -1 ) override;
 
   /// Set additional frame data associated with all tracks for all frames
-  virtual bool
-  set_frame_data( track_set_frame_data_map_t const& fmap )
+  bool
+  set_frame_data( track_set_frame_data_map_t const& fmap ) override
   {
     frame_data_ = fmap;
     return true;
   }
 
   /// Set additional data associated with all tracks on the given frame
-  virtual bool set_frame_data(
+  bool set_frame_data(
     track_set_frame_data_sptr data,
-    frame_id_t offset = -1 );
+    frame_id_t offset = -1 ) override;
 
   track_set_implementation_uptr clone(
     clone_type = clone_type::DEEP ) const override;
