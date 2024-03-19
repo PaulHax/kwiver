@@ -4,7 +4,7 @@
 
 #include <pybind11/pybind11.h>
 #include <python/kwiver/vital/algo/algorithm.h>
-#include <python/kwiver/vital/algo/trampoline/algorithm_trampoline.txx>
+#include <python/kwiver/vital/algo/algorithm_trampoline.txx>
 #include <vital/algo/algorithm.h>
 
 namespace py = pybind11;
