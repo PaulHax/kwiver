@@ -12,6 +12,7 @@
 #include <arrows/qt/image_container.h>
 #include <arrows/qt/image_io.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/plugin_management/plugin_manager.h>
 #include <vital/util/transform_image.h>
 
@@ -36,7 +37,7 @@ TEST ( image, create )
   plugin_manager::instance().load_all_plugins();
 
   std::shared_ptr< algo::image_io > img_io;
-  ASSERT_NE( nullptr, img_io = algo::image_io::create( "qt" ) );
+  ASSERT_NE( nullptr, img_io = create_algorithm< algo::image_io >( "qt" ) );
 
   algo::image_io* img_io_ptr = img_io.get();
   EXPECT_EQ( typeid( qt::image_io ), typeid( *img_io_ptr ) )
