@@ -35,7 +35,6 @@ Tests for CameraRPC interface class.
 """
 
 import unittest
-import nose.tools as nt
 import numpy as np
 import math
 
@@ -49,15 +48,17 @@ class TestCameraRPC(unittest.TestCase):
         crpc()
 
     def test_pure_virts(self):
-        no_call_pure_virtual_method(crpc().project, np.array([1.0, 2.0, 10.0]))
-        no_call_pure_virtual_method(crpc().back_project, np.array([1.0, 2.0]), 1.0)
-        no_call_pure_virtual_method(crpc().rpc_coeffs)
-        no_call_pure_virtual_method(crpc().world_scale)
-        no_call_pure_virtual_method(crpc().world_offset)
-        no_call_pure_virtual_method(crpc().image_scale)
-        no_call_pure_virtual_method(crpc().image_offset)
-        no_call_pure_virtual_method(crpc().image_height)
-        no_call_pure_virtual_method(crpc().image_width)
+        no_call_pure_virtual_method(self, crpc().project, np.array([1.0, 2.0, 10.0]))
+        no_call_pure_virtual_method(
+            self, crpc().back_project, np.array([1.0, 2.0]), 1.0
+        )
+        no_call_pure_virtual_method(self, crpc().rpc_coeffs)
+        no_call_pure_virtual_method(self, crpc().world_scale)
+        no_call_pure_virtual_method(self, crpc().world_offset)
+        no_call_pure_virtual_method(self, crpc().image_scale)
+        no_call_pure_virtual_method(self, crpc().image_offset)
+        no_call_pure_virtual_method(self, crpc().image_height)
+        no_call_pure_virtual_method(self, crpc().image_width)
 
 
 class TestSimpleCameraRPC(unittest.TestCase):
@@ -343,7 +344,7 @@ class TestInheritedRPC(unittest.TestCase):
         InheritedRPC()
 
     def test_inheritance(self):
-        nt.ok_(issubclass(InheritedRPC, crpc))
+        self.assertTrue(issubclass(InheritedRPC, crpc))
 
     def test_clone(self):
         irpc = InheritedRPC()

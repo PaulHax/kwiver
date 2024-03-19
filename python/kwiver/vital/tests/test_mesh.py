@@ -35,7 +35,6 @@ Tests for the vital class mesh
 """
 
 import unittest
-import nose.tools as nt
 from pathlib import Path
 
 from kwiver.vital.types import Mesh
@@ -55,14 +54,14 @@ class TestMesh(unittest.TestCase):
 
     def test_object_properties(self):
         m = Mesh.from_ply_file(str(TEST_DATA_DIR) + "/cube.ply")
-        nt.ok_(m.is_init())
-        nt.assert_equal(m.num_verts(), 8)
-        nt.assert_equal(m.num_faces(), 6)
-        nt.assert_equal(m.num_edges(), 0)
+        self.assertTrue(m.is_init())
+        self.assertEqual(m.num_verts(), 8)
+        self.assertEqual(m.num_faces(), 6)
+        self.assertEqual(m.num_edges(), 0)
 
     def test_bad_mesh(self):
         m = Mesh()
-        nt.ok_(not m.is_init())
-        nt.assert_equal(m.num_verts(), 0)
-        nt.assert_equal(m.num_faces(), 0)
-        nt.assert_equal(m.num_edges(), 0)
+        self.assertTrue(not m.is_init())
+        self.assertEqual(m.num_verts(), 0)
+        self.assertEqual(m.num_faces(), 0)
+        self.assertEqual(m.num_edges(), 0)

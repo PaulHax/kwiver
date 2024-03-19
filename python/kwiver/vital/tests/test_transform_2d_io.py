@@ -28,7 +28,6 @@
 
 from unittest import TestCase
 from kwiver.vital.algo import Transform2DIO
-import nose.tools
 import tempfile
 from unittest.mock import Mock
 
@@ -44,22 +43,22 @@ class TestVitalTransform2DIO(TestCase):
         # behavior
         self.transform_2d = Mock()
 
-    @nose.tools.raises(RuntimeError)
     def test_load_nonexistant(self):
-        self.instance.load("nonexistant_filename.txt")
+        with self.assertRaises(Exception):
+            self.instance.load("nonexistant_filename.txt")
 
-    @nose.tools.raises(RuntimeError)
     def test_load_directory(self):
-        with tempfile.TemporaryDirectory() as directory_name:
-            self.instance.load(directory_name)
+        with self.assertRaises(Exception):
+            with tempfile.TemporaryDirectory() as directory_name:
+                self.instance.load(directory_name)
 
-    @nose.tools.raises(Exception)
     def test_save_nonexistant(self):
-        self.instance.save("nonexistant_filename.txt", self.transform_2d)
+        with self.assertRaises(Exception):
+            self.instance.save("nonexistant_filename.txt", self.transform_2d)
 
-    @nose.tools.raises(Exception)
     def test_save_directory(self):
-        # Create a mock transform2d object
-        # save() requires a second argument
-        with tempfile.TemporaryDirectory() as directory_name:
-            self.instance.save(directory_name, self.transform_2d)
+        with self.assertRaises(Exception):
+            # Create a mock transform2d object
+            # save() requires a second argument
+            with tempfile.TemporaryDirectory() as directory_name:
+                self.instance.save(directory_name, self.transform_2d)

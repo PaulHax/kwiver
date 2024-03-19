@@ -28,14 +28,15 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import nose.tools
+import unittest
 
 
-class TestVitalModules(object):
+class TestVitalModules(unittest.TestCase):
     def test_import(self):
-        import kwiver.vital.modules.modules
+        from kwiver.vital import plugin_management
 
     def test_load(self):
-        from kwiver.vital.modules import modules
+        from kwiver.vital import plugin_management
 
-        modules.load_known_modules()
+        vpm = plugin_management.plugin_manager_instance()
+        vpm.load_all_plugins()

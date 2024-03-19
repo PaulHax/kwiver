@@ -34,12 +34,11 @@ Tests for track_interval interface
 
 """
 
-import nose.tools as nt
-
 from kwiver.vital.types import TrackInterval, Timestamp
+import unittest
 
 
-class TestVitalTrackInterval(object):
+class TestVitalTrackInterval(unittest.TestCase):
     def test_create(self):
         TrackInterval()
         TrackInterval(20, Timestamp(), Timestamp())
@@ -47,92 +46,92 @@ class TestVitalTrackInterval(object):
 
     def test_get_set_track_id(self):
         ti = TrackInterval()
-        nt.assert_equals(ti.track, 0)
+        self.assertEqual(ti.track, 0)
 
         ti.track = 5
-        nt.assert_equals(ti.track, 5)
+        self.assertEqual(ti.track, 5)
 
         ti.track = -12
-        nt.assert_equals(ti.track, -12)
+        self.assertEqual(ti.track, -12)
 
         ti.track = 0
-        nt.assert_equals(ti.track, 0)
+        self.assertEqual(ti.track, 0)
 
         # Check initial id
         ti = TrackInterval(20, Timestamp(), Timestamp())
-        nt.assert_equals(ti.track, 20)
+        self.assertEqual(ti.track, 20)
 
         ti.track = 5
-        nt.assert_equals(ti.track, 5)
+        self.assertEqual(ti.track, 5)
 
         ti.track = -12
-        nt.assert_equals(ti.track, -12)
+        self.assertEqual(ti.track, -12)
 
         ti.track = 0
-        nt.assert_equals(ti.track, 0)
+        self.assertEqual(ti.track, 0)
 
     def test_get_set_timestamps(self):
         ti = TrackInterval()
-        nt.assert_false(ti.start.is_valid())
-        nt.assert_false(ti.stop.is_valid())
+        self.assertFalse(ti.start.is_valid())
+        self.assertFalse(ti.stop.is_valid())
 
         ts1, ts2 = Timestamp(1234, 1), Timestamp(5678, 2)
         ti.start = ts1
         ti.stop = ts2
-        nt.ok_(ti.start == ts1)
-        nt.ok_(ti.stop == ts2)
+        self.assertTrue(ti.start == ts1)
+        self.assertTrue(ti.stop == ts2)
 
         # Confirm its a copy, not a reference
         ts1.set_frame(3)
-        nt.ok_(ti.start != ts1)
+        self.assertTrue(ti.start != ts1)
 
         ti.start.set_frame(3)
-        nt.ok_(ti.start == ts1)
+        self.assertTrue(ti.start == ts1)
 
         # Getting and setting with other constructor
         ti = TrackInterval(21, Timestamp(1234, 1), Timestamp(5678, 2))
-        nt.ok_(ti.start.is_valid())
-        nt.ok_(ti.stop.is_valid())
-        nt.ok_(ti.start == Timestamp(1234, 1))
-        nt.ok_(ti.stop == Timestamp(5678, 2))
+        self.assertTrue(ti.start.is_valid())
+        self.assertTrue(ti.stop.is_valid())
+        self.assertTrue(ti.start == Timestamp(1234, 1))
+        self.assertTrue(ti.stop == Timestamp(5678, 2))
 
         ti.stop = Timestamp()
-        nt.assert_false(ti.stop.is_valid())
+        self.assertFalse(ti.stop.is_valid())
         ti.stop.set_time_seconds(4321)
-        nt.assert_equals(ti.stop.get_time_seconds(), 4321)
+        self.assertEqual(ti.stop.get_time_seconds(), 4321)
 
         ts1 = Timestamp(8765, 4)
         ti.start = ts1
-        nt.ok_(ti.start == ts1)
+        self.assertTrue(ti.start == ts1)
 
     def test_set_incorrect_type(self):
         ti = TrackInterval()
 
-        with nt.assert_raises(TypeError):
+        with self.assertRaises(TypeError):
             ti.track = "5"
 
-        with nt.assert_raises(TypeError):
+        with self.assertRaises(TypeError):
             ti.start = "5"
 
-        with nt.assert_raises(TypeError):
+        with self.assertRaises(TypeError):
             ti.stop = "5"
 
         ti = TrackInterval(21, Timestamp(1234, 1), Timestamp(5678, 2))
 
-        with nt.assert_raises(TypeError):
+        with self.assertRaises(TypeError):
             ti.track = "5"
 
-        with nt.assert_raises(TypeError):
+        with self.assertRaises(TypeError):
             ti.start = "5"
 
-        with nt.assert_raises(TypeError):
+        with self.assertRaises(TypeError):
             ti.stop = "5"
 
     def test_set_no_attribute(self):
         ti = TrackInterval()
-        with nt.assert_raises(AttributeError):
+        with self.assertRaises(AttributeError):
             ti.nonexistant_attribute = 5
 
         ti = TrackInterval(21, Timestamp(1234, 1), Timestamp(5678, 2))
-        with nt.assert_raises(AttributeError):
+        with self.assertRaises(AttributeError):
             ti.nonexistant_attribute = 5

@@ -38,16 +38,15 @@ Test Python interface to vital::image_container
 
 from kwiver.vital.types import Image, ImageContainer
 
-import nose.tools
 import numpy as np
+import unittest
 from kwiver.vital.tests.py_helpers import (
     create_numpy_image,
     map_dtype_name_to_pixel_type,
 )
 
 
-class TestVitalImageContainer(object):
-
+class TestVitalImageContainer(unittest.TestCase):
     def test_new(self):
         image = Image()
         img_c = ImageContainer(image)
@@ -58,17 +57,17 @@ class TestVitalImageContainer(object):
     def test_size(self):
         i = Image(720, 480)
         ic = ImageContainer(i)
-        nose.tools.assert_equal(ic.size(), 720 * 480)
+        self.assertEqual(ic.size(), 720 * 480)
 
     def test_width(self):
         i = Image(720, 480)
         ic = ImageContainer(i)
-        nose.tools.assert_equal(ic.width(), 720)
+        self.assertEqual(ic.width(), 720)
 
     def test_height(self):
         i = Image(720, 480)
         ic = ImageContainer(i)
-        nose.tools.assert_equal(ic.height(), 480)
+        self.assertEqual(ic.height(), 480)
 
     def test_fromarray(self):
         dtype_names = [

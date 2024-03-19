@@ -36,11 +36,11 @@ Tests for Python interface to vital::iqr_feedback
 
 from kwiver.vital.types import IQRFeedback, UID
 
-import nose.tools as nt
 import numpy.testing as npt
+import unittest
 
 
-class TestVitalIQRFeedback(object):
+class TestVitalIQRFeedback(unittest.TestCase):
     def test_new(self):
         IQRFeedback()
 
@@ -48,27 +48,27 @@ class TestVitalIQRFeedback(object):
         iqrf = IQRFeedback()
 
         # First check default
-        nt.assert_equals(iqrf.query_id.value(), "")
-        nt.assert_false(iqrf.query_id.is_valid())
+        self.assertEqual(iqrf.query_id.value(), "")
+        self.assertFalse(iqrf.query_id.is_valid())
 
         # Now check setting and getting a few values
         iqrf.query_id = UID("first")
-        nt.assert_equals(iqrf.query_id.value(), "first")
+        self.assertEqual(iqrf.query_id.value(), "first")
 
         iqrf.query_id = UID("second")
-        nt.assert_equals(iqrf.query_id.value(), "second")
+        self.assertEqual(iqrf.query_id.value(), "second")
 
         iqrf.query_id = UID("42")
-        nt.assert_equals(iqrf.query_id.value(), "42")
+        self.assertEqual(iqrf.query_id.value(), "42")
 
         # Try setting back to empty
         iqrf.query_id = UID()
-        nt.assert_equals(iqrf.query_id.value(), "")
+        self.assertEqual(iqrf.query_id.value(), "")
 
-    @nt.raises(TypeError)
     def test_bad_set_query_id(self):
-        iqrf = IQRFeedback()
-        iqrf.query_id = "string, not uid"
+        with self.assertRaises(TypeError):
+            iqrf = IQRFeedback()
+            iqrf.query_id = "string, not uid"
 
     def test_pos_and_neg_ids(self):
         iqrf = IQRFeedback()
@@ -97,12 +97,12 @@ class TestVitalIQRFeedback(object):
         npt.assert_array_equal(iqrf.positive_ids, [])
         npt.assert_array_equal(iqrf.negative_ids, [])
 
-    @nt.raises(TypeError)
     def test_bad_set_pos_ids(self):
-        iqrf = IQRFeedback()
-        iqrf.positive_ids = "string, not list"
+        with self.assertRaises(TypeError):
+            iqrf = IQRFeedback()
+            iqrf.positive_ids = "string, not list"
 
-    @nt.raises(TypeError)
     def test_bad_set_neg_ids(self):
-        iqrf = IQRFeedback()
-        iqrf.negative_ids = "string, not list"
+        with self.assertRaises(TypeError):
+            iqrf = IQRFeedback()
+            iqrf.negative_ids = "string, not list"

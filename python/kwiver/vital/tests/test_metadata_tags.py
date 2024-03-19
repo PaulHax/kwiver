@@ -36,7 +36,6 @@ Tests for Python interface to vital::metadata_tags
 
 from kwiver.vital.types import metadata_tags as mt
 
-import nose.tools as nt
 import unittest
 
 
@@ -156,7 +155,7 @@ class TestVitalMetadataTags(unittest.TestCase):
     def test_generated_enums(self):
         expected_val = 0
         for t in self.tags:
-            nt.assert_equals(
+            self.assertEqual(
                 int(t),
                 expected_val,
                 "Enum mismatch for {}. Expected {}, got {}".format(

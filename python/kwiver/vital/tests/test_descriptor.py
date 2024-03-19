@@ -38,8 +38,6 @@ from __future__ import print_function
 import random
 import unittest
 
-import nose.tools
-import pytest
 from six.moves import range
 import numpy
 
@@ -47,7 +45,6 @@ from kwiver.vital.types import new_descriptor, DescriptorD, DescriptorF, Descrip
 
 
 class TestDescriptor(unittest.TestCase):
-
     def test_new(self):
         # Attempt construction using a bunch of random, non-zero integers
         random.seed(0)
@@ -58,14 +55,15 @@ class TestDescriptor(unittest.TestCase):
 
     def test_new_invalid_size(self):
         # Check that we need to pass an integer size.
-        nose.tools.assert_raises(TypeError, new_descriptor, 42.3)
+        with self.assertRaises(TypeError):
+            new_descriptor(42.3)
 
     def test_size(self):
         # Check that we can check the size of the descriptor array.
         random.seed(0)
         for i in range(100):
             n = random.randint(1, 4096)
-            nose.tools.assert_equal(new_descriptor(n).size, n)
+            self.assertEqual(new_descriptor(n).size, n)
 
     def test_num_bytes(self):
         # While not calling the C function, it should still be a correct value
@@ -74,13 +72,13 @@ class TestDescriptor(unittest.TestCase):
             n = random.randint(1, 4096)
             print(n, end=" ")
 
-            nose.tools.assert_equal(new_descriptor(n, "d").nbytes, 8 * n)
-            nose.tools.assert_equal(new_descriptor(n, "f").nbytes, 4 * n)
+            self.assertEqual(new_descriptor(n, "d").nbytes, 8 * n)
+            self.assertEqual(new_descriptor(n, "f").nbytes, 4 * n)
 
     def test_raw_data(self):
         d = new_descriptor(64)
         d[:] = 1
-        nose.tools.assert_equal(d.sum(), 64)
+        self.assertEqual(d.sum(), 64)
 
         # Check that slicing the array data yields an array with the same
         # values.
@@ -93,8 +91,8 @@ class TestDescriptor(unittest.TestCase):
         d = new_descriptor(64)
         d[:] = 0
         b = d.tobytearray()
-        nose.tools.assert_equal(len(b), d.nbytes)
-        nose.tools.assert_equal(sum(b), 0)
+        self.assertEqual(len(b), d.nbytes)
+        self.assertEqual(sum(b), 0)
 
     def test_operators(self):
         d = new_descriptor(10)
@@ -102,6 +100,6 @@ class TestDescriptor(unittest.TestCase):
         c = new_descriptor(5)
         d[:] = 1
         b[:] = 1
-        nose.tools.ok_(d == b)
-        nose.tools.ok_(c != b)
-        nose.tools.ok_(not c != c)
+        self.assertTrue(d == b)
+        self.assertTrue(c != b)
+        self.assertTrue(not c != c)

@@ -35,7 +35,6 @@ Tests for DetectedObjectSet interface class.
 """
 
 import unittest
-import nose.tools
 import numpy as np
 from kwiver.vital.tests.cpp_helpers import det_obj_set_helpers as dos_helper
 from kwiver.vital.types import (
@@ -68,9 +67,7 @@ class SimpleDetectedSet(dos):
 
 
 class TestDetectedObjectSet(unittest.TestCase):
-
     def setUp(self):
-
         # Values to setup Detected Object to hold in DOS
         self.bbox1 = bb(10, 10, 20, 20)
         self.bbox2 = bb(10, 10, 30, 30)
