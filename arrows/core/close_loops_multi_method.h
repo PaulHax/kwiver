@@ -10,7 +10,6 @@
 
 #include <arrows/core/kwiver_algo_core_export.h>
 
-#include <vital/algo/algorithm.h>
 #include <vital/types/image_container.h>
 #include <vital/types/track_set.h>
 
@@ -37,10 +36,9 @@ public:
   PLUGGABLE_IMPL(
     close_loops_multi_method,
     "Iteratively run multiple loop closure algorithms.",
-    PARAM_DEFAULT(
-      count, unsigned,
-      "Number of close loops methods we want to use.",
-      1 )
+    PARAM(
+      method, std::vector< vital::algo::close_loops_sptr >,
+      "Methods" )
   )
 
   /// Destructor
@@ -73,16 +71,10 @@ public:
     vital::image_container_sptr mask = vital::image_container_sptr() ) const;
 
 private:
-  /// The close loops methods to use.
-  std::vector< vital::algo::close_loops_sptr > methods_;
-
   void initialize() override;
 
   /// private implementation class
   class priv;
-
-// protected:
-//  void set_configuration_internal( vital::config_block_sptr config ) override;
 };
 
 } // end namespace core
