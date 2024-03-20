@@ -91,7 +91,3 @@ private:
 }   // End namespace
 
 #endif
-
-/*
- *
- */

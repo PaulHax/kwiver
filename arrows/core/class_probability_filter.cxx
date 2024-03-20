@@ -22,7 +22,7 @@ namespace core {
 using namespace kwiver::vital;
 
 // ----------------------------------------------------------------------------
-// Function to create the set of keep_classes to keep each time it is called
+// Function to create the set of keep_classes each time it is called
 std::set< std::string >
 keep_classes_set( std::string list_of_classes )
 {
@@ -62,56 +62,6 @@ void
 class_probability_filter
 ::initialize()
 {}
-
-/*
- *  //
- * ----------------------------------------------------------------------------
- *  vital::config_block_sptr
- *  class_probability_filter
- *  ::get_configuration() const
- *  {
- *  // Get base config from base class
- *  vital::config_block_sptr config = vital::algorithm::get_configuration();
- *
- *  std::string list_of_classes;
- *  for( std::set< std::string >::const_iterator i = m_keep_classes.begin();
- *      i != m_keep_classes.end(); ++i )
- *  {
- *   list_of_classes += ( list_of_classes.empty() ) ? "" : ";" + *i;
- *  }
- *
- *  // Note that specifying a list of classes to keep and a keep-all can be
- *  // ambiguous.
- *  // What to do if keep_classes is specified in addition to keep_all_classes?
- *
- *  return config;
- *  }
- *
- *  //
- * ----------------------------------------------------------------------------
- *  void
- *  class_probability_filter
- *  ::set_configuration( vital::config_block_sptr config_in )
- *  {
- *  vital::config_block_sptr config = this->get_configuration();
- *
- *  config->merge_config( config_in );
- *  this->m_threshold = config->get_value< double >( "threshold" );
- *  m_keep_all_classes = config->get_value< bool >( "keep_all_classes" );
- *
- *  std::string list = config->get_value< std::string >( "keep_classes" );
- *  std::string parsed;
- *  std::stringstream ss( list );
- *
- *  while( std::getline( ss, parsed, ';' ) )
- *  {
- *   if( !parsed.empty() )
- *   {
- *     m_keep_classes.insert( parsed );
- *   }
- *  }
- *  }
- */
 
 // ----------------------------------------------------------------------------
 bool
@@ -161,11 +111,13 @@ class_probability_filter
     // Get list of class names that are above threshold
     auto selected_names = input_dot->class_names( c_threshold );
 
+    std::set< std::string > m_keep_all_classes =
+      keep_classes_set( c_list_of_classes );
+
     // Loop over all selected class names
     for( const std::string& a_name : selected_names )
     {
-      if( c_keep_all_classes ||
-          ( keep_classes_set( c_list_of_classes ) ).count( a_name ) )
+      if( c_keep_all_classes || m_keep_all_classes.count( a_name ) )
       {
         // insert class-name/score into DOT
         out_dot->set_score( a_name, input_dot->score( a_name ) );
