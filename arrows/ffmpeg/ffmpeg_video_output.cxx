@@ -245,7 +245,7 @@ ffmpeg_video_output::impl
 {
 #ifdef KWIVER_ENABLE_FFMPEG_CUDA
   hardware_device_context =
-    std::move( cuda_create_context( cuda_device_index ) );
+    std::move( cuda_create_context( cuda_device_index() ) );
 #else
   LOG_DEBUG(
     logger,
