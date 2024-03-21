@@ -6,7 +6,7 @@
 /// \brief Register Qt algorithms implementation
 
 #include <arrows/qt/kwiver_algo_qt_plugin_export.h>
-#include <vital/algo/algorithm_factory.h>
+#include <vital/plugin_management/plugin_manager.h>
 
 #include <arrows/qt/image_io.h>
 
@@ -22,16 +22,20 @@ KWIVER_ALGO_QT_PLUGIN_EXPORT
 void
 register_factories( kwiver::vital::plugin_loader& vpm )
 {
-  ::kwiver::vital::algorithm_registrar reg( vpm, "arrows.qt" );
+  using kvpf = ::kwiver::vital::plugin_factory;
 
-  if( reg.is_module_loaded() )
+  static auto const module_name = std::string( "arrows.qt" );
+
+  if( vpm.is_module_loaded( module_name ) )
   {
     return;
   }
 
-  reg.register_algorithm< image_io >();
+  auto fact =
+    vpm.add_factory< vital::algo::image_io, image_io >( "qt" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_qt" );
 
-  reg.mark_module_as_loaded();
+  vpm.mark_module_as_loaded( module_name );
 }
 
 } // end namespace qt

@@ -1,5 +1,5 @@
 {
     "latest-integration-v2": [
-        { "group": "integration-v2", "site": "gitlab-ci", "buildname": "[ubuntu2004_ceres_ffmpeg_gdal_kpf_opencv_pdal_proj_python_vtk_vxl]" }
+        { "group": "integration-v2", "site": "gitlab-ci", "buildname": "[ubuntu2004_ceres_ffmpeg_gdal_kpf_opencv_pdal_proj_python_qt_vtk_vxl]" }
     ]
 }

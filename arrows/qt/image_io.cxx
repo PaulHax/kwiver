@@ -27,8 +27,9 @@ namespace arrows {
 namespace qt {
 
 // ----------------------------------------------------------------------------
+void
 image_io
-::image_io()
+::initialize()
 {
   attach_logger( "arrows.qt.image_io" );
 }
@@ -37,14 +38,6 @@ image_io
 image_io
 ::~image_io()
 {}
-
-// ----------------------------------------------------------------------------
-void
-image_io
-::set_configuration( vital::config_block_sptr in_config )
-{
-  static_cast< void >( in_config );
-}
 
 // ----------------------------------------------------------------------------
 // Check that the algorithm's currently configuration is valid
