@@ -43,6 +43,7 @@
 
 // implementation
 #include <arrows/core/associate_detections_to_tracks_threshold.h>
+#include <arrows/core/class_probability_filter.h>
 #include <arrows/core/close_loops_appearance_indexed.h>
 #include <arrows/core/close_loops_bad_frames_only.h>
 #include <arrows/core/close_loops_exhaustive.h>
@@ -299,6 +300,10 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   fact = vpl.add_factory< vital::algo::detected_object_filter,
     transform_detected_object_set >( "transform_detected_object_set" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
+
+  fact = vpl.add_factory< vital::algo::detected_object_filter,
+    class_probability_filter >( "class_probability_filter" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core" );
 }
 
