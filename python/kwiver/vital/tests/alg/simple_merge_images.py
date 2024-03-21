@@ -27,26 +27,27 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 from kwiver.vital.algo import MergeImages
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
+from kwiver.vital.config import Config
+from typing import Type
+from typing import TypeVar
+
+T = TypeVar("T", bound="SimpleMergeImages")
 
 
 class SimpleMergeImages(CommonConfigurationMixin, MergeImages):
+    """
+    Implementation of MergeImages to test it
+
+    Examples:
+    """
+
     def __init__(self):
         MergeImages.__init__(self)
 
+    @classmethod
+    def from_config(cls: Type[T], c: Config) -> T:
+        return SimpleMergeImages()
 
-def __vital_algorithm_register__():
-    from kwiver.vital.algo import algorithm_factory
-
-    # Register Algorithm
-    implementation_name = "SimpleMergeImages"
-    if algorithm_factory.has_algorithm_impl_name(
-        SimpleMergeImages.static_type_name(), implementation_name
-    ):
+    @classmethod
+    def get_default_config(cls, c: Config):  # ...  # nothing to set
         return
-
-    algorithm_factory.add_algorithm(
-        implementation_name,
-        "test simple merge images",
-        SimpleMergeImages,
-    )
-    algorithm_factory.mark_algorithm_as_loaded(implementation_name)

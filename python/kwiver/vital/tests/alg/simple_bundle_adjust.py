@@ -26,15 +26,13 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-from __future__ import print_function
-
 from kwiver.vital.algo import BundleAdjust
-from kwiver.vital.types import CameraMap
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
+from kwiver.vital.config import Config
+from typing import Type
+from typing import TypeVar
 
-import numpy as np
-from multimethod import multimethod
-from unittest.mock import Mock
+T = TypeVar("T", bound="SimpleBundleAdjust")
 
 
 class SimpleBundleAdjust(CommonConfigurationMixin, BundleAdjust):
@@ -46,17 +44,10 @@ class SimpleBundleAdjust(CommonConfigurationMixin, BundleAdjust):
     def __init__(self):
         BundleAdjust.__init__(self)
 
+    @classmethod
+    def from_config(cls: Type[T], c: Config) -> T:
+        return SimpleBundleAdjust()
 
-def __vital_algorithm_register__():
-    from kwiver.vital.algo import algorithm_factory
-
-    # Register Algorithm
-    implementation_name = "SimpleBundleAdjust"
-    if algorithm_factory.has_algorithm_impl_name(
-        SimpleBundleAdjust.static_type_name(), implementation_name
-    ):
+    @classmethod
+    def get_default_config(cls, c: Config):  # ...  # nothing to set
         return
-    algorithm_factory.add_algorithm(
-        implementation_name, "test simple bundle adjust", SimpleBundleAdjust
-    )
-    algorithm_factory.mark_algorithm_as_loaded(implementation_name)

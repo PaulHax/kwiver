@@ -25,28 +25,30 @@
 # SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from kwiver.vital.algo import RefineDetections
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
+from kwiver.vital.config import Config
+from typing import Type
+from typing import TypeVar
+
+T = TypeVar("T", bound="SimpleRefineDetections")
 
 
 class SimpleRefineDetections(CommonConfigurationMixin, RefineDetections):
+    """
+    Implementation of RefineDetections to test it
+
+    Examples:
+    """
+
     def __init__(self):
         RefineDetections.__init__(self)
 
+    @classmethod
+    def from_config(cls: Type[T], c: Config) -> T:
+        return SimpleRefineDetections()
 
-def __vital_algorithm_register__():
-    from kwiver.vital.algo import algorithm_factory
-
-    # Register Algorithm
-    implementation_name = "SimpleRefineDetections"
-    if algorithm_factory.has_algorithm_impl_name(
-        SimpleRefineDetections.static_type_name(), implementation_name
-    ):
+    @classmethod
+    def get_default_config(cls, c: Config):  # ...  # nothing to set
         return
-
-    algorithm_factory.add_algorithm(
-        implementation_name,
-        "test simple refine detections",
-        SimpleRefineDetections,
-    )
-    algorithm_factory.mark_algorithm_as_loaded(implementation_name)
