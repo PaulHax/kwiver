@@ -47,7 +47,6 @@ class read_object_track_set_kw18::priv
 public:
   priv( read_object_track_set_kw18& parent )
     : parent( parent ),
-      m_logger( vital::get_logger( "read_object_track_set_kw18" ) ),
       m_first( true ),
       m_current_idx( 0 ),
       m_last_idx( 1 )
@@ -62,7 +61,6 @@ public:
   ~priv() {}
 
   // Local values
-  vital::logger_handle_t m_logger;
   bool m_first;
 
   vital::frame_id_t m_current_idx;

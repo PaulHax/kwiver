@@ -54,7 +54,7 @@ public:
            test_fraction_tracks_lost_to_necessitate_new_keyframe <= 1.0 ) )
     {
       LOG_ERROR(
-        m_logger, "fraction_tracks_lost_to_necessitate_new_keyframe ("
+        parent.logger(), "fraction_tracks_lost_to_necessitate_new_keyframe ("
           << test_fraction_tracks_lost_to_necessitate_new_keyframe
           << ") should be greater than zero and <= 1.0" );
       success = false;
@@ -66,7 +66,7 @@ public:
     if( test_keyframe_min_feature_count < 0 )
     {
       LOG_ERROR(
-        m_logger, "keyframe_min_feature_count ("
+        parent.logger(), "keyframe_min_feature_count ("
           << test_keyframe_min_feature_count
           << ") should be greater than zero" );
       success = false;
@@ -83,8 +83,6 @@ public:
 
   bool a_keyframe_was_selected(
     kwiver::vital::track_set_sptr tracks );
-
-  kwiver::vital::logger_handle_t m_logger;
 };
 
 void

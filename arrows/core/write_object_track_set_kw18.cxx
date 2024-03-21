@@ -37,7 +37,6 @@ class write_object_track_set_kw18::priv
 public:
   priv( write_object_track_set_kw18& parent )
     : parent( parent ),
-      m_logger( kwiver::vital::get_logger( "write_object_track_set_kw18" ) ),
       m_first( true ),
       m_frame_number( 1 )
   {}
@@ -50,7 +49,6 @@ public:
   std::string c_delim() { return parent.c_delim; }
 
   // Local values
-  kwiver::vital::logger_handle_t m_logger;
   bool m_first;
   int m_frame_number;
   std::string m_delim;
@@ -86,7 +84,7 @@ write_object_track_set_kw18
       if( !ts )
       {
         LOG_ERROR(
-          d->m_logger,
+          d->parent.logger(),
           "MISSED STATE " << trk_ptr->id() << " " << trk_ptr->size() );
         continue;
       }

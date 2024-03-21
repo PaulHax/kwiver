@@ -119,9 +119,6 @@ public:
     feature_info_sptr fi1,
     feature_info_sptr fi2 );
 
-  /// The logger handle
-  kwiver::vital::logger_handle_t m_logger;
-
   /// The function used to calculate the distance between two descriptors
   std::function< float( descriptor_sptr,
                         descriptor_sptr ) > desc_dist = hamming_distance;
@@ -404,7 +401,7 @@ close_loops_appearance_indexed::priv
     if( num_stitched_tracks > 0 )
     {
       LOG_DEBUG(
-        m_logger, "Stitched " << num_stitched_tracks <<
+        parent.logger(), "Stitched " << num_stitched_tracks <<
           " tracks between frames " << frame_number <<
           " and " << fn_match);
 
@@ -413,8 +410,8 @@ close_loops_appearance_indexed::priv
   }
 
   LOG_DEBUG(
-    m_logger, "Of " << putative_matches.size() << " putative matches "
-                    << num_successfully_matched_pairs <<
+    parent.logger(), "Of " << putative_matches.size() << " putative matches "
+                           << num_successfully_matched_pairs <<
       " pairs were verified" );
 
   return feat_tracks;
@@ -453,7 +450,7 @@ close_loops_appearance_indexed::priv
     if( !mset )
     {
       LOG_WARN(
-        m_logger, "Feature matching between frames " << frame_number <<
+        parent.logger(), "Feature matching between frames " << frame_number <<
           " and " << fn2 << " failed" );
       continue;
     }
@@ -478,7 +475,7 @@ close_loops_appearance_indexed::priv
       }
     }
     LOG_DEBUG(
-      m_logger, "Stitched " << num_linked <<
+      parent.logger(), "Stitched " << num_linked <<
         " tracks between frames " << frame_number <<
         " and " << fn2);
 
@@ -489,8 +486,8 @@ close_loops_appearance_indexed::priv
   }
 
   LOG_DEBUG(
-    m_logger, "Of " << putative_matches.size() << " putative matches "
-                    << num_successfully_matched_pairs <<
+    parent.logger(), "Of " << putative_matches.size() << " putative matches "
+                           << num_successfully_matched_pairs <<
       " pairs were verified" );
 
   return feat_tracks;
@@ -641,7 +638,7 @@ close_loops_appearance_indexed
 {
   KWIVER_INITIALIZE_UNIQUE_PTR( priv, d_ );
   attach_logger( "arrows.core.close_loops_appearance_indexed" );
-  d_->m_logger = this->logger();
+  d_->parent.logger() = this->logger();
 }
 
 /// Destructor
@@ -683,7 +680,7 @@ close_loops_appearance_indexed
   if( min_loop_matches < 0 )
   {
     LOG_ERROR(
-      d_->m_logger,
+      d_->parent.logger(),
       "min_loop_inlier_matches must be non-negative" );
     config_valid = false;
   }

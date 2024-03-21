@@ -30,9 +30,7 @@ class initialize_object_tracks_threshold::priv
 public:
   /// Constructor
   priv( initialize_object_tracks_threshold& parent )
-    : parent( parent ),
-      m_logger( vital::get_logger(
-        "arrows.core.initialize_object_tracks_threshold" ) )
+    : parent( parent )
   {}
 
   initialize_object_tracks_threshold& parent;
@@ -49,9 +47,6 @@ public:
 
   /// Next track ID to assign - make unique across all processes
   static std::atomic< unsigned > next_track_id;
-
-  /// Logger handle
-  vital::logger_handle_t m_logger;
 };
 
 // Initialize statics

@@ -23,7 +23,6 @@ class write_track_descriptor_set_csv::priv
 public:
   priv( write_track_descriptor_set_csv& parent )
     : parent( parent ),
-      m_logger( kwiver::vital::get_logger( "write_track_descriptor_set_csv" ) ),
       m_first( true ),
       m_delim( "," ),
       m_sub_delim( " " )
@@ -38,7 +37,6 @@ public:
   ~priv() {}
 
   // Local values
-  kwiver::vital::logger_handle_t m_logger;
   bool m_first;
   std::string m_delim;
   std::string m_sub_delim;

@@ -48,9 +48,6 @@ public:
   vital::algo::match_features_sptr c_matcher() { return parent.c_matcher; }
   vital::algo::estimate_fundamental_matrix_sptr c_f_estimator()
   { return parent.c_f_estimator; }
-
-  // Logger handle
-  vital::logger_handle_t m_logger;
 };
 
 // ----------------------------------------------------------------------------

@@ -25,7 +25,6 @@ class read_track_descriptor_set_csv::priv
 public:
   priv( read_track_descriptor_set_csv& parent )
     : parent( parent ),
-      m_logger( kwiver::vital::get_logger( "read_track_descriptor_set_csv" ) ),
       m_first( true ),
       m_delim( "," ),
       m_sub_delim( " " ),
@@ -40,8 +39,6 @@ public:
   bool c_read_raw_descriptor() { return parent.c_read_raw_descriptor; }
 
   ~priv() {}
-
-  kwiver::vital::logger_handle_t m_logger;
 
   bool m_first;
   bool m_batch_load;
