@@ -27,18 +27,18 @@ std::set< std::string >
 keep_classes_set( std::string list_of_classes )
 {
   std::string parsed;
-  std::set< std::string > m_keep_classes;
+  std::set< std::string > keep_classes;
   std::stringstream ss( list_of_classes );
 
   while( std::getline( ss, parsed, ';' ) )
   {
     if( !parsed.empty() )
     {
-      m_keep_classes.insert( parsed );
+      keep_classes.insert( parsed );
     }
   }
 
-  return m_keep_classes;
+  return keep_classes;
 }
 
 // ----------------------------------------------------------------------------
@@ -89,13 +89,13 @@ class_probability_filter
     // Get list of class names that are above threshold
     auto selected_names = input_dot->class_names( c_threshold );
 
-    std::set< std::string > m_keep_all_classes =
+    std::set< std::string > keep_all_classes =
       keep_classes_set( c_list_of_classes );
 
     // Loop over all selected class names
     for( const std::string& a_name : selected_names )
     {
-      if( c_keep_all_classes || m_keep_all_classes.count( a_name ) )
+      if( c_keep_all_classes || keep_all_classes.count( a_name ) )
       {
         // insert class-name/score into DOT
         out_dot->set_score( a_name, input_dot->score( a_name ) );
