@@ -76,12 +76,6 @@ public:
 
   virtual vital::detected_object_set_sptr filter(
     const vital::detected_object_set_sptr input_set ) const;
-
-private:
-  void initialize() override;
-
-  /// private implementation class
-  class priv;
 };
 
 } // namespace core

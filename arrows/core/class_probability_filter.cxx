@@ -42,28 +42,6 @@ keep_classes_set( std::string list_of_classes )
 }
 
 // ----------------------------------------------------------------------------
-class class_probability_filter::priv
-{
-public:
-  priv( class_probability_filter& parent )
-    : parent( parent )
-  {}
-
-  class_probability_filter& parent;
-
-  /// Configuration values
-  bool c_keep_all_classes() { return parent.c_keep_all_classes; }
-  double c_threshold() { return parent.c_threshold; }
-  std::string c_list_of_classes() { return parent.c_list_of_classes; }
-};
-
-// ----------------------------------------------------------------------------
-void
-class_probability_filter
-::initialize()
-{}
-
-// ----------------------------------------------------------------------------
 bool
 class_probability_filter
 ::check_configuration( vital::config_block_sptr config ) const
