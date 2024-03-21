@@ -24,7 +24,7 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 {
   using kvpf = ::kwiver::vital::plugin_factory;
 
-  static auto const module_name = std::string( "arrows_qt" );
+  static auto const module_name = std::string( "arrows.qt" );
 
   if( vpm.is_module_loaded( module_name ) )
   {
