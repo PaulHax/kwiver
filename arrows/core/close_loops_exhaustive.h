@@ -47,7 +47,7 @@ public:
       "(-1 looks back to the beginning).",
       -1 ),
     PARAM(
-      matcher, kwiver::vital::algo::match_features_sptr,
+      feature_matcher, kwiver::vital::algo::match_features_sptr,
       "feature_matcher" )
   )
 

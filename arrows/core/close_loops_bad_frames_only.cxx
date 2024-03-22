@@ -112,7 +112,7 @@ close_loops_bad_frames_only
       input->active_tracks( frame_to_test ) );
 
     // run matcher alg
-    vital::match_set_sptr mset = c_matcher->match(
+    vital::match_set_sptr mset = c_feature_matcher->match(
       test_frame_set->frame_features( frame_to_test ),
       test_frame_set->frame_descriptors( frame_to_test ),
       stitch_frame_set->frame_features( frame_to_stitch ),

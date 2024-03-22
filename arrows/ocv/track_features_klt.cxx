@@ -349,7 +349,6 @@ public:
   typedef std::map< track_id_t, detection_data > detection_data_map;
 
   /// The feature detector algorithm to use
-  vital::algo::detect_features_sptr detector;
   image_pyramid prev_pyramid;
   image_pyramid_map det_pyramids;
   detection_data_map det_data_map;
@@ -442,7 +441,7 @@ track_features_klt
   image_container_sptr mask ) const
 {
   // verify that all dependent algorithms have been initialized
-  if( !d_->detector )
+  if( !c_feature_detector )
   {
     // Something did not initialize
     VITAL_THROW(
@@ -749,7 +748,7 @@ track_features_klt
 
     LOG_DEBUG( logger(), "Computing new features on frame " << frame_number);
     // detect features on the current frame
-    detected_feat = d_->detector->detect( image_data, mask );
+    detected_feat = c_feature_detector->detect( image_data, mask );
 
     // merge new features into existing features (ignore new features near
     // existing features)

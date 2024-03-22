@@ -74,19 +74,19 @@ public:
       "amount, no matches will be output.",
       0.0 ),
     PARAM(
-      h_estimator,
+      homography_estimator,
       vital::algo::estimate_homography_sptr,
       "homography_estimator" ),
     PARAM(
-      matcher1,
+      feature_matcher1,
       vital::algo::match_features_sptr,
       "feature_matcher1" ),
     PARAM(
-      matcher2,
+      feature_matcher2,
       vital::algo::match_features_sptr,
       "feature_matcher2" ),
     PARAM(
-      feature_filter,
+      filter_features,
       vital::algo::filter_features_sptr,
       "filter_features" )
   )

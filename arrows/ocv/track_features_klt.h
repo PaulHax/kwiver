@@ -73,7 +73,7 @@ public:
       "will be discarded.", 10 ),
 
     PARAM(
-      detector, vital::algo::detect_features_sptr,
+      feature_detector, vital::algo::detect_features_sptr,
       "feature_detector configuration" )
 
   )

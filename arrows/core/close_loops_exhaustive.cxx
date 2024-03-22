@@ -42,7 +42,7 @@ public:
 
   /// The feature matching algorithm to use
   vital::algo::match_features_sptr c_matcher()
-  { return parent.c_matcher; }
+  { return parent.c_feature_matcher; }
 };
 
 // ----------------------------------------------------------------------------

@@ -40,7 +40,7 @@ public:
       video_input, kwiver::vital::algo::video_input_sptr,
       "video_input" ),
     PARAM(
-      filter, kwiver::vital::algo::buffered_metadata_filter_sptr,
+      metadata_filter, kwiver::vital::algo::buffered_metadata_filter_sptr,
       "metadata_filter" )
   )
 
