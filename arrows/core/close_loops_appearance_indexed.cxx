@@ -43,14 +43,22 @@ public:
   // Values configured by PLUGGABLE_IMPL macro
 
   /// The feature matching algorithm to use
-  vital::algo::match_features_sptr c_matcher() { return parent.c_matcher; }
+  vital::algo::match_features_sptr
+  c_matcher()
+  {
+    return parent.c_match_features;
+  }
 
   /// The bag of words matching image finder
-  vital::algo::match_descriptor_sets_sptr c_bow() { return parent.c_bow; }
+  vital::algo::match_descriptor_sets_sptr
+  c_bow()
+  {
+    return parent.c_bag_of_words_matching;
+  }
 
   /// The fundamental matrix estimator for geometric verification
   vital::algo::estimate_fundamental_matrix_sptr c_f_estimator()
-  { return parent.c_f_estimator; }
+  { return parent.c_fundamental_mat_estimator; }
 
   /// The minimum number of inliers required for a putative loop to be accepted
   unsigned c_min_loop_inlier_matches()

@@ -41,11 +41,22 @@ public:
 
   // processing classes
   vital::algo::estimate_homography_sptr c_h_estimator()
-  { return parent.c_h_estimator; }
-  vital::algo::match_features_sptr c_matcher1() { return parent.c_matcher1; }
-  vital::algo::match_features_sptr c_matcher2() { return parent.c_matcher2; }
+  { return parent.c_homography_estimator; }
+
+  vital::algo::match_features_sptr
+  c_matcher1()
+  {
+    return parent.c_feature_matcher1;
+  }
+
+  vital::algo::match_features_sptr
+  c_matcher2()
+  {
+    return parent.c_feature_matcher2;
+  }
+
   vital::algo::filter_features_sptr c_feature_filter()
-  { return parent.c_feature_filter; }
+  { return parent.c_filter_features; }
 };
 
 // ----------------------------------------------------------------------------

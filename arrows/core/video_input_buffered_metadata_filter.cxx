@@ -49,7 +49,7 @@ public:
   // Configuration values
   kv::algo::video_input_sptr c_video_input() { return parent.c_video_input; }
   kv::algo::buffered_metadata_filter_sptr c_filter()
-  { return parent.c_filter; }
+  { return parent.c_metadata_filter; }
 
   std::list< frame_info > frames;
   kv::metadata_vector frame_metadata;

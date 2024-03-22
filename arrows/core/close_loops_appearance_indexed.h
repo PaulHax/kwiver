@@ -64,13 +64,13 @@ public:
       "Inlier fraction must be this high to accept a loop completion",
       0.5 ),
     PARAM(
-      matcher, vital::algo::match_features_sptr,
+      match_features, vital::algo::match_features_sptr,
       "match_features" ),
     PARAM(
-      bow, vital::algo::match_descriptor_sets_sptr,
+      bag_of_words_matching, vital::algo::match_descriptor_sets_sptr,
       "bag_of_words_matching" ),
     PARAM(
-      f_estimator, vital::algo::estimate_fundamental_matrix_sptr,
+      fundamental_mat_estimator, vital::algo::estimate_fundamental_matrix_sptr,
       "fundamental_mat_estimator" )
   )
 

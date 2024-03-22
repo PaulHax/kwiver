@@ -59,7 +59,7 @@ handle_descriptor_request_core
   std::vector< kwiver::vital::image_container_sptr >& imgs )
 {
   // Verify that all dependent algorithms have been initialized
-  if( !c_reader || !c_extractor )
+  if( !c_image_reader || !c_descriptor_extractor )
   {
     // Something did not initialize
     VITAL_THROW(
@@ -70,7 +70,7 @@ handle_descriptor_request_core
 
   // load images or video if required by query plan
   std::string data_path = request->data_location();
-  kwiver::vital::image_container_sptr image = c_reader->load( data_path );
+  kwiver::vital::image_container_sptr image = c_image_reader->load( data_path );
 
   if( !image )
   {
@@ -97,7 +97,7 @@ handle_descriptor_request_core
   vital::object_track_set_sptr tracks(
     new vital::object_track_set( trk_vec ) );
 
-  descs = c_extractor->compute( fake_ts, image, tracks );
+  descs = c_descriptor_extractor->compute( fake_ts, image, tracks );
 
   imgs.clear();
   imgs.push_back( image );

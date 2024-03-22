@@ -32,10 +32,10 @@ public:
     handle_descriptor_request_core,
     "Formulate descriptors for later queries.",
     PARAM(
-      reader, vital::algo::image_io_sptr,
+      image_reader, vital::algo::image_io_sptr,
       "image_reader" ),
     PARAM(
-      extractor, vital::algo::compute_track_descriptors_sptr,
+      descriptor_extractor, vital::algo::compute_track_descriptors_sptr,
       "descriptor_extractor" )
   )
 
