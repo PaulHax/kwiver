@@ -346,22 +346,33 @@ name = { nullptr, kwiver::vital::detail::KwiverEmptyDeleter< type > }
 
 // ----------------------------------------------------------------------------
 #define EXPECT_PARAM_DESCRIPTION( tuple ) EXPECT_PARAM_DESCRIPTION_ tuple
-#define EXPECT_PARAM_DESCRIPTION_( param, type, description, default )     \
-IF_ELSE( HAS_ARGS( default ) )                                             \
-(                                                                          \
-  {                                                                        \
-    const std::string& value = cfg->get_value< std::string >( #param );    \
-    if( value != #default )                                                \
-    {                                                                      \
-      ADD_FAILURE() << "Param " << #param << " has wrong default value..." \
-                                             "Expected " << #default <<    \
-        ", but got " << value << " instead.";                              \
-    }                                                                      \
-    if( cfg->get_description( #param ) != description )                    \
-    {                                                                      \
-      ADD_FAILURE() << "Wrong description for parameter " << #param;       \
-    }                                                                      \
-  },                                                                       \
+#define EXPECT_PARAM_DESCRIPTION_( param, type, description, default )      \
+IF_ELSE( HAS_ARGS( default ) )                                              \
+(                                                                           \
+  {                                                                         \
+    auto value = [ & ]{                                                     \
+                   const std::string& val =                                 \
+                     cfg->get_value< std::string >( #param );               \
+                   if constexpr( std::is_same< type, std::string >::value ) \
+                   {                                                        \
+                     return "\"" + val + "\"";                              \
+                   }                                                        \
+                   else                                                     \
+                   {                                                        \
+                     return val;                                            \
+                   }                                                        \
+                 }();                                                       \
+    if( value != #default )                                                 \
+    {                                                                       \
+      ADD_FAILURE() << "Param " << #param << " has wrong default value..."  \
+                                             "Expected " << #default <<     \
+        ", but got " << value << " instead.";                               \
+    }                                                                       \
+    if( cfg->get_description( #param ) != description )                     \
+    {                                                                       \
+      ADD_FAILURE() << "Wrong description for parameter " << #param;        \
+    }                                                                       \
+  },                                                                        \
 )
 
 // ----------------------------------------------------------------------------
