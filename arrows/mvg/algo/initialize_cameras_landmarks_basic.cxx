@@ -162,7 +162,7 @@ public:
 
   // processing classes
   vital::algo::estimate_essential_matrix_sptr
-  d_e_estimator() const { return parent.c_e_estimator; }
+  d_essential_mat_estimator() const { return parent.c_essential_mat_estimator; }
   vital::algo::optimize_cameras_sptr
   d_camera_optimizer() const { return parent.c_camera_optimizer; }
   vital::algo::triangulate_landmarks_sptr
@@ -228,7 +228,7 @@ initialize_cameras_landmarks_basic::priv
   camera_intrinsics_sptr cal_right = prev_cam->intrinsics();
   const camera_intrinsics_sptr cal_left = m_base_camera.get_intrinsics();
   std::vector< bool > inliers;
-  essential_matrix_sptr E_sptr = d_e_estimator()->estimate(
+  essential_matrix_sptr E_sptr = d_essential_mat_estimator()->estimate(
     pts_right, pts_left,
     cal_right, cal_left,
     inliers, 2.0 );
@@ -801,7 +801,7 @@ initialize_cameras_landmarks_basic
   {
     VITAL_THROW( invalid_value, "Some required input data is NULL." );
   }
-  if( !c_e_estimator )
+  if( !c_essential_mat_estimator )
   {
     VITAL_THROW( invalid_value, "Essential matrix estimator not initialized." );
   }

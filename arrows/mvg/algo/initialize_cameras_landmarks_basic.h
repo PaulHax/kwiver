@@ -116,7 +116,7 @@ public:
 
     // nested algorithm configurations
     PARAM(
-      e_estimator, vital::algo::estimate_essential_matrix_sptr,
+      essential_mat_estimator, vital::algo::estimate_essential_matrix_sptr,
       "pointer to the nested algorithm" ),
     PARAM(
       camera_optimizer, vital::algo::optimize_cameras_sptr,

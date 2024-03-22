@@ -409,7 +409,7 @@ public:
 
   // processing classes
   vital::algo::estimate_essential_matrix_sptr
-  d_e_estimator() const { return parent.c_e_estimator; }
+  d_essential_mat_estimator() const { return parent.c_essential_mat_estimator; }
   // vital::algo::optimize_cameras_sptr d_camera_optimizer() const { return
   // parent.c_camera_optimizer; };
   vital::algo::triangulate_landmarks_sptr
@@ -562,7 +562,7 @@ initialize_cameras_landmarks::priv
   {
     VITAL_THROW( invalid_value, "required feature tracks are NULL." );
   }
-  if( !d_e_estimator() )
+  if( !d_essential_mat_estimator() )
   {
     VITAL_THROW( invalid_value, "Essential matrix estimator not initialized." );
   }
@@ -953,7 +953,7 @@ initialize_cameras_landmarks::priv
   }
 
   std::vector< bool > inliers;
-  essential_matrix_sptr E_sptr = d_e_estimator()->estimate(
+  essential_matrix_sptr E_sptr = d_essential_mat_estimator()->estimate(
     pts_right, pts_left,
     cal_right, cal_left,
     inliers, c_interim_reproj_thresh() );
