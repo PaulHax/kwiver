@@ -144,7 +144,7 @@ IF_ELSE( HAS_ARGS( default ) )                                    \
 kwiver::vital::set_config_helper< type >(                                   \
   cb, #name,                                                                \
   this->CONFIG_VAR_NAME(                                                    \
-  name ) );
+  name ), description_str );
 
 /**
  * Produce a set_value call on the config_block (assumed variable `cb`) to set
