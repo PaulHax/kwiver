@@ -45,9 +45,14 @@ public:
   { return parent.c_motion_filter_percentile; }
 
   // processing classes
-  vital::algo::match_features_sptr c_matcher() { return parent.c_matcher; }
+  vital::algo::match_features_sptr
+  c_matcher()
+  {
+    return parent.c_feature_matcher;
+  }
+
   vital::algo::estimate_fundamental_matrix_sptr c_f_estimator()
-  { return parent.c_f_estimator; }
+  { return parent.c_fundamental_matrix_estimator; }
 };
 
 // ----------------------------------------------------------------------------
