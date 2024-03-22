@@ -54,12 +54,16 @@ public:
   config_path_t features_dir() { return parent.c_features_dir; }
 
   // processing classes
-  vital::algo::detect_features_sptr detector() { return parent.c_detector; }
+  vital::algo::detect_features_sptr
+  feature_detector()
+  {
+    return parent.c_feature_detector;
+  }
 
   vital::algo::extract_descriptors_sptr
-  extractor()
+  descriptor_extractor()
   {
-    return parent.c_extractor;
+    return parent.c_descriptor_extractor;
   }
 
   vital::algo::feature_descriptor_io_sptr
@@ -68,8 +72,13 @@ public:
     return parent.c_feature_io;
   }
 
-  vital::algo::match_features_sptr matcher() { return parent.c_matcher; }
-  vital::algo::close_loops_sptr closer() { return parent.c_closer; }
+  vital::algo::match_features_sptr
+  feature_matcher()
+  {
+    return parent.c_feature_matcher;
+  }
+
+  vital::algo::close_loops_sptr loop_closer() { return parent.c_loop_closer; }
 };
 
 // ----------------------------------------------------------------------------
@@ -92,7 +101,7 @@ track_features_core
 {
   bool config_valid = true;
   // this algorithm is optional
-  if( config->has_value( "loop_closer" ) &&
+  if( config->has_value( "loop_loop_closer" ) &&
       config->get_value< std::string >( "loop_closer" ) != "" &&
       !check_nested_algo_configuration< algo::close_loops >(
         "loop_closer",
@@ -148,7 +157,8 @@ track_features_core
   image_container_sptr mask ) const
 {
   // verify that all dependent algorithms have been initialized
-  if( !d_->detector() || !d_->extractor() || !d_->matcher() )
+  if( !d_->feature_detector() || !d_->descriptor_extractor() ||
+      !d_->feature_matcher() )
   {
     // Something did not initialize
     VITAL_THROW(
@@ -249,14 +259,16 @@ track_features_core
   {
     LOG_DEBUG( logger(), "Computing new features on frame " << frame_number);
     // detect features on the current frame
-    curr_feat = d_->detector()->detect( image_data, mask );
+    curr_feat = d_->feature_detector()->detect( image_data, mask );
     features_computed = true;
   }
   if( !curr_desc || curr_desc->size() == 0 )
   {
     LOG_DEBUG( logger(), "Computing new descriptors on frame " << frame_number);
     // extract descriptors on the current frame
-    curr_desc = d_->extractor()->extract( image_data, curr_feat, mask );
+    curr_desc = d_->descriptor_extractor()->extract(
+      image_data, curr_feat,
+      mask );
     features_computed = true;
   }
 
@@ -313,11 +325,11 @@ track_features_core
     auto new_track_set = std::make_shared< feature_track_set >(
       tsi_uptr( new frame_index_track_set_impl( new_tracks ) ) );
 
-    if( d_->closer() )
+    if( d_->loop_closer() )
     {
       // call loop closure on the first frame to establish this
       // frame as the first frame for loop closing purposes
-      return d_->closer()->stitch(
+      return d_->loop_closer()->stitch(
         frame_number,
         new_track_set,
         image_data, mask );
@@ -358,7 +370,7 @@ track_features_core
   descriptor_set_sptr prev_desc = active_set->frame_descriptors( prev_frame );
 
   // match features to from the previous to the current frame
-  match_set_sptr mset = d_->matcher()->match(
+  match_set_sptr mset = d_->feature_matcher()->match(
     prev_feat, prev_desc,
     curr_feat, curr_desc );
   if( !mset )
@@ -440,9 +452,9 @@ track_features_core
   }
 
   // run loop closure if enabled
-  if( d_->closer() )
+  if( d_->loop_closer() )
   {
-    updated_track_set = d_->closer()->stitch(
+    updated_track_set = d_->loop_closer()->stitch(
       frame_number,
       updated_track_set,
       image_data, mask );

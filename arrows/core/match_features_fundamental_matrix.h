@@ -73,11 +73,11 @@ public:
       "when the motion between images is small.",
       0.75 ),
     PARAM(
-      matcher,
+      feature_matcher,
       vital::algo::match_features_sptr,
       "feature_matcher" ),
     PARAM(
-      f_estimator,
+      fundamental_matrix_estimator,
       vital::algo::estimate_fundamental_matrix_sptr,
       "fundamental_matrix_estimator" )
   )

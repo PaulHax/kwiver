@@ -95,11 +95,11 @@ public:
       base_camera_focal_length, double,
       "focal length of the base camera model", 1.0 ),
 
-    PARAM(
+    PARAM_DEFAULT(
       base_camera_principal_point, vital::vector_2d,
       "The principal point of the base camera model \"x y\".\n"
       "It is usually safe to assume this is the center of the "
-      "image." ),
+      "image.", vital::vector_2d( { 0, 0 } ) ),
 
     PARAM_DEFAULT(
       base_camera_aspect_ratio, double,
@@ -116,7 +116,7 @@ public:
 
     // nested algorithm configurations
     PARAM(
-      e_estimator, vital::algo::estimate_essential_matrix_sptr,
+      essential_mat_estimator, vital::algo::estimate_essential_matrix_sptr,
       "pointer to the nested algorithm" ),
     PARAM(
       camera_optimizer, vital::algo::optimize_cameras_sptr,

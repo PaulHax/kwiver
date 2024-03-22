@@ -18,20 +18,22 @@ class KWIVER_ALGO_MVG_APPLETS_EXPORT bundle_adjust_tool
   : public kwiver::tools::kwiver_applet
 {
 public:
-  bundle_adjust_tool();
-  virtual ~bundle_adjust_tool() override;
+  virtual ~bundle_adjust_tool() = default;
 
-  PLUGIN_INFO(
-    "bundle-adjust-tool",
+  PLUGGABLE_IMPL(
+    bundle_adjust_tool,
     "Optimize cameras and landmarks via a bundle adjustment algorithm."
   );
 
   virtual int run() override;
   virtual void add_command_options() override;
 
+protected:
+  void initialize() override;
+
 private:
   struct priv;
-  std::unique_ptr< priv > d;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 }; // bundle_adjust_tool
 
 } // mvg

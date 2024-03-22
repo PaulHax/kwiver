@@ -18,20 +18,21 @@ class KWIVER_ALGO_MVG_APPLETS_EXPORT track_features
   : public kwiver::tools::kwiver_applet
 {
 public:
-  track_features();
-  virtual ~track_features();
+  virtual ~track_features() = default;
 
-  PLUGIN_INFO(
-    "track-features",
+  PLUGGABLE_IMPL(
+    track_features,
     "Feature tracking utility" );
 
   int run() override;
   void add_command_options() override;
 
+protected:
+  void initialize() override;
+
 private:
   class priv;
-
-  const std::unique_ptr< priv > d;
+  KWIVER_UNIQUE_PTR( priv, d_ );
 }; // end of class
 
 } // namespace mvg

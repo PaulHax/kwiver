@@ -226,6 +226,8 @@ plugin_loader
   LOG_TRACE(
     m_logger,
     "Adding plugin to create interface: \"" << demangle( interface_type )
+                                            << "\" with name: \"" <<
+      plugin_name
                                             << "\" from derived type: \"" <<
       demangle( concrete_type )
                                             << "\" from file: " <<

@@ -48,7 +48,7 @@ public:
 
   /// The feature matching algorithm to use
   vital::algo::match_features_sptr c_matcher()
-  { return parent.c_matcher; }
+  { return parent.c_feature_matcher; }
 
   /// histogram of matches associated with each frame
   std::map< frame_id_t, unsigned int > frame_matches;

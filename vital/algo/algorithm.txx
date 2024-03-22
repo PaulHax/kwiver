@@ -104,12 +104,16 @@ set_nested_algo_configuration(
       nested_algo->set_configuration(
         config->subblock_view( name + config_block::block_sep() + iname )
       );
+      LOG_DEBUG(
+        logger, "Found Config implementation \"" << iname
+                                                 << "\" for \"" << type_name <<
+          "\" from key \"" << type_key << "\"" );
     }
     else
     {
       std::stringstream msg;
       msg << "Could not find implementation \"" << iname
-          << "\" for \"" << type_name << "\"";
+          << "\" for \"" << type_name << "\" from key \"" << type_key << "\"";
 
       // Add line number if known
       std::string file;

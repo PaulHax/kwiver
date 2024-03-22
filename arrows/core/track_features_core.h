@@ -45,19 +45,19 @@ public:
       "Using this directory requires a feature_io algorithm.",
       "" ),
     PARAM(
-      detector, vital::algo::detect_features_sptr,
+      feature_detector, vital::algo::detect_features_sptr,
       "feature_detector" ),
     PARAM(
-      extractor, vital::algo::extract_descriptors_sptr,
+      descriptor_extractor, vital::algo::extract_descriptors_sptr,
       "descriptor_extractor" ),
     PARAM(
       feature_io, vital::algo::feature_descriptor_io_sptr,
       "feature_io" ),
     PARAM(
-      matcher, vital::algo::match_features_sptr,
+      feature_matcher, vital::algo::match_features_sptr,
       "feature_matcher" ),
     PARAM(
-      closer, vital::algo::close_loops_sptr,
+      loop_closer, vital::algo::close_loops_sptr,
       "loop_closer" )
   )
 

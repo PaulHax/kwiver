@@ -31,10 +31,10 @@ public:
     "Wrapper that runs a feature detector and "
     "applies a filter to the detector output",
     PARAM(
-      feature_detector, vital::algo::detect_features_sptr,
+      detector, vital::algo::detect_features_sptr,
       "detector" ),
     PARAM(
-      feature_filter, vital::algo::filter_features_sptr,
+      filter, vital::algo::filter_features_sptr,
       "filter" )
   )
 

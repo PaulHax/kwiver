@@ -70,7 +70,8 @@ if ( fletch_FOUND )
   file( APPEND "${KWIVER_SETUP_POWERSHELL_FILE}" "$ENV:GDAL_DATA = \"${GDAL_ROOT}/share/gdal\"\n" )
   file( APPEND "${KWIVER_SETUP_POWERSHELL_FILE}" "$ENV:PROJ_LIB = \"${PROJ_ROOT}/share/proj\"\n" )
 
-  file( APPEND "${KWIVER_SETUP_SCRIPT_FILE}" "export ${LIBRARY_PATH_VAR}=${fletch_ROOT}/lib:$${LIBRARY_PATH_VAR}\n" )
+  # should be unneccessary if rpath is set correctly
+  file( APPEND "${KWIVER_SETUP_SCRIPT_FILE}" "# export ${LIBRARY_PATH_VAR}=${fletch_ROOT}/lib:$${LIBRARY_PATH_VAR}\n" )
   file( APPEND "${KWIVER_SETUP_SCRIPT_FILE}" "export GDAL_DATA=${GDAL_ROOT}/share/gdal\n" )
   file( APPEND "${KWIVER_SETUP_SCRIPT_FILE}" "export PROJ_LIB=${PROJ_ROOT}/share/proj\n" )
 endif()

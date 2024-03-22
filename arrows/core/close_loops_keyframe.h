@@ -55,7 +55,7 @@ public:
       "that could make the tracks stronger.",
       false ),
     PARAM(
-      matcher, kwiver::vital::algo::match_features_sptr,
+      feature_matcher, kwiver::vital::algo::match_features_sptr,
       "feature_matcher" )
   )
 

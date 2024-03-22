@@ -28,9 +28,9 @@ public:
 
   // Processing classes
   vital::algo::detect_features_sptr feature_detector()
-  { return parent.c_feature_detector; }
+  { return parent.c_detector; }
   vital::algo::filter_features_sptr feature_filter()
-  { return parent.c_feature_filter; }
+  { return parent.c_filter; }
 };
 
 // ----------------------------------------------------------------------------
