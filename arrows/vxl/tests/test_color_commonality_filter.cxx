@@ -7,12 +7,15 @@
 #include <arrows/vxl/color_commonality_filter.h>
 #include <arrows/vxl/image_io.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>
 
 namespace kv = kwiver::vital;
 namespace ka = kwiver::arrows;
+
+using namespace kwiver::vital;
 
 kv::path_t g_data_dir;
 static std::string test_image_name = "images/kitware_logos/small_grey_logo.png";
@@ -40,6 +43,54 @@ class color_commonality_filter : public ::testing::Test
 {
   TEST_ARG( data_dir );
 };
+
+// ----------------------------------------------------------------------------
+TEST ( color_commonality_filter, create )
+{
+  plugin_manager::instance().load_all_plugins();
+
+  EXPECT_NE(
+    nullptr,
+    create_algorithm< algo::image_filter >( "vxl_color_commonality" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( color_commonality_filter, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    ka::vxl::color_commonality_filter,
+    "Filter image based on color frequency or commonality.",
+    PARAM_DEFAULT(
+      color_resolution_per_channel, unsigned,
+      "Resolution of the utilized histogram (per channel) if the input "
+      "contains 3 channels. Must be a power of two.",
+      8 ),
+    PARAM_DEFAULT(
+      intensity_resolution, unsigned,
+      "Resolution of the utilized histogram if the input "
+      "contains 1 channel. Must be a power of two.",
+      16 ),
+    PARAM_DEFAULT(
+      output_scale, unsigned,
+      "Scale the output image (typically, values start in the range [0,1]) "
+      "by this amount. Enter 0 for type-specific default.",
+      0 ),
+    PARAM_DEFAULT(
+      grid_image, bool,
+      "Instead of calculating which colors are more common "
+      "in the entire image, should we do it for smaller evenly "
+      "spaced regions?",
+      false ),
+    PARAM_DEFAULT(
+      grid_resolution_height, unsigned,
+      "Divide the height of the image into x regions, if enabled.",
+      5 ),
+    PARAM_DEFAULT(
+      grid_resolution_width, unsigned,
+      "Divide the width of the image into x regions, if enabled.",
+      6 )
+  );
+}
 
 // ----------------------------------------------------------------------------
 TEST_F ( color_commonality_filter, color )
