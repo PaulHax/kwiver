@@ -35,5 +35,29 @@ TEST ( optimize_cameras, create )
       "ceres" ) );
 }
 
+TEST ( optimize_cameras, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    optimize_cameras,
+    "Uses Ceres Solver to optimize camera parameters",
+    PARAM_DEFAULT(
+      verbose, bool,
+      "If true, write status messages to the terminal showing "
+      "optimization progress at each iteration", false ),
+    PARAM_DEFAULT(
+      loss_function_type, LossFunctionType,
+      "Robust loss function type to use.", TRIVIAL_LOSS ),
+    PARAM_DEFAULT(
+      loss_function_scale, double,
+      "Robust loss function scale factor.", 1 ),
+    PARAM(
+      solver_options, solver_options_sptr,
+      "pointer to the nested config options for solver" ),
+    PARAM(
+      camera_options, camera_options_sptr,
+      "pointer to the nested config options for camera" )
+  );
+}
+
 // ----------------------------------------------------------------------------
 #include <arrows/tests/test_optimize_cameras.h>
