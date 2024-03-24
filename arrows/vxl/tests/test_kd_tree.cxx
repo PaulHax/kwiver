@@ -91,6 +91,15 @@ TEST ( kd_tree, create )
 }
 
 // ----------------------------------------------------------------------------
+TEST ( kd_tree, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    kd_tree,
+    "KD Tree search to find nearest points."
+  );
+}
+
+// ----------------------------------------------------------------------------
 TEST_F ( kd_tree_test, find_nearest )
 {
   kwiver::arrows::vxl::kd_tree search_tree;
