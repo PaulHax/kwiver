@@ -8,6 +8,7 @@
 #include <arrows/vxl/image_io.h>
 #include <arrows/vxl/pixel_feature_extractor.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <vil/vil_plane.h>
@@ -18,6 +19,8 @@
 
 namespace kv = kwiver::vital;
 namespace ka = kwiver::arrows;
+
+using namespace kv;
 
 kv::path_t g_data_dir;
 static std::string test_color_image_name =
@@ -34,6 +37,72 @@ main( int argc, char** argv )
   GET_ARG( 1, g_data_dir );
 
   return RUN_ALL_TESTS();
+}
+
+// ----------------------------------------------------------------------------
+TEST ( pixel_feature_extractor, create )
+{
+  plugin_manager::instance().load_all_plugins();
+
+  EXPECT_NE(
+    nullptr,
+    create_algorithm< algo::image_filter >( "vxl_pixel_feature_extractor" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( pixel_feature_extractor, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    ka::vxl::pixel_feature_extractor,
+    "Extract various local pixel-wise features from an image.",
+    PARAM_DEFAULT(
+      enable_color, bool,
+      "Enable color channels.",
+      true ),
+    PARAM_DEFAULT(
+      enable_gray, bool,
+      "Enable grayscale channel.",
+      true ),
+    PARAM_DEFAULT(
+      enable_aligned_edge, bool,
+      "Enable aligned_edge_detection filter.",
+      true ),
+    PARAM_DEFAULT(
+      enable_average, bool,
+      "Enable average_frames filter.",
+      true ),
+    PARAM_DEFAULT(
+      enable_color_commonality, bool,
+      "Enable color_commonality_filter filter.",
+      true ),
+    PARAM_DEFAULT(
+      enable_high_pass_box, bool,
+      "Enable high_pass_filter filter.",
+      true ),
+    PARAM_DEFAULT(
+      enable_high_pass_bidir, bool,
+      "Enable high_pass_filter filter.",
+      true ),
+    PARAM_DEFAULT(
+      enable_normalized_variance, bool,
+      "Enable the normalized variance since the last shot break. "
+      "This will be a scalar multiple with the normal variance until "
+      "shot breaks are implemented.",
+      true ),
+    PARAM_DEFAULT(
+      enable_spatial_prior, bool,
+      "Enable an image which encodes the location",
+      true ),
+    PARAM_DEFAULT(
+      variance_scale_factor, float,
+      "The multiplicative value for the normalized varaince",
+      0.32 ),
+    PARAM_DEFAULT(
+      grid_length, unsigned,
+      "The number of grids in each directions of the spatial "
+      "prior",
+      5 )
+  );
 }
 
 // ----------------------------------------------------------------------------
