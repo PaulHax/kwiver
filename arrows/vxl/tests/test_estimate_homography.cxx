@@ -45,4 +45,12 @@ TEST ( estimate_homography, create )
 }
 
 // ----------------------------------------------------------------------------
+TEST ( estimate_homography, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    estimate_homography,
+    "Use VXL (rrel) to robustly estimate a homography from matched features." )
+}
+
+// ----------------------------------------------------------------------------
 #include <arrows/tests/test_estimate_homography.h>
