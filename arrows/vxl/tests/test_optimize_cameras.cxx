@@ -34,4 +34,14 @@ TEST ( optimize_cameras, create )
 }
 
 // ----------------------------------------------------------------------------
+TEST ( optimize_cameras, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    optimize_cameras,
+    "Use VXL (vpgl) to optimize camera parameters for fixed "
+    "landmarks and tracks.",
+  );
+}
+
+// ----------------------------------------------------------------------------
 #include <arrows/tests/test_optimize_cameras.h>
