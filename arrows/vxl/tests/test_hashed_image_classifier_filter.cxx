@@ -8,6 +8,7 @@
 #include <arrows/vxl/image_container.h>
 #include <arrows/vxl/image_io.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <vil/vil_convert.h>
@@ -17,6 +18,8 @@
 
 namespace kv = kwiver::vital;
 namespace ka = kwiver::arrows;
+
+using namespace kv;
 
 kv::path_t g_data_dir;
 static std::string feature_images =
@@ -35,6 +38,33 @@ main( int argc, char** argv )
   GET_ARG( 1, g_data_dir );
 
   return RUN_ALL_TESTS();
+}
+
+// ----------------------------------------------------------------------------
+TEST ( hashed_image_classifier_filter, create )
+{
+  plugin_manager::instance().load_all_plugins();
+
+  EXPECT_NE(
+    nullptr,
+    create_algorithm< algo::image_filter >(
+      "vxl_hashed_image_classifier_filter" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( hashed_image_classifier_filter, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    ka::vxl::hashed_image_classifier_filter,
+    "Perform per-pixel classification on an image of features.",
+    PARAM(
+      model_file, std::string,
+      "Model file from which to load weights." ),
+    PARAM_DEFAULT(
+      offset, double,
+      "Value to initialize the response map with.",
+      0 )
+  );
 }
 
 // ----------------------------------------------------------------------------
