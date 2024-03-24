@@ -56,12 +56,6 @@ public:
       "Optional output location for a homography text file." )
   );
 
-  /// Default Constructor
-  close_loops_homography_guided();
-
-  /// Copy Constructor
-  close_loops_homography_guided( const close_loops_homography_guided& );
-
   /// Destructor
   virtual ~close_loops_homography_guided() = default;
 
