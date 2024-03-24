@@ -43,6 +43,53 @@ main( int argc, char** argv )
 }
 
 // ----------------------------------------------------------------------------
+TEST ( image_io, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    ka::vxl::image_io,
+    "Use VXL (vil) to load and save image files.",
+    PARAM_DEFAULT(
+      force_byte, bool,
+      "When loading, convert the loaded data into a byte "
+      "(unsigned char) image regardless of the source data type. "
+      "Stretch the dynamic range according to the stretch options "
+      "before converting. When saving, convert to a byte image "
+      "before writing out the image",
+      false ),
+    PARAM_DEFAULT(
+      auto_stretch, bool,
+      "Dynamically stretch the range of the input data such that "
+      "the minimum and maximum pixel values in the data map to "
+      "the minimum and maximum support values for that pixel "
+      "type, or 0.0 and 1.0 for floating point types.  If using "
+      "the force_byte option value map between 0 and 255. "
+      "Warning, this can result in brightness and constrast "
+      "varying between images.",
+      false ),
+    PARAM_DEFAULT(
+      manual_stretch, bool,
+      "Manually stretch the range of the input data by "
+      "specifying the minimum and maximum values of the data "
+      "to map to the full byte range",
+      false ),
+    PARAM_DEFAULT(
+      intensity_range, ka::vxl::array2,
+      "The range of intensity values (min, max) to stretch into "
+      "the byte range.  This is most useful when e.g. 12-bit "
+      "data is encoded in 16-bit pixels. Only used when manual_stretch is "
+      "set to true.",
+      ka::vxl::array2( { 0, 255 } ) ),
+    PARAM_DEFAULT(
+      split_channels, bool,
+      "When writing out images, if it contains more than one image "
+      "plane, write each plane out as a seperate image file. Also, "
+      "when enabled at read time, support images written out in via "
+      "this method.",
+      false )
+  );
+}
+
+// ----------------------------------------------------------------------------
 class image_io : public ::testing::Test
 {
   TEST_ARG( data_dir );
