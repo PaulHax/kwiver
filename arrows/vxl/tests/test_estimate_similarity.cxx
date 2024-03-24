@@ -20,6 +20,8 @@
 
 using namespace kwiver::vital;
 
+using kwiver::arrows::vxl::estimate_similarity_transform;
+
 using std::cerr;
 using std::endl;
 
@@ -40,6 +42,16 @@ TEST ( estimate_similarity, create )
     nullptr,
     kwiver::vital::create_algorithm< kwiver::vital::algo::
       estimate_similarity_transform >( "vxl" )
+  );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( estimate_similarity, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    estimate_similarity_transform,
+    "Use VXL (vpgl) to estimate a 3D similarity transformation "
+    "between corresponding landmarks."
   );
 }
 
