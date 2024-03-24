@@ -36,4 +36,24 @@ TEST ( estimate_fundamental_matrix, create )
 }
 
 // ----------------------------------------------------------------------------
+TEST ( estimate_fundamental_matrix, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    estimate_fundamental_matrix,
+    "Use VXL (vpgl) to estimate a fundamental matrix.",
+    PARAM_DEFAULT(
+      precondition, bool,
+      "If true, precondition the data before estimating the "
+      "fundamental matrix",
+      true ),
+    PARAM_DEFAULT(
+      method, std::string,
+      "Fundamental matrix estimation method to use. "
+      "(Note: does not include RANSAC).  Choices are: " +
+      estimate_fundamental_matrix::method_converter().element_name_string(),
+      "EST_8_POINT" )
+  );
+}
+
+// ----------------------------------------------------------------------------
 #include <arrows/tests/test_estimate_fundamental_matrix.h>
