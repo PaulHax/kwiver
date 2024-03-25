@@ -1,10 +1,8 @@
 from kwiver.vital import config
 from kwiver.vital import plugin_management
 
-print(dir(plugin_management))
 
-
-def main_config_formatter_load_example():
+def test_config_formatter_load_example():
     vpm = plugin_management.plugin_manager_instance()
 
     vpm.load_all_plugins()
@@ -21,7 +19,7 @@ def main_config_formatter_load_example():
     cb_new.set_value("b:c", "other")
 
 
-def main_say_example():
+def test_say_example():
     vpm = plugin_management.plugin_manager_instance()
     vpm.load_all_plugins()
 
@@ -40,7 +38,7 @@ def main_say_example():
         print()
 
 
-def main_they_say_example():
+def test_they_say_example():
     vpm = plugin_management.plugin_manager_instance()
     vpm.load_all_plugins()
 
@@ -60,6 +58,6 @@ def main_they_say_example():
     print()
 
 
-main_config_formatter_load_example()
-main_say_example()
-main_they_say_example()
+test_config_formatter_load_example()
+test_say_example()
+test_they_say_example()

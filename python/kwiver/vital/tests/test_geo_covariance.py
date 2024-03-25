@@ -38,8 +38,8 @@ import nose.tools as nt
 import numpy as np
 import unittest
 
+from kwiver.vital import plugin_management
 from kwiver.vital.types import Covar3f, GeoCovariance, geodesy, GeoPoint
-from kwiver.vital.modules import modules
 
 
 class TestVitalGeoCovariance(unittest.TestCase):
@@ -166,7 +166,8 @@ class TestVitalGeoCovariance(unittest.TestCase):
             )  # This would fail if loc3 was cached
 
     def test_conversion(self):
-        modules.load_known_modules()
+        vpm = plugin_management.plugin_manager_instance()
+        vpm.load_all_plugins()
 
         gc_ll = GeoCovariance(self.loc1, self.crs_ll)
         gc_utm = GeoCovariance(self.loc3, self.crs_utm_18n)

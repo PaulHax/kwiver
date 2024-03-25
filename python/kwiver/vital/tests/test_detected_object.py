@@ -52,9 +52,6 @@ from kwiver.vital.types import (
 )
 
 
-@pytest.mark.skip(
-    reason="See TODO in binding code. Users may experience UB until resolved"
-)
 class TestVitalDetectedObject(unittest.TestCase):
     def setUp(self):
         self.loc1 = np.array([-73.759291, 42.849631])
