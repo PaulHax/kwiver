@@ -30,140 +30,38 @@ class bundle_adjust::priv
 {
 public:
   /// Constructor
-  priv()
-    : verbose( false ),
-      use_m_estimator( false ),
-      m_estimator_scale( 1.0 ),
-      estimate_focal_length( false ),
-      normalize_data( true ),
-      max_iterations( 1000 ),
-      x_tolerance( 1e-8 ),
-      g_tolerance( 1e-8 )
-  {}
+  priv( bundle_adjust& parent ) : parent{ parent } {}
+
+  bundle_adjust& parent;
 
   /// the vxl sparse bundle adjustor
   vpgl_bundle_adjust ba;
   // vpgl_bundle_adjust does not currently allow accessors for parameters,
   // so we need to cache the parameters here.
-  bool verbose;
-  bool use_m_estimator;
-  double m_estimator_scale;
-  bool estimate_focal_length;
-  bool normalize_data;
-  unsigned max_iterations;
-  double x_tolerance;
-  double g_tolerance;
+  bool
+  c_verbose() const { return parent.c_verbose; }
+  bool
+  c_use_m_estimator() const { return parent.c_use_m_estimator; }
+  double
+  c_m_estimater_scale() const { return parent.c_m_estimator_scale; }
+  bool
+  c_estimate_focal_length() const { return parent.c_estimate_focal_length; }
+  bool
+  c_normalize_data() const { return parent.c_normalize_data; }
+  unsigned
+  c_max_iterations() const { return parent.c_max_iterations; }
+  double
+  c_x_tolerance() const { return parent.c_x_tolerance; }
+  double
+  c_g_tolerance() const { return parent.c_g_tolerance; }
 };
 
-/// Constructor
-bundle_adjust
-::bundle_adjust()
-  : d_( new priv )
-{
-  attach_logger( "arrows.vxl.bundle_adjust" );
-}
-
-/// Destructor
-bundle_adjust
-::~bundle_adjust()
-{}
-
-/// Get this algorithm's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-bundle_adjust
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config =
-    vital::algo::bundle_adjust::get_configuration();
-  config->set_value(
-    "verbose", d_->verbose,
-    "If true, write status messages to the terminal showing "
-    "optimization progress at each iteration" );
-  config->set_value(
-    "use_m_estimator", d_->use_m_estimator,
-    "If true, use a M-estimator for a robust loss function. "
-    "Currently only the Beaton-Tukey loss function is supported." );
-  config->set_value(
-    "m_estimator_scale", d_->m_estimator_scale,
-    "The scale of the M-estimator, if enabled, in pixels. "
-    "Inlier landmarks should project to within this distance "
-    "from the feature point." );
-  config->set_value(
-    "estimate_focal_length", d_->estimate_focal_length,
-    "If true, estimate a shared intrinsic focal length for all "
-    "cameras.  Warning: there is often a depth/focal length "
-    "ambiguity which can lead to long optimizations." );
-  config->set_value(
-    "normalize_data", d_->normalize_data,
-    "Normalize the data for numerical stability. "
-    "There is no reason not enable this option, except "
-    "for testing purposes." );
-  config->set_value(
-    "max_iterations", d_->max_iterations,
-    "Termination condition: maximum number of LM iterations" );
-  config->set_value(
-    "x_tolerance", d_->x_tolerance,
-    "Termination condition: Relative change is parameters. "
-    "Exit when (mag(delta_params) / mag(params) < x_tol)." );
-  config->set_value(
-    "g_tolerance", d_->g_tolerance,
-    "Termination condition: Maximum gradient magnitude. "
-    "Exit when (max(grad_params) < g_tol)" );
-  return config;
-}
-
-/// Set this algorithm's properties via a config block
 void
 bundle_adjust
-::set_configuration( vital::config_block_sptr in_config )
+::initialize()
 {
-  // Starting with our generated vital::config_block to ensure that assumed
-  // values are present
-  // An alternative is to check for key presence before performing a get_value()
-  // call.
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  d_->verbose = config->get_value< bool >(
-    "verbose",
-    d_->verbose );
-  d_->ba.set_verbose( d_->verbose );
-
-  d_->use_m_estimator = config->get_value< bool >(
-    "use_m_estimator",
-    d_->use_m_estimator );
-  d_->ba.set_use_m_estimator( d_->use_m_estimator );
-
-  d_->m_estimator_scale = config->get_value< double >(
-    "m_estimator_scale",
-    d_->m_estimator_scale );
-  d_->ba.set_m_estimator_scale( d_->m_estimator_scale );
-
-  d_->estimate_focal_length = config->get_value< bool >(
-    "estimate_focal_length",
-    d_->estimate_focal_length );
-  d_->ba.set_self_calibrate( d_->estimate_focal_length );
-
-  d_->normalize_data = config->get_value< bool >(
-    "normalize_data",
-    d_->normalize_data );
-  d_->ba.set_normalize_data( d_->normalize_data );
-
-  d_->max_iterations = config->get_value< unsigned >(
-    "max_iterations",
-    d_->max_iterations );
-  d_->ba.set_max_iterations( d_->max_iterations );
-
-  d_->x_tolerance = config->get_value< double >(
-    "x_tolerance",
-    d_->x_tolerance );
-  d_->ba.set_x_tolerence( d_->x_tolerance );
-
-  d_->g_tolerance = config->get_value< double >(
-    "g_tolerance",
-    d_->g_tolerance );
-  d_->ba.set_g_tolerence( d_->g_tolerance );
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+  attach_logger( "arrows.vxl.bundle_adjust" );
 }
 
 /// Check that the algorithm's currently configuration is valid
@@ -201,13 +99,13 @@ bundle_adjust
 do                                                           \
 {                                                            \
   kwiver::vital::cpu_timer t;                                \
-  if( d_->verbose )                                          \
+  if( d->c_verbose() )                                       \
   {                                                          \
     t.start();                                               \
     LOG_DEBUG(logger(), msg << " ... " );                    \
   }                                                          \
   code                                                       \
-  if( d_->verbose )                                          \
+  if( d->c_verbose() )                                       \
   {                                                          \
     t.stop();                                                \
     LOG_DEBUG(logger(), " --> " << t.elapsed() << "s CPU" ); \
@@ -273,44 +171,44 @@ do                                                           \
   //
 
   // -> landmark mappings
-  std::vector< track_id_t > lm_id_index;
-  std::map< track_id_t, frame_id_t > lm_id_reverse_map;
-  std::vector< vgl_point_3d< double > > active_world_pts;
+  std::vector< track_id_t > lm_idindex;
+  std::map< track_id_t, frame_id_t > lm_idreverse_map;
+  std::vector< vgl_point_3d< double > > active_worldpts;
   // -> camera mappings
-  std::vector< frame_id_t > cam_id_index;
-  std::map< frame_id_t, frame_id_t > cam_id_reverse_map;
+  std::vector< frame_id_t > cam_idindex;
+  std::map< frame_id_t, frame_id_t > cam_idreverse_map;
   std::vector< vpgl_perspective_camera< double > > active_vcams;
 
   SBA_TIMED(
     "Creating index mappings",
     for( const track_id_t& id : lm_ids )
         {
-          lm_id_reverse_map[ id ] =
-            static_cast< track_id_t >( lm_id_index.size() );
-          lm_id_index.push_back( id );
+          lm_idreverse_map[ id ] =
+            static_cast< track_id_t >( lm_idindex.size() );
+          lm_idindex.push_back( id );
           vector_3d pt = lms[ id ]->loc();
-          active_world_pts.push_back(
+          active_worldpts.push_back(
             vgl_point_3d< double >(
               pt.x(), pt.y(),
               pt.z() ) );
         }
     for( const super_map_t::value_type& p : frame2track2feature_map )
         {
-          cam_id_reverse_map[ p.first ] =
-            static_cast< frame_id_t >( cam_id_index.size() );
-          cam_id_index.push_back( p.first );
+          cam_idreverse_map[ p.first ] =
+            static_cast< frame_id_t >( cam_idindex.size() );
+          cam_idindex.push_back( p.first );
           active_vcams.push_back( vcams[ p.first ] );
         } );
 
   // Construct the camera/landmark visibility matrix
   std::vector< std::vector< bool > >
   mask( active_vcams.size(),
-    std::vector< bool >( active_world_pts.size(), false ) );
+    std::vector< bool >( active_worldpts.size(), false ) );
   // Analogous 2D matrix of the track state (feature) location for a given
   // camera/landmark pair
   std::vector< std::vector< feature_sptr > >
   feature_mask( active_vcams.size(),
-    std::vector< feature_sptr >( active_world_pts.size(), feature_sptr() ) );
+    std::vector< feature_sptr >( active_worldpts.size(), feature_sptr() ) );
   // compact location vector
   std::vector< vgl_point_2d< double > > image_pts;
 
@@ -320,15 +218,15 @@ do                                                           \
         {
           // p.first  -> frame ID
           // p.second -> super_map_inner_t
-          const frame_id_t c_idx = cam_id_reverse_map[ p.first ];
+          const frame_id_t c_idx = cam_idreverse_map[ p.first ];
           std::vector< bool >& mask_row = mask[ c_idx ];
           std::vector< feature_sptr >& fmask_row = feature_mask[ c_idx ];
           for( const super_map_inner_t::value_type& q : p.second )
           {
             // q.first  -> lm ID
             // q.second -> feature_sptr
-            mask_row[ lm_id_reverse_map[ q.first ] ] = true;
-            fmask_row[ lm_id_reverse_map[ q.first ] ] = q.second;
+            mask_row[ lm_idreverse_map[ q.first ] ] = true;
+            fmask_row[ lm_idreverse_map[ q.first ] ] = q.second;
           }
         }
     // Populate the vector of observations in the correct order using mask
@@ -336,7 +234,7 @@ do                                                           \
     vector_2d t_loc;
     for( unsigned int i = 0; i < active_vcams.size(); ++i )
         {
-          for( unsigned int j = 0; j < active_world_pts.size(); ++j )
+          for( unsigned int j = 0; j < active_worldpts.size(); ++j )
           {
             if( mask[ i ][ j ] )
             {
@@ -352,7 +250,7 @@ do                                                           \
   // Run the vpgl bundle adjustment on the selected data
   SBA_TIMED(
     "VXL bundle optimization",
-    d_->ba.optimize( active_vcams, active_world_pts, image_pts, mask );
+    d->ba.optimize( active_vcams, active_worldpts, image_pts, mask );
   );
 
   // map optimized results back into vital structures
@@ -360,17 +258,17 @@ do                                                           \
     "Mapping optimized results back to VITAL structures",
     for( unsigned int i = 0; i < active_vcams.size(); ++i )
         {
-          vcams[ cam_id_index[ i ] ] = active_vcams[ i ];
+          vcams[ cam_idindex[ i ] ] = active_vcams[ i ];
         }
-    for( unsigned int i = 0; i < active_world_pts.size(); ++i )
+    for( unsigned int i = 0; i < active_worldpts.size(); ++i )
         {
-          const vgl_point_3d< double >& pt = active_world_pts[ i ];
+          const vgl_point_3d< double >& pt = active_worldpts[ i ];
           vector_3d loc( pt.x(), pt.y(), pt.z() );
           // Cloning here so we don't change the landmarks contained in the
           // input
           // map.
-          landmark_sptr lm = lms[ lm_id_index[ i ] ]->clone();
-          lms[ lm_id_index[ i ] ] = lm;
+          landmark_sptr lm = lms[ lm_idindex[ i ] ]->clone();
+          lms[ lm_idindex[ i ] ] = lm;
           if( landmark_d* lmd = dynamic_cast< landmark_d* >( lm.get() ) )
           {
             lmd->set_loc( loc );

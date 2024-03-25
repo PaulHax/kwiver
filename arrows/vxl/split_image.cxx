@@ -18,16 +18,15 @@ namespace arrows {
 
 namespace vxl {
 
-/// Constructor
+// ----------------------------------------------------------------------------
+void
 split_image
-::split_image()
-{}
+::initialize()
+{
+  attach_logger( "arrows.vxl.split_image" );
+}
 
-/// Destructor
-split_image
-::~split_image()
-{}
-
+// ----------------------------------------------------------------------------
 /// Split image
 std::vector< kwiver::vital::image_container_sptr >
 split_image

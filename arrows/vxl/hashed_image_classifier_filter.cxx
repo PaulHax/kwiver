@@ -32,8 +32,10 @@ namespace vxl {
 class hashed_image_classifier_filter::priv
 {
 public:
-  priv( hashed_image_classifier_filter* parent ) : p{ parent }
+  priv( hashed_image_classifier_filter& parent ) : parent( parent )
   {}
+
+  hashed_image_classifier_filter& parent;
 
   // Convert the type
   template < typename ipix_t > vil_image_view< ipix_t >
@@ -42,13 +44,13 @@ public:
   // Scale and convert the image
   bool load_model();
 
-  hashed_image_classifier_filter* const p;
-
   hashed_image_classifier< vxl_byte, double > hashed_classifier;
-  double offset{ 0 };
   bool model_loaded{ false };
 
-  std::string model_file;
+  double
+  c_offset() const { return parent.c_offset; }
+  const std::string&
+  c_model_file() const { return parent.c_model_file; }
 };
 
 // ----------------------------------------------------------------------------
@@ -58,19 +60,19 @@ hashed_image_classifier_filter::priv
 {
   if( !model_loaded )
   {
-    auto const& model_paths = vital::find_config_file( model_file );
+    auto const& model_paths = vital::find_config_file( c_model_file() );
     if( model_paths.empty() )
     {
       LOG_ERROR(
-        p->logger(),
-        "Could not locate \"" << model_file << "\" model" );
+        parent.logger(),
+        "Could not locate \"" << c_model_file() << "\" model" );
       return false;
     }
 
     if( !hashed_classifier.load_from_file( model_paths.front() ) )
     {
       LOG_ERROR(
-        p->logger(),
+        parent.logger(),
         "Could not load \"" << model_paths.front() << "\" model" );
       return false;
     }
@@ -80,51 +82,12 @@ hashed_image_classifier_filter::priv
 }
 
 // ----------------------------------------------------------------------------
-hashed_image_classifier_filter
-::hashed_image_classifier_filter()
-  : d( new priv( this ) )
-{
-  attach_logger( "arrows.vxl.hashed_image_classifier_filter" );
-}
-
-// ----------------------------------------------------------------------------
-hashed_image_classifier_filter
-::~hashed_image_classifier_filter()
-{}
-
-// ----------------------------------------------------------------------------
-vital::config_block_sptr
-hashed_image_classifier_filter
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config = algorithm::get_configuration();
-
-  config->set_value(
-    "model_file", d->model_file,
-    "Model file from which to load weights." );
-  config->set_value(
-    "offset", d->offset,
-    "Value to initialize the response map with." );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
 void
 hashed_image_classifier_filter
-::set_configuration( vital::config_block_sptr in_config )
+::initialize()
 {
-  // Start with our generated vital::config_block to ensure that assumed values
-  // are present. An alternative would be to check for key presence before
-  // performing a get_value() call.
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  d->model_file =
-    config->get_value< std::string >( "model_file" );
-  d->offset =
-    config->get_value< double >( "offset" );
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+  attach_logger( "arrows.vxl.hashed_image_classifier_filter" );
 }
 
 // ----------------------------------------------------------------------------
@@ -170,7 +133,7 @@ hashed_image_classifier_filter
 
   vil_image_view< double > weight_image;
 
-  d->hashed_classifier.classify_images( view, weight_image, d->offset );
+  d->hashed_classifier.classify_images( view, weight_image, d->c_offset() );
 
   return std::make_shared< vxl::image_container >( weight_image );
 }

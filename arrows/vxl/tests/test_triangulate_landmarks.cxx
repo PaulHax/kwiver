@@ -7,6 +7,7 @@
 #include <arrows/tests/test_triangulate_landmarks.h>
 #include <arrows/vxl/triangulate_landmarks.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/plugin_management/plugin_manager.h>
 
 using namespace kwiver::vital;
@@ -24,7 +25,9 @@ TEST ( triangulate_landmarks, create )
 {
   plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE( nullptr, algo::triangulate_landmarks::create( "vxl" ) );
+  EXPECT_NE(
+    nullptr,
+    create_algorithm< algo::triangulate_landmarks >( "vxl" ) );
 }
 
 // ----------------------------------------------------------------------------

@@ -14,11 +14,15 @@
 
 #include <vital/algo/estimate_fundamental_matrix.h>
 
+#include <vital/util/enum_converter.h>
+
 namespace kwiver {
 
 namespace arrows {
 
 namespace vxl {
+
+enum method_t { EST_7_POINT, EST_8_POINT, };
 
 /// A class that uses 5 pt algorithm to estimate an initial xform between 2 pt
 /// sets
@@ -26,23 +30,27 @@ class KWIVER_ALGO_VXL_EXPORT estimate_fundamental_matrix
   : public vital::algo::estimate_fundamental_matrix
 {
 public:
-  PLUGIN_INFO(
-    "vxl",
-    "Use VXL (vpgl) to estimate a fundamental matrix." )
-
-  /// Constructor
-  estimate_fundamental_matrix();
+  PLUGGABLE_IMPL(
+    estimate_fundamental_matrix,
+    "Use VXL (vpgl) to estimate a fundamental matrix.",
+    PARAM_DEFAULT(
+      precondition, bool,
+      "If true, precondition the data before estimating the "
+      "fundamental matrix",
+      true ),
+    PARAM_DEFAULT(
+      method, std::string,
+      "Fundamental matrix estimation method to use. "
+      "(Note: does not include RANSAC).  Choices are: " +
+      method_converter().element_name_string(),
+      method_converter().to_string( EST_8_POINT ) )
+  )
 
   /// Destructor
-  virtual ~estimate_fundamental_matrix();
+  virtual ~estimate_fundamental_matrix() = default;
 
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's currently configuration is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
   /// Estimate an fundamental matrix from corresponding points
   ///
@@ -78,11 +86,17 @@ public:
     std::vector< bool >& inliers,
     double inlier_scale = 1.0 );
 
+  ENUM_CONVERTER(
+    method_converter, method_t,
+    { "EST_7_POINT",   EST_7_POINT },
+    { "EST_8_POINT",   EST_8_POINT } )
+
 private:
+  void initialize() override;
   /// private implementation class
   class priv;
 
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // end namespace vxl

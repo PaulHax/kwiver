@@ -8,8 +8,6 @@
 
 #include <arrows/vxl/image_container.h>
 
-#include <vital/util/enum_converter.h>
-
 #include <vital/range/iota.h>
 
 #include <vil/vil_convert.h>
@@ -29,16 +27,6 @@ namespace arrows {
 
 namespace vxl {
 
-enum threshold_mode
-{
-  MODE_absolute,
-  MODE_percentile,
-};
-
-ENUM_CONVERTER(
-  mode_converter, threshold_mode, { "absolute", MODE_absolute },
-  { "percentile", MODE_percentile } );
-
 // ----------------------------------------------------------------------------
 // Private implementation class
 class threshold::priv
@@ -48,8 +36,14 @@ public:
   vil_image_view< bool >
   filter( vil_image_view< pix_t > image );
 
-  double threshold{ 0.95 };
-  threshold_mode type{ MODE_percentile };
+  priv( threshold& parent ) : parent( parent ) {}
+
+  threshold& parent;
+
+  double
+  c_threshold() const { return parent.c_threshold; }
+  const std::string&
+  c_type() const { return parent.c_type; }
 };
 
 // ----------------------------------------------------------------------------
@@ -58,18 +52,20 @@ vil_image_view< bool >
 threshold::priv
 ::filter( vil_image_view< pix_t > image )
 {
-  switch( type )
+  switch( mode_converter().from_string( c_type() ) )
   {
     case MODE_absolute:
     {
       vil_image_view< bool > output;
-      vil_threshold_above( image, output, static_cast< pix_t >( threshold ) );
+      vil_threshold_above(
+        image, output,
+        static_cast< pix_t >( c_threshold() ) );
       return output;
     }
     case MODE_percentile:
     {
       vil_image_view< bool > output;
-      percentile_threshold_above( image, threshold, output );
+      percentile_threshold_above( image, c_threshold(), output );
       return output;
     }
     default:
@@ -78,50 +74,12 @@ threshold::priv
 }
 
 // ----------------------------------------------------------------------------
-threshold
-::threshold()
-  : d{ new priv{} }
-{
-  attach_logger( "arrows.vxl.threshold" );
-}
-
-// ----------------------------------------------------------------------------
-threshold
-::~threshold()
-{}
-
-// ----------------------------------------------------------------------------
-vital::config_block_sptr
-threshold
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config = algorithm::get_configuration();
-
-  config->set_value(
-    "threshold", d->threshold,
-    "Threshold to use. Meaning is dependent on type." );
-  config->set_value(
-    "type", mode_converter().to_string( d->type ),
-    "Type of thresholding to use. Possible options are: " +
-    mode_converter().element_name_string() );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
 void
 threshold
-::set_configuration( vital::config_block_sptr in_config )
+::initialize()
 {
-  // Start with our generated vital::config_block to ensure that assumed values
-  // are present. An alternative would be to check for key presence before
-  // performing a get_value() call.
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  d->threshold = config->get_value< double >( "threshold" );
-  d->type = config->get_enum_value< mode_converter >( "type" );
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+  attach_logger( "arrows.vxl.threshold" );
 }
 
 // ----------------------------------------------------------------------------

@@ -134,8 +134,17 @@ percentile_scale_image(
       }
       else
       {
-        return static_cast< OutputType >(
-          static_cast< double >( pixel - lower_bound ) * scale );
+        if constexpr( std::is_same< InputType, bool >::value )
+        {
+          // avoiding a compile warning here
+          return static_cast< OutputType >(
+            static_cast< double >( pixel - lower_bound ) && scale );
+        }
+        else
+        {
+          return static_cast< OutputType >(
+            static_cast< double >( pixel - lower_bound ) * scale );
+        }
       }
     } );
 }
@@ -147,13 +156,10 @@ percentile_scale_image(
 class convert_image::priv
 {
 public:
-  priv()
-    : format{ "byte" },
-      single_channel{ false },
-      scale_factor{ 0.0 },
-      random_grayscale{ 0.0 },
-      percentile_norm{ -1.0 }
+  priv( convert_image& parent ) : parent( parent )
   {}
+
+  convert_image& parent;
 
   // Convert a fraction of images to gray
   template < typename Type >
@@ -172,11 +178,16 @@ public:
   vil_image_view< opix_t >
   scale_and_convert( vil_image_view< ipix_t > const& input );
 
-  std::string format;
-  bool single_channel;
-  double scale_factor;
-  double random_grayscale;
-  double percentile_norm;
+  const std::string&
+  c_format() const { return parent.c_format; }
+  bool
+  c_single_channel() const { return parent.c_single_channel; }
+  double
+  c_scale_factor() const { return parent.c_scale_factor; }
+  double
+  c_random_grayscale() const { return parent.c_random_grayscale; }
+  double
+  c_percentile_norm() const { return parent.c_percentile_norm; }
 
   std::random_device random_device;
   std::mt19937 random_engine{ random_device() };
@@ -217,7 +228,7 @@ vil_image_view< ipix_t >
 convert_image::priv
 ::apply_transforms( vil_image_view_base_sptr& view )
 {
-  if( single_channel && view->nplanes() != 1 )
+  if( c_single_channel() && view->nplanes() != 1 )
   {
     vil_image_view< ipix_t > output;
     combine_channels(
@@ -225,11 +236,11 @@ convert_image::priv
       output );
     return output;
   }
-  else if( random_grayscale > 0.0 )
+  else if( c_random_grayscale() > 0.0 )
   {
     return random_gray_conversion(
       static_cast< vil_image_view< ipix_t > >( view ),
-      random_grayscale );
+      c_random_grayscale() );
   }
   else
   {
@@ -244,92 +255,29 @@ convert_image::priv
 ::scale_and_convert( vil_image_view< ipix_t > const& input )
 {
   vil_image_view< opix_t > output;
-  if( percentile_norm >= 0.0 )
+  if( c_percentile_norm() >= 0.0 )
   {
     percentile_scale_image(
-      input, output, percentile_norm, 1.0 - percentile_norm, 1e8 );
+      input, output, c_percentile_norm(), 1.0 - c_percentile_norm(), 1e8 );
   }
-  else if( scale_factor == 0.0 || scale_factor == 1.0 )
+  else if( c_scale_factor() == 0.0 || c_scale_factor() == 1.0 )
   {
     vil_convert_cast( input, output );
   }
   else
   {
-    output = scale_image< opix_t >( input, scale_factor );
+    output = scale_image< opix_t >( input, c_scale_factor() );
   }
   return output;
 }
 
 // ----------------------------------------------------------------------------
-convert_image
-::convert_image()
-  : d{ new priv{} }
-{
-  attach_logger( "arrows.vxl.convert_image" );
-}
-
-// ----------------------------------------------------------------------------
-convert_image
-::~convert_image()
-{}
-
-// ----------------------------------------------------------------------------
-vital::config_block_sptr
-convert_image
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config = algorithm::get_configuration();
-
-  config->set_value(
-    "format", d->format,
-    "Output type format: byte, sbyte, float, double, uint16, uint32, etc." );
-  config->set_value(
-    "single_channel", d->single_channel,
-    "Convert input (presumably multi-channel) to contain a single channel, "
-    "using either standard RGB to grayscale conversion weights, or "
-    "averaging." );
-  config->set_value(
-    "scale_factor", d->scale_factor,
-    "Optional input value scaling factor" );
-  config->set_value(
-    "random_grayscale", d->random_grayscale,
-    "Convert input image to a 3-channel grayscale image randomly with this "
-    "percentage between 0.0 and 1.0. This is used for machine learning "
-    "augmentation." );
-  config->set_value(
-    "percentile_norm", d->percentile_norm,
-    "If set, between [0, 0.5), perform percentile "
-    "normalization such that the output image's min and max "
-    "values correspond to the percentiles in the orignal "
-    "image at this value and one minus this value, respectively." );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
 void
 convert_image
-::set_configuration( vital::config_block_sptr in_config )
+::initialize()
 {
-  // Start with our generated vital::config_block to ensure that assumed values
-  // are present. An alternative would be to check for key presence before
-  // performing a get_value() call.
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  // Settings for conversion
-  d->format = config->get_value< std::string >( "format" );
-  d->single_channel = config->get_value< bool >( "single_channel" );
-  d->scale_factor = config->get_value< double >( "scale_factor" );
-  d->random_grayscale = config->get_value< double >( "random_grayscale" );
-  d->percentile_norm = config->get_value< double >( "percentile_norm" );
-
-  // Adjustment in case user specified 1% instead of 0.01
-  if( d->percentile_norm >= 0.5 )
-  {
-    d->percentile_norm /= 100.;
-  }
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+  attach_logger( "arrows.vxl.convert_image" );
 }
 
 // ----------------------------------------------------------------------------
@@ -357,7 +305,7 @@ convert_image
 
   // Perform different actions based on input type
 #define HANDLE_OUTPUT_CASE( S, T )                              \
-if( d->format == S )                                            \
+if( d->c_format() == S )                                        \
 {                                                               \
   using opix_t = vil_pixel_format_type_of< T >::component_type; \
   auto const& output = d->scale_and_convert< opix_t >( input ); \
@@ -368,12 +316,12 @@ if( d->format == S )                                            \
   case T:                                                             \
     {                                                                 \
       using ipix_t = vil_pixel_format_type_of< T >::component_type;   \
-      if( d->format == "disable" )                                    \
+      if( d->c_format() == "disable" )                                \
       {                                                               \
         return image_data;                                            \
       }                                                               \
       auto const& input = d->apply_transforms< ipix_t >( view );      \
-      if( d->format == "copy" )                                       \
+      if( d->c_format() == "copy" )                                   \
       {                                                               \
         auto const& output = d->scale_and_convert< ipix_t >( input ); \
         return std::make_shared< vxl::image_container >( output );    \

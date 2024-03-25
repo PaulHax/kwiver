@@ -15,6 +15,8 @@
 #include <vital/plugin_management/plugin_manager.h>
 #include <vital/util/transform_image.h>
 
+#include <vital/algo/algorithm.txx>
+
 #include <vil/vil_crop.h>
 
 #include <gtest/gtest.h>
@@ -36,7 +38,7 @@ TEST ( image, create )
   plugin_manager::instance().load_all_plugins();
 
   std::shared_ptr< algo::image_io > img_io;
-  ASSERT_NE( nullptr, img_io = algo::image_io::create( "vxl" ) );
+  ASSERT_NE( nullptr, img_io = create_algorithm< algo::image_io >( "vxl" ) );
 
   algo::image_io* img_io_ptr = img_io.get();
   EXPECT_EQ( typeid( vxl::image_io ), typeid( *img_io_ptr ) )

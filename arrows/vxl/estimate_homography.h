@@ -24,16 +24,12 @@ class KWIVER_ALGO_VXL_EXPORT estimate_homography
   : public vital::algo::estimate_homography
 {
 public:
-  PLUGIN_INFO(
-    "vxl",
+  PLUGGABLE_IMPL(
+    estimate_homography,
     "Use VXL (rrel) to robustly estimate a homography from matched features." )
 
-  // No configuration yet for this class.
-  /// \cond DoxygenSuppress
-  virtual void set_configuration( vital::config_block_sptr /*config*/ ) {}
-
-  virtual bool
-  check_configuration( vital::config_block_sptr /*config*/ ) const
+  bool
+  check_configuration( vital::config_block_sptr /*config*/ ) const override
   {
     return true;
   }
@@ -58,6 +54,9 @@ public:
     std::vector< bool >& inliers,
     double inlier_scale = 1.0 ) const;
   using vital::algo::estimate_homography::estimate;
+
+private:
+  void initialize() override;
 };
 
 } // end namespace vxl

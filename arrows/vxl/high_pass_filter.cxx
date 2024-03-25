@@ -5,7 +5,6 @@
 #include "high_pass_filter.h"
 
 #include <arrows/vxl/image_container.h>
-#include <vital/util/enum_converter.h>
 
 #include <vil/vil_convert.h>
 #include <vil/vil_image_view.h>
@@ -22,16 +21,6 @@ namespace vxl {
 namespace {
 
 // anonymous
-
-enum filter_mode
-{
-  MODE_box,
-  MODE_bidir,
-};
-
-ENUM_CONVERTER(
-  mode_converter, filter_mode,
-  { "box", MODE_box }, { "bidir", MODE_bidir } )
 
 // ----------------------------------------------------------------------------
 template < typename T > struct accumulator;
@@ -79,20 +68,21 @@ struct accumulator< double >
 class high_pass_filter::priv
 {
 public:
-  priv( high_pass_filter* parent )
-    : p{ parent }
-  {}
+  priv( high_pass_filter& parent ) : parent( parent ) {}
 
-  ~priv()
-  {}
+  high_pass_filter& parent;
 
   // Internal parameters/settings
-  filter_mode mode = MODE_box;
-  unsigned kernel_width = 7;
-  unsigned kernel_height = 7;
-  bool treat_as_interlaced = false;
-  bool output_net_only = false;
-  high_pass_filter* p;
+  const std::string&
+  c_mode() const { return parent.c_mode; }
+  unsigned
+  c_kernel_width() const { return parent.c_kernel_width; }
+  unsigned
+  c_kernel_height() const { return parent.c_kernel_height; }
+  bool
+  c_treat_as_interlaced() const { return parent.c_treat_as_interlaced; }
+  bool
+  c_output_net_only() const { return parent.c_output_net_only; }
 
   // Perform box filtering
   template < typename PixType > vil_image_view< PixType >
@@ -151,12 +141,12 @@ high_pass_filter::priv
   vil_image_view< PixType > filter_y = vil_plane( output, 1 );
   vil_image_view< PixType > filter_xy = vil_plane( output, 2 );
 
-  box_average_horizontal( grey_img, filter_x, kernel_width );
-  box_average_vertical( grey_img, filter_y, kernel_height );
+  box_average_horizontal( grey_img, filter_x, c_kernel_width() );
+  box_average_vertical( grey_img, filter_y, c_kernel_height() );
 
   // Apply horizontal smoothing to the vertically smoothed image to get a 2D
   // box filter
-  box_average_horizontal( filter_y, filter_xy, kernel_width );
+  box_average_horizontal( filter_y, filter_xy, c_kernel_width() );
 
   // Report the difference between the pixel value and all of the smoothed
   // responses
@@ -243,14 +233,14 @@ high_pass_filter::priv
   // Report the difference between the pixel value, and all of the smoothed
   // responses, using the xy channel as a temporary buffer to avoid additional
   // memory allocation.
-  box_average_vertical( grey_img, filter_xy, kernel_height );
+  box_average_vertical( grey_img, filter_xy, c_kernel_height() );
   horizontal_box_bidirectional_pass(
     grey_img, filter_xy, filter_x,
-    kernel_width );
-  box_average_horizontal( grey_img, filter_xy, kernel_width );
+    c_kernel_width() );
+  box_average_horizontal( grey_img, filter_xy, c_kernel_width() );
   vertical_box_bidirectional_pass(
     grey_img, filter_xy, filter_y,
-    kernel_height );
+    c_kernel_height() );
   vil_math_image_max( filter_x, filter_y, filter_xy );
 
   return output;
@@ -291,11 +281,11 @@ high_pass_filter::priv
 {
   if( src.ni() <= 0 )
   {
-    LOG_ERROR( p->logger(), "Image width must be non-zero" );
+    LOG_ERROR( parent.logger(), "Image width must be non-zero" );
   }
   if( kernel_width % 2 == 0 )
   {
-    LOG_ERROR( p->logger(), "Kernel width must be odd" );
+    LOG_ERROR( parent.logger(), "Kernel width must be odd" );
   }
 
   if( kernel_width >= src.ni() )
@@ -385,7 +375,7 @@ high_pass_filter::priv
   vil_image_view< PixType >& dst,
   unsigned kernel_height )
 {
-  if( treat_as_interlaced )
+  if( c_treat_as_interlaced() )
   {
     // if interlaced, split the image into odd and even views transpose all
     // input and ouput images so that the horizontal smoothing function
@@ -421,7 +411,7 @@ high_pass_filter::priv
 ::filter( vil_image_view< PixType >& input )
 {
   vil_image_view< PixType > output;
-  switch( mode )
+  switch( mode_converter().from_string( c_mode() ) )
   {
     case MODE_box:
       output = box_high_pass_filter( input );
@@ -435,7 +425,7 @@ high_pass_filter::priv
 
   // Only report the last plane, which contains the summation of directional
   // filtering
-  if( output_net_only && output.nplanes() > 1 )
+  if( c_output_net_only() && output.nplanes() > 1 )
   {
     output = vil_plane( output, output.nplanes() - 1 );
   }
@@ -444,68 +434,12 @@ high_pass_filter::priv
 }
 
 // ----------------------------------------------------------------------------
-high_pass_filter
-::high_pass_filter()
-  : d( new priv( this ) )
-{
-  attach_logger( "arrows.vxl.high_pass_filter" );
-}
-
-// ----------------------------------------------------------------------------
-high_pass_filter
-::~high_pass_filter()
-{}
-
-// ----------------------------------------------------------------------------
-vital::config_block_sptr
-high_pass_filter
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config = algorithm::get_configuration();
-
-  config->set_value(
-    "mode", mode_converter().to_string(
-      d->mode ),
-    "Operating mode of this filter, possible values: " +
-    mode_converter().element_name_string() );
-  config->set_value(
-    "kernel_width", d->kernel_width,
-    "Pixel width of smoothing kernel" );
-  config->set_value(
-    "kernel_height", d->kernel_height,
-    "Pixel height of smoothing kernel" );
-  config->set_value(
-    "treat_as_interlaced", d->treat_as_interlaced,
-    "Process alternating rows independently" );
-  config->set_value(
-    "output_net_only", d->output_net_only,
-    "If set to false, the output image will contain multiple "
-    "planes, each representing the modal filter applied at "
-    "different orientations, as opposed to a single plane "
-    "image representing the sum of filters applied in all "
-    "directions." );
-
-  return config;
-}
-
-// ----------------------------------------------------------------------------
 void
 high_pass_filter
-::set_configuration( vital::config_block_sptr in_config )
+::initialize()
 {
-  // Starting with our generated vital::config_block to ensure that assumed
-  // values are present. An alternative is to check for key presence before
-  // performing a get_value() call.
-  vital::config_block_sptr config = this->get_configuration();
-  config->merge_config( in_config );
-
-  // Settings for filtering
-  d->mode = config->get_enum_value< mode_converter >( "mode" );
-  d->kernel_width = config->get_value< unsigned >( "kernel_width" );
-  d->kernel_height = config->get_value< unsigned >( "kernel_height" );
-  d->treat_as_interlaced = config->get_value< bool >( "treat_as_interlaced" );
-  d->output_net_only = config->get_value< bool >( "output_net_only" );
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+  attach_logger( "arrows.vxl.high_pass_filter" );
 }
 
 // ----------------------------------------------------------------------------

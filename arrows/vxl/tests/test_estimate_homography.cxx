@@ -10,6 +10,7 @@
 
 #include <arrows/vxl/estimate_homography.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/plugin_management/plugin_manager.h>
 
 using namespace kwiver::vital;
@@ -40,7 +41,7 @@ TEST ( estimate_homography, create )
 {
   plugin_manager::instance().load_all_plugins();
 
-  EXPECT_NE( nullptr, algo::estimate_homography::create( "vxl" ) );
+  EXPECT_NE( nullptr, create_algorithm< algo::estimate_homography >( "vxl" ) );
 }
 
 // ----------------------------------------------------------------------------

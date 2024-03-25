@@ -23,23 +23,58 @@ class KWIVER_ALGO_VXL_EXPORT bundle_adjust
   : public vital::algo::bundle_adjust
 {
 public:
-  PLUGIN_INFO(
-    "vxl",
-    "Use VXL (vpgl) to bundle adjust cameras and landmarks." )
-
-  /// Constructor
-  bundle_adjust();
+  PLUGGABLE_IMPL(
+    bundle_adjust,
+    "Use VXL (vpgl) to bundle adjust cameras and landmarks.",
+    PARAM_DEFAULT(
+      verbose, bool,
+      "If true, write status messages to the terminal showing "
+      "optimization progress at each iteration",
+      false ),
+    PARAM_DEFAULT(
+      use_m_estimator, bool,
+      "If true, use a M-estimator for a robust loss function. "
+      "Currently only the Beaton-Tukey loss function is supported.",
+      false ),
+    PARAM_DEFAULT(
+      m_estimator_scale, double,
+      "The scale of the M-estimator, if enabled, in pixels. "
+      "Inlier landmarks should project to within this distance "
+      "from the feature point.",
+      1.0 ),
+    PARAM_DEFAULT(
+      estimate_focal_length, bool,
+      "If true, estimate a shared intrinsic focal length for all "
+      "cameras.  Warning: there is often a depth/focal length "
+      "ambiguity which can lead to long optimizations.",
+      false ),
+    PARAM_DEFAULT(
+      normalize_data, bool,
+      "Normalize the data for numerical stability. "
+      "There is no reason not enable this option, except "
+      "for testing purposes.",
+      true ),
+    PARAM_DEFAULT(
+      max_iterations, unsigned,
+      "Termination condition: maximum number of LM iterations",
+      1000 ),
+    PARAM_DEFAULT(
+      x_tolerance, double,
+      "Termination condition: Relative change is parameters. "
+      "Exit when (mag(delta_params) / mag(params) < x_tol).",
+      1e-8 ),
+    PARAM_DEFAULT(
+      g_tolerance, double,
+      "Termination condition: Maximum gradient magnitude. "
+      "Exit when (max(grad_params) < g_tol)",
+      1e-8 )
+  )
 
   /// Destructor
-  virtual ~bundle_adjust();
+  virtual ~bundle_adjust() = default;
 
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's currently configuration is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
   /// Optimize the camera and landmark parameters given a set of feature tracks
   ///
@@ -57,10 +92,11 @@ public:
   using vital::algo::bundle_adjust::optimize;
 
 private:
+  void initialize() override;
   /// private implementation class
   class priv;
 
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // end namespace vxl

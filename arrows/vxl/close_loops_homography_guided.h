@@ -33,10 +33,28 @@ class KWIVER_ALGO_VXL_EXPORT close_loops_homography_guided
   : public vital::algo::close_loops
 {
 public:
-  PLUGIN_INFO(
-    "vxl_homography_guided",
+  PLUGGABLE_IMPL(
+    close_loops_homography_guided,
     "Use VXL to estimate a sequence of ground plane homographies to identify "
-    "frames to match for loop closure." )
+    "frames to match for loop closure.",
+    PARAM_DEFAULT(
+      enabled, bool,
+      "Is long term loop closure enabled?",
+      true ),
+    PARAM_DEFAULT(
+      max_checkpoint_frames, unsigned,
+      "Maximum past search distance in terms of number of checkpoints.",
+      10000 ),
+    PARAM_DEFAULT(
+      checkpoint_percent_overlap, double,
+      "Term which controls when we make new loop closure checkpoints. "
+      "Everytime the percentage of tracked features drops below this "
+      "threshold, we generate a new checkpoint.",
+      0.70 ),
+    PARAM(
+      homography_filename, std::string,
+      "Optional output location for a homography text file." )
+  );
 
   /// Default Constructor
   close_loops_homography_guided();
@@ -45,32 +63,7 @@ public:
   close_loops_homography_guided( const close_loops_homography_guided& );
 
   /// Destructor
-  virtual ~close_loops_homography_guided();
-
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  ///
-  /// This base virtual function implementation returns an empty configuration
-  /// block whose name is set to \c this->type_name.
-  ///
-  /// \returns \c vital::config_block containing the configuration for this
-  /// algorithm
-  ///          and any nested components.
-  virtual vital::config_block_sptr get_configuration() const;
-
-  /// Set this algorithm's properties via a config block
-  ///
-  /// \throws no_such_configuration_value_exception
-  ///    Thrown if an expected configuration value is not present.
-  /// \throws algorithm_configuration_exception
-  ///    Thrown when the algorithm is given an invalid \c vital::config_block or
-  /// is'
-  ///    otherwise unable to configure itself.
-  ///
-  /// \param config  The \c vital::config_block instance containing the
-  /// configuration
-  ///                parameters for this algorithm
-  virtual void set_configuration( vital::config_block_sptr config );
+  virtual ~close_loops_homography_guided() = default;
 
   /// Check that the algorithm's currently configuration is valid
   ///
@@ -82,7 +75,7 @@ public:
   /// \param config  The config block to check configuration of.
   ///
   /// \returns true if the configuration check passed and false if it didn't.
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
   /// Perform loop closure operation.
   ///
@@ -100,10 +93,11 @@ public:
     vital::image_container_sptr mask = vital::image_container_sptr() ) const;
 
 private:
+  void initialize() override;
   /// Class for storing other internal variables
   class priv;
 
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // end namespace vxl

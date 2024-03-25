@@ -23,6 +23,15 @@ namespace arrows {
 
 namespace vxl {
 
+// ----------------------------------------------------------------------------
+void
+estimate_homography
+::initialize()
+{
+  attach_logger( "arrows.vxl.estimate_homography" );
+}
+
+// ----------------------------------------------------------------------------
 /// Estimate a homography matrix from corresponding points
 homography_sptr
 estimate_homography

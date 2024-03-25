@@ -33,20 +33,10 @@ namespace vxl {
 class estimate_canonical_transform::priv
 {
 public:
-  enum rrel_method_types { RANSAC, LMS, IRLS, };
-
 // Constructor
-  priv()
-    : estimate_scale( true ),
-      trace_level( 0 ),
-      rrel_method( IRLS ),
-      desired_prob_good( 0.99 ),
-      max_outlier_frac( 0.75 ),
-      prior_inlier_scale( 0.1 ),
-      irls_max_iterations( 15 ),
-      irls_iterations_for_scale( 2 ),
-      irls_conv_tolerance( 1e-4 )
-  {}
+  priv( estimate_canonical_transform& parent ) : parent( parent ) {}
+
+  estimate_canonical_transform& parent;
 
 // --------------------------------------------------------------------------
 // Helper function to estimate a ground plane from the data points
@@ -72,18 +62,18 @@ public:
       new rrel_orthogonal_regression( vnl_points );
     vnl_vector< double > pp;
 
-    switch( rrel_method )
+    switch( rrel_converter().from_string( c_rrel_method() ) )
     {
       case RANSAC:
       {
         rrel_ransac_obj* ransac = new rrel_ransac_obj();
         rrel_ran_sam_search* ransam = new rrel_ran_sam_search;
         ransam->set_sampling_params(
-          max_outlier_frac, desired_prob_good,
+          c_max_outlier_frac(), c_desiredprob_good(),
           max_pops );
-        ransam->set_trace_level( trace_level );
+        ransam->set_trace_level( c_trace_level() );
 
-        reg->set_prior_scale( prior_inlier_scale );
+        reg->set_prior_scale( c_prior_inlier_scale() );
 
         if( !ransam->estimate( reg, ransac ) )
         {
@@ -102,9 +92,9 @@ public:
         rrel_objective* lms = new rrel_lms_obj( num_sam_inst );
         rrel_ran_sam_search* ransam = new rrel_ran_sam_search;
         ransam->set_sampling_params(
-          max_outlier_frac, desired_prob_good,
+          c_max_outlier_frac(), c_desiredprob_good(),
           max_pops );
-        ransam->set_trace_level( trace_level );
+        ransam->set_trace_level( c_trace_level() );
 
         if( !ransam->estimate( reg, lms ) )
         {
@@ -123,10 +113,10 @@ public:
         reg->set_no_prior_scale();
 
         // Iteratively Reweighted Least Squares
-        rrel_irls* irls = new rrel_irls( irls_max_iterations );
-        irls->set_est_scale( irls_iterations_for_scale );
-        irls->set_convergence_test( irls_conv_tolerance );
-        irls->set_trace_level( trace_level );
+        rrel_irls* irls = new rrel_irls( c_irls_max_iterations() );
+        irls->set_est_scale( c_irls_iterations_for_scale() );
+        irls->set_convergence_test( c_irls_conv_tolerance() );
+        irls->set_trace_level( c_trace_level() );
 
         if( !irls->estimate( reg, m_est ) )
         {
@@ -144,132 +134,49 @@ public:
   }
 
 // Enable estimation of scale in the similarity transform
-  bool estimate_scale;
+  bool
+  c_estimate_scale() const { return parent.c_estimate_scale; }
 // This controls the verbosity of the search techniques.
-  int trace_level;
+  int
+  c_trace_level() const { return parent.c_trace_level; }
 // The robust estimation method to used
-  rrel_method_types rrel_method;
+  const std::string&
+  c_rrel_method() const { return parent.c_rrel_method; }
 // The desired probability of finding the correct fit.
-  double desired_prob_good;
+  double
+  c_desiredprob_good() const { return parent.c_estimate_scale; }
 // The maximum fraction of the data that is expected to be gross outliers.
-  double max_outlier_frac;
+  double
+  c_max_outlier_frac() const { return parent.c_max_outlier_frac; }
 // The initial estimate of inlier scale for RANSAC
-  double prior_inlier_scale;
+  double
+  c_prior_inlier_scale() const { return parent.c_prior_inlier_scale; }
 // The maximum number of iterations for IRLS
-  int irls_max_iterations;
+  int
+  c_irls_max_iterations() const { return parent.c_irls_max_iterations; }
+
 // The number of IRLS iterations in which to estimate scale
-  int irls_iterations_for_scale;
+  int
+  c_irls_iterations_for_scale() const
+  {
+    return parent.c_irls_iterations_for_scale;
+  }
+
 // The convergence tolerance for IRLS
-  double irls_conv_tolerance;
+  double
+  c_irls_conv_tolerance() const { return parent.c_irls_conv_tolerance; }
 
 // Logger handle
   vital::logger_handle_t m_logger;
 };
 
 // ----------------------------------------------------------------------------
-// Constructor
-estimate_canonical_transform
-::estimate_canonical_transform()
-  : d_( new priv )
-{
-  attach_logger( "arrows.vxl.estimate_canonical_transform" );
-  d_->m_logger = logger();
-}
-
-// Destructor
-estimate_canonical_transform
-::~estimate_canonical_transform()
-{}
-
-// ----------------------------------------------------------------------------
-// Get this algorithm's \link vital::config_block configuration block \endlink
-vital::config_block_sptr
-estimate_canonical_transform
-::get_configuration() const
-{
-  // get base config from base class
-  vital::config_block_sptr config =
-    vital::algo::estimate_canonical_transform::get_configuration();
-
-  config->set_value(
-    "estimate_scale", d_->estimate_scale,
-    "Estimate the scale to normalize the data. "
-    "If disabled the estimate transform is rigid" );
-
-  config->set_value(
-    "trace_level", d_->trace_level,
-    "Integer value controlling the verbosity of the "
-    "plane search algorithms (0->no output, 3->max output)." );
-
-  config->set_value(
-    "rrel_method", static_cast< int >( d_->rrel_method ),
-    "The robust estimation algorithm to use for plane "
-    "fitting. Options are:\n"
-    " 0 = RANSAC\n"
-    " 1 = Least Median of Squares (LMS)\n"
-    " 2 = Iteratively Reweighted Least Squares (IRLS)" );
-
-  config->set_value(
-    "desired_prob_good", d_->desired_prob_good,
-    "The desired probability of finding the correct plane fit." );
-
-  config->set_value(
-    "max_outlier_frac", d_->max_outlier_frac,
-    "The maximum fraction of the landmarks that is expected "
-    "outliers to the ground plane." );
-
-  config->set_value(
-    "prior_inlier_scale", d_->prior_inlier_scale,
-    "The initial estimate of inlier scale for RANSAC "
-    "fitting of the ground plane." );
-
-  config->set_value(
-    "irls_max_iterations", d_->irls_max_iterations,
-    "The maximum number if iterations when using IRLS" );
-
-  config->set_value(
-    "irls_iterations_for_scale", d_->irls_iterations_for_scale,
-    "The number of IRLS iterations in which to estimate scale" );
-
-  config->set_value(
-    "irls_conv_tolerance", d_->irls_conv_tolerance,
-    "The convergence tolerance for IRLS" );
-  return config;
-}
-
-// ----------------------------------------------------------------------------
-// Set this algorithm's properties via a config block
 void
 estimate_canonical_transform
-::set_configuration( vital::config_block_sptr config )
+::initialize()
 {
-  d_->estimate_scale = config->get_value< bool >(
-    "estimate_scale",
-    d_->estimate_scale );
-  d_->trace_level = config->get_value< int >( "trace_level", d_->trace_level );
-  d_->rrel_method = static_cast< priv::rrel_method_types >(
-    config->get_value< int >(
-      "rrel_method",
-      static_cast< int >( d_->rrel_method ) ) );
-  d_->desired_prob_good = config->get_value< double >(
-    "desired_prob_good",
-    d_->desired_prob_good );
-  d_->max_outlier_frac = config->get_value< double >(
-    "max_outlier_frac",
-    d_->max_outlier_frac );
-  d_->prior_inlier_scale = config->get_value< double >(
-    "prior_inlier_scale",
-    d_->prior_inlier_scale );
-  d_->irls_max_iterations = config->get_value< int >(
-    "irls_max_iterations",
-    d_->irls_max_iterations );
-  d_->irls_iterations_for_scale =
-    config->get_value< int >(
-      "irls_iterations_for_scale",
-      d_->irls_iterations_for_scale );
-  d_->irls_conv_tolerance = config->get_value< double >(
-    "irls_conv_tolerance",
-    d_->irls_conv_tolerance );
+  KWIVER_INITIALIZE_UNIQUE_PTR( priv, d );
+  attach_logger( "arrows.vxl.estimate_canonical_transform" );
 }
 
 // ----------------------------------------------------------------------------
@@ -298,7 +205,7 @@ estimate_canonical_transform
   }
 
   // estimate the ground plane
-  vector_4d plane = d_->estimate_plane( points );
+  vector_4d plane = d->estimate_plane( points );
   vector_3d normal = plane.head< 3 >();
 
   // project the points onto the plane
@@ -355,7 +262,7 @@ estimate_canonical_transform
     }
   }
 
-  if( !d_->estimate_scale )
+  if( !d->c_estimate_scale() )
   {
     s = 1.0;
   }

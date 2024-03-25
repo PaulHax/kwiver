@@ -24,23 +24,15 @@ class KWIVER_ALGO_VXL_EXPORT triangulate_landmarks
   : public vital::algo::triangulate_landmarks
 {
 public:
-  PLUGIN_INFO(
-    "vxl",
+  PLUGGABLE_IMPL(
+    triangulate_landmarks,
     "Use VXL (vpgl) to triangulate 3D landmarks from cameras and tracks." )
 
-  /// Constructor
-  triangulate_landmarks();
-
   /// Destructor
-  virtual ~triangulate_landmarks();
+  virtual ~triangulate_landmarks() = default;
 
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's currently configuration is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
   /// Triangulate the landmark locations given sets of cameras and feature
   /// tracks
@@ -59,10 +51,7 @@ public:
   using vital::algo::triangulate_landmarks::triangulate;
 
 private:
-  /// private implementation class
-  class priv;
-
-  const std::unique_ptr< priv > d_;
+  void initialize() override;
 };
 
 } // end namespace vxl

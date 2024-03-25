@@ -35,24 +35,31 @@ class KWIVER_ALGO_VXL_EXPORT match_features_constrained
   : public vital::algo::match_features
 {
 public:
-  PLUGIN_INFO(
-    "vxl_constrained",
+  PLUGGABLE_IMPL(
+    match_features_constrained,
     "Use VXL to match descriptors under the constraints of similar geometry "
-    "(rotation, scale, position)." )
-
-  /// Constructor
-  match_features_constrained();
+    "(rotation, scale, position).",
+    PARAM_DEFAULT(
+      scale_thresh, double,
+      "Ratio threshold of scales between matching keypoints (>=1.0)"
+      " -1 turns scale thresholding off",
+      2.0 ),
+    PARAM_DEFAULT(
+      angle_thresh, double,
+      "Angle difference threshold between matching keypoints"
+      " -1 turns angle thresholding off",
+      -1.0 ),
+    PARAM_DEFAULT(
+      radius_thresh, double,
+      "Search radius for a match in pixels",
+      200.0 )
+  )
 
   /// Destructor
-  virtual ~match_features_constrained();
+  virtual ~match_features_constrained() = default;
 
-  /// Get this algorithm's \link vital::config_block configuration block
-  /// \endlink
-  virtual vital::config_block_sptr get_configuration() const;
-  /// Set this algorithm's properties via a config block
-  virtual void set_configuration( vital::config_block_sptr config );
   /// Check that the algorithm's configuration vital::config_block is valid
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
   /// Match one set of features and corresponding descriptors to another
   ///
@@ -67,10 +74,11 @@ public:
     vital::feature_set_sptr feat2, vital::descriptor_set_sptr desc2 ) const;
 
 private:
+  void initialize() override;
   /// private implementation class
   class priv;
 
-  const std::unique_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 } // end namespace vxl
