@@ -1,5 +1,6 @@
 # standard fletch build config for kwiver v2
 set(fletch_BUILD_WITH_PYTHON ON CACHE BOOL "")
+set(fletch_BUILD_WITH_CUDA ON CACHE BOOL "")
 set(fletch_BUILD_WITH_CX11 ON CACHE BOOL "")
 set(fletch_ENABLE_Boost ON CACHE BOOL "")
 set(fletch_ENABLE_Ceres ON CACHE BOOL "")
