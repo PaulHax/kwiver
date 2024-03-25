@@ -41,6 +41,11 @@
 
 #include <arrows/dbow2/kwiver_algo_dbow2_export.h>
 
+#include <vital/algo/algorithm.txx>
+#include <vital/algo/detect_features.h>
+#include <vital/algo/extract_descriptors.h>
+#include <vital/algo/image_io.h>
+
 #include <vital/algo/match_descriptor_sets.h>
 
 namespace kwiver {
@@ -58,13 +63,33 @@ class KWIVER_ALGO_DBOW2_EXPORT match_descriptor_sets
   : public vital::algo::match_descriptor_sets
 {
 public:
-  match_descriptor_sets();
   virtual ~match_descriptor_sets() = default;
 
-  PLUGIN_INFO(
-    "dbow2",
+  PLUGGABLE_IMPL(
+    match_descriptor_sets,
     "Use DBoW2 for bag of words matching of descriptor sets. "
-    "This is currently limited to OpenCV ORB descriptors." )
+    "This is currently limited to OpenCV ORB descriptors.",
+    PARAM_DEFAULT(
+      max_num_candidate_matches_from_vocabulary_tree, int,
+      "the maximum number of candidate matches to return from the vocabulary tree",
+      10 ),
+    PARAM(
+      training_image_list_path, std::string,
+      "path to the list of vocabulary training images" ),
+    PARAM_DEFAULT(
+      vocabulary_path, std::string,
+      "path to the vocabulary file",
+      "kwiver_voc.yml.gz" ),
+    PARAM(
+      image_io, vital::algo::image_io_sptr,
+      "image_io" ),
+    PARAM(
+      detector, vital::algo::detect_features_sptr,
+      "detector" ),
+    PARAM(
+      extractor, vital::algo::extract_descriptors_sptr,
+      "extractor" )
+  )
 
   /// Add an image to the inverted file system.
 
@@ -108,29 +133,6 @@ public:
   /// Get this algorithm's \link vital::config_block configuration block
   /// \endlink
 
-  /**
-   * This base virtual function implementation returns an empty configuration
-   * block whose name is set to \c this->type_name.
-   *
-   * \returns \c config_block containing the configuration for this algorithm
-   *          and any nested components.
-   */
-  vital::config_block_sptr get_configuration() const override;
-
-  /// Set this algorithm's properties via a config block
-
-  /**
-   * \throws no_such_configuration_value_exception
-   *    Thrown if an expected configuration value is not present.
-   * \throws algorithm_configuration_exception
-   *    Thrown when the algorithm is given an invalid \c config_block or is'
-   *    otherwise unable to configure itself.
-   *
-   * \param config  The \c config_block instance containing the configuration
-   *                parameters for this algorithm
-   */
-  void set_configuration( vital::config_block_sptr config ) override;
-
   /// Check that the algorithm's currently configuration is valid
 
   /**
@@ -145,10 +147,11 @@ public:
   bool check_configuration( vital::config_block_sptr config ) const override;
 
 protected:
+  void initialize() override;
   /// the feature m_detector algorithm
   class priv;
 
-  std::shared_ptr< priv > d_;
+  KWIVER_UNIQUE_PTR( priv, d );
 };
 
 /// Shared pointer type for generic image_io definition type.
