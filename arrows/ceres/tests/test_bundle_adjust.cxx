@@ -21,6 +21,7 @@ using namespace kwiver::arrows;
 using namespace kwiver::arrows::mvg;
 
 using kwiver::arrows::ceres::bundle_adjust;
+using kwiver::arrows::ceres::LossFunctionType;
 
 // ----------------------------------------------------------------------------
 int
