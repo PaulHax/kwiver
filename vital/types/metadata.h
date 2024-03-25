@@ -30,6 +30,11 @@
 #include <variant>
 #include <vector>
 
+// needed to allow pybind11 wrap methods that return metadata_vector
+#ifdef KWIVER_PYBIND11_INCLUDE
+#include <pybind11/stl.h>
+#endif
+
 namespace kwiver {
 
 namespace vital {
