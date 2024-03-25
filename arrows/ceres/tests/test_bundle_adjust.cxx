@@ -42,6 +42,36 @@ TEST ( bundle_adjust, create )
 }
 
 // ----------------------------------------------------------------------------
+TEST ( bundle_adjust, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    bundle_adjust,
+    "Uses Ceres Solver to bundle adjust camera and landmark parameters.",
+    PARAM_DEFAULT(
+      verbose, bool,
+      "If true, write status messages to the terminal showing "
+      "optimization progress at each iteration.", false ),
+    PARAM_DEFAULT(
+      log_full_report, bool,
+      "If true, log a full report of optimization stats at "
+      "the end of optimization.", false ),
+    PARAM_DEFAULT(
+      loss_function_type, LossFunctionType,
+      "Robust loss function type to use.",
+      TRIVIAL_LOSS ),
+    PARAM_DEFAULT(
+      loss_function_scale, double,
+      "Robust loss function scale factor.", 1 ),
+    PARAM(
+      solver_options, solver_options_sptr,
+      "pointer to the nested config options for solver" ),
+    PARAM(
+      camera_options, camera_options_sptr,
+      "pointer to the nested config options for camera" )
+  );
+}
+
+// ----------------------------------------------------------------------------
 #include <arrows/tests/test_bundle_adjust.h>
 
 // ----------------------------------------------------------------------------
