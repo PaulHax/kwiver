@@ -499,7 +499,7 @@ def parse_headers(headers, include_directories, declaration_names):
         include_paths=include_directories,
         xml_generator_path=generator_path,
         xml_generator=generator_name,
-        cflags="-std=c++17 -DKWIVER_PYBIND11_WRAPPING",
+        cflags="-std=c++17 -fsized-deallocation -DKWIVER_PYBIND11_WRAPPING",
         castxml_epic_version=1,  # required to be able to parse comments
     )
 
