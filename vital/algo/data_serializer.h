@@ -17,6 +17,11 @@
 #include <set>
 #include <string>
 
+#ifdef KWIVER_PYBIND11_INCLUDE
+#include <pybind11/pybind11.h>
+PYBIND11_MAKE_OPAQUE( std::shared_ptr< std::string > );
+#endif
+
 namespace kwiver {
 
 namespace vital {

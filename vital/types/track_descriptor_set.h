@@ -25,4 +25,9 @@ typedef std::shared_ptr< track_descriptor_set > track_descriptor_set_sptr;
 
 }   // end namespace
 
+#ifdef KWIVER_PYBIND11_INCLUDE
+#include <pybind11/pybind11.h>
+PYBIND11_MAKE_OPAQUE( kwiver::vital::track_descriptor_set_sptr )
+#endif
+
 #endif
