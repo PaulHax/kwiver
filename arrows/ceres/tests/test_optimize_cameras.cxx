@@ -11,6 +11,7 @@
 using namespace kwiver::vital;
 
 using kwiver::arrows::ceres::optimize_cameras;
+using kwiver::arrows::ceres::LossFunctionType;
 
 static constexpr double noisy_center_tolerance = 1e-8;
 static constexpr double noisy_rotation_tolerance = 2e-9;
