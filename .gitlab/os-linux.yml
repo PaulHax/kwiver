@@ -56,12 +56,12 @@
 .before_script_linux_venv: &before_script_linux_venv
     - python3 -m venv build/ci-venv
     - . build/ci-venv/bin/activate
-    - pip install -r .gitlab/ci/requirements_dev.txt
+    - pip install -r ./python/requirements_dev.txt
 
 .before_script_linux_wheel_venv: &before_script_linux_wheel_venv
     - "$PYTHON_PREFIX/bin/python -m venv build/ci-venv"
     - . build/ci-venv/bin/activate
-    - pip install -r .gitlab/ci/requirements_dev.txt
+    - pip install -r ./python/requirements_dev.txt
     - pip install scikit-build auditwheel
 
 .cmake_build_linux:
