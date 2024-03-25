@@ -51,8 +51,9 @@ public:
   /// \param [in] feat The feature set to filter
   /// \param [in] descr The parallel descriptor set to filter
   /// \returns a pair of the filtered features and descriptors
-  virtual std::pair< kwiver::vital::feature_set_sptr,
-    kwiver::vital::descriptor_set_sptr >
+  using filter_return_value = std::pair< kwiver::vital::feature_set_sptr,
+    kwiver::vital::descriptor_set_sptr >;
+  virtual filter_return_value
   filter(
     kwiver::vital::feature_set_sptr feat,
     kwiver::vital::descriptor_set_sptr descr ) const;
