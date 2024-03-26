@@ -3,26 +3,29 @@
 
 set(CMAKE_FOLDER "Arrows/DBoW2")
 
-set( dbow2_headers_public
-  match_descriptor_sets.h
-  )
-set( dbow2_headers_private
-  BowVector.h
+set( plugin_dbow2_headers
   DBoW2.h
   FClass.h
-  FeatureVector.h
-  FORB.h
-  QueryResults.h
-  Random.h
-  ScoringObject.h
   TemplatedDatabase.h
   TemplatedVocabulary.h
-  Timestamp.h
   )
+set( plugin_dbow2_sources )
+set( plugin_dbow2_classes
+  BowVector
+  match_descriptor_sets
+  FeatureVector
+  FORB
+  QueryResults
+  Random
+  ScoringObject
+  Timestamp
+  )
+
+kwiver_expand_class_list( "${plugin_dbow2_classes}" plugin_dbow2_headers plugin_dbow2_sources )
 
 kwiver_install_headers(
   SUBDIR     arrows/dbow2
-  ${DBoW2_headers_public}
+  ${plugin_dbow2_headers}
   )
 
 kwiver_install_headers(
@@ -30,28 +33,17 @@ kwiver_install_headers(
   NOPATH   SUBDIR     arrows/dbow2
   )
 
-set( dbow2_sources
-  match_descriptor_sets.cxx
-  BowVector.cxx
-  FeatureVector.cxx
-  FORB.cxx
-  QueryResults.cxx
-  Random.cxx
-  ScoringObject.cxx
-  Timestamp.cxx
-  )
 
 kwiver_add_library( kwiver_algo_dbow2
-  ${dbow2_headers_public}
-  ${dbow2_headers_private}
-  ${dbow2_sources}
+  ${plugin_dbow2_headers}
+  ${plugin_dbow2_sources}
   )
+
 target_link_libraries( kwiver_algo_dbow2
   PUBLIC               vital_algo
                        ${OpenCV_LIBS}
   PRIVATE              kwiversys
   )
-
 
 algorithms_create_plugin( kwiver_algo_dbow2
   register_algorithms.cxx
