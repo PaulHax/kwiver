@@ -20,16 +20,19 @@ class KWIVER_SERIALIZE_PROTOBUF_EXPORT timestamp
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO(
-    "kwiver:timestamp",
-    "Serializes a timestamp using protobuf notation." );
+  PLUGGABLE_IMPL(
+    timestamp,
+    "Serializes a timestamp using protobuf notation."
+  );
 
-  timestamp();
   virtual ~timestamp();
 
   std::shared_ptr< std::string > serialize(
     const vital::any& element ) override;
   vital::any deserialize( const std::string& message ) override;
+
+protected:
+  void initialize() override;
 };
 
 } // namespace protobuf

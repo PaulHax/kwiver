@@ -20,16 +20,19 @@ class KWIVER_SERIALIZE_PROTOBUF_EXPORT image
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO(
-    "kwiver:image",
-    "Serializes an image container using protobuf notation." );
+  PLUGGABLE_IMPL(
+    image,
+    "Serializes an image container using protobuf notation."
+  );
 
-  image();
   virtual ~image();
 
   std::shared_ptr< std::string > serialize(
     const vital::any& elements ) override;
   vital::any deserialize( const std::string& message ) override;
+
+protected:
+  void initialize() override;
 };
 
 } // namespace protobuf

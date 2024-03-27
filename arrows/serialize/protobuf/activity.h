@@ -20,16 +20,19 @@ class KWIVER_SERIALIZE_PROTOBUF_EXPORT activity
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO(
-    "kwiver:activity",
-    "Serializes a activity using protobuf notation. " );
+  PLUGGABLE_IMPL(
+    activity,
+    "Serializes a activity using protobuf notation. "
+  );
 
-  activity();
   virtual ~activity();
 
   std::shared_ptr< std::string > serialize(
     const vital::any& element ) override;
   vital::any deserialize( const std::string& message ) override;
+
+protected:
+  void initialize() override;
 };
 
 } // namespace protobuf

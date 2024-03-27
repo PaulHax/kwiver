@@ -20,17 +20,20 @@ class KWIVER_SERIALIZE_PROTOBUF_EXPORT object_track_set
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO(
-    "kwiver:object_track_set",
+  PLUGGABLE_IMPL(
+    object_track_set,
     "Serializes a object_track_set using protobuf notation. "
-    "This implementation only handles a single data item." );
+    "This implementation only handles a single data item."
+  );
 
-  object_track_set();
   virtual ~object_track_set();
 
   std::shared_ptr< std::string > serialize(
     const vital::any& element ) override;
   vital::any deserialize( const std::string& message ) override;
+
+protected:
+  void initialize() override;
 };
 
 } // namespace protobuf

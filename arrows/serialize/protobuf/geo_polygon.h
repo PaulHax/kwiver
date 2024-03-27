@@ -20,16 +20,19 @@ class KWIVER_SERIALIZE_PROTOBUF_EXPORT geo_polygon
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO(
-    "kwiver:corner_points",
-    "Serializes a geo_polygon using protobuf notation." );
+  PLUGGABLE_IMPL(
+    geo_polygon,
+    "Serializes a geo_polygon using protobuf notation."
+  );
 
-  geo_polygon();
   virtual ~geo_polygon();
 
   std::shared_ptr< std::string > serialize(
     const vital::any& element ) override;
   vital::any deserialize( const std::string& message ) override;
+
+protected:
+  void initialize() override;
 };
 
 } // namespace protobuf

@@ -20,16 +20,19 @@ class KWIVER_SERIALIZE_PROTOBUF_EXPORT bounding_box
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO(
-    "kwiver:bounding_box",
-    "Serializes a bounding_box using protobuf notation." );
+  PLUGGABLE_IMPL(
+    bounding_box,
+    "Serializes a bounding_box using protobuf notation."
+  );
 
-  bounding_box();
   virtual ~bounding_box();
 
   std::shared_ptr< std::string > serialize(
     const vital::any& element ) override;
   vital::any deserialize( const std::string& message ) override;
+
+protected:
+  void initialize() override;
 };
 
 } // namespace protobuf

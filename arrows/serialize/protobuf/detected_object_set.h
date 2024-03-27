@@ -20,17 +20,20 @@ class KWIVER_SERIALIZE_PROTOBUF_EXPORT detected_object_set
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO(
-    "kwiver:detected_object_set",
+  PLUGGABLE_IMPL(
+    detected_object_set,
     "Serializes a detected_object_set using protobuf notation. "
-    "This implementation only handles a single data item." );
+    "This implementation only handles a single data item."
+  );
 
-  detected_object_set();
   virtual ~detected_object_set();
 
   std::shared_ptr< std::string > serialize(
     const vital::any& element ) override;
   vital::any deserialize( const std::string& message ) override;
+
+protected:
+  void initialize() override;
 };
 
 } // namespace protobuf

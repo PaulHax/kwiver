@@ -8,6 +8,8 @@
 #include <arrows/serialize/protobuf/kwiver_serialize_protobuf_export.h>
 #include <vital/algo/data_serializer.h>
 
+#include <vital/algo/algorithm.txx>
+
 namespace kwiver {
 
 namespace arrows {
@@ -20,17 +22,20 @@ class KWIVER_SERIALIZE_PROTOBUF_EXPORT track
   : public vital::algo::data_serializer
 {
 public:
-  PLUGIN_INFO(
-    "kwiver:track",
+  PLUGGABLE_IMPL(
+    track,
     "Serializes a track using protobuf notation. "
-    "This implementation only handles a single data item." );
+    "This implementation only handles a single data item."
+  );
 
-  track();
   virtual ~track();
 
   std::shared_ptr< std::string > serialize(
     const vital::any& element ) override;
   vital::any deserialize( const std::string& message ) override;
+
+protected:
+  void initialize() override;
 };
 
 } // namespace protobuf
