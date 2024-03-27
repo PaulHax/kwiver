@@ -2,27 +2,22 @@
 
 set(CMAKE_FOLDER "Arrows/UUID")
 
-set( plugin_headers
-  uuid_factory_uuid.h
+set ( plugin_uuid_headers )
+set ( plugin_uuid_sources )
+set( plugin_uuid_classes
+  uuid_factory_uuid
   )
 
-kwiver_install_headers(
-  SUBDIR     arrows/uuid
-  ${plugin_headers}
-  )
+kwiver_expand_class_list( "${plugin_uuid_classes}" plugin_uuid_headers plugin_uuid_sources )
 
 kwiver_install_headers(
   ${CMAKE_CURRENT_BINARY_DIR}/kwiver_algo_uuid_export.h
   NOPATH   SUBDIR     arrows/uuid
   )
 
-set( plugin_sources
-  uuid_factory_uuid.cxx
-  )
-
 kwiver_add_library( kwiver_algo_uuid
-  ${plugin_headers}
-  ${plugin_sources}
+  ${plugin_uuid_headers}
+  ${plugin_uuid_sources}
   )
 
 target_link_libraries( kwiver_algo_uuid

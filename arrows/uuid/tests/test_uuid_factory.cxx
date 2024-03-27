@@ -7,9 +7,12 @@
 
 #include <arrows/uuid/uuid_factory_uuid.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>
+
+using namespace kwiver::vital;
 
 namespace algo = kwiver::vital::algo;
 namespace kac = kwiver::arrows::uuid;
@@ -20,6 +23,22 @@ main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
+}
+
+// ----------------------------------------------------------------------------
+TEST ( uuid, create )
+{
+  plugin_manager::instance().load_all_plugins();
+
+  EXPECT_NE( nullptr, create_algorithm< algo::uuid_factory >( "uuid" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( uuid, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    kac::uuid_factory_uuid,
+    "Global UUID generator using system library as source for UUID." );
 }
 
 // ----------------------------------------------------------------------------
@@ -49,10 +68,12 @@ TEST ( uuid, test_loading )
   // Check config so it will give run-time diagnostic if any config problems are
   // found
   ASSERT_TRUE(
-    algo::uuid_factory::check_nested_algo_configuration( "uuid_cfg", cfg ) );
+    kwiver::vital::check_nested_algo_configuration< algo::uuid_factory >(
+      "uuid_cfg", cfg ) );
 
   // Instantiate the configured algorithm
-  algo::uuid_factory::set_nested_algo_configuration( "uuid_cfg", cfg, fact );
+  kwiver::vital::set_nested_algo_configuration< algo::uuid_factory >(
+    "uuid_cfg", cfg, fact );
   ASSERT_NE( nullptr, fact ) << "Unable to create algorithm";
   EXPECT_EQ( "uuid", fact->impl_name() );
 }

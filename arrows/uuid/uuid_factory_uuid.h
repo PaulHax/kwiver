@@ -21,19 +21,19 @@ class KWIVER_ALGO_UUID_EXPORT uuid_factory_uuid
   : public vital::algo::uuid_factory
 {
 public:
-  uuid_factory_uuid();
-  virtual ~uuid_factory_uuid();
+  PLUGGABLE_IMPL(
+    uuid_factory_uuid,
+    "Global UUID generator using system library as source for UUID." );
 
-  virtual void set_configuration( vital::config_block_sptr config );
-  virtual bool check_configuration( vital::config_block_sptr config ) const;
+  virtual ~uuid_factory_uuid() = default;
+
+  bool check_configuration( vital::config_block_sptr config ) const override;
 
   // Main method to generate UUID's
   virtual kwiver::vital::uid create_uuid();
 
 private:
-  class priv;
-
-  std::unique_ptr< priv > d;
+  void initialize() override;
 };
 
 } // namespace uuid

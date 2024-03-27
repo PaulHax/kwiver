@@ -20,26 +20,12 @@ namespace arrows {
 namespace uuid {
 
 // ----------------------------------------------------------------------------
-class uuid_factory_uuid::priv
-{
-public:
-};
-
-// ----------------------------------------------------------------------------
-uuid_factory_uuid
-::uuid_factory_uuid()
-  : d( new uuid_factory_uuid::priv() )
-{}
-
-uuid_factory_uuid::
-~uuid_factory_uuid()
-{}
-
-// ----------------------------------------------------------------------------
 void
 uuid_factory_uuid
-::set_configuration( vital::config_block_sptr config )
-{}
+::initialize()
+{
+  attach_logger( "arrows.uuid.uuid_factory_uuid" );
+}
 
 // ----------------------------------------------------------------------------
 bool
