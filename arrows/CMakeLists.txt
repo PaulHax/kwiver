@@ -58,11 +58,6 @@ if ( KWIVER_ENABLE_CUDA )
   add_subdirectory( cuda )
 endif()
 
-# if burnout is enabled
-if( KWIVER_ENABLE_BURNOUT )
-  add_subdirectory( burnout )
-endif()
-
 # if kpf is enabled
 if( KWIVER_ENABLE_KPF )
   add_subdirectory( kpf )
@@ -99,11 +94,6 @@ if( KWIVER_ENABLE_VTK)
 endif()
 
 add_subdirectory( serialize )
-
-# Register the colmap arrow with CMake.
-if( KWIVER_ENABLE_COLMAP )
-  add_subdirectory( colmap )
-endif()
 
 # If Zlib is enabled
 if( KWIVER_ENABLE_ZLIB )

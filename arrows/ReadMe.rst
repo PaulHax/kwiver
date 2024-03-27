@@ -5,8 +5,6 @@ Directory Structure and Provided Functionality
 ==============================================
 
 ===================== =========================================================
-`<arrows/burnout>`_   [*Experimental*] Pixel classifiers for heads-up display
-                      detection an related tasks using Vibrant_.
 `<arrows/ceres>`_     Algorithms for bundle adjustment and optimization using
                       `Ceres Solver`_.
 `<arrows/core>`_      Algorithms implemented with no additional third party
