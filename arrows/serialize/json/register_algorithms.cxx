@@ -44,55 +44,55 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 
   auto fact =
     vpm.add_factory< vital::algo::data_serializer,
-      activity >( "kwiver:activity" );
+      activity >( "kwiver:json:activity" );
   fact->add_attribute(
     kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
     "arrows.serialize.json" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
-    activity_type >( "kwiver:activity_type" );
+    activity_type >( "kwiver:json:activity_type" );
   fact->add_attribute(
     kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
     "arrows.serialize.json" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
-    bounding_box >( "kwiver:bounding_box" );
+    bounding_box >( "kwiver:json:bounding_box" );
   fact->add_attribute(
     kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
     "arrows.serialize.json" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
-    detected_object >( "kwiver:detected_object" );
+    detected_object >( "kwiver:json:detected_object" );
   fact->add_attribute(
     kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
     "arrows.serialize.json" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
-    detected_object_set >( "kwiver:detected_object_set" );
+    detected_object_set >( "kwiver:json:detected_object_set" );
   fact->add_attribute(
     kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
     "arrows.serialize.json" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
-    detected_object_type >( "kwiver:detected_object_type" );
+    detected_object_type >( "kwiver:json:detected_object_type" );
   fact->add_attribute(
     kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
     "arrows.serialize.json" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
-    image >( "kwiver:image" );
+    image >( "kwiver:json:image" );
   fact->add_attribute(
     kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
     "arrows.serialize.json" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
-    image >( "kwiver:mask" );
+    image >( "kwiver:json:mask" );
   fact->add_attribute(
     kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
     "arrows.serialize.json" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
-    metadata >( "kwiver:metadata" );
+    metadata >( "kwiver:json:metadata" );
   fact->add_attribute(
     kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
     "arrows.serialize.json" );
@@ -104,61 +104,61 @@ register_factories( kwiver::vital::plugin_loader& vpm )
     "arrows.serialize.json" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
-    object_track_set >( "kwiver:object_track_set" );
+    object_track_set >( "kwiver:json:object_track_set" );
   fact->add_attribute(
     kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
     "arrows.serialize.json" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
-    object_track_state >( "kwiver:object_track_state" );
+    object_track_state >( "kwiver:json:object_track_state" );
   fact->add_attribute(
     kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
     "arrows.serialize.json" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
-    string >( "kwiver:string" );
+    string >( "kwiver:json:string" );
   fact->add_attribute(
     kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
     "arrows.serialize.json" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
-    timestamp >( "kwiver:timestamp" );
+    timestamp >( "kwiver:json:timestamp" );
   fact->add_attribute(
     kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
     "arrows.serialize.json" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
-    track >( "kwiver:track" );
+    track >( "kwiver:json:track" );
   fact->add_attribute(
     kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
     "arrows.serialize.json" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
-    track_set >( "kwiver:track_set" );
+    track_set >( "kwiver:json:track_set" );
   fact->add_attribute(
     kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
     "arrows.serialize.json" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
-    track_state >( "kwiver:track_state" );
+    track_state >( "kwiver:json:track_state" );
   fact->add_attribute(
     kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
     "arrows.serialize.json" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
-    string >( "kwiver:file_name" );
+    string >( "kwiver:json:file_name" );
   fact->add_attribute(
     kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
     "arrows.serialize.json" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
-    string >( "kwiver:image_name" );
+    string >( "kwiver:json:image_name" );
   fact->add_attribute(
     kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
     "arrows.serialize.json" );
 
   fact = vpm.add_factory< vital::algo::data_serializer,
-    string >( "kwiver:video_name" );
+    string >( "kwiver:json:video_name" );
   fact->add_attribute(
     kwiver::vital::plugin_factory::PLUGIN_MODULE_NAME,
     "arrows.serialize.json" );
