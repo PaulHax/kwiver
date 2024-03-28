@@ -95,7 +95,6 @@ public:
       true )
   );
 
-  draw_detected_object_set();
   virtual ~draw_detected_object_set();
 
   bool check_configuration( vital::config_block_sptr config ) const override;

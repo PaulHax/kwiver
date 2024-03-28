@@ -12,7 +12,7 @@
 #include <gtest/gtest.h>
 
 using namespace kwiver::vital;
-using namespace kwiver::arrows;
+using namespace kwiver::arrows::ocv;
 
 // ----------------------------------------------------------------------------
 int
@@ -32,3 +32,9 @@ TEST ( split_image, create )
 }
 
 // ----------------------------------------------------------------------------
+TEST ( split_image, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    split_image,
+    "Split an image  into multiple smaller images using opencv functions" );
+}

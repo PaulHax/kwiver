@@ -93,9 +93,6 @@ public:
       "" )
   );
 
-  /// Constructor
-  draw_tracks();
-
   /// Destructor
   virtual ~draw_tracks();
 

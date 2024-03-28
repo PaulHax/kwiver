@@ -53,7 +53,7 @@ public:
       KWIVER_STRINGIFY( cv::FastFeatureDetector::TYPE_7_12 ) ", "
                                                              "TYPE_9_16="
       KWIVER_STRINGIFY( cv::FastFeatureDetector::TYPE_9_16 ) ".",
-      cv::FastFeatureDetector::TYPE_9_16 )
+      int( cv::FastFeatureDetector::TYPE_9_16 ) )
 #endif
   );
   /// Destructor

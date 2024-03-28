@@ -4,6 +4,7 @@
 
 #include <arrows/ocv/resection_camera.h>
 
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <vital/algo/algorithm.txx>
@@ -37,6 +38,19 @@ TEST ( resection_camera, create )
   EXPECT_NE(
     nullptr,
     kwiver::vital::create_algorithm< algo::resection_camera >( "ocv" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( resection_camera, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    resection_camera,
+    "resection camera using OpenCV calibrate camera method",
+    PARAM(
+      camera_options,
+      resection_camera_options_sptr,
+      "camera_options" )
+  );
 }
 
 // ----------------------------------------------------------------------------

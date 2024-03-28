@@ -5,6 +5,7 @@
 #include <arrows/ocv/estimate_pnp.h>
 #include <vital/algo/algorithm.txx>
 
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>
@@ -38,6 +39,24 @@ TEST ( estimate_pnp, create )
     nullptr,
     kwiver::vital::create_algorithm< kwiver::vital::algo::estimate_pnp >(
       "ocv" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( estimate_pnp, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    estimate_pnp,
+    "Estimate camera pose with perspective N point method",
+
+    PARAM_DEFAULT(
+      confidence_threshold, double,
+      "Confidence that estimated matrix is correct, range (0.0, 1.0]",
+      0.99 ),
+
+    PARAM_DEFAULT(
+      max_iterations, int,
+      "maximum number of iterations to run PnP [1, INT_MAX]",
+      10000 ) );
 }
 
 // ----------------------------------------------------------------------------
