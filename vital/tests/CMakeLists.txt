@@ -10,7 +10,7 @@ set( test_libraries vital vital_vpm vital_algo)
 # Core tests
 ##############################
 
-## kwiver_discover_tests(vital_algo               test_libraries test_algo.cxx)
+kwiver_discover_gtests(vital algo                           LIBRARIES ${test_libraries})
 kwiver_discover_gtests(vital algorithm_capabilities         LIBRARIES ${test_libraries})
 kwiver_discover_gtests(vital any                            LIBRARIES ${test_libraries})
 kwiver_discover_gtests(vital attribute_set                  LIBRARIES ${test_libraries})
