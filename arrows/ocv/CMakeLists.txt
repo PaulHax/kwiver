@@ -3,114 +3,72 @@
 
 set(CMAKE_FOLDER "Arrows/OCV")
 
-set( ocv_headers_public
-  analyze_tracks.h
-  camera_intrinsics.h
-  config_options_helpers.txx
-  descriptor_set.h
-  detect_features.h
-  detect_features_AGAST.h
-  detect_features_FAST.h
-  detect_features_GFTT.h
-  detect_features_MSD.h
-  detect_features_MSER.h
-  detect_features_simple_blob.h
-  detect_features_STAR.h
-  detect_motion_3frame_differencing.h
-  detect_motion_mog2.h
-  draw_detected_object_set.h
-  draw_tracks.h
-  estimate_fundamental_matrix.h
-  estimate_homography.h
-  estimate_pnp.h
-  extract_descriptors.h
-  extract_descriptors_BRIEF.h
-  extract_descriptors_DAISY.h
-  extract_descriptors_FREAK.h
-  extract_descriptors_LATCH.h
-  extract_descriptors_LUCID.h
-  feature_set.h
-  feature_detect_extract_BRISK.h
-  feature_detect_extract_ORB.h
-  feature_detect_extract_SIFT.h
-  feature_detect_extract_SURF.h
-  detect_heat_map.h
-  hough_circle_detector.h
-  image_container.h
-  image_io.h
-  inpaint.h
-  mat_image_memory.h
-  match_features.h
-  match_features_bruteforce.h
-  match_features_flannbased.h
-  match_set.h
-  merge_images.h
-  refine_detections_write_to_disk.h
-  resection_camera_options.h
-  resection_camera.h
-  split_image.h
-  track_features_klt.h
+set( plugin_ocv_headers )
+set( plugin_ocv_sources
+  config_options_helpers.txx )
+set( plugin_ocv_classes
+  algo/analyze_tracks
+  algo/detect_features_AGAST
+  algo/detect_features_FAST
+  algo/detect_features_GFTT
+  algo/detect_features_MSD
+  algo/detect_features_MSER
+  algo/detect_features_simple_blob
+  algo/detect_features_STAR
+  algo/detect_heat_map
+  algo/detect_motion_3frame_differencing
+  algo/detect_motion_mog2
+  algo/draw_detected_object_set
+  algo/draw_tracks
+  algo/estimate_fundamental_matrix
+  algo/estimate_homography
+  algo/estimate_pnp
+  algo/extract_descriptors_BRIEF
+  algo/extract_descriptors_DAISY
+  algo/extract_descriptors_FREAK
+  algo/extract_descriptors_LATCH
+  algo/extract_descriptors_LUCID
+  algo/feature_detect_extract_BRISK
+  algo/feature_detect_extract_ORB
+  algo/feature_detect_extract_SIFT
+  algo/feature_detect_extract_SURF
+  algo/hough_circle_detector
+  algo/image_io
+  algo/inpaint
+  algo/match_features_bruteforce
+  algo/match_features_flannbased
+  algo/merge_images
+  algo/refine_detections_write_to_disk
+  algo/resection_camera
+  algo/split_image
+  algo/track_features_klt
+
+  camera_intrinsics
+  descriptor_set
+  detect_features
+  extract_descriptors
+  feature_set
+  image_container
+  mat_image_memory
+  match_features
+  match_set
+  resection_camera_options
   )
+
+kwiver_expand_class_list( "${plugin_ocv_classes}" plugin_ocv_headers plugin_ocv_sources )
+
 kwiver_install_headers(
   SUBDIR     arrows/ocv
-  ${ocv_headers_public}
+  ${plugin_ocv_headers}
   )
 kwiver_install_headers(
   ${CMAKE_CURRENT_BINARY_DIR}/kwiver_algo_ocv_export.h
   NOPATH   SUBDIR     arrows/ocv
   )
 
-set( ocv_sources
-  analyze_tracks.cxx
-  camera_intrinsics.cxx
-  descriptor_set.cxx
-  detect_features.cxx
-  detect_features_AGAST.cxx
-  detect_features_FAST.cxx
-  detect_features_GFTT.cxx
-  detect_features_MSD.cxx
-  detect_features_MSER.cxx
-  detect_features_simple_blob.cxx
-  detect_features_STAR.cxx
-  detect_motion_3frame_differencing.cxx
-  detect_motion_mog2.cxx
-  draw_detected_object_set.cxx
-  draw_tracks.cxx
-  estimate_fundamental_matrix.cxx
-  estimate_homography.cxx
-  estimate_pnp.cxx
-  extract_descriptors.cxx
-  extract_descriptors_BRIEF.cxx
-  extract_descriptors_DAISY.cxx
-  extract_descriptors_FREAK.cxx
-  extract_descriptors_LATCH.cxx
-  extract_descriptors_LUCID.cxx
-  detect_heat_map.cxx
-  hough_circle_detector.cxx
-  feature_set.cxx
-  feature_detect_extract_BRISK.cxx
-  feature_detect_extract_ORB.cxx
-  feature_detect_extract_SIFT.cxx
-  feature_detect_extract_SURF.cxx
-  image_container.cxx
-  image_io.cxx
-  inpaint.cxx
-  mat_image_memory.cxx
-  match_features.cxx
-  match_features_bruteforce.cxx
-  match_features_flannbased.cxx
-  match_set.cxx
-  merge_images.cxx
-  refine_detections_write_to_disk.cxx
-  resection_camera.cxx
-  resection_camera_options.cxx
-  split_image.cxx
-  track_features_klt.cxx
-  )
-
 kwiver_add_library( kwiver_algo_ocv
-  ${ocv_headers_public}
-  ${ocv_sources}
+  ${plugin_ocv_headers}
+  ${plugin_ocv_sources}
   )
 target_compile_definitions( kwiver_algo_ocv
   PUBLIC KWIVER_OPENCV_VERSION_MAJOR=${KWIVER_OPENCV_VERSION_MAJOR}

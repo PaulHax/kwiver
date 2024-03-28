@@ -9,8 +9,8 @@
 
 #include <arrows/tests/test_image.h>
 
+#include <arrows/ocv/algo/image_io.h>
 #include <arrows/ocv/image_container.h>
-#include <arrows/ocv/image_io.h>
 
 #include <vital/algo/algorithm.txx>
 #include <vital/plugin_management/plugin_manager.h>

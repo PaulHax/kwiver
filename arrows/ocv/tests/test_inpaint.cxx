@@ -4,9 +4,9 @@
 
 #include <test_gtest.h>
 
+#include <arrows/ocv/algo/image_io.h>
+#include <arrows/ocv/algo/inpaint.h>
 #include <arrows/ocv/image_container.h>
-#include <arrows/ocv/image_io.h>
-#include <arrows/ocv/inpaint.h>
 
 #include <vital/plugin_management/plugin_manager.h>
 

@@ -9,16 +9,16 @@
 #include <test_gtest.h>
 
 // Get headers of optional algos for ``MAPTK_OCV_HAS_*`` defines
-#include <arrows/ocv/detect_features_AGAST.h>
-#include <arrows/ocv/detect_features_MSD.h>
-#include <arrows/ocv/detect_features_STAR.h>
-#include <arrows/ocv/extract_descriptors_BRIEF.h>
-#include <arrows/ocv/extract_descriptors_DAISY.h>
-#include <arrows/ocv/extract_descriptors_FREAK.h>
-#include <arrows/ocv/extract_descriptors_LATCH.h>
-#include <arrows/ocv/extract_descriptors_LUCID.h>
-#include <arrows/ocv/feature_detect_extract_SIFT.h>
-#include <arrows/ocv/feature_detect_extract_SURF.h>
+#include <arrows/ocv/algo/detect_features_AGAST.h>
+#include <arrows/ocv/algo/detect_features_MSD.h>
+#include <arrows/ocv/algo/detect_features_STAR.h>
+#include <arrows/ocv/algo/extract_descriptors_BRIEF.h>
+#include <arrows/ocv/algo/extract_descriptors_DAISY.h>
+#include <arrows/ocv/algo/extract_descriptors_FREAK.h>
+#include <arrows/ocv/algo/extract_descriptors_LATCH.h>
+#include <arrows/ocv/algo/extract_descriptors_LUCID.h>
+#include <arrows/ocv/algo/feature_detect_extract_SIFT.h>
+#include <arrows/ocv/algo/feature_detect_extract_SURF.h>
 
 #include <arrows/ocv/detect_features.h>
 #include <arrows/ocv/extract_descriptors.h>

@@ -2,19 +2,16 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <arrows/ocv/algo/estimate_fundamental_matrix.h>
-#include <vital/algo/algorithm.txx>
-
+#include <arrows/ocv/algo/merge_images.h>
 #include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
+
+#include <vital/algo/algorithm.txx>
 
 #include <gtest/gtest.h>
 
 using namespace kwiver::vital;
 using namespace kwiver::arrows::ocv;
-
-static constexpr double ideal_tolerance = 3e-6;
-static constexpr double outlier_tolerance = 0.01;
 
 // ----------------------------------------------------------------------------
 int
@@ -25,27 +22,22 @@ main( int argc, char** argv )
 }
 
 // ----------------------------------------------------------------------------
-TEST ( estimate_fundamental_matrix, create )
+TEST ( merge_images, create )
 {
   plugin_manager::instance().load_all_plugins();
-
   EXPECT_NE(
-    nullptr,
-    create_algorithm< algo::estimate_fundamental_matrix >( "ocv" ) );
+    nullptr, create_algorithm< algo::merge_images >( "ocv" ) );
 }
 
 // ----------------------------------------------------------------------------
-TEST ( estimate_fundamental_matrix, default_config )
+TEST ( merge_images, default_config )
 {
   EXPECT_PLUGGABLE_IMPL(
-    estimate_fundamental_matrix,
-    "Use OpenCV to estimate a fundimental matrix from feature matches.",
-    PARAM_DEFAULT(
-      confidence_threshold,
-      double,
-      "Confidence that estimated matrix is correct, range (0.0, 1.0]",
-      0.99 )
+    merge_images,
+    "Merge two images into one using opencv functions.\n\n"
+    "The channels from the first image are added to the "
+    "output image first, followed by the channels from the "
+    "second image. This implementation takes no configuration "
+    "parameters."
   );
 }
-// ----------------------------------------------------------------------------
-#include <arrows/tests/test_estimate_fundamental_matrix.h>

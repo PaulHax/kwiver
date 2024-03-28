@@ -8,7 +8,7 @@
 #include <test_eigen.h>
 #include <test_random_point.h>
 
-#include <arrows/ocv/estimate_homography.h>
+#include <arrows/ocv/algo/estimate_homography.h>
 #include <vital/algo/algorithm.txx>
 
 #include <vital/plugin_management/pluggable_macro_testing.h>

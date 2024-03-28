@@ -2,13 +2,13 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <arrows/ocv/detect_features_AGAST.h>
-#include <arrows/ocv/detect_features_FAST.h>
-#include <arrows/ocv/detect_features_GFTT.h>
-#include <arrows/ocv/detect_features_MSD.h>
-#include <arrows/ocv/detect_features_MSER.h>
-#include <arrows/ocv/detect_features_simple_blob.h>
-#include <arrows/ocv/detect_features_STAR.h>
+#include <arrows/ocv/algo/detect_features_AGAST.h>
+#include <arrows/ocv/algo/detect_features_FAST.h>
+#include <arrows/ocv/algo/detect_features_GFTT.h>
+#include <arrows/ocv/algo/detect_features_MSD.h>
+#include <arrows/ocv/algo/detect_features_MSER.h>
+#include <arrows/ocv/algo/detect_features_simple_blob.h>
+#include <arrows/ocv/algo/detect_features_STAR.h>
 
 #include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
@@ -155,7 +155,7 @@ TEST ( detect_features_FAST, default_config )
       KWIVER_STRINGIFY( cv::FastFeatureDetector::TYPE_7_12 ) ", "
                                                              "TYPE_9_16="
       KWIVER_STRINGIFY( cv::FastFeatureDetector::TYPE_9_16 ) ".",
-      int( cv::FastFeatureDetector::TYPE_9_16 ) )
+      static_cast< int >( cv::FastFeatureDetector::TYPE_9_16 ) )
 #endif
   );
 }

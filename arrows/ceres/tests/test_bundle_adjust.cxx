@@ -14,6 +14,7 @@
 #include <arrows/mvg/projected_track_set.h>
 
 #include <vital/math_constants.h>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 using namespace kwiver::vital;

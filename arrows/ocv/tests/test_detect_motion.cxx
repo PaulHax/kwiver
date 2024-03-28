@@ -2,8 +2,8 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <arrows/ocv/detect_motion_3frame_differencing.h>
-#include <arrows/ocv/detect_motion_mog2.h>
+#include <arrows/ocv/algo/detect_motion_3frame_differencing.h>
+#include <arrows/ocv/algo/detect_motion_mog2.h>
 #include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
