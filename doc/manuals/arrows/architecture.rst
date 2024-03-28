@@ -31,7 +31,6 @@ The provided Arrows are:
    :maxdepth: 4
 
    core
-   burnout
    ceres
    opencv
    proj

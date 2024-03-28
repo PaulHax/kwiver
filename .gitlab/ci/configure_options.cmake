@@ -24,7 +24,6 @@ else ()
 endif ()
 
 # Arrows.
-configuration_flag(KWIVER_ENABLE_BURNOUT "burnout")
 configuration_flag(KWIVER_ENABLE_CERES "ceres")
 configuration_flag(KWIVER_ENABLE_CUDA "cuda")
 configuration_flag(KWIVER_ENABLE_FFMPEG "ffmpeg")
