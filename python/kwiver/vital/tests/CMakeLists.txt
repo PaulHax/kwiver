@@ -7,8 +7,8 @@ add_subdirectory(cpp_helpers)
 # Define modules with tests in them
 set(__testable_modnames
   test_activity
-  #test_algorithms_common
-  #test_algorithm_factory
+  test_algorithms_common
+  test_algorithm_factory
   test_activity_type
   test_bounding_box
   test_camera
