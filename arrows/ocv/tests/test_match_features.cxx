@@ -53,15 +53,14 @@ TEST ( match_features_bruteforce, default_config )
       "SIFT paper.",
       false ),
 
-//    PARAM_DEFAULT(
-//      norm_type, int,
-//      std::string(
-//        "normalization type enum value. this should be one of the enum
-// values:" )
-//      +
-//      list_enum_values
-//      ,
-//      cv::NORM_L2 )
+    PARAM_DEFAULT(
+      norm_type, int,
+      std::string(
+        "normalization type enum value. this should be one of the enum values:" )
+      +
+      match_features_bruteforce::list_enum_values
+      ,
+      cv::NORM_L2 )
 
   );
 }

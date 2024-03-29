@@ -42,7 +42,7 @@ TEST ( draw_detected_object_set, default_config )
       float,
       "min threshold for output (float). "
       "Detections with confidence values below this value are not drawn.",
-      -1 ),
+      -1.0 ),
 
     PARAM_DEFAULT(
       alpha_blend_prob,
@@ -54,7 +54,7 @@ TEST ( draw_detected_object_set, default_config )
       default_line_thickness,
       float,
       "The default line thickness, in pixels.",
-      1 ),
+      1.0 ),
 
     PARAM_DEFAULT(
       default_color,
@@ -87,7 +87,7 @@ TEST ( draw_detected_object_set, default_config )
       text_thickness,
       float,
       "Thickness of the lines used to draw a text.",
-      1 ),
+      1.0 ),
 
     PARAM_DEFAULT(
       clip_box_to_image,

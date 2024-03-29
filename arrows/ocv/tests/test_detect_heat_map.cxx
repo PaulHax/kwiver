@@ -12,7 +12,7 @@
 #include <gtest/gtest.h>
 
 using namespace kwiver::vital;
-using namespace kwiver::arrows;
+using namespace kwiver::arrows::ocv;
 
 // ----------------------------------------------------------------------------
 int
@@ -34,8 +34,6 @@ TEST ( detect_heat_map, create )
 // ----------------------------------------------------------------------------
 TEST ( detect_heat_map, default_config )
 {
-  using namespace kwiver::arrows::ocv;
-
   EXPECT_PLUGGABLE_IMPL(
     detect_heat_map,
     "OCV implementation to create detections from heatmaps",

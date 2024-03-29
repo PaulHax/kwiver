@@ -81,6 +81,5 @@ TEST ( track_features_klt, default_config )
     PARAM(
       feature_detector, vital::algo::detect_features_sptr,
       "feature_detector configuration" )
-
   );
 }

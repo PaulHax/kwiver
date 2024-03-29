@@ -78,7 +78,7 @@ TEST ( feature_detect_extract_BRISK, default_config )
       pattern_scale, float,
       "apply this scale to the pattern used for sampling the "
       "neighbourhood of a keypoint.",
-      1 )
+      1.0f )
   );
 }
 

@@ -115,12 +115,12 @@ TEST ( extract_descriptors_DAISY, default_config )
       "amount of gradient orientations range division quantity",
       8 ),
 
-//    PARAM_DEFAULT(
-//      norm,
-//      int,
-//      "descriptor normalization type. valid choices:\n" +
-//      list_norm_options,
-//      cv::xfeatures2d::DAISY::NRM_NONE ),
+    PARAM_DEFAULT(
+      norm,
+      int,
+      "descriptor normalization type. valid choices:\n" +
+      extract_descriptors_DAISY::list_norm_options,
+      cv::xfeatures2d::DAISY::NRM_NONE ),
 
     PARAM_DEFAULT(
       interpolation, bool,
@@ -152,7 +152,7 @@ TEST ( extract_descriptors_FREAK, default_config )
     PARAM_DEFAULT(
       pattern_scale, float,
       "scaling of the description pattern",
-      22 ),
+      22.0f ),
 
     PARAM_DEFAULT(
       n_octaves, int,

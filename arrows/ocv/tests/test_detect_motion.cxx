@@ -53,7 +53,7 @@ TEST ( detect_motion_mog2, default_config )
       "the pixel and the model to decide whether a pixel is "
       "well described by the background model. This parameter "
       "does not affect the background update.",
-      36 ),
+      36.0 ),
 
     PARAM_DEFAULT(
       history,

@@ -54,6 +54,8 @@ public:
   /// Check that the algorithm's configuration vital::config_block is valid
   bool check_configuration( vital::config_block_sptr config ) const override;
 
+  static const char* list_enum_values;
+
 protected:
   /// Perform matching based on the underlying OpenCV implementation
   void ocv_match(
@@ -66,8 +68,6 @@ private:
   void set_configuration_internal( vital::config_block_sptr config ) override;
 
   cv::Ptr< cv::BFMatcher > matcher;
-
-  static const char* list_enum_values;
 };
 
 } // end namespace ocv

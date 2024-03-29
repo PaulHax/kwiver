@@ -40,6 +40,7 @@ TEST ( estimate_fundamental_matrix, default_config )
   EXPECT_PLUGGABLE_IMPL(
     estimate_fundamental_matrix,
     "Use OpenCV to estimate a fundimental matrix from feature matches.",
+
     PARAM_DEFAULT(
       confidence_threshold,
       double,

@@ -74,9 +74,9 @@ public:
   /// Check that the algorithm's configuration config_block is valid
   bool check_configuration( vital::config_block_sptr config ) const override;
 
-private:
   static const std::string list_norm_options;
 
+private:
   void initialize() override;
   void update_extractor_parameters() const override;
   void set_configuration_internal( vital::config_block_sptr config ) override;
