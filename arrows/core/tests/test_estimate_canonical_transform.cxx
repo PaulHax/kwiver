@@ -23,11 +23,31 @@ main( int argc, char** argv )
 // ----------------------------------------------------------------------------
 TEST ( estimate_canonical_transform, create )
 {
-  using namespace kwiver::vital;
-
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE(
     nullptr,
     create_algorithm< algo::estimate_canonical_transform >( "core_pca" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( estimate_canonical_transform, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    estimate_canonical_transform,
+    "Uses PCA to estimate a canonical similarity transform"
+    " that aligns the best fit plane to Z=0",
+    PARAM_DEFAULT(
+      estimate_scale, bool,
+      "Estimate the scale to normalize the data. "
+      "If disabled the estimate transform is rigid",
+      true ),
+    PARAM_DEFAULT(
+      height_percentile, double,
+      "Shift the ground plane along the normal axis such that "
+      "this percentage of landmarks are below the ground. Values "
+      "are in the range [0.0, 1.0).  If the value is outside "
+      "this range use the mean height instead.",
+      0.05 )
+  );
 }

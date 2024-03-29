@@ -31,3 +31,14 @@ TEST ( read_object_track_set_kw18, create )
     nullptr,
     create_algorithm< algo::read_object_track_set >( "kw18" ) );
 }
+
+// ----------------------------------------------------------------------------
+TEST ( read_object_track_set_kw18, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    read_object_track_set_kw18,
+    "Object track set kw18 reader.",
+    PARAM_DEFAULT( delim, std::string, "delimeter", " " ),
+    PARAM_DEFAULT( batch_load, bool, "batch_load", true ),
+  );
+}

@@ -23,9 +23,23 @@ main( int argc, char** argv )
 // ----------------------------------------------------------------------------
 TEST ( detect_features_filtered, create )
 {
-  using namespace kwiver::vital;
-
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE( nullptr, create_algorithm< algo::detect_features >( "filtered" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( detect_features_filtered, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    detect_features_filtered,
+    "Wrapper that runs a feature detector and "
+    "applies a filter to the detector output",
+    PARAM(
+      detector, vital::algo::detect_features_sptr,
+      "detector" ),
+    PARAM(
+      filter, vital::algo::filter_features_sptr,
+      "filter" )
+  );
 }

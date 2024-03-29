@@ -25,11 +25,20 @@ main( int argc, char** argv )
 // ----------------------------------------------------------------------------
 TEST ( write_track_descriptor_set_csv, create )
 {
-  using namespace kwiver::vital;
-
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE(
     nullptr,
     create_algorithm< algo::write_track_descriptor_set >( "csv" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( write_track_descriptor_set_csv, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    write_track_descriptor_set_csv,
+    "Track descriptor set csv writer.",
+    PARAM_DEFAULT( write_raw_descriptor, bool, "write_raw_descriptor", true ),
+    PARAM_DEFAULT( write_world_loc, bool, "write_world_loc", false )
+  );
 }

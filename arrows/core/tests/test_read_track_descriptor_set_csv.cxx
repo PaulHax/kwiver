@@ -23,11 +23,20 @@ main( int argc, char** argv )
 // ----------------------------------------------------------------------------
 TEST ( read_track_descriptor_set_csv, create )
 {
-  using namespace kwiver::vital;
-
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE(
     nullptr,
     create_algorithm< algo::read_track_descriptor_set >( "csv" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( read_track_descriptor_set_csv, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    read_track_descriptor_set_csv,
+    "Track descriptor csv reader",
+    PARAM_DEFAULT( batch_load, bool, "batch_load", true ),
+    PARAM_DEFAULT( read_raw_descriptor, bool, "read_raw_descriptor", true ),
+  );
 }

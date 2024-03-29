@@ -23,9 +23,16 @@ main( int argc, char** argv )
 // ----------------------------------------------------------------------------
 TEST ( convert_image_bypass, create )
 {
-  using namespace kwiver::vital;
-
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE( nullptr, create_algorithm< algo::convert_image >( "bypass" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( convert_image_bypass, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    convert_image_bypass,
+    "Performs no conversion and returns the given image container."
+  );
 }

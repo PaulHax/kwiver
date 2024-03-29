@@ -23,11 +23,27 @@ main( int argc, char** argv )
 // ----------------------------------------------------------------------------
 TEST ( transform_detected_object_set, create )
 {
-  using namespace kwiver::vital;
-
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE(
     nullptr, create_algorithm< algo::detected_object_filter >(
       "transform_detected_object_set" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( transform_detected_object_set, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    transform_detected_object_set,
+    "Transforms a detected object set based on source and "
+    "destination cameras.\n\n",
+    PARAM_DEFAULT(
+      src_camera_krtd_file_name, std::string,
+      "Source camera KRTD file name path",
+      "" ),
+    PARAM_DEFAULT(
+      dest_camera_krtd_file_name, std::string,
+      "Destination camera KRTD file name path",
+      "" )
+  );
 }

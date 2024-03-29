@@ -31,3 +31,22 @@ TEST ( associate_detections_to_tracks_threshold, create )
     nullptr,
     create_algorithm< algo::associate_detections_to_tracks >( "threshold" ) );
 }
+
+// ----------------------------------------------------------------------------
+TEST ( associate_detections_to_tracks_threshold, default_config )
+{
+  using namespace kwiver::vital;
+
+  EXPECT_PLUGGABLE_IMPL(
+    associate_detections_to_tracks_threshold,
+    "Associate detections to tracks via simple thresholding on the input matrix.",
+    PARAM_DEFAULT(
+      threshold, double,
+      "Threshold to apply on the matrix.",
+      0.50 ),
+    PARAM_DEFAULT(
+      higher_is_better, bool,
+      "Whether values above or below the threshold indicate a better fit.",
+      true )
+  );
+}

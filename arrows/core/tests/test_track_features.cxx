@@ -24,8 +24,6 @@ main( int argc, char** argv )
 // ----------------------------------------------------------------------------
 TEST ( track_features_core, create )
 {
-  using namespace kwiver::vital;
-
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE( nullptr, create_algorithm< algo::track_features >( "core" ) );
@@ -34,11 +32,57 @@ TEST ( track_features_core, create )
 // ----------------------------------------------------------------------------
 TEST ( track_features_augment_keyframes, create )
 {
-  using namespace kwiver::vital;
-
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE(
     nullptr, create_algorithm< algo::track_features >(
       "augment_keyframes" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( track_features_core, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    track_features_core,
+    "Track features from frame to frame"
+    " using feature detection, matching, and loop closure.",
+    PARAM_DEFAULT(
+      features_dir, kwiver::vital::config_path_t,
+      "Path to a directory in which to read or write the feature "
+      "detection and description files.\n"
+      "Using this directory requires a feature_io algorithm.",
+      "" ),
+    PARAM(
+      feature_detector, vital::algo::detect_features_sptr,
+      "feature_detector" ),
+    PARAM(
+      descriptor_extractor, vital::algo::extract_descriptors_sptr,
+      "descriptor_extractor" ),
+    PARAM(
+      feature_io, vital::algo::feature_descriptor_io_sptr,
+      "feature_io" ),
+    PARAM(
+      feature_matcher, vital::algo::match_features_sptr,
+      "feature_matcher" ),
+    PARAM(
+      loop_closer, vital::algo::close_loops_sptr,
+      "loop_closer" )
+  );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( track_features_augment_keyframes, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    track_features_augment_keyframes,
+    "If the current frame is a keyframe, detect and describe "
+    "additional features and create new tracks on this frame.",
+    PARAM(
+      extractor, vital::algo::extract_descriptors_sptr,
+      "Extractor" ),
+    PARAM_DEFAULT(
+      extractor_name, std::string,
+      "Extractor name",
+      "kf_only_descriptor_extractor" )
+  );
 }

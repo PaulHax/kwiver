@@ -23,11 +23,25 @@ main( int argc, char** argv )
 // ----------------------------------------------------------------------------
 TEST ( initialize_object_tracks_threshold, create )
 {
-  using namespace kwiver::vital;
-
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE(
     nullptr, create_algorithm<
       algo::initialize_object_tracks >( "threshold" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( initialize_object_tracks_threshold, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    initialize_object_tracks_threshold,
+    "Perform thresholding on detection confidence values to create tracks.",
+    PARAM_DEFAULT(
+      max_new_tracks, unsigned,
+      "Maximum number of new tracks to initialize on a single frame.",
+      10000 ),
+    PARAM(
+      filter, vital::algo::detected_object_filter_sptr,
+      "filter" )
+  );
 }

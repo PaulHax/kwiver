@@ -29,3 +29,21 @@ TEST ( keyframe_selector_basic, create )
 
   EXPECT_NE( nullptr, create_algorithm< algo::keyframe_selection >( "basic" ) );
 }
+
+// ----------------------------------------------------------------------------
+TEST ( keyframe_selector_basic, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    keyframe_selector_basic,
+    "A simple implementation of keyframe selection based on statistics "
+    "of KLT tracks",
+    PARAM_DEFAULT(
+      fraction_tracks_lost_to_necessitate_new_keyframe, float,
+      "If this fraction of more of features is lost then select a new keyframe",
+      0.3 ),
+    PARAM_DEFAULT(
+      keyframe_min_feature_count, size_t,
+      "Minimum number of features required for a frame to become a keyframe",
+      50 )
+  );
+}

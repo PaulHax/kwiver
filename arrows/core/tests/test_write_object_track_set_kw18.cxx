@@ -23,11 +23,19 @@ main( int argc, char** argv )
 // ----------------------------------------------------------------------------
 TEST ( write_object_track_set_kw18, create )
 {
-  using namespace kwiver::vital;
-
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE(
     nullptr,
     create_algorithm< algo::write_object_track_set >( "kw18" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( write_object_track_set_kw18, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    write_object_track_set_kw18,
+    "Object track set kw18 writer.",
+    PARAM_DEFAULT( delim, std::string, "delimeter", "," )
+  );
 }

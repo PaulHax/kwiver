@@ -24,12 +24,35 @@ main( int argc, char** argv )
 // ----------------------------------------------------------------------------
 TEST ( create_detection_grid, create )
 {
-  using namespace kwiver::vital;
-
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE(
     nullptr,
     create_algorithm< algo::image_object_detector >(
       "create_detection_grid" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( create_detection_grid, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    create_detection_grid,
+    "Create a grid of detections across the input image.",
+    PARAM_DEFAULT(
+      width, double,
+      "Width of each detection in the output grid.",
+      0.0 ),
+    PARAM_DEFAULT(
+      height, double,
+      "Height of each detection in the output grid.",
+      0.0 ),
+    PARAM_DEFAULT(
+      x_step, double,
+      "How far apart along the x axis each detection is.",
+      0.0 ),
+    PARAM_DEFAULT(
+      y_step, double,
+      "How far apart along the y axis each detection is.",
+      0.0 )
+  );
 }

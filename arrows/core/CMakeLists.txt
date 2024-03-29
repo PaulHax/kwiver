@@ -18,11 +18,11 @@ set( plugin_core_classes
   algo/create_detection_grid
   algo/derive_metadata
   algo/detect_features_filtered
-  algo/detected_object_set_input_kw18
-  algo/detected_object_set_output_kw18
   algo/detected_object_set_input_csv
-  algo/detected_object_set_output_csv
+  algo/detected_object_set_input_kw18
   algo/detected_object_set_input_simulator
+  algo/detected_object_set_output_csv
+  algo/detected_object_set_output_kw18
   algo/dynamic_config_none
   algo/estimate_canonical_transform
   algo/example_detector

@@ -23,11 +23,25 @@ main( int argc, char** argv )
 // ----------------------------------------------------------------------------
 TEST ( video_input_buffered_metadata_filter, create )
 {
-  using namespace kwiver::vital;
-
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE(
     nullptr, create_algorithm< algo::video_input >(
       "buffered_metadata_filter" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( video_input_buffered_metadata_filter, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    video_input_buffered_metadata_filter,
+    "A video input that calls another video input and applies a "
+    "buffered filter to the output metadata.",
+    PARAM(
+      video_input, kwiver::vital::algo::video_input_sptr,
+      "video_input" ),
+    PARAM(
+      metadata_filter, kwiver::vital::algo::buffered_metadata_filter_sptr,
+      "metadata_filter" )
+  );
 }

@@ -23,11 +23,42 @@ main( int argc, char** argv )
 // ----------------------------------------------------------------------------
 TEST ( example_detector, create )
 {
-  using namespace kwiver::vital;
-
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE(
     nullptr,
     create_algorithm< algo::image_object_detector >( "example_detector" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( example_detector, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    example_detector,
+    "Simple example detector that just creates a user-specified bounding box.",
+    PARAM_DEFAULT(
+      center_x, double,
+      "Bounding box center x coordinate.",
+      100.0 ),
+    PARAM_DEFAULT(
+      center_y, double,
+      "Bounding box center y coordinate.",
+      100.0 ),
+    PARAM_DEFAULT(
+      height, double,
+      "Bounding box height.",
+      200.0 ),
+    PARAM_DEFAULT(
+      width, double,
+      "Bounding box width.",
+      200.0 ),
+    PARAM_DEFAULT(
+      dx, double,
+      "Bounding box x translation per frame.",
+      0.0 ),
+    PARAM_DEFAULT(
+      dy, double,
+      "Bounding box y translation per frame.",
+      0.0 )
+  );
 }
