@@ -33,6 +33,7 @@ algorithm( py::module& m )
     .def_property(
     "impl_name", &kwiver::vital::algorithm::impl_name,
     &kwiver::vital::algorithm::set_impl_name )
+    .def_static( "interface_name", &kwiver::vital::algorithm::interface_name )
     .def( "get_configuration", &kwiver::vital::algorithm::get_configuration )
     .def( "set_configuration", &kwiver::vital::algorithm::set_configuration )
     .def(
