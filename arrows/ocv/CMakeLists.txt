@@ -3,9 +3,10 @@
 
 set(CMAKE_FOLDER "Arrows/OCV")
 
-set( plugin_ocv_headers )
+set( plugin_ocv_headers
+     bounding_box.h )
 set( plugin_ocv_sources
-  config_options_helpers.txx )
+     config_options_helpers.txx )
 set( plugin_ocv_classes
   algo/analyze_tracks
   algo/detect_features_AGAST
