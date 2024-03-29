@@ -40,7 +40,7 @@ TEST ( track_features_klt, default_config )
     PARAM_DEFAULT(
       redetect_frac_lost_threshold, float,
       "redetect if fraction of features tracked from last "
-      "detection drops below this level", 0.7 ),
+      "detection drops below this level", 0.7f ),
 
     PARAM_DEFAULT(
       grid_rows, int,
@@ -54,7 +54,7 @@ TEST ( track_features_klt, default_config )
       new_feat_exclusionary_radius_image_fraction,
       float,
       "do not place new features any closer than this fraction of image min "
-      "dimension to existing features", 0.01 ),
+      "dimension to existing features", 0.01f ),
 
     PARAM_DEFAULT(
       win_size, int,

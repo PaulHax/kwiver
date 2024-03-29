@@ -51,7 +51,7 @@ TEST ( optimize_cameras, default_config )
       "Robust loss function type to use.", TRIVIAL_LOSS ),
     PARAM_DEFAULT(
       loss_function_scale, double,
-      "Robust loss function scale factor.", 1 ),
+      "Robust loss function scale factor.", 1.0 ),
     PARAM(
       solver_options, solver_options_sptr,
       "pointer to the nested config options for solver" ),

@@ -35,7 +35,7 @@ public:
     PARAM_DEFAULT(
       radius, float,
       "radius of the descriptor at the initial scale",
-      15 ),
+      15.0f ),
 
     PARAM_DEFAULT(
       q_radius, int,

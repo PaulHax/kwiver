@@ -48,7 +48,7 @@ TEST ( detect_heat_map, default_config )
       "The default threshold of -1 indicates that further "
       "processing will be done on the full-range heat map "
       "image. This mode of processing requires that ",
-      -1 ),
+      -1.0 ),
 
     PARAM_DEFAULT(
       force_bbox_width, int,

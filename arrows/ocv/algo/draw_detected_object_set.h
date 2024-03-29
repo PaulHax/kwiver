@@ -35,7 +35,7 @@ public:
       float,
       "min threshold for output (float). "
       "Detections with confidence values below this value are not drawn.",
-      -1.0 ),
+      -1.0f ),
 
     PARAM_DEFAULT(
       alpha_blend_prob,
@@ -47,7 +47,7 @@ public:
       default_line_thickness,
       float,
       "The default line thickness, in pixels.",
-      1.0 ),
+      1.0f ),
 
     PARAM_DEFAULT(
       default_color,
@@ -74,13 +74,13 @@ public:
       float,
       "Scaling for the text label. "
       "Font scale factor that is multiplied by the font-specific base size.",
-      0.4 ),
+      0.4f ),
 
     PARAM_DEFAULT(
       text_thickness,
       float,
       "Thickness of the lines used to draw a text.",
-      1.0 ),
+      1.0f ),
 
     PARAM_DEFAULT(
       clip_box_to_image,
