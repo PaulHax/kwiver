@@ -18,7 +18,10 @@
 #include <gtest/gtest.h>
 
 using namespace kwiver::vital;
-using namespace kwiver::arrows;
+using namespace kwiver::arrows::ocv;
+
+
+const cv::SimpleBlobDetector::Params detect_features_simple_blob::default_params {};
 
 // ----------------------------------------------------------------------------
 int
@@ -89,8 +92,6 @@ TEST ( detect_features_AGAST, default_config )
 {
   using namespace kwiver::arrows::ocv;
 
-  static const std::string list_agast_types;
-
   EXPECT_PLUGGABLE_IMPL(
     detect_features_AGAST,
     "OpenCV feature detection via the AGAST algorithm",
@@ -106,14 +107,12 @@ TEST ( detect_features_AGAST, default_config )
       "if true, non-maximum suppression is applied to "
       "detected corners (keypoints)", true ),
 
-// Need to resolve compile error
-//    PARAM_DEFAULT(
-//      type, int,
-//      "Neighborhood pattern type. Should be one of the "
-//      "following enumeration type values:\n" +
-//      list_agast_types +  " (default)",
-//      static_cast< int >( cv::AgastFeatureDetector::OAST_9_16 )
-//    )
+    PARAM_DEFAULT(
+      type, int,
+      "Neighborhood pattern type. Should be one of the "
+      "following enumeration type values:\n" +
+      detect_features_AGAST::list_agast_types +  " (default)",
+      3 )
   );
 }
 
@@ -143,7 +142,6 @@ TEST ( detect_features_FAST, default_config )
       "algorithm tries to output approximately this many features. "
       "Disable by setting to negative value.", 2500 )
 
-// Need to resolve the test errors in this block of code
 #if KWIVER_OPENCV_VERSION_MAJOR >= 3
     ,
     PARAM_DEFAULT(
@@ -155,7 +153,7 @@ TEST ( detect_features_FAST, default_config )
       KWIVER_STRINGIFY( cv::FastFeatureDetector::TYPE_7_12 ) ", "
                                                              "TYPE_9_16="
       KWIVER_STRINGIFY( cv::FastFeatureDetector::TYPE_9_16 ) ".",
-      static_cast< int >( cv::FastFeatureDetector::TYPE_9_16 ) )
+      2 )
 #endif
   );
 }
@@ -282,28 +280,28 @@ TEST ( detect_features_simple_blob, default_config )
       "min_threshold (inclusive) to max_threshold (exclusive) "
       " with distance threshold_step between neighboring "
       "thresholds.",
-      default_params.thresholdStep ),
+      10 ),
     PARAM_DEFAULT(
       threshold_min,
       float,
       "threshold_min",
-      default_params.minThreshold ),
+      50 ),
     PARAM_DEFAULT(
       threshold_max,
       float,
       "threshold_max",
-      default_params.maxThreshold ),
+      220 ),
     PARAM_DEFAULT(
       min_repeatability,
       std::size_t,
       "min_repeatability",
-      default_params.minRepeatability ),
+      2 ),
     PARAM_DEFAULT(
       min_dist_between_blocks,
       float,
       "Close centers form one group that corresponds to one "
       "blob, controlled by this distance value.",
-      default_params.minDistBetweenBlobs ),
+      10 ),
     PARAM_DEFAULT(
       filter_by_color,
       bool,
@@ -312,62 +310,65 @@ TEST ( detect_features_simple_blob, default_config )
       "differ, the blob is filtered out. Use blob_color = 0 "
       "to extract dark blobs and blob_color = 255 to extract "
       "light blobs",
-      default_params.filterByColor ),
-    PARAM_DEFAULT(
-      blob_color,
-      unsigned char,
-      "blob_color",
-      default_params.blobColor ),
+      true ),
+
+// Need to compare null values but using a string to pass the argument
+//    PARAM_DEFAULT(
+//      blob_color,
+//      unsigned char,
+//      "blob_color",
+//      '\0' ),
+
     PARAM_DEFAULT(
       filter_by_area,
       bool,
       "Enable blob filtering by area to those between "
       "min_area (inclusive) and max_area (exclusive).",
-      default_params.filterByArea ),
+      true ),
     PARAM_DEFAULT(
       min_area,
       float,
       "min_area",
-      default_params.minArea ),
+      25 ),
     PARAM_DEFAULT(
       max_area,
       float,
       "max_area",
-      default_params.maxArea ),
+      5000 ),
     PARAM_DEFAULT(
       filter_by_circularity,
       bool,
       "Enable blob filtering by circularity to those between "
       "min_circularity (inclusive) and max_circularity "
       "(exclusive).",
-      default_params.filterByCircularity ),
+      false ),
     PARAM_DEFAULT(
       min_circularity,
       float,
       "min_circularity",
-      default_params.minCircularity ),
+      0.8 ),
     PARAM_DEFAULT(
       max_circularity,
       float,
       "max_circularity",
-      default_params.maxCircularity ),
+      3.40282e+38 ),
     PARAM_DEFAULT(
       filter_by_inertia,
       bool,
       "Enable blob filtering by the ratio of inertia between "
       "min_inertia_ratio (inclusive) and max_inertia_ratio "
       "(exclusive).",
-      default_params.filterByInertia ),
+      true ),
     PARAM_DEFAULT(
       min_inertia_ratio,
       float,
       "min_inertia_ratio",
-      default_params.minInertiaRatio ),
+      0.1 ),
     PARAM_DEFAULT(
       max_inertia_ratio,
       float,
       "max_inertia_ratio",
-      default_params.maxInertiaRatio ),
+      3.40282e+38 ),
     PARAM_DEFAULT(
       filter_by_convexity,
       bool,
@@ -375,18 +376,17 @@ TEST ( detect_features_simple_blob, default_config )
       "convexity (area / area of blob convex hull) between "
       "min_convexity (inclusive) and max_convexity "
       "(exclusive).",
-      default_params.filterByConvexity ),
+      true ),
     PARAM_DEFAULT(
       min_convexity,
       float,
       "min_convexity",
-      default_params.minConvexity ),
+      0.95 ),
     PARAM_DEFAULT(
       max_convexity,
       float,
       "max_convexity",
-      default_params.maxConvexity
-    )
+      3.40282e+38 )
   );
 }
 
