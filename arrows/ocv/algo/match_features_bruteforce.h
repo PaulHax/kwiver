@@ -54,7 +54,7 @@ public:
   /// Check that the algorithm's configuration vital::config_block is valid
   bool check_configuration( vital::config_block_sptr config ) const override;
 
-  static const char* list_enum_values;
+  static const std::string list_enum_values;
 
 protected:
   /// Perform matching based on the underlying OpenCV implementation

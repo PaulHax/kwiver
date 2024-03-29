@@ -183,12 +183,12 @@ public:
   /// Check that the algorithm's configuration vital::config_block is valid
   bool check_configuration( vital::config_block_sptr config ) const override;
 
+  static const cv::SimpleBlobDetector::Params default_params;
+
 private:
   void update_detector_parameters() const override;
   void set_configuration_internal( vital::config_block_sptr config ) override;
   void initialize() override;
-
-  static const cv::SimpleBlobDetector::Params default_params;
 };
 
 } // end namespace ocv
