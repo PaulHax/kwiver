@@ -62,6 +62,21 @@ has_algorithm_impl_name( std::string const& implementation_name )
     implementation_name ) != impl_names.end();
 }
 
+// ----------------------------------------------------------------------------
+/// Return a vector of the impl_name of each registered implementation
+template < typename INTERFACE >
+std::vector< std::string >
+registered_names()
+{
+  // Get list of factories for the algo_name
+  kwiver::vital::plugin_manager& vpm =
+    kwiver::vital::plugin_manager::instance();
+
+  auto impl_names = vpm.impl_names< INTERFACE >();
+
+  return impl_names;
+}
+
 //// ----------------------------------------------------------------------------
 /// Helper function for properly setting a nested algorithm's configuration
 ///
