@@ -339,7 +339,7 @@ class CommonConfigurationMixin(object):
         :return A kwiver.vital.config.Config object with threshold key
         """
         base_cfg = super(CommonConfigurationMixin, self).get_configuration()
-        cfg = config.empty_config()
+        cfg = empty_config()
         cfg.set_value("threshold", str(self.threshold))
         cfg.merge_config(base_cfg)
         return cfg
