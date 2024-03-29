@@ -63,14 +63,8 @@ PYBIND11_MODULE( _plugin_management, m )
       py::doc( "Clears the factory list and reloads plugins." )
     )
     .def(
-      "impl_names_say", &kv::plugin_manager::impl_names< kv::say >,
-      py::doc( "Get list of plugin implementation names for say interface." )
-    )
-    .def(
-      "impl_names_format_config_block",
-      &kv::plugin_manager::impl_names< kv::format_config_block >,
-      py::doc(
-        "Get list of plugin implementation names for format_config_block interface." )
+      "impl_names", &kv::plugin_manager::_impl_names,
+      py::doc( "Get list of plugin implementation names for an interface." )
     );
 
 // -------------------------------------------------------------------------

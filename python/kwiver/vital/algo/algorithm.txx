@@ -4,6 +4,7 @@
 #ifndef KWIVER_VITAL_PYTHON_ALGORITHM_TXX_
 #define KWIVER_VITAL_PYTHON_ALGORITHM_TXX_
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 #include <vital/algo/algorithm.txx>
 
 // register template specializations for methods in vital/algo/algorithm.txx
@@ -27,6 +28,10 @@ register_algorithm( py::class_< Args... >& c )
   c.def_static(
     "has_algorithm_impl_name",
     &kwiver::vital::has_algorithm_impl_name< INTERFACE > );
+
+  c.def_static(
+    "registered_names",
+    &kwiver::vital::registered_names< INTERFACE > );
 
   c.def_static(
     "get_nested_algo_configuration",
