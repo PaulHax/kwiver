@@ -20,9 +20,6 @@
 using namespace kwiver::vital;
 using namespace kwiver::arrows::ocv;
 
-
-const cv::SimpleBlobDetector::Params detect_features_simple_blob::default_params {};
-
 // ----------------------------------------------------------------------------
 int
 main( int argc, char** argv )
@@ -256,6 +253,8 @@ TEST ( detect_features_MSER, default_config )
 // ----------------------------------------------------------------------------
 TEST ( detect_features_simple_blob, default_config )
 {
+  using  kaod = kwiver::arrows::ocv::detect_features_simple_blob;
+
   EXPECT_PLUGGABLE_IMPL(
     detect_features_simple_blob,
     "OpenCV feature detection via the simple_blob algorithm.",
@@ -269,36 +268,33 @@ TEST ( detect_features_simple_blob, default_config )
       "min_threshold (inclusive) to max_threshold (exclusive) "
       " with distance threshold_step between neighboring "
       "thresholds.",
-      default_params.thresholdStep
+      kaod::default_params.thresholdStep
     ),
 
     PARAM_DEFAULT(
       threshold_min,
       float,
       "threshold_min",
-      default_params.minThreshold
+      kaod::default_params.minThreshold
     ),
-
     PARAM_DEFAULT(
       threshold_max,
       float,
       "threshold_max",
-      default_params.maxThreshold
+      kaod::default_params.maxThreshold
     ),
-
     PARAM_DEFAULT(
       min_repeatability,
       std::size_t,
       "min_repeatability",
-      default_params.minRepeatability
+      kaod::default_params.minRepeatability
     ),
-
     PARAM_DEFAULT(
       min_dist_between_blocks,
       float,
       "Close centers form one group that corresponds to one "
       "blob, controlled by this distance value.",
-      default_params.minDistBetweenBlobs
+      kaod::default_params.minDistBetweenBlobs
     ),
     PARAM_DEFAULT(
       filter_by_color,
@@ -308,83 +304,73 @@ TEST ( detect_features_simple_blob, default_config )
       "differ, the blob is filtered out. Use blob_color = 0 "
       "to extract dark blobs and blob_color = 255 to extract "
       "light blobs",
-      default_params.filterByColor
+      kaod::default_params.filterByColor
     ),
     PARAM_DEFAULT(
       blob_color,
       unsigned char,
       "blob_color",
-      default_params.blobColor
+      kaod::default_params.blobColor
     ),
-
     PARAM_DEFAULT(
       filter_by_area,
       bool,
       "Enable blob filtering by area to those between "
       "min_area (inclusive) and max_area (exclusive).",
-      default_params.filterByArea
+      kaod::default_params.filterByArea
     ),
-
     PARAM_DEFAULT(
       min_area,
       float,
       "min_area",
-      default_params.minArea
+      kaod::default_params.minArea
     ),
-
     PARAM_DEFAULT(
       max_area,
       float,
       "max_area",
-      default_params.maxArea
+      kaod::default_params.maxArea
     ),
-
     PARAM_DEFAULT(
       filter_by_circularity,
       bool,
       "Enable blob filtering by circularity to those between "
       "min_circularity (inclusive) and max_circularity "
       "(exclusive).",
-      default_params.filterByCircularity
+      kaod::default_params.filterByCircularity
     ),
-
     PARAM_DEFAULT(
       min_circularity,
       float,
       "min_circularity",
-      default_params.minCircularity
+      kaod::default_params.minCircularity
     ),
-
     PARAM_DEFAULT(
       max_circularity,
       float,
       "max_circularity",
-      default_params.maxCircularity
+      kaod::default_params.maxCircularity
     ),
-
     PARAM_DEFAULT(
       filter_by_inertia,
       bool,
       "Enable blob filtering by the ratio of inertia between "
       "min_inertia_ratio (inclusive) and max_inertia_ratio "
       "(exclusive).",
-      default_params.filterByInertia
+      kaod::default_params.filterByInertia
     ),
-
     PARAM_DEFAULT(
       min_inertia_ratio,
       float,
       "min_inertia_ratio",
-      default_params.minInertiaRatio
+      kaod::default_params.minInertiaRatio
     ),
-
     PARAM_DEFAULT(
       max_inertia_ratio,
       float,
       "max_inertia_ratio",
-      default_params.maxInertiaRatio
+      kaod::default_params.maxInertiaRatio
     ),
-
     PARAM_DEFAULT(
       filter_by_convexity,
       bool,
@@ -392,21 +378,19 @@ TEST ( detect_features_simple_blob, default_config )
       "convexity (area / area of blob convex hull) between "
       "min_convexity (inclusive) and max_convexity "
       "(exclusive).",
-      default_params.filterByConvexity
+      kaod::default_params.filterByConvexity
     ),
-
     PARAM_DEFAULT(
       min_convexity,
       float,
       "min_convexity",
-      default_params.minConvexity
+      kaod::default_params.minConvexity
     ),
-
     PARAM_DEFAULT(
       max_convexity,
       float,
       "max_convexity",
-      default_params.maxConvexity
+      kaod::default_params.maxConvexity
     )
   );
 }

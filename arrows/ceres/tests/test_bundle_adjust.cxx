@@ -60,7 +60,7 @@ TEST ( bundle_adjust, default_config )
     PARAM_DEFAULT(
       loss_function_type, LossFunctionType,
       "Robust loss function type to use.",
-      TRIVIAL_LOSS ),
+      kwiver::arrows::ceres::TRIVIAL_LOSS ),
     PARAM_DEFAULT(
       loss_function_scale, double,
       "Robust loss function scale factor.", 1.0 ),

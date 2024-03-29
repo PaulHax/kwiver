@@ -48,7 +48,8 @@ TEST ( optimize_cameras, default_config )
       "optimization progress at each iteration", false ),
     PARAM_DEFAULT(
       loss_function_type, LossFunctionType,
-      "Robust loss function type to use.", TRIVIAL_LOSS ),
+      "Robust loss function type to use.",
+      kwiver::arrows::ceres::TRIVIAL_LOSS ),
     PARAM_DEFAULT(
       loss_function_scale, double,
       "Robust loss function scale factor.", 1.0 ),
