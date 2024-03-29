@@ -2,8 +2,8 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <arrows/core/create_detection_grid.h>
-#include <arrows/core/filter_features_scale.h>
+#include <arrows/core/algo/create_detection_grid.h>
+#include <arrows/core/algo/filter_features_scale.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>

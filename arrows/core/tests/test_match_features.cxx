@@ -2,8 +2,8 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <arrows/core/match_features_fundamental_matrix.h>
-#include <arrows/core/match_features_homography.h>
+#include <arrows/core/algo/match_features_fundamental_matrix.h>
+#include <arrows/core/algo/match_features_homography.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>

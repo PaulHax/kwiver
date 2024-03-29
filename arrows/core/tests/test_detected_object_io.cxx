@@ -5,8 +5,8 @@
 /// \file
 /// \brief test detected object io
 
-#include <arrows/core/detected_object_set_input_csv.h>
-#include <arrows/core/detected_object_set_output_csv.h>
+#include <arrows/core/algo/detected_object_set_input_csv.h>
+#include <arrows/core/algo/detected_object_set_output_csv.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>

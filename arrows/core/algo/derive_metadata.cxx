@@ -5,7 +5,7 @@
 /// \file
 /// \brief Compute derived metadata fields.
 
-#include <arrows/core/derive_metadata.h>
+#include <arrows/core/algo/derive_metadata.h>
 
 #include <vital/types/geo_point.h>
 #include <vital/types/metadata.h>

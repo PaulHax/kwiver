@@ -2,9 +2,9 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <arrows/core/detected_object_set_input_csv.h>
-#include <arrows/core/detected_object_set_input_kw18.h>
-#include <arrows/core/detected_object_set_input_simulator.h>
+#include <arrows/core/algo/detected_object_set_input_csv.h>
+#include <arrows/core/algo/detected_object_set_input_kw18.h>
+#include <arrows/core/algo/detected_object_set_input_simulator.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>

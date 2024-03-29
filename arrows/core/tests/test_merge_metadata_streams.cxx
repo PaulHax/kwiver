@@ -5,7 +5,7 @@
 /// \file
 /// Test merge_metadata_streams filter.
 
-#include <arrows/core/merge_metadata_streams.h>
+#include <arrows/core/algo/merge_metadata_streams.h>
 
 #include <gtest/gtest.h>
 

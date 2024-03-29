@@ -2,8 +2,8 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <arrows/core/track_features_augment_keyframes.h>
-#include <arrows/core/track_features_core.h>
+#include <arrows/core/algo/track_features_augment_keyframes.h>
+#include <arrows/core/algo/track_features_core.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>

@@ -2,7 +2,7 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <arrows/core/uv_unwrap_mesh.h>
+#include <arrows/core/algo/uv_unwrap_mesh.h>
 #include <vital/plugin_management/plugin_manager.h>
 #include <vital/types/mesh.h>
 

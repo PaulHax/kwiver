@@ -2,9 +2,9 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <arrows/core/filter_features_magnitude.h>
-#include <arrows/core/filter_features_nonmax.h>
-#include <arrows/core/filter_features_scale.h>
+#include <arrows/core/algo/filter_features_magnitude.h>
+#include <arrows/core/algo/filter_features_nonmax.h>
+#include <arrows/core/algo/filter_features_scale.h>
 
 #include <test_features.h>
 

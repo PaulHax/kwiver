@@ -5,7 +5,7 @@
 /// \file
 /// Definition of the video_input_buffered_metadata_filter class.
 
-#include <arrows/core/video_input_buffered_metadata_filter.h>
+#include <arrows/core/algo/video_input_buffered_metadata_filter.h>
 
 #include <vital/algo/buffered_metadata_filter.h>
 

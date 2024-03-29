@@ -2,11 +2,11 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <arrows/core/close_loops_appearance_indexed.h>
-#include <arrows/core/close_loops_bad_frames_only.h>
-#include <arrows/core/close_loops_exhaustive.h>
-#include <arrows/core/close_loops_keyframe.h>
-#include <arrows/core/close_loops_multi_method.h>
+#include <arrows/core/algo/close_loops_appearance_indexed.h>
+#include <arrows/core/algo/close_loops_bad_frames_only.h>
+#include <arrows/core/algo/close_loops_exhaustive.h>
+#include <arrows/core/algo/close_loops_keyframe.h>
+#include <arrows/core/algo/close_loops_multi_method.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>

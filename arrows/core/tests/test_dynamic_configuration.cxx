@@ -5,7 +5,7 @@
 /// \file
 /// \brief test dynamic configuration
 
-#include <arrows/core/dynamic_config_none.h>
+#include <arrows/core/algo/dynamic_config_none.h>
 
 #include <vital/algo/algorithm.txx>
 #include <vital/plugin_management/plugin_manager.h>

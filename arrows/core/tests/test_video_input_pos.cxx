@@ -7,7 +7,7 @@
 
 #include <test_gtest.h>
 
-#include <arrows/core/video_input_pos.h>
+#include <arrows/core/algo/video_input_pos.h>
 #include <vital/algo/algorithm.txx>
 #include <vital/io/metadata_io.h>
 #include <vital/plugin_management/plugin_manager.h>

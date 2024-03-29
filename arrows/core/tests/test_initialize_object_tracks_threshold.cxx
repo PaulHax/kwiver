@@ -2,7 +2,7 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <arrows/core/initialize_object_tracks_threshold.h>
+#include <arrows/core/algo/initialize_object_tracks_threshold.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>

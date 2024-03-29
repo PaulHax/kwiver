@@ -6,7 +6,7 @@
 /// \brief Implementation of close_loops_exhaustive
 
 #include "close_loops_exhaustive.h"
-#include "match_tracks.h"
+#include <arrows/core/match_tracks.h>
 
 #include <algorithm>
 #include <set>

@@ -6,7 +6,7 @@
 /// \brief Implementation of close_loops_keyframe
 
 #include "close_loops_keyframe.h"
-#include "match_tracks.h"
+#include <arrows/core/match_tracks.h>
 
 #include <set>
 #include <string>
