@@ -115,9 +115,15 @@ def run():
     metadata_serializer = MetadataMapIO()
     image_writer = ImageIO()
 
-    print(DEFAULT_CONFIG_PREFIX)
-    config_path = DEFAULT_CONFIG_PREFIX / "applets" / "dump_klv.conf"
-    config = read_config_file(str(config_path))
+    try:
+        # the path exists when installed as a wheel
+        config_path = DEFAULT_CONFIG_PREFIX / "applets" / "dump_klv.conf"
+        config = read_config_file(str(config_path))
+    except RuntimeError:
+        # look into the parent directory for configuration files
+        # this is the layout in the build/install tree
+        prefix = os.path.dirname(sys.executable) + "/.."
+        config = read_config_file("applets/dump_klv.conf", "", "", prefix)
 
     # If --config given, read in config file, merge in with default just generated
     if cmd_args.config:
@@ -147,22 +153,18 @@ def run():
     if cmd_args.compress:
         config["metadata_serializer:klv-json:compress"] = True
 
-    video_reader = VideoInput.set_nested_algo_configuration(
-        "video_reader", config, video_reader
-    )
+    video_reader = VideoInput.set_nested_algo_configuration("video_reader", config)
     VideoInput.get_nested_algo_configuration("video_reader", config, video_reader)
 
     metadata_serializer = MetadataMapIO.set_nested_algo_configuration(
-        "metadata_serializer", config, metadata_serializer
+        "metadata_serializer", config
     )
     MetadataMapIO.get_nested_algo_configuration(
         "metadata_serializer", config, metadata_serializer
     )
 
     if cmd_args.frames:
-        image_writer = ImageIO.set_nested_algo_configuration(
-            "image_writer", config, image_writer
-        )
+        image_writer = ImageIO.set_nested_algo_configuration("image_writer", config)
         ImageIO.get_nested_algo_configuration("image_writer", config, image_writer)
 
     # Check to see if we are to dump config
