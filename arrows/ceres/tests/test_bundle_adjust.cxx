@@ -14,6 +14,7 @@
 #include <arrows/mvg/projected_track_set.h>
 
 #include <vital/math_constants.h>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 using namespace kwiver::vital;
@@ -59,10 +60,10 @@ TEST ( bundle_adjust, default_config )
     PARAM_DEFAULT(
       loss_function_type, LossFunctionType,
       "Robust loss function type to use.",
-      TRIVIAL_LOSS ),
+      kwiver::arrows::ceres::TRIVIAL_LOSS ),
     PARAM_DEFAULT(
       loss_function_scale, double,
-      "Robust loss function scale factor.", 1 ),
+      "Robust loss function scale factor.", 1.0 ),
     PARAM(
       solver_options, solver_options_sptr,
       "pointer to the nested config options for solver" ),

@@ -8,9 +8,10 @@
 #include <test_eigen.h>
 #include <test_random_point.h>
 
-#include <arrows/ocv/estimate_homography.h>
+#include <arrows/ocv/algo/estimate_homography.h>
 #include <vital/algo/algorithm.txx>
 
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 using namespace kwiver::vital;
@@ -44,6 +45,14 @@ TEST ( estimate_homography, create )
   EXPECT_NE(
     nullptr,
     kwiver::vital::create_algorithm< estimate_homography >( "ocv" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( estimate_homography, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    estimate_homography,
+    "Use OpenCV to estimate a homography from feature matches." );
 }
 
 // ----------------------------------------------------------------------------

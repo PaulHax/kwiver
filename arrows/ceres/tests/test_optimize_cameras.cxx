@@ -4,6 +4,7 @@
 
 #include <arrows/ceres/optimize_cameras.h>
 
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>
@@ -47,10 +48,11 @@ TEST ( optimize_cameras, default_config )
       "optimization progress at each iteration", false ),
     PARAM_DEFAULT(
       loss_function_type, LossFunctionType,
-      "Robust loss function type to use.", TRIVIAL_LOSS ),
+      "Robust loss function type to use.",
+      kwiver::arrows::ceres::TRIVIAL_LOSS ),
     PARAM_DEFAULT(
       loss_function_scale, double,
-      "Robust loss function scale factor.", 1 ),
+      "Robust loss function scale factor.", 1.0 ),
     PARAM(
       solver_options, solver_options_sptr,
       "pointer to the nested config options for solver" ),

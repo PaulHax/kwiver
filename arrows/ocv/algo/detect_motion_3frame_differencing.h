@@ -63,7 +63,7 @@ public:
       "invalid (e.g., due to excessive camera motion) and is "
       "reset. The default value of 1 indicates that no checking "
       "is done.",
-      1.0 ),
+      1 ),
 
     PARAM_DEFAULT(
       max_foreground_fract_thresh,
@@ -72,7 +72,7 @@ public:
       "parameter defines the threshold for foreground in order "
       "to determine if the maximum fraction of foreground has "
       "been exceeded.",
-      -1.0 ),
+      -1 ),
 
     PARAM_DEFAULT(
       debug_dir,
@@ -81,8 +81,6 @@ public:
       "" )
   );
 
-  /// Constructor
-  detect_motion_3frame_differencing();
   /// Destructor
   virtual ~detect_motion_3frame_differencing() noexcept;
 

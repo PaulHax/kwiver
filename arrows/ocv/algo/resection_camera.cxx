@@ -7,7 +7,7 @@
 
 #include "resection_camera.h"
 
-#include "camera_intrinsics.h"
+#include <arrows/ocv/camera_intrinsics.h>
 
 #include <vital/range/iota.h>
 

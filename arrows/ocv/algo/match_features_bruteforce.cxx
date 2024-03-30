@@ -108,7 +108,7 @@ match_features_bruteforce
   this->matcher->match( descriptors1, descriptors2, matches );
 }
 
-const char* match_features_bruteforce::list_enum_values =
+const std::string match_features_bruteforce::list_enum_values =
   "cv::NORM_INF="       KWIVER_STRINGIFY( cv::NORM_INF )       ", "
                                                                "cv::NORM_L1="
   KWIVER_STRINGIFY( cv::NORM_L1 )        ", "

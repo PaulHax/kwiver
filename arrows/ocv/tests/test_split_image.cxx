@@ -2,7 +2,7 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <arrows/ocv/algo/resection_camera.h>
+#include <arrows/ocv/algo/split_image.h>
 
 #include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
@@ -12,16 +12,7 @@
 #include <gtest/gtest.h>
 
 using namespace kwiver::vital;
-using namespace kwiver::arrows;
-using namespace std;
-
-using ocv::resection_camera;
-
-static constexpr double
-  ideal_rotation_tolerance = 1e-6,
-  ideal_center_tolerance = 1e-6,
-  noisy_rotation_tolerance = 0.01,
-  noisy_center_tolerance = 0.06;
+using namespace kwiver::arrows::ocv;
 
 // ----------------------------------------------------------------------------
 int
@@ -32,26 +23,18 @@ main( int argc, char** argv )
 }
 
 // ----------------------------------------------------------------------------
-TEST ( resection_camera, create )
+TEST ( split_image, create )
 {
   plugin_manager::instance().load_all_plugins();
   EXPECT_NE(
-    nullptr,
-    kwiver::vital::create_algorithm< algo::resection_camera >( "ocv" ) );
+    nullptr, create_algorithm< algo::split_image >(
+      "ocv" ) );
 }
 
 // ----------------------------------------------------------------------------
-TEST ( resection_camera, default_config )
+TEST ( split_image, default_config )
 {
   EXPECT_PLUGGABLE_IMPL(
-    resection_camera,
-    "resection camera using OpenCV calibrate camera method",
-    PARAM(
-      camera_options,
-      resection_camera_options_sptr,
-      "camera_options" )
-  );
+    split_image,
+    "Split an image  into multiple smaller images using opencv functions" );
 }
-
-// ----------------------------------------------------------------------------
-#include <arrows/tests/test_resection_camera.h>

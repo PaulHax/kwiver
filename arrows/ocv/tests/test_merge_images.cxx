@@ -2,8 +2,7 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <arrows/ocv/algo/resection_camera.h>
-
+#include <arrows/ocv/algo/merge_images.h>
 #include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
@@ -12,16 +11,7 @@
 #include <gtest/gtest.h>
 
 using namespace kwiver::vital;
-using namespace kwiver::arrows;
-using namespace std;
-
-using ocv::resection_camera;
-
-static constexpr double
-  ideal_rotation_tolerance = 1e-6,
-  ideal_center_tolerance = 1e-6,
-  noisy_rotation_tolerance = 0.01,
-  noisy_center_tolerance = 0.06;
+using namespace kwiver::arrows::ocv;
 
 // ----------------------------------------------------------------------------
 int
@@ -32,26 +22,22 @@ main( int argc, char** argv )
 }
 
 // ----------------------------------------------------------------------------
-TEST ( resection_camera, create )
+TEST ( merge_images, create )
 {
   plugin_manager::instance().load_all_plugins();
   EXPECT_NE(
-    nullptr,
-    kwiver::vital::create_algorithm< algo::resection_camera >( "ocv" ) );
+    nullptr, create_algorithm< algo::merge_images >( "ocv" ) );
 }
 
 // ----------------------------------------------------------------------------
-TEST ( resection_camera, default_config )
+TEST ( merge_images, default_config )
 {
   EXPECT_PLUGGABLE_IMPL(
-    resection_camera,
-    "resection camera using OpenCV calibrate camera method",
-    PARAM(
-      camera_options,
-      resection_camera_options_sptr,
-      "camera_options" )
+    merge_images,
+    "Merge two images into one using opencv functions.\n\n"
+    "The channels from the first image are added to the "
+    "output image first, followed by the channels from the "
+    "second image. This implementation takes no configuration "
+    "parameters."
   );
 }
-
-// ----------------------------------------------------------------------------
-#include <arrows/tests/test_resection_camera.h>

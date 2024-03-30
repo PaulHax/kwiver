@@ -35,7 +35,7 @@ public:
     PARAM_DEFAULT(
       radius, float,
       "radius of the descriptor at the initial scale",
-      15 ),
+      15.0f ),
 
     PARAM_DEFAULT(
       q_radius, int,
@@ -74,9 +74,9 @@ public:
   /// Check that the algorithm's configuration config_block is valid
   bool check_configuration( vital::config_block_sptr config ) const override;
 
-private:
   static const std::string list_norm_options;
 
+private:
   void initialize() override;
   void update_extractor_parameters() const override;
   void set_configuration_internal( vital::config_block_sptr config ) override;

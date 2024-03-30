@@ -34,7 +34,7 @@ public:
     PARAM_DEFAULT(
       hessian_threshold, double,
       "Threshold for hessian keypoint detector used in SURF",
-      100 ),
+      100.0 ),
 
     PARAM_DEFAULT(
       n_octaves, int,
