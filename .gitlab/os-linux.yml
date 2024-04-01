@@ -9,7 +9,7 @@
 
 .ubuntu2004:
     extends: .linux
-    image: "kitware/kwiver:ci-ubuntu20_04-20240304"
+    image: "kitware/kwiver:ci-ubuntu20_04-20240327"
 
 .ubuntu2004_arrows:
     extends:
