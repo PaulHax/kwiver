@@ -6,7 +6,13 @@
 
 #include <arrows/mvg/algo/triangulate_landmarks.h>
 #include <arrows/tests/test_triangulate_landmarks.h>
+
+#include <vital/algo/algorithm.txx>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
+
+using namespace kwiver::vital;
+using namespace kwiver::arrows::mvg;
 
 // ----------------------------------------------------------------------------
 int
@@ -27,6 +33,47 @@ TEST ( triangulate_landmarks, create )
     nullptr,
     kwiver::vital::create_algorithm< kwiver::vital::algo::triangulate_landmarks >
       ( "mvg" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( triangulate_landmarks, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    triangulate_landmarks,
+    "Triangulate landmarks from tracks and cameras"
+    " using a simple least squares solver.",
+    PARAM_DEFAULT(
+      homogeneous, bool,
+      "Use the homogeneous method for triangulating points. "
+      "The homogeneous method can triangulate points at or near "
+      "infinity and discard them.", false ),
+
+    PARAM_DEFAULT(
+      ransac, bool,
+      "Use RANSAC in triangulating the points", true ),
+
+    PARAM_DEFAULT(
+      min_angle_deg, float,
+      "minimum angle required to triangulate a point.", 1.0f ),
+
+    PARAM_DEFAULT(
+      inlier_threshold_pixels, float,
+      "reprojection error threshold in pixels.", 2.0f ),
+
+    PARAM_DEFAULT(
+      frac_track_inliers_to_keep_triangulated_point, float,
+      "fraction of measurements in track that must be inliers to "
+      "keep the triangulated point", 0.5f ),
+
+    PARAM_DEFAULT(
+      max_ransac_samples, int,
+      "maximum number of samples to take in RANSAC triangulation", 20 ),
+
+    PARAM_DEFAULT(
+      conf_thresh, double,
+      "RANSAC sampling terminates when this confidences in the "
+      "solution is reached.", 0.99 )
+  )
 }
 
 // ----------------------------------------------------------------------------

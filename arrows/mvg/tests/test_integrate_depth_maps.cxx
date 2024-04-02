@@ -7,13 +7,18 @@
 #include <arrows/mvg/algo/integrate_depth_maps.h>
 #include <arrows/tests/test_integrate_depth_maps.h>
 
+#include <vital/algo/algorithm.txx>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>
 
 #include <algorithm>
+#include <array>
 
 using namespace kwiver::vital;
+using namespace kwiver::arrows::mvg;
+using array3 = std::array< double, 3 >;
 
 // ----------------------------------------------------------------------------
 int
@@ -21,6 +26,42 @@ main( int argc, char** argv )
 {
   ::testing::InitGoogleTest( &argc, argv );
   return RUN_ALL_TESTS();
+}
+
+// ----------------------------------------------------------------------------
+TEST ( integrate_depth_maps, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    integrate_depth_maps,
+    "CPU depth map fusion",
+    PARAM_DEFAULT(
+      ray_potential_thickness, double,
+      "Distance that the TSDF covers sloping from Rho to zero. "
+      "Units are in voxels.", 20.0 ),
+    PARAM_DEFAULT(
+      ray_potential_rho, double,
+      "Maximum magnitude of the TDSF", 1.0 ),
+    PARAM_DEFAULT(
+      ray_potential_eta, double,
+      "Fraction of rho to use for free space constraint. "
+      "Requires 0 <= Eta <= 1.", 1.0 ),
+    PARAM_DEFAULT(
+      ray_potential_epsilon, double,
+      "Fraction of rho to use in occluded space. "
+      "Requires 0 <= Epsilon <= 1.", 0.01 ),
+    PARAM_DEFAULT(
+      ray_potential_delta, double,
+      "Distance from the surface before the TSDF is truncate. "
+      "Units are in voxels", 10.0 ),
+    PARAM_DEFAULT(
+      voxel_spacing_factor, double,
+      "Multiplier on voxel spacing.  Set to 1.0 for voxel "
+      "sizes that project to 1 pixel on average.", 1.0 ),
+    PARAM_DEFAULT(
+      grid_spacing, array3,
+      "Relative spacing for each dimension of the grid",
+      array3( { 1., 1., 1. } ) )
+  )
 }
 
 // ----------------------------------------------------------------------------
