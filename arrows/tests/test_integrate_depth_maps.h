@@ -58,7 +58,8 @@ evaluate_volume(
   kwiver::vital::image_container_sptr volume,
   kwiver::vital::vector_3d const& min_pt,
   kwiver::vital::vector_3d const& max_pt,
-  kwiver::vital::vector_3d const& spacing )
+  kwiver::vital::vector_3d const& spacing,
+  double boundary_tolerance )
 {
   kwiver::vital::vector_3d sizes = max_pt - min_pt;
   EXPECT_NEAR( spacing[ 0 ] * volume->width(), sizes[ 0 ], spacing[ 0 ] );
@@ -92,13 +93,14 @@ evaluate_volume(
   EXPECT_GT( world_value( { 0.0, 0.0, 0.9 } ), 0.0 );
   EXPECT_GT( world_value( { -0.75, -0.75, -0.6 } ), 0.0 );
 
-  // values near the boundary should have small values
-  EXPECT_NEAR( world_value( { 0.5, 0.0, 0.0 } ), 0.0, 1.0 );
-  EXPECT_NEAR( world_value( { 0.0, 0.5, 0.0 } ), 0.0, 1.0 );
-  EXPECT_NEAR( world_value( { 0.49, 0.49, 0.0 } ), 0.0, 1.0 );
-  EXPECT_NEAR( world_value( { 0.0, 0.0, 1.0 } ), 0.0, 1.0 );
+  // values near the boundary should have small values, but this varies between
+  // mvg and cuda
+  EXPECT_NEAR( world_value( { 0.5, 0.0, 0.0 } ), 0.0, boundary_tolerance );
+  EXPECT_NEAR( world_value( { 0.0, 0.5, 0.0 } ), 0.0, boundary_tolerance );
+  EXPECT_NEAR( world_value( { 0.49, 0.49, 0.0 } ), 0.0, boundary_tolerance );
+  EXPECT_NEAR( world_value( { 0.0, 0.0, 1.0 } ), 0.0, boundary_tolerance );
 
-  // values inside the structure should have positive values
+  // values outside the structure should have negative values
   EXPECT_LT( world_value( { 0.0, 0.0, 1.1 } ), 0.0 );
   EXPECT_LT( world_value( { 0.5, 0.5, 0.6 } ), 0.0 );
   EXPECT_LT( world_value( { -0.75, -0.75, -0.4 } ), 0.0 );

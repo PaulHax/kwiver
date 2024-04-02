@@ -68,7 +68,7 @@ TEST ( integrate_depth_maps, integrate )
   timer.stop();
   std::cout << "integration time: " << timer.elapsed() << std::endl;
 
-  evaluate_volume( volume, min_pt, max_pt, spacing );
+  evaluate_volume( volume, min_pt, max_pt, spacing, 6.0 );
 }
 
 // ----------------------------------------------------------------------------
@@ -112,7 +112,7 @@ TEST ( integrate_depth_maps, integrate_weighted )
   timer.stop();
   std::cout << "integration time: " << timer.elapsed() << std::endl;
 
-  evaluate_volume( volume, min_pt, max_pt, spacing );
+  evaluate_volume( volume, min_pt, max_pt, spacing, 6.0 );
 }
 
 // ----------------------------------------------------------------------------
@@ -150,5 +150,5 @@ TEST ( integrate_depth_maps, integrate_distorted )
   timer.stop();
   std::cout << "integration time: " << timer.elapsed() << std::endl;
 
-  evaluate_volume( volume, min_pt, max_pt, spacing );
+  evaluate_volume( volume, min_pt, max_pt, spacing, 6.0 );
 }
