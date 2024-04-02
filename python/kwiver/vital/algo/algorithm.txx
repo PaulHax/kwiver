@@ -38,8 +38,8 @@ register_algorithm( py::class_< Args... >& c )
     &kwiver::vital::get_nested_algo_configuration< INTERFACE > );
   c.def_static(
     "set_nested_algo_configuration",
-    [](std::string const& name, kwiver::vital::config_block_sptr config,
-       std::shared_ptr< INTERFACE >& nested_algo){
+    [](std::string const& name, kwiver::vital::config_block_sptr config){
+      std::shared_ptr< INTERFACE > nested_algo;
       kwiver::vital::set_nested_algo_configuration< INTERFACE >(
         name, config,
         nested_algo );
