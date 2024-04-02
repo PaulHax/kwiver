@@ -35,7 +35,7 @@ public:
     PARAM_DEFAULT(
       fraction_tracks_lost_to_necessitate_new_keyframe, float,
       "If this fraction of more of features is lost then select a new keyframe",
-      0.3 ),
+      0.3f ),
     PARAM_DEFAULT(
       keyframe_min_feature_count, size_t,
       "Minimum number of features required for a frame to become a keyframe",
