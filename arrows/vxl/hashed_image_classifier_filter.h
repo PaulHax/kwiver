@@ -23,9 +23,10 @@ public:
   PLUGGABLE_IMPL(
     hashed_image_classifier_filter,
     "Perform per-pixel classification on an image of features.",
-    PARAM(
+    PARAM_DEFAULT(
       model_file, std::string,
-      "Model file from which to load weights." ),
+      "Model file from which to load weights.",
+      "" ),
     PARAM_DEFAULT(
       offset, double,
       "Value to initialize the response map with.",

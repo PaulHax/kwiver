@@ -8,13 +8,13 @@
 #include <arrows/vxl/image_io.h>
 
 #include <vital/algo/algorithm.txx>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>
 
 using namespace kwiver::vital;
-
-using kwiver::arrows::vxl::close_loops_homography_guided;
+using namespace kwiver::arrows;
 
 // ----------------------------------------------------------------------------
 int
@@ -27,20 +27,10 @@ main( int argc, char** argv )
 }
 
 // ----------------------------------------------------------------------------
-TEST ( close_loops_homography_guided, create )
-{
-  plugin_manager::instance().load_all_plugins();
-
-  EXPECT_NE(
-    nullptr,
-    create_algorithm< algo::close_loops >( "vxl_homography_guided" ) );
-}
-
-// ----------------------------------------------------------------------------
 TEST ( close_loops_homography_guided, default_config )
 {
   EXPECT_PLUGGABLE_IMPL(
-    close_loops_homography_guided,
+    vxl::close_loops_homography_guided,
     "Use VXL to estimate a sequence of ground plane homographies to identify "
     "frames to match for loop closure.",
     PARAM_DEFAULT(
@@ -57,8 +47,23 @@ TEST ( close_loops_homography_guided, default_config )
       "Everytime the percentage of tracked features drops below this "
       "threshold, we generate a new checkpoint.",
       0.7 ),
-    PARAM(
+    PARAM_DEFAULT(
       homography_filename, std::string,
-      "Optional output location for a homography text file." )
+      "Optional output location for a homography text file.",
+      "" )
   );
+}
+
+// ----------------------------------------------------------------------------
+class close_loops_homography_guided : public ::testing::Test
+{};
+
+// ----------------------------------------------------------------------------
+TEST ( close_loops_homography_guided, create )
+{
+  plugin_manager::instance().load_all_plugins();
+
+  EXPECT_NE(
+    nullptr,
+    create_algorithm< algo::close_loops >( "vxl_homography_guided" ) );
 }

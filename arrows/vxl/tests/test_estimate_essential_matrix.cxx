@@ -6,6 +6,7 @@
 #include <test_scene.h>
 
 #include <vital/algo/algorithm.txx>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <arrows/mvg/epipolar_geometry.h>

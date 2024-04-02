@@ -5,6 +5,7 @@
 #include <arrows/vxl/estimate_fundamental_matrix.h>
 
 #include <vital/algo/algorithm.txx>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>

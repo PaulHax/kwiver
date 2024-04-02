@@ -51,9 +51,10 @@ public:
       "Everytime the percentage of tracked features drops below this "
       "threshold, we generate a new checkpoint.",
       0.70 ),
-    PARAM(
+    PARAM_DEFAULT(
       homography_filename, std::string,
-      "Optional output location for a homography text file." )
+      "Optional output location for a homography text file.",
+      "" )
   );
 
   /// Destructor

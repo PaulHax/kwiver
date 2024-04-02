@@ -8,6 +8,7 @@
 #include <arrows/vxl/image_io.h>
 
 #include <vital/algo/algorithm.txx>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>
@@ -45,17 +46,7 @@ class color_commonality_filter : public ::testing::Test
 };
 
 // ----------------------------------------------------------------------------
-TEST ( color_commonality_filter, create )
-{
-  plugin_manager::instance().load_all_plugins();
-
-  EXPECT_NE(
-    nullptr,
-    create_algorithm< algo::image_filter >( "vxl_color_commonality" ) );
-}
-
-// ----------------------------------------------------------------------------
-TEST ( color_commonality_filter, default_config )
+TEST_F ( color_commonality_filter, default_config )
 {
   EXPECT_PLUGGABLE_IMPL(
     ka::vxl::color_commonality_filter,
@@ -90,6 +81,16 @@ TEST ( color_commonality_filter, default_config )
       "Divide the width of the image into x regions, if enabled.",
       6 )
   );
+}
+
+// ----------------------------------------------------------------------------
+TEST_F ( color_commonality_filter, create )
+{
+  plugin_manager::instance().load_all_plugins();
+
+  EXPECT_NE(
+    nullptr,
+    create_algorithm< algo::image_filter >( "vxl_color_commonality" ) );
 }
 
 // ----------------------------------------------------------------------------

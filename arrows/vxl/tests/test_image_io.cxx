@@ -15,6 +15,7 @@
 
 #include <kwiversys/SystemTools.hxx>
 #include <vital/algo/algorithm.txx>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 #include <vital/util/transform_image.h>
 
@@ -43,7 +44,13 @@ main( int argc, char** argv )
 }
 
 // ----------------------------------------------------------------------------
-TEST ( image_io, default_config )
+class image_io : public ::testing::Test
+{
+  TEST_ARG( data_dir );
+};
+
+// ----------------------------------------------------------------------------
+TEST_F ( image_io, default_config )
 {
   EXPECT_PLUGGABLE_IMPL(
     ka::vxl::image_io,
@@ -88,12 +95,6 @@ TEST ( image_io, default_config )
       false )
   );
 }
-
-// ----------------------------------------------------------------------------
-class image_io : public ::testing::Test
-{
-  TEST_ARG( data_dir );
-};
 
 // ----------------------------------------------------------------------------
 TEST_F ( image_io, create )

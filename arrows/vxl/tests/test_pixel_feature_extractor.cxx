@@ -9,6 +9,7 @@
 #include <arrows/vxl/pixel_feature_extractor.h>
 
 #include <vital/algo/algorithm.txx>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <vil/vil_plane.h>
@@ -40,7 +41,13 @@ main( int argc, char** argv )
 }
 
 // ----------------------------------------------------------------------------
-TEST ( pixel_feature_extractor, create )
+class pixel_feature_extractor : public ::testing::Test
+{
+  TEST_ARG( data_dir );
+};
+
+// ----------------------------------------------------------------------------
+TEST_F ( pixel_feature_extractor, create )
 {
   plugin_manager::instance().load_all_plugins();
 
@@ -50,7 +57,7 @@ TEST ( pixel_feature_extractor, create )
 }
 
 // ----------------------------------------------------------------------------
-TEST ( pixel_feature_extractor, default_config )
+TEST_F ( pixel_feature_extractor, default_config )
 {
   EXPECT_PLUGGABLE_IMPL(
     ka::vxl::pixel_feature_extractor,
@@ -96,7 +103,7 @@ TEST ( pixel_feature_extractor, default_config )
     PARAM_DEFAULT(
       variance_scale_factor, float,
       "The multiplicative value for the normalized varaince",
-      0.32 ),
+      0.32f ),
     PARAM_DEFAULT(
       grid_length, unsigned,
       "The number of grids in each directions of the spatial "
@@ -104,12 +111,6 @@ TEST ( pixel_feature_extractor, default_config )
       5 )
   );
 }
-
-// ----------------------------------------------------------------------------
-class pixel_feature_extractor : public ::testing::Test
-{
-  TEST_ARG( data_dir );
-};
 
 // ----------------------------------------------------------------------------
 TEST_F ( pixel_feature_extractor, compute_all )

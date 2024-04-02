@@ -8,6 +8,7 @@
 #include <arrows/vxl/estimate_similarity_transform.h>
 
 #include <vital/algo/algorithm.txx>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <vital/exceptions.h>

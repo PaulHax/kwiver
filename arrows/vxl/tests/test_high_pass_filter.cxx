@@ -12,6 +12,7 @@
 #include <arrows/vxl/image_io.h>
 
 #include <vital/algo/algorithm.txx>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>
@@ -45,18 +46,13 @@ main( int argc, char** argv )
 }
 
 // ----------------------------------------------------------------------------
-TEST ( high_pass_filter, create )
+class high_pass_filter : public ::testing::Test
 {
-  plugin_manager::instance().load_all_plugins();
-
-  EXPECT_NE(
-    nullptr,
-    create_algorithm< algo::image_filter >(
-      "vxl_hashed_image_classifier_filter" ) );
-}
+  TEST_ARG( data_dir );
+};
 
 // ----------------------------------------------------------------------------
-TEST ( high_pass_filter, default_config )
+TEST_F ( high_pass_filter, default_config )
 {
   EXPECT_PLUGGABLE_IMPL(
     ka::vxl::high_pass_filter,
@@ -65,7 +61,8 @@ TEST ( high_pass_filter, default_config )
       mode, std::string,
       "Operating mode of this filter, possible values: " +
       ka::vxl::high_pass_filter::mode_converter().element_name_string(),
-      "MODE_box" ),
+      ka::vxl::high_pass_filter::mode_converter().to_string(
+        ka::vxl::MODE_box ) ),
     PARAM_DEFAULT(
       kernel_width, unsigned,
       "Pixel width of smoothing kernel",
@@ -90,10 +87,15 @@ TEST ( high_pass_filter, default_config )
 }
 
 // ----------------------------------------------------------------------------
-class high_pass_filter : public ::testing::Test
+TEST_F ( high_pass_filter, create )
 {
-  TEST_ARG( data_dir );
-};
+  plugin_manager::instance().load_all_plugins();
+
+  EXPECT_NE(
+    nullptr,
+    create_algorithm< algo::image_filter >(
+      "vxl_high_pass_filter" ) );
+}
 
 // ----------------------------------------------------------------------------
 TEST_F ( high_pass_filter, color )

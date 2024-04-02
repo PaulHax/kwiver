@@ -11,6 +11,7 @@
 #include <arrows/vxl/estimate_homography.h>
 
 #include <vital/algo/algorithm.txx>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 using namespace kwiver::vital;

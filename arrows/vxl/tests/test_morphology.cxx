@@ -12,6 +12,7 @@
 #include <vil/vil_convert.h>
 
 #include <vital/algo/algorithm.txx>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>
@@ -44,45 +45,6 @@ main( int argc, char** argv )
   GET_ARG( 1, g_data_dir );
 
   return RUN_ALL_TESTS();
-}
-
-// ----------------------------------------------------------------------------
-TEST ( morphology, create )
-{
-  plugin_manager::instance().load_all_plugins();
-
-  EXPECT_NE(
-    nullptr,
-    create_algorithm< algo::image_filter >( "vxl_morphology" ) );
-}
-
-// ----------------------------------------------------------------------------
-TEST ( morphology, default_config )
-{
-  EXPECT_PLUGGABLE_IMPL(
-    kav::morphology,
-    "Apply channel-wise morphological operations and "
-    "optionally merge across channels.",
-    PARAM_DEFAULT(
-      morphology, std::string,
-      "Morphological operation to apply. Possible options are: " +
-      kav::morphology::morphology_converter().element_name_string(),
-      "MORPHOLOGY_dilate" ),
-    PARAM_DEFAULT(
-      element_shape, std::string,
-      "Shape of the structuring element. Possible options are: " +
-      kav::morphology::element_converter().element_name_string(),
-      "ELEMENT_disk" ),
-    PARAM_DEFAULT(
-      channel_combination, std::string,
-      "Method for combining multiple binary channels. Possible options are: " +
-      kav::morphology::combine_converter().element_name_string(),
-      "COMBINE_none" ),
-    PARAM_DEFAULT(
-      kernel_radius, double,
-      "Radius of morphological kernel.",
-      1.5 )
-  );
 }
 
 // ----------------------------------------------------------------------------
@@ -145,6 +107,46 @@ morphology
     equal_content(
       filtered_byte_image_ptr->get_image(),
       expected_image_ptr->get_image() ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST_F ( morphology, create )
+{
+  plugin_manager::instance().load_all_plugins();
+
+  EXPECT_NE(
+    nullptr,
+    create_algorithm< algo::image_filter >( "vxl_morphology" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST_F ( morphology, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    kav::morphology,
+    "Apply channel-wise morphological operations and "
+    "optionally merge across channels.",
+    PARAM_DEFAULT(
+      morphology, std::string,
+      "Morphological operation to apply. Possible options are: " +
+      kav::morphology::morphology_converter().element_name_string(),
+      kav::morphology::morphology_converter().to_string(
+        kav::MORPHOLOGY_dilate ) ),
+    PARAM_DEFAULT(
+      element_shape, std::string,
+      "Shape of the structuring element. Possible options are: " +
+      kav::morphology::element_converter().element_name_string(),
+      kav::morphology::element_converter().to_string( kav::ELEMENT_disk ) ),
+    PARAM_DEFAULT(
+      channel_combination, std::string,
+      "Method for combining multiple binary channels. Possible options are: " +
+      kav::morphology::combine_converter().element_name_string(),
+      kav::morphology::combine_converter().to_string( kav::COMBINE_none ) ),
+    PARAM_DEFAULT(
+      kernel_radius, double,
+      "Radius of morphological kernel.",
+      1.5 )
+  );
 }
 
 // ----------------------------------------------------------------------------
