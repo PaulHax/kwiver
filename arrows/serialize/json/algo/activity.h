@@ -2,11 +2,11 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#ifndef ARROWS_SERIALIZATION_JSON_DETECTED_OBJECT
-#define ARROWS_SERIALIZATION_JSON_DETECTED_OBJECT
+#ifndef ARROWS_SERIALIZATION_JSON_ACTIVITY
+#define ARROWS_SERIALIZATION_JSON_ACTIVITY
 
-#include "load_save.h"
 #include <arrows/serialize/json/kwiver_serialize_json_export.h>
+#include <arrows/serialize/json/load_save.h>
 #include <vital/algo/data_serializer.h>
 
 namespace cereal {
@@ -24,17 +24,19 @@ namespace serialize {
 
 namespace json {
 
-class KWIVER_SERIALIZE_JSON_EXPORT detected_object
+class KWIVER_SERIALIZE_JSON_EXPORT activity
   : public vital::algo::data_serializer
 {
 public:
+  // Type name this class supports and description
   PLUGGABLE_IMPL(
-    detected_object,
-    "Serializes a detected_object using JSON notation." );
+    activity,
+    "Serializes an activity using JSON notation. "
+    "This implementation only handles a single data item." );
 
-  std::shared_ptr< std::string > serialize(
-    const vital::any& elements ) override;
-  vital::any deserialize( const std::string& message ) override;
+  std::shared_ptr< std::string >
+  serialize( const kwiver::vital::any& element ) override;
+  kwiver::vital::any deserialize( const std::string& message ) override;
 };
 
 } // namespace json
@@ -43,6 +45,6 @@ public:
 
 } // namespace arrows
 
-}             // end namespace kwiver
+} // namespace kwiver
 
-#endif // ARROWS_SERIALIZATION_JSON_DETECTED_OBJECT
+#endif

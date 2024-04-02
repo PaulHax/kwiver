@@ -6,22 +6,22 @@ endif()
 include_directories( ${ZLIB_INCLUDE_DIRS} )
 
 set( headers_public
-  activity.h
-  activity_type.h
-  bounding_box.h
-  detected_object.h
-  detected_object_set.h
-  detected_object_type.h
-  image.h
-  metadata.h
-  metadata_map_io.h
-  object_track_set.h
-  object_track_state.h
-  string.h
-  timestamp.h
-  track.h
-  track_set.h
-  track_state.h
+  algo/activity.h
+  algo/activity_type.h
+  algo/bounding_box.h
+  algo/detected_object.h
+  algo/detected_object_set.h
+  algo/detected_object_type.h
+  algo/image.h
+  algo/metadata.h
+  algo/metadata_map_io.h
+  algo/object_track_set.h
+  algo/object_track_state.h
+  algo/string.h
+  algo/timestamp.h
+  algo/track.h
+  algo/track_set.h
+  algo/track_state.h
   )
 
 set( private_headers
@@ -33,25 +33,26 @@ set( private_headers
   )
 
 set( sources
-  activity.cxx
-  activity_type.cxx
-  bounding_box.cxx
-  detected_object.cxx
-  detected_object_set.cxx
-  detected_object_type.cxx
-  image.cxx
+  algo/activity.cxx
+  algo/activity_type.cxx
+  algo/bounding_box.cxx
+  algo/detected_object.cxx
+  algo/detected_object_set.cxx
+  algo/detected_object_type.cxx
+  algo/image.cxx
+  algo/metadata.cxx
+  algo/metadata_map_io.cxx
+  algo/object_track_set.cxx
+  algo/object_track_state.cxx
+  algo/string.cxx
+  algo/timestamp.cxx
+  algo/track.cxx
+  algo/track_set.cxx
+  algo/track_state.cxx
+
   load_save.cxx
   load_save_point.cxx
   load_save_metadata.cxx
-  metadata.cxx
-  metadata_map_io.cxx
-  object_track_set.cxx
-  object_track_state.cxx
-  string.cxx
-  timestamp.cxx
-  track.cxx
-  track_set.cxx
-  track_state.cxx
   )
 
 kwiver_install_headers(

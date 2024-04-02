@@ -2,16 +2,17 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <arrows/serialize/json/activity.h>
+#include "object_track_set.h"
+
 #include <arrows/serialize/json/load_save.h>
+#include <arrows/serialize/json/load_save_track_set.h>
+#include <arrows/serialize/json/load_save_track_state.h>
 
 #include <vital/internal/cereal/archives/json.hpp>
 #include <vital/internal/cereal/cereal.hpp>
-#include <vital/types/activity.h>
+#include <vital/types/object_track_set.h>
 
 #include <sstream>
-
-namespace kasj = kwiver::arrows::serialize::json;
 
 namespace kwiver {
 
@@ -22,46 +23,46 @@ namespace serialize {
 namespace json {
 
 std::shared_ptr< std::string >
-activity
-::serialize( const kwiver::vital::any& element )
+object_track_set
+::serialize( const vital::any& element )
 {
-  kwiver::vital::activity l_activity =
-    kwiver::vital::any_cast< kwiver::vital::activity >( element );
+  kwiver::vital::object_track_set_sptr obj_trk_set_sptr =
+    kwiver::vital::any_cast< kwiver::vital::object_track_set_sptr >( element );
 
   std::stringstream msg;
-  msg << "activity ";
+  msg << "object_track_set "; // add type tag
   {
     cereal::JSONOutputArchive ar( msg );
-    save( ar, l_activity );
+    save( ar, obj_trk_set_sptr );
   }
 
   return std::make_shared< std::string >( msg.str() );
 }
 
 // ----------------------------------------------------------------------------
-kwiver::vital::any
-activity
+vital::any
+object_track_set
 ::deserialize( const std::string& message )
 {
   std::stringstream msg( message );
-  kwiver::vital::activity l_activity;
+  auto obj_trk_set_sptr = std::make_shared< kwiver::vital::object_track_set >();
   std::string tag;
   msg >> tag;
 
-  if( tag != "activity" )
+  if( tag != "object_track_set" )
   {
     LOG_ERROR(
-      logger(),
-      "Invalid data type tag received. Expected \"activity\", received \""
-        << tag << "\". Message dropped." );
+      logger(), "Invalid data type tag received. "
+        << " Expected \"object_track_set\", received \""
+        << tag << "\". Message dropped, returning default object." );
   }
   else
   {
     cereal::JSONInputArchive ar( msg );
-    load( ar, l_activity );
+    load( ar, obj_trk_set_sptr );
   }
 
-  return kwiver::vital::any( l_activity );
+  return kwiver::vital::any( obj_trk_set_sptr );
 }
 
 } // namespace json
@@ -70,4 +71,4 @@ activity
 
 } // namespace arrows
 
-} // namespace kwiver
+}             // end namespace kwiver

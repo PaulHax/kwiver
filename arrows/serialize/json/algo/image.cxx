@@ -2,17 +2,17 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include "track_set.h"
+#include "image.h"
+#include <arrows/serialize/json/load_save.h>
 
-#include "load_save.h"
-#include "load_save_track_set.h"
-#include "load_save_track_state.h"
+#include <vital/types/image_container.h>
 
 #include <vital/internal/cereal/archives/json.hpp>
 #include <vital/internal/cereal/cereal.hpp>
-#include <vital/types/track_set.h>
 
 #include <sstream>
+
+namespace kasj = kwiver::arrows::serialize::json;
 
 namespace kwiver {
 
@@ -23,17 +23,18 @@ namespace serialize {
 namespace json {
 
 std::shared_ptr< std::string >
-track_set
+image
 ::serialize( const vital::any& element )
 {
-  kwiver::vital::track_set_sptr trk_set_sptr =
-    kwiver::vital::any_cast< kwiver::vital::track_set_sptr >( element );
+  // Get native data type from any
+  kwiver::vital::image_container_sptr obj =
+    kwiver::vital::any_cast< kwiver::vital::image_container_sptr >( element );
 
   std::stringstream msg;
-  msg << "track_set "; // add type tag
+  msg << "image ";
   {
     cereal::JSONOutputArchive ar( msg );
-    save( ar, trk_set_sptr );
+    save( ar, obj );
   }
 
   return std::make_shared< std::string >( msg.str() );
@@ -41,28 +42,29 @@ track_set
 
 // ----------------------------------------------------------------------------
 vital::any
-track_set
+image
 ::deserialize( const std::string& message )
 {
   std::stringstream msg( message );
-  auto trk_set_sptr = std::make_shared< kwiver::vital::track_set >();
+  kwiver::vital::image_container_sptr img_ctr_sptr;
+
   std::string tag;
   msg >> tag;
 
-  if( tag != "track_set" )
+  if( tag != "image" )
   {
     LOG_ERROR(
       logger(),
-      "Invalid data type tag received. Expected \"track_set\", received \""
-        << tag << "\". Message dropped, returning default object." );
+      "Invalid data type tag received. Expected \"image\", received \""
+        << tag << "\". Message dropped." );
   }
   else
   {
     cereal::JSONInputArchive ar( msg );
-    load( ar, trk_set_sptr );
+    load( ar, img_ctr_sptr );
   }
 
-  return kwiver::vital::any( trk_set_sptr );
+  return kwiver::vital::any( img_ctr_sptr );
 }
 
 } // namespace json

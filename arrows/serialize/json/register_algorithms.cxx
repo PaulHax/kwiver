@@ -9,22 +9,22 @@
 
 #include <vital/plugin_management/plugin_manager.h>
 
-#include "activity.h"
-#include "activity_type.h"
-#include "bounding_box.h"
-#include "detected_object.h"
-#include "detected_object_set.h"
-#include "detected_object_type.h"
-#include "image.h"
-#include "metadata.h"
-#include "metadata_map_io.h"
-#include "object_track_set.h"
-#include "object_track_state.h"
-#include "string.h"
-#include "timestamp.h"
-#include "track.h"
-#include "track_set.h"
-#include "track_state.h"
+#include <arrows/serialize/json/algo/activity.h>
+#include <arrows/serialize/json/algo/activity_type.h>
+#include <arrows/serialize/json/algo/bounding_box.h>
+#include <arrows/serialize/json/algo/detected_object.h>
+#include <arrows/serialize/json/algo/detected_object_set.h>
+#include <arrows/serialize/json/algo/detected_object_type.h>
+#include <arrows/serialize/json/algo/image.h>
+#include <arrows/serialize/json/algo/metadata.h>
+#include <arrows/serialize/json/algo/metadata_map_io.h>
+#include <arrows/serialize/json/algo/object_track_set.h>
+#include <arrows/serialize/json/algo/object_track_state.h>
+#include <arrows/serialize/json/algo/string.h>
+#include <arrows/serialize/json/algo/timestamp.h>
+#include <arrows/serialize/json/algo/track.h>
+#include <arrows/serialize/json/algo/track_set.h>
+#include <arrows/serialize/json/algo/track_state.h>
 
 namespace kwiver {
 

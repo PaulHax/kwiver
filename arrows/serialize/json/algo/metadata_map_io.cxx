@@ -5,8 +5,8 @@
 /// \file
 /// \brief Implementation of metadata load/save functionality.
 
-#include <arrows/serialize/json/metadata.h>
-#include <arrows/serialize/json/metadata_map_io.h>
+#include <arrows/serialize/json/algo/metadata.h>
+#include <arrows/serialize/json/algo/metadata_map_io.h>
 
 #include <vital/types/metadata_map.h>
 

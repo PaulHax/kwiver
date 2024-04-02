@@ -2,14 +2,14 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include "load_save.h"
-#include "timestamp.h"
+#include "detected_object_type.h"
+
+#include <arrows/serialize/json/load_save.h>
 
 #include <vital/internal/cereal/archives/json.hpp>
 #include <vital/internal/cereal/cereal.hpp>
-#include <vital/types/timestamp.h>
+#include <vital/types/detected_object_type.h>
 
-#include <cstdint>
 #include <sstream>
 
 namespace kwiver {
@@ -21,43 +21,46 @@ namespace serialize {
 namespace json {
 
 std::shared_ptr< std::string >
-timestamp
+detected_object_type
 ::serialize( const vital::any& element )
 {
-  kwiver::vital::timestamp tstamp =
-    kwiver::vital::any_cast< kwiver::vital::timestamp >( element );
+  kwiver::vital::detected_object_type dot =
+    kwiver::vital::any_cast< kwiver::vital::detected_object_type >( element );
+
   std::stringstream msg;
-  msg << "timestamp ";
+  msg << "detected_object_type ";
   {
     cereal::JSONOutputArchive ar( msg );
-    save( ar, tstamp );
+    save( ar, dot );
   }
+
   return std::make_shared< std::string >( msg.str() );
 }
 
 // ----------------------------------------------------------------------------
 vital::any
-timestamp
+detected_object_type
 ::deserialize( const std::string& message )
 {
   std::stringstream msg( message );
-  kwiver::vital::timestamp tstamp;
-
+  kwiver::vital::detected_object_type dot;
   std::string tag;
   msg >> tag;
-  if( tag != "timestamp" )
+
+  if( tag != "detected_object_type" )
   {
     LOG_ERROR(
-      logger(), "Invalid data type tag received. Expected \"timestamp\""
-        << ",  received \"" << tag << "\". Message dropped." );
+      logger(),
+      "Invalid data type tag received. Expected \"detected_object_type\", received \""
+        << tag << "\". Message dropped." );
   }
   else
   {
     cereal::JSONInputArchive ar( msg );
-    load( ar, tstamp );
+    load( ar, dot );
   }
 
-  return kwiver::vital::any( tstamp );
+  return kwiver::vital::any( dot );
 }
 
 } // namespace json
@@ -66,4 +69,4 @@ timestamp
 
 } // namespace arrows
 
-} // namespace kwiver
+}             // end namespace kwiver

@@ -2,12 +2,15 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <arrows/serialize/json/activity_type.h>
+#include "detected_object_set.h"
+
+#include "detected_object.h"
 #include <arrows/serialize/json/load_save.h>
+
+#include <vital/types/detected_object_set.h>
 
 #include <vital/internal/cereal/archives/json.hpp>
 #include <vital/internal/cereal/cereal.hpp>
-#include <vital/types/activity_type.h>
 
 #include <sstream>
 
@@ -22,46 +25,48 @@ namespace serialize {
 namespace json {
 
 std::shared_ptr< std::string >
-activity_type
-::serialize( const kwiver::vital::any& element )
+detected_object_set
+::serialize( const vital::any& element )
 {
-  kwiver::vital::activity_type at =
-    kwiver::vital::any_cast< kwiver::vital::activity_type >( element );
+  kwiver::vital::detected_object_set_sptr obj =
+    kwiver::vital::any_cast< kwiver::vital::detected_object_set_sptr >(
+      element );
 
   std::stringstream msg;
-  msg << "activity_type ";
+  msg << "detected_object_set ";
   {
     cereal::JSONOutputArchive ar( msg );
-    save( ar, at );
+    save( ar, *obj );
   }
-
   return std::make_shared< std::string >( msg.str() );
 }
 
 // ----------------------------------------------------------------------------
-kwiver::vital::any
-activity_type
+vital::any
+detected_object_set
 ::deserialize( const std::string& message )
 {
   std::stringstream msg( message );
-  kwiver::vital::activity_type at;
+  kwiver::vital::detected_object_set* obj =
+    new kwiver::vital::detected_object_set();
+
   std::string tag;
   msg >> tag;
 
-  if( tag != "activity_type" )
+  if( tag != "detected_object_set" )
   {
     LOG_ERROR(
       logger(),
-      "Invalid data type tag received. Expected \"activity_type\", received \""
+      "Invalid data type tag received. Expected \"detected_object_set\", received \""
         << tag << "\". Message dropped." );
   }
   else
   {
     cereal::JSONInputArchive ar( msg );
-    load( ar, at );
+    load( ar, *obj );
   }
 
-  return kwiver::vital::any( at );
+  return kwiver::vital::any( kwiver::vital::detected_object_set_sptr( obj ) );
 }
 
 } // namespace json
@@ -70,4 +75,4 @@ activity_type
 
 } // namespace arrows
 
-} // namespace kwiver
+}             // end namespace kwiver

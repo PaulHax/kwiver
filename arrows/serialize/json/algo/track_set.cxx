@@ -2,12 +2,15 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include "bounding_box.h"
-#include "load_save.h"
+#include "track_set.h"
+
+#include <arrows/serialize/json/load_save.h>
+#include <arrows/serialize/json/load_save_track_set.h>
+#include <arrows/serialize/json/load_save_track_state.h>
 
 #include <vital/internal/cereal/archives/json.hpp>
 #include <vital/internal/cereal/cereal.hpp>
-#include <vital/types/bounding_box.h>
+#include <vital/types/track_set.h>
 
 #include <sstream>
 
@@ -20,17 +23,17 @@ namespace serialize {
 namespace json {
 
 std::shared_ptr< std::string >
-bounding_box
+track_set
 ::serialize( const vital::any& element )
 {
-  kwiver::vital::bounding_box_d bbox =
-    kwiver::vital::any_cast< kwiver::vital::bounding_box_d >( element );
+  kwiver::vital::track_set_sptr trk_set_sptr =
+    kwiver::vital::any_cast< kwiver::vital::track_set_sptr >( element );
 
   std::stringstream msg;
-  msg << "bounding_box "; // add type tag
+  msg << "track_set "; // add type tag
   {
     cereal::JSONOutputArchive ar( msg );
-    save( ar, bbox );
+    save( ar, trk_set_sptr );
   }
 
   return std::make_shared< std::string >( msg.str() );
@@ -38,28 +41,28 @@ bounding_box
 
 // ----------------------------------------------------------------------------
 vital::any
-bounding_box
+track_set
 ::deserialize( const std::string& message )
 {
   std::stringstream msg( message );
-  kwiver::vital::bounding_box_d bbox{ 0, 0, 0, 0 };
+  auto trk_set_sptr = std::make_shared< kwiver::vital::track_set >();
   std::string tag;
   msg >> tag;
 
-  if( tag != "bounding_box" )
+  if( tag != "track_set" )
   {
     LOG_ERROR(
       logger(),
-      "Invalid data type tag received. Expected \"bounding_box\", received \""
+      "Invalid data type tag received. Expected \"track_set\", received \""
         << tag << "\". Message dropped, returning default object." );
   }
   else
   {
     cereal::JSONInputArchive ar( msg );
-    load( ar, bbox );
+    load( ar, trk_set_sptr );
   }
 
-  return kwiver::vital::any( bbox );
+  return kwiver::vital::any( trk_set_sptr );
 }
 
 } // namespace json

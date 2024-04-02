@@ -2,11 +2,11 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
+#include <arrows/serialize/json/algo/track.h>
 #include <arrows/serialize/json/load_save.h>
 #include <arrows/serialize/json/load_save_point.h>
 #include <arrows/serialize/json/load_save_track_set.h>
 #include <arrows/serialize/json/load_save_track_state.h>
-#include <arrows/serialize/json/track.h>
 
 #include <vital/internal/cereal/archives/json.hpp>
 #include <vital/internal/cereal/cereal.hpp>

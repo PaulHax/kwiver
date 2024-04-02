@@ -5,8 +5,8 @@
 #ifndef ARROWS_SERIALIZATION_JSON_ACTIVITY_TYPE
 #define ARROWS_SERIALIZATION_JSON_ACTIVITY_TYPE
 
-#include "load_save.h"
 #include <arrows/serialize/json/kwiver_serialize_json_export.h>
+#include <arrows/serialize/json/load_save.h>
 #include <vital/algo/data_serializer.h>
 
 namespace cereal {

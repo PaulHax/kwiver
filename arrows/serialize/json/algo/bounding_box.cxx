@@ -2,17 +2,14 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include "image.h"
-#include "load_save.h"
-
-#include <vital/types/image_container.h>
+#include "bounding_box.h"
+#include <arrows/serialize/json/load_save.h>
 
 #include <vital/internal/cereal/archives/json.hpp>
 #include <vital/internal/cereal/cereal.hpp>
+#include <vital/types/bounding_box.h>
 
 #include <sstream>
-
-namespace kasj = kwiver::arrows::serialize::json;
 
 namespace kwiver {
 
@@ -23,18 +20,17 @@ namespace serialize {
 namespace json {
 
 std::shared_ptr< std::string >
-image
+bounding_box
 ::serialize( const vital::any& element )
 {
-  // Get native data type from any
-  kwiver::vital::image_container_sptr obj =
-    kwiver::vital::any_cast< kwiver::vital::image_container_sptr >( element );
+  kwiver::vital::bounding_box_d bbox =
+    kwiver::vital::any_cast< kwiver::vital::bounding_box_d >( element );
 
   std::stringstream msg;
-  msg << "image ";
+  msg << "bounding_box "; // add type tag
   {
     cereal::JSONOutputArchive ar( msg );
-    save( ar, obj );
+    save( ar, bbox );
   }
 
   return std::make_shared< std::string >( msg.str() );
@@ -42,29 +38,28 @@ image
 
 // ----------------------------------------------------------------------------
 vital::any
-image
+bounding_box
 ::deserialize( const std::string& message )
 {
   std::stringstream msg( message );
-  kwiver::vital::image_container_sptr img_ctr_sptr;
-
+  kwiver::vital::bounding_box_d bbox{ 0, 0, 0, 0 };
   std::string tag;
   msg >> tag;
 
-  if( tag != "image" )
+  if( tag != "bounding_box" )
   {
     LOG_ERROR(
       logger(),
-      "Invalid data type tag received. Expected \"image\", received \""
-        << tag << "\". Message dropped." );
+      "Invalid data type tag received. Expected \"bounding_box\", received \""
+        << tag << "\". Message dropped, returning default object." );
   }
   else
   {
     cereal::JSONInputArchive ar( msg );
-    load( ar, img_ctr_sptr );
+    load( ar, bbox );
   }
 
-  return kwiver::vital::any( img_ctr_sptr );
+  return kwiver::vital::any( bbox );
 }
 
 } // namespace json
