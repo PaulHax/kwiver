@@ -4,6 +4,7 @@
 
 #include <arrows/core/algo/create_detection_grid.h>
 #include <arrows/core/algo/filter_features_scale.h>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>

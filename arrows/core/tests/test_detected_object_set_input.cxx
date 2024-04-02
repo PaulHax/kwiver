@@ -5,6 +5,7 @@
 #include <arrows/core/algo/detected_object_set_input_csv.h>
 #include <arrows/core/algo/detected_object_set_input_kw18.h>
 #include <arrows/core/algo/detected_object_set_input_simulator.h>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>

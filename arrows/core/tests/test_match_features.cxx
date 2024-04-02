@@ -4,6 +4,7 @@
 
 #include <arrows/core/algo/match_features_fundamental_matrix.h>
 #include <arrows/core/algo/match_features_homography.h>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>

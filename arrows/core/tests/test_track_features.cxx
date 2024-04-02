@@ -4,6 +4,7 @@
 
 #include <arrows/core/algo/track_features_augment_keyframes.h>
 #include <arrows/core/algo/track_features_core.h>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>

@@ -7,6 +7,7 @@
 #include <arrows/core/algo/close_loops_exhaustive.h>
 #include <arrows/core/algo/close_loops_keyframe.h>
 #include <arrows/core/algo/close_loops_multi_method.h>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>
@@ -103,11 +104,11 @@ TEST ( close_loops_appearance_indexed, default_config )
       skip_loop_detection_track_i_over_u_threshold, float,
       "skip loop detection if intersection over union of track ids in two "
       "frames is greater than this",
-      0.5 ),
+      0.5f ),
     PARAM_DEFAULT(
       min_loop_inlier_fraction, float,
       "Inlier fraction must be this high to accept a loop completion",
-      0.5 ),
+      0.5f ),
     PARAM(
       match_features, vital::algo::match_features_sptr,
       "match_features" ),
