@@ -8,21 +8,21 @@
 #include <arrows/serialize/protobuf/kwiver_serialize_protobuf_plugin_export.h>
 #include <vital/plugin_management/plugin_manager.h>
 
-#include "activity.h"
-#include "activity_type.h"
-#include "bounding_box.h"
-#include "detected_object.h"
-#include "detected_object_set.h"
-#include "detected_object_type.h"
-#include "image.h"
-#include "metadata.h"
-#include "object_track_set.h"
-#include "object_track_state.h"
-#include "string.h"
-#include "timestamp.h"
-#include "track.h"
-#include "track_set.h"
-#include "track_state.h"
+#include <arrows/serialize/protobuf/algo/activity.h>
+#include <arrows/serialize/protobuf/algo/activity_type.h>
+#include <arrows/serialize/protobuf/algo/bounding_box.h>
+#include <arrows/serialize/protobuf/algo/detected_object.h>
+#include <arrows/serialize/protobuf/algo/detected_object_set.h>
+#include <arrows/serialize/protobuf/algo/detected_object_type.h>
+#include <arrows/serialize/protobuf/algo/image.h>
+#include <arrows/serialize/protobuf/algo/metadata.h>
+#include <arrows/serialize/protobuf/algo/object_track_set.h>
+#include <arrows/serialize/protobuf/algo/object_track_state.h>
+#include <arrows/serialize/protobuf/algo/string.h>
+#include <arrows/serialize/protobuf/algo/timestamp.h>
+#include <arrows/serialize/protobuf/algo/track.h>
+#include <arrows/serialize/protobuf/algo/track_set.h>
+#include <arrows/serialize/protobuf/algo/track_state.h>
 
 namespace kwiver {
 

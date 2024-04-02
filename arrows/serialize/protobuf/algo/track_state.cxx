@@ -2,12 +2,12 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include "activity_type.h"
-#include "convert_protobuf.h"
+#include "track_state.h"
+#include <arrows/serialize/protobuf/convert_protobuf.h>
 
+#include "vital/types/track.h"
 #include <vital/exceptions.h>
-#include <vital/types/activity_type.h>
-#include <vital/types/protobuf/activity_type.pb.h>
+#include <vital/types/protobuf/track_state.pb.h>
 
 namespace kwiver {
 
@@ -19,7 +19,7 @@ namespace protobuf {
 
 // ----------------------------------------------------------------------------
 void
-activity_type
+track_state
 ::initialize()
 {
   // Verify that the version of the library that we linked against is
@@ -27,67 +27,66 @@ activity_type
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 }
 
-activity_type::
-~activity_type()
+track_state::~track_state()
 {}
 
-// ----------------------------------------------------------------------------
+// --------------------------------------------------------------------------
 std::shared_ptr< std::string >
-activity_type
+track_state
 ::serialize( const vital::any& element )
 {
-  kwiver::vital::activity_type at =
-    kwiver::vital::any_cast< kwiver::vital::activity_type >( element );
+  kwiver::vital::track_state trk_state =
+    kwiver::vital::any_cast< kwiver::vital::track_state >( element );
 
   std::ostringstream msg;
-  msg << "activity_type "; // add type tag
+  msg << "track_state ";   // add type tag
 
-  kwiver::protobuf::activity_type proto_at;
-  convert_protobuf( at, proto_at );
+  kwiver::protobuf::track_state proto_trk_state;
+  convert_protobuf( trk_state, proto_trk_state );
 
-  if( !proto_at.SerializeToOstream( &msg ) )
+  if( !proto_trk_state.SerializeToOstream( &msg ) )
   {
     VITAL_THROW(
       kwiver::vital::serialization_exception,
-      "Error serializing detected_type from protobuf" );
+      "Error serializing track state from protobuf" );
   }
+
   return std::make_shared< std::string >( msg.str() );
 }
 
-// ----------------------------------------------------------------------------
+// --------------------------------------------------------------------------
 vital::any
-activity_type
+track_state
 ::deserialize( const std::string& message )
 {
-  kwiver::vital::activity_type at;
   std::istringstream msg( message );
-
+  kwiver::vital::track_state trk_state( 0 );
   std::string tag;
   msg >> tag;
-  msg.get();  // Eat delimiter
+  msg.get();    // Eat delimiter
 
-  if( tag != "activity_type" )
+  if( tag != "track_state" )
   {
     LOG_ERROR(
       logger(),
-      "Invalid data type tag received. Expected \"activity_type\", received \""
+      "Invalid data type tag received. Expected \"track_state\", received \""
         << tag << "\". Message dropped." );
   }
   else
   {
     // define our protobuf
-    kwiver::protobuf::activity_type proto_at;
-    if( !proto_at.ParseFromIstream( &msg ) )
+    kwiver::protobuf::track_state proto_trk_state;
+    if( !proto_trk_state.ParseFromIstream( &msg ) )
     {
       VITAL_THROW(
         kwiver::vital::serialization_exception,
-        "Error deserializing detected_type from protobuf" );
+        "Error deserializing Track State from protobuf" );
     }
 
-    convert_protobuf( proto_at, at );
+    convert_protobuf( proto_trk_state,  trk_state );
   }
 
-  return kwiver::vital::any( at );
+  return kwiver::vital::any( trk_state );
 }
 
 } // namespace protobuf

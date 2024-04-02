@@ -11,45 +11,29 @@ if(NOT PROTOBUF_FOUND)
   message(FATAL_ERROR "-- Protobuf is required!")
 endif()
 
-set( headers_public
-  convert_protobuf.h
-  convert_protobuf_point.h
-  activity.h
-  activity_type.h
-  bounding_box.h
-  detected_object_type.h
-  detected_object.h
-  detected_object_set.h
-  metadata.h
-  timestamp.h
-  image.h
-  string.h
-  track_set.h
-  track_state.h
-  track.h
-  object_track_state.h
-  object_track_set.h
+set( plugin_serialize_protobuf_headers )
+set( plugin_serialize_protobuf_sources )
+set( plugin_serialize_protobuf_classes
+  convert_protobuf
+  convert_protobuf_point
+  algo/activity
+  algo/activity_type
+  algo/bounding_box
+  algo/detected_object_type
+  algo/detected_object
+  algo/detected_object_set
+  algo/metadata
+  algo/timestamp
+  algo/image
+  algo/string
+  algo/track_set
+  algo/track_state
+  algo/track
+  algo/object_track_state
+  algo/object_track_set
   )
 
-set( sources
-  convert_protobuf.cxx
-  convert_protobuf_point.cxx
-  activity.cxx
-  activity_type.cxx
-  bounding_box.cxx
-  detected_object_type.cxx
-  detected_object.cxx
-  detected_object_set.cxx
-  metadata.cxx
-  timestamp.cxx
-  image.cxx
-  string.cxx
-  track_set.cxx
-  track_state.cxx
-  track.cxx
-  object_track_state.cxx
-  object_track_set.cxx
-  )
+  kwiver_expand_class_list( "${plugin_serialize_protobuf_classes}" plugin_serialize_headers plugin_serialize_protobuf_sources )
 
 link_directories(${PROTOBUF_LIBRARY})
 include_directories(${PROTOBUF_INCLUDE_DIR})
@@ -61,8 +45,8 @@ include_directories(${PROTOBUF_INCLUDE_DIR})
 add_compile_options( -include "${CMAKE_BINARY_DIR}/vital/types/protobuf/vital_types_protobuf_export.h" )
 
 kwiver_add_library( kwiver_serialize_protobuf
-  ${headers_public}
-  ${sources}
+  ${plugin_serialize_protobuf_headers}
+  ${plugin_serialize_protobuf_sources}
   )
 
 target_link_libraries( kwiver_serialize_protobuf
@@ -74,7 +58,7 @@ target_link_libraries( kwiver_serialize_protobuf
 
 kwiver_install_headers(
   SUBDIR     arrows/serialization/protobuf
-  ${headers_public}
+  ${plugin_serialize_protobuf_headers}
   )
 
 kwiver_install_headers(

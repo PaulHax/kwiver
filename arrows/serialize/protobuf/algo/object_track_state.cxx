@@ -2,12 +2,12 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include "convert_protobuf.h"
-#include "track_state.h"
+#include "object_track_state.h"
+#include <arrows/serialize/protobuf/convert_protobuf.h>
 
-#include "vital/types/track.h"
+#include "vital/types/object_track_set.h"
 #include <vital/exceptions.h>
-#include <vital/types/protobuf/track_state.pb.h>
+#include <vital/types/protobuf/object_track_state.pb.h>
 
 namespace kwiver {
 
@@ -19,7 +19,7 @@ namespace protobuf {
 
 // ----------------------------------------------------------------------------
 void
-track_state
+object_track_state
 ::initialize()
 {
   // Verify that the version of the library that we linked against is
@@ -27,24 +27,24 @@ track_state
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 }
 
-track_state::~track_state()
+object_track_state::~object_track_state()
 {}
 
 // --------------------------------------------------------------------------
 std::shared_ptr< std::string >
-track_state
+object_track_state
 ::serialize( const vital::any& element )
 {
-  kwiver::vital::track_state trk_state =
-    kwiver::vital::any_cast< kwiver::vital::track_state >( element );
+  kwiver::vital::object_track_state obj_trk_state =
+    kwiver::vital::any_cast< kwiver::vital::object_track_state >( element );
 
   std::ostringstream msg;
-  msg << "track_state ";   // add type tag
+  msg << "object_track_state ";   // add type tag
 
-  kwiver::protobuf::track_state proto_trk_state;
-  convert_protobuf( trk_state, proto_trk_state );
+  kwiver::protobuf::object_track_state proto_obj_trk_state;
+  convert_protobuf( obj_trk_state, proto_obj_trk_state );
 
-  if( !proto_trk_state.SerializeToOstream( &msg ) )
+  if( !proto_obj_trk_state.SerializeToOstream( &msg ) )
   {
     VITAL_THROW(
       kwiver::vital::serialization_exception,
@@ -56,37 +56,37 @@ track_state
 
 // --------------------------------------------------------------------------
 vital::any
-track_state
+object_track_state
 ::deserialize( const std::string& message )
 {
   std::istringstream msg( message );
-  kwiver::vital::track_state trk_state( 0 );
+  kwiver::vital::object_track_state obj_trk_state;
   std::string tag;
   msg >> tag;
   msg.get();    // Eat delimiter
 
-  if( tag != "track_state" )
+  if( tag != "object_track_state" )
   {
     LOG_ERROR(
       logger(),
-      "Invalid data type tag received. Expected \"track_state\", received \""
+      "Invalid data type tag received. Expected \"object_track_state\", received \""
         << tag << "\". Message dropped." );
   }
   else
   {
     // define our protobuf
-    kwiver::protobuf::track_state proto_trk_state;
-    if( !proto_trk_state.ParseFromIstream( &msg ) )
+    kwiver::protobuf::object_track_state proto_obj_trk_state;
+    if( !proto_obj_trk_state.ParseFromIstream( &msg ) )
     {
       VITAL_THROW(
         kwiver::vital::serialization_exception,
-        "Error deserializing Track State from protobuf" );
+        "Error deserializing Object Track State from protobuf" );
     }
 
-    convert_protobuf( proto_trk_state,  trk_state );
+    convert_protobuf( proto_obj_trk_state,  obj_trk_state );
   }
 
-  return kwiver::vital::any( trk_state );
+  return kwiver::vital::any( obj_trk_state );
 }
 
 } // namespace protobuf

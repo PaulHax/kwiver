@@ -2,12 +2,11 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include "convert_protobuf.h"
-#include "image.h"
+#include "bounding_box.h"
+#include <arrows/serialize/protobuf/convert_protobuf.h>
 
-#include <vital/exceptions.h>
-#include <vital/types/image_container.h>
-#include <vital/types/protobuf/image.pb.h>
+#include <vital/types/bounding_box.h>
+#include <vital/types/protobuf/bounding_box.pb.h>
 
 namespace kwiver {
 
@@ -19,7 +18,7 @@ namespace protobuf {
 
 // ----------------------------------------------------------------------------
 void
-image
+bounding_box
 ::initialize()
 {
   // Verify that the version of the library that we linked against is
@@ -27,28 +26,27 @@ image
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 }
 
-image::~image()
+bounding_box::
+~bounding_box()
 {}
 
 // ----------------------------------------------------------------------------
 std::shared_ptr< std::string >
-image
+bounding_box
 ::serialize( const vital::any& element )
 {
-  kwiver::vital::image_container_sptr img_sptr =
-    kwiver::vital::any_cast< kwiver::vital::image_container_sptr >( element );
+  kwiver::vital::bounding_box_d bbox =
+    kwiver::vital::any_cast< kwiver::vital::bounding_box_d >( element );
 
   std::ostringstream msg;
-  msg << "image ";   // add type tag
+  msg << "bounding_box "; // add type tag
 
-  kwiver::protobuf::image proto_img;
-  convert_protobuf( img_sptr, proto_img );
+  kwiver::protobuf::bounding_box proto_bbox;
+  convert_protobuf( bbox, proto_bbox );
 
-  if( !proto_img.SerializeToOstream( &msg ) )
+  if( !proto_bbox.SerializeToOstream( &msg ) )
   {
-    VITAL_THROW(
-      kwiver::vital::serialization_exception,
-      "Error serializing detected_object_set from protobuf" );
+    LOG_ERROR( logger(), "proto_bbox.SerializeToOStream failed" );
   }
 
   return std::make_shared< std::string >( msg.str() );
@@ -56,38 +54,38 @@ image
 
 // ----------------------------------------------------------------------------
 vital::any
-image
+bounding_box
 ::deserialize( const std::string& message )
 {
-  kwiver::vital::image_container_sptr img_container_sptr;
-  std::istringstream msg( message );
+  kwiver::vital::bounding_box_d bbox{ 0, 0, 0, 0 };
 
+  std::istringstream msg( message );
   std::string tag;
   msg >> tag;
-  msg.get();    // Eat delimiter
+  msg.get();  // Eat the delimiter
 
-  if( tag != "image" )
+  if( tag != "bounding_box" )
   {
     LOG_ERROR(
       logger(),
-      "Invalid data type tag received. Expected \"image\", received \""
+      "Invalid data type tag received. Expected \"bounding_box\", received \""
         << tag << "\". Message dropped." );
   }
   else
   {
     // define our protobuf
-    kwiver::protobuf::image proto_img;
-    if( !proto_img.ParseFromIstream( &msg ) )
+    kwiver::protobuf::bounding_box proto_bbox;
+    if( !proto_bbox.ParseFromIstream( &msg ) )
     {
-      VITAL_THROW(
-        kwiver::vital::serialization_exception,
-        "Error deserializing image_container from protobuf" );
+      LOG_ERROR(
+        logger(),
+        "Incoming protobuf stream did not parse correctly. ParseFromIstream failed." );
     }
 
-    convert_protobuf( proto_img, img_container_sptr );
+    convert_protobuf( proto_bbox, bbox );
   }
 
-  return kwiver::vital::any( img_container_sptr );
+  return kwiver::vital::any( bbox );
 }
 
 } // namespace protobuf
@@ -96,4 +94,4 @@ image
 
 } // namespace arrows
 
-} // namespace kwiver
+}       // end namespace

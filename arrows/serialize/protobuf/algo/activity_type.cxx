@@ -2,12 +2,12 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include "activity.h"
-#include "convert_protobuf.h"
+#include "activity_type.h"
+#include <arrows/serialize/protobuf/convert_protobuf.h>
 
 #include <vital/exceptions.h>
-#include <vital/types/activity.h>
-#include <vital/types/protobuf/activity.pb.h>
+#include <vital/types/activity_type.h>
+#include <vital/types/protobuf/activity_type.pb.h>
 
 namespace kwiver {
 
@@ -19,7 +19,7 @@ namespace protobuf {
 
 // ----------------------------------------------------------------------------
 void
-activity
+activity_type
 ::initialize()
 {
   // Verify that the version of the library that we linked against is
@@ -27,68 +27,67 @@ activity
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 }
 
-activity::
-~activity()
+activity_type::
+~activity_type()
 {}
 
 // ----------------------------------------------------------------------------
 std::shared_ptr< std::string >
-activity
+activity_type
 ::serialize( const vital::any& element )
 {
-  kwiver::vital::activity act =
-    kwiver::vital::any_cast< kwiver::vital::activity >( element );
+  kwiver::vital::activity_type at =
+    kwiver::vital::any_cast< kwiver::vital::activity_type >( element );
 
   std::ostringstream msg;
-  msg << "activity "; // add type tag
+  msg << "activity_type "; // add type tag
 
-  kwiver::protobuf::activity proto_act;
-  convert_protobuf( act, proto_act );
+  kwiver::protobuf::activity_type proto_at;
+  convert_protobuf( at, proto_at );
 
-  if( !proto_act.SerializeToOstream( &msg ) )
+  if( !proto_at.SerializeToOstream( &msg ) )
   {
     VITAL_THROW(
       kwiver::vital::serialization_exception,
-      "Error serializing activity from protobuf" );
+      "Error serializing detected_type from protobuf" );
   }
-
   return std::make_shared< std::string >( msg.str() );
 }
 
 // ----------------------------------------------------------------------------
 vital::any
-activity
+activity_type
 ::deserialize( const std::string& message )
 {
-  kwiver::vital::activity act;
+  kwiver::vital::activity_type at;
   std::istringstream msg( message );
 
   std::string tag;
   msg >> tag;
   msg.get();  // Eat delimiter
 
-  if( tag != "activity" )
+  if( tag != "activity_type" )
   {
     LOG_ERROR(
       logger(),
-      "Invalid data type tag received. Expected \"activity\", received \""
+      "Invalid data type tag received. Expected \"activity_type\", received \""
         << tag << "\". Message dropped." );
   }
   else
   {
     // define our protobuf
-    kwiver::protobuf::activity proto_act;
-    if( !proto_act.ParseFromIstream( &msg ) )
+    kwiver::protobuf::activity_type proto_at;
+    if( !proto_at.ParseFromIstream( &msg ) )
     {
       VITAL_THROW(
         kwiver::vital::serialization_exception,
         "Error deserializing detected_type from protobuf" );
     }
 
-    convert_protobuf( proto_act, act );
+    convert_protobuf( proto_at, at );
   }
 
-  return kwiver::vital::any( act );
+  return kwiver::vital::any( at );
 }
 
 } // namespace protobuf

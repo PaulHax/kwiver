@@ -7,21 +7,21 @@
 
 #include <gtest/gtest.h>
 
-#include <arrows/serialize/protobuf/activity.h>
-#include <arrows/serialize/protobuf/activity_type.h>
-#include <arrows/serialize/protobuf/bounding_box.h>
+#include <arrows/serialize/protobuf/algo/activity.h>
+#include <arrows/serialize/protobuf/algo/activity_type.h>
+#include <arrows/serialize/protobuf/algo/bounding_box.h>
+#include <arrows/serialize/protobuf/algo/detected_object.h>
+#include <arrows/serialize/protobuf/algo/detected_object_set.h>
+#include <arrows/serialize/protobuf/algo/detected_object_type.h>
+#include <arrows/serialize/protobuf/algo/image.h>
+#include <arrows/serialize/protobuf/algo/object_track_set.h>
+#include <arrows/serialize/protobuf/algo/object_track_state.h>
+#include <arrows/serialize/protobuf/algo/string.h>
+#include <arrows/serialize/protobuf/algo/timestamp.h>
+#include <arrows/serialize/protobuf/algo/track.h>
+#include <arrows/serialize/protobuf/algo/track_set.h>
+#include <arrows/serialize/protobuf/algo/track_state.h>
 #include <arrows/serialize/protobuf/convert_protobuf.h>
-#include <arrows/serialize/protobuf/detected_object.h>
-#include <arrows/serialize/protobuf/detected_object_set.h>
-#include <arrows/serialize/protobuf/detected_object_type.h>
-#include <arrows/serialize/protobuf/image.h>
-#include <arrows/serialize/protobuf/object_track_set.h>
-#include <arrows/serialize/protobuf/object_track_state.h>
-#include <arrows/serialize/protobuf/string.h>
-#include <arrows/serialize/protobuf/timestamp.h>
-#include <arrows/serialize/protobuf/track.h>
-#include <arrows/serialize/protobuf/track_set.h>
-#include <arrows/serialize/protobuf/track_state.h>
 
 #include <vital/types/activity.h>
 #include <vital/types/activity_type.h>

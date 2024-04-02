@@ -2,8 +2,8 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include "convert_protobuf.h"
 #include "metadata.h"
+#include <arrows/serialize/protobuf/convert_protobuf.h>
 
 #include <vital/types/metadata.h>
 #include <vital/types/protobuf/metadata.pb.h>

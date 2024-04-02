@@ -3,9 +3,9 @@
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
 #include "bounding_box.h"
-#include "convert_protobuf.h"
 #include "detected_object.h"
 #include "detected_object_type.h"
+#include <arrows/serialize/protobuf/convert_protobuf.h>
 
 #include <vital/exceptions.h>
 #include <vital/types/detected_object.h>

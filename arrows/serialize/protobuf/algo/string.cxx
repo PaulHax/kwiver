@@ -4,7 +4,7 @@
 
 #include "string.h"
 
-#include "convert_protobuf.h"
+#include <arrows/serialize/protobuf/convert_protobuf.h>
 
 #include <vital/types/protobuf/string.pb.h>
 

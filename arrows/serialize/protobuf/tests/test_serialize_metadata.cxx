@@ -7,8 +7,8 @@
 
 #include <gtest/gtest.h>
 
+#include <arrows/serialize/protobuf/algo/metadata.h>
 #include <arrows/serialize/protobuf/convert_protobuf.h>
-#include <arrows/serialize/protobuf/metadata.h>
 
 #include <vital/types/geo_polygon.h>
 #include <vital/types/geodesy.h>

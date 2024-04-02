@@ -2,12 +2,13 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include "convert_protobuf.h"
-#include "track_set.h"
+#include "detected_object.h"
+#include "detected_object_set.h"
+#include <arrows/serialize/protobuf/convert_protobuf.h>
 
 #include <vital/exceptions.h>
-#include <vital/types/protobuf/track_set.pb.h>
-#include <vital/types/track_set.h>
+#include <vital/types/detected_object_set.h>
+#include <vital/types/protobuf/detected_object_set.pb.h>
 
 namespace kwiver {
 
@@ -19,7 +20,7 @@ namespace protobuf {
 
 // ----------------------------------------------------------------------------
 void
-track_set
+detected_object_set
 ::initialize()
 {
   // Verify that the version of the library that we linked against is
@@ -27,28 +28,30 @@ track_set
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 }
 
-track_set::~track_set()
+detected_object_set::
+~detected_object_set()
 {}
 
 // ----------------------------------------------------------------------------
 std::shared_ptr< std::string >
-track_set
+detected_object_set
 ::serialize( const vital::any& element )
 {
-  kwiver::vital::track_set_sptr trk_set_sptr =
-    kwiver::vital::any_cast< kwiver::vital::track_set_sptr >( element );
+  kwiver::vital::detected_object_set_sptr dos_sptr =
+    kwiver::vital::any_cast< kwiver::vital::detected_object_set_sptr >(
+      element );
 
   std::ostringstream msg;
-  msg << "track_set "; // add type tag
+  msg << "detected_object_set "; // add type tag
 
-  kwiver::protobuf::track_set proto_trk_set;
-  convert_protobuf( trk_set_sptr, proto_trk_set );
+  kwiver::protobuf::detected_object_set proto_dos;
+  convert_protobuf( *dos_sptr, proto_dos );
 
-  if( !proto_trk_set.SerializeToOstream( &msg ) )
+  if( !proto_dos.SerializeToOstream( &msg ) )
   {
     VITAL_THROW(
       kwiver::vital::serialization_exception,
-      "Error serializing track from protobuf" );
+      "Error serializing detected_object_set from protobuf" );
   }
 
   return std::make_shared< std::string >( msg.str() );
@@ -56,38 +59,38 @@ track_set
 
 // ----------------------------------------------------------------------------
 vital::any
-track_set
+detected_object_set
 ::deserialize( const std::string& message )
 {
-  auto trk_set_sptr = std::make_shared< kwiver::vital::track_set >();
+  auto dos_sptr = std::make_shared< kwiver::vital::detected_object_set >();
   std::istringstream msg( message );
 
   std::string tag;
   msg >> tag;
   msg.get();  // Eat delimiter
 
-  if( tag != "track_set" )
+  if( tag != "detected_object_set" )
   {
     LOG_ERROR(
       logger(),
-      "Invalid data type tag received. Expected \"track\", received \""
+      "Invalid data type tag received. Expected \"detected_object_set\", received \""
         << tag << "\". Message dropped." );
   }
   else
   {
     // define our protobuf
-    kwiver::protobuf::track_set proto_trk_set;
-    if( !proto_trk_set.ParseFromIstream( &msg ) )
+    kwiver::protobuf::detected_object_set proto_dos;
+    if( !proto_dos.ParseFromIstream( &msg ) )
     {
       VITAL_THROW(
         kwiver::vital::serialization_exception,
-        "Error deserializing track from protobuf" );
+        "Error deserializing detected_object_set from protobuf" );
     }
 
-    convert_protobuf( proto_trk_set, trk_set_sptr );
+    convert_protobuf( proto_dos, *dos_sptr );
   }
 
-  return kwiver::vital::any( trk_set_sptr );
+  return kwiver::vital::any( dos_sptr );
 }
 
 } // namespace protobuf
