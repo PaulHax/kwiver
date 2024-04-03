@@ -17,46 +17,33 @@ if (NOT FFMPEG_FOUND_SEVERAL)
 )
 endif()
 
-set(ffmpeg_headers_public
-  ffmpeg_audio_stream_settings.h
-  ffmpeg_cuda.h
-  ffmpeg_init.h
-  ffmpeg_util.h
-  ffmpeg_video_input.h
-  ffmpeg_video_input_clip.h
-  # XXX(ffmpeg-rewire)
-  # ffmpeg_video_input_rewire.h
-  ffmpeg_video_output.h
-  ffmpeg_video_raw_image.h
-  ffmpeg_video_raw_metadata.h
-  ffmpeg_video_settings.h
-  ffmpeg_video_uninterpreted_data.h
+set( plugin_ffmpeg_headers )
+set( plugin_ffmpeg_sources )
+set( plugin_ffmpeg_classes
+  algo/ffmpeg_video_input
+  algo/ffmpeg_video_input_clip
+  algo/ffmpeg_video_output
+
+  ffmpeg_audio_stream_settings
+  ffmpeg_cuda
+  ffmpeg_init
+  ffmpeg_util
+  ffmpeg_video_raw_image
+  ffmpeg_video_raw_metadata
+  ffmpeg_video_settings
+  ffmpeg_video_uninterpreted_data
   )
+
+kwiver_expand_class_list( "${plugin_ffmpeg_classes}" plugin_ffmpeg_headers plugin_ffmpeg_sources )
 
 kwiver_install_headers(
   SUBDIR     arrows/ffmpeg
-  ${ffmpeg_headers_public}
+  ${plugin_ffmpeg_headers}
   )
 
 kwiver_install_headers(
   ${CMAKE_CURRENT_BINARY_DIR}/kwiver_algo_ffmpeg_export.h
   NOPATH   SUBDIR     arrows/ffmpeg
-  )
-
-set(ffmpeg_sources
-  ffmpeg_audio_stream_settings.cxx
-  ffmpeg_cuda.cxx
-  ffmpeg_init.cxx
-  ffmpeg_util.cxx
-  ffmpeg_video_input.cxx
-  ffmpeg_video_input_clip.cxx
-  # XXX(ffmpeg-rewire)
-  # ffmpeg_video_input_rewire.cxx
-  ffmpeg_video_output.cxx
-  ffmpeg_video_raw_image.cxx
-  ffmpeg_video_raw_metadata.cxx
-  ffmpeg_video_settings.cxx
-  ffmpeg_video_uninterpreted_data.cxx
   )
 
 if(KWIVER_ENABLE_CUDA)
@@ -69,8 +56,8 @@ if(KWIVER_ENABLE_CUDA)
 endif()
 
 kwiver_add_library( kwiver_algo_ffmpeg
-  ${ffmpeg_headers_public}
-  ${ffmpeg_sources}
+  ${plugin_ffmpeg_headers}
+  ${plugin_ffmpeg_sources}
   )
 
 if(fletch_ENABLED_ZLib)
@@ -102,7 +89,6 @@ endif()
 algorithms_create_plugin( kwiver_algo_ffmpeg
   register_algorithms.cxx
   )
-
 
 if (KWIVER_ENABLE_TESTS)
   add_subdirectory(tests)

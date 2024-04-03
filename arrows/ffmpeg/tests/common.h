@@ -4,7 +4,7 @@
 
 #include <test_gtest.h>
 
-#include <arrows/ffmpeg/ffmpeg_video_input.h>
+#include <arrows/ffmpeg/algo/ffmpeg_video_input.h>
 #include <arrows/ffmpeg/ffmpeg_video_uninterpreted_data.h>
 
 #include <vital/range/iota.h>

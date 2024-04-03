@@ -5,12 +5,12 @@
 /// \file
 /// Implementation of FFmpeg video writer.
 
-#include "arrows/ffmpeg/ffmpeg_cuda.h"
-#include "arrows/ffmpeg/ffmpeg_init.h"
-#include "arrows/ffmpeg/ffmpeg_video_output.h"
-#include "arrows/ffmpeg/ffmpeg_video_raw_image.h"
-#include "arrows/ffmpeg/ffmpeg_video_settings.h"
-#include "arrows/ffmpeg/ffmpeg_video_uninterpreted_data.h"
+#include "arrows/ffmpeg/algo/ffmpeg_video_output.h"
+#include <arrows/ffmpeg/ffmpeg_cuda.h>
+#include <arrows/ffmpeg/ffmpeg_init.h>
+#include <arrows/ffmpeg/ffmpeg_video_raw_image.h>
+#include <arrows/ffmpeg/ffmpeg_video_settings.h>
+#include <arrows/ffmpeg/ffmpeg_video_uninterpreted_data.h>
 
 extern "C" {
 #include <libavcodec/avcodec.h>

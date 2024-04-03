@@ -5,9 +5,9 @@
 /// \file
 /// Definition of FFmpeg video clipping utility.
 
-#include <arrows/ffmpeg/ffmpeg_video_input_clip.h>
+#include <arrows/ffmpeg/algo/ffmpeg_video_input_clip.h>
 
-#include <arrows/ffmpeg/ffmpeg_video_input.h>
+#include <arrows/ffmpeg/algo/ffmpeg_video_input.h>
 #include <arrows/ffmpeg/ffmpeg_video_raw_image.h>
 #include <arrows/ffmpeg/ffmpeg_video_raw_metadata.h>
 #include <arrows/ffmpeg/ffmpeg_video_settings.h>
