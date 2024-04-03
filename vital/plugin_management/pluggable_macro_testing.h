@@ -8,6 +8,7 @@
 #include <cmath>
 #include <limits>
 #include <string>
+#include <type_traits>
 
 namespace kwiver::vital::detail {
 
@@ -48,26 +49,45 @@ is_equal( const ValueType1 a, const ValueType2 b )
   }
 }
 
+template < typename T, typename = void >
+struct is_streamable : std::false_type {};
+
+template < typename T >
+struct is_streamable< T,
+  std::void_t< decltype( std::declval< std::ostream& >() << std::declval< const T& >() ) > >: std::true_type {};
+
 } // namespace kwiver::vital::detail
 
 #define EXPECT_PARAM_DESCRIPTION( tuple ) EXPECT_PARAM_DESCRIPTION_ tuple
-#define EXPECT_PARAM_DESCRIPTION_( param, type, description, default )      \
-IF_ELSE( HAS_ARGS( default ) )                                              \
-(                                                                           \
-  {                                                                         \
-    const type& value = cfg->get_value< type >( #param );                   \
-    bool success = kwiver::vital::detail::is_equal( value, default );       \
-    if( !success )                                                          \
-    {                                                                       \
-      ADD_FAILURE() << "Param " << #param << " has wrong default value..."  \
-                                             "Expected |" << default << "|" \
-                    << ", but got |" << value << "| instead.";              \
-    }                                                                       \
-    if( cfg->get_description( #param ) != description )                     \
-    {                                                                       \
-      ADD_FAILURE() << "Wrong description for parameter " << #param;        \
-    }                                                                       \
-  },                                                                        \
+#define EXPECT_PARAM_DESCRIPTION_( param, type, description, default )                           \
+IF_ELSE( HAS_ARGS( default ) )                                                                   \
+(                                                                                                \
+  {                                                                                              \
+    const type& value = cfg->get_value< type >( #param );                                        \
+    bool success = kwiver::vital::detail::is_equal( value, default );                            \
+    if( !success )                                                                               \
+    {                                                                                            \
+      const auto& values = [ & ]{                                                                \
+                             if constexpr( kwiver::vital::detail::is_streamable< type >::value ) \
+                             {                                                                   \
+                               return std::make_pair( value, default );                          \
+                             }                                                                   \
+                             else                                                                \
+                             {                                                                   \
+                               return std::make_pair(                                            \
+  cfg->get_value< std::string >( #param ), #default );                                           \
+                             }                                                                   \
+                           }();                                                                  \
+      ADD_FAILURE() << "Param " << values.second <<                                              \
+        " has wrong default value..."                                                            \
+        "Expected " << #default <<                                                               \
+        ", but got " << values.first << " instead.";                                             \
+    }                                                                                            \
+    if( cfg->get_description( #param ) != description )                                          \
+    {                                                                                            \
+      ADD_FAILURE() << "Wrong description for parameter " << #param;                             \
+    }                                                                                            \
+  },                                                                                             \
 )
 
 // ----------------------------------------------------------------------------
