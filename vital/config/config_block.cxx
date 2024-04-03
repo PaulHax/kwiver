@@ -355,12 +355,15 @@ config_block
                                                                // evil!
     if( value_to_store.empty() )
     {
-      // value after trimming is empty. This means that it was either empty to
+      // Value after trimming is empty. This means that it was either empty to
       // begin with or it contained white space(s) which could be what the user
-      // intended. In any case use the original value to be safe.  TODO: there
-      // could be a case where one whitespace character is needed but the user
-      // entered two. We currently do not handle this
-      value_to_store = value;
+      // intended.
+
+      // Trim value input to a single white space if more than one was entered
+      if( typeid( value ) == typeid( std::string ) && value.length() >= 1 )
+      {
+        value_to_store = " ";
+      }
     }
     m_store[ key ] = value_to_store;
 
