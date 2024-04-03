@@ -36,11 +36,12 @@
         - linux-x86_64
         - kwiver
 
+# testing cuda requires cuda-capable runner
 .linux_tester_tags:
     tags:
         - docker
         - linux-x86_64
-        - build
+        - cuda-rt
         - kwiver
 
 ## Linux-specific scripts

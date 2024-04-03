@@ -28,6 +28,8 @@ configuration_flag(KWIVER_ENABLE_CERES "ceres")
 configuration_flag(KWIVER_ENABLE_CUDA "cuda")
 configuration_flag(KWIVER_ENABLE_DBOW2 "dbow2")
 configuration_flag(KWIVER_ENABLE_FFMPEG "ffmpeg")
+# disable CUDA with ffmpeg, until test failures are resolved
+set(KWIVER_ENABLE_FFMPEG_CUDA OFF CACHE BOOL "")
 configuration_flag(KWIVER_ENABLE_GDAL "gdal")
 configuration_flag(KWIVER_ENABLE_KPF "kpf")
 configuration_flag(KWIVER_ENABLE_OPENCV "opencv")
