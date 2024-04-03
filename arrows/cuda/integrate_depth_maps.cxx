@@ -33,38 +33,14 @@ namespace arrows {
 
 namespace cuda {
 
-/// Private implementation class
-class integrate_depth_maps::priv
-{
-public:
-  // Constructor
-  priv( integrate_depth_maps& parent )
-    : parent( parent ),
-      m_logger( vital::get_logger( "arrows.cuda.integrate_depth_maps" ) )
-  {}
-
-  integrate_depth_maps& parent;
-
-  double
-  ray_potential_rho() const { return parent.c_ray_potential_rho; }
-  double
-  ray_potential_thickness() { return parent.c_ray_potential_thickness; }
-  double
-  ray_potential_eta() { return parent.c_ray_potential_eta; }
-  double
-  ray_potential_epsilon() { return parent.c_ray_potential_epsilon; }
-  double
-  ray_potential_delta() { return parent.c_ray_potential_delta; }
-  double
-  voxel_spacing_factor() { return parent.c_voxel_spacing_factor; }
-  unsigned
-  max_voxels_per_launch() { return parent.c_max_voxels_per_launch; }
-
-  // Logger handle
-  vital::logger_handle_t m_logger;
-};
-
 // *****************************************************************************
+
+void
+integrate_depth_maps
+::initialize()
+{
+  attach_logger( "arrows.cuda.integrate_depth_maps" );
+}
 
 /// Check that the algorithm's currently configuration is valid
 bool

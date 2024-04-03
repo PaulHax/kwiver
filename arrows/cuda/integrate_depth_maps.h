@@ -96,10 +96,8 @@ public:
     kwiver::vital::image_container_sptr& volume,
     kwiver::vital::vector_3d& spacing ) const;
 
-private:
-  /// private implementation class
-  class priv;
-  KWIVER_UNIQUE_PTR( priv, d_ );
+protected:
+  void initialize() override;
 };
 
 }  // end namespace cuda
