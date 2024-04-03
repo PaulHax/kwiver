@@ -16,20 +16,20 @@
 #include <vital/types/track.h>
 #include <vital/types/track_set.h>
 
-#include <arrows/serialize/json/activity.h>
-#include <arrows/serialize/json/activity_type.h>
-#include <arrows/serialize/json/bounding_box.h>
-#include <arrows/serialize/json/detected_object.h>
-#include <arrows/serialize/json/detected_object_set.h>
-#include <arrows/serialize/json/detected_object_type.h>
-#include <arrows/serialize/json/image.h>
-#include <arrows/serialize/json/object_track_set.h>
-#include <arrows/serialize/json/object_track_state.h>
-#include <arrows/serialize/json/string.h>
-#include <arrows/serialize/json/timestamp.h>
-#include <arrows/serialize/json/track.h>
-#include <arrows/serialize/json/track_set.h>
-#include <arrows/serialize/json/track_state.h>
+#include <arrows/serialize/json/algo/activity.h>
+#include <arrows/serialize/json/algo/activity_type.h>
+#include <arrows/serialize/json/algo/bounding_box.h>
+#include <arrows/serialize/json/algo/detected_object.h>
+#include <arrows/serialize/json/algo/detected_object_set.h>
+#include <arrows/serialize/json/algo/detected_object_type.h>
+#include <arrows/serialize/json/algo/image.h>
+#include <arrows/serialize/json/algo/object_track_set.h>
+#include <arrows/serialize/json/algo/object_track_state.h>
+#include <arrows/serialize/json/algo/string.h>
+#include <arrows/serialize/json/algo/timestamp.h>
+#include <arrows/serialize/json/algo/track.h>
+#include <arrows/serialize/json/algo/track_set.h>
+#include <arrows/serialize/json/algo/track_state.h>
 
 #include <vital/util/string.h>
 
