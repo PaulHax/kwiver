@@ -5,7 +5,7 @@
 /// \file
 /// Test conversion of metadata maps to and from CSV.
 
-#include <arrows/core/metadata_map_io_csv.h>
+#include <arrows/core/algo/metadata_map_io_csv.h>
 
 #include <vital/types/geodesy.h>
 

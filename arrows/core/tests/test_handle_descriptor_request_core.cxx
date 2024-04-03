@@ -2,7 +2,8 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <arrows/core/handle_descriptor_request_core.h>
+#include <arrows/core/algo/handle_descriptor_request_core.h>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>
@@ -23,11 +24,24 @@ main( int argc, char** argv )
 // ----------------------------------------------------------------------------
 TEST ( handle_descriptor_request_core, create )
 {
-  using namespace kwiver::vital;
-
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE(
     nullptr,
     create_algorithm< algo::handle_descriptor_request >( "core" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( handle_descriptor_request_core, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    handle_descriptor_request_core,
+    "Formulate descriptors for later queries.",
+    PARAM(
+      image_reader, vital::algo::image_io_sptr,
+      "image_reader" ),
+    PARAM(
+      descriptor_extractor, vital::algo::compute_track_descriptors_sptr,
+      "descriptor_extractor" )
+  );
 }

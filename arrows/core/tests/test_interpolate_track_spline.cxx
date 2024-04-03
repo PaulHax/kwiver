@@ -5,7 +5,7 @@
 /// \file
 /// \brief test reading video from a list of images.
 
-#include <arrows/core/interpolate_track_spline.h>
+#include <arrows/core/algo/interpolate_track_spline.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>

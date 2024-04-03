@@ -51,23 +51,23 @@ is_equal( const ValueType1 a, const ValueType2 b )
 } // namespace kwiver::vital::detail
 
 #define EXPECT_PARAM_DESCRIPTION( tuple ) EXPECT_PARAM_DESCRIPTION_ tuple
-#define EXPECT_PARAM_DESCRIPTION_( param, type, description, default )     \
-IF_ELSE( HAS_ARGS( default ) )                                             \
-(                                                                          \
-  {                                                                        \
-    const type& value = cfg->get_value< type >( #param );                  \
-    bool success = kwiver::vital::detail::is_equal( value, default );      \
-    if( !success )                                                         \
-    {                                                                      \
-      ADD_FAILURE() << "Param " << #param << " has wrong default value..." \
-                                             "Expected " << default <<     \
-        ", but got " << value << " instead.";                              \
-    }                                                                      \
-    if( cfg->get_description( #param ) != description )                    \
-    {                                                                      \
-      ADD_FAILURE() << "Wrong description for parameter " << #param;       \
-    }                                                                      \
-  },                                                                       \
+#define EXPECT_PARAM_DESCRIPTION_( param, type, description, default )      \
+IF_ELSE( HAS_ARGS( default ) )                                              \
+(                                                                           \
+  {                                                                         \
+    const type& value = cfg->get_value< type >( #param );                   \
+    bool success = kwiver::vital::detail::is_equal( value, default );       \
+    if( !success )                                                          \
+    {                                                                       \
+      ADD_FAILURE() << "Param " << #param << " has wrong default value..."  \
+                                             "Expected |" << default << "|" \
+                    << ", but got |" << value << "| instead.";              \
+    }                                                                       \
+    if( cfg->get_description( #param ) != description )                     \
+    {                                                                       \
+      ADD_FAILURE() << "Wrong description for parameter " << #param;        \
+    }                                                                       \
+  },                                                                        \
 )
 
 // ----------------------------------------------------------------------------

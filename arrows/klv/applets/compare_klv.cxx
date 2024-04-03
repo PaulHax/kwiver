@@ -7,7 +7,7 @@
 
 #include <arrows/klv/applets/compare_klv.h>
 
-#include <arrows/core/metadata_map_io_csv.h>
+#include <arrows/core/algo/metadata_map_io_csv.h>
 #include <arrows/core/metadata_stream_from_video.h>
 #include <arrows/klv/klv_all.h>
 #include <arrows/klv/klv_key_traits.h>

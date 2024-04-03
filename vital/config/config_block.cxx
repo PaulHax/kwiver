@@ -347,8 +347,25 @@ config_block
     }
 
     config_block_value_t temp( value );
-    m_store[ key ] = string_trim( temp ); // trim value in place. Leading and
-                                          // trailing blanks are evil!
+    config_block_value_t value_to_store = string_trim( temp ); // trim value in
+                                                               // place. Leading
+                                                               // and
+                                                               // trailing
+                                                               // blanks are
+                                                               // evil!
+    if( value_to_store.empty() )
+    {
+      // Value after trimming is empty. This means that it was either empty to
+      // begin with or it contained white space(s) which could be what the user
+      // intended.
+
+      // Trim value input to a single white space if more than one was entered
+      if( typeid( value ) == typeid( std::string ) && value.length() >= 1 )
+      {
+        value_to_store = " ";
+      }
+    }
+    m_store[ key ] = value_to_store;
 
     // Only assign the description given if there is no stored description
     // for this key, or the given description is non-zero.

@@ -2,7 +2,8 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <arrows/core/convert_image_bypass.h>
+#include <arrows/core/algo/convert_image_bypass.h>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>
@@ -23,9 +24,16 @@ main( int argc, char** argv )
 // ----------------------------------------------------------------------------
 TEST ( convert_image_bypass, create )
 {
-  using namespace kwiver::vital;
-
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE( nullptr, create_algorithm< algo::convert_image >( "bypass" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( convert_image_bypass, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    convert_image_bypass,
+    "Performs no conversion and returns the given image container."
+  );
 }

@@ -7,7 +7,7 @@
 
 #include <test_gtest.h>
 
-#include <arrows/core/video_input_filter.h>
+#include <arrows/core/algo/video_input_filter.h>
 #include <arrows/tests/test_video_input.h>
 #include <vital/algo/algorithm.txx>
 #include <vital/algo/image_io.h>

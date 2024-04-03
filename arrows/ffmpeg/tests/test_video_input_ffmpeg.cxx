@@ -7,7 +7,7 @@
 
 #include <test_gtest.h>
 
-#include <arrows/core/video_input_filter.h>
+#include <arrows/core/algo/video_input_filter.h>
 #include <arrows/ffmpeg/ffmpeg_video_input.h>
 #include <arrows/tests/test_video_input.h>
 

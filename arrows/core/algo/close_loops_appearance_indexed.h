@@ -58,11 +58,11 @@ public:
       skip_loop_detection_track_i_over_u_threshold, float,
       "skip loop detection if intersection over union of track ids in two "
       "frames is greater than this",
-      0.5 ),
+      0.5f ),
     PARAM_DEFAULT(
       min_loop_inlier_fraction, float,
       "Inlier fraction must be this high to accept a loop completion",
-      0.5 ),
+      0.5f ),
     PARAM(
       match_features, vital::algo::match_features_sptr,
       "match_features" ),

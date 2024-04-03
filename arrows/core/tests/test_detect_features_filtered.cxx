@@ -2,7 +2,8 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#include <arrows/core/detect_features_filtered.h>
+#include <arrows/core/algo/detect_features_filtered.h>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>
@@ -23,9 +24,23 @@ main( int argc, char** argv )
 // ----------------------------------------------------------------------------
 TEST ( detect_features_filtered, create )
 {
-  using namespace kwiver::vital;
-
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE( nullptr, create_algorithm< algo::detect_features >( "filtered" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( detect_features_filtered, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    detect_features_filtered,
+    "Wrapper that runs a feature detector and "
+    "applies a filter to the detector output",
+    PARAM(
+      detector, vital::algo::detect_features_sptr,
+      "detector" ),
+    PARAM(
+      filter, vital::algo::filter_features_sptr,
+      "filter" )
+  );
 }

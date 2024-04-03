@@ -6,7 +6,7 @@
 
 #include <tuple>
 
-#include <arrows/core/transfer_bbox_with_depth_map.h>
+#include <arrows/core/algo/transfer_bbox_with_depth_map.h>
 
 using namespace kwiver::vital;
 

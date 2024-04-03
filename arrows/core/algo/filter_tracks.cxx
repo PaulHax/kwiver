@@ -4,7 +4,7 @@
 
 /// \file
 /// \brief Implementation of core filter_tracks algorithm
-#include <arrows/core/filter_tracks.h>
+#include <arrows/core/algo/filter_tracks.h>
 #include <arrows/core/match_matrix.h>
 
 #include <algorithm>
