@@ -25,6 +25,7 @@ set( public_headers
   interval.h
   interval_map.h
   singleton.h
+  streamable.h
   string.h
   string_editor.h
   string_encoding.h

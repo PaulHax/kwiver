@@ -381,6 +381,7 @@ set_config_helper(
       config, vs );
     n++;
   }
+  config->set_value< ValueType >( key, value, description );
 }
 
 // A helper for getting a value from a config block. This specialization is for
