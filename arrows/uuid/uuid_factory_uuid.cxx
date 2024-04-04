@@ -30,7 +30,7 @@ uuid_factory_uuid
 // ----------------------------------------------------------------------------
 bool
 uuid_factory_uuid
-::check_configuration( vital::config_block_sptr config ) const
+::check_configuration( vital::config_block_sptr VITAL_UNUSED( config ) ) const
 {
   return true;
 }
