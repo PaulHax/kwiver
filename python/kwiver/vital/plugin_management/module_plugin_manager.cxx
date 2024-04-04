@@ -53,6 +53,12 @@ PYBIND11_MODULE( _plugin_management, m )
       "currently active search path. " )
     )
     .def(
+      "add_search_path",
+      ( void ( kwiver::vital::plugin_manager::* )(
+        const kwiver::vital::path_t& ) ) & kv::plugin_manager::add_search_path,
+      py::doc( "Add a location to the search path for plugins" )
+    )
+    .def(
       "reload_all_plugins", &kv::plugin_manager::reload_all_plugins,
       py::doc( "Clears the factory list and reloads plugins." )
     )
