@@ -51,9 +51,9 @@ kwiver_install_headers(
   )
 
 kwiver_add_library( kwiver_serialize_json
-${plugin_serialize_json_headers}
-${plugin_serialize_json_sources}
-${private_headers}
+  ${plugin_serialize_json_headers}
+  ${plugin_serialize_json_sources}
+  ${private_headers}
   )
 
 target_link_libraries( kwiver_serialize_json
