@@ -6,6 +6,7 @@
 #include <test_scene.h>
 
 #include <vital/algo/algorithm.txx>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <arrows/mvg/epipolar_geometry.h>
@@ -15,6 +16,8 @@
 #include <Eigen/LU>
 
 using namespace kwiver::vital;
+
+using kwiver::arrows::vxl::estimate_essential_matrix;
 
 // ----------------------------------------------------------------------------
 int
@@ -33,6 +36,24 @@ TEST ( estimate_essential_matrix, create )
     nullptr,
     kwiver::vital::create_algorithm< kwiver::vital::algo::
       estimate_essential_matrix >( "vxl" )
+  );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( estimate_essential_matrix, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    estimate_essential_matrix,
+    "Use VXL (vpgl) to estimate an essential matrix.",
+    PARAM_DEFAULT(
+      verbose, bool,
+      "If true, write status messages to the terminal showing "
+      "debugging information",
+      false ),
+    PARAM_DEFAULT(
+      num_ransac_samples, unsigned,
+      "The number of samples to use in RANSAC",
+      512 )
   );
 }
 

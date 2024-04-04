@@ -12,6 +12,7 @@
 #include <arrows/vxl/kd_tree.h>
 
 #include <vital/algo/algorithm.txx>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 #include <vital/vital_config.h>
 
@@ -88,6 +89,15 @@ TEST ( kd_tree, create )
   EXPECT_NE(
     nullptr,
     create_algorithm< algo::nearest_neighbors >( "vxl_kd_tree" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( kd_tree, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    kd_tree,
+    "KD Tree search to find nearest points."
+  );
 }
 
 // ----------------------------------------------------------------------------

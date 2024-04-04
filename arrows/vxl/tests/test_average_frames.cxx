@@ -8,6 +8,8 @@
 #include <arrows/vxl/image_container.h>
 #include <arrows/vxl/image_io.h>
 
+#include <vital/algo/algorithm.txx>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <vil/vil_plane.h>
@@ -18,6 +20,9 @@
 
 namespace kv = kwiver::vital;
 namespace ka = kwiver::arrows;
+
+using namespace kwiver::vital;
+using namespace kwiver::arrows;
 
 kv::path_t g_data_dir;
 static std::string test_red_image_name =
@@ -115,6 +120,48 @@ test_averaging_type(
     equal_content(
       third_filtered->get_image(),
       third_expected->get_image() ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST_F ( average_frames, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    vxl::average_frames,
+    "Use VXL to average frames together.",
+    PARAM_DEFAULT(
+      type, std::string,
+      "Operating mode of this filter, possible values: " +
+      vxl::average_frames::averager_converter().element_name_string(),
+      vxl::average_frames::averager_converter().to_string(
+        vxl::AVERAGER_window ) ),
+    PARAM_DEFAULT(
+      window_size, unsigned,
+      "The window size if computing a windowed moving average.",
+      10 ),
+    PARAM_DEFAULT(
+      exp_weight, double,
+      "Exponential averaging coefficient if computing an exp average.",
+      0.3 ),
+    PARAM_DEFAULT(
+      round, bool,
+      "Should we spend a little extra time rounding when possible?",
+      false ),
+    PARAM_DEFAULT(
+      output_variance, bool,
+      "If set, will compute an estimated variance for each pixel which "
+      "will be outputted as either a double-precision or byte image.",
+      false )
+  )
+}
+
+// ----------------------------------------------------------------------------
+TEST_F ( average_frames, create )
+{
+  plugin_manager::instance().load_all_plugins();
+
+  EXPECT_NE(
+    nullptr,
+    create_algorithm< algo::image_filter >( "vxl_average" ) );
 }
 
 // ----------------------------------------------------------------------------

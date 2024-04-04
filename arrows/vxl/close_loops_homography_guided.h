@@ -51,16 +51,11 @@ public:
       "Everytime the percentage of tracked features drops below this "
       "threshold, we generate a new checkpoint.",
       0.70 ),
-    PARAM(
+    PARAM_DEFAULT(
       homography_filename, std::string,
-      "Optional output location for a homography text file." )
+      "Optional output location for a homography text file.",
+      "" )
   );
-
-  /// Default Constructor
-  close_loops_homography_guided();
-
-  /// Copy Constructor
-  close_loops_homography_guided( const close_loops_homography_guided& );
 
   /// Destructor
   virtual ~close_loops_homography_guided() = default;

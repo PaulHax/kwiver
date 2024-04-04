@@ -11,6 +11,7 @@
 #include <arrows/vxl/estimate_homography.h>
 
 #include <vital/algo/algorithm.txx>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 using namespace kwiver::vital;
@@ -42,6 +43,14 @@ TEST ( estimate_homography, create )
   plugin_manager::instance().load_all_plugins();
 
   EXPECT_NE( nullptr, create_algorithm< algo::estimate_homography >( "vxl" ) );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( estimate_homography, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    estimate_homography,
+    "Use VXL (rrel) to robustly estimate a homography from matched features." )
 }
 
 // ----------------------------------------------------------------------------

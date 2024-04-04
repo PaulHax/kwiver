@@ -11,12 +11,16 @@
 #include <arrows/vxl/image_container.h>
 #include <arrows/vxl/image_io.h>
 
+#include <vital/algo/algorithm.txx>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>
 
 namespace kv = kwiver::vital;
 namespace ka = kwiver::arrows;
+
+using namespace kv;
 
 kv::path_t g_data_dir;
 static std::string test_image_name = "images/kitware_logos/small_grey_logo.png";
@@ -46,6 +50,52 @@ class high_pass_filter : public ::testing::Test
 {
   TEST_ARG( data_dir );
 };
+
+// ----------------------------------------------------------------------------
+TEST_F ( high_pass_filter, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    ka::vxl::high_pass_filter,
+    "Use VXL to create an image based on high-frequency information.",
+    PARAM_DEFAULT(
+      mode, std::string,
+      "Operating mode of this filter, possible values: " +
+      ka::vxl::high_pass_filter::mode_converter().element_name_string(),
+      ka::vxl::high_pass_filter::mode_converter().to_string(
+        ka::vxl::MODE_box ) ),
+    PARAM_DEFAULT(
+      kernel_width, unsigned,
+      "Pixel width of smoothing kernel",
+      7 ),
+    PARAM_DEFAULT(
+      kernel_height, unsigned,
+      "Pixel height of smoothing kernel",
+      7 ),
+    PARAM_DEFAULT(
+      treat_as_interlaced, bool,
+      "Process alternating rows independently",
+      false ),
+    PARAM_DEFAULT(
+      output_net_only, bool,
+      "If set to false, the output image will contain multiple "
+      "planes, each representing the modal filter applied at "
+      "different orientations, as opposed to a single plane "
+      "image representing the sum of filters applied in all "
+      "directions.",
+      false )
+  );
+}
+
+// ----------------------------------------------------------------------------
+TEST_F ( high_pass_filter, create )
+{
+  plugin_manager::instance().load_all_plugins();
+
+  EXPECT_NE(
+    nullptr,
+    create_algorithm< algo::image_filter >(
+      "vxl_high_pass_filter" ) );
+}
 
 // ----------------------------------------------------------------------------
 TEST_F ( high_pass_filter, color )

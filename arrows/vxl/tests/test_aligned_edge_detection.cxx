@@ -10,6 +10,7 @@
 #include <arrows/vxl/image_io.h>
 
 #include <vital/algo/algorithm.txx>
+#include <vital/plugin_management/pluggable_macro_testing.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <vil/vil_plane.h>
@@ -62,6 +63,34 @@ aligned_edge_detection
   std::string test_file = data_dir + "/" + test_image;
   ka::vxl::image_io io;
   input_image = io.load( test_file );
+}
+
+// ----------------------------------------------------------------------------
+TEST_F ( aligned_edge_detection, default_config )
+{
+  EXPECT_PLUGGABLE_IMPL(
+    ka::vxl::aligned_edge_detection,
+    "Compute axis-aligned edges in an image.",
+    PARAM_DEFAULT(
+      threshold, float,
+      "Minimum edge magnitude required to report as an edge "
+      "in any output image.",
+      10.0f ),
+    PARAM_DEFAULT(
+      produce_joint_output, bool,
+      "Set to false if we do not want to spend time computing "
+      "joint edge images comprised of both horizontal and "
+      "vertical information.",
+      true ),
+    PARAM_DEFAULT(
+      smoothing_sigma, double,
+      "Smoothing sigma for the output NMS edge density map.",
+      1.3 ),
+    PARAM_DEFAULT(
+      smoothing_half_step, unsigned,
+      "Smoothing half step for the output NMS edge density map.",
+      2 )
+  );
 }
 
 // ----------------------------------------------------------------------------
