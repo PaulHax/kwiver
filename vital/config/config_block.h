@@ -766,23 +766,6 @@ config_block_set_value_cast_default( T const& value )
     {
       val_str << value;
     }
-    // We assume that one can iterate over value.
-    // If non streamable types cannot be looped over streamable types,
-    // there needs to be another section added here for those types.
-    else
-    {
-      if( !value.empty() )
-      {
-        val_str << "[";
-        for( const auto& item : value )
-        {
-          val_str << item << ", ";
-        }
-        // removing last ", "
-        val_str.seekp( -2, std::ios_base::end );
-        val_str << "]";
-      }
-    }
     if( val_str.fail() )
     {
       VITAL_THROW(

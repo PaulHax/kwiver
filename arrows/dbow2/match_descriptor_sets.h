@@ -73,9 +73,10 @@ public:
       max_num_candidate_matches_from_vocabulary_tree, int,
       "the maximum number of candidate matches to return from the vocabulary tree",
       10 ),
-    PARAM(
+    PARAM_DEFAULT(
       training_image_list_path, std::string,
-      "path to the list of vocabulary training images" ),
+      "path to the list of vocabulary training images",
+      "" ),
     PARAM_DEFAULT(
       vocabulary_path, std::string,
       "path to the vocabulary file",
