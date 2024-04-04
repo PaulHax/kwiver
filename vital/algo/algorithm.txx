@@ -327,6 +327,7 @@ set_config_helper(
   config_block_description_t() )
 {
   kwiver::vital::get_nested_algo_configuration< typename ValueType::element_type >( key, config, value );
+  config->set_value< ValueType >( key, value, description );
 }
 
 // A helper for getting a value from a config block. This specialization is for
@@ -380,6 +381,7 @@ set_config_helper(
       config, vs );
     n++;
   }
+  config->set_value< ValueType >( key, value, description );
 }
 
 // A helper for getting a value from a config block. This specialization is for
