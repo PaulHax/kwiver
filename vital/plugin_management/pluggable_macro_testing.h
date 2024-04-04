@@ -60,9 +60,9 @@ struct is_streamable< T,
 
 #define EXPECT_PARAM_DESCRIPTION( tuple ) EXPECT_PARAM_DESCRIPTION_ tuple
 #define EXPECT_PARAM_DESCRIPTION_( param, type, description, default )                           \
-IF_ELSE( HAS_ARGS( default ) )                                                                   \
-(                                                                                                \
-  {                                                                                              \
+{                                                                                                \
+  IF( HAS_ARGS( default ) )                                                                      \
+  (                                                                                              \
     const type& value = cfg->get_value< type >( #param );                                        \
     bool success = kwiver::vital::detail::is_equal( value, default );                            \
     if( !success )                                                                               \
@@ -83,12 +83,12 @@ IF_ELSE( HAS_ARGS( default ) )                                                  
         "Expected " << #default <<                                                               \
         ", but got " << values.first << " instead.";                                             \
     }                                                                                            \
-    if( cfg->get_description( #param ) != description )                                          \
-    {                                                                                            \
-      ADD_FAILURE() << "Wrong description for parameter " << #param;                             \
-    }                                                                                            \
-  },                                                                                             \
-)
+  )                                                                                              \
+  if( cfg->get_description( #param ) != description )                                            \
+  {                                                                                              \
+    ADD_FAILURE() << "Wrong description for parameter " << #param;                               \
+  }                                                                                              \
+}                                                                                                \
 
 // ----------------------------------------------------------------------------
 // Test utility that allows to test a configuration by copy / pasting
