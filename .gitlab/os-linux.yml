@@ -61,6 +61,7 @@
 .before_script_linux_wheel_venv: &before_script_linux_wheel_venv
     - "$PYTHON_PREFIX/bin/python -m venv build/ci-venv"
     - . build/ci-venv/bin/activate
+    - pip install -U pip
     - pip install -r ./python/requirements_dev.txt
     - pip install scikit-build auditwheel
 
@@ -93,7 +94,7 @@
         - sccache --show-stats
         - "python setup.py bdist_wheel -- -C $GIT_CLONE_PATH/.gitlab/ci/configure_wheel.cmake > $GIT_CLONE_PATH/skbuild_output.log"
         - "LD_LIBRARY_PATH=/opt/fletch/lib/ auditwheel show dist/*.whl > $GIT_CLONE_PATH/wheel_output.log"
-        - "LD_LIBRARY_PATH=/opt/fletch/lib/ auditwheel repair $WHEEL_EXCLUSIONS dist/*.whl >> $GIT_CLONE_PATH/wheel_output.log"
+        - "LD_LIBRARY_PATH=/opt/fletch/lib/ auditwheel repair dist/*.whl >> $GIT_CLONE_PATH/wheel_output.log"
         - mv -v dist/ dist-orig/
         - mv -v wheelhouse/ dist/
         - sccache --show-stats
@@ -108,5 +109,18 @@
         - . build/ci-venv/bin/activate
         - . build/setup_KWIVER.sh
         - ctest -V --output-on-failure -S .gitlab/ci/ctest_test.cmake
+
+    interruptible: true
+
+.cmake_test_wheel_linux:
+    stage: test
+
+    script:
+        # install the wheel in a clean venv
+        - "$PYTHON_PREFIX/bin/python -m venv build/ci-test-venv"
+        - . build/ci-test-venv/bin/activate
+        - pip install -U pip
+        - pip install dist/*.whl
+        - pytest .
 
     interruptible: true
