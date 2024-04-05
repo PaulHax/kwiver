@@ -10,6 +10,7 @@
 #include "klv_all.h"
 #include "klv_metadata.h"
 #include "klv_muxer.h"
+#include "klv_read_write.h"
 
 #include <vital/range/iota.h>
 #include <vital/types/geodesy.h>
@@ -31,14 +32,16 @@ namespace {
 
 // ----------------------------------------------------------------------------
 using kld = klv_lengthy< double >;
+using kli = klv_lengthy< klv_imap >;
+
 
 struct klv_to_vital_visitor
 {
   template < class T,
-    typename std::enable_if< std::is_same< T, uint64_t >::value ||
-      std::is_same< T, double >::value ||
-      std::is_same< T, std::string >::value,
-      bool >::type = true >
+    std::enable_if_t< std::is_same_v< T, uint64_t > ||
+      std::is_same_v< T, double > ||
+      std::is_same_v< T, std::string >,
+      bool > = true >
   kv::metadata_value
   operator()() const
   {
@@ -46,12 +49,19 @@ struct klv_to_vital_visitor
   }
 
   template < class T,
-    typename std::enable_if< std::is_same< T, kld >::value,
-      bool >::type = true >
+    std::enable_if_t< std::is_same_v< T, kld >, bool > = true >
   kv::metadata_value
   operator()() const
   {
     return value.get< T >().value;
+  }
+
+  template < class T,
+    std::enable_if_t< std::is_same_v< T, kli >, bool > = true >
+  kv::metadata_value
+  operator()() const
+  {
+    return value.get< T >().value.as_double();
   }
 
   klv_value const& value;
@@ -67,6 +77,7 @@ klv_to_vital_value( klv_value const& value )
     uint64_t,
     double,
     kld,
+    kli,
     std::string >( { value }, value.type() );
 }
 
@@ -79,12 +90,13 @@ assemble_geo_point(
   klv_value const& elevation )
 {
   constexpr auto qnan = std::numeric_limits< double >::quiet_NaN();
+  auto const converter = klv_to_vital_value;
   return {
     kv::vector_3d{
-      longitude.valid() ? longitude.get< kld >().value : qnan,
-      latitude.valid() ? latitude.get< kld >().value : qnan,
-      elevation.valid() ? elevation.get< kld >().value : qnan, },
-    kv::SRID::lat_lon_WGS84 };
+      longitude.valid() ? std::get< double >( converter( longitude ) ) : qnan,
+      latitude.valid() ? std::get< double >( converter( latitude ) ) : qnan,
+      elevation.valid() ? std::get< double >( converter( elevation ) ) : qnan,
+    }, kv::SRID::lat_lon_WGS84 };
 }
 
 // ----------------------------------------------------------------------------
@@ -114,6 +126,7 @@ parse_geo_point(
     return std::nullopt;
   }
 
+
   klv_value longitude;
   for( auto const tag : longitude_tags )
   {
@@ -127,6 +140,7 @@ parse_geo_point(
   {
     return std::nullopt;
   }
+
 
   klv_value elevation;
   for( auto const tag : elevation_tags )
@@ -266,6 +280,7 @@ klv_0104_to_vital_metadata(
     klv_data, timestamp, vital_data,
     KLV_0104_EVENT_START_DATETIME, kv::VITAL_META_EVENT_START_TIMESTAMP );
 
+
   // Sensor location
   auto const sensor_location =
     parse_geo_point(
@@ -278,6 +293,7 @@ klv_0104_to_vital_metadata(
     vital_data.add< kv::VITAL_META_SENSOR_LOCATION >( *sensor_location );
   }
 
+
   // Frame center location
   auto const frame_center_location =
     parse_geo_point(
@@ -289,6 +305,7 @@ klv_0104_to_vital_metadata(
   {
     vital_data.add< kv::VITAL_META_FRAME_CENTER >( *frame_center_location );
   }
+
 
   // Image frame corner point locations
   std::vector< std::optional< kv::geo_point > > corner_points = {
@@ -326,6 +343,7 @@ klv_0104_to_vital_metadata(
       points.emplace_back(
         corner_points[ i ]->location( kv::SRID::lat_lon_WGS84 ).head< 2 >() );
     }
+
 
     auto const polygon = kv::geo_polygon{ points, kv::SRID::lat_lon_WGS84 };
     vital_data.add< kv::VITAL_META_CORNER_POINTS >( polygon );
@@ -437,6 +455,7 @@ klv_0601_to_vital_metadata(
     }
   }
 
+
   // Convert enum to integer
   auto const sensor_fov_name =
     klv_data.at( standard, KLV_0601_SENSOR_FOV_NAME, timestamp );
@@ -444,11 +463,13 @@ klv_0601_to_vital_metadata(
   {
     using value_t = kv::type_of_tag< kv::VITAL_META_SENSOR_FOV_NAME >;
 
+
     auto const value =
       static_cast< value_t >(
         sensor_fov_name.get< klv_0601_sensor_fov_name >() );
     vital_data.add< kv::VITAL_META_SENSOR_FOV_NAME >( value );
   }
+
 
   // If more than these two enum -> int conversions become necessary, consider
   // creating a template function to avoid copy-paste
@@ -467,6 +488,7 @@ klv_0601_to_vital_metadata(
     vital_data.add< kv::VITAL_META_SENSOR_LOCATION >( *sensor_location );
   }
 
+
   // Frame center location
   auto const frame_center_location =
     parse_geo_point(
@@ -480,6 +502,7 @@ klv_0601_to_vital_metadata(
     vital_data.add< kv::VITAL_META_FRAME_CENTER >( *frame_center_location );
   }
 
+
   // Target location
   auto const target_location =
     parse_geo_point(
@@ -491,6 +514,7 @@ klv_0601_to_vital_metadata(
   {
     vital_data.add< kv::VITAL_META_TARGET_LOCATION >( *target_location );
   }
+
 
   // Image frame corner point locations
   std::vector< std::optional< kv::geo_point > > corner_points = {
@@ -570,6 +594,7 @@ klv_0601_to_vital_metadata(
         corner_points[ i ]->location( kv::SRID::lat_lon_WGS84 ).head< 2 >() );
     }
 
+
     auto const polygon = kv::geo_polygon{ points, kv::SRID::lat_lon_WGS84 };
     vital_data.add< kv::VITAL_META_CORNER_POINTS >( polygon );
   }
@@ -600,12 +625,14 @@ klv_1108_to_vital_metadata(
         continue;
       }
 
+
       auto const& metric_set = metric_set_entry.get< klv_local_set >();
       auto const name_entry = metric_set.at( KLV_1108_METRIC_SET_NAME );
       if( !name_entry.valid() )
       {
         continue;
       }
+
 
       auto const& name = name_entry.get< std::string >();
       if( name != metric.first )

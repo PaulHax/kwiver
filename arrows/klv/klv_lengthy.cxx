@@ -7,6 +7,7 @@
 
 #include "klv_lengthy.h"
 
+#include <arrows/klv/klv_imap.h>
 #include <arrows/klv/klv_util.h>
 
 #include <optional>
@@ -77,6 +78,7 @@ template bool operator!=( klv_lengthy< T > const&, klv_lengthy< T > const& )
 
 KLV_INSTANTIATE( double );
 KLV_INSTANTIATE( std::optional< double > );
+KLV_INSTANTIATE( klv_imap );
 
 } // namespace klv
 
