@@ -327,6 +327,11 @@ set_config_helper(
   config_block_description_t() )
 {
   kwiver::vital::get_nested_algo_configuration< typename ValueType::element_type >( key, config, value );
+  // We only set a value to assign a description to the key.
+  // The value will never be read from the config itself,
+  // as this type has a custom specialized accessor
+  // that returns a new instance each time.
+  config->set_value< ValueType >( key, value, description );
 }
 
 // A helper for getting a value from a config block. This specialization is for
@@ -380,6 +385,11 @@ set_config_helper(
       config, vs );
     n++;
   }
+  // We only set a value to assign a description to the key.
+  // The value will never be read from the config itself,
+  // as this type has a custom specialized accessor
+  // that returns a new instance each time.
+  config->set_value< ValueType >( key, value, description );
 }
 
 // A helper for getting a value from a config block. This specialization is for

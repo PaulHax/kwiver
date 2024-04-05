@@ -12,6 +12,7 @@
 #include <vital/config/vital_config_export.h>
 #include <vital/noncopyable.h>
 #include <vital/util/source_location.h>
+#include <vital/util/streamable.h>
 #include <vital/util/tokenize.h>
 
 #include "config_block_exception.h"
@@ -761,14 +762,16 @@ config_block_set_value_cast_default( T const& value )
 
   try
   {
-    val_str << value;
+    if constexpr( kwiver::vital::streamable::is_streamable< T >::value )
+    {
+      val_str << value;
+    }
     if( val_str.fail() )
     {
       VITAL_THROW(
         bad_config_block_cast,
         "failed to convert value to string representation" );
     }
-
     return val_str.str();
   }
   catch( std::exception& e )

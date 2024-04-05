@@ -33,6 +33,11 @@ set_config_helper(
   {
     value->get_configuration( config );
   }
+  // We only set a value to assign a description to the key.
+  // The value will never be read from the config itself,
+  // as this type has a custom specialized accessor
+  // that returns a new instance each time.
+  config->set_value< ValueType >( key, value, description );
 }
 
 /// A helper for retrieving a value from a config block. This specialization is
