@@ -49,6 +49,10 @@ Arrows: FFmpeg
 
 * Fixed bugs causing invalid output when transcoding between .mp4 and .ts files.
 
+* Made the MPEG-TS stream id take precedence when determining KLV stream synchronicity.
+
+* Added video_input_ffmpeg_rewire.
+
 Arrows: KLV
 
 * Ensured that NaN comparisons happen consistently across all data structures.
@@ -66,3 +70,14 @@ Arrows: KLV
 * Modified flint, IMAP, and integer behavior to print a warning when writing
   values with incorrect lengths instead of correcting the length and possibly
   losing data.
+
+* Ensured integer wrapper data formats (enum, enum bitfield) use the same
+  lenient length logic as integers to prevent crashes when writing invalid data.
+
+* Added has_nanoseconds to misp_timestamp.
+
+* Added frame_timestamp() to klv_metadata.
+
+* Added tag 143 (Metadata Substream ID) to ST0601.
+
+* Implement remaining obscure IMAP features.

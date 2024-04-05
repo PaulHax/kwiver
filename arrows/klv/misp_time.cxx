@@ -19,21 +19,24 @@ namespace klv {
 misp_timestamp
 ::misp_timestamp()
   : m_timestamp{ 0 },
-    m_status{ default_status }
+    m_status{ default_status },
+    m_has_nanoseconds{ false }
 {}
 
 // ----------------------------------------------------------------------------
 misp_timestamp
 ::misp_timestamp( std::chrono::microseconds timestamp, uint8_t status )
   : m_timestamp{ timestamp },
-    m_status{ status }
+    m_status{ status },
+    m_has_nanoseconds{ false }
 {}
 
 // ----------------------------------------------------------------------------
 misp_timestamp
 ::misp_timestamp( std::chrono::nanoseconds timestamp, uint8_t status )
   : m_timestamp{ timestamp },
-    m_status{ status }
+    m_status{ status },
+    m_has_nanoseconds{ true }
 {}
 
 // ----------------------------------------------------------------------------
@@ -50,6 +53,7 @@ misp_timestamp
 ::set_microseconds( std::chrono::microseconds microseconds )
 {
   m_timestamp = std::chrono::nanoseconds{ microseconds };
+  m_has_nanoseconds = false;
 }
 
 // ----------------------------------------------------------------------------
@@ -66,6 +70,7 @@ misp_timestamp
 ::set_nanoseconds( std::chrono::nanoseconds nanoseconds )
 {
   m_timestamp = nanoseconds;
+  m_has_nanoseconds = true;
 }
 
 // ----------------------------------------------------------------------------
@@ -82,6 +87,14 @@ misp_timestamp
 ::set_status( uint8_t status )
 {
   m_status = status;
+}
+
+// ----------------------------------------------------------------------------
+bool
+misp_timestamp
+::has_nanoseconds() const
+{
+  return m_has_nanoseconds;
 }
 
 // ----------------------------------------------------------------------------

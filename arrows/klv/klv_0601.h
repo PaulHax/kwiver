@@ -12,6 +12,7 @@
 
 #include "klv_0102.h"
 #include "klv_checksum.h"
+#include "klv_imap.h"
 #include "klv_list.h"
 #include "klv_packet.h"
 #include "klv_series.h"
@@ -174,6 +175,7 @@ enum klv_0601_tag : klv_lds_key
   KLV_0601_WEAPONS_STORES                      = 140,
   KLV_0601_WAYPOINT_LIST                       = 141,
   KLV_0601_VIEW_DOMAIN                         = 142,
+  KLV_0601_METADATA_SUBSTREAM_ID               = 143,
   KLV_0601_ENUM_END,
 };
 
@@ -572,9 +574,9 @@ private:
 /// Geographic location.
 struct klv_0601_location_dlp
 {
-  double latitude;
-  double longitude;
-  std::optional< double > altitude;
+  klv_imap latitude;
+  klv_imap longitude;
+  std::optional< klv_imap > altitude;
 };
 
 // ----------------------------------------------------------------------------
@@ -651,8 +653,8 @@ private:
 // ----------------------------------------------------------------------------
 struct klv_0601_view_domain_interval
 {
-  double start;
-  double range;
+  klv_imap start;
+  klv_imap range;
   size_t semi_length;
 };
 
@@ -998,8 +1000,8 @@ using klv_0601_active_payloads_format = klv_enum_bitfield_format< uint16_t >;
 struct klv_0601_wavelength_record
 {
   uint16_t id;
-  double min;
-  double max;
+  klv_imap min;
+  klv_imap max;
   std::string name;
 };
 
@@ -1043,6 +1045,46 @@ using klv_0601_wavelengths_list_format =
 /// Interprets data as a list of active ST0601 wavelengths.
 using klv_0601_active_wavelength_list_format =
   klv_list_format< klv_ber_oid_format >;
+
+// ----------------------------------------------------------------------------
+/// A metadata substream id.
+struct klv_0601_msid
+{
+  uint32_t local_id;
+  klv_uuid universal_id;
+};
+
+// ----------------------------------------------------------------------------
+KWIVER_ALGO_KLV_EXPORT
+std::ostream&
+operator<<( std::ostream& os, klv_0601_msid const& value );
+
+// ----------------------------------------------------------------------------
+DECLARE_CMP( klv_0601_msid )
+
+// ----------------------------------------------------------------------------
+/// Interprets data as a metadata substream id.
+class KWIVER_ALGO_KLV_EXPORT klv_0601_msid_format
+  : public klv_data_format_< klv_0601_msid >
+{
+public:
+  klv_0601_msid_format();
+
+  std::string
+  description_() const override;
+
+private:
+  klv_0601_msid
+  read_typed( klv_read_iter_t& data, size_t length ) const override;
+
+  void
+  write_typed(
+    klv_0601_msid const& value,
+    klv_write_iter_t& data, size_t length ) const override;
+
+  size_t
+  length_of_typed( klv_0601_msid const& value ) const override;
+};
 
 // ----------------------------------------------------------------------------
 /// Interprets data as a MISB ST0601 local set.

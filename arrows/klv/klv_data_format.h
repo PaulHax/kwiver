@@ -495,8 +495,8 @@ protected:
   size_t
   length_of_typed( data_type const& value ) const override
   {
-    return this->m_length_constraints.fixed_or(
-      klv_int_length( static_cast< uint64_t >( value ) ) );
+    auto const int_length = klv_int_length( static_cast< uint64_t >( value ) );
+    return std::max( this->m_length_constraints.fixed_or( 1 ), int_length );
   }
 
   size_t m_length;
@@ -669,42 +669,6 @@ protected:
 };
 
 // ----------------------------------------------------------------------------
-/// Interprets data as a floating point value encoded in IMAP format.
-class KWIVER_ALGO_KLV_EXPORT klv_imap_format
-  : public klv_data_format_< klv_lengthy< double > >
-{
-public:
-  klv_imap_format(
-    vital::interval< double > const& interval,
-    klv_length_constraints const& length_constraints = {} );
-
-  std::string
-  description_() const override;
-
-  vital::interval< double >
-  interval() const;
-
-protected:
-  klv_lengthy< double >
-  read_typed( klv_read_iter_t& data, size_t length ) const override;
-
-  void
-  write_typed(
-    klv_lengthy< double > const& value,
-    klv_write_iter_t& data, size_t length ) const override;
-
-  size_t
-  length_of_typed( klv_lengthy< double > const& value ) const override;
-
-  std::ostream&
-  print_typed(
-    std::ostream& os,
-    klv_lengthy< double > const& value ) const override;
-
-  vital::interval< double > m_interval;
-};
-
-// ----------------------------------------------------------------------------
 template < class Format >
 class KWIVER_ALGO_KLV_EXPORT klv_lengthless_format
   : public klv_data_format_< typename Format::data_type::value_type >
@@ -762,7 +726,6 @@ protected:
   Format m_format;
 };
 using klv_lengthless_float_format = klv_lengthless_format< klv_float_format >;
-using klv_lengthless_imap_format = klv_lengthless_format< klv_imap_format >;
 
 // ----------------------------------------------------------------------------
 template < class Enum, class Int >
@@ -835,8 +798,8 @@ protected:
   size_t
   length_of_typed( std::set< Enum > const& value ) const
   {
-    return this->m_length_constraints.fixed_or(
-      m_format.length_of_( enums_to_bitfield( value ) ) );
+    auto const int_length = m_format.length_of_( enums_to_bitfield( value ) );
+    return std::max( this->m_length_constraints.fixed_or( 1 ), int_length );
   }
 
   Format m_format;

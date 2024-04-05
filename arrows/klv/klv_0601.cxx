@@ -1076,7 +1076,14 @@ klv_0601_traits_lookup()
       "View Domain",
       "Specifies range of possible sensor relative azimuth, elevation, and "
       "roll values.",
-      { 0, 1 } }, };
+      { 0, 1 } },
+    { {},
+      ENUM_AND_NAME( KLV_0601_METADATA_SUBSTREAM_ID ),
+      std::make_shared< klv_0601_msid_format >(),
+      "Metadata Substream ID",
+      "Identifier for substream containing metadata operations. For use only "
+      "in segment (Item 100) and amend (Item 101) sets.",
+      { 0, 1 } } };
 
   return lookup;
 }
@@ -1774,9 +1781,7 @@ operator<<( std::ostream& os, klv_0601_location_dlp const& value )
        << value.longitude
        << ", "
        << "altitude: "
-       << ( value.altitude
-         ? std::to_string( *value.altitude )
-         : std::string( "(empty)" ) )
+       << value.altitude
        << " }";
 }
 
@@ -1949,23 +1954,21 @@ klv_0601_airbase_locations_format
   klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
+  klv_0601_location_dlp_format const location_format;
 
   // Write take-off location
   if( value.take_off_location )
   {
     // Take-off location is set
-    size_t const length_of_take_off_location =
-      klv_0601_location_dlp_format{}.length_of_( *value.take_off_location );
+    auto const length_of_take_off_location =
+      location_format.length_of_( *value.take_off_location );
 
-    if( length_of_take_off_location <= tracker.remaining() )
-    {
-      klv_write_ber( length_of_take_off_location, data, tracker.remaining() );
+    klv_write_ber( length_of_take_off_location, data, tracker.remaining() );
 
-      klv_0601_location_dlp_format{}
-        .write_(
-        *value.take_off_location, data,
-        tracker.verify( length_of_take_off_location ) );
-    }
+    location_format
+      .write_(
+      *value.take_off_location, data,
+      tracker.verify( length_of_take_off_location ) );
   }
   else
   {
@@ -1974,7 +1977,7 @@ klv_0601_airbase_locations_format
   }
 
   // Write recovery location
-  if( !tracker.remaining() )
+  if( value.recovery_location == value.take_off_location )
   {
     // Recovery location is not included
     return;
@@ -1982,25 +1985,15 @@ klv_0601_airbase_locations_format
 
   if( value.recovery_location )
   {
-    // Recovery location is set
-    if( value.recovery_location == value.take_off_location )
-    {
-      // Locations are the same, truncate the recovery location
-      return;
-    }
+    auto const length_of_recovery_location =
+      location_format.length_of_( *value.recovery_location );
 
-    size_t const length_of_recovery_location =
-      klv_0601_location_dlp_format{}.length_of_( *value.recovery_location );
+    klv_write_ber( length_of_recovery_location, data, tracker.remaining() );
 
-    if( length_of_recovery_location <= tracker.remaining() )
-    {
-      klv_write_ber( length_of_recovery_location, data, tracker.remaining() );
-
-      klv_0601_location_dlp_format{}
-        .write_(
-        *value.recovery_location, data,
-        tracker.verify( length_of_recovery_location ) );
-    }
+    location_format
+      .write_(
+      *value.recovery_location, data,
+      tracker.verify( length_of_recovery_location ) );
   }
   else
   {
@@ -2846,6 +2839,79 @@ klv_0601_wavelength_record_format
   size_t const length_of_wavelength_name = klv_string_length( item.name );
 
   return ( length_of_wavelength_id + 8 + length_of_wavelength_name );
+}
+
+// ----------------------------------------------------------------------------
+std::ostream&
+operator<<( std::ostream& os, klv_0601_msid const& value )
+{
+  os << value.local_id;
+  if( !value.local_id )
+  {
+    os << ":" << value.universal_id;
+  }
+  return os;
+}
+
+// ----------------------------------------------------------------------------
+DEFINE_STRUCT_CMP(
+  klv_0601_msid,
+  &klv_0601_msid::local_id,
+  &klv_0601_msid::universal_id
+)
+
+// ----------------------------------------------------------------------------
+klv_0601_msid_format
+::klv_0601_msid_format()
+{}
+
+// ----------------------------------------------------------------------------
+std::string
+klv_0601_msid_format
+::description_() const
+{
+  return "ST0601 Metadata Substream ID Pack";
+}
+
+// ----------------------------------------------------------------------------
+klv_0601_msid
+klv_0601_msid_format
+::read_typed( klv_read_iter_t& data, size_t length ) const
+{
+  auto const tracker = track_it( data, length );
+
+  klv_0601_msid result;
+  result.local_id = klv_read_ber_oid< uint32_t >( data, tracker.remaining() );
+  if( !result.local_id )
+  {
+    result.universal_id = klv_uuid_format().read_( data, tracker.remaining() );
+  }
+  return result;
+}
+
+// ----------------------------------------------------------------------------
+void
+klv_0601_msid_format
+::write_typed(
+  klv_0601_msid const& value, klv_write_iter_t& data, size_t length ) const
+{
+  auto const tracker = track_it( data, length );
+
+  klv_write_ber_oid( value.local_id, data, tracker.remaining() );
+  if( !value.local_id )
+  {
+    klv_uuid_format().write_( value.universal_id, data, tracker.remaining() );
+  }
+}
+
+// ----------------------------------------------------------------------------
+size_t
+klv_0601_msid_format
+::length_of_typed( klv_0601_msid const& value ) const
+{
+  return
+    klv_ber_oid_length( value.local_id ) +
+    ( value.local_id ? 0 : klv_uuid_format().length_of_( value.universal_id ) );
 }
 
 // ----------------------------------------------------------------------------
