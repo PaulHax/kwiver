@@ -1,2 +1,14 @@
 [build-system]
 requires = ["setuptools", "wheel", "scikit-build", "cmake", "ninja"]
+[tool.pytest.ini_options]
+addopts = [
+    "--import-mode=importlib",
+# Add to get all the output of the tests
+#   "-s",
+]
+minversion = "6.0"
+testpaths = [
+    "python/kwiver/vital/tests",
+    "tools/demo_python_impl_call.py",
+    "python/kwiver/tools/tests",
+]
