@@ -63,6 +63,6 @@ foreach (modname IN LISTS test_algorithms)
     ${modname})
 endforeach()
 
-# Generate an __init__.py that imports all test_algorithms so we can simplify
-# the plugin path to just "kwiver.vital.tests.alg"
-kwiver_create_python_init(vital/tests/alg ${__test_algorithms})
+kwiver_add_python_module( ${CMAKE_CURRENT_SOURCE_DIR}/__init__.py
+  vital/tests/alg
+  __init__ )
