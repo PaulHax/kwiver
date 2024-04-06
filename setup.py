@@ -65,7 +65,10 @@ setup(
         "kwiver.python_plugins": [
             "say=kwiver.vital.test_interface.python_say",
             "they_say=kwiver.vital.test_interface.python_they_say",
-        ]
+        ],
+        "console_scripts": [
+            "dump_klv=kwiver.tools.dump_klv:run",
+        ],
         # 'kwiver.python_plugin_registration': [
         #     'pythread_process=kwiver.sprokit.schedulers.pythread_per_process',
         #     'apply_descriptor=kwiver.sprokit.processes.apply_descriptor',
@@ -89,10 +92,6 @@ setup(
         # ],
         # 'kwiver.env.logger_factory': [
         #     'vital_log4cplus_logger_factory=kwiver.vital.util.entrypoint:get_vital_logger_factory',
-        # ],
-        # 'console_scripts': [
-        #     'plugin_explorer=kwiver.kwiver_tools:plugin_explorer',
-        #     'kwiver=kwiver.kwiver_tools:kwiver',
         # ],
     },
     # Scikit-Build Stuff #######################################################

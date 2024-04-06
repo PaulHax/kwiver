@@ -10,6 +10,12 @@ from kwiver.vital.config import ConfigBlockFormatter, read_config_file
 from kwiver.vital.algo import VideoInput, MetadataMapIO, ImageIO
 from kwiver.vital.types.metadata_traits import tag_traits_by_tag
 from kwiver.vital.io import basename_from_metadata
+import kwiver
+from importlib.metadata import version
+
+DEFAULT_CONFIG_PREFIX = (
+    Path(kwiver.__file__).parents[0] / "share" / "kwiver" / version("kwiver") / "config"
+)
 
 
 def add_command_options():
@@ -109,12 +115,16 @@ def run():
     metadata_serializer = MetadataMapIO()
     image_writer = ImageIO()
 
-    prefix = str(Path(__file__).parents[1].absolute())
-    config = read_config_file("applets/dump_klv.conf", "", "", prefix)
+    print(DEFAULT_CONFIG_PREFIX)
+    config_path = DEFAULT_CONFIG_PREFIX / "applets" / "dump_klv.conf"
+    config = read_config_file(str(config_path))
 
     # If --config given, read in config file, merge in with default just generated
     if cmd_args.config:
         config.merge_config(read_config_file(cmd_args.config.name))
+    print(f"CONFIG #### {config}")
+    fmt = ConfigBlockFormatter(config)
+    fmt.print(sys.stdout)
 
     # Output file extension configures exporter
     if cmd_args.log and cmd_args.exporter is None:
@@ -248,4 +258,5 @@ def run():
         t.join()
 
 
-run()
+if __name__ == "__main__":
+    run()
