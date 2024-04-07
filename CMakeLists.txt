@@ -7,7 +7,7 @@ project(KWIVER)
 
 ###
 # KWIVER version
-file( READ "VERSION" KWIVER_VERSION )
+file( READ "VERSION.txt" KWIVER_VERSION )
 string( STRIP "${KWIVER_VERSION}" KWIVER_VERSION )
 string( REGEX MATCH "^([0-9]+)\.([0-9]+)\.([0-9]+)" _ "${KWIVER_VERSION}" )
 set( KWIVER_VERSION_MAJOR "${CMAKE_MATCH_1}" )
