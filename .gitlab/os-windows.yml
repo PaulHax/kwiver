@@ -1,0 +1,102 @@
+# Windows-specific builder configurations and build commands
+
+## Base configurations
+
+.windows:
+    variables:
+        GIT_CLONE_PATH: "$CI_BUILDS_DIR\\kwiver-ext\\$CI_CONCURRENT_ID"
+        # Turn off direct mode until we test it.
+        BUILDCACHE_DIRECT_MODE: "false"
+
+### Build and test
+
+.windows_build:
+    extends: .windows
+
+    variables:
+        # Note that shell runners only support runners with a single
+        # concurrency level. We can't use `$CI_CONCURRENCY_ID` because this may
+        # change between the build and test stages which CMake doesn't support.
+        # Even if we could, it could change if other runners on the machine
+        # could run at the same time, so we drop it.
+        GIT_CLONE_PATH: "$CI_BUILDS_DIR\\kwiver"
+        # Force "desktop" OpenGL support. Qt seems to want to use EGL when run
+        # from GitLab-CI by default (it runs as a Windows service).
+        QT_OPENGL: desktop
+
+.windows_vs2022:
+    extends: .windows_build
+
+    variables:
+        VCVARSALL: "${VS170COMNTOOLS}\\..\\..\\VC\\Auxiliary\\Build\\vcvarsall.bat"
+        VCVARSPLATFORM: "x64"
+        VCVARSVERSION: "14.35.32215"
+
+.windows_vs2022_ninja_arrows:
+    extends: .windows_vs2022
+
+    variables:
+        CMAKE_CONFIGURATION: windows_vs2022_ninja_ceres_ffmpeg_gdal_opencv_pdal_proj_python_qt_vtk_vxl
+
+## Tags
+
+.windows_builder_tags:
+    tags:
+        - kwiver # Since this is a bare runner, pin to a project.
+        - msvc-19.35
+        - nonconcurrent
+        - shell
+        - vs2022
+        - windows-x86_64
+
+## Windows-specific scripts
+
+.before_script_windows: &before_script_windows
+    - $pwdpath = $pwd.Path
+    - powershell -File ".gitlab/ci/cmake.ps1"
+    - Set-Item -Force -Path "env:PATH" -Value "$pwdpath\.gitlab\cmake\bin;$env:PATH"
+    - powershell -File ".gitlab/ci/ninja.ps1"
+    - Set-Item -Force -Path "env:PATH" -Value "$pwdpath\.gitlab;$env:PATH"
+    - cmake --version
+    - ninja --version
+    - cmake -P .gitlab/ci/download_qt.cmake
+    - Set-Item -Force -Path "env:PATH" -Value "$pwdpath\.gitlab\qt\bin;$env:PATH"
+    - cmake -P .gitlab/ci/download_python.cmake
+    - Set-Item -Force -Path "env:PATH" -Value "$pwdpath\.gitlab\python;$env:PATH"
+    - Set-Item -Force -Path "env:PYTHONHOME" -Value "$pwdpath\.gitlab\python"
+    - cmake -P .gitlab/ci/download_fletch.cmake
+    - Set-Item -Force -Path "env:PATH" -Value "$env:PATH;$pwdpath\.gitlab\fletch\bin;$pwdpath\.gitlab\fletch\x64\vc17\bin"
+
+.before_script_windows_venv: &before_script_windows_venv
+    # Build and activate the venv
+    - python -m venv $pwdpath\build\ci-venv
+    # This may be necessary when running manually.
+    # Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+    - . .\build\ci-venv\Scripts\Activate.ps1
+    - pip install -qq -r $pwdpath\.gitlab\ci\requirements_dev-windows.txt
+
+.cmake_build_windows:
+    stage: build
+
+    script:
+        - *before_script_windows
+        - *before_script_windows_venv
+        - Invoke-Expression -Command .gitlab/ci/vcvarsall.ps1
+        - Invoke-Expression -Command .gitlab/ci/buildcache.ps1
+        - Set-Item -Force -Path "env:PATH" -Value "$env:PATH;$pwdpath\.gitlab\buildcache\bin"
+        - buildcache --show-stats
+        - ctest -VV -S .gitlab/ci/ctest_configure.cmake
+        - ctest -VV -S .gitlab/ci/ctest_build.cmake
+        - buildcache --show-stats
+    interruptible: true
+
+.cmake_test_windows:
+    stage: test
+
+    script:
+        - *before_script_windows
+        - . .\build\ci-venv\Scripts\Activate.ps1
+        - Invoke-Expression -Command .gitlab/ci/vcvarsall.ps1
+        - . build/setup_KWIVER.ps1
+        - ctest --output-on-failure -V -S .gitlab/ci/ctest_test.cmake
+    interruptible: true

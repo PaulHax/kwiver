@@ -6,6 +6,7 @@ include:
 
     # OS builds.
     - local: .gitlab/os-linux.yml
+    - local: .gitlab/os-windows.yml
 
 stages:
     - build
@@ -62,3 +63,29 @@ wheel-linux-python38-x86_64:build:
         - .linux_builder_tags
         - .cmake_wheel_artifacts
         - .rules
+
+# Windows
+
+## Basic builds
+
+windows-vs2022-ninja-arrows:build:
+    extends:
+        - .windows_vs2022_ninja_arrows
+        - .cmake_build_windows
+        - .windows_builder_tags
+        - .cmake_build_artifacts
+        - .rules
+
+windows-vs2022-ninja-arrows:test:
+    extends:
+        - .windows_vs2022_ninja_arrows
+        - .cmake_test_windows
+        - .windows_builder_tags
+        - .cmake_test_artifacts
+        - .rules
+    variables:
+        RUN_DEPENDENT: "true"
+    dependencies:
+        - windows-vs2022-ninja-arrows:build
+    needs:
+        - windows-vs2022-ninja-arrows:build

@@ -1,6 +1,7 @@
 {
     "latest-integration-v2": [
         { "group": "integration-v2", "site": "gitlab-ci", "buildname": "[ubuntu2004_ceres_dbow2_ffmpeg_gdal_kpf_opencv_pdal_proj_python_qt_uuid_vtk_vxl]" },
-        { "group": "integration-v2", "site": "gitlab-ci", "buildname": "[wheel_linux38_x86_64_ceres_dbow2_ffmpeg_gdal_kpf_opencv_pdal_proj_python_uuid_vtk_vxl]" }
+        { "group": "integration-v2", "site": "gitlab-ci", "buildname": "[wheel_linux38_x86_64_ceres_dbow2_ffmpeg_gdal_kpf_opencv_pdal_proj_python_uuid_vtk_vxl]" },
+        { "group": "integration-v2", "site": "gitlab-ci", "buildname": "[windows_vs2022_ninja_ceres_ffmpeg_gdal_opencv_pdal_proj_python_qt_vtk_vxl]" }
     ]
 }
