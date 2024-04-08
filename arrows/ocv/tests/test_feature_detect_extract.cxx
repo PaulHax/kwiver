@@ -49,6 +49,7 @@ TEST ( feature_detect_extract_SIFT, create )
     nullptr, create_algorithm< algo::detect_features >( "ocv_SIFT" ) );
 }
 
+#if defined( HAVE_OPENCV_NONFREE ) && defined( HAVE_OPENCV_XFEATURES2D )
 // ----------------------------------------------------------------------------
 TEST ( feature_detect_extract_SURF, create )
 {
@@ -56,6 +57,7 @@ TEST ( feature_detect_extract_SURF, create )
   EXPECT_NE(
     nullptr, create_algorithm< algo::detect_features >( "ocv_SURF" ) );
 }
+#endif
 
 // ----------------------------------------------------------------------------
 TEST ( feature_detect_extract_BRISK, default_config )
@@ -220,6 +222,7 @@ TEST ( feature_detect_extract_SIFT, default_config )
   );
 }
 
+#if defined( HAVE_OPENCV_NONFREE ) && defined( HAVE_OPENCV_XFEATURES2D )
 // ----------------------------------------------------------------------------
 TEST ( feature_detect_extract_SURF, default_config )
 {
@@ -257,3 +260,4 @@ TEST ( feature_detect_extract_SURF, default_config )
       false )
   );
 }
+#endif
