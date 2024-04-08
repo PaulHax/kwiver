@@ -133,16 +133,22 @@ set(__prev_kwiver_pyversion "${KWIVER_PYTHON_MAJOR_VERSION}" CACHE INTERNAL
 ###
 # Python interpreter and libraries
 #
-# note, 3.6 is a minimum version
-find_package(Python 3.6 COMPONENTS Interpreter Development REQUIRED)
+# note, 3.8 is a minimum version
+# when building extension modules we need to link to Development.Module instead
+# of Development . This links to libpython as interface instead of directly
+# allowing to build python wheels which should not link directly to libpython
+
+set(_requested_python_components Interpreter Development.Module)
+if(NOT SKBUILD)
+  set(_requested_python_components ${_requested_python_components} Development.Embed)
+endif()
+find_package(Python 3.8 REQUIRED COMPONENTS ${_requested_python_components})
 
 set(PYTHON_EXECUTABLE ${Python_EXECUTABLE} CACHE FILEPATH "Path to Python executable")
 set(PYTHON_INCLUDE_DIR ${Python_INCLUDE_DIRS} CACHE STRING "Paths to Python include directories")
 set(PYTHON_LIBRARIES ${Python_LIBRARIES} CACHE STRING "Paths to Python libraries")
 set(PYTHON_LIBRARIES ${Python_LIBRARIES} CACHE STRING "Paths to Python libraries")
 set(PYTHON_LIBRARIES_DEBUG PYTHON_LIBRARIES_DEBUG_NOT_FOUND CACHE FILEPATH "Path to Python debug libraries")
-
-include_directories(SYSTEM ${PYTHON_INCLUDE_DIR})
 
 ###
 # Python site-packages
@@ -220,9 +226,7 @@ mark_as_advanced(PYTHON_ABIFLAGS)
 #
 #
 #
-set(pybind11_library     python)
-set(PYBIND11_PYTHON_VERSION "${PYTHON_VERSION}")
-find_package(pybind11)
+find_package(pybind11 REQUIRED)
 
 
 ###

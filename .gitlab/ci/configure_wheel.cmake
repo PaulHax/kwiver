@@ -1,0 +1,2 @@
+set(CMAKE_BUILD_TYPE "Release" CACHE STRING "")
+include("${CMAKE_CURRENT_LIST_DIR}/configure_$ENV{CMAKE_CONFIGURATION}.cmake")

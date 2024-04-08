@@ -12,7 +12,7 @@ kwiver_add_library(vital_python_util
   ${python_util_headers})
 
 target_link_libraries(vital_python_util
-  PUBLIC ${PYTHON_LIBRARIES} pybind11::pybind11
+  PRIVATE pybind11::embed
   )
 
 kwiver_install_headers(

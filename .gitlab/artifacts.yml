@@ -53,6 +53,18 @@
             - build/CMakeFiles/CMakeOutput.log
             - build/CMakeFiles/rules.ninja
 
+.cmake_wheel_artifacts:
+    artifacts:
+        expire_in: 1d
+        when: always
+        paths:
+            - skbuild_output.log
+            - wheel_output.log
+
+            - dist/*.whl
+
+
+
 .cmake_junit_artifacts:
     extends: .cmake_annotations_artifacts
     artifacts:

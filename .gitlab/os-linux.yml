@@ -18,6 +18,17 @@
     variables:
         CMAKE_CONFIGURATION: ubuntu2004_ceres_dbow2_ffmpeg_gdal_kpf_opencv_pdal_proj_python_qt_uuid_vtk_vxl
 
+.manylinux2014_x86_64:
+    extends: .linux
+    image: "kitware/kwiver:ci-python-20240405"
+
+.wheel_linux38_x86_64:
+    extends: .manylinux2014_x86_64
+
+    variables:
+        CMAKE_CONFIGURATION: wheel_linux38_x86_64_ceres_dbow2_ffmpeg_gdal_kpf_opencv_pdal_proj_python_uuid_vtk_vxl
+        PYTHON_PREFIX: /opt/python/cp38-cp38
+
 .linux_builder_tags:
     tags:
         - build
@@ -46,6 +57,12 @@
     - . build/ci-venv/bin/activate
     - pip install -r .gitlab/ci/requirements_dev.txt
 
+.before_script_linux_wheel_venv: &before_script_linux_wheel_venv
+    - "$PYTHON_PREFIX/bin/python -m venv build/ci-venv"
+    - . build/ci-venv/bin/activate
+    - pip install -r .gitlab/ci/requirements_dev.txt
+    - pip install scikit-build auditwheel
+
 .cmake_build_linux:
     stage: build
     extends: .warning_policy
@@ -60,6 +77,25 @@
         - $LAUNCHER ctest -VV -S .gitlab/ci/ctest_build.cmake &> $GIT_CLONE_PATH/compile_output.log
         - sccache --show-stats
         - exec .gitlab/ci/check_warnings.sh .
+
+    interruptible: true
+
+.cmake_build_wheel_linux:
+    stage: build
+    extends: .warning_policy
+
+    script:
+        - *before_script_linux
+        - *before_script_linux_wheel_venv
+        - .gitlab/ci/sccache.sh
+        - sccache --start-server
+        - sccache --show-stats
+        - "python setup.py bdist_wheel -- -C $GIT_CLONE_PATH/.gitlab/ci/configure_wheel.cmake > $GIT_CLONE_PATH/skbuild_output.log"
+        - "LD_LIBRARY_PATH=/opt/fletch/lib/ auditwheel show dist/*.whl > $GIT_CLONE_PATH/wheel_output.log"
+        - "LD_LIBRARY_PATH=/opt/fletch/lib/ auditwheel repair $WHEEL_EXCLUSIONS dist/*.whl >> $GIT_CLONE_PATH/wheel_output.log"
+        - mv -v dist/ dist-orig/
+        - mv -v wheelhouse/ dist/
+        - sccache --show-stats
 
     interruptible: true
 

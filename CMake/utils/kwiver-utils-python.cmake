@@ -108,7 +108,10 @@ function (kwiver_add_python_library    name    modpath)
   # implicitly include the python libraries under the PRIVATE linkage.
   # This assumes ``find_package(Python)`` was performed before invoking this
   # function, which should be a general requirement anyway.
-  list(INSERT PYLIB_PRIVATE 0 ${PYTHON_LIBRARIES})
+  # we link to pybind11::module  instead of directly to PYTHON_LIBRARIES. This
+  # is required when building wheel while still makes the code work outside
+  # the wheels.
+  list(INSERT PYLIB_PRIVATE 0 pybind11::module)
   target_link_libraries( "${pylib_target_name}"
     PUBLIC    ${PYLIB_PUBLIC}
     PRIVATE   ${PYLIB_PRIVATE}
