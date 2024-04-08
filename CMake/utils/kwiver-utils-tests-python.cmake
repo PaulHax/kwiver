@@ -134,9 +134,10 @@ endfunction ()
 #
 function (kwiver_add_pytest name targ)
   if (WIN32)
+    file(TO_NATIVE_PATH "${kwiver_pytest_runner}${name}.py" python_test_windows_path)
     add_test(
       NAME    test-python-${name}
-      COMMAND cmd /C "${kwiver_pytest_runner}${name}.py"
+      COMMAND cmd /C "${python_test_windows_path}"
               ${ARGN})
   else()
     add_test(
