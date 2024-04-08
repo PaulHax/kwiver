@@ -2,7 +2,7 @@
 :: Script to source to setup the KWIVER environment
 ::
 
-set PATH=%~dp0/bin;%~dp0/lib/@kwiver_plugin_module_subdir@;%~dp0/lib/@kwiver_plugin_process_subdir@;%~dp0/lib/@kwiver_plugin_algorithms_subdir@;@EXTRA_WIN32_PATH@;%PATH%
+set PATH=%~dp0\bin;%~dp0\lib\@kwiver_plugin_module_subdir_win@;%~dp0\lib\@kwiver_plugin_process_subdir_win@;%~dp0\lib\@kwiver_plugin_algorithms_subdir_win@;@EXTRA_WIN32_PATH@;%PATH%
 
 set KWIVER_PLUGIN_PATH=%~dp0/lib/@kwiver_plugin_subdir@
 

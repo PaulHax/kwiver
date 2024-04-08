@@ -27,6 +27,12 @@ configure_file(
   @ONLY
   )
 
+# Convert Windows path slashes.
+file(TO_NATIVE_PATH "${EXTRA_WIN32_PATH}" EXTRA_WIN32_PATH)
+file(TO_NATIVE_PATH "${kwiver_plugin_module_subdir}" kwiver_plugin_module_subdir_win)
+file(TO_NATIVE_PATH "${kwiver_plugin_process_subdir}" kwiver_plugin_process_subdir_win)
+file(TO_NATIVE_PATH "${kwiver_plugin_algorithms_subdir}" kwiver_plugin_algorithms_subdir_win)
+
 if(fletch_BUILT_WITH_CUDA)
   list(APPEND EXTRA_WIN32_PATH "${CUDA_TOOLKIT_ROOT_DIR}/bin")
 endif()
