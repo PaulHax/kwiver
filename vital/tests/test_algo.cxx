@@ -5,242 +5,215 @@
 /// \file
 /// \brief Basic algorithm configuration tests
 
-#include <test_common.h>
-
 #include <iostream>
 
 #include <vital/config/config_block.h>
+#include <vital/config/config_block_io.h>
 
+#include <gtest/gtest.h>
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/match_features.h>
 #include <vital/algo/track_features.h>
-#include <vital/algorithm_plugin_manager.h>
 #include <vital/exceptions/algorithm.h>
+#include <vital/plugin_management/plugin_manager.h>
 #include <vital/vital_types.h>
-
-using namespace kwiver::vital;
-
-#define TEST_ARGS ( )
-DECLARE_TEST_MAP();
 
 int
 main( int argc, char* argv[] )
 {
-  // just the test name is expected
-  CHECK_ARGS( 1 );
-
-  testname_t const testname = argv[ 1 ];
-
-  RUN_TEST( testname );
+  ::testing::InitGoogleTest( &argc, argv );
+  return RUN_ALL_TESTS();
 }
 
-#define print_config( config )                                    \
-for( auto const& key : config->available_values() )               \
-{                                                                 \
-  cerr << "\t"                                                    \
-       << key << " = " <<                                         \
-    config->get_value< kwiver::vital::config_block_key_t >( key ) \
-       << endl;                                                   \
-}
-
-IMPLEMENT_TEST( registered_names )
+TEST ( algo, registered_names )
 {
-  using namespace std;
-  // register algorithms from plugins
-  kwiver::vital::algorithm_plugin_manager::instance().register_plugins();
+  kwiver::vital::plugin_manager& vpm =
+    kwiver::vital::plugin_manager::instance();
 
-  cout << "registered algorithms (type_name:impl_name)\n";
-  for( auto const& name : kwiver::vital::algorithm::registered_names() )
-  {
-    cout << "  " << name << endl;
-  }
+  vpm.load_all_plugins();
 
-  vector< string > mf_names =
-    kwiver::vital::algorithm::registered_names( "match_features" );
-  cout << "registered \"match_features\" implementations\n";
+
+  std::vector< std::string > mf_names = vpm._impl_names( "match_features" );
+  std::cout << "registered \"match_features\" implementations\n";
   for( auto const& name : mf_names )
   {
-    cout << "  " << name << endl;
+    std::cout << "  " << name << std::endl;
   }
 }
 
-IMPLEMENT_TEST( create_from_name )
+TEST ( algo, create_from_name )
 {
-  using namespace std;
-  // register algorithms from plugins
-  kwiver::vital::algorithm_plugin_manager::instance().register_plugins();
+  kwiver::vital::plugin_manager& vpm =
+    kwiver::vital::plugin_manager::instance();
+  vpm.load_all_plugins();
 
-  kwiver::vital::algorithm_sptr empty = kwiver::vital::algorithm::create(
-    "",
-    "" );
-  TEST_EQUAL( "create empty algorithm", empty, 0 );
 
-  empty = kwiver::vital::algorithm::create(
-    "match_features",
-    "not_a_real_impl" );
-  TEST_EQUAL( "create invalid algorithm", empty, 0 );
+  // create invalid algorithm
+  kwiver::vital::algorithm_sptr empty;
+  EXPECT_THROW(
+  {
+    empty =
+      kwiver::vital::create_algorithm< kwiver::vital::algo::match_features >(
+        "not_a_real_impl" ); }, kwiver::vital::plugin_factory_not_found );
 
-  TEST_EQUAL(
-    "has algorithm type",
-    kwiver::vital::algorithm::has_type_name( "match_features" ), true );
-  TEST_EQUAL(
-    "does not have algorithm type",
-    kwiver::vital::algorithm::has_type_name( "not_a_real_type" ), false );
-  TEST_EQUAL(
-    "has algorithm impl",
-    kwiver::vital::algorithm::has_impl_name(
-      "match_features",
-      "homography_guided" ), true );
-  TEST_EQUAL(
-    "does not have algorithm impl",
-    kwiver::vital::algorithm::has_impl_name(
-      "match_features",
-      "not_a_real_impl" ), false );
-  TEST_EQUAL(
-    "invalid type does not have algorithm impl",
-    kwiver::vital::algorithm::has_impl_name(
-      "not_a_real_type",
-      "homography_guided" ), false );
+  // has algorithm type
+  EXPECT_TRUE(
+    !vpm.get_factories( "match_features" ).empty() );
 
-  kwiver::vital::algorithm_sptr valid =
-    kwiver::vital::algorithm::create( "match_features", "homography_guided" );
-  TEST_EQUAL( "create valid algorithm", !valid, false );
+  // does not have algorithm type
+  EXPECT_TRUE(
+    vpm.get_factories( "not_a_real_type" ).empty() );
 
+  // has algorithm impl
+  EXPECT_TRUE(
+    kwiver::vital::has_algorithm_impl_name< kwiver::vital::algo::match_features >
+    (
+      "homography" ) );
+  // does not have algorithm impl
+  EXPECT_FALSE(
+    kwiver::vital::has_algorithm_impl_name< kwiver::vital::algo::match_features >
+      ( "not_a_real_impl" ) );
+
+
+  //  create valid algorithm
+  auto valid = kwiver::vital::create_algorithm< kwiver::vital::algo::match_features >( "homography" );
+  EXPECT_NE( valid, nullptr );
+
+
+  // create correct type
   kwiver::vital::algo::match_features_sptr mf = std::dynamic_pointer_cast< kwiver::vital::algo::match_features >( valid );
-  TEST_EQUAL( "create correct type", !mf, false );
-
-  TEST_EQUAL( "create correct impl", mf->impl_name(), "homography_guided" );
+  EXPECT_EQ( !mf, false );
+  // create correct impl
+  EXPECT_EQ( mf->impl_name(), "homography" );
 }
 
-IMPLEMENT_TEST( track_features_before_configuration )
+TEST ( algo,  track_features_before_configuration )
 {
   // register algorithms from plugins
-  kwiver::vital::algorithm_plugin_manager::instance().register_plugins();
+  kwiver::vital::plugin_manager& vpm =
+    kwiver::vital::plugin_manager::instance();
+  vpm.load_all_plugins();
 
-  using namespace std;
 
   kwiver::vital::algo::track_features_sptr track_features_impl =
-    kwiver::vital::algo::track_features::create( "core" );
+    kwiver::vital::create_algorithm< kwiver::vital::algo::track_features >(
+      "core" );
 
-  cerr <<
+  std::cerr <<
     "Contents of kwiver::vital::config_block BEFORE attempted configuration:" <<
-    endl;
+    std::endl;
+
 
   kwiver::vital::config_block_sptr tf_config =
     track_features_impl->get_configuration();
-  print_config( tf_config );
+  kwiver::vital::write_config( tf_config, std::cerr );
 
-  cerr << "Setting mf algo impl" << endl;
-  tf_config->set_value( "feature_matcher:type", "homography_guided" );
+  std::cerr << "Setting mf algo impl" << std::endl;
+  tf_config->set_value( "feature_matcher:type", "homography" );
 
-  cerr << "Contents of kwiver::vital::config_block after cb set:" << endl;
-  print_config( tf_config );
+  std::cerr << "Contents of kwiver::vital::config_block after cb set:" <<
+    std::endl;
+  kwiver::vital::write_config( tf_config, std::cerr );
 
-  cerr << "Setting modified config to tf algorithm" << endl;
+  std::cerr << "Setting modified config to tf algorithm" << std::endl;
   track_features_impl->set_configuration( tf_config );
 
-  cerr << "algo's config after set:" << endl;
+  std::cerr << "algo's config after set:" << std::endl;
   tf_config = track_features_impl->get_configuration();
-  print_config( tf_config );
+  kwiver::vital::write_config( tf_config, std::cerr );
 
-  cerr << "Setting mf's mf algo type (in config)" << endl;
+  std::cerr << "Setting mf's mf algo type (in config)" << std::endl;
   tf_config->set_value(
-    "feature_matcher:homography_guided:feature_matcher:type",
-    "homography_guided" );
+    "feature_matcher:homography:feature_matcher:type",
+    "homography" );
 
-  cerr << "Contents of kwiver::vital::config_block after set:" << endl;
-  print_config( tf_config );
+  std::cerr << "Contents of kwiver::vital::config_block after set:" <<
+    std::endl;
+  kwiver::vital::write_config( tf_config, std::cerr );
 
   track_features_impl->set_configuration( tf_config );
 
-  cerr << "algo's config after second algo set:" << endl;
+  std::cerr << "algo's config after second algo set:" << std::endl;
   tf_config = track_features_impl->get_configuration();
-  print_config( tf_config );
+  kwiver::vital::write_config( tf_config, std::cerr );
 
-  cerr << "One more level for good measure" << endl;
+  std::cerr << "One more level for good measure" << std::endl;
   tf_config->set_value(
-    "feature_matcher:homography_guided:feature_matcher:homography_guided:feature_matcher:type",
-    "homography_guided" );
+    "feature_matcher:homography:feature_matcher:homography:feature_matcher:type",
+    "homography" );
 
-  cerr << "Contents of cb after set:" << endl;
-  print_config( tf_config );
+  std::cerr << "Contents of cb after set:" << std::endl;
+  kwiver::vital::write_config( tf_config, std::cerr );
 
   track_features_impl->set_configuration( tf_config );
 
-  cerr << "algo's config after third algo set" << endl;
+  std::cerr << "algo's config after third algo set" << std::endl;
   tf_config = track_features_impl->get_configuration();
-  print_config( tf_config );
+  kwiver::vital::write_config( tf_config, std::cerr );
 
-  cerr << "One more level for good measure" << endl;
+  std::cerr << "One more level for good measure" << std::endl;
   tf_config->set_value(
-    "feature_matcher:homography_guided:feature_matcher:homography_guided:feature_matcher:homography_guided:feature_matcher:type",
-    "homography_guided" );
+    "feature_matcher:homography:feature_matcher:homography:feature_matcher:homography:feature_matcher:type",
+    "homography" );
 
-  cerr << "Contents of cb after set:" << endl;
-  print_config( tf_config );
+  std::cerr << "Contents of cb after set:" << std::endl;
+  kwiver::vital::write_config( tf_config, std::cerr );
 
   track_features_impl->set_configuration( tf_config );
 
-  cerr << "algo's config after third algo set" << endl;
+  std::cerr << "algo's config after third algo set" << std::endl;
   tf_config = track_features_impl->get_configuration();
-  print_config( tf_config );
+  kwiver::vital::write_config( tf_config, std::cerr );
 }
-
-IMPLEMENT_TEST( track_features_check_config )
+TEST ( algo,  track_features_check_config )
 {
-  // register core algorithms
-  kwiver::vital::algorithm_plugin_manager::instance().register_plugins();
+  // register algorithms from plugins
+  kwiver::vital::plugin_manager& vpm =
+    kwiver::vital::plugin_manager::instance();
+  vpm.load_all_plugins();
 
-  using namespace std;
 
   kwiver::vital::algo::track_features_sptr tf_impl =
-    kwiver::vital::algo::track_features::create( "core" );
+    kwiver::vital::create_algorithm< kwiver::vital::algo::track_features >(
+      "core" );
 
-  // Checking that exception is thrown when trying to configure with no config
-  // parameters.
+// Checking that exception is thrown when trying to configure with no config
+// parameters.
   kwiver::vital::config_block_sptr config =
     kwiver::vital::config_block::empty_config( "track_features_check_config" );
-  TEST_EQUAL(
-    "empty config check", tf_impl->check_configuration( config ),
-    false );
+  EXPECT_FALSE( tf_impl->check_configuration( config ) );
 
   // Checking that default impl switch value is invalid (base default is
   // nothing).
   config = tf_impl->get_configuration();
-  cerr << "Default config:" << endl;
-  print_config( config );
-  TEST_EQUAL(
-    "default config check", tf_impl->check_configuration( config ),
-    false );
-
+  std::cerr << "Default config:" << std::endl;
+  kwiver::vital::write_config( config, std::cerr );
+  // default config check
+  EXPECT_FALSE( tf_impl->check_configuration( config ) );
   // Adding valid implementation name for match_features algo, but should
   // still fail as the underlying match_features impl wants another nested
   // algo specification.
-  config->set_value( "feature_matcher:type", "homography_guided" );
-  // config->set_value("match_features_algorithm:homography_guided:match_features_algorithm",
-  // "homography_guided");
-  cerr << "Modified configuration:" << endl;
-  print_config( config );
-  TEST_EQUAL(
-    "modified config check", tf_impl->check_configuration( config ),
-    false );
+  config->set_value( "feature_matcher:type", "homography" );
+  std::cerr << "Modified configuration:" << std::endl;
+  kwiver::vital::write_config( config, std::cerr );
+  EXPECT_FALSE( tf_impl->check_configuration( config ) );
 
-  cerr << "Config from perspective of algo with that that config:" << endl;
+  std::cerr << "Config from perspective of algo with that that config:" <<
+    std::endl;
   tf_impl->set_configuration( config );
 
+
   kwiver::vital::config_block_sptr cb = tf_impl->get_configuration();
-  print_config( cb );
+  kwiver::vital::write_config( config, std::cerr );
 
   // Checking that, even though there were nested algorithms that weren't set,
   // at least the one that we did set propaged correctly and triggered the
   // sub-config generation.
-  TEST_EQUAL(
-    "param check 1",
+  // param check 1
+  EXPECT_EQ(
     cb->get_value< std::string >( "feature_matcher:type" ),
-    "homography_guided"
-  );
-  TEST_EQUAL(
-    "param check 2",
-    cb->has_value( "feature_matcher:homography_guided:feature_matcher1:type" ),
-    true
-  );
+    "homography" );
+  // param check 2
+  EXPECT_TRUE(
+    cb->has_value( "feature_matcher:homography:feature_matcher1:type" ) );
 }

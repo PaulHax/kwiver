@@ -10,7 +10,7 @@ set( test_libraries vital vital_vpm vital_algo)
 # Core tests
 ##############################
 
-## kwiver_discover_tests(vital_algo               test_libraries test_algo.cxx)
+kwiver_discover_gtests(vital algo                           LIBRARIES ${test_libraries})
 kwiver_discover_gtests(vital algorithm_capabilities         LIBRARIES ${test_libraries})
 kwiver_discover_gtests(vital any                            LIBRARIES ${test_libraries})
 kwiver_discover_gtests(vital attribute_set                  LIBRARIES ${test_libraries})
@@ -30,7 +30,7 @@ kwiver_discover_gtests(vital detected_object_set            LIBRARIES ${test_lib
 kwiver_discover_gtests(vital class_map                      LIBRARIES ${test_libraries})
 kwiver_discover_gtests(vital enumerate_matrix               LIBRARIES ${test_libraries})
 kwiver_discover_gtests(vital essential_matrix               LIBRARIES ${test_libraries})
-# kwiver_discover_gtests(vital estimate_similarity_transform  LIBRARIES ${test_libraries})
+kwiver_discover_gtests(vital estimate_similarity_transform  LIBRARIES ${test_libraries})
 kwiver_discover_gtests(vital file_md5                       LIBRARIES ${test_libraries} ARGUMENTS "${kwiver_test_data_directory}/video_as_images/images/frame_0001.png" "2764c96ee5d3830277313ffb91d343ae" )
 kwiver_discover_gtests(vital fundamental_matrix             LIBRARIES ${test_libraries})
 kwiver_discover_gtests(vital geo_MGRS                       LIBRARIES ${test_libraries})
