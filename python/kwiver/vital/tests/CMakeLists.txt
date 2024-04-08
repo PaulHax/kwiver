@@ -90,14 +90,14 @@ foreach (modname IN LISTS __all_modnames)
 endforeach()
 
 # Add python vital.tests to CTest if python test runner is available
-if (PYTHON_TEST)
+if (KWIVER_ENABLE_PYTHON_TESTS)
   if (WIN32)
     set(WIN_TEST_CONFIG_TYPE "$<CONFIG>")
   endif()
 
   include(kwiver-setup-tests-python)
   foreach (test IN LISTS __testable_modnames)
-    kwiver_add_pytest(${test} python)
+    kwiver_add_pytest( "${CMAKE_CURRENT_SOURCE_DIR}/${test}" python)
   endforeach()
 
   set(_test_data

@@ -131,11 +131,12 @@ endfunction ()
 
 ###
 # Adds a python module testing suite run by pytest
-#
-function (kwiver_add_pytest name targ)
+function (kwiver_add_pytest path targ)
+  get_filename_component(name "${path}" NAME)
   add_test(
     NAME    test-python-${name}
-    COMMAND ${kwiver_pytest_runner} "${mod_dst}/${name}.py"
+    COMMAND pytest
+            ${path}.py
             ${ARGN})
 
   set_tests_properties(test-python-${name}
@@ -156,7 +157,7 @@ function (kwiver_add_pytest name targ)
     add_custom_command(
       TARGET  test-python-${name}
       COMMAND ${kwiver_test_environment}
-              ${kwiver_test_runner}
+              pytest ${path}.py
               "${kwiver_test_output_path}"
               ${ARGN}
       WORKING_DIRECTORY
