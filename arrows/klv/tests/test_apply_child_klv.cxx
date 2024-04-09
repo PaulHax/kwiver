@@ -10,7 +10,7 @@
 #include <vital/algo/algorithm.txx>
 #include <vital/plugin_management/plugin_manager.h>
 
-#include <arrows/klv/apply_child_klv.h>
+#include <arrows/klv/algo/apply_child_klv.h>
 #include <arrows/klv/klv_0601.h>
 #include <arrows/klv/klv_1607.h>
 #include <arrows/klv/klv_metadata.h>

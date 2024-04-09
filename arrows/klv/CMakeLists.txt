@@ -2,128 +2,78 @@
 
 set(CMAKE_FOLDER "Arrows/KLV")
 
-set( sources
-  apply_child_klv.cxx
-  klv_blob.cxx
-  klv_checksum.cxx
-  klv_convert_vital.cxx
-  klv_data_format.cxx
-  klv_demuxer.cxx
-  klv_lengthy.cxx
-  klv_length_constraints.cxx
-  klv_imap.cxx
-  klv_key.cxx
-  klv_metadata.cxx
-  klv_muxer.cxx
-  klv_packet.cxx
-  klv_read_write.cxx
-  klv_set.cxx
-  klv_stream_settings.cxx
-  klv_string.cxx
-  klv_tag_traits.cxx
-  klv_timeline.cxx
-  klv_unimplemented.cxx
-  klv_update_intervals.cxx
-  klv_update_tracker.cxx
-  klv_uuid.cxx
-  klv_value.cxx
-  klv_0102.cxx
-  klv_0104.cxx
-  klv_0601.cxx
-  klv_0806.cxx
-  klv_0806_aoi_set.cxx
-  klv_0806_poi_set.cxx
-  klv_0806_user_defined_set.cxx
-  klv_0903.cxx
-  klv_0903_algorithm_set.cxx
-  klv_0903_location_pack.cxx
-  klv_0903_ontology_set.cxx
-  klv_0903_vchip_set.cxx
-  klv_0903_vfeature_set.cxx
-  klv_0903_vmask_set.cxx
-  klv_0903_vobject_set.cxx
-  klv_0903_vtarget_pack.cxx
-  klv_0903_vtrackitem_pack.cxx
-  klv_0903_vtrack_set.cxx
-  klv_0903_vtracker_set.cxx
-  klv_1002.cxx
-  klv_1010.cxx
-  klv_1107.cxx
-  klv_1108.cxx
-  klv_1108_metric_set.cxx
-  klv_1202.cxx
-  klv_1204.cxx
-  klv_1206.cxx
-  klv_1303.cxx
-  klv_1601.cxx
-  klv_1602.cxx
-  klv_1607.cxx
-  misp_time.cxx
-  update_klv.cxx
+set( plugin_klv_headers
+  klv_all.h
+  klv_list.h
+  klv_series.h
+  klv_series.hpp
+  klv_types.h
+  klv_util.h
+  klv_1303.hpp  )
+set( plugin_klv_sources
+  klv_read_write.txx )
+set( plugin_klv_classes
+  algo/apply_child_klv
+  algo/update_klv
+
+  klv_blob
+  klv_checksum
+  klv_convert_vital
+  klv_data_format
+  klv_demuxer
+  klv_lengthy
+  klv_length_constraints
+  klv_imap
+  klv_key
+  klv_metadata
+  klv_muxer
+  klv_packet
+  klv_read_write
+  klv_set
+  klv_stream_settings
+  klv_string
+  klv_tag_traits
+  klv_timeline
+  klv_unimplemented
+  klv_update_intervals
+  klv_update_tracker
+  klv_uuid
+  klv_value
+  klv_0102
+  klv_0104
+  klv_0601
+  klv_0806
+  klv_0806_aoi_set
+  klv_0806_poi_set
+  klv_0806_user_defined_set
+  klv_0903
+  klv_0903_algorithm_set
+  klv_0903_location_pack
+  klv_0903_ontology_set
+  klv_0903_vchip_set
+  klv_0903_vfeature_set
+  klv_0903_vmask_set
+  klv_0903_vobject_set
+  klv_0903_vtarget_pack
+  klv_0903_vtrackitem_pack
+  klv_0903_vtrack_set
+  klv_0903_vtracker_set
+  klv_1002
+  klv_1010
+  klv_1107
+  klv_1108
+  klv_1108_metric_set
+  klv_1202
+  klv_1204
+  klv_1206
+  klv_1303
+  klv_1601
+  klv_1602
+  klv_1607
+  misp_time
   )
 
-set( public_headers
-  apply_child_klv.h
-  klv_all.h
-  klv_blob.h
-  klv_data_format.h
-  klv_demuxer.h
-  klv_lengthy.h
-  klv_length_constraints.h
-  klv_list.h
-  klv_list.hpp
-  klv_imap.h
-  klv_key.h
-  klv_metadata.h
-  klv_muxer.h
-  klv_packet.h
-  klv_read_write.h
-  klv_series.h
-  klv_set.h
-  klv_stream_settings.h
-  klv_string.h
-  klv_timeline.h
-  klv_types.h
-  klv_unimplemented.h
-  klv_update_intervals.h
-  klv_update_tracker.h
-  klv_util.h
-  klv_value.h
-  klv_0102.h
-  klv_0104.h
-  klv_0601.h
-  klv_0806.h
-  klv_0806_aoi_set.h
-  klv_0806_poi_set.h
-  klv_0806_user_defined_set.h
-  klv_0903.h
-  klv_0903_algorithm_set.h
-  klv_0903_location_pack.h
-  klv_0903_ontology_set.h
-  klv_0903_vchip_set.h
-  klv_0903_vfeature_set.h
-  klv_0903_vmask_set.h
-  klv_0903_vobject_set.h
-  klv_0903_vtarget_pack.h
-  klv_0903_vtrackitem_pack.h
-  klv_0903_vtrack_set.h
-  klv_0903_vtracker_set.h
-  klv_1002.h
-  klv_1010.h
-  klv_1107.h
-  klv_1108.h
-  klv_1108_metric_set.h
-  klv_1202.h
-  klv_1204.h
-  klv_1206.h
-  klv_1303.h
-  klv_1303.hpp
-  klv_1601.h
-  klv_1602.h
-  klv_1607.h
-  misp_time.h
-  update_klv.h
-  )
+kwiver_expand_class_list( "${plugin_klv_classes}" plugin_klv_headers plugin_klv_sources )
 
 set( private_headers
   klv_length_value.h
@@ -131,7 +81,7 @@ set( private_headers
 )
 
 kwiver_install_headers(
-  ${public_headers}
+  ${plugin_klv_headers}
   SUBDIR   arrows/klv
   )
 
@@ -142,8 +92,8 @@ kwiver_install_headers(
   )
 
 kwiver_add_library( kwiver_algo_klv
-  ${sources}
-  ${public_headers}
+  ${plugin_klv_headers}
+  ${plugin_klv_sources}
   ${private_headers}
   )
 
@@ -152,7 +102,6 @@ target_link_libraries( kwiver_algo_klv
   PRIVATE       vital
                 vital_logger
   )
-
 
 kwiver_add_plugin( kwiver_algo_klv_plugin
                    SOURCES          register_algorithms.cxx

@@ -13,8 +13,8 @@
 #include <vital/algo/metadata_filter.h>
 
 // implementations
-#include <arrows/klv/apply_child_klv.h>
-#include <arrows/klv/update_klv.h>
+#include <arrows/klv/algo/apply_child_klv.h>
+#include <arrows/klv/algo/update_klv.h>
 
 namespace kwiver::arrows::klv {
 
