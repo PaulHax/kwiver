@@ -6,7 +6,7 @@
 /// \brief Register depth algorithms implementation
 
 #include <arrows/cuda/kwiver_algo_cuda_plugin_export.h>
-#include <vital/algo/algorithm_factory.h>
+#include <vital/plugin_management/plugin_manager.h>
 
 #include <arrows/cuda/integrate_depth_maps.h>
 
@@ -16,21 +16,17 @@ namespace arrows {
 
 namespace cuda {
 
+// ----------------------------------------------------------------------------
 extern "C"
 KWIVER_ALGO_CUDA_PLUGIN_EXPORT
 void
-register_factories( kwiver::vital::plugin_loader& vpm )
+register_factories( kwiver::vital::plugin_loader& vpl )
 {
-  kwiver::vital::algorithm_registrar reg( vpm, "arrows.cuda" );
+  using kvpf = ::kwiver::vital::plugin_factory;
 
-  if( reg.is_module_loaded() )
-  {
-    return;
-  }
-
-  reg.register_algorithm< integrate_depth_maps >();
-
-  reg.mark_module_as_loaded();
+  auto fact = vpl.add_factory< vital::algo::integrate_depth_maps,
+    integrate_depth_maps >( "cuda" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows.cuda" );
 }
 
 } // end namespace cuda

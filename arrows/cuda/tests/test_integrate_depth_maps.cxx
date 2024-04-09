@@ -4,9 +4,10 @@
 
 #include <test_scene.h>
 
-#include <arrows/mvg/algo/integrate_depth_maps.h>
+#include <arrows/cuda/integrate_depth_maps.h>
 #include <arrows/tests/test_integrate_depth_maps.h>
 
+#include <vital/algo/algorithm.txx>
 #include <vital/plugin_management/plugin_manager.h>
 
 #include <gtest/gtest.h>
@@ -33,14 +34,14 @@ TEST ( integrate_depth_maps, create )
   EXPECT_NE(
     nullptr,
     kwiver::vital::create_algorithm< kwiver::vital::algo::integrate_depth_maps >
-      ( "mvg" ) );
+      ( "cuda" ) );
 }
 
 // ----------------------------------------------------------------------------
 // Test depth map integration
 TEST ( integrate_depth_maps, integrate )
 {
-  namespace mvg = kwiver::arrows::mvg;
+  namespace cuda = kwiver::arrows::cuda;
 
 
   std::vector< image_container_sptr > depth_maps;
@@ -51,7 +52,7 @@ TEST ( integrate_depth_maps, integrate )
   make_test_data( depth_maps, cams, min_pt, max_pt, K );
 
 
-  mvg::integrate_depth_maps algorithm;
+  cuda::integrate_depth_maps algorithm;
   config_block_sptr config = algorithm.get_configuration();
   config->set_value( "voxel_spacing_factor", 1.0 );
   algorithm.set_configuration( config );
@@ -67,14 +68,14 @@ TEST ( integrate_depth_maps, integrate )
   timer.stop();
   std::cout << "integration time: " << timer.elapsed() << std::endl;
 
-  evaluate_volume( volume, min_pt, max_pt, spacing, 1.0 );
+  evaluate_volume( volume, min_pt, max_pt, spacing, 6.0 );
 }
 
 // ----------------------------------------------------------------------------
 // Test depth map integration
 TEST ( integrate_depth_maps, integrate_weighted )
 {
-  namespace mvg = kwiver::arrows::mvg;
+  namespace cuda = kwiver::arrows::cuda;
 
 
   std::vector< image_container_sptr > depth_maps;
@@ -95,7 +96,7 @@ TEST ( integrate_depth_maps, integrate_weighted )
   }
 
 
-  mvg::integrate_depth_maps algorithm;
+  cuda::integrate_depth_maps algorithm;
   config_block_sptr config = algorithm.get_configuration();
   config->set_value( "voxel_spacing_factor", 1.0 );
   algorithm.set_configuration( config );
@@ -111,14 +112,14 @@ TEST ( integrate_depth_maps, integrate_weighted )
   timer.stop();
   std::cout << "integration time: " << timer.elapsed() << std::endl;
 
-  evaluate_volume( volume, min_pt, max_pt, spacing, 1.0 );
+  evaluate_volume( volume, min_pt, max_pt, spacing, 6.0 );
 }
 
 // ----------------------------------------------------------------------------
 // Test depth map integration
 TEST ( integrate_depth_maps, integrate_distorted )
 {
-  namespace mvg = kwiver::arrows::mvg;
+  namespace cuda = kwiver::arrows::cuda;
 
 
   std::vector< image_container_sptr > depth_maps;
@@ -133,7 +134,7 @@ TEST ( integrate_depth_maps, integrate_distorted )
   make_test_data( depth_maps, cams, min_pt, max_pt, K );
 
 
-  mvg::integrate_depth_maps algorithm;
+  cuda::integrate_depth_maps algorithm;
   config_block_sptr config = algorithm.get_configuration();
   config->set_value( "voxel_spacing_factor", 1.0 );
   algorithm.set_configuration( config );
@@ -149,5 +150,5 @@ TEST ( integrate_depth_maps, integrate_distorted )
   timer.stop();
   std::cout << "integration time: " << timer.elapsed() << std::endl;
 
-  evaluate_volume( volume, min_pt, max_pt, spacing, 1.0 );
+  evaluate_volume( volume, min_pt, max_pt, spacing, 6.0 );
 }

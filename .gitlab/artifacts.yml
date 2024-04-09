@@ -25,6 +25,7 @@
             - compile_output.log
 
             # The artifacts of the build.
+            - build/CMakeCache.txt
             - build/bin/
             - build/lib/
             - build/tests/bin/
