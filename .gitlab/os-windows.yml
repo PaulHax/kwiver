@@ -36,7 +36,7 @@
     extends: .windows_vs2022
 
     variables:
-        CMAKE_CONFIGURATION: windows_vs2022_ninja_ceres_ffmpeg_gdal_opencv_pdal_proj_python_qt_vtk_vxl
+        CMAKE_CONFIGURATION: windows_vs2022_ninja_ceres_ffmpeg_gdal_opencv_pdal_proj_qt_vtk_vxl
 
 ## Tags
 
