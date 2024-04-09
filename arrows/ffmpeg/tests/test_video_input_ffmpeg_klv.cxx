@@ -7,7 +7,7 @@
 
 #include <tests/test_gtest.h>
 
-#include <arrows/ffmpeg/ffmpeg_video_input.h>
+#include <arrows/ffmpeg/algo/ffmpeg_video_input.h>
 #include <arrows/klv/klv_metadata.h>
 #include <arrows/serialize/json/klv/metadata_map_io.h>
 

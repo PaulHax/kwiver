@@ -5,14 +5,14 @@
 /// \file
 /// \brief Implementation file for video input using FFmpeg.
 
-#include "ffmpeg_cuda.h"
-#include "ffmpeg_init.h"
-#include "ffmpeg_util.h"
-#include "ffmpeg_video_input.h"
-#include "ffmpeg_video_raw_image.h"
-#include "ffmpeg_video_raw_metadata.h"
-#include "ffmpeg_video_settings.h"
-#include "ffmpeg_video_uninterpreted_data.h"
+#include <arrows/ffmpeg/algo/ffmpeg_video_input.h>
+#include <arrows/ffmpeg/ffmpeg_cuda.h>
+#include <arrows/ffmpeg/ffmpeg_init.h>
+#include <arrows/ffmpeg/ffmpeg_util.h>
+#include <arrows/ffmpeg/ffmpeg_video_raw_image.h>
+#include <arrows/ffmpeg/ffmpeg_video_raw_metadata.h>
+#include <arrows/ffmpeg/ffmpeg_video_settings.h>
+#include <arrows/ffmpeg/ffmpeg_video_uninterpreted_data.h>
 
 #include <arrows/klv/klv_convert_vital.h>
 #include <arrows/klv/klv_demuxer.h>

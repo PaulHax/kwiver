@@ -8,12 +8,9 @@
 #include <arrows/ffmpeg/kwiver_algo_ffmpeg_plugin_export.h>
 #include <vital/plugin_management/plugin_manager.h>
 
-#include <arrows/ffmpeg/ffmpeg_video_input.h>
-#include <arrows/ffmpeg/ffmpeg_video_input_clip.h>
-/* XXX(ffmpeg-rewire)
-#include <arrows/ffmpeg/ffmpeg_video_input_rewire.h>
- */
-#include <arrows/ffmpeg/ffmpeg_video_output.h>
+#include <arrows/ffmpeg/algo/ffmpeg_video_input.h>
+#include <arrows/ffmpeg/algo/ffmpeg_video_input_clip.h>
+#include <arrows/ffmpeg/algo/ffmpeg_video_output.h>
 
 namespace kwiver {
 
@@ -38,11 +35,11 @@ register_factories( kwiver::vital::plugin_loader& vpm )
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
 
   /* XXX(ffmpeg-rewire)
-  fact =
-    vpm.add_factory< vital::algo::video_input,
-      ffmpeg_video_input_rewire >( "ffmpeg_rewire" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
-  */
+   *  fact =
+   *  vpm.add_factory< vital::algo::video_input,
+   *   ffmpeg_video_input_rewire >( "ffmpeg_rewire" );
+   *  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+   */
 
   fact =
     vpm.add_factory< vital::algo::video_output,
