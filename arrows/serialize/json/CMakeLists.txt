@@ -5,24 +5,32 @@ if(NOT KWIVER_ENABLE_ZLIB)
 endif()
 include_directories( ${ZLIB_INCLUDE_DIRS} )
 
-set( headers_public
-  algo/activity.h
-  algo/activity_type.h
-  algo/bounding_box.h
-  algo/detected_object.h
-  algo/detected_object_set.h
-  algo/detected_object_type.h
-  algo/image.h
-  algo/metadata.h
-  algo/metadata_map_io.h
-  algo/object_track_set.h
-  algo/object_track_state.h
-  algo/string.h
-  algo/timestamp.h
-  algo/track.h
-  algo/track_set.h
-  algo/track_state.h
+set( plugin_serialize_json_headers)
+set( plugin_serialize_json_sources
+  load_save.cxx
+  load_save_point.cxx
+  load_save_metadata.cxx )
+set( plugin_serialize_json_classes
+  algo/activity
+  algo/activity_type
+  algo/bounding_box
+  algo/detected_object
+  algo/detected_object_set
+  algo/detected_object_type
+  algo/image
+  algo/metadata
+  algo/metadata_map_io
+  algo/object_track_set
+  algo/object_track_state
+  algo/string
+  algo/timestamp
+  algo/track
+  algo/track_set
+  algo/track_state
   )
+
+  kwiver_expand_class_list( "${plugin_serialize_json_classes}"
+    plugin_serialize_json_headers plugin_serialize_json_sources )
 
 set( private_headers
   load_save.h
@@ -32,32 +40,9 @@ set( private_headers
   track_item.h
   )
 
-set( sources
-  algo/activity.cxx
-  algo/activity_type.cxx
-  algo/bounding_box.cxx
-  algo/detected_object.cxx
-  algo/detected_object_set.cxx
-  algo/detected_object_type.cxx
-  algo/image.cxx
-  algo/metadata.cxx
-  algo/metadata_map_io.cxx
-  algo/object_track_set.cxx
-  algo/object_track_state.cxx
-  algo/string.cxx
-  algo/timestamp.cxx
-  algo/track.cxx
-  algo/track_set.cxx
-  algo/track_state.cxx
-
-  load_save.cxx
-  load_save_point.cxx
-  load_save_metadata.cxx
-  )
-
 kwiver_install_headers(
   SUBDIR     arrows/serialize/json
-  ${headers_public}
+  ${plugin_serialize_json_headers}
   )
 
 kwiver_install_headers(
@@ -66,8 +51,9 @@ kwiver_install_headers(
   )
 
 kwiver_add_library( kwiver_serialize_json
-  ${headers_public}
-  ${sources}
+  ${plugin_serialize_json_headers}
+  ${plugin_serialize_json_sources}
+  ${private_headers}
   )
 
 target_link_libraries( kwiver_serialize_json
