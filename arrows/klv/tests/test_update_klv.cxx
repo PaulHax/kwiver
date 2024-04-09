@@ -10,10 +10,10 @@
 #include <vital/algo/algorithm.txx>
 #include <vital/plugin_management/plugin_manager.h>
 
+#include <arrows/klv/algo/update_klv.h>
 #include <arrows/klv/klv_1108.h>
 #include <arrows/klv/klv_1108_metric_set.h>
 #include <arrows/klv/klv_metadata.h>
-#include <arrows/klv/update_klv.h>
 
 // ----------------------------------------------------------------------------
 int

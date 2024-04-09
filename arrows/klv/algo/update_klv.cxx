@@ -5,7 +5,7 @@
 /// \file
 /// Implementation of update_klv metadata filter.
 
-#include <arrows/klv/update_klv.h>
+#include "update_klv.h"
 
 #include <arrows/klv/klv_1108.h>
 #include <arrows/klv/klv_1108_metric_set.h>
