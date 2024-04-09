@@ -1,6 +1,7 @@
 import argparse
 import sys
 import os
+from pathlib import Path
 import threading
 
 from kwiver.vital import plugin_management
@@ -108,7 +109,7 @@ def run():
     metadata_serializer = MetadataMapIO()
     image_writer = ImageIO()
 
-    prefix = os.path.dirname(sys.executable) + "/.."
+    prefix = str(Path(__file__).parents[1].absolute())
     config = read_config_file("applets/dump_klv.conf", "", "", prefix)
 
     # If --config given, read in config file, merge in with default just generated

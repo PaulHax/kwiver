@@ -13,7 +13,7 @@
 #include <vital/logger/logger.h>
 #include <vital/noncopyable.h>
 #include <vital/set.h>
-#include <vital/vital_export.h>
+#include <vital/types/vital_types_export.h>
 
 namespace kwiver {
 

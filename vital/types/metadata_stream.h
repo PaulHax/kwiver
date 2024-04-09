@@ -9,7 +9,7 @@
 #define KWIVER_VITAL_METADATA_STREAM_H_
 
 #include <vital/types/metadata.h>
-#include <vital/vital_export.h>
+#include <vital/types/vital_types_export.h>
 
 #include <map>
 #include <string>
@@ -20,7 +20,7 @@ namespace vital {
 
 // ----------------------------------------------------------------------------
 /// Base class for reading or writing metadata.
-class VITAL_EXPORT metadata_stream
+class VITAL_TYPES_EXPORT metadata_stream
 {
 public:
   metadata_stream();
@@ -35,7 +35,7 @@ public:
 
 // ----------------------------------------------------------------------------
 /// Interface for reading sequential frames of metadata from somewhere.
-class VITAL_EXPORT metadata_istream : public metadata_stream
+class VITAL_TYPES_EXPORT metadata_istream : public metadata_stream
 {
 public:
   metadata_istream();
@@ -67,7 +67,7 @@ public:
 
 // ----------------------------------------------------------------------------
 /// Interface for writing sequential frames of metadata to somewhere.
-class VITAL_EXPORT metadata_ostream : public metadata_stream
+class VITAL_TYPES_EXPORT metadata_ostream : public metadata_stream
 {
 public:
   metadata_ostream();

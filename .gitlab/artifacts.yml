@@ -29,6 +29,7 @@
             - build/lib/
             - build/tests/bin/
             - build/setup_KWIVER.sh
+            - build/setup_KWIVER.ps1
             - build/share/kwiver/*/config/
 
             # CTest files.

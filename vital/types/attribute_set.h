@@ -8,8 +8,8 @@
 #ifndef KWIVER_VITAL_ATTRIBUTE_SET_H
 #define KWIVER_VITAL_ATTRIBUTE_SET_H
 
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 
 #include <vital/any.h>
 #include <vital/exceptions/base.h>
@@ -24,7 +24,7 @@ namespace kwiver {
 namespace vital {
 
 // ----------------------------------------------------------------------------
-class VITAL_EXPORT attribute_set_exception
+class VITAL_TYPES_EXPORT attribute_set_exception
   : public vital_exception
 {
 public:
@@ -48,7 +48,7 @@ typedef std::shared_ptr< attribute_set > attribute_set_sptr;
 /// core data. This associated data is not used in the main algorithm
 /// but must be available at the output so the artifact created can be
 /// associated with the specific input.
-class VITAL_EXPORT attribute_set
+class VITAL_TYPES_EXPORT attribute_set
   : private noncopyable
 {
 public:

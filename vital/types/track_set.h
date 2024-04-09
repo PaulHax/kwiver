@@ -12,8 +12,8 @@
 
 #include "track.h"
 
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 #include <vital/vital_types.h>
 
 #include <map>
@@ -40,7 +40,7 @@ typedef std::map< frame_id_t,
 
 // ----------------------------------------------------------------------------
 /// Empty base class for data associated a frame in the track_set
-class VITAL_EXPORT track_set_frame_data
+class VITAL_TYPES_EXPORT track_set_frame_data
 {
 public:
   // Dynamic copy constructor
@@ -52,7 +52,7 @@ protected:
 
 // ----------------------------------------------------------------------------
 /// Abstract interface for a collection of tracks
-class VITAL_EXPORT track_set_interface
+class VITAL_TYPES_EXPORT track_set_interface
 {
 public:
   /// Destructor
@@ -340,7 +340,7 @@ typedef std::shared_ptr< track_set_implementation >
 typedef std::unique_ptr< track_set_implementation >
   track_set_implementation_uptr;
 
-class VITAL_EXPORT track_set_implementation
+class VITAL_TYPES_EXPORT track_set_implementation
   : public track_set_interface
 {
 public:
@@ -428,7 +428,7 @@ public:
 /// with
 /// any of the derived track_set types like feature_track_set and
 /// object_track_set.
-class VITAL_EXPORT track_set
+class VITAL_TYPES_EXPORT track_set
   : public track_set_interface
 {
 public:

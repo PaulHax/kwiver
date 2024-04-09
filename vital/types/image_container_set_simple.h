@@ -15,7 +15,7 @@ namespace kwiver {
 namespace vital {
 
 /// A concrete image container set that simply wraps a vector of images.
-class VITAL_EXPORT simple_image_container_set
+class VITAL_TYPES_EXPORT simple_image_container_set
   : public image_container_set
 {
 public:

@@ -8,7 +8,7 @@
 #ifndef VITAL_CATEGORY_HIERARCHY_H_
 #define VITAL_CATEGORY_HIERARCHY_H_
 
-#include <vital/vital_export.h>
+#include <vital/types/vital_types_export.h>
 
 #include <map>
 #include <memory>
@@ -26,7 +26,7 @@ namespace vital {
 /// of arbitrary types of categories. Each category can have any number of
 /// optional 'parent' and 'child' categories (for example an 'atlantic sea
 /// scallop' is a type of broader 'scallop' category).
-class VITAL_EXPORT category_hierarchy
+class VITAL_TYPES_EXPORT category_hierarchy
 {
 public:
   using label_t = std::string;

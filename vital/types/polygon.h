@@ -9,8 +9,8 @@
 #define VITAL_TYPES_POLYGON_H
 
 #include <vital/types/vector.h>
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 
 #include <initializer_list>
 #include <memory>
@@ -35,7 +35,7 @@ namespace vital {
 /// This class behaviour is considered the specification for all
 /// derived classes.
 
-class VITAL_EXPORT polygon
+class VITAL_TYPES_EXPORT polygon
 {
 public:
   typedef kwiver::vital::vector_2d point_t;
@@ -120,10 +120,10 @@ private:
 typedef std::shared_ptr< polygon > polygon_sptr;
 typedef std::vector< polygon_sptr >  polygon_sptr_list;
 
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 bool operator==( polygon const& lhs, polygon const& rhs );
 
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 bool operator!=( polygon const& lhs, polygon const& rhs );
 
 } // namespace vital

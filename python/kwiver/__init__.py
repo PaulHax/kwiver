@@ -1,5 +1,7 @@
 import logging
 import os
+import sys
+from pathlib import Path
 
 
 PYTHON_PLUGIN_ENTRYPOINT = "kwiver.python_plugin_registration"
@@ -50,5 +52,10 @@ def _logging_onetime_init() -> None:
             "Logging one-time setup already called, doing nothing."
         )
 
+
+# For Python >=3.8  we need to explicitly add paths where dll will be imported from.
+if sys.version_info >= (3, 8) and sys.platform == "win32":
+    # __file__ is at Lib\site_packages\kwiver and kwiver dlls in toplevel bin
+    os.add_dll_directory(str(Path(__file__).parents[3].absolute() / "bin"))
 
 _logging_onetime_init()

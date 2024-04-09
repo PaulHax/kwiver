@@ -5,8 +5,8 @@
 #ifndef VITAL_TRACK_DESCRIPTOR_
 #define VITAL_TRACK_DESCRIPTOR_
 
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 
 #include <vital/types/bounding_box.h>
 #include <vital/types/descriptor.h>
@@ -40,7 +40,7 @@ typedef std::shared_ptr< track_descriptor > track_descriptor_sptr;
 /// for classification for higher level recognition tasks.
 ///
 /// Note that object of this class are created using factory methods.
-class VITAL_EXPORT track_descriptor
+class VITAL_TYPES_EXPORT track_descriptor
 {
 public:
 
@@ -51,7 +51,7 @@ public:
   //  should be created for every frame which the descriptor covers (see
   //  track_descriptor documentation). Only quanities which get used
   //  downstream need be filled.
-  class VITAL_EXPORT history_entry
+  class VITAL_TYPES_EXPORT history_entry
   {
   public:
     // -- TYPES --

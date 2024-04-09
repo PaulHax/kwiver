@@ -34,6 +34,13 @@ class KWIVER_ALGO_OCV_EXPORT detect_features_ORB
   : public ocv::detect_features
 {
 public:
+#if KWIVER_OPENCV_VERSION_MAJOR >= 3
+#define DETECT_FEATURES_ORB_EXTRA_PARAMETERS \
+,                                            \
+PARAM_DEFAULT( fast_threshold, int, "Undocumented", 20 )
+#else
+#define DETECT_FEATURES_ORB_EXTRA_PARAMETERS
+#endif
   PLUGGABLE_IMPL(
     detect_features_ORB,
     "OpenCV feature detection via the ORB algorithm",
@@ -116,12 +123,7 @@ public:
       "the perceived image area covered by a feature will "
       "be larger.",
       31 )
-
-#if KWIVER_OPENCV_VERSION_MAJOR >= 3
-    ,
-    PARAM_DEFAULT( fast_threshold, int, "Undocumented", 20 )
-#endif
-  );
+    DETECT_FEATURES_ORB_EXTRA_PARAMETERS );
 
   /// Destructor
   virtual ~detect_features_ORB();
@@ -135,10 +137,19 @@ private:
   void update_detector_parameters() const override;
 };
 
+#undef DETECT_FEATURES_ORB_EXTRA_PARAMETERS
+
 class KWIVER_ALGO_OCV_EXPORT extract_descriptors_ORB
   : public ocv::extract_descriptors
 {
 public:
+#if KWIVER_OPENCV_VERSION_MAJOR >= 3
+#define EXTRACT_DESCRIPTORS_ORB_EXTRA_PARAMETERS \
+,                                                \
+PARAM_DEFAULT( fast_threshold, int, "Undocumented", 20 )
+#else
+#define EXTRACT_DESCRIPTORS_ORB_EXTRA_PARAMETERS
+#endif
   PLUGGABLE_IMPL(
     extract_descriptors_ORB,
     "OpenCV feature-point descriptor extraction via the ORB algorithm",
@@ -221,10 +232,7 @@ public:
       "the perceived image area covered by a feature will "
       "be larger.",
       31 )
-#if KWIVER_OPENCV_VERSION_MAJOR >= 3
-    ,
-    PARAM_DEFAULT( fast_threshold, int, "Undocumented", 20 )
-#endif
+    EXTRACT_DESCRIPTORS_ORB_EXTRA_PARAMETERS
   );
 
   /// Destructor
@@ -245,4 +253,5 @@ private:
 
 } // end namespace kwiver
 
+#undef DETECT_FEATURES_ORB_EXTRA_PARAMETERS
 #endif

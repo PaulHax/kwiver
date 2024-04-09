@@ -113,10 +113,10 @@ operator>>( std::istream& s, similarity_< T >& t )
 
 /// \cond DoxygenSuppress
 #define INSTANTIATE_SIMILARITY( T )                       \
-template class VITAL_EXPORT similarity_< T >;             \
-template VITAL_EXPORT std::ostream&                       \
+template class VITAL_TYPES_EXPORT similarity_< T >;       \
+template VITAL_TYPES_EXPORT std::ostream&                 \
 operator<<( std::ostream& s, const similarity_< T >& t ); \
-template VITAL_EXPORT std::istream&                       \
+template VITAL_TYPES_EXPORT std::istream&                 \
 operator>>( std::istream& s, similarity_< T >& t )
 
 INSTANTIATE_SIMILARITY( double );

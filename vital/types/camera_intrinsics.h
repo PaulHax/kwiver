@@ -9,7 +9,7 @@
 #ifndef VITAL_CAMERA_INTRINSICS_H_
 #define VITAL_CAMERA_INTRINSICS_H_
 
-#include <vital/vital_export.h>
+#include <vital/types/vital_types_export.h>
 
 #include <iostream>
 #include <memory>
@@ -29,7 +29,7 @@ typedef std::shared_ptr< camera_intrinsics > camera_intrinsics_sptr;
 
 // ----------------------------------------------------------------------------
 /// An abstract representation of camera intrinsics
-class VITAL_EXPORT camera_intrinsics
+class VITAL_TYPES_EXPORT camera_intrinsics
 {
 public:
   /// Destructor
@@ -106,11 +106,11 @@ public:
 };
 
 /// output stream operator for a base class camera_intrinsics
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 std::ostream& operator<<( std::ostream& s, const camera_intrinsics& c );
 
 /// A representation of camera intrinsic parameters
-class VITAL_EXPORT simple_camera_intrinsics
+class VITAL_TYPES_EXPORT simple_camera_intrinsics
   : public camera_intrinsics
 {
 public:
@@ -322,7 +322,7 @@ protected:
 ///
 /// \param s input stream
 /// \param k simple_camera_intrinsics to stream into
-VITAL_EXPORT std::istream&
+VITAL_TYPES_EXPORT std::istream&
 operator>>( std::istream& s, simple_camera_intrinsics& k );
 
 } // namespace vital

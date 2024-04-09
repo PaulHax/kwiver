@@ -254,11 +254,11 @@ operator<<( std::ostream& s, homography const& h )
 // Template class instantiation
 // ----------------------------------------------------------------------------
 /// \cond DoxygenSuppress
-#define INSTANTIATE_HOMOGRAPHY( T ) \
-template class homography_< T >;    \
-template VITAL_EXPORT std::ostream& \
-operator<<(                         \
-  std::ostream&,                    \
+#define INSTANTIATE_HOMOGRAPHY( T )       \
+template class homography_< T >;          \
+template VITAL_TYPES_EXPORT std::ostream& \
+operator<<(                               \
+  std::ostream&,                          \
   homography_< T > const& )
 
 INSTANTIATE_HOMOGRAPHY( float );

@@ -133,17 +133,10 @@ endfunction ()
 # Adds a python module testing suite run by pytest
 #
 function (kwiver_add_pytest name targ)
-  if (WIN32)
-    add_test(
-      NAME    test-python-${name}
-      COMMAND cmd /C "${kwiver_pytest_runner}${name}.py"
-              ${ARGN})
-  else()
-    add_test(
-      NAME    test-python-${name}
-      COMMAND bash -c "${kwiver_pytest_runner}${name}.py"
-              ${ARGN})
-  endif()
+  add_test(
+    NAME    test-python-${name}
+    COMMAND ${kwiver_pytest_runner} "${mod_dst}/${name}.py"
+            ${ARGN})
 
   set_tests_properties(test-python-${name}
     PROPERTIES

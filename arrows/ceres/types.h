@@ -66,7 +66,6 @@ StringToCameraIntrinsicShareType(
 
 /// Default implementation of string options for Ceres enums
 template < typename T >
-KWIVER_ALGO_CERES_EXPORT
 std::string
 ceres_options()
 {

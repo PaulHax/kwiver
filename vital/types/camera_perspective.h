@@ -11,7 +11,7 @@
 #ifndef VITAL_CAMERA_PERSPECTIVE_H_
 #define VITAL_CAMERA_PERSPECTIVE_H_
 
-#include <vital/vital_export.h>
+#include <vital/types/vital_types_export.h>
 
 #include <iostream>
 #include <memory>
@@ -41,7 +41,7 @@ typedef std::shared_ptr< camera_perspective > camera_perspective_sptr;
 /// The base class of camera_perspectives is abstract and provides a
 /// double precision interface.  The templated derived class
 /// can store values in either single or double precision.
-class VITAL_EXPORT camera_perspective : public camera
+class VITAL_TYPES_EXPORT camera_perspective : public camera
 {
 public:
   /// Destructor
@@ -104,7 +104,7 @@ protected:
 };
 
 /// output stream operator for a base class camera_perspective
-VITAL_EXPORT std::ostream& operator<<(
+VITAL_TYPES_EXPORT std::ostream& operator<<(
   std::ostream& s,
   const camera_perspective& c );
 
@@ -117,7 +117,7 @@ typedef std::shared_ptr< simple_camera_perspective >
 /// A representation of a camera
 ///
 /// Contains camera location, orientation, and intrinsics
-class VITAL_EXPORT simple_camera_perspective
+class VITAL_TYPES_EXPORT simple_camera_perspective
   : public camera_perspective
 {
 public:
@@ -290,7 +290,7 @@ protected:
 ///
 /// \param s input stream
 /// \param c camera_perspective to stream into
-VITAL_EXPORT std::istream& operator>>(
+VITAL_TYPES_EXPORT std::istream& operator>>(
   std::istream& s,
   simple_camera_perspective& c );
 

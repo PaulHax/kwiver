@@ -14,7 +14,7 @@ PACKAGE_SRC = "python"
 PACKAGE_NAME = "kwiver"
 
 
-with open(SCRIPT_DIR / "VERSION", "r") as f:
+with open(SCRIPT_DIR / "VERSION.txt", "r") as f:
     VERSION = f.read().strip()
 
 

@@ -276,22 +276,24 @@ uas_ypr_to_rotation(
 }
 
 /// \cond DoxygenSuppress
-#define INSTANTIATE_ROTATION( T )                                           \
-template class VITAL_EXPORT rotation_< T >;                                 \
-template VITAL_EXPORT std::ostream&                                         \
-operator<<( std::ostream& s, const rotation_< T >& r );                     \
-template VITAL_EXPORT std::istream&                                         \
-operator>>( std::istream& s, rotation_< T >& r );                           \
-template VITAL_EXPORT rotation_< T > interpolate_rotation(                  \
-  rotation_< T > const& A, rotation_< T > const& B, T f );                  \
-template VITAL_EXPORT void                                                  \
-interpolated_rotations(                                                     \
-  rotation_< T > const& A, rotation_< T > const& B,                         \
-  size_t n, std::vector< rotation_< T > >& interp_rots );                   \
-template VITAL_EXPORT rotation_< T > ned_to_enu( rotation_< T > const& r ); \
-template VITAL_EXPORT rotation_< T > enu_to_ned( rotation_< T > const& r ); \
-template VITAL_EXPORT rotation_< T > uas_ypr_to_rotation(                   \
-  T platform_yaw, T platform_pitch, T platform_roll,                        \
+#define INSTANTIATE_ROTATION( T )                                \
+template class VITAL_TYPES_EXPORT rotation_< T >;                \
+template VITAL_TYPES_EXPORT std::ostream&                        \
+operator<<( std::ostream& s, const rotation_< T >& r );          \
+template VITAL_TYPES_EXPORT std::istream&                        \
+operator>>( std::istream& s, rotation_< T >& r );                \
+template VITAL_TYPES_EXPORT rotation_< T > interpolate_rotation( \
+  rotation_< T > const& A, rotation_< T > const& B, T f );       \
+template VITAL_TYPES_EXPORT void                                 \
+interpolated_rotations(                                          \
+  rotation_< T > const& A, rotation_< T > const& B,              \
+  size_t n, std::vector< rotation_< T > >& interp_rots );        \
+template VITAL_TYPES_EXPORT rotation_< T > ned_to_enu(           \
+  rotation_< T > const& r );                                     \
+template VITAL_TYPES_EXPORT rotation_< T > enu_to_ned(           \
+  rotation_< T > const& r );                                     \
+template VITAL_TYPES_EXPORT rotation_< T > uas_ypr_to_rotation(  \
+  T platform_yaw, T platform_pitch, T platform_roll,             \
   T sensor_yaw,   T sensor_pitch,   T sensor_roll )
 
 INSTANTIATE_ROTATION( double );

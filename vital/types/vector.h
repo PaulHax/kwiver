@@ -5,8 +5,8 @@
 /// \file
 /// \brief Header for Eigen fixed size column vector typedefs
 
-#ifndef VITAL_VECTOR_H_
-#define VITAL_VECTOR_H_
+#ifndef VITAL_TYPES_VECTOR_H_
+#define VITAL_TYPES_VECTOR_H_
 
 #include <Eigen/Core>
 
@@ -28,4 +28,4 @@ typedef Eigen::Vector4f vector_4f;
 
 }   // end namespace vital
 
-#endif // VITAL_VECTOR_H_
+#endif // VITAL_TYPES_VECTOR_H_

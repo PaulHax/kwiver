@@ -9,7 +9,7 @@
 #ifndef VITAL_CAMERA_H_
 #define VITAL_CAMERA_H_
 
-#include <vital/vital_export.h>
+#include <vital/types/vital_types_export.h>
 
 #include <iostream>
 #include <memory>
@@ -32,7 +32,7 @@ typedef std::vector< camera_sptr > camera_sptr_list;
 /// An abstract representation of camera
 ///
 /// The base class of cameras.
-class VITAL_EXPORT camera
+class VITAL_TYPES_EXPORT camera
 {
 public:
   /// Destructor

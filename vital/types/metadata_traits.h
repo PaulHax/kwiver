@@ -11,7 +11,7 @@
 #include <vital/types/geo_point.h>
 #include <vital/types/geo_polygon.h>
 #include <vital/types/metadata_tags.h>
-#include <vital/vital_export.h>
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_types.h>
 
 #include <typeinfo>
@@ -136,7 +136,7 @@ TAG_TYPE( VITAL_META_NITF_IMAGE_COMMENTS, string_t );
 #undef TAG_TYPE
 
 // ----------------------------------------------------------------------------
-class VITAL_EXPORT metadata_tag_traits
+class VITAL_TYPES_EXPORT metadata_tag_traits
 {
 public:
   metadata_tag_traits(
@@ -171,17 +171,17 @@ private:
 };
 
 // ----------------------------------------------------------------------------
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 metadata_tag_traits const&
 tag_traits_by_tag( vital_metadata_tag tag );
 
 // ----------------------------------------------------------------------------
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 metadata_tag_traits const&
 tag_traits_by_name( std::string const& name );
 
 // ----------------------------------------------------------------------------
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 metadata_tag_traits const&
 tag_traits_by_enum_name( std::string const& name );
 

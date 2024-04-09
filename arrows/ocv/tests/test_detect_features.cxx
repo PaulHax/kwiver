@@ -112,6 +112,23 @@ TEST ( detect_features_AGAST, default_config )
   );
 }
 
+#if KWIVER_OPENCV_VERSION_MAJOR >= 3
+#define DETECT_FEATURES_FAST_EXTRA_PARAMETERS                                     \
+,                                                                                 \
+PARAM_DEFAULT(                                                                    \
+  neighborhood_type,                                                              \
+  int,                                                                            \
+  "one of the three neighborhoods as defined in the paper: "                      \
+  "TYPE_5_8="  KWIVER_STRINGIFY( cv::FastFeatureDetector::TYPE_5_8 ) ","          \
+                                                                     "TYPE_7_12=" \
+  KWIVER_STRINGIFY( cv::FastFeatureDetector::TYPE_7_12 ) ", "                     \
+                                                         "TYPE_9_16="             \
+  KWIVER_STRINGIFY( cv::FastFeatureDetector::TYPE_9_16 ) ".",                     \
+  static_cast< int >( cv::FastFeatureDetector::TYPE_9_16 ) )
+#else
+#define DETECT_FEATURES_FAST_EXTRA_PARAMETERS
+#endif
+
 // ----------------------------------------------------------------------------
 TEST ( detect_features_FAST, default_config )
 {
@@ -135,19 +152,7 @@ TEST ( detect_features_FAST, default_config )
       target_num_features_detected,  int,
       "algorithm tries to output approximately this many features. "
       "Disable by setting to negative value.", 2500 )
-#if KWIVER_OPENCV_VERSION_MAJOR >= 3
-    ,
-    PARAM_DEFAULT(
-      neighborhood_type,
-      int,
-      "one of the three neighborhoods as defined in the paper: "
-      "TYPE_5_8="  KWIVER_STRINGIFY( cv::FastFeatureDetector::TYPE_5_8 ) ","
-                                                                         "TYPE_7_12="
-      KWIVER_STRINGIFY( cv::FastFeatureDetector::TYPE_7_12 ) ", "
-                                                             "TYPE_9_16="
-      KWIVER_STRINGIFY( cv::FastFeatureDetector::TYPE_9_16 ) ".",
-      static_cast< int >( cv::FastFeatureDetector::TYPE_9_16 ) )
-#endif
+    DETECT_FEATURES_FAST_EXTRA_PARAMETERS
   );
 }
 
@@ -183,6 +188,18 @@ TEST ( detect_features_MSD, default_config )
     PARAM_DEFAULT( compute_orientation, bool, "compute_orientation", false )
   );
 }
+
+#if KWIVER_OPENCV_VERSION_MAJOR >= 3
+#define DETECT_FEATURES_MSER_EXTRA_PARAMETERS \
+,                                             \
+PARAM_DEFAULT(                                \
+  pass2only,                                  \
+  bool,                                       \
+  "Undocumented",                             \
+  false )
+#else
+#define DETECT_FEATURES_MSER_EXTRA_PARAMETERS
+#endif
 
 // ----------------------------------------------------------------------------
 TEST ( detect_features_MSER, default_config )
@@ -239,14 +256,7 @@ TEST ( detect_features_MSER, default_config )
       int,
       "For color images, the aperture size for edge blur",
       5 )
-#if KWIVER_OPENCV_VERSION_MAJOR >= 3
-    ,
-    PARAM_DEFAULT(
-      pass2only,
-      bool,
-      "Undocumented",
-      false )
-#endif
+    DETECT_FEATURES_MSER_EXTRA_PARAMETERS
   );
 }
 

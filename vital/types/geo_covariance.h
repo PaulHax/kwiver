@@ -18,7 +18,7 @@ namespace vital {
 
 // ----------------------------------------------------------------------------
 /// A geo_point with covariance
-class VITAL_EXPORT geo_covariance : public geo_point
+class VITAL_TYPES_EXPORT geo_covariance : public geo_point
 {
 public:
   using covariance_type = covariance_< 3, float >;
@@ -42,7 +42,7 @@ protected:
   covariance_type m_covariance;
 };
 
-VITAL_EXPORT::std::ostream& operator<<(
+VITAL_TYPES_EXPORT::std::ostream& operator<<(
   ::std::ostream& str,
   geo_covariance const& obj );
 

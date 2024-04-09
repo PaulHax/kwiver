@@ -13,8 +13,8 @@
 #include <vital/types/covariance.h>
 #include <vital/types/vector.h>
 
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 
 #include <memory>
 
@@ -23,7 +23,7 @@ namespace kwiver {
 namespace vital {
 
 template < unsigned N, typename T >
-class VITAL_EXPORT point
+class VITAL_TYPES_EXPORT point
 {
 public:
   using vector_type = Eigen::Matrix< T, N, 1 >;
@@ -90,13 +90,27 @@ using point_3f = point< 3, float >;
 using point_4d = point< 4, double >;
 using point_4f = point< 4, float >;
 
-VITAL_EXPORT::std::ostream& operator<<( ::std::ostream&, point_2i const& );
-VITAL_EXPORT::std::ostream& operator<<( ::std::ostream&, point_2d const& );
-VITAL_EXPORT::std::ostream& operator<<( ::std::ostream&, point_2f const& );
-VITAL_EXPORT::std::ostream& operator<<( ::std::ostream&, point_3d const& );
-VITAL_EXPORT::std::ostream& operator<<( ::std::ostream&, point_3f const& );
-VITAL_EXPORT::std::ostream& operator<<( ::std::ostream&, point_4d const& );
-VITAL_EXPORT::std::ostream& operator<<( ::std::ostream&, point_4f const& );
+VITAL_TYPES_EXPORT::std::ostream& operator<<(
+  ::std::ostream&,
+  point_2i const& );
+VITAL_TYPES_EXPORT::std::ostream& operator<<(
+  ::std::ostream&,
+  point_2d const& );
+VITAL_TYPES_EXPORT::std::ostream& operator<<(
+  ::std::ostream&,
+  point_2f const& );
+VITAL_TYPES_EXPORT::std::ostream& operator<<(
+  ::std::ostream&,
+  point_3d const& );
+VITAL_TYPES_EXPORT::std::ostream& operator<<(
+  ::std::ostream&,
+  point_3f const& );
+VITAL_TYPES_EXPORT::std::ostream& operator<<(
+  ::std::ostream&,
+  point_4d const& );
+VITAL_TYPES_EXPORT::std::ostream& operator<<(
+  ::std::ostream&,
+  point_4f const& );
 
 } // namespace vital
 

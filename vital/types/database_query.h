@@ -13,8 +13,8 @@
 #include "track_descriptor_set.h"
 #include "uid.h"
 
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 
 #include <memory>
 #include <stdexcept>
@@ -42,7 +42,7 @@ enum class query_filter
 /// This structure is used to initialize a query, for communication with
 /// either a GUI or other entity. It contains many optional fields which only
 /// need be filled based on the application and query type.
-class VITAL_EXPORT database_query
+class VITAL_TYPES_EXPORT database_query
 {
 public:
   enum query_type

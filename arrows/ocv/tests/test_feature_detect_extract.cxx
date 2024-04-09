@@ -49,6 +49,7 @@ TEST ( feature_detect_extract_SIFT, create )
     nullptr, create_algorithm< algo::detect_features >( "ocv_SIFT" ) );
 }
 
+#if defined( HAVE_OPENCV_NONFREE ) && defined( HAVE_OPENCV_XFEATURES2D )
 // ----------------------------------------------------------------------------
 TEST ( feature_detect_extract_SURF, create )
 {
@@ -56,6 +57,7 @@ TEST ( feature_detect_extract_SURF, create )
   EXPECT_NE(
     nullptr, create_algorithm< algo::detect_features >( "ocv_SURF" ) );
 }
+#endif
 
 // ----------------------------------------------------------------------------
 TEST ( feature_detect_extract_BRISK, default_config )
@@ -81,6 +83,14 @@ TEST ( feature_detect_extract_BRISK, default_config )
       1.0f )
   );
 }
+
+#if KWIVER_OPENCV_VERSION_MAJOR >= 3
+#define FEATURE_DETECT_EXTRACT_ORB_EXTRA_PARAMETERS \
+,                                                   \
+PARAM_DEFAULT( fast_threshold, int, "Undocumented", 20 )
+#else
+#define FEATURE_DETECT_EXTRACT_ORB_EXTRA_PARAMETERS
+#endif
 
 // ----------------------------------------------------------------------------
 TEST ( feature_detect_extract_ORB, default_config )
@@ -168,10 +178,7 @@ TEST ( feature_detect_extract_ORB, default_config )
       "be larger.",
       31 )
 
-#if KWIVER_OPENCV_VERSION_MAJOR >= 3
-    ,
-    PARAM_DEFAULT( fast_threshold, int, "Undocumented", 20 )
-#endif
+    FEATURE_DETECT_EXTRACT_ORB_EXTRA_PARAMETERS
   );
 }
 
@@ -215,6 +222,7 @@ TEST ( feature_detect_extract_SIFT, default_config )
   );
 }
 
+#if defined( HAVE_OPENCV_NONFREE ) && defined( HAVE_OPENCV_XFEATURES2D )
 // ----------------------------------------------------------------------------
 TEST ( feature_detect_extract_SURF, default_config )
 {
@@ -252,3 +260,4 @@ TEST ( feature_detect_extract_SURF, default_config )
       false )
   );
 }
+#endif

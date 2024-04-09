@@ -13,8 +13,8 @@
 #include "vector.h"
 
 #include <vital/io/eigen_io.h>
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 
 #include <iostream>
 #include <memory>
@@ -94,14 +94,16 @@ public:
 ///
 /// \param s output stream
 /// \param f feature to stream
-VITAL_EXPORT std::ostream& operator<<( std::ostream& s, feature const& f );
+VITAL_TYPES_EXPORT std::ostream& operator<<(
+  std::ostream& s,
+  feature const& f );
 
 // ----------------------------------------------------------------------------
 /// A concrete 2D image feature point.
 ///
 /// Templated over real number type (double or float).
 template < typename T >
-class VITAL_EXPORT feature_
+class VITAL_TYPES_EXPORT feature_
   : public feature
 {
 public:
@@ -223,13 +225,15 @@ typedef feature_< float > feature_f;
 
 /// output stream operator for a feature
 template < typename T >
-VITAL_EXPORT std::ostream& operator<<(
+VITAL_TYPES_EXPORT std::ostream& operator<<(
   std::ostream& s,
   feature_< T > const& f );
 
 /// input stream operator for a feature
 template < typename T >
-VITAL_EXPORT std::istream& operator>>( std::istream& s, feature_< T >& f );
+VITAL_TYPES_EXPORT std::istream& operator>>(
+  std::istream& s,
+  feature_< T >& f );
 
 } // namespace vital
 

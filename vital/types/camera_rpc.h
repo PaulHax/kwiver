@@ -9,7 +9,7 @@
 #ifndef VITAL_CAMERA_RPC_H_
 #define VITAL_CAMERA_RPC_H_
 
-#include <vital/vital_export.h>
+#include <vital/types/vital_types_export.h>
 
 #include <iostream>
 #include <memory>
@@ -38,7 +38,7 @@ typedef std::shared_ptr< camera_rpc > camera_rpc_sptr;
 /// The base class of camera_rpcs is abstract and provides a
 /// double precision interface.  The templated derived class
 /// can store values in either single or double precision.
-class VITAL_EXPORT camera_rpc : public camera
+class VITAL_TYPES_EXPORT camera_rpc : public camera
 {
 public:
   /// Destructor
@@ -91,7 +91,7 @@ protected:
 /// A representation of a camera
 ///
 /// Contains camera rpc coefficients, offsets, and scales
-class VITAL_EXPORT simple_camera_rpc
+class VITAL_TYPES_EXPORT simple_camera_rpc
   : public camera_rpc
 {
 public:

@@ -16,8 +16,8 @@
 #include "track_descriptor_set.h"
 #include "uid.h"
 
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 
 #include <memory>
 #include <string>
@@ -32,7 +32,7 @@ namespace vital {
 /// This structure is used as the response to a query, for communication with
 /// either a GUI or other entity. It contains many optional fields which only
 /// need be filled based on the application.
-class VITAL_EXPORT query_result
+class VITAL_TYPES_EXPORT query_result
 {
 public:
   query_result();

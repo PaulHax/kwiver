@@ -31,11 +31,11 @@
 #define TEST_OPT_2( a, b ) a ## b
 #define TEST_OPT_3( a, b, c ) a ## b ## c
 
-#define TEST_OPT_ARG( a, b, ... )         \
-IF_ELSE( NOT( HAS_ARGS( __VA_ARGS__ ) ) ) \
-(                                         \
-  TEST_OPT_2( a, b ),                     \
-  TEST_OPT_3( a, b, __VA_ARGS__ )         \
+#define TEST_OPT_ARG( a, b, ... )                                       \
+CPP_MAGIC_IF_ELSE( CPP_MAGIC_NOT( CPP_MAGIC_HAS_ARGS( __VA_ARGS__ ) ) ) \
+(                                                                       \
+  TEST_OPT_2( a, b ),                                                   \
+  TEST_OPT_3( a, b, __VA_ARGS__ )                                       \
 )
 
 static int _test_opt_arg{ TEST_OPT_ARG( 1, 2, ) };
@@ -56,11 +56,11 @@ static int _test_opt_arg{ TEST_OPT_ARG( 1, 2, ) };
  * Conditionally surround the symbol with comments if the second argument is
  * true.
  */
-#define MAYBE_COMMENT( symbol, do_comment ) \
-IF_ELSE( BOOL( do_comment ) )               \
-(                                           \
-  /* symbol */,                             \
-  symbol                                    \
+#define MAYBE_COMMENT( symbol, do_comment )       \
+CPP_MAGIC_IF_ELSE( CPP_MAGIC_BOOL( do_comment ) ) \
+(                                                 \
+  /* symbol */,                                   \
+  symbol                                          \
 )
 
 // ----------------------------------------------------------------------------
@@ -95,14 +95,14 @@ type CONFIG_VAR_NAME( name );
 
 #define PARAM_PUBLIC_GETTER( tuple ) PARAM_PUBLIC_GETTER_ tuple
 #define PARAM_PUBLIC_GETTER_( name, type, description_str, default_value ) \
-type const& CAT( get_, name )( ) const                                     \
+type const& CPP_MAGIC_CAT( get_, name )( ) const                           \
 {                                                                          \
   return this->CONFIG_VAR_NAME( name );                                    \
 }
 
 #define PARAM_PUBLIC_SETTER( tuple ) PARAM_PUBLIC_SETTER_ tuple
 #define PARAM_PUBLIC_SETTER_( name, type, description_str, default_value ) \
-void CAT( set_, name )( type value )                                       \
+void CPP_MAGIC_CAT( set_, name )( type value )                             \
 {                                                                          \
   this->CONFIG_VAR_NAME( name ) = value;                                   \
 }
@@ -113,7 +113,7 @@ void CAT( set_, name )( type value )                                       \
  */
 #define PARAM_CONSTRUCTOR_ARGS( tuple ) PARAM_CONSTRUCTOR_ARGS_ tuple
 #define PARAM_CONSTRUCTOR_ARGS_( name, type, description_str, default_value ) \
-IF_ELSE( HAS_ARGS( default_value ) )                                          \
+CPP_MAGIC_IF_ELSE( CPP_MAGIC_HAS_ARGS( default_value ) )                      \
 (                                                                             \
   type name = ( default_value ),                                              \
   type name = type()                                                          \
@@ -133,7 +133,7 @@ CONFIG_VAR_NAME( name )( name )
  */
 #define PARAM_CONFIG_GET( tuple ) PARAM_CONFIG_GET_ tuple
 #define PARAM_CONFIG_GET_( name, type, description_str, default ) \
-IF_ELSE( HAS_ARGS( default ) )                                    \
+CPP_MAGIC_IF_ELSE( CPP_MAGIC_HAS_ARGS( default ) )                \
 (                                                                 \
   kwiver::vital::get_config_helper< type >( cb, #name, default ), \
   kwiver::vital::get_config_helper< type >( cb, #name )           \
@@ -153,7 +153,7 @@ kwiver::vital::set_config_helper< type >(                                   \
 #define PARAM_CONFIG_DEFAULT_SET( tuple ) PARAM_CONFIG_DEFAULT_SET_ tuple
 #define PARAM_CONFIG_DEFAULT_SET_( name, type, description_str, \
                                    default )                    \
-IF_ELSE( HAS_ARGS( default ) )                                  \
+CPP_MAGIC_IF_ELSE( CPP_MAGIC_HAS_ARGS( default ) )              \
 (                                                               \
   kwiver::vital::set_config_helper< type >(                     \
   cb, #name, default,                                           \
@@ -174,55 +174,58 @@ IF_ELSE( HAS_ARGS( default ) )                                  \
  * Setup private member variables for the parameter set, as well as public
  * accessor methods that return const& variants of parameter types.
  */
-#define PLUGGABLE_VARIABLES( ... )               \
-IF( HAS_ARGS( __VA_ARGS__ ) )(                   \
-private:                                         \
-  MAP( PARAM_VAR_DEF, EMPTY, __VA_ARGS__ )       \
-public:                                          \
-  MAP( PARAM_PUBLIC_GETTER, EMPTY, __VA_ARGS__ ) \
-  MAP( PARAM_PUBLIC_SETTER, EMPTY, __VA_ARGS__ ) \
+#define PLUGGABLE_VARIABLES( ... )                                   \
+CPP_MAGIC_IF( CPP_MAGIC_HAS_ARGS( __VA_ARGS__ ) )(                   \
+private:                                                             \
+  CPP_MAGIC_MAP( PARAM_VAR_DEF, CPP_MAGIC_EMPTY, __VA_ARGS__ )       \
+public:                                                              \
+  CPP_MAGIC_MAP( PARAM_PUBLIC_GETTER, CPP_MAGIC_EMPTY, __VA_ARGS__ ) \
+  CPP_MAGIC_MAP( PARAM_PUBLIC_SETTER, CPP_MAGIC_EMPTY, __VA_ARGS__ ) \
 )
 
-#define PLUGGABLE_CONSTRUCTOR( class_name, ... )                         \
-public:                                                                   \
-explicit class_name( MAP( PARAM_CONSTRUCTOR_ARGS, COMMA, __VA_ARGS__ ) ) \
-IF( HAS_ARGS( __VA_ARGS__ ) )(                                           \
-  : MAP( PARAM_CONSTRUCTOR_ASSN, COMMA, __VA_ARGS__ )                    \
-)                                                                        \
-{                                                                        \
-  this->initialize();                                                    \
+#define PLUGGABLE_CONSTRUCTOR( class_name, ... )                          \
+public:                                                                    \
+explicit class_name(                                                      \
+  CPP_MAGIC_MAP(                                                          \
+  PARAM_CONSTRUCTOR_ARGS, CPP_MAGIC_COMMA,                                \
+  __VA_ARGS__ ) )                                                         \
+CPP_MAGIC_IF( CPP_MAGIC_HAS_ARGS( __VA_ARGS__ ) )(                        \
+  : CPP_MAGIC_MAP( PARAM_CONSTRUCTOR_ASSN, CPP_MAGIC_COMMA, __VA_ARGS__ ) \
+)                                                                         \
+{                                                                         \
+  this->initialize();                                                     \
 }
 
-#define PLUGGABLE_STATIC_FROM_CONFIG( class_name, ... )          \
-public:                                                           \
-static ::kwiver::vital::pluggable_sptr from_config(              \
-  [[maybe_unused]] ::kwiver::vital::config_block_sptr const cb ) \
-{                                                                \
-  return std::make_shared< class_name >(                         \
-  MAP( PARAM_CONFIG_GET, COMMA, __VA_ARGS__ )                    \
-  );                                                             \
+#define PLUGGABLE_STATIC_FROM_CONFIG( class_name, ... )           \
+public:                                                            \
+static ::kwiver::vital::pluggable_sptr from_config(               \
+  [[maybe_unused]] ::kwiver::vital::config_block_sptr const cb )  \
+{                                                                 \
+  return std::make_shared< class_name >(                          \
+  CPP_MAGIC_MAP( PARAM_CONFIG_GET, CPP_MAGIC_COMMA, __VA_ARGS__ ) \
+  );                                                              \
 }
 
-#define PLUGGABLE_STATIC_GET_DEFAULT( ... )                \
-public:                                                     \
-static void get_default_config(                            \
-  [[maybe_unused]] ::kwiver::vital::config_block& config ) \
-{                                                          \
-  kwiver::vital::config_block_sptr cb =                    \
-    kwiver::vital::config_block::empty_config();           \
-  MAP( PARAM_CONFIG_DEFAULT_SET, EMPTY, __VA_ARGS__ )      \
-  config.merge_config( cb );                               \
+#define PLUGGABLE_STATIC_GET_DEFAULT( ... )                               \
+public:                                                                    \
+static void get_default_config(                                           \
+  [[maybe_unused]] ::kwiver::vital::config_block& config )                \
+{                                                                         \
+  kwiver::vital::config_block_sptr cb =                                   \
+    kwiver::vital::config_block::empty_config();                          \
+  CPP_MAGIC_MAP( PARAM_CONFIG_DEFAULT_SET, CPP_MAGIC_EMPTY, __VA_ARGS__ ) \
+  config.merge_config( cb );                                              \
 }
 
-#define PLUGGABLE_GET_CONFIGURATION( ... )                              \
-public:                                                                  \
-kwiver::vital::config_block_sptr get_configuration()     const override \
-{                                                                       \
-  kwiver::vital::config_block_sptr cb =                                 \
-    kwiver::vital::config_block::empty_config();                        \
-  MAP( PARAM_CONFIG_GET_FROM_THIS, EMPTY, __VA_ARGS__ )                 \
-  return cb;                                                            \
-}                                                                       \
+#define PLUGGABLE_GET_CONFIGURATION( ... )                                  \
+public:                                                                      \
+kwiver::vital::config_block_sptr get_configuration()     const override     \
+{                                                                           \
+  kwiver::vital::config_block_sptr cb =                                     \
+    kwiver::vital::config_block::empty_config();                            \
+  CPP_MAGIC_MAP( PARAM_CONFIG_GET_FROM_THIS, CPP_MAGIC_EMPTY, __VA_ARGS__ ) \
+  return cb;                                                                \
+}                                                                           \
 
 
 /**
@@ -237,20 +240,20 @@ this->CONFIG_VAR_NAME( name ) =                                   \
 /**
  * Define a method for setting an algorithm's configuration
  */
-#define PLUGGABLE_SET_CONFIGURATION( class_name, ... )     \
-public:                                                     \
-void set_configuration(                                    \
-  ::kwiver::vital::config_block_sptr in_config )  override \
-{                                                          \
-  kwiver::vital::config_block_sptr config =                \
-    kwiver::vital::config_block::empty_config();           \
-  class_name::get_default_config( *config );               \
-  config->merge_config( in_config );                       \
-  IF( HAS_ARGS( __VA_ARGS__ ) )(                           \
-    MAP( PARAM_CONFIG_SET, EMPTY, __VA_ARGS__ )            \
-  )                                                        \
-  this->set_configuration_internal( in_config );           \
-}                                                          \
+#define PLUGGABLE_SET_CONFIGURATION( class_name, ... )              \
+public:                                                              \
+void set_configuration(                                             \
+  ::kwiver::vital::config_block_sptr in_config )  override          \
+{                                                                   \
+  kwiver::vital::config_block_sptr config =                         \
+    kwiver::vital::config_block::empty_config();                    \
+  class_name::get_default_config( *config );                        \
+  config->merge_config( in_config );                                \
+  CPP_MAGIC_IF( CPP_MAGIC_HAS_ARGS( __VA_ARGS__ ) )(                \
+    CPP_MAGIC_MAP( PARAM_CONFIG_SET, CPP_MAGIC_EMPTY, __VA_ARGS__ ) \
+  )                                                                 \
+  this->set_configuration_internal( in_config );                    \
+}                                                                   \
 
 // ----------------------------------------------------------------------------
 

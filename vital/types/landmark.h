@@ -8,8 +8,8 @@
 #ifndef VITAL_LANDMARK_H_
 #define VITAL_LANDMARK_H_
 
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 
 #include <iostream>
 #include <memory>
@@ -65,11 +65,13 @@ public:
 ///
 /// \param s output stream
 /// \param m landmark to stream
-VITAL_EXPORT std::ostream& operator<<( std::ostream& s, landmark const& m );
+VITAL_TYPES_EXPORT std::ostream& operator<<(
+  std::ostream& s,
+  landmark const& m );
 
 /// A representation of a 3D world point
 template < typename T >
-class VITAL_EXPORT landmark_
+class VITAL_TYPES_EXPORT landmark_
   : public landmark
 {
 public:
@@ -209,13 +211,15 @@ typedef landmark_< float > landmark_f;
 
 /// output stream operator for a landmark
 template < typename T >
-VITAL_EXPORT std::ostream& operator<<(
+VITAL_TYPES_EXPORT std::ostream& operator<<(
   std::ostream& s,
   landmark_< T > const& m );
 
 /// input stream operator for a landmark
 template < typename T >
-VITAL_EXPORT std::istream& operator>>( std::istream& s, landmark_< T >& m );
+VITAL_TYPES_EXPORT std::istream& operator>>(
+  std::istream& s,
+  landmark_< T >& m );
 
 } // namespace vital
 

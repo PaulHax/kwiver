@@ -14,8 +14,8 @@
 #include "feature_set.h"
 #include "track_set.h"
 
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 #include <vital/vital_types.h>
 
 #include <vital/range/transform.h>
@@ -34,7 +34,7 @@ using feature_track_set_frame_data_sptr =
 
 // ----------------------------------------------------------------------------
 /// A derived track_state for feature tracks
-class VITAL_EXPORT feature_track_state : public track_state
+class VITAL_TYPES_EXPORT feature_track_state : public track_state
 {
 public:
   //@{
@@ -107,7 +107,7 @@ using feature_track_state_sptr = std::shared_ptr< feature_track_state >;
 
 // ----------------------------------------------------------------------------
 /// A derived track_state_frame_data for feature tracks
-class VITAL_EXPORT feature_track_set_frame_data
+class VITAL_TYPES_EXPORT feature_track_set_frame_data
   : public track_set_frame_data
 {
 public:
@@ -132,7 +132,7 @@ public:
 typedef std::shared_ptr< feature_info > feature_info_sptr;
 
 /// A collection of 2D feature point tracks
-class VITAL_EXPORT feature_track_set : public track_set
+class VITAL_TYPES_EXPORT feature_track_set : public track_set
 {
 public:
   /// Default Constructor
@@ -247,7 +247,7 @@ class feature_track_set_changes;
 typedef std::shared_ptr< feature_track_set_changes >
   feature_track_set_changes_sptr;
 
-class VITAL_EXPORT feature_track_set_changes
+class VITAL_TYPES_EXPORT feature_track_set_changes
 {
 public:
   struct state_data

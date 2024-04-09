@@ -55,7 +55,7 @@ is_equal( const ValueType1 a, const ValueType2 b )
 #define EXPECT_PARAM_DESCRIPTION( tuple ) EXPECT_PARAM_DESCRIPTION_ tuple
 #define EXPECT_PARAM_DESCRIPTION_( param, type, description, default )    \
 {                                                                         \
-  IF( HAS_ARGS( default ) )                                               \
+  CPP_MAGIC_IF( CPP_MAGIC_HAS_ARGS( default ) )                           \
   (                                                                       \
     const type& value = cfg->get_value< type >( #param );                 \
     bool success = kwiver::vital::detail::is_equal( value, default );     \
@@ -88,17 +88,17 @@ is_equal( const ValueType1 a, const ValueType2 b )
 // ----------------------------------------------------------------------------
 // Test utility that allows to test a configuration by copy / pasting
 // PLUGGABLE_IMPL from the header
-#define EXPECT_PLUGGABLE_IMPL( class_name, description, ... )     \
-do                                                                \
-{                                                                 \
-  class_name instance;                                            \
-  if( instance.plugin_description() != description )              \
-  {                                                               \
-    ADD_FAILURE() << "Description for the class is not correct."; \
-  }                                                               \
-  auto cfg = instance.get_configuration();                        \
-  IF( HAS_ARGS( __VA_ARGS__ ) )(                                  \
-    MAP( EXPECT_PARAM_DESCRIPTION, EMPTY, __VA_ARGS__ )           \
-  )                                                               \
+#define EXPECT_PLUGGABLE_IMPL( class_name, description, ... )               \
+do                                                                          \
+{                                                                           \
+  class_name instance;                                                      \
+  if( instance.plugin_description() != description )                        \
+  {                                                                         \
+    ADD_FAILURE() << "Description for the class is not correct.";           \
+  }                                                                         \
+  auto cfg = instance.get_configuration();                                  \
+  CPP_MAGIC_IF( CPP_MAGIC_HAS_ARGS( __VA_ARGS__ ) )(                        \
+    CPP_MAGIC_MAP( EXPECT_PARAM_DESCRIPTION, CPP_MAGIC_EMPTY, __VA_ARGS__ ) \
+  )                                                                         \
 } while( false );
 #endif

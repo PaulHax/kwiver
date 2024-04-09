@@ -14,7 +14,7 @@ namespace kwiver {
 
 namespace vital {
 
-class VITAL_EXPORT f2w_homography
+class VITAL_TYPES_EXPORT f2w_homography
 {
 public:
   /// Construct an identity homography for the given frame

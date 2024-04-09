@@ -7,7 +7,6 @@
 
 #include <arrows/core/kwiver_algo_core_plugin_export.h>
 
-#include <arrows/core/kwiver_algo_core_export.h>
 #include <vital/plugin_management/plugin_manager.h>
 
 // interface
@@ -101,7 +100,7 @@ namespace core {
 
 // ----------------------------------------------------------------------------
 extern "C"
-KWIVER_ALGO_CORE_EXPORT
+KWIVER_ALGO_CORE_PLUGIN_EXPORT
 void
 register_factories( kwiver::vital::plugin_loader& vpl )
 {

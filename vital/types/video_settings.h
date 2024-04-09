@@ -8,7 +8,7 @@
 #ifndef VITAL_VIDEO_SETTINGS_H_
 #define VITAL_VIDEO_SETTINGS_H_
 
-#include <vital/vital_export.h>
+#include <vital/types/vital_types_export.h>
 
 #include <memory>
 
@@ -18,7 +18,7 @@ namespace vital {
 
 // ----------------------------------------------------------------------------
 /// Base class for holding information about how to encode a video.
-struct VITAL_EXPORT video_settings
+struct VITAL_TYPES_EXPORT video_settings
 {
   virtual ~video_settings();
 };

@@ -8,8 +8,8 @@
 #ifndef VITAL_LOCAL_GEO_CS_H_
 #define VITAL_LOCAL_GEO_CS_H_
 
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 
 #include <vital/types/geo_point.h>
 #include <vital/vital_types.h>
@@ -19,7 +19,7 @@ namespace kwiver {
 namespace vital {
 
 /// Represents a local geo coordinate system origin expressed in UTM
-class VITAL_EXPORT local_geo_cs
+class VITAL_TYPES_EXPORT local_geo_cs
 {
 public:
   /// Constructor
@@ -48,7 +48,7 @@ private:
 /// \param [in,out] lgcs      The local geographic coordinate system that is
 ///                           updated with the origin in the file.
 /// \param [in]     file_path The path to the file to read.
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 bool
 read_local_geo_cs_from_file(
   local_geo_cs& lgcs,
@@ -62,7 +62,7 @@ read_local_geo_cs_from_file(
 ///
 /// \param [in] lgcs      The local geographic coordinate system to write.
 /// \param [in] file_path The path to the file to write.
-VITAL_EXPORT
+VITAL_TYPES_EXPORT
 bool
 write_local_geo_cs_to_file(
   local_geo_cs const& lgcs,

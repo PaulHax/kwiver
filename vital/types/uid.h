@@ -8,8 +8,8 @@
 #ifndef KWIVER_VITAL_TYPES_UID_H
 #define KWIVER_VITAL_TYPES_UID_H
 
+#include <vital/types/vital_types_export.h>
 #include <vital/vital_config.h>
-#include <vital/vital_export.h>
 
 #include <cstdint>
 #include <string>
@@ -23,7 +23,7 @@ namespace vital {
 ///
 /// This class represents a global UID. The content and other
 /// attributes are dependent on the method used to create the ID.
-class VITAL_EXPORT uid
+class VITAL_TYPES_EXPORT uid
 {
 public:
   //@{

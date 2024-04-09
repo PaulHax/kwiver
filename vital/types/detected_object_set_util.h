@@ -6,7 +6,7 @@
 #define VITAL_DETECTED_OBJECT_SET_UTIL_H
 
 #include "detected_object_set.h"
-#include <vital/vital_export.h>
+#include <vital/types/vital_types_export.h>
 
 namespace kwiver {
 
@@ -18,7 +18,7 @@ namespace vital {
 /// by scaling them by some scale factor.
 ///
 /// @param scale Scale factor
-void VITAL_EXPORT
+void VITAL_TYPES_EXPORT
 scale_detections(
   detected_object_set_sptr dos,
   double scale_factor );
@@ -35,7 +35,7 @@ scale_detections(
 ///
 /// @param col_shift Column  (a.k.a. x, i, width) translation factor
 /// @param row_shift Row (a.k.a. y, j, height) translation factor
-void VITAL_EXPORT
+void VITAL_TYPES_EXPORT
 shift_detections(
   detected_object_set_sptr dos,
   double col_shift, double row_shift );

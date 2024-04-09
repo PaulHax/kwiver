@@ -27,6 +27,18 @@ class KWIVER_ALGO_OCV_EXPORT extract_descriptors_BRIEF
   : public extract_descriptors
 {
 public:
+#if KWIVER_OPENCV_VERSION_MAJOR >= 3
+#define EXTRACT_DESCRIPTORS_BRIEF_EXTRA_PARAMETERS           \
+,                                                            \
+PARAM_DEFAULT(                                               \
+    use_orientation, bool,                                   \
+    "sample patterns using keypoints orientation, disabled " \
+    "by default.",                                           \
+    false )
+#else
+#define EXTRACT_DESCRIPTORS_BRIEF_EXTRA_PARAMETERS
+#endif
+
   PLUGGABLE_IMPL(
     extract_descriptors_BRIEF,
     "OpenCV feature-point descriptor extraction via the BRIEF algorithm",
@@ -35,14 +47,7 @@ public:
       "Length of descriptor in bytes. It can be equal 16, 32 "
       "or 64 bytes.",
       32 )
-#if KWIVER_OPENCV_VERSION_MAJOR >= 3
-    ,
-    PARAM_DEFAULT(
-      use_orientation, bool,
-      "sample patterns using keypoints orientation, disabled "
-      "by default.",
-      false )
-#endif
+    EXTRACT_DESCRIPTORS_BRIEF_EXTRA_PARAMETERS
   );
 
   /// Destructor
@@ -55,6 +60,7 @@ private:
   void update_extractor_parameters() const override;
 };
 
+#undef EXTRACT_DESCRIPTORS_BRIEF_EXTRA_PARAMETERS
 #define KWIVER_OCV_HAS_BRIEF
 
 } // end namespace ocv
