@@ -166,33 +166,33 @@ public:
   {}
 
   /// Create a clone of this camera object
-  virtual camera_sptr
-  clone() const
+  camera_sptr
+  clone() const override
   { return camera_sptr( new simple_camera_perspective( *this ) ); }
 
   /// Accessor for the camera center of projection (position)
-  virtual vector_3d
-  center() const
+  vector_3d
+  center() const override
   { return center_; }
 
   /// Accessor for the translation vector
-  virtual vector_3d
-  translation() const
+  vector_3d
+  translation() const override
   { return -( orientation_ * center_ ); }
 
   /// Accessor for the covariance of camera center
-  virtual covariance_3d
-  center_covar() const
+  covariance_3d
+  center_covar() const override
   { return center_covar_; }
 
   /// Accessor for the rotation
-  virtual rotation_d
-  rotation() const
+  rotation_d
+  rotation() const override
   { return orientation_; }
 
   /// Accessor for the intrinsics
-  virtual camera_intrinsics_sptr
-  intrinsics() const
+  camera_intrinsics_sptr
+  intrinsics() const override
   { return intrinsics_; }
 
   /// Create a clone of this camera that is rotated to look at the given point

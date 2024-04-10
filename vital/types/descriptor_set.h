@@ -84,8 +84,8 @@ public:
   //@}
 
   /// Return a vector of descriptor shared pointers
-  virtual std::vector< descriptor_sptr >
-  descriptors() const { return data_; }
+  std::vector< descriptor_sptr >
+  descriptors() const override { return data_; }
 
 protected:
   using vec_t = std::vector< descriptor_sptr >;
@@ -94,10 +94,10 @@ protected:
   vec_t data_;
 
   /// Next value function for non-const iteration.
-  iterator::next_value_func_t get_iter_next_func();
+  iterator::next_value_func_t get_iter_next_func() override;
 
   /// Next value function for const iteration.
-  const_iterator::next_value_func_t get_const_iter_next_func() const;
+  const_iterator::next_value_func_t get_const_iter_next_func() const override;
 };
 
 } // namespace vital

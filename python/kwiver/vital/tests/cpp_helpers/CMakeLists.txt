@@ -1,3 +1,4 @@
+set( THIS_MODULE vital/tests/cpp_helpers)
 set(__helper_modnames
   camera_helpers
   camera_intrinsics_helpers
@@ -12,13 +13,12 @@ set(__helper_modnames
 
 # Add files to the vital.tests.cpp_helpers python module
 foreach (modname IN LISTS __helper_modnames)
-  kwiver_add_python_library(${modname}
-    vital/tests/cpp_helpers
-    ${modname}.cxx)
-
-  target_link_libraries(python-vital.tests.cpp_helpers-${modname}
-    PRIVATE ${PYTHON_LIBRARIES} pybind11::pybind11
-           vital)
+  kwiver_add_python_library(
+    ${modname}
+    "${THIS_MODULE}"
+    SOURCES ${modname}.cxx
+    PRIVATE vital
+    )
 
 endforeach()
 
