@@ -86,9 +86,11 @@ include(kwiver-cmake-future)
 # ===========================================================================================
 # project global includes
 include_directories("${KWIVER_SOURCE_DIR}")
-include_directories("${KWIVER_SOURCE_DIR}/sprokit/src")
+#xxx(kwiver-2) re-enable once ported
+#include_directories("${KWIVER_SOURCE_DIR}/sprokit/src")
 include_directories("${KWIVER_BINARY_DIR}")
-include_directories("${KWIVER_BINARY_DIR}/sprokit/src")
+#xxx(kwiver-2) re-enable once ported
+#include_directories("${KWIVER_BINARY_DIR}/sprokit/src")
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 # include vital internal headers for private use only
