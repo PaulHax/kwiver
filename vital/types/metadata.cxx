@@ -10,6 +10,7 @@
 #include <vital/types/metadata_traits.h>
 #include <vital/util/demangle.h>
 
+#include <ios>
 #include <typeindex>
 
 #include <cmath>
@@ -55,6 +56,15 @@ struct print_visitor
   operator()( T const& value ) const
   {
     return os << value;
+  }
+
+  std::ostream&
+  operator()( bool value ) const
+  {
+    auto flags = os.flags();
+    os << std::boolalpha << value;
+    os.flags( flags );
+    return os;
   }
 
   std::ostream& os;
@@ -494,23 +504,16 @@ metadata
 
 // ----------------------------------------------------------------------------
 std::ostream&
-print_metadata( std::ostream& str, metadata const& metadata )
+print_metadata( std::ostream& os, metadata const& metadata )
 {
-  auto eix = metadata.end();
-  for( auto ix = metadata.begin(); ix != eix; ix++ )
+  for( auto const& entry : metadata )
   {
-    // process metada items
-    std::string name = ix->second->name();
-    kwiver::vital::any data = ix->second->data();
+    os << entry.second->name() << ": "
+       << metadata::format_string( entry.second->as_string() )
+       << std::endl;
+  }
 
-    str << "Metadata item: "
-        << name
-        << " <" << demangle( ix->second->type().name() ) << ">: "
-        << metadata::format_string( ix->second->as_string() )
-        << std::endl;
-  } // end for
-
-  return str;
+  return os;
 }
 
 // ----------------------------------------------------------------------------

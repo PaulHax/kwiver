@@ -7,4 +7,10 @@ over the previous v2.0.0 release.
 Updates
 -------
 
+Arrows: Core
+
+* Cleaned up dump-klv's printed output.
+
+Arrows: FFmpeg
+
 * Added video_input_ffmpeg_rewire.
