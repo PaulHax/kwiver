@@ -18,9 +18,16 @@ pip install pygccxml castxml
 This script was derived from https://gitlab.kitware.com/cmb/smtk/-/blob/master/utilities/python/cpp_to_pybind11.py
 """
 
+import argparse
+import configparser
 import os
 import sys
 from pathlib import Path
+import logging
+import time
+
+logger = logging.getLogger(__name__)
+
 
 # Find out the file location within the sources tree
 this_module_dir_path = os.path.abspath(os.path.dirname(sys.modules[__name__].__file__))
@@ -37,6 +44,35 @@ LICENSE_STRING = """// This file is part of KWIVER, and is distributed under the
 """
 
 COMMAND_STRING = """// Generated using: """
+
+
+def tranform_default_value(arg):
+    """
+    A handcrafted list of values that we should not use as default in python.
+    This includes values that are not automatically convertable in python.
+    """
+    if arg.default_value is None:
+        return None
+    elif declarations.type_traits.is_fundamental(arg.decl_type):
+        # fundamental values are handled automatically by pybind
+        return arg.default_value
+    elif arg.default_value == "std::cout":
+        # std::cout cannot be simply converted to a python object
+        return None
+    elif declarations.smart_pointer_traits.is_smart_pointer(arg.decl_type):
+        # we accept only nullptrs smart_pointers which we convert to None
+        # Add more types here to have them converted to None
+        if arg.default_value == "kwiver::vital::image_container_sptr()":
+            return "py::none()"
+    elif declarations.container_traits.vector_traits.is_my_case(arg.decl_type):
+        # accept only vector of fundemental types
+        value_type = declarations.container_traits.vector_traits.element_type(
+            arg.decl_type
+        )
+        if declarations.type_traits.is_fundamental(value_type):
+            return arg.default_value
+        return None
+    return None
 
 
 def get_scope(namespace):
@@ -80,14 +116,7 @@ def get_path_relative_to_directory(path, directory):
     )
 
 
-def create_trampoline(filename, project_source_directory, decls, stream):
-    # grab global namespace
-    try:
-        global_ns = declarations.get_global_namespace(decls)
-    except RuntimeError:
-        print(f"create_trampoline: No classes found in {filename}")
-        exit(1)
-
+def create_trampoline(filename, project_source_directory, algo_namespace, stream):
     fileguard = Path(filename).stem.replace(".", "_").upper() + "_TRAMPOLINE_TXX"
 
     # output file preamble
@@ -98,8 +127,9 @@ def create_trampoline(filename, project_source_directory, decls, stream):
     stream("")
 
     # includes
+    stream("#define KWIVER_PYBIND11_INCLUDE")
     stream("#include <pybind11/pybind11.h>")
-    stream("#include <python/kwiver/vital/algo/trampoline/algorithm_trampoline.txx>")
+    stream("#include <python/kwiver/vital/algo/algorithm_trampoline.txx>")
     stream(
         "#include <%s>"
         % os.path.relpath(
@@ -110,19 +140,22 @@ def create_trampoline(filename, project_source_directory, decls, stream):
         )
     )
     stream("")
+    class_name = Path(filename).stem
+    try:
+        (class_,) = algo_namespace.classes(class_name)
+    except RuntimeError as error:
+        logger.error(f"Could not find {class_name} is kwiver::vital::algo namespace!")
+        logger.error(
+            "Make sure the proper header and declarations are given to the parser"
+        )
+        logger.error(error)
+        exit(1)
 
     # namespace
     stream("namespace kwiver::vital::python {")
 
     # generate trampoline class
-    class_ = None
-    for class_ in global_ns.classes(allow_empty=True):
-        if class_.location.file_name != os.path.abspath(filename):
-            continue
-        if class_.parent and type(class_.parent).__name__.find("class_t") != -1:
-            continue
-        break
-
+    assert class_ is not None
     stream(
         f"""
 template< class {class_.name}_base = {full_class_name(class_)} >
@@ -169,6 +202,7 @@ class {class_.name}_trampoline
 
     stream("}; // class")
     stream("} // namespace")
+    stream("#undef KWIVER_PYBIND11_INCLUDE")
     stream("#endif")
 
     return {class_: f"{class_.name}_trampoline"}
@@ -188,6 +222,7 @@ def create_class_header(filename, project_source_directory, stream):
         .replace("-", "_")
         .upper()
     )
+    class_name = Path(filename).stem
 
     stream(LICENSE_STRING)
     stream(COMMAND_STRING)
@@ -200,26 +235,17 @@ def create_class_header(filename, project_source_directory, stream):
     stream("namespace py = pybind11;")
     stream("")
 
-    stream(f"void {Path(filename).stem}(py::module& m);")
+    stream(f"void {class_name}(py::module& m);")
     stream("}")
     stream("#endif")
 
 
 def create_class_implementation(
     filename,
-    class_name,
-    extra_includes,
     project_source_directory,
-    declaration_names,
-    decls,
+    algo_namespace,
     stream,
 ):
-    # grab global namespace
-    try:
-        global_ns = declarations.get_global_namespace(decls)
-    except RuntimeError:
-        print(f"create_class_implementation: No classes found in {filename}")
-        exit(1)
     # output file preamble
     header_path_relative_to_project = os.path.relpath(
         os.path.abspath(filename),
@@ -231,16 +257,14 @@ def create_class_implementation(
     trampoline_path = (
         Path("python/kwiver")
         / Path(*Path(header_path_relative_to_project).parts[:-1])
-        / "trampoline"
         / Path(Path(filename).stem + "_trampoline.txx")
     )
 
     stream(LICENSE_STRING)
     stream(COMMAND_STRING)
     stream("")
+    stream("#define KWIVER_PYBIND11_INCLUDE")
     stream("#include <pybind11/pybind11.h>")
-    for line in extra_includes:
-        stream(f"#include {line}")
 
     stream("")
     stream(f"#include <{header_path_relative_to_project}>")
@@ -252,175 +276,83 @@ def create_class_implementation(
     stream("namespace py = pybind11;")
     stream("")
 
-    stream(f"void {Path(filename).stem}(py::module& m)")
+    cpp_class_name = Path(filename).stem
+    stream(f"void {cpp_class_name}(py::module& m)")
     stream("{")
 
-    for class_ in global_ns.classes(allow_empty=True):
-        if class_.location.file_name != os.path.abspath(filename):
-            continue
-        if class_.parent and type(class_.parent).__name__.find("class_t") != -1:
-            continue
-        parse_class(class_, class_name, stream)
-        break
+    (class_,) = algo_namespace.classes(cpp_class_name)
+    parse_class(class_, stream)
 
     stream("")
 
     stream("}")
+    stream("#undef KWIVER_PYBIND11_INCLUDE")
 
 
 def parse_file(
+    algo_namespace,
     filename,
     project_source_directory,
-    include_directories,
-    declaration_names,
-    class_name,
-    extra_includes,
-    stream_header,
-    stream_impl,
-    stream_tramp,
+    output_basename,
 ):
     """
     Entry point for parsing a file
     """
-    # Find out the xml generator (gccxml or castxml)
-    generator_path, generator_name = utils.find_xml_generator()
 
-    # Configure the xml generator
-    config = parser.xml_generator_configuration_t(
-        start_with_declarations=declaration_names.split(" "),
-        include_paths=include_directories.split(" "),
-        xml_generator_path=generator_path,
-        xml_generator=generator_name,
-        cflags="-std=c++17 -DKWIVER_PYBIND11_WRAPPING",
-        castxml_epic_version=1,  # required to be able to parse comments
-    )
+    logger.debug(f"{filename=}")
 
-    # Parse source file
-    declarations = parser.parse(
-        [os.path.abspath(filename)],
-        config,
-        compilation_mode=parser.COMPILATION_MODE.ALL_AT_ONCE,
-    )
+    class_header = output_basename + ".h"
+    class_impl = output_basename + ".cxx"
+    class_trampoline = output_basename + "_trampoline.txx"
+    with open(class_header, "w") as h, open(class_impl, "w") as cxx, open(
+        class_trampoline, "w"
+    ) as tramp:
+        stream_header = stream_with_line_breaks(h)
+        stream_impl = stream_with_line_breaks(cxx)
+        stream_tramp = stream_with_line_breaks(tramp)
 
-    if stream_tramp:
         create_trampoline(
-            filename, project_source_directory, declarations, stream_tramp
+            filename, project_source_directory, algo_namespace, stream_tramp
+        )
+        create_class_header(filename, project_source_directory, stream_header)
+        create_class_implementation(
+            filename,
+            project_source_directory,
+            algo_namespace,
+            stream_impl,
         )
 
-    create_class_header(filename, project_source_directory, stream_header)
-    create_class_implementation(
-        filename,
-        class_name,
-        extra_includes,
-        project_source_directory,
-        declaration_names,
-        declarations,
-        stream_impl,
-    )
+
+def derive_python_name(class_):
+    # start with camelCase and handle special cases
+    python_name = "".join(part.title() for part in class_.name.split("_"))
+    # special case class_io  -> ClassIo -> ClassIO
+    if python_name[-2:] == "Io":
+        python_name = python_name[:-1] + "O"
+    # special case estimate_pnp  -> EstimatePnp -> EstimatePNP
+    elif class_.name == "estimate_pnp":
+        python_name = "EstimatePNP"
+    # special case uuid_factory  -> UuidFactory -> UUIDFactory
+    elif class_.name == "uuid_factory":
+        python_name = "UUIDFactory"
+    elif class_.name == "uv_unwrap_mesh":
+        python_name = "UVUnwrapMesh"
+    return python_name
 
 
-def parse_free_enumeration(enum, stream):
-    """
-    Write bindings for a free enumeration
-    """
-    init_function_name = "pybind11_init_" + mangled_name(enum)
-    stream("inline void %s(py::module &m)" % init_function_name)
-    stream("{")
-    full_enum_name = full_class_name(enum)
-    stream('  py::enum_<%s>(m, "%s")' % (full_enum_name, enum.name))
-    for name, num in enum.values:
-        stream('    .value("%s", %s::%s)' % (name, full_enum_name, name))
-    stream("    .export_values();")
-    stream("}")
-    return init_function_name
-
-
-def parse_free_function(func, overloaded, stream):
-    """
-    Write bindings for a free function
-    """
-    init_function_name = "pybind11_init_" + (
-        func.mangled if overloaded else mangled_name(func)
-    )
-    stream("inline void %s(py::module &m)" % init_function_name)
-    stream("{")
-    if overloaded:
-        stream(
-            '  m.def("%s", (%s (*)(%s)) &%s, "", %s);'
-            % (
-                func.name,
-                func.return_type,
-                ", ".join([arg.decl_type.decl_string for arg in func.arguments]),
-                "::".join(get_scope(func) + [func.name]),
-                ", ".join(
-                    [
-                        (
-                            'py::arg("%s") = %s' % (arg.name, arg.default_value)
-                            if arg.default_value is not None
-                            else 'py::arg("%s")' % (arg.name)
-                        )
-                        for arg in func.arguments
-                    ]
-                ),
-            )
-        )
-    else:
-        stream(
-            '  m.def("%s", &%s, "", %s);'
-            % (
-                func.name,
-                "::".join(get_scope(func) + [func.name]),
-                ", ".join(
-                    [
-                        (
-                            'py::arg("%s") = %s' % (arg.name, arg.default_value)
-                            if arg.default_value is not None
-                            else 'py::arg("%s")' % (arg.name)
-                        )
-                        for arg in func.arguments
-                    ]
-                ),
-            )
-        )
-    stream("}")
-    return init_function_name
-
-
-def has_static(class_):
-    for member in class_.public_members:
-        if member.parent.name != class_.name:
-            continue
-        if member.__class__.__name__ != "member_function_t":
-            continue
-        if member.has_static:
-            return True
-
-    for variable in class_.variables(allow_empty=True):
-        if variable.parent.name != class_.name:
-            continue
-        if variable.access_type == "public" and variable.type_qualifiers.has_static:
-            return True
-
-    return False
-
-
-def parse_class(class_, class_name, stream, top_level=True):
+def parse_class(class_, stream):
     """
     Write bindings for a class
     """
-    full_class_name_ = full_class_name(class_)
 
-    python_name = (
-        class_name
-        if class_name is not None
-        else "".join(part.title() for part in class_.name.split("_"))
-    )
+    full_class_name_ = full_class_name(class_)
+    python_class_name = derive_python_name(class_)
     stream(
         f"""
     py::class_<{full_class_name_},
                std::shared_ptr<{full_class_name_}>,
                kwiver::vital::algorithm,
-               {class_.name}_trampoline<> > instance(m,  "{python_name}");
+               {class_.name}_trampoline<> > instance(m,  "{python_class_name}");
     """
     )
 
@@ -430,11 +362,11 @@ def parse_class(class_, class_name, stream, top_level=True):
         stream("    .def(py::init<>())")
     else:
         for constructor in class_.constructors():
-            print(dir(constructor))
             if constructor.parent.name != class_.name:
                 continue
             if constructor.access_type != "public":
                 continue
+            # create a string of all constructor arguments along with their default value
             types = ", ".join([str(arg.decl_type) for arg in constructor.arguments])
             names = ", ".join(
                 [
@@ -442,7 +374,6 @@ def parse_class(class_, class_name, stream, top_level=True):
                     for arg in constructor.arguments
                 ]
             )
-            print(names)
             stream(f"    .def(py::init<{types}>(), {names})")
 
     all_methods = set()
@@ -461,73 +392,67 @@ def parse_class(class_, class_name, stream, top_level=True):
             all_methods.add(member.name)
 
     # this code block separates method pairs that look like "get_XXX()" and
-    # "setXXXX()" and flags them to be used as set-s and get-s to define a
+    # "set_xxxx()" and flags them to be used as set-s and get-s to define a
     # property.
-    use_properties = False
+    use_properties = True
     property_set_methods = set()
     property_get_methods = set()
     if use_properties:
-
-        def uncapitalize(s):
-            return s[:1].lower() + s[1:] if s else ""
-
         property_set_methods = set(
             [
                 m
                 for m in class_.public_members
-                if m.name[:3] == "set" and m.name not in virtual_methods
+                if m.name[:4] == "set_" and m.name not in virtual_methods
             ]
         )
         property_get_methods = set(
             [
                 m
                 for m in class_.public_members
-                if m.name[:3] == "get" and m.name not in virtual_methods
+                if m.name[:4] == "get_" and m.name not in virtual_methods
             ]
         )
 
         for getter, setter in zip(property_get_methods, property_set_methods):
             name = getter.name[4:]
             stream(
-                f'    .def_property("{name}", &%{full_class_name_}::{getter.name}, &{full_class_name_}::{setter.name})'
+                f'    .def_property("{name}", &{full_class_name_}::{getter.name}, &{full_class_name_}::{setter.name})'
             )
 
     for member in class_.public_members:
         if member.parent.name != class_.name:
             continue
         if member.__class__.__name__ != "member_function_t":
+            # we are interested only in methods for now
+            continue
+        if member in property_get_methods and member in property_set_methods:
+            # already registered
             continue
         static = "_static" if member.has_static else ""
         const = " const" if member.has_const else ""
         doc = (
             (
                 ", "
-                + 'R"('
+                + 'py::doc(R"('
                 + "\n".join(line for line in member.comment.text).replace("///", "")
-                + ')"'
+                + ')")'
             )
             if len(member.comment.text) != 0
             else ""
         )
-        args_ = (
-            (
-                ", "
-                + ", ".join(
-                    [
-                        (
-                            f'py::arg("{arg.name}") = {arg.default_value}'
-                            if arg.default_value is not None
-                            else f'py::arg("{arg.name}")'
-                        )
-                        for arg in member.arguments
-                    ]
+        if len(member.arguments) == 0:
+            args_ = ""
+        else:
+            args_list = []
+            for arg in member.arguments:
+                default_value = tranform_default_value(arg)
+                arg_str = (
+                    f'py::arg("{arg.name}") = {tranform_default_value(arg)}'
+                    if default_value is not None
+                    else f'py::arg("{arg.name}")'
                 )
-            )
-            if len(member.arguments) != 0
-            else ""
-        )
-        if member in property_set_methods or member in property_get_methods:
-            continue
+                args_list.append(arg_str)
+            args_ = ", " + ", ".join(args_list)
         if member.name in overloaded_methods:
             args_declaration = ", ".join(
                 [arg.decl_type.decl_string for arg in member.arguments]
@@ -549,50 +474,67 @@ def parse_class(class_, class_name, stream, top_level=True):
             static = "_static" if variable.type_qualifiers.has_static else ""
             if declarations.type_traits.is_const(variable.decl_type):
                 stream(
-                    '    .def_readonly%s("%s", &%s::%s)'
-                    % (static, variable.name, full_class_name_, variable.name)
-                )
-
-        elif variable.access_type == "private" and variable.name[:2] == "c_":
-            static = "_static" if variable.type_qualifiers.has_static else ""
-            name = variable.name[2:]  # drop c_
-            print(name)
-            if declarations.is_const(variable):
-                stream(
-                    '    .def_readonly%s("%s", &%s::%s)'
-                    % (static, variable.name, full_class_name_, variable.name)
-                )
-            else:
-                stream(
-                    f'    .def_property("{name}", &{full_class_name_}::get_{name}, &{full_class_name_}::set_{name})'
+                    f'    .def_readonly{static}("{variable.name}", &{full_class_name_}::{variable.name})'
                 )
 
     stream("    ;")
-
-    for enum in class_.enumerations(allow_empty=True):
-        stream(
-            '  py::enum_<%s::%s>(%s, "%s")'
-            % (full_class_name_, enum.name, "instance", enum.name)
-        )
-        for name, num in enum.values:
-            stream(
-                '    .value("%s", %s::%s::%s)'
-                % (name, full_class_name_, enum.name, name)
-            )
-        stream("    .export_values();")
-
-    for decl in class_.declarations:
-        if type(decl).__name__.find("class_t") != -1:
-            parse_class(decl, stream, False)
-
     stream(f"  register_algorithm< {full_class_name_} > (instance);")
     stream("}")
 
 
-if __name__ == "__main__":
-    import argparse
+def parse_headers(headers, include_directories, declaration_names):
+    """
+    Parse the provided headers and extract declatation form them.
+    `include_directories` should provide all the paths required to resolved
+    `includes` in the headers.  If declaration_names is not empty. Only the
+    classes in `declaration_names` will be considered which speeds up the
+    process significantly.
+    """
+    # Find out the xml generator (gccxml or castxml)
+    generator_path, generator_name = utils.find_xml_generator()
 
-    arg_parser = argparse.ArgumentParser()
+    # Configure the xml generator
+    config = parser.xml_generator_configuration_t(
+        start_with_declarations=declaration_names,
+        include_paths=include_directories,
+        xml_generator_path=generator_path,
+        xml_generator=generator_name,
+        cflags="-std=c++17 -fsized-deallocation -DKWIVER_PYBIND11_WRAPPING",
+        castxml_epic_version=1,  # required to be able to parse comments
+    )
+
+    toc = time.perf_counter()
+    parsed_declarations = parser.parse(
+        [str(header) for header in headers],
+        config,
+        compilation_mode=parser.COMPILATION_MODE.ALL_AT_ONCE,
+    )
+    tic = time.perf_counter()
+    logger.debug(f"Time to parse {toc-tic}")
+    return parsed_declarations
+
+
+def parse_arguments():
+    global COMMAND_STRING
+    config_parser = argparse.ArgumentParser(
+        # Turn off help, so we print all options in response to -h
+        add_help=False
+    )
+    config_parser.add_argument(
+        "-c",
+        "--config",
+        help="Use config file",
+        metavar="FILE",
+    )
+    args, _ = config_parser.parse_known_args()
+
+    defaults = None
+    if args.config:
+        config = configparser.ConfigParser()
+        config.read(args.config)
+        defaults = dict(config.items("Defaults"))
+
+    arg_parser = argparse.ArgumentParser(parents=[config_parser])
     arg_parser.add_argument(
         "-I",
         "--include-dirs",
@@ -602,54 +544,104 @@ if __name__ == "__main__":
 
     arg_parser.add_argument(
         "-d",
-        "--declaration-name",
-        help="names of C++ classes and functions",
+        "--declaration-names",
+        help="names of C++ classes to extract",
         default="",
     )
 
-    arg_parser.add_argument(
+    input_arg = arg_parser.add_argument(
         "-i", "--input", help="<Required> Input C++ header file", required=True
     )
-    arg_parser.add_argument(
-        "-e",
-        "--extra-includes",
-        nargs="+",
-        help="List of extra includes files for the implementation class. Usually, <pybind11/stl.h>",
-        default=[],
-    )
 
-    arg_parser.add_argument(
+    output_arg = arg_parser.add_argument(
         "-o", "--output", help="Basename of output C++ file(s)", required=True
     )
 
     arg_parser.add_argument(
-        "-s", "--project-source-dir", help="Project source directory", default="."
+        "-s", "--project-source-directory", help="Project source directory", default="."
+    )
+    arg_parser.add_argument(
+        "-w",
+        "--working-directory",
+        help="Working directory. All generated files will be written here.",
+        default=".",
     )
 
     arg_parser.add_argument(
-        "-t",
-        "--trampoline",
-        help="Generate also the corresponding trampoline class",
-        action="store_true",
+        "--classes",
+        help="If specificed, input, output and declaration_name args will be derived by these names combining the values of `base-directory-for-input` and `working-directory`",
+        default=None,
     )
     arg_parser.add_argument(
-        "-n",
-        "--class-name",
-        help="Python name for the wrapped class. By default the C++ name is converted to camelcase.",
+        "--common-namespace",
+        help="If specificed, the namespace will be prepended in all classes given in class-basename argument",
         default=None,
+    )
+    arg_parser.add_argument(
+        "--base-directory-for-input",
+        help="Base directory for all files in input files. If not given, input is expected to be relative paths with respect to project source argument",
+        default=None,
+    )
+    arg_parser.add_argument(
+        "--list-delimiter",
+        help="Character used to separate lists in .ini file /commandline",
+        default="\n",
     )
 
     arg_parser.add_argument(
         "-v", "--verbose", help="Print out generated wrapping code", action="store_true"
     )
+    if defaults:
+        arg_parser.set_defaults(**defaults)
+        if "classes" in defaults.keys():
+            output_arg.required = False
+            input_arg.required = False
+        if "output" in defaults.keys():
+            output_arg.required = False
+        if "input" in defaults.keys():
+            input_arg.required = False
 
+    logger.debug(defaults)
     args = arg_parser.parse_args()
 
     command_args = " ".join(sys.argv)
     COMMAND_STRING += command_args
+    logger.debug(args)
+    sep = args.list_delimiter
 
-    if not args.include_dirs:
-        args.include_dirs = args.input_directory
+    if args.classes:
+        args.classes = args.classes.split(sep)
+        if args.base_directory_for_input:
+            args.input = [
+                Path(args.base_directory_for_input) / str(name.split("::")[-1] + ".h")
+                for name in args.classes
+            ]
+        else:
+            args.input = [name.split("::")[-1] + ".h" for name in args.classes]
+        args.output = args.classes
+        if args.common_namespace:
+            args.declaration_names = [
+                args.common_namespace + "::" + name for name in args.classes
+            ]
+        else:
+            args.declaration_names = args.classes
+    else:
+        args.input = args.input.split(sep)
+        args.output = args.output.split(sep)
+        args.declaration_names = args.declaration_names.split(sep)
+
+    wd = Path(args.working_directory).absolute()
+    sd = Path(args.project_source_directory).absolute()
+    args.output = [wd / output for output in args.output]
+    args.input = [sd / filename for filename in args.input]
+    args.include_dirs = args.include_dirs.split(sep)
+    logger.debug(f"{args.declaration_names=}")
+    logger.debug(f"{args.input=}")
+    return args
+
+
+if __name__ == "__main__":
+    args = parse_arguments()
 
     def stream_with_line_breaks(stream):
         def write(string):
@@ -665,23 +657,31 @@ if __name__ == "__main__":
         else:
             return write
 
-    class_header = args.output + ".h"
-    class_impl = args.output + ".cxx"
-    class_trampoline = args.output + "_trampoline.txx"
-    with open(class_header, "w") as h, open(class_impl, "w") as cxx, open(
-        class_trampoline, "w"
-    ) as tramp:
-        stream_header = stream_with_line_breaks(h)
-        stream_impl = stream_with_line_breaks(cxx)
-        stream_tramp = stream_with_line_breaks(tramp) if args.trampoline else None
+    parsed_declarations = parse_headers(
+        args.input, args.include_dirs, args.declaration_names
+    )
+
+    try:
+        global_ns = declarations.get_global_namespace(parsed_declarations)
+        algo_namespace = (
+            global_ns.namespace("kwiver").namespace("vital").namespace("algo")
+        )
+        algo_namespace.init_optimizer()
+    except RuntimeError as ex:
+        logger.error("Error extracting namespaces")
+        logger.error(ex)
+        exit(1)
+
+    sd = Path(args.project_source_directory).absolute()
+    for filename, declaration, output in zip(
+        args.input, args.declaration_names, args.output
+    ):
+        if not filename.exists():
+            logger.error(f"{filename} does not exist")
+            continue
         parse_file(
-            args.input,
-            args.project_source_dir,
-            args.include_dirs,
-            args.declaration_name,
-            args.class_name,
-            args.extra_includes,
-            stream_header,
-            stream_impl,
-            stream_tramp,
+            algo_namespace=algo_namespace,
+            filename=str(filename),
+            project_source_directory=sd,
+            output_basename=str(output),
         )

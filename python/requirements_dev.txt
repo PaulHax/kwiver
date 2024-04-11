@@ -19,3 +19,7 @@ nose>1.2
 coverage>=4.4.1,<5.0.0
 pytest>=4.6,<=6.0
 multimethod>=1.2,<=1.4
+
+# for pybind11 wrapping generation
+castxml==0.4.5
+pygccxml==2.4.0
