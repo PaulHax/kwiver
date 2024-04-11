@@ -38,7 +38,7 @@ make_n_features( size_t num_feat )
   {
     T v = static_cast< T >( i ) / num_feat;
     auto f = std::make_shared< feature_< T > >();
-    T x = v * 1000, y = v * 1000 + 5;
+    T x = v * 5000, y = v * 5000 + 5;
     f->set_loc( Eigen::Matrix< T, 2, 1 >( x, y ) );
     f->set_scale( 1.0 + v );
     f->set_magnitude( 1 - v );
@@ -77,6 +77,46 @@ make_10_features()
     auto f = std::make_shared< feature_< T > >();
     T x = v * 1000, y = v * 1000 + 5;
     f->set_loc( Eigen::Matrix< T, 2, 1 >( x, y ) );
+    f->set_scale( scale[ i ] );
+    f->set_magnitude( mag[ i ] );
+    f->set_angle( v * 3.14159f );
+    f->set_color(
+      rgb_color(
+        static_cast< uint8_t >( i ),
+        static_cast< uint8_t >( i + 5 ),
+        static_cast< uint8_t >( i + 10 ) ) );
+    f->set_covar( covariance_< 2, T >( v ) );
+    feat.push_back( f );
+  }
+
+  return std::make_shared< simple_feature_set >( feat );
+}
+
+// Create a set of 10 features with known (unordered )
+// scale and magnitude values for unit testing
+// set the locations for nonmax filtering
+
+template < typename T >
+feature_set_sptr
+make_12_features()
+{
+  unsigned num_feat = 12;
+
+  std::vector< double > scale = {
+    1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 4.0, 1.0  };
+
+  std::vector< double > mag = {
+    0.5, 1.0, 1.0, 0.5, 1.0, 0.2, 1.0, 0.2, 1.0, 1.0, 1.0, 1.0 };
+
+  std::vector< unsigned > coord = {
+    100, 110, 300, 310, 320, 505, 510, 515, 700, 710, 720, 800 };
+
+  std::vector< feature_sptr > feat;
+  for( unsigned i = 0; i < num_feat; ++i )
+  {
+    T v = static_cast< T >( i ) / num_feat;
+    auto f = std::make_shared< feature_< T > >();
+    f->set_loc( Eigen::Matrix< T, 2, 1 >( coord[ i ], coord[ i ] ) );
     f->set_scale( scale[ i ] );
     f->set_magnitude( mag[ i ] );
     f->set_angle( v * 3.14159f );
