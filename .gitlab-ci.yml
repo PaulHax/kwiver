@@ -64,6 +64,20 @@ wheel-linux-python38-x86_64:build:
         - .cmake_wheel_artifacts
         - .rules
 
+wheel-linux-python38-x86_64:test:
+    extends:
+        - .wheel_linux38_x86_64
+        - .cmake_test_wheel_linux
+        - .linux_tester_tags
+        - .cmake_wheel_artifacts
+        - .rules
+    variables:
+        RUN_DEPENDENT: "true"
+    dependencies:
+        - wheel-linux-python38-x86_64:build
+    needs:
+        - wheel-linux-python38-x86_64:build
+
 # Windows
 
 ## Basic builds
