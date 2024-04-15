@@ -65,21 +65,32 @@ if( KWIVER_INSTALL_SET_UP_SCRIPT )
   endif()
 endif()
 
+find_package( GDAL REQUIRED )
+if(GDAL_FOUND)
+  file(REAL_PATH "${GDAL_INCLUDE_DIRS}/../share/gdal" GDAL_DATA)
+  file( APPEND "${KWIVER_SETUP_BATCH_FILE}" "set GDAL_DATA=${GDAL_DATA}\n" )
+  file( APPEND "${KWIVER_SETUP_POWERSHELL_FILE}" "$ENV:GDAL_DATA = \"${GDAL_DATA}\"\n" )
+  file( APPEND "${KWIVER_SETUP_SCRIPT_FILE}" "export GDAL_DATA=${GDAL_DATA}\n")
+endif()
+
+find_package( PROJ REQUIRED )
+if(PROJ_FOUND)
+  file(REAL_PATH "${PROJ_INCLUDE_DIR}/../share/proj" PROJ_LIB)
+  file( APPEND "${KWIVER_SETUP_BATCH_FILE}" "set PROJ_LIB=${PROJ_LIB}\n" )
+  file( APPEND "${KWIVER_SETUP_POWERSHELL_FILE}" "$ENV:PROJ_LIB = \"${PROJ_LIB}\"\n" )
+  file( APPEND "${KWIVER_SETUP_SCRIPT_FILE}" "export PROJ_LIB=${PROJ_LIB}\n" )
+endif()
+
+
 if ( fletch_FOUND )
   file( APPEND "${KWIVER_SETUP_BATCH_FILE}" "set PATH=${fletch_ROOT}/bin;%PATH%;\n" )
   file( APPEND "${KWIVER_SETUP_BATCH_FILE}" "set PATH=${fletch_ROOT}/x64/${_vcVersion}/bin;%PATH%;\n" )
-  file( APPEND "${KWIVER_SETUP_BATCH_FILE}" "set GDAL_DATA=${GDAL_ROOT}/share/gdal\n" )
-  file( APPEND "${KWIVER_SETUP_BATCH_FILE}" "set PROJ_LIB=${PROJ_ROOT}/share/proj\n" )
 
   file( APPEND "${KWIVER_SETUP_POWERSHELL_FILE}" "$ENV:PATH = \"${fletch_ROOT}/bin;$ENV:PATH\"\n" )
   file( APPEND "${KWIVER_SETUP_POWERSHELL_FILE}" "$ENV:PATH = \"${fletch_ROOT}/x64/${_vcVersion}/bin;$ENV:PATH\"\n" )
-  file( APPEND "${KWIVER_SETUP_POWERSHELL_FILE}" "$ENV:GDAL_DATA = \"${GDAL_ROOT}/share/gdal\"\n" )
-  file( APPEND "${KWIVER_SETUP_POWERSHELL_FILE}" "$ENV:PROJ_LIB = \"${PROJ_ROOT}/share/proj\"\n" )
 
   # should be unneccessary if rpath is set correctly
   file( APPEND "${KWIVER_SETUP_SCRIPT_FILE}" "# export ${LIBRARY_PATH_VAR}=${fletch_ROOT}/lib:$${LIBRARY_PATH_VAR}\n" )
-  file( APPEND "${KWIVER_SETUP_SCRIPT_FILE}" "export GDAL_DATA=${GDAL_ROOT}/share/gdal\n" )
-  file( APPEND "${KWIVER_SETUP_SCRIPT_FILE}" "export PROJ_LIB=${PROJ_ROOT}/share/proj\n" )
 else()
 if(WIN32)
   message(WARNING "set fletch_DIR, otherwise paths to external libraries will not be set")
