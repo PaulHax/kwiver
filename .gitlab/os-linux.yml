@@ -120,8 +120,9 @@
         - "$PYTHON_PREFIX/bin/python -m venv build/ci-test-venv"
         - . build/ci-test-venv/bin/activate
         - pip install -U pip
+        # test dependencies
+        - pip install pytest six
         - pip install dist/*.whl
-        # xxx(autogerenrate-python) enable once tests are updaed for new API
-        #- KWIVER_PYTHON_PLUGIN_PATH="kwiver.vital.tests.alg" pytest
+        - KWIVER_PYTHON_PLUGIN_PATH="kwiver.vital.tests.alg" pytest
 
     interruptible: true
