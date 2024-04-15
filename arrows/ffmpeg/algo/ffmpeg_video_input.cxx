@@ -46,6 +46,7 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 
+#include <filesystem>
 #include <iomanip>
 #include <list>
 #include <memory>
@@ -568,6 +569,14 @@ ffmpeg_video_input::priv
 ::open( std::string const& path )
 {
   hardware_init();
+  if( !std::filesystem::exists( path ) )
+  {
+    LOG_ERROR(
+      kv::get_logger( "ffmpeg_video_input" ),
+      "File " << path << " does not exist" );
+    return;
+  }
+
   video.emplace( *this, path );
 }
 
