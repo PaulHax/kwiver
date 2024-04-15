@@ -285,7 +285,7 @@ TEST ( filter_features_magnitude, filter_10_features )
     mag_values.end(), 0.0 );
 
   // Sum of top three scale values should be 2.4
-  EXPECT_EQ( sum_of_magnitudes, 2.4 );
+  EXPECT_DOUBLE_EQ( sum_of_magnitudes, 2.4 );
 }
 
 // ---------------------------------------------------------------------------
