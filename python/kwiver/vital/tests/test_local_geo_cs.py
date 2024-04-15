@@ -34,7 +34,6 @@ Tests for Python interface to vital::local_geo_cs
 
 """
 
-import nose.tools as nt
 import unittest
 import numpy as np
 from kwiver.vital.types import (

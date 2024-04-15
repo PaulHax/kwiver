@@ -35,7 +35,6 @@ Tests for DetectedObjectType interface class.
 """
 
 import unittest
-import nose.tools
 import numpy as np
 
 
@@ -43,7 +42,6 @@ from kwiver.vital.types import DetectedObjectType as DOT
 
 
 class TestDetectedObject(unittest.TestCase):
-
     def test_constructor(self):
         DOT()
         DOT(np.array(["name1", "class_name2", "class3"]), np.array([1.0, 2.3, 3.14]))

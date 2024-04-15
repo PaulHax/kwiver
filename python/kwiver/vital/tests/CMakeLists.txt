@@ -57,6 +57,7 @@ set(__testable_modnames
   test_metadata_map
   test_metadata_tags
   test_metadata_traits
+  test_modules
   test_object_track_state
   test_object_track_set
   test_query_result
@@ -72,8 +73,8 @@ set(__testable_modnames
   test_track_set
   test_track_state
   test_transform_2d
-  test_uid
   test_transform_2d_io
+  test_uid
   )
 
 # All python filenames_we in the vital.tests module

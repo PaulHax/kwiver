@@ -48,15 +48,15 @@ class TestCameraInstrinsicsBase(unittest.TestCase):
 
     def test_virt_methods(self):
         ci = CameraIntrinsics()
-        no_call_pure_virtual_method(ci.focal_length)
-        no_call_pure_virtual_method(ci.principal_point)
-        no_call_pure_virtual_method(ci.aspect_ratio)
-        no_call_pure_virtual_method(ci.skew)
-        no_call_pure_virtual_method(ci.image_width)
-        no_call_pure_virtual_method(ci.image_height)
-        no_call_pure_virtual_method(ci.map, np.array([0, 1]))
-        no_call_pure_virtual_method(ci.unmap, np.array([0, 1]))
-        no_call_pure_virtual_method(ci.as_matrix)
+        no_call_pure_virtual_method(self, ci.focal_length)
+        no_call_pure_virtual_method(self, ci.principal_point)
+        no_call_pure_virtual_method(self, ci.aspect_ratio)
+        no_call_pure_virtual_method(self, ci.skew)
+        no_call_pure_virtual_method(self, ci.image_width)
+        no_call_pure_virtual_method(self, ci.image_height)
+        no_call_pure_virtual_method(self, ci.map, np.array([0, 1]))
+        no_call_pure_virtual_method(self, ci.unmap, np.array([0, 1]))
+        no_call_pure_virtual_method(self, ci.as_matrix)
 
     def test_members(self):
         ci = CameraIntrinsics()
@@ -165,7 +165,7 @@ class TestVitalSimpleCameraIntrinsics(unittest.TestCase):
         self.check_cam_intrins_properties_equal(s)
 
     def test_init_from_base(self):
-        no_call_pure_virtual_method(SimpleCameraIntrinsics, CameraIntrinsics())
+        no_call_pure_virtual_method(self, SimpleCameraIntrinsics, CameraIntrinsics())
         SimpleCameraIntrinsics(SimpleCameraIntrinsics())
 
     def test_init_from_string(self):

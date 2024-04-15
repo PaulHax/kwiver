@@ -39,7 +39,7 @@ import math
 from six.moves import range
 
 import numpy as np
-import nose.tools as nt
+import unittest
 
 from kwiver.vital.types import (
     Camera,
@@ -58,7 +58,7 @@ from kwiver.vital.types import (
     TrackState,
 )
 
-from kwiver.vital.config import Config
+from kwiver.vital.config import Config, empty_config
 
 
 def random_point_3d(stddev):
@@ -280,7 +280,7 @@ def create_geo_poly(crs=geodesy.SRID.lat_lon_NAD83, pts=None):
 
 
 # Makes sure that a pure virtual method cannot be called
-def no_call_pure_virtual_method(mthd, *args, **kwargs):
+def no_call_pure_virtual_method(self, mthd, *args, **kwargs):
     """
     Catches a RuntimeError raised by attempting to call a bound method
     with an interface implementation. Used to test that a pybind11
@@ -291,7 +291,7 @@ def no_call_pure_virtual_method(mthd, *args, **kwargs):
     :param: **kwargs: Kwargs forwarded to method call
     :return:
     """
-    with nt.assert_raises_regexp(
+    with self.assertRaisesRegex(
         RuntimeError,
         "Tried to call pure virtual function",
     ):
@@ -305,10 +305,10 @@ def generate_dummy_config(**kwargs):
     :param kwargs: Named arguments provided to the function
     :return An instance of config with named arguments as attributes
     """
-    test_cfg = config.empty_config()
+    test_cfg = empty_config()
     for var_name in kwargs:
-        if isinstance(type(kwargs[var_name]), type(config)):
-            test_config.merge_config(kwargs[var_name])
+        if isinstance(type(kwargs[var_name]), Config):
+            test_cfg.merge_config(kwargs[var_name])
         else:
             test_cfg.set_value(str(var_name), str(kwargs[var_name]))
     return test_cfg

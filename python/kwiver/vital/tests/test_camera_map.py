@@ -36,20 +36,17 @@ Tests for CameraMap interface
 
 import unittest
 
-import nose.tools
-
 from kwiver.vital.types import Camera, CameraMap, SimpleCameraPerspective as scap
 
 
 class TestCameraMap(unittest.TestCase):
-
     def test_size(self):
         m = {0: scap(), 1: scap(), 5: scap()}
         cm = CameraMap(m)
-        nose.tools.assert_equal(cm.size, 3)
+        assert cm.size == 3
 
     def test_as_dict(self):
         m = {0: scap(), 1: scap(), 5: scap()}
         cm = CameraMap(m)
         m2 = cm.as_dict()
-        nose.tools.assert_equal(m[0].image_width(), m2[0].image_width())
+        assert m[0].image_width() == m2[0].image_width()

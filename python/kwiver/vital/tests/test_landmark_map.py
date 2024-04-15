@@ -36,7 +36,6 @@ Tests for Landmark_Map interface
 
 import numpy as np
 import numpy.testing as npt
-import nose.tools as nt
 import unittest
 
 from kwiver.vital.types import (
@@ -55,7 +54,7 @@ class TestSimpleLandmarkMap(unittest.TestCase):
         self.landmarks_dict = {0: self.landmark1, 1: self.landmark2}
 
     def test_inherits(self):
-        nt.ok_(issubclass(SimpleLandmarkMap, LandmarkMap))
+        self.assertTrue(issubclass(SimpleLandmarkMap, LandmarkMap))
 
     def test_construct(self):
         SimpleLandmarkMap()
@@ -63,5 +62,5 @@ class TestSimpleLandmarkMap(unittest.TestCase):
 
     def test_methods(self):
         sm = SimpleLandmarkMap(self.landmarks_dict)
-        nt.assert_equal(sm.size(), 2)
-        nt.assert_dict_equal(sm.landmarks(), self.landmarks_dict)
+        self.assertEqual(sm.size(), 2)
+        self.assertDictEqual(sm.landmarks(), self.landmarks_dict)

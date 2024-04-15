@@ -34,7 +34,6 @@ Tests for the vital classes metadata_map
 
 """
 
-import nose.tools as nt
 import numpy as np
 import unittest
 from kwiver.vital.tests.cpp_helpers import metadata_map_helpers as mmh
@@ -55,12 +54,16 @@ class TestMetadataMap(unittest.TestCase):
 
     def test_no_call_pure_virt(self):
         m = MetadataMap()
-        no_call_pure_virtual_method(m.size)
-        no_call_pure_virtual_method(m.metadata)
-        no_call_pure_virtual_method(m.has_item, mt.tags.VITAL_META_UNIX_TIMESTAMP, 1)
-        no_call_pure_virtual_method(m.get_item, mt.tags.VITAL_META_UNIX_TIMESTAMP, 1)
-        no_call_pure_virtual_method(m.get_vector, 1)
-        no_call_pure_virtual_method(m.frames)
+        no_call_pure_virtual_method(self, m.size)
+        no_call_pure_virtual_method(self, m.metadata)
+        no_call_pure_virtual_method(
+            self, m.has_item, mt.tags.VITAL_META_UNIX_TIMESTAMP, 1
+        )
+        no_call_pure_virtual_method(
+            self, m.get_item, mt.tags.VITAL_META_UNIX_TIMESTAMP, 1
+        )
+        no_call_pure_virtual_method(self, m.get_vector, 1)
+        no_call_pure_virtual_method(self, m.frames)
 
 
 class MetadataMapSub(MetadataMap):
@@ -113,11 +116,11 @@ class TestMetadataMapSub(unittest.TestCase):
         MetadataMapSub(self.map)
 
     def test_inheritance(self):
-        nt.ok_(issubclass(MetadataMapSub, MetadataMap))
+        self.assertTrue(issubclass(MetadataMapSub, MetadataMap))
 
     def test_size(self):
         mms = MetadataMapSub(self.map)
-        nt.assert_equal(mmh.size(mms), 1)
+        self.assertEqual(mmh.size(mms), 1)
 
     def test_metadata(self):
         mms = MetadataMapSub(self.map)
@@ -126,19 +129,19 @@ class TestMetadataMapSub(unittest.TestCase):
 
     def test_has_get_item(self):
         mms = MetadataMapSub(self.map)
-        nt.ok_(mmh.has_item(mms, self.tags[1], 1))
+        self.assertTrue(mmh.has_item(mms, self.tags[1], 1))
         ret_typed = mms.get_item(self.tags[0], 1)
-        nt.assert_equal(ret_typed.name, "Unknown / Undefined Entry")
+        self.assertEqual(ret_typed.name, "Unknown / Undefined Entry")
 
     def test_get_vector(self):
         mms = MetadataMapSub(self.map)
-        nt.assert_list_equal(mmh.get_vector(mms, 1), [])
+        self.assertListEqual(mmh.get_vector(mms, 1), [])
 
     def test_frames(self):
         mms = MetadataMapSub(self.map)
         ret_set = mmh.frames(mms)
-        nt.assert_in(1, ret_set)
-        nt.assert_equal(len(ret_set), 1)
+        self.assertIn(1, ret_set)
+        self.assertEqual(len(ret_set), 1)
 
 
 class TestSimpleMetadataMap(unittest.TestCase):
@@ -157,17 +160,17 @@ class TestSimpleMetadataMap(unittest.TestCase):
 
     def test_size(self):
         sm = SimpleMetadataMap()
-        nt.assert_equal(sm.size(), 0)
+        self.assertEqual(sm.size(), 0)
 
     def test_metadata(self):
         sm = SimpleMetadataMap()
         m = sm.metadata()
-        nt.ok_(isinstance(m, dict))
+        self.assertTrue(isinstance(m, dict))
 
     def test_has_get_item(self):
         sm = SimpleMetadataMap()
-        nt.assert_false(sm.has_item(self.small_tag[1], 1))
-        with nt.assert_raises_regexp(
+        self.assertFalse(sm.has_item(self.small_tag[1], 1))
+        with self.assertRaisesRegex(
             RuntimeError,
             "Metadata map does not contain frame 1",
         ):
@@ -176,11 +179,11 @@ class TestSimpleMetadataMap(unittest.TestCase):
     def test_get_vector(self):
         sm = SimpleMetadataMap()
         vm = sm.get_vector(1)
-        nt.ok_(isinstance(vm, list))
-        nt.assert_list_equal(vm, [])
+        self.assertTrue(isinstance(vm, list))
+        self.assertListEqual(vm, [])
 
     def test_frames(self):
         sm = SimpleMetadataMap()
         frames = sm.frames()
-        nt.ok_(isinstance(frames, set))
-        nt.assert_set_equal(frames, set())
+        self.assertTrue(isinstance(frames, set))
+        self.assertSetEqual(frames, set())

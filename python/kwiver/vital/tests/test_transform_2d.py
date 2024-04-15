@@ -36,7 +36,6 @@ Tests for Python interface to vital::transform_2d
 
 import numpy as np
 
-import nose.tools as nt
 import unittest
 from kwiver.vital.tests.py_helpers import no_call_pure_virtual_method
 from kwiver.vital.tests.cpp_helpers import transform_2d_helpers as t2dh
@@ -58,15 +57,15 @@ class SimpleTransform2D(Transform2D):
         return SimpleTransform2D(1 / self.arr)
 
 
-class TestVitalTransform2D(object):
+class TestVitalTransform2D(unittest.TestCase):
     # Note that clone and inverse_ are skipped. See binding code for explanation
     def test_bad_call_virtual_map(self):
         t = Transform2D()
-        no_call_pure_virtual_method(t.map, np.array([2, 4]))
+        no_call_pure_virtual_method(self, t.map, np.array([2, 4]))
 
     def test_pure_virt_inverse(self):
         t = Transform2D()
-        with nt.assert_raises_regexp(
+        with self.assertRaisesRegex(
             AttributeError,
             "'kwiver.vital.types.transform_2d.Transform2D' object has no attribute 'inverse_'",
         ):
@@ -74,7 +73,7 @@ class TestVitalTransform2D(object):
 
     def test_is_instance(self):
         st = SimpleTransform2D(np.array([2, 4]))
-        nt.ok_(isinstance(st, Transform2D))
+        self.assertTrue(isinstance(st, Transform2D))
 
 
 class TestVitalTransform2DSubclass(unittest.TestCase):
@@ -83,7 +82,7 @@ class TestVitalTransform2DSubclass(unittest.TestCase):
         st_inverse = st.inverse()
         np.testing.assert_array_equal(st_inverse.arr, np.array([0.5, 0.25]))
         # Make sure instance wasn't sliced
-        nt.ok_(isinstance(st_inverse, SimpleTransform2D))
+        self.assertTrue(isinstance(st_inverse, SimpleTransform2D))
         # Now test bouncing back to the cpp side, and back with no slicing
         st_inverse_2 = t2dh.call_inverse(st)
         self.assertIsInstance(st_inverse_2, SimpleTransform2D)
