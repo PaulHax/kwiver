@@ -34,12 +34,14 @@ Tests for the vital class mesh
 
 """
 
-import numpy as np
-import numpy.testing as npt
 import unittest
 import nose.tools as nt
+from pathlib import Path
 
 from kwiver.vital.types import Mesh
+from pathlib import Path
+
+TEST_DATA_DIR = Path(__file__).parents[0] / "data"
 
 
 class TestMesh(unittest.TestCase):
@@ -49,13 +51,10 @@ class TestMesh(unittest.TestCase):
 
     def test_constructor(self):
         Mesh()
-        Mesh.from_ply_file("tests/data/cube.ply")
+        Mesh.from_ply_file(str(TEST_DATA_DIR) + "/cube.ply")
 
     def test_object_properties(self):
-        import os
-
-        print(os.getcwd())
-        m = Mesh.from_ply_file("tests/data/cube.ply")
+        m = Mesh.from_ply_file(str(TEST_DATA_DIR) + "/cube.ply")
         nt.ok_(m.is_init())
         nt.assert_equal(m.num_verts(), 8)
         nt.assert_equal(m.num_faces(), 6)

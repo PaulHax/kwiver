@@ -36,13 +36,13 @@ target_link_libraries( kwiver
 )
 
 
-### Add demos as tests
-add_test(
-  NAME CXX::demo_python_impl_call
-  COMMAND ${KWIVER_BINARY_DIR}/bin/demo_python_impl_call
-)
-
 if (KWIVER_ENABLE_PYTHON)
+### Add demos as tests
+  add_test(
+    NAME CXX::demo_python_impl_call
+    COMMAND ${KWIVER_BINARY_DIR}/bin/demo_python_impl_call
+  )
+
   add_test(
     NAME Python::demo_python_impl_call
     COMMAND ${Python_EXECUTABLE} ${KWIVER_BINARY_DIR}/bin/demo_python_impl_call.py

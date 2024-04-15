@@ -38,9 +38,8 @@ import nose.tools as nt
 import numpy as np
 import unittest
 
+from kwiver.vital import plugin_management
 from kwiver.vital.types import geo_polygon as gp, geodesy, Polygon
-from kwiver.vital.config import config
-from kwiver.vital.modules import modules
 
 
 class TestVitalGeoPolygon(unittest.TestCase):
@@ -100,9 +99,9 @@ class TestVitalGeoPolygon(unittest.TestCase):
     def test_set_polygon(self):
         g_poly1 = gp.GeoPolygon()
         g_poly2 = gp.GeoPolygon(self._create_polygon(), self.crs_ll)
-        modules.load_known_modules()
+        vpm = plugin_management.plugin_manager_instance()
+        vpm.load_all_plugins()
         for instance in [g_poly1, g_poly2]:
-
             instance.set_polygon(Polygon([self.loc2_ll]), self.crs_ll)
 
             nt.assert_equals(instance.polygon().num_vertices(), 1)
@@ -137,7 +136,8 @@ class TestVitalGeoPolygon(unittest.TestCase):
                 )  # This would fail if loc2_ll was cached
 
     def test_conversion(self):
-        modules.load_known_modules()
+        vpm = plugin_management.plugin_manager_instance()
+        vpm.load_all_plugins()
 
         p_ll = gp.GeoPolygon(Polygon([self.loc_ll]), self.crs_ll)
         p_utm = gp.GeoPolygon(Polygon([self.loc_utm]), self.crs_utm_6s)

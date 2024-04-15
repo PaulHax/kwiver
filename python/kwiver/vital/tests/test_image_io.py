@@ -33,10 +33,13 @@ import tempfile
 import os
 from kwiver.vital.types import ImageContainer
 import numpy as np
+from kwiver.vital import plugin_management
 
 
 class TestVitalImageIO(TestCase):
     def setUp(self):
+        vpm = plugin_management.plugin_manager_instance()
+        vpm.load_all_plugins()
         self.instance = ImageIO.create("SimpleImageIO")
 
     @nose.tools.raises(RuntimeError)

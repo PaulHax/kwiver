@@ -8,7 +8,7 @@
 
 
 # results of tests being run will be exported to an Xunit xml file
-if (PYTHON_TEST)
+if (KWIVER_ENABLE_PYTHON_TESTS)
 
   set(no_install TRUE)
   string(TOLOWER "${CMAKE_PROJECT_NAME}" project_name)

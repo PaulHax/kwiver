@@ -27,7 +27,7 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-from kwiver.vital.config import config
+from kwiver.vital.config import Config, ConfigKeys, empty_config
 from kwiver.vital.tests.py_helpers import create_geo_poly
 from kwiver.vital.types import GeoPolygon
 
@@ -37,15 +37,15 @@ import nose.tools
 
 class TestVitalConfig(object):
     def test_create(self):
-        nose.tools.ok_(len(config.empty_config()) == 0)
-        config.ConfigKeys()
+        nose.tools.ok_(len(empty_config()) == 0)
+        ConfigKeys()
 
     def test_api_calls(self):
-        config.Config.block_sep()
-        config.Config.global_value
+        Config.block_sep()
+        Config.global_value
 
     def test_has_value(self):
-        c = config.empty_config()
+        c = empty_config()
         keya = "keya"
         keyb = "keyb"
         valuea = "valuea"
@@ -54,7 +54,7 @@ class TestVitalConfig(object):
         nose.tools.ok_(not c.has_value(keyb))
 
     def test_get_value(self):
-        c = config.empty_config()
+        c = empty_config()
         keya = "keya"
         valuea = "valuea"
         c.set_value(keya, valuea)
@@ -62,23 +62,23 @@ class TestVitalConfig(object):
         nose.tools.assert_equal(valuea, get_valuea)
 
     def test_get_value_nested(self):
-        c = config.empty_config()
+        c = empty_config()
         keya = "keya"
         keyb = "keyb"
         valuea = "valuea"
-        c.set_value(keya + config.Config.block_sep() + keyb, valuea)
+        c.set_value(keya + Config.block_sep() + keyb, valuea)
         nc = c.subblock(keya)
         get_valuea = nc.get_value(keyb)
         nose.tools.assert_equal(valuea, get_valuea)
 
     @nose.tools.raises(RuntimeError)
     def test_get_value_no_exist(self):
-        c = config.empty_config()
+        c = empty_config()
         keya = "keya"
         c.get_value(keya)
 
     def test_default_value(self):
-        c = config.empty_config()
+        c = empty_config()
         keyb = "keyb"
         valueb = "valueb"
         get_valueb = c.get_value(keyb, valueb)
@@ -86,7 +86,7 @@ class TestVitalConfig(object):
 
     @nose.tools.raises(RuntimeError)
     def test_unset_value(self):
-        c = config.empty_config()
+        c = empty_config()
         keya = "keya"
         valuea = "valuea"
         c.set_value(keya, valuea)
@@ -94,7 +94,7 @@ class TestVitalConfig(object):
         c.get_value(keya)
 
     def test_available_values(self):
-        c = config.empty_config()
+        c = empty_config()
         keya = "keya"
         keyb = "keyb"
 
@@ -108,12 +108,12 @@ class TestVitalConfig(object):
         nose.tools.assert_equal(len(avail), 2)
 
     def test_available_values_are_iterable(self):
-        c = config.empty_config()
+        c = empty_config()
         nose.tools.ok_(hasattr(c, "__getitem__"))
 
     @nose.tools.raises(RuntimeError)
     def test_read_only(self):
-        c = config.empty_config()
+        c = empty_config()
         keya = "keya"
         valuea = "valuea"
         valueb = "valueb"
@@ -123,7 +123,7 @@ class TestVitalConfig(object):
 
     @nose.tools.raises(RuntimeError)
     def test_read_only_unset(self):
-        c = config.empty_config()
+        c = empty_config()
         keya = "keya"
         valuea = "valuea"
         c.set_value(keya, valuea)
@@ -131,7 +131,7 @@ class TestVitalConfig(object):
         c.unset_value(keya)
 
     def test_subblock(self):
-        c = config.empty_config()
+        c = empty_config()
         block1 = "block1"
         block2 = "block2"
 
@@ -143,9 +143,9 @@ class TestVitalConfig(object):
         valueb = "valueb"
         valuec = "valuec"
 
-        c.set_value(block1 + config.Config.block_sep() + keya, valuea)
-        c.set_value(block1 + config.Config.block_sep() + keyb, valueb)
-        c.set_value(block2 + config.Config.block_sep() + keyc, valuec)
+        c.set_value(block1 + Config.block_sep() + keya, valuea)
+        c.set_value(block1 + Config.block_sep() + keyb, valueb)
+        c.set_value(block2 + Config.block_sep() + keyc, valuec)
 
         d = c.subblock(block1)
         get_valuea = d.get_value(keya)
@@ -162,7 +162,7 @@ class TestVitalConfig(object):
         )
 
     def test_subblock_view(self):
-        c = config.empty_config()
+        c = empty_config()
 
         block1 = "block1"
         block2 = "block2"
@@ -173,8 +173,8 @@ class TestVitalConfig(object):
         valuea = "valuea"
         valueb = "valueb"
 
-        c.set_value(block1 + config.Config.block_sep() + keya, valuea)
-        c.set_value(block2 + config.Config.block_sep() + keyb, valueb)
+        c.set_value(block1 + Config.block_sep() + keya, valuea)
+        c.set_value(block2 + Config.block_sep() + keyb, valueb)
 
         d = c.subblock_view(block1)
 
@@ -184,7 +184,7 @@ class TestVitalConfig(object):
             d.has_value(keyb), False, "Subblock inherited unrelated key"
         )
 
-        c.set_value(block1 + config.Config.block_sep() + keya, valueb)
+        c.set_value(block1 + Config.block_sep() + keya, valueb)
 
         get_valuea1 = d.get_value(keya)
 
@@ -200,8 +200,8 @@ class TestVitalConfig(object):
         )
 
     def test_merge_config(self):
-        c = config.empty_config()
-        d = config.empty_config()
+        c = empty_config()
+        d = empty_config()
         keya = "keya"
         keyb = "keyb"
         keyc = "keyc"
@@ -223,7 +223,7 @@ class TestVitalConfig(object):
         nose.tools.assert_equal(valuec, get_valuec, "New key did not appear")
 
     def test_getitem(self):
-        c = config.empty_config()
+        c = empty_config()
         key = "key"
         value = "oldvalue"
         c[key] = value
@@ -240,12 +240,12 @@ class TestVitalConfig(object):
 
     @nose.tools.raises(KeyError)
     def test_invalid_getitem(self):
-        c = config.empty_config()
+        c = empty_config()
         key = "key"
         value = c[key]
 
     def test_delitem(self):
-        c = config.empty_config()
+        c = empty_config()
         key = "key"
         value = "oldvalue"
         c[key] = value
@@ -254,12 +254,12 @@ class TestVitalConfig(object):
 
     @nose.tools.raises(KeyError)
     def test_invalid_delitem(self):
-        c = config.empty_config()
+        c = empty_config()
         key = "key"
         del c[key]
 
     def test_implicit_string_conversion_of_values(self):
-        c = config.empty_config()
+        c = empty_config()
         key = "key"
         value = 10
         c[key] = value
@@ -276,7 +276,7 @@ class TestVitalConfig(object):
             np.testing.assert_array_almost_equal(loc_in, loc_out, decimal=15)
 
     def test_get_value_geo_poly(self):
-        c = config.empty_config()
+        c = empty_config()
         keya = "keya"
         valuea = create_geo_poly()
 
@@ -285,7 +285,7 @@ class TestVitalConfig(object):
         self.check_pts_equal(valuea, get_valuea)
 
     def test_get_value_empty_geo_poly(self):
-        c = config.empty_config()
+        c = empty_config()
         keya = "keya"
         valuea = GeoPolygon()
 
@@ -296,7 +296,7 @@ class TestVitalConfig(object):
         nose.tools.ok_(get_valuea.is_empty())
 
     def test_default_value_geo_poly(self):
-        c = config.empty_config()
+        c = empty_config()
         keyb = "keyb"
         valueb = create_geo_poly()
 
@@ -306,16 +306,16 @@ class TestVitalConfig(object):
 
     @nose.tools.raises(RuntimeError)
     def test_get_value_geo_poly_no_exist(self):
-        c = config.empty_config()
+        c = empty_config()
         keya = "keya"
         c.get_value_geo_poly(keya)
 
     def test_get_value_geo_poly_nested(self):
-        c = config.empty_config()
+        c = empty_config()
         keya = "keya"
         keyb = "keyb"
         valuea = create_geo_poly()
-        c.set_value_geo_poly(keya + config.Config.block_sep() + keyb, valuea)
+        c.set_value_geo_poly(keya + Config.block_sep() + keyb, valuea)
         nc = c.subblock(keya)
         get_valuea = nc.get_value_geo_poly(keyb)
 
@@ -323,7 +323,7 @@ class TestVitalConfig(object):
 
     @nose.tools.raises(RuntimeError)
     def test_unset_geo_poly(self):
-        c = config.empty_config()
+        c = empty_config()
         keya = "keya"
         valuea = create_geo_poly()
         c.set_value_geo_poly(keya, valuea)
@@ -331,7 +331,7 @@ class TestVitalConfig(object):
         c.get_value_geo_poly(keya)
 
     def test_set_get_value_wrong_type(self):
-        c = config.empty_config()
+        c = empty_config()
         key = "key"
         value_gp = create_geo_poly()
         value_str = "value_str"
@@ -344,7 +344,7 @@ class TestVitalConfig(object):
         nose.tools.assert_raises(RuntimeError, c.get_value_geo_poly, key)
 
     def test_get_geo_poly_str(self):
-        c = config.empty_config()
+        c = empty_config()
         keya = "key"
         valuea = create_geo_poly()
 

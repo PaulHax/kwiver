@@ -121,6 +121,21 @@ detected_object_set_input
 ::new_stream()
 {}
 
+// ----------------------------------------------------------------------------
+std::pair< kwiver::vital::detected_object_set_sptr, std::string >
+detected_object_set_input
+::read_set()
+{
+  kwiver::vital::detected_object_set_sptr set;
+  std::string image_name;
+  const bool success = this->read_set( set, image_name );
+  if( !success )
+  {
+    set = nullptr;
+  }
+  return std::make_pair( set, image_name );
+}
+
 } // namespace algo
 
 } // namespace vital

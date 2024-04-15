@@ -30,13 +30,11 @@ from unittest import TestCase
 from kwiver.vital.algo import Transform2DIO
 import nose.tools
 import tempfile
-from kwiver.vital.modules import modules
 from unittest.mock import Mock
 
 
 class TestVitalTransform2DIO(TestCase):
     def setUp(self):
-        modules.load_known_modules()
         self.instance = Transform2DIO.create("SimpleTransform2DIO")
         # TODO: Replace these mocks with the actual vital types
         # The successful tests in this file are not indicators of anything being

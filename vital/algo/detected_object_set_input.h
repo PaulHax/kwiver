@@ -15,6 +15,7 @@
 
 #include <fstream>
 #include <string>
+#include <utility>
 
 namespace kwiver {
 
@@ -86,6 +87,8 @@ public:
   virtual bool read_set(
     kwiver::vital::detected_object_set_sptr& set,
     std::string& image_name ) = 0;
+
+  std::pair< kwiver::vital::detected_object_set_sptr, std::string > read_set();
 
   /// Determine if input file is at end of file.
   ///

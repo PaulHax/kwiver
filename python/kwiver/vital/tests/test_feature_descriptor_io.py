@@ -30,14 +30,15 @@ from unittest import TestCase
 from kwiver.vital.algo import FeatureDescriptorIO
 import nose.tools
 import tempfile
-from kwiver.vital.modules import modules
+from kwiver.vital import plugin_management
 import os
 from unittest.mock import Mock
 
 
 class TestVitalFeatureDescriptorIO(TestCase):
     def setUp(self):
-        modules.load_known_modules()
+        vpm = plugin_management.plugin_manager_instance()
+        vpm.load_all_plugins()
         self.instance = FeatureDescriptorIO.create("SimpleFeatureDescriptorIO")
         # TODO: Replace these mocks with the actual vital types
         # The successful tests in this file are not indicators of anything being

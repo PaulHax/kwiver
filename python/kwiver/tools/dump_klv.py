@@ -10,6 +10,12 @@ from kwiver.vital.config import ConfigBlockFormatter, read_config_file
 from kwiver.vital.algo import VideoInput, MetadataMapIO, ImageIO
 from kwiver.vital.types.metadata_traits import tag_traits_by_tag
 from kwiver.vital.io import basename_from_metadata
+import kwiver
+from importlib.metadata import version
+
+DEFAULT_CONFIG_PREFIX = (
+    Path(kwiver.__file__).parents[0] / "share" / "kwiver" / version("kwiver") / "config"
+)
 
 
 def add_command_options():
@@ -109,12 +115,22 @@ def run():
     metadata_serializer = MetadataMapIO()
     image_writer = ImageIO()
 
-    prefix = str(Path(__file__).parents[1].absolute())
-    config = read_config_file("applets/dump_klv.conf", "", "", prefix)
+    try:
+        # the path exists when installed as a wheel
+        config_path = DEFAULT_CONFIG_PREFIX / "applets" / "dump_klv.conf"
+        config = read_config_file(str(config_path))
+    except RuntimeError:
+        # look into the parent directory for configuration files
+        # this is the layout in the build/install tree
+        prefix = os.path.dirname(sys.executable) + "/.."
+        config = read_config_file("applets/dump_klv.conf", "", "", prefix)
 
     # If --config given, read in config file, merge in with default just generated
     if cmd_args.config:
         config.merge_config(read_config_file(cmd_args.config.name))
+    print(f"CONFIG #### {config}")
+    fmt = ConfigBlockFormatter(config)
+    fmt.print(sys.stdout)
 
     # Output file extension configures exporter
     if cmd_args.log and cmd_args.exporter is None:
@@ -137,22 +153,18 @@ def run():
     if cmd_args.compress:
         config["metadata_serializer:klv-json:compress"] = True
 
-    video_reader = VideoInput.set_nested_algo_configuration(
-        "video_reader", config, video_reader
-    )
+    video_reader = VideoInput.set_nested_algo_configuration("video_reader", config)
     VideoInput.get_nested_algo_configuration("video_reader", config, video_reader)
 
     metadata_serializer = MetadataMapIO.set_nested_algo_configuration(
-        "metadata_serializer", config, metadata_serializer
+        "metadata_serializer", config
     )
     MetadataMapIO.get_nested_algo_configuration(
         "metadata_serializer", config, metadata_serializer
     )
 
     if cmd_args.frames:
-        image_writer = ImageIO.set_nested_algo_configuration(
-            "image_writer", config, image_writer
-        )
+        image_writer = ImageIO.set_nested_algo_configuration("image_writer", config)
         ImageIO.get_nested_algo_configuration("image_writer", config, image_writer)
 
     # Check to see if we are to dump config
@@ -248,4 +260,5 @@ def run():
         t.join()
 
 
-run()
+if __name__ == "__main__":
+    run()

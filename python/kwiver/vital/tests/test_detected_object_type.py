@@ -88,9 +88,11 @@ class TestDetectedObject(unittest.TestCase):
         )
         np.testing.assert_array_equal(t.class_names(3.0), np.array(["foo2", "class3"]))
 
-        np.testing.assert_array_equal(
-            t.all_class_names(),
-            np.array(["class3", "class_name2", "foo1", "foo2", "name", "name1"]),
+        # use inclusion instead of equality since all_class_names is static and
+        # when tests run in parallel all_class_names could include more names
+        self.assertTrue(
+            set(np.array(["class3", "class_name2", "foo1", "foo2", "name", "name1"]))
+            <= set(t.all_class_names())
         )
         print()
         print("--------------------------")

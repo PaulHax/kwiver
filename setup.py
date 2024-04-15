@@ -38,10 +38,7 @@ setup(
         "Intended Audience :: Developers",
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: BSD License",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
         "Operating System :: Unix",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ],
@@ -52,48 +49,28 @@ setup(
     # Options ##################################################################
     zip_safe=False,
     include_package_data=True,
-    python_requires=">=3.6",
+    python_requires=">=3.8",
     # Package Specification ####################################################
     package_dir={"": PACKAGE_SRC},
-    packages=find_packages(where=PACKAGE_SRC, include=[f"{PACKAGE_NAME}*"]),
+    packages=find_packages(
+        where=PACKAGE_SRC,
+        include=[f"{PACKAGE_NAME}*"],
+        # remove once we update for kwiver 2.0.0.
+        exclude=[f"{PACKAGE_NAME}.vital.arrows*", f"{PACKAGE_NAME}.vital.sprokit*"],
+    ),
     # Requirements #############################################################
-    install_requires=["numpy", "importlib-metadata>=3.7.0; python_version < '3.8'"],
+    install_requires=["numpy"],
     # extras_require=[],
-    # tests_require=[],
+    tests_require=["pytest"],
     # Entry-Points #############################################################
     entry_points={
         "kwiver.python_plugins": [
             "say=kwiver.vital.test_interface.python_say",
             "they_say=kwiver.vital.test_interface.python_they_say",
-        ]
-        # 'kwiver.python_plugin_registration': [
-        #     'pythread_process=kwiver.sprokit.schedulers.pythread_per_process',
-        #     'apply_descriptor=kwiver.sprokit.processes.apply_descriptor',
-        #     'process_image=kwiver.sprokit.processes.process_image',
-        #     'print_number_process=kwiver.sprokit.processes.kw_print_number_process',
-        #     'homography_writer=kwiver.sprokit.processes.homography_writer',
-        #     'simple_homog_tracker=kwiver.sprokit.processes.simple_homog_tracker',
-        #     'alexnet_descriptors=kwiver.sprokit.processes.pytorch.alexnet_descriptors',
-        #     'resnet_augmentation=kwiver.sprokit.processes.pytorch.resnet_augmentation',
-        #     'resnet_descriptors=kwiver.sprokit.processes.pytorch.resnet_descriptors',
-        #     'srnn_tracker=kwiver.sprokit.processes.pytorch.srnn_tracker',
-        #     'simple_object_detector=kwiver.vital.tests.alg.simple_image_object_detector'
-        # ],
-        # 'kwiver.cpp_search_paths': [
-        #     'sprokit_process=kwiver.vital.util.entrypoint:sprokit_process_path',
-        #     'applets=kwiver.vital.util.entrypoint:applets_path',
-        #     'plugin_explorer=kwiver.vital.util.entrypoint:plugin_explorer_path'
-        # ],
-        # 'kwiver.env.ld_library_path': [
-        #     'kwiver_ld_library_path=kwiver.vital.util.entrypoint:get_library_path',
-        # ],
-        # 'kwiver.env.logger_factory': [
-        #     'vital_log4cplus_logger_factory=kwiver.vital.util.entrypoint:get_vital_logger_factory',
-        # ],
-        # 'console_scripts': [
-        #     'plugin_explorer=kwiver.kwiver_tools:plugin_explorer',
-        #     'kwiver=kwiver.kwiver_tools:kwiver',
-        # ],
+        ],
+        "console_scripts": [
+            "dump_klv=kwiver.tools.dump_klv:run",
+        ],
     },
     # Scikit-Build Stuff #######################################################
     cmake_minimum_required_version="3.15",  # matches primary CMakeLists.txt req

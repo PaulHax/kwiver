@@ -37,7 +37,6 @@ Tests for Python interface to vital::local_geo_cs
 import nose.tools as nt
 import unittest
 import numpy as np
-from kwiver.vital.modules import modules
 from kwiver.vital.types import (
     LocalGeoCS,
     GeoPoint,
@@ -45,12 +44,14 @@ from kwiver.vital.types import (
     local_geo_cs,
 )
 
-modules.load_known_modules()
+from kwiver.vital import plugin_management
 
 
 class TestLocalGeoCS(unittest.TestCase):
     @classmethod
     def setUp(self):
+        vpm = plugin_management.plugin_manager_instance()
+        vpm.load_all_plugins()
         self.wgs = geodesy.SRID.lat_lon_WGS84
         self.geo1 = GeoPoint(np.array([-73.75898515, 42.85012609, 0]), self.wgs)
         self.geo2 = GeoPoint(np.array([-73.75623008, 42.89913984, 52.381]), self.wgs)

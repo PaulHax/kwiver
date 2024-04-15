@@ -1,4 +1,4 @@
-
+# TODO update for kwiver 2.0.0
 # Exporting Plugin Implementations
 Add to your ``setup.py`` entrypoints section a "kwiver_plugins" namespace.
 This namespace is defined in the ``kwiver.vital.plugins.constants`` module under

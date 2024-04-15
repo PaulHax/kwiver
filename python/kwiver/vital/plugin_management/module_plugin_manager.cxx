@@ -53,18 +53,18 @@ PYBIND11_MODULE( _plugin_management, m )
       "currently active search path. " )
     )
     .def(
+      "add_search_path",
+      ( void ( kwiver::vital::plugin_manager::* )(
+        const kwiver::vital::path_t& ) ) & kv::plugin_manager::add_search_path,
+      py::doc( "Add a location to the search path for plugins" )
+    )
+    .def(
       "reload_all_plugins", &kv::plugin_manager::reload_all_plugins,
       py::doc( "Clears the factory list and reloads plugins." )
     )
     .def(
-      "impl_names_say", &kv::plugin_manager::impl_names< kv::say >,
-      py::doc( "Get list of plugin implementation names for say interface." )
-    )
-    .def(
-      "impl_names_format_config_block",
-      &kv::plugin_manager::impl_names< kv::format_config_block >,
-      py::doc(
-        "Get list of plugin implementation names for format_config_block interface." )
+      "impl_names", &kv::plugin_manager::_impl_names,
+      py::doc( "Get list of plugin implementation names for an interface." )
     );
 
 // -------------------------------------------------------------------------

@@ -37,7 +37,7 @@ import nose.tools as nt
 import numpy as np
 import unittest
 
-from kwiver.vital.modules import modules
+from kwiver.vital import plugin_management
 from kwiver.vital.types import geodesy as g
 from kwiver.vital.tests.py_helpers import no_call_pure_virtual_method
 
@@ -144,7 +144,8 @@ class TestVitalGeodesy(unittest.TestCase):
         print(desc)
 
     def test_descriptions(self):
-        modules.load_known_modules()
+        vpm = plugin_management.plugin_manager_instance()
+        vpm.load_all_plugins()
 
         # Test WGS84 lat/lon
         desc_wgs84_ll = g.geo_crs_description(g.SRID.lat_lon_WGS84)
@@ -223,7 +224,8 @@ class TestVitalGeodesy(unittest.TestCase):
         nt.assert_equal(self.get_desc_value(desc_wgs84_ups_s, "projection"), "stere")
 
     def test_convert(self):
-        modules.load_known_modules()
+        vpm = plugin_management.plugin_manager_instance()
+        vpm.load_all_plugins()
 
         # First no altitude
         loc_ll = self.loc1

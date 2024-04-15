@@ -31,59 +31,51 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Tests for python algorithm factory class
 """
 
-from __future__ import print_function, absolute_import
-
-import nose.tools as nt
-
-from kwiver.vital.algo import algorithm_factory, ImageObjectDetector
+from kwiver.vital import plugin_management
+from kwiver.vital.algo import ImageObjectDetector
 
 
-class TestImageObjectDetector(ImageObjectDetector):
+# an algorithm needs to implement a minimal pluggable API:
+class DummyImageObjectDetector(ImageObjectDetector):
     def __init__(self):
         ImageObjectDetector.__init__(self)
 
+    @classmethod
+    def from_config(cls, c):
+        return DummyImageObjectDetector()
+
+    @classmethod
+    def get_default_config(cls, c):
+        return
+
 
 def test_algorithm_factory():
+    # algorithm is automatically added since it is defined in the same file.
+    vpm = plugin_management.plugin_manager_instance()
+    vpm.load_all_plugins()
 
-    # Add algorithm
-    algorithm_factory.add_algorithm(
-        "TestImageObjectDetector", "test detector", TestImageObjectDetector
-    )
-
-    nt.ok_(
-        algorithm_factory.has_algorithm_impl_name(
-            "image_object_detector", "TestImageObjectDetector"
-        ),
-        "TestImageObjectDetector not found by the factory",
-    )
+    assert ImageObjectDetector.has_algorithm_impl_name(
+        "DummyImageObjectDetector"
+    ), "TestImageObjectDetector not found by the factory"
 
     # Check with an empty implementation
-    nt.assert_equal(
-        algorithm_factory.has_algorithm_impl_name("image_object_detector", ""), False
-    )
-    # Check with dummy implementation
-    nt.assert_equal(
-        algorithm_factory.has_algorithm_impl_name(
-            "image_object_detector", "NotAnObjectDetector"
-        ),
-        False,
-    )
+    assert ImageObjectDetector.has_algorithm_impl_name("") == False
+
+    # Check with non existsting implementation
+    assert ImageObjectDetector.has_algorithm_impl_name("NotAnObjectDetector") == False
 
     # Check that a registered implementation is returned by implementations
-    nt.ok_(
-        "TestImageObjectDetector"
-        in algorithm_factory.implementations("image_object_detector"),
-        "Dummy example_detector not registered",
-    )
+    assert (
+        "DummyImageObjectDetector" in ImageObjectDetector.registered_names()
+    ), "Dummy example_detector not registered"
+
     # Check with an empty algorithm return empty list
-    nt.assert_equal(len(algorithm_factory.implementations("")), 0)
+    assert len(vpm.impl_names("")) == 0
     # Check with dummy algorithm returns empty list
-    nt.assert_equal(len(algorithm_factory.implementations("NotAnAlgorithm")), 0)
+    assert len(vpm.impl_names("NotAnAlgorithm")) == 0
 
     # Make sure creating works
-    alg_out = algorithm_factory.create_algorithm(
-        "image_object_detector", "TestImageObjectDetector"
-    )
+    alg_out = ImageObjectDetector.create_algorithm("DummyImageObjectDetector")
 
-    nt.ok_(isinstance(alg_out, TestImageObjectDetector))
-    nt.ok_(isinstance(alg_out, ImageObjectDetector))
+    assert isinstance(alg_out, DummyImageObjectDetector)
+    assert isinstance(alg_out, ImageObjectDetector)

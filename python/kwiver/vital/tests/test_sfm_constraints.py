@@ -37,7 +37,6 @@ Tests for Python interface to vital::sfm_constraints
 import nose.tools as nt
 import unittest
 import numpy as np
-from kwiver.vital.modules import modules
 from kwiver.vital.types.metadata import *
 from kwiver.vital.types.metadata_traits import *
 from kwiver.vital.types import (
@@ -52,13 +51,14 @@ from kwiver.vital.types import (
     metadata_tags as mt,
     SimpleMetadataMap,
 )
-
-modules.load_known_modules()
+from kwiver.vital import plugin_management
 
 
 class TestSFMConstraints(unittest.TestCase):
     @classmethod
     def setUp(self):
+        vpm = plugin_management.plugin_manager_instance()
+        vpm.load_all_plugins()
         self.meta_ = SimpleMetadataMap()
         self.geo_ = LocalGeoCS()
         self.small_tag = [
@@ -79,7 +79,6 @@ class TestSFMConstraints(unittest.TestCase):
         SFMConstraints(self.meta_, self.geo_)
 
     def test_properties(self):
-        # modules.load_known_modules()
         # metadata property
         s = SFMConstraints(self.meta_, self.geo_)
         get_meta = s.metadata

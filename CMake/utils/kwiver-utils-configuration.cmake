@@ -42,7 +42,7 @@ function(kwiver_configure_file name source dest)
   set(multiValueArgs DEPENDS)
   cmake_parse_arguments(mcf "" "" "${multiValueArgs}" ${ARGN})
 
-  message(STATUS "[configure-${name}] Creating configure command")
+  #message(STATUS "[configure-${name}] Creating configure command")
 
   set(gen_command_args)
   foreach(arg IN LISTS mcf_UNPARSED_ARGUMENTS)

@@ -38,8 +38,8 @@ import nose.tools as nt
 import numpy as np
 import unittest
 
+from kwiver.vital import plugin_management
 from kwiver.vital.types import geo_point as gp, geodesy
-from kwiver.vital.modules import modules
 
 
 class TestVitalGeoPoint(unittest.TestCase):
@@ -137,7 +137,8 @@ class TestVitalGeoPoint(unittest.TestCase):
             )  # This would fail if loc3 was cached
 
     def test_conversion(self):
-        modules.load_known_modules()
+        vpm = plugin_management.plugin_manager_instance()
+        vpm.load_all_plugins()
 
         p_ll = gp.GeoPoint(self.loc1, self.crs_ll)
         p_utm = gp.GeoPoint(self.loc3, self.crs_utm_18n)

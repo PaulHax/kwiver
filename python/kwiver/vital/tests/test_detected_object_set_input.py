@@ -34,8 +34,8 @@ Tests for the DetectedObjectSetInput wrapping class
 import unittest
 
 from kwiver.vital.algo import DetectedObjectSetInput
-from kwiver.vital.config import config
-from kwiver.vital.modules.modules import load_known_modules
+from kwiver.vital.config import empty_config
+from kwiver.vital import plugin_management
 from kwiver.vital.types import DetectedObjectSet
 
 SIMULATOR_CONFIG = dict(
@@ -52,37 +52,39 @@ SIMULATOR_CONFIG = dict(
 
 
 def _create_simulator_config():
-    cfg = config.empty_config()
+    cfg = empty_config()
     for k, v in SIMULATOR_CONFIG.items():
         cfg[k] = v
     return cfg
 
 
 class TestVitalDetectedObjectSetInput(unittest.TestCase):
+    def setUp(self):
+        vpm = plugin_management.plugin_manager_instance()
+        vpm.load_all_plugins()
+
     def test_registered_names(self):
         """Print all the registered detected object set input arrows"""
-        load_known_modules()
         print("All registered detected object set input arrows:")
         for arrow in DetectedObjectSetInput.registered_names():
             print("  " + arrow)
 
     def test_open(self):
         """Create a DetectedObjectSetInput and call .open on it"""
-        load_known_modules()
         dosi = DetectedObjectSetInput.create("simulator")
         # The simulator doesn't actually try to open its file
         dosi.open("/example/file/path")
 
     def test_read_set(self):
         """Create and configure a DetectedObjectSetInput and call .read_set"""
-        load_known_modules()
         dosi = DetectedObjectSetInput.create("simulator")
         dosi.set_configuration(_create_simulator_config())
-        sets = list(iter(dosi.read_set, None))
-        self.assertEqual(len(sets), SIMULATOR_CONFIG["max_sets"])
-        for s in sets:
-            self.assertEqual(len(s), 2)
-            dos, image_name = s
+        dos, image_name = dosi.read_set()
+        counter = 0
+        while dos:
+            counter += 1
             self.assertIsInstance(dos, DetectedObjectSet)
             self.assertEqual(len(dos), SIMULATOR_CONFIG["set_size"])
             self.assertEqual(image_name, SIMULATOR_CONFIG["image_name"])
+            dos, image_name = dosi.read_set()
+        self.assertEqual(counter, SIMULATOR_CONFIG["max_sets"])
