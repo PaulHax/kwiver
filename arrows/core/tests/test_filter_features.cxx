@@ -18,8 +18,23 @@ using namespace kwiver::arrows::core;
 
 namespace {
 
-// Number of features, used in multiple tests
+// DO NOT MODIFY number of features, used in multiple tests
 int const num_features = 2000;
+
+// ----------------------------------------------------------------------------
+// Function to generate the x-coord into a vector of filtered set
+std::vector< unsigned >
+extract_x_coordinates( const feature_set_sptr& feature_set )
+{
+  std::vector< unsigned > x_coords;
+  auto features = feature_set->features();
+  for( const auto& feature : features )
+  {
+    auto loc = feature->loc();
+    x_coords.push_back( loc( 0 ) );
+  }
+  return x_coords;
+}
 
 } // namespace
 
@@ -306,4 +321,63 @@ TEST ( filter_features_nonmax, change_config )
   // Check if the size is between 200 and 220 default values
   EXPECT_GE( filtered_size, 200 );
   EXPECT_LE( filtered_size, 220 );
+}
+
+// ---------------------------------------------------------------------------
+// Test filtering 12 features with known attributes and location
+TEST ( filter_features_nonmax, filter_12_features )
+{
+  plugin_manager::instance().load_all_plugins();
+
+  // Generate instance of the filter algorithm
+  algo::filter_features_sptr filter_algo = create_algorithm<
+    algo::filter_features >( "nonmax" );
+
+  // Get the configuration
+  config_block_sptr config = filter_algo->get_configuration();
+
+  // Generate feature set with following attributes.
+
+  // Feature #  | Scale | Magnitude | X/Y Coord
+  // -----------------------------------------
+  //      0      |  1.0  |    0.5     | 100/100
+  //      1      |  1.0  |    1.0     | 110/110
+  //      2      |  2.0  |    1.0     | 300/300
+  //      3      |  1.0  |    0.5     | 310/310
+  //      4      |  1.0  |    1.0     | 320/320
+  //      5      |  1.0  |    0.2     | 500/500
+  //      6      |  1.0  |    1.0     | 510/510
+  //      7      |  1.0  |    0.2     | 520/520
+  //      8      |  1.0  |    1.0     | 700/700
+  //      9      |  2.0  |    1.0     | 710/710
+  //     10      |  4.0  |    1.0     | 720/720
+  //     11      |  1.0  |    1.0     | 800/800
+
+  // Based on these feature attributes, the selected features ought to have
+  // expected x-coordinates
+  std::vector< unsigned > expected_x_coords = { 110, 300, 320, 510, 700, 710,
+                                                720, 800 };
+
+  feature_set_sptr feature_set =
+    kwiver::testing::make_12_features< double >();
+
+  // Adjust config to select 8 from 12 features
+  config->set_value< int >( "num_features_target", 8 );
+  config->set_value< int >( "num_features_range", 0 );
+
+  // Set the updated configuration to the filter algorithm
+  filter_algo->set_configuration( config );
+
+  // Run the filter function
+  feature_set_sptr filtered_set = filter_algo->filter( feature_set );
+
+  // Extract x-coordinates from the feature set
+  std::vector< unsigned > feature_x_coords =
+    extract_x_coordinates( filtered_set );
+
+  // Sort feature x-coordinates
+  std::sort( feature_x_coords.begin(), feature_x_coords.end() );
+
+  // Check if sorted feature x-coordinates match desired x-coordinates
+  ASSERT_EQ( feature_x_coords, expected_x_coords );
 }
