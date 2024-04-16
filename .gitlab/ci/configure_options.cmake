@@ -42,8 +42,7 @@ configuration_flag(KWIVER_ENABLE_VXL "vxl")
 configuration_flag(KWIVER_ENABLE_SUPER3D "vxl")
 configuration_flag(KWIVER_ENABLE_VTK "vtk")
 
-#xxx(autogenerate-python) commenting out until dependent MRs are merged
 # Python settings.
-#configuration_flag(KWIVER_ENABLE_PYTHON "python")
-#configuration_flag(KWIVER_ENABLE_C_BINDINGS "python")
-#configuration_flag(KWIVER_ENABLE_PYTHON_TESTS "python")
+configuration_flag(KWIVER_ENABLE_PYTHON "python")
+configuration_flag(KWIVER_ENABLE_C_BINDINGS "python")
+configuration_flag(KWIVER_ENABLE_PYTHON_TESTS "python")

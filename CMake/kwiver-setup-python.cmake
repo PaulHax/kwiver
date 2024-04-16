@@ -83,6 +83,19 @@ ${cmd}\"\"\"")
   set(${outvar} "${_output}" PARENT_SCOPE)
 endfunction()
 
+###
+# Private helper function to check if a python package is installed
+function(_ensure_pypackage_exists package)
+  execute_process(
+    COMMAND "${PYTHON_EXECUTABLE}" -c "import ${package}"
+    RESULT_VARIABLE _exitcode
+    OUTPUT_VARIABLE _output)
+  if(NOT ${_exitcode} EQUAL 0)
+    message(FATAL_ERROR "${package} is missing !
+Please install ${package} in the python virtual environment associated with the build")
+  endif()
+endfunction()
+
 
 ###
 # Python major version user option
@@ -239,18 +252,8 @@ find_package(pybind11 REQUIRED)
 #
 
 if (KWIVER_ENABLE_TESTS)
-
-  message(STATUS "KWIVER_PYTHON and KWIVER_TESTING enabled.")
-  message(STATUS "Python tests will be added to CTest.")
-  message(STATUS "Tests are executed by PYTEST, for successful test execution, please install the appropriate pytest for your python distribution.")
-  message(STATUS "Testing dependencies will be added to Python requirements.")
-  set(PYTHON_TEST 1)
-#  set(PYTHON_REQS "${PYTHON_REQS};nose>1.2;coverage>=4.4.1,<5.0.0;pytest>=4.6,<=6.0;multimethod>=1.2,<=1.4")
-
+  _ensure_pypackage_exists("pytest")
 endif()
-
-#string(REPLACE ";" "\n" PYTHON_REQS "${PYTHON_REQS}")
-#file(WRITE ${KWIVER_BINARY_DIR}/python/requirements.txt "${PYTHON_REQS}")
 
 ###
 # Python package build locations
@@ -300,3 +303,5 @@ PYTHON_CONFIG_STATUS
 ")
 
 message(STATUS "${PYTHON_CONFIG_STATUS}")
+_ensure_pypackage_exists("pygccxml")
+_ensure_pypackage_exists("castxml")

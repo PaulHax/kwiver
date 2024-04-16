@@ -26,10 +26,14 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-from __future__ import print_function
-
 from kwiver.vital.algo import DetectedObjectSetOutput
 from kwiver.vital.tests.py_helpers import CommonConfigurationMixin
+
+from kwiver.vital.config import Config
+from typing import Type
+from typing import TypeVar
+
+T = TypeVar("T", bound="SimpleDetectedObjectSetOutput")
 
 
 class SimpleDetectedObjectSetOutput(CommonConfigurationMixin, DetectedObjectSetOutput):
@@ -42,19 +46,10 @@ class SimpleDetectedObjectSetOutput(CommonConfigurationMixin, DetectedObjectSetO
     def __init__(self):
         DetectedObjectSetOutput.__init__(self)
 
+    @classmethod
+    def from_config(cls: Type[T], c: Config) -> T:
+        return SimpleDetectedObjectSetOutput()
 
-def __vital_algorithm_register__():
-    from kwiver.vital.algo import algorithm_factory
-
-    # Register Algorithm
-    implementation_name = "SimpleDetectedObjectSetOutput"
-    if algorithm_factory.has_algorithm_impl_name(
-        SimpleDetectedObjectSetOutput.static_type_name(), implementation_name
-    ):
+    @classmethod
+    def get_default_config(cls, c: Config):  # ...  # nothing to set
         return
-    algorithm_factory.add_algorithm(
-        implementation_name,
-        "Test kwiver.vital.algo.DetectedObjectSetOutput",
-        SimpleDetectedObjectSetOutput,
-    )
-    algorithm_factory.mark_algorithm_as_loaded(implementation_name)
