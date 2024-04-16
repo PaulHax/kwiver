@@ -240,8 +240,11 @@ using feature_track_set_sptr = std::shared_ptr< feature_track_set >;
 /// \endcode
 ///
 /// \sa kwiver::vital::range::transform_view
+#ifndef KWIVER_PYBIND11_WRAPPING
+// xxx(python-wrapping-issues) causes issues during wrapping
 static constexpr auto as_feature_track =
   feature_track_state::downcast_transform;
+#endif
 
 class feature_track_set_changes;
 typedef std::shared_ptr< feature_track_set_changes >
