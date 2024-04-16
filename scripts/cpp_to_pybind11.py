@@ -218,7 +218,8 @@ def create_class_header(filename, project_source_directory, stream):
     fileguard = (
         "KWIVER_PYTHON_"
         + header_path_relative_to_project.replace(".", "_")
-        .replace("/", "_")
+        .replace(os.sep, "_")  # replace directory separator from filenames
+        .replace("/", "_")  # on windows there is more than one separator
         .replace("-", "_")
         .upper()
     )
