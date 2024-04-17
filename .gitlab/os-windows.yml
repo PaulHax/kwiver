@@ -98,5 +98,6 @@
         - . .\build\ci-venv\Scripts\Activate.ps1
         - Invoke-Expression -Command .gitlab/ci/vcvarsall.ps1
         - . build/setup_KWIVER.ps1
+        - Set-Item -Force -Path "env:KWIVER_DEFAULT_LOG_LEVEL" -Value "DEBUG"
         - ctest --output-on-failure -V -S .gitlab/ci/ctest_test.cmake
     interruptible: true
