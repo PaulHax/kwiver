@@ -85,9 +85,17 @@ set( classes
 # generate configuration file for the wrapper generator
 set(KWIVER_PYBIND11_ALGO "${classes}")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.ini.in  ${CMAKE_CURRENT_BINARY_DIR}/config.ini.in @ONLY)
+# due to https://github.com/CastXML/pygccxml/issues/180 we need to run castxml externally
+if (MSVC)
+file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/config.ini.in
+"run_external_castxml=1
+compiler_path=${CMAKE_CXX_COMPILER}
+")
+endif ()
 file(GENERATE
   OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/config.ini
   INPUT  ${CMAKE_CURRENT_BINARY_DIR}/config.ini.in)
+
 
 # files to generate
 set(algo_sources)
