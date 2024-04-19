@@ -2,23 +2,13 @@
 numpy==1.24.4
 six==1.13.0
 
-# For arrows
-opencv-python==3.4.18.65
-pillow==7.1.2
-scipy==1.5
-
-# For pytorch arrow
-torch==1.8.1
-torchvision==0.9.1
-
-# if building wheel
-scikit-build==0.11.1
-
 # Required for testing
-nose==1.3.7
 coverage==7.4.1
 pytest==8.0.0
 multimethod==1.4
+
+# if creating a wheel
+scikit-build==0.17.6
 
 # for pybind11 wrapping generation
 castxml==0.4.5

@@ -55,7 +55,7 @@ ubuntu2004-arrows:test:
     needs:
         - ubuntu2004-arrows:build
 
-# python wheels
+# linux python wheels
 wheel-linux-python38-x86_64:build:
     extends:
         - .wheel_linux38_x86_64
@@ -103,3 +103,26 @@ windows-vs2022-ninja-arrows:test:
         - windows-vs2022-ninja-arrows:build
     needs:
         - windows-vs2022-ninja-arrows:build
+
+# windows wheels
+wheel-windows-python38-x86_64:build:
+    extends:
+        - .wheel_windows38_x86_64
+        - .cmake_build_wheel_windows
+        - .windows_builder_tags
+        - .cmake_wheel_artifacts
+        - .rules
+
+wheel-windows-python38-x86_64:test:
+    extends:
+        - .wheel_windows38_x86_64
+        - .cmake_test_wheel_windows
+        - .windows_builder_tags
+        - .cmake_wheel_artifacts
+        - .rules
+    variables:
+        RUN_DEPENDENT: "true"
+    dependencies:
+        - wheel-windows-python38-x86_64:build
+    needs:
+        - wheel-windows-python38-x86_64:build

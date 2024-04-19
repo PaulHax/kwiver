@@ -31,12 +31,26 @@
         VCVARSALL: "${VS170COMNTOOLS}\\..\\..\\VC\\Auxiliary\\Build\\vcvarsall.bat"
         VCVARSPLATFORM: "x64"
         VCVARSVERSION: "14.35.32215"
+        # make error more readable
+        KWIVER_DEFAULT_LOG_LEVEL: "DEBUG"
+        # required for testing
+        KWIVER_PYTHON_PLUGIN_PATH: "kwiver.vital.tests.alg"
 
 .windows_vs2022_ninja_arrows:
     extends: .windows_vs2022
 
     variables:
         CMAKE_CONFIGURATION: windows_vs2022_ninja_ceres_ffmpeg_gdal_opencv_pdal_proj_python_qt_vtk_vxl
+
+.wheel_windows_x86_64:
+    extends: .windows_vs2022
+
+.wheel_windows38_x86_64:
+    extends: .wheel_windows_x86_64
+
+    variables:
+        CMAKE_CONFIGURATION: wheel_windows38_x86_64_vs2022_ninja_ceres_ffmpeg_gdal_opencv_pdal_proj_python_qt_vtk_vxl
+        SCIKIT_BUILD_DIR: "${GIT_CLONE_PATH}\\_skbuild\\win-amd64-3.8\\cmake-build"
 
 ## Tags
 
@@ -61,18 +75,25 @@
     - ninja --version
     - cmake -P .gitlab/ci/download_qt.cmake
     - Set-Item -Force -Path "env:PATH" -Value "$pwdpath\.gitlab\qt\bin;$env:PATH"
-    - cmake -P .gitlab/ci/download_python.cmake
-    - Set-Item -Force -Path "env:PATH" -Value "$pwdpath\.gitlab\python;$env:PATH"
-    - Set-Item -Force -Path "env:PYTHONHOME" -Value "$pwdpath\.gitlab\python"
     - cmake -P .gitlab/ci/download_fletch.cmake
     - Set-Item -Force -Path "env:PATH" -Value "$env:PATH;$pwdpath\.gitlab\fletch\bin;$pwdpath\.gitlab\fletch\x64\vc17\bin"
 
+.before_script_windows_setup_python: &before_script_windows_setup_python
+    - cmake -P .gitlab/ci/download_python.cmake
+    - Set-Item -Force -Path "env:PATH" -Value "$pwdpath\.gitlab\python;$env:PATH"
+    - Set-Item -Force -Path "env:PYTHONHOME" -Value "$pwdpath\.gitlab\python"
+
+.before_script_windows_setup_wheel_python: &before_script_windows_setup_wheel_python
+    - cmake -P .gitlab/ci/download_wheel_python.cmake
+    - Set-Item -Force -Path "env:PATH" -Value "$pwdpath\.gitlab\python;$env:PATH"
+    - Set-Item -Force -Path "env:PYTHONHOME" -Value "$pwdpath\.gitlab\python"
+
 .before_script_windows_venv: &before_script_windows_venv
-    # Build and activate the venv
     - python -m venv $pwdpath\build\ci-venv
     # This may be necessary when running manually.
     # Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
     - . .\build\ci-venv\Scripts\Activate.ps1
+    - python -m pip install --upgrade pip
     - pip install -qq -r $pwdpath\.gitlab\ci\requirements_dev-windows.txt
 
 .cmake_build_windows:
@@ -80,6 +101,7 @@
 
     script:
         - *before_script_windows
+        - *before_script_windows_setup_python
         - *before_script_windows_venv
         - Invoke-Expression -Command .gitlab/ci/vcvarsall.ps1
         - Invoke-Expression -Command .gitlab/ci/buildcache.ps1
@@ -90,14 +112,52 @@
         - buildcache --show-stats
     interruptible: true
 
+.cmake_build_wheel_windows:
+    stage: build
+    script:
+        - *before_script_windows
+        - *before_script_windows_setup_wheel_python
+        - *before_script_windows_venv
+        - pip install scikit-build delvewheel
+        - Invoke-Expression -Command .gitlab/ci/vcvarsall.ps1
+        - Invoke-Expression -Command .gitlab/ci/buildcache.ps1
+        - Set-Item -Force -Path "env:PATH" -Value "$env:PATH;$pwdpath\.gitlab\buildcache\bin"
+        - buildcache --show-stats
+        - "python setup.py bdist_wheel -- -C $env:GIT_CLONE_PATH/.gitlab/ci/configure_wheel.cmake > $env:GIT_CLONE_PATH/skbuild_output.log"
+        - delvewheel show --add-path "$env:SCIKIT_BUILD_DIR\bin;$env:CI_PROJECT_DIR\.gitlab\fletch\bin" (Get-ChildItem dist\*.whl | % FullName) | Out-File -FilePath "$env:GIT_CLONE_PATH\wheel_output.log"
+        - delvewheel repair --add-path "$env:SCIKIT_BUILD_DIR\bin;$env:CI_PROJECT_DIR\.gitlab\fletch\bin" (Get-ChildItem dist\*.whl | % FullName) | Out-File -Append -FilePath "$env:GIT_CLONE_PATH\wheel_output.log"
+        - Rename-Item -Path dist -NewName dist-orig
+        - Rename-Item -Path wheelhouse -NewName dist
+        - buildcache --show-stats
+    interruptible: true
+
 .cmake_test_windows:
     stage: test
 
     script:
         - *before_script_windows
+        - *before_script_windows_setup_python
         - . .\build\ci-venv\Scripts\Activate.ps1
         - Invoke-Expression -Command .gitlab/ci/vcvarsall.ps1
         - . build/setup_KWIVER.ps1
         - Set-Item -Force -Path "env:KWIVER_DEFAULT_LOG_LEVEL" -Value "DEBUG"
         - ctest --output-on-failure -V -S .gitlab/ci/ctest_test.cmake
+    interruptible: true
+
+.cmake_test_wheel_windows:
+    stage: test
+
+    script:
+        - $pwdpath = $pwd.Path
+        - powershell -File ".gitlab/ci/cmake.ps1"
+        - Set-Item -Force -Path "env:PATH" -Value "$pwdpath\.gitlab\cmake\bin;$env:PATH"
+        - *before_script_windows_setup_wheel_python
+        # install the wheel in a clean venv
+        - python -m venv $pwdpath\build\ci-test-venv
+        - . .\build\ci-test-venv\Scripts\Activate.ps1
+        - python -m pip install --upgrade pip
+        # test dependencies
+        - pip install "pytest<=8.1" six
+        - pip install (Get-ChildItem dist\*.whl | % FullName)
+        - pytest
     interruptible: true
