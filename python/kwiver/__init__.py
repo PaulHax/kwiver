@@ -53,9 +53,29 @@ def _logging_onetime_init() -> None:
         )
 
 
-# For Python >=3.8  we need to explicitly add paths where dll will be imported from.
-if sys.version_info >= (3, 8) and sys.platform == "win32":
-    # __file__ is at Lib\site_packages\kwiver and kwiver dlls in toplevel bin
-    os.add_dll_directory(str(Path(__file__).parents[3].absolute() / "bin"))
+def _add_library_paths() -> None:
+    # For Python >=3.8  we need to explicitly add paths where dll will be imported from.
+    if sys.version_info >= (3, 8) and sys.platform == "win32":
+        paths = [
+            # in the build directory __file__ is at Lib\site_packages\kwiver and kwiver dlls in toplevel bin
+            Path(__file__).parents[3].absolute() / "bin",
+            # in a a wheel __file__ is at Lib\site_packages\kwiver and kwiver dlls in  the same level bin
+            Path(__file__).parents[0].absolute() / "bin",
+        ]
+        for path in paths:
+            if path.exists():
+                os.add_dll_directory(str(path))
+                logging.getLogger(__name__).debug(f"Adding {path} to dll search paths")
+        # xxx(python310) it look like this is not need for python310
+        if sys.version_info[:2] == (
+            3,
+            8,
+        ):
+            path = (Path(__file__).parents[1] / "kwiver.libs").resolve()
+            if path.exists():
+                os.environ["PATH"] = f"{str(path)}{os.pathsep}{os.environ['PATH']}"
+                logging.getLogger(__name__).debug(f"Adding {path} to PATH")
+
 
 _logging_onetime_init()
+_add_library_paths()
