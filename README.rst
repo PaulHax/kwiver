@@ -13,7 +13,7 @@ Kitware Image and Video Exploitation and Retrieval
 
 The KWIVER toolkit is a collection of software tools designed to
 tackle challenging image and video analysis problems and other related
-challenges. Recently started by Kitware’s Computer Vision and
+challenges. Started by Kitware’s Computer Vision and
 Scientific Visualization teams, KWIVER is an ongoing effort to
 transition technology developed over multiple years to the open source
 domain to further research, collaboration, and product development.
@@ -50,15 +50,13 @@ KWIVER Docker Image
 =============================
 
 Kitware maintains a `Docker <https://www.docker.com/>`_ image with KWIVER prebuilt.
-The Dockerfile used to build the image can be found `here <dockerfile>`_.
+The Dockerfile used to build the image can be found `here <Dockerfile>`_.
 
 Pull the image from Dockerhub::
 
  "docker pull kitware/kwiver:latest" (latest master)
 
  "docker pull kitware/kwiver:release" (latest release)
-
- "docker pull kitware/kwiver:1.6.0" (static release)
 
 (`https://hub.docker.com/r/kitware/kwiver <https://hub.docker.com/r/kitware/kwiver>`_)
 
@@ -121,7 +119,6 @@ The following are the most important CMake configuration options for KWIVER:
 ``KWIVER_ENABLE_DOCS``        Turn on building the Doxygen documentation
 ``KWIVER_ENABLE_LOG4CPLUS``   Enable log4cplus logger back end
 ``KWIVER_ENABLE_PYTHON``      Enable the Vital Python bindings
-``KWIVER_ENABLE_SPROKIT``     Enable the Stream Processing Toolkit
 ``KWIVER_ENABLE_TESTS``       Build the unit tests (requires Google Test)
 ``KWIVER_ENABLE_TOOLS``       Build the command line tools (e.g. plugin_explorer)
 ``fletch_DIR``                Install directory of a Fletch build.
@@ -135,6 +132,16 @@ packages built by Fletch should be turned on by default.
 The fletch_DIR is the fletch build directory root, which contains the fletchConfig.cmake file.
 
 The following sections will walk you through the basic options for a minimal KWIVER build.
+
+Building with Python Enabled
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The required python packages are included in the source files `kwiver/src/python/requirements_dev.txt`
+It is recommended to create and use a virtual python environment. Python version 3.8 is a required minimum.
+`python -m venv env` is one method for creating a virtual environment.
+Activate the virtual environment, `source env/bin/activate`.
+Install the python packages needed for kwiver.
+`pip install -r kwiver/src/python/requirements_dev.txt`
+
 
 Basic CMake generation via command line
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
