@@ -155,9 +155,19 @@ set_config_helper(
   VITAL_UNUSED config_block_description_t const& description  =
   config_block_description_t() )
 {
-  kwiver::vital::get_nested_camera_intrinsics_configuration(
-    key, config,
-    value );
+  if( value )
+  {
+    ValueType cam_intrinsics = value->clone();
+    kwiver::vital::set_nested_camera_intrinsics_configuration(
+      key, config,
+      cam_intrinsics );
+  }
+
+  // We only set a value to assign a description to the key.
+  // The value will never be read from the config itself,
+  // as this type has a custom specialized accessor
+  // that returns a new instance each time.
+  config->set_value< ValueType >( key, value, description );
 }
 
 // A helper for getting a value from a config block. This specialization is for
@@ -170,7 +180,7 @@ ValueType
 get_config_helper( config_block_sptr config, config_block_key_t const& key )
 {
   ValueType cam_intrinsics;
-  kwiver::vital::set_nested_camera_intrinsics_configuration(
+  kwiver::vital::get_nested_camera_intrinsics_configuration(
     key, config,
     cam_intrinsics );
   return cam_intrinsics;
