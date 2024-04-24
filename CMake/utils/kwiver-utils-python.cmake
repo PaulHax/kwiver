@@ -161,7 +161,6 @@ endfunction ()
 # SeeAlso:
 #     kwiver/CMake/utils/kwiver-utils-configuration.cmake
 #     ../../sprokit/conf/sprokit-macro-python.cmake
-#     ../../vital/bindings/python/vital/CMakeLists.txt
 #     ../../sprokit/processes/bindings/python/kwiver/CMakeLists.txt
 #     ../../sprokit/processes/bindings/python/kwiver/util/CMakeLists.txt
 function (kwiver_add_python_module path     modpath    module)

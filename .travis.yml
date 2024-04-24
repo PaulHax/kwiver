@@ -40,7 +40,6 @@ script:
           -Dfletch_DIR=/opt/kitware/fletch/share/cmake/
           -DKWIVER_ENABLE_ARROWS=ON
           -DKWIVER_ENABLE_CERES=ON
-          -DKWIVER_ENABLE_C_BINDINGS=ON
           -DKWIVER_ENABLE_DOCS=OFF
           -DKWIVER_ENABLE_FFMPEG=ON
           -DKWIVER_ENABLE_GDAL=ON
