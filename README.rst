@@ -118,10 +118,9 @@ The following are the most important CMake configuration options for KWIVER:
 ``CMAKE_BUILD_TYPE``          The compiler mode, usually Debug or Release
 ``CMAKE_INSTALL_PREFIX``      The path to where you want the kwiver build products to install
 ``KWIVER_ENABLE_ARROWS``      Enable algorithm implementation plugins
-``KWIVER_ENABLE_C_BINDINGS``  Whether to build the Vital C bindings
 ``KWIVER_ENABLE_DOCS``        Turn on building the Doxygen documentation
 ``KWIVER_ENABLE_LOG4CPLUS``   Enable log4cplus logger back end
-``KWIVER_ENABLE_PYTHON``      Enable the Vital Python bindings (requires KWIVER_ENABLE_C_BINDINGS)
+``KWIVER_ENABLE_PYTHON``      Enable the Vital Python bindings
 ``KWIVER_ENABLE_SPROKIT``     Enable the Stream Processing Toolkit
 ``KWIVER_ENABLE_TESTS``       Build the unit tests (requires Google Test)
 ``KWIVER_ENABLE_TOOLS``       Build the command line tools (e.g. plugin_explorer)
@@ -146,7 +145,7 @@ You will also need to replace the fletch path with your own::
 
     $ cmake </path/to/kwiver/source> -DCMAKE_BUILD_TYPE=Release \
             -Dfletch_DIR:PATH=<path/to/fletch/build/dir> \
-            -DKWIVER_ENABLE_ARROWS:BOOL=ON -DKWIVER_ENABLE_C_BINDINGS:BOOL=ON \
+            -DKWIVER_ENABLE_ARROWS:BOOL=ON \
             -DKWIVER_ENABLE_EXTRAS:BOOL=ON -DKWIVER_ENABLE_LOG4CPLUS:BOOL=ON \
             -DKWIVER_ENABLE_PROCESSES:BOOL=ON -DKWIVER_ENABLE_PYTHON:BOOL=ON \
             -DKWIVER_ENABLE_SPROKIT:BOOL=ON -DKWIVER_ENABLE_TOOLS:BOOL=ON \

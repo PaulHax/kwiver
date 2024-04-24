@@ -44,5 +44,4 @@ configuration_flag(KWIVER_ENABLE_VTK "vtk")
 
 # Python settings.
 configuration_flag(KWIVER_ENABLE_PYTHON "python")
-configuration_flag(KWIVER_ENABLE_C_BINDINGS "python")
 configuration_flag(KWIVER_ENABLE_PYTHON_TESTS "python")

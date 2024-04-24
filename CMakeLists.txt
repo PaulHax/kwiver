@@ -147,10 +147,7 @@ MARK_AS_ADVANCED(KWIVER_USE_BUILD_TREE)
 
 option( KWIVER_ENABLE_EXTRAS "Enable extras content" OFF )
 
-## TODO: How should pytgon and c lib interact?
-OPTION( KWIVER_ENABLE_C_BINDINGS               "Enable C bindings libraries" OFF)
-CMAKE_DEPENDENT_OPTION( KWIVER_ENABLE_PYTHON   "Enable python code" OFF
-  KWIVER_ENABLE_C_BINDINGS OFF )
+option( KWIVER_ENABLE_PYTHON "Enable python code" OFF )
 
 if (WIN32)
   # Set default for python tests to OFF on windows for now
@@ -180,11 +177,6 @@ include( kwiver-utils )
 if (KWIVER_ENABLE_PYTHON)
   if (NOT WIN32)
     OPTION(KWIVER_SYMLINK_PYTHON "Symlink python files instead of copying." OFF)
-  endif()
-
-  if( NOT KWIVER_ENABLE_C_BINDINGS )
-    message( SEND_ERROR  "Python can not be enabled unless KWIVER_ENABLE_C_BINDINGS "
-      "is also enabled." )
   endif()
 endif()
 

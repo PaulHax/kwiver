@@ -27,7 +27,6 @@ RUN cd /kwiver/build && \
       -DCMAKE_INSTALL_PREFIX=/opt/kitware/kwiver \
       -Dfletch_DIR:PATH=/opt/kitware/fletch/share/cmake \
       -DKWIVER_ENABLE_ARROWS=ON \
-      -DKWIVER_ENABLE_C_BINDINGS=ON \
       -DKWIVER_ENABLE_CERES=ON \
       -DKWIVER_ENABLE_CUDA=${ENABLE_CUDA} \
       -DKWIVER_ENABLE_EXTRAS=ON \
