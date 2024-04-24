@@ -19,7 +19,7 @@ kwiver_add_python_library(
 #
 
 set(libraries_to_link pybind11::embed pybind11::pybind11)
-if(NOT SKBUILD)
+if((NOT SKBUILD) OR MSVC)
   # libraries included in a wheel should not link to Python::Python directly
   # When used from python, libpython is already loaded so the plugin is able to find the required symbols.
   set(libraries_to_link "${libraries_to_link}" Python::Python)

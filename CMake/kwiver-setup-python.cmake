@@ -152,7 +152,7 @@ set(__prev_kwiver_pyversion "${KWIVER_PYTHON_MAJOR_VERSION}" CACHE INTERNAL
 # allowing to build python wheels which should not link directly to libpython
 
 set(_requested_python_components Interpreter Development.Module)
-if(NOT SKBUILD)
+if((NOT SKBUILD) OR MSVC)
   set(_requested_python_components ${_requested_python_components} Development.Embed)
 endif()
 find_package(Python 3.8 REQUIRED COMPONENTS ${_requested_python_components})

@@ -8,6 +8,5 @@ kwiver_add_python_library(
   _plugin_management
   "${THIS_MODULE}"
   SOURCES module_plugin_manager.cxx
-  PRIVATE pybind11::pybind11
-          vital
+  PRIVATE vital
 )
