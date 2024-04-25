@@ -77,5 +77,18 @@ def _add_library_paths() -> None:
                 logging.getLogger(__name__).debug(f"Adding {path} to PATH")
 
 
+def _setup_projdb_path() -> None:
+    """Set path to proj.db file. Call to proj library require access to this
+    file. Ideally we should use an API call to the proj arrow to set this path via
+    `proj_context_set_search_paths()`
+    See also https://proj.org/en/6.3/resource_files.html#where-are-proj-resource-files-looked-for
+    """
+    if "PROJ_LIB" not in os.environ:
+        path = str(Path(__file__).parents[0] / "share")
+        os.environ["PROJ_LIB"] = path
+        logging.getLogger(__name__).debug(f"Setting PROJ_LIB to {path}")
+
+
 _logging_onetime_init()
 _add_library_paths()
+_setup_projdb_path()
