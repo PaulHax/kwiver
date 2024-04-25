@@ -55,13 +55,16 @@ setup(
     packages=find_packages(
         where=PACKAGE_SRC,
         include=[f"{PACKAGE_NAME}*"],
-        # remove once we update for kwiver 2.0.0.
-        exclude=[f"{PACKAGE_NAME}.vital.arrows*", f"{PACKAGE_NAME}.vital.sprokit*"],
+        # xxx(python-arrows) bring back once arrows are adapted to new API
+        exclude=[
+            f"{PACKAGE_NAME}.arrows*",
+            f"{PACKAGE_NAME}.sprokit*",
+        ],
     ),
     # Requirements #############################################################
     install_requires=["numpy"],
     # extras_require=[],
-    tests_require=["pytest"],
+    tests_require=["pytest", "six"],
     # Entry-Points #############################################################
     entry_points={
         "kwiver.python_plugins": [
