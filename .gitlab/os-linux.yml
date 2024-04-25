@@ -29,6 +29,11 @@
         CMAKE_CONFIGURATION: wheel_linux38_x86_64_ceres_dbow2_ffmpeg_gdal_kpf_opencv_pdal_proj_python_uuid_vtk_vxl
         PYTHON_PREFIX: /opt/python/cp38-cp38
 
+.test_wheel_linux38_x86_64:
+    extends: .manylinux2014_x86_64
+    image: "quay.io/pypa/manylinux_2_28_x86_64"
+
+
 .linux_builder_tags:
     tags:
         - build
