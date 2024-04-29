@@ -1,6 +1,5 @@
 # Required for general binding function
 numpy==1.24.4
-six==1.13.0
 
 # Required for testing
 coverage==7.4.1

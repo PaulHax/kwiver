@@ -36,7 +36,6 @@ Helper functions for testing various Vital components
 
 import logging
 import math
-from six.moves import range
 
 import numpy as np
 import unittest

@@ -64,7 +64,7 @@ setup(
     # Requirements #############################################################
     install_requires=["numpy"],
     # extras_require=[],
-    tests_require=["pytest", "six"],
+    tests_require=["pytest"],
     # Entry-Points #############################################################
     entry_points={
         "kwiver.python_plugins": [

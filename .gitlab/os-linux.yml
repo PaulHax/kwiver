@@ -129,7 +129,7 @@
         - . build/ci-test-venv/bin/activate
         - pip install -U pip
         # test dependencies
-        - pip install "pytest<=8.1" six
+        - pip install "pytest<=8.1"
         - pip install dist/*.whl
         - pytest
 

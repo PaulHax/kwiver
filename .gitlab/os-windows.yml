@@ -157,7 +157,7 @@
         - . .\build\ci-test-venv\Scripts\Activate.ps1
         - python -m pip install --upgrade pip
         # test dependencies
-        - pip install "pytest<=8.1" six
+        - pip install "pytest<=8.1"
         - pip install (Get-ChildItem dist\*.whl | % FullName)
         - pytest
     interruptible: true

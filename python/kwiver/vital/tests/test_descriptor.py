@@ -38,7 +38,6 @@ from __future__ import print_function
 import random
 import unittest
 
-from six.moves import range
 import numpy
 
 from kwiver.vital.types import new_descriptor, DescriptorD, DescriptorF, Descriptor

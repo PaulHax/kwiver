@@ -38,8 +38,6 @@ import unittest
 
 import numpy
 
-from six.moves import range
-
 from kwiver.vital.types import (
     ObjectTrackSet,
     ObjectTrackState,
