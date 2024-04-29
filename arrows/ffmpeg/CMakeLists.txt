@@ -20,11 +20,13 @@ endif()
 set( plugin_ffmpeg_headers )
 set( plugin_ffmpeg_sources )
 set( plugin_ffmpeg_classes
+  algo/ffmpeg_image_io
   algo/ffmpeg_video_input
   algo/ffmpeg_video_input_clip
   algo/ffmpeg_video_output
 
   ffmpeg_audio_stream_settings
+  ffmpeg_convert_image
   ffmpeg_cuda
   ffmpeg_init
   ffmpeg_util

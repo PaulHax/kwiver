@@ -14,3 +14,5 @@ Arrows: Core
 Arrows: FFmpeg
 
 * Added video_input_ffmpeg_rewire.
+
+* Added ffmpeg_image_io.
