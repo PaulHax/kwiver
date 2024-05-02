@@ -1,13 +1,6 @@
 .. image:: doc/kwiver_Logo-300x78.png
    :alt: KWIVER
 
-|master|   |release|   |version|   |docker|
-
-.. |master| image:: https://img.shields.io/travis/Kitware/kwiver/master?label=master
-.. |release| image:: https://img.shields.io/travis/Kitware/kwiver/release?label=release
-.. |version| image:: https://img.shields.io/github/release/kitware/kwiver
-.. |docker| image:: https://img.shields.io/docker/pulls/kitware/kwiver
-
 Kitware Image and Video Exploitation and Retrieval
 ==================================================
 
@@ -17,8 +10,8 @@ challenges. Started by Kitware’s Computer Vision and
 Scientific Visualization teams, KWIVER is an ongoing effort to
 transition technology developed over multiple years to the open source
 domain to further research, collaboration, and product development.
-KWIVER is a collection of C++ libraries with C and Python bindings
-and uses an permissive `BSD License <LICENSE>`_.
+KWIVER is a collection of C++ libraries with Python bindings
+and uses a permissive `BSD License <LICENSE>`_.
 
 One of the primary design goals of KWIVER is to make it easier to pull
 together algorithms from a wide variety of third-party, open source
@@ -58,7 +51,7 @@ grow as we expand Arrows.
 
 Vital has minimal required dependencies (only Eigen_).
 C++ tests additionally rely on `Google Test`_.
-Arrows processes are structured so that
+Arrows are structured so that
 the code that depends on an external package is in a directory with
 the major dependency name (e.g. vxl, ocv). The dependencies can be
 turned ON or OFF through CMake variables.
@@ -115,13 +108,13 @@ The following sections will walk you through the basic options for a minimal KWI
 
 Building with Python Enabled
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The required python packages are included in the source files
-`kwiver/src/python/requirements_dev.txt`
+The required python packages are included.
+``kwiver/src/python/requirements_dev.txt``
 It is recommended to create and use a virtual python environment. Python version 3.8 is a required minimum.
-`python -m venv env` is one method for creating a virtual environment.
-Activate the virtual environment, `source env/bin/activate`and install
+``python -m venv env`` is one method for creating a virtual environment.
+Activate the virtual environment, ``source env/bin/activate`` and install
 the python packages needed for kwiver with
-`pip install -r kwiver/src/python/requirements_dev.txt`
+``pip install -r kwiver/src/python/requirements_dev.txt``
 
 
 Basic CMake generation via command line
@@ -190,8 +183,7 @@ then create an install directory inside the build directory.  This install
 folder will be populated with all binaries, libraries, headers, and other files
 you will need to develop your application with KWIVER. MSVC users, note that
 this install directory is for a single build configuration; there will not be
-configuration named directories in this directory structure
-(i.e. no ``/bin/release``, only ``/bin``).
+configuration named directories in this directory structure.
 
 .. note::
 
@@ -236,14 +228,14 @@ KWIVER Users
 Here are some applications using KWIVER that serve as an example of how to
 leverage KWIVER for a specific application:
 
-========== ================================================================
-TeleSculptor_    A collection of tools for structure-from-motion and dense 3D
-           reconstruction from imagery with an emphasis on aerial video.
-           The primary component is a GUI application named TeleSculptor.
-VIAME_     A computer vision library designed to integrate several image and
-           video processing algorithms together in a common distributed
-           processing framework, majorly targeting marine species analytics.
-========== ================================================================
+============= ================================================================
+TeleSculptor_ A collection of tools for structure-from-motion and dense 3D
+              reconstruction from imagery with an emphasis on aerial video.
+              The primary component is a GUI application named TeleSculptor.
+VIAME_        A computer vision library designed to integrate several image and
+              video processing algorithms together in a common distributed
+              processing framework, majorly targeting marine species analytics.
+============= ================================================================
 
 Testing
 ========
@@ -289,6 +281,8 @@ DIVA program.
 
 The authors would like to thank NOAA for their support of this work via the
 NOAA Fisheries Strategic Initiative on Automated Image Analysis.
+
+The authors would like to thank NGA for their support of this work.
 
 
 .. Appendix I: References
