@@ -16,7 +16,7 @@ Contents:
    introduction
    developer/index
 
-.. vital/architecture
+   vital/architecture
    arrows/architecture
    sprokit/sprokit
    tools
