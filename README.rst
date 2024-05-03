@@ -282,9 +282,6 @@ DIVA program.
 The authors would like to thank NOAA for their support of this work via the
 NOAA Fisheries Strategic Initiative on Automated Image Analysis.
 
-The authors would like to thank NGA for their support of this work.
-
-
 .. Appendix I: References
 .. ======================
 
