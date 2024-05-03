@@ -197,7 +197,10 @@ typedef std::shared_ptr< object_track_set > object_track_set_sptr;
 /// \endcode
 ///
 /// \sa kwiver::vital::range::transform_view
+#ifndef KWIVER_PYBIND11_WRAPPING
+// xxx(python-wrapping-issues) causes issues during wrapping
 static constexpr auto as_object_track = object_track_state::downcast_transform;
+#endif
 
 } // namespace vital
 

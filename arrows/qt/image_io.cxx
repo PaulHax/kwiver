@@ -77,7 +77,11 @@ image_io
 
   if( !img.isNull() )
   {
-    img.save( qt_string( filename ) );
+    const bool success = img.save( qt_string( filename ) );
+    if( !success )
+    {
+      LOG_ERROR( logger(), "Could not save image " << filename );
+    }
   }
 }
 

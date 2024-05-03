@@ -84,12 +84,13 @@ public:
   /// This method writes any necessary final data to the currently open file.
   virtual void complete() {}
 
-// expose filename as a python property
-#if defined( KWIVER_PYBIND11_WRAPPING ) || defined( KWIVER_PYBIND11_INCLUDE )
+  ///@{
+  /// Filename property
+  /// @note  Required for accessing it as a python property
   std::string
   get_filename() const { return m_filename; }
   void set_filename( std::string filename ) { m_filename = filename; }
-#endif
+  ///@}
 
 protected:
   std::ostream& stream();

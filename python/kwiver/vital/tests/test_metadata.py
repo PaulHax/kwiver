@@ -38,6 +38,7 @@ unknown_metadata_item, and metadata
 import numpy as np
 import sys
 import unittest
+import platform
 
 from kwiver.vital.types.metadata_traits import *
 from kwiver.vital.types.metadata import *
@@ -163,8 +164,21 @@ class TestVitalMetadataItemSubclasses(unittest.TestCase):
         tag = mt.tags.VITAL_META_FRAME_CENTER
         inst1 = MetadataItem(tag, GeoPoint())
         inst2 = MetadataItem(tag, self.g_point)
-        type_info1 = TypeInfo("kwiver::vital::geo_point", as_string=str(GeoPoint()))
-        type_info2 = TypeInfo("kwiver::vital::geo_point", as_string=str(self.g_point))
+        if platform.system() == "Windows":
+            # std::type_info::name (used to derive typeinfo internally) result
+            # is different on windows versus the result on linux after
+            # demangling. This is expected.
+            type_info1 = TypeInfo(
+                "class kwiver::vital::geo_point", as_string=str(GeoPoint())
+            )
+            type_info2 = TypeInfo(
+                "class kwiver::vital::geo_point", as_string=str(self.g_point)
+            )
+        else:
+            type_info1 = TypeInfo("kwiver::vital::geo_point", as_string=str(GeoPoint()))
+            type_info2 = TypeInfo(
+                "kwiver::vital::geo_point", as_string=str(self.g_point)
+            )
         self.check_instance(
             inst1,
             PropInfo("Geodetic Frame Center (lon/lat/alt)", tag, GeoPoint()),
@@ -180,8 +194,23 @@ class TestVitalMetadataItemSubclasses(unittest.TestCase):
         tag = mt.tags.VITAL_META_CORNER_POINTS
         inst1 = MetadataItem(tag, GeoPolygon())
         inst2 = MetadataItem(tag, self.g_poly)
-        type_info1 = TypeInfo("kwiver::vital::geo_polygon", as_string=str(GeoPolygon()))
-        type_info2 = TypeInfo("kwiver::vital::geo_polygon", as_string=str(self.g_poly))
+        if platform.system() == "Windows":
+            # std::type_info::name (used to derive typeinfo internally) result
+            # is different on windows versus the result on linux after
+            # demangling. This is expected.
+            type_info1 = TypeInfo(
+                "class kwiver::vital::geo_polygon", as_string=str(GeoPolygon())
+            )
+            type_info2 = TypeInfo(
+                "class kwiver::vital::geo_polygon", as_string=str(self.g_poly)
+            )
+        else:
+            type_info1 = TypeInfo(
+                "kwiver::vital::geo_polygon", as_string=str(GeoPolygon())
+            )
+            type_info2 = TypeInfo(
+                "kwiver::vital::geo_polygon", as_string=str(self.g_poly)
+            )
         self.check_instance(
             inst1, PropInfo("Corner Points (lon/lat)", tag, GeoPolygon()), type_info1
         )

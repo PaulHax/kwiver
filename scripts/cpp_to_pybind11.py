@@ -25,6 +25,7 @@ import sys
 from pathlib import Path
 import logging
 import time
+import subprocess
 
 logger = logging.getLogger(__name__)
 
@@ -218,7 +219,8 @@ def create_class_header(filename, project_source_directory, stream):
     fileguard = (
         "KWIVER_PYTHON_"
         + header_path_relative_to_project.replace(".", "_")
-        .replace("/", "_")
+        .replace(os.sep, "_")  # replace directory separator from filenames
+        .replace("/", "_")  # on windows there is more than one separator
         .replace("-", "_")
         .upper()
     )
@@ -482,7 +484,13 @@ def parse_class(class_, stream):
     stream("}")
 
 
-def parse_headers(headers, include_directories, declaration_names):
+def parse_headers(
+    headers,
+    include_directories,
+    declaration_names,
+    run_external_castxml=None,
+    compiler_path=None,
+):
     """
     Parse the provided headers and extract declatation form them.
     `include_directories` should provide all the paths required to resolved
@@ -492,23 +500,54 @@ def parse_headers(headers, include_directories, declaration_names):
     """
     # Find out the xml generator (gccxml or castxml)
     generator_path, generator_name = utils.find_xml_generator()
+    cflags = "-std=c++17 -fsized-deallocation -DKWIVER_PYBIND11_WRAPPING"
 
-    # Configure the xml generator
+    ## Configure the xml generator
     config = parser.xml_generator_configuration_t(
         start_with_declarations=declaration_names,
         include_paths=include_directories,
         xml_generator_path=generator_path,
         xml_generator=generator_name,
-        cflags="-std=c++17 -fsized-deallocation -DKWIVER_PYBIND11_WRAPPING",
+        cflags=cflags,
         castxml_epic_version=1,  # required to be able to parse comments
     )
 
     toc = time.perf_counter()
-    parsed_declarations = parser.parse(
-        [str(header) for header in headers],
-        config,
-        compilation_mode=parser.COMPILATION_MODE.ALL_AT_ONCE,
-    )
+    if run_external_castxml:
+        # compose a file will all the headers this has the same effect with COMPILATION_MODE.ALL_AT_ONCE
+        file = ""
+        for header in headers:
+            file += f'#include "{header}" \n'
+        with open("python_kwiver_vital_algo.h", "w") as F:
+            F.write(file)
+
+        # compose the command for castxml
+        command = []
+        command.append(generator_path)
+        command.append(cflags)
+        command.append(" ".join(f'-I"{path}"' for path in include_directories))
+        command.append("-c -x c++")
+        command.append(f'--castxml-cc-msvc  "(" "{compiler_path}"  -std:c++17  ")"')
+        command.append(f"--castxml-output=1")
+        command.append(f"-o python_kwiver_vital_algo.xml python_kwiver_vital_algo.h")
+        command.append('--castxml-start "{0}"'.format(",".join(declaration_names)))
+        logger.debug(command)
+
+        cmd_line = " ".join(command)
+        print(cmd_line)
+        process = subprocess.Popen(args=cmd_line, shell=True, stdout=subprocess.PIPE)
+
+        process.wait()
+        parsed_declarations = parser.parse_xml_file(
+            "python_kwiver_vital_algo.xml", config=config
+        )
+    else:
+        parsed_declarations = parser.parse(
+            [str(header) for header in headers],
+            config,
+            compilation_mode=parser.COMPILATION_MODE.ALL_AT_ONCE,
+        )
+
     tic = time.perf_counter()
     logger.debug(f"Time to parse {toc-tic}")
     return parsed_declarations
@@ -587,6 +626,15 @@ def parse_arguments():
         help="Character used to separate lists in .ini file /commandline",
         default="\n",
     )
+    arg_parser.add_argument(
+        "--run-external-castxml",
+        help="Compose the command and execute castxml as part of this script (only supported on windows)",
+        default=False,
+    )
+    arg_parser.add_argument(
+        "--compiler-path",
+        help="Path to native compiler, required if run-external-castxml is selected",
+    )
 
     arg_parser.add_argument(
         "-v", "--verbose", help="Print out generated wrapping code", action="store_true"
@@ -658,7 +706,11 @@ if __name__ == "__main__":
             return write
 
     parsed_declarations = parse_headers(
-        args.input, args.include_dirs, args.declaration_names
+        args.input,
+        args.include_dirs,
+        args.declaration_names,
+        args.run_external_castxml,
+        args.compiler_path,
     )
 
     try:
