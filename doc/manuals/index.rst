@@ -18,10 +18,8 @@ Contents:
 
    vital/architecture
    arrows/architecture
-   sprokit/sprokit
    tools
    tutorials
-   extentions
 
 
 Indices and tables

@@ -3,10 +3,10 @@ Arrows
 
 Arrows is the collection of plugins that provides implementations of the
 algorithms declared in Vital. Each arrow can be enabled or disabled
-in build process through CMake options. Most arrows bring in additional
+in the build process through CMake options. Most arrows bring in additional
 third-party dependencies and wrap the capabilities of those libraries
 to make them accessible through the Vital APIs. The code in Arrows
-also converts or wrap data types from these external libraries into
+also converts or wraps data types from these external libraries into
 Vital data types. This allows interchange of data between algorithms
 from different arrows using Vital types as the intermediary.
 
@@ -32,7 +32,22 @@ The provided Arrows are:
 
    core
    ceres
+   cuda
+   dbow2
+   ffmpeg
+   gdal
+   klv
+   kpf
+   mvg
    opencv
+   pdal
    proj
+   qt
+   serialize
+   super3d
+   test_data
+   tests
    uuid
+   vtk
    vxl
+   zlib
