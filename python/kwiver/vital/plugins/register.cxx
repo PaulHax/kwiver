@@ -8,12 +8,13 @@
  * implementations.
  */
 
+#include <pybind11/embed.h>
 #include <pybind11/pybind11.h>
 
 #include <vital/logger/logger.h>
 #include <vital/plugin_management/plugin_loader.h>
 
-#include <python/kwiver/internal/python.h>
+// #include <python/kwiver/internal/python.h>
 #include <python/kwiver/internal/python_plugin_factory.h>
 
 #include <kwiversys/Encoding.hxx>

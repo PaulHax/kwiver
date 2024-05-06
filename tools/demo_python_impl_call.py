@@ -55,9 +55,9 @@ def test_they_say_example():
 
             impl = sf.create(t_name, cb)
             print(impl.says())
-    print()
 
 
-test_config_formatter_load_example()
-test_say_example()
-test_they_say_example()
+if __name__ == "__main__":
+    test_config_formatter_load_example()
+    test_say_example()
+    test_they_say_example()

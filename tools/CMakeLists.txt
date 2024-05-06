@@ -1,6 +1,9 @@
 #
 # CMake file for the kwiver tool runner
 #
+if (SKBUILD)
+ return()
+endif ()
 
 kwiver_add_executable( demo_macro_magic demo_macro_magic.cxx )
 target_link_libraries(

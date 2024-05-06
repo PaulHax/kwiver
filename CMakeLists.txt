@@ -82,6 +82,16 @@ list(INSERT CMAKE_MODULE_PATH 0 ${KWIVER_CMAKE_DIR})
 # "Future" generally meaning versions of CMake that are greater than the one
 # currently used.
 include(kwiver-cmake-future)
+option( KWIVER_ENABLE_PYTHON   "Enable python code" OFF)
+if(KWIVER_ENABLE_PYTHON AND WIN32 AND SKBUILD)
+  # When patching wheels on windows with delvewheel only pyd modules and
+  # libraries are inspected for dependencies and are being patched.
+  # So, we force .pyd extension to all of them to ensure they will be
+  # picked up by delvewheel.
+  # See also https://github.com/adang1345/delvewheel/issues/47
+  set(CMAKE_SHARED_MODULE_SUFFIX ".pyd")
+  set(CMAKE_SHARED_LIBRARY_SUFFIX ".pyd")
+endif()
 
 # ===========================================================================================
 # project global includes
@@ -147,19 +157,9 @@ MARK_AS_ADVANCED(KWIVER_USE_BUILD_TREE)
 
 option( KWIVER_ENABLE_EXTRAS "Enable extras content" OFF )
 
-option( KWIVER_ENABLE_PYTHON "Enable python code" OFF )
 
-if (WIN32)
-  # Set default for python tests to OFF on windows for now
-  CMAKE_DEPENDENT_OPTION( KWIVER_ENABLE_PYTHON_TESTS "Enable python tests" OFF
+CMAKE_DEPENDENT_OPTION( KWIVER_ENABLE_PYTHON_TESTS "Enable python tests" ON
     "KWIVER_ENABLE_PYTHON; KWIVER_ENABLE_TESTS" OFF )
-  if (KWIVER_ENABLE_PYTHON_TESTS)
-    message( WARNING "Python tests are not currently supported for Windows." )
-  endif()
-else()
-  CMAKE_DEPENDENT_OPTION( KWIVER_ENABLE_PYTHON_TESTS "Enable python tests" ON
-    "KWIVER_ENABLE_PYTHON; KWIVER_ENABLE_TESTS" OFF )
-endif()
 
 if (KWIVER_ENABLE_SERIALIZE_PROTOBUF)
   if (WIN32)

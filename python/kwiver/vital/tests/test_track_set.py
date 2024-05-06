@@ -34,8 +34,6 @@ Tests for Python interface to vital::track_set
 
 """
 
-from six.moves import range
-
 from kwiver.vital.types import Track, TrackState
 from kwiver.vital.types import TrackSet
 

@@ -79,6 +79,9 @@ if(PROJ_FOUND)
   file( APPEND "${KWIVER_SETUP_BATCH_FILE}" "set PROJ_LIB=${PROJ_LIB}\n" )
   file( APPEND "${KWIVER_SETUP_POWERSHELL_FILE}" "$ENV:PROJ_LIB = \"${PROJ_LIB}\"\n" )
   file( APPEND "${KWIVER_SETUP_SCRIPT_FILE}" "export PROJ_LIB=${PROJ_LIB}\n" )
+  # install proj.db so it can be included in the python wheel
+  install(FILES "${PROJ_LIB}/proj.db"
+        DESTINATION "${CMAKE_INSTALL_PREFIX}/share")
 endif()
 
 

@@ -29,6 +29,14 @@
         CMAKE_CONFIGURATION: wheel_linux38_x86_64_ceres_dbow2_ffmpeg_gdal_kpf_opencv_pdal_proj_python_uuid_vtk_vxl
         PYTHON_PREFIX: /opt/python/cp38-cp38
 
+.test_wheel_linux38_x86_64:
+    extends: .wheel_linux38_x86_64
+    # use a clean image when testing
+    image: "quay.io/pypa/manylinux_2_28_x86_64"
+    variables:
+        KWIVER_PYTHON_PLUGIN_PATH: kwiver.vital.tests.alg
+
+
 .linux_builder_tags:
     tags:
         - build
@@ -121,8 +129,8 @@
         - . build/ci-test-venv/bin/activate
         - pip install -U pip
         # test dependencies
-        - pip install "pytest<=8.1" six
+        - pip install "pytest<=8.1"
         - pip install dist/*.whl
-        - KWIVER_PYTHON_PLUGIN_PATH="kwiver.vital.tests.alg" pytest
+        - pytest
 
     interruptible: true
