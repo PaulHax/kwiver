@@ -44,6 +44,8 @@ The provided Arrows are:
    proj
    qt
    serialize
+   .. sprokit (not active, needs to be ported to v2)
+
    super3d
    test_data
    tests

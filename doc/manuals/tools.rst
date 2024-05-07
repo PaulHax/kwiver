@@ -16,4 +16,11 @@ including the available Arrows processes.
   tools/explore-config
   tools/fuse-depth
   tools/init-cameras-landmarks
+  tools/plugin_explorer.rst
   tools/track-features
+
+..
+  The following tools require sprokit to be ported to v2
+  tools/pipe-config.rst
+  tools/pipe-to-dot.rst
+  tools/pipeline_runner.rst

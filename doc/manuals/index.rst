@@ -15,7 +15,6 @@ Contents:
 
    introduction
    developer/index
-
    vital/architecture
    arrows/architecture
    tools
