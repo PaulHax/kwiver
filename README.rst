@@ -38,6 +38,27 @@ the content they contain.
 `<vital>`_       Core libraries source and headers
 ================ ===========================================================
 
+KWIVER Docker Image
+=============================
+
+Kitware maintains a `Docker <https://www.docker.com/>`_ image with KWIVER prebuilt.
+The Dockerfile used to build the image can be found `here <dockerfile>`_.
+
+Pull the image from Dockerhub::
+
+ "docker pull kitware/kwiver:latest" (latest master)
+
+ "docker pull kitware/kwiver:release" (latest release)
+
+ "docker pull kitware/kwiver:1.6.0" (static release)
+
+(`https://hub.docker.com/r/kitware/kwiver <https://hub.docker.com/r/kitware/kwiver>`_)
+
+or build the KWIVER image using the dockerfile::
+
+ "docker build -t kwiver:tagname ."
+
+
 Building KWIVER
 ===============
 
