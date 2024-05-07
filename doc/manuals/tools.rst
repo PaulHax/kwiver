@@ -16,7 +16,6 @@ including the available Arrows processes.
   tools/explore-config
   tools/fuse-depth
   tools/init-cameras-landmarks
-  tools/plugin_explorer.rst
   tools/track-features
 
 ..
@@ -24,3 +23,4 @@ including the available Arrows processes.
   tools/pipe-config.rst
   tools/pipe-to-dot.rst
   tools/pipeline_runner.rst
+  tools/plugin_explorer.rst (these plugin methods are not valid)
