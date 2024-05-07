@@ -1,21 +1,21 @@
 KLV
 ===
 
-.. _klv_image_container:
+.. _klv_apply_child:
 
-Image Container Algorithm
+Apply Child KLV Algorithm
 -------------------------
 
-..  doxygenclass:: kwiver::arrows::klv::image_container
+..  doxygenclass:: kwiver::arrows::klv::_klv_apply_child
     :project: kwiver
     :members:
 
 
-.. _klv_image_io:
+.. _klv_update:
 
-Image I/O Algorithm
+Update KLV Algorithm
 -------------------
 
-..  doxygenclass:: kwiver::arrows::klv::image_io
+..  doxygenclass:: kwiver::arrows::klv::update_klv
     :project: kwiver
     :members:

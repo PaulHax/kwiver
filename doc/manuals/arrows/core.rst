@@ -10,12 +10,12 @@ Associate Detections to Tracks Threshold Algorithm
     :project: kwiver
     :members:
 
-.. _core_class_probablity_filter:
+.. _core_class_probability_filter:
 
 Class Probablity Filter Algorithm
 ---------------------------------
 
-..  doxygenclass:: kwiver::arrows::core::class_probablity_filter
+..  doxygenclass:: kwiver::arrows::core::class_probability_filter
     :project: kwiver
     :members:
 
@@ -69,7 +69,7 @@ Close Loops Multi Method Algorithm
 Compute Association Matrix from Features Algorithm
 --------------------------------------------------
 
-..  doxygenclass:: kwiver::arrows::core::compute_association_matrix_from_feature
+..  doxygenclass:: kwiver::arrows::core::compute_association_matrix_from_features
     :project: kwiver
     :members:
 
@@ -289,12 +289,12 @@ Merge Metadata Streams Algorithm
     :project: kwiver
     :members:
 
-.. _core_metadata_map_io:
+.. _core_metadata_map_io_csv:
 
-Metadata Map I/O Algorithm
+Metadata Map I/O csv Algorithm
 -----------------------------------
 
-..  doxygenclass:: kwiver::arrows::core::metadata_map_io
+..  doxygenclass:: kwiver::arrows::core::metadata_map_io_csv
     :project: kwiver
     :members:
 
@@ -334,12 +334,12 @@ Track Features Core Algorithm
     :project: kwiver
     :members:
 
-.. _core_transfer_bbox_with_depth:
+.. _core_transfer_bbox_with_depth_map:
 
-Transfer Bounding Box with Depth Algorithm
+Transfer Bounding Box with Depth Map Algorithm
 -------------------------------------------
 
-..  doxygenclass:: kwiver::arrows::core::transfer_bbox_with_depth
+..  doxygenclass:: kwiver::arrows::core::transfer_bbox_with_depth_map
     :project: kwiver
     :members:
 

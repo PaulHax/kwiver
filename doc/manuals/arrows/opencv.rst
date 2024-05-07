@@ -16,6 +16,14 @@ Analyze Tracks Algorithm
     :project: kwiver
     :members:
 
+.. _ocv_detect_features:
+
+Detect Features Algorithm
+-------------------------------
+
+..  doxygenclass:: kwiver::arrows::ocv::detect_features
+    :project: kwiver
+    :members:
 
 .. _ocv_detect_features_AGAST:
 
@@ -152,6 +160,15 @@ Estimate PnP Algorithm
     :project: kwiver
     :members:
 
+.. _ocv_extract_descriptors:
+
+Extract Descriptors Algorithm
+-----------------------------------
+
+..  doxygenclass:: kwiver::arrows::ocv::extract_descriptors_BRIEF
+    :project: kwiver
+    :members:
+
 .. _ocv_extract_descriptors_BRIEF:
 
 Extract Descriptors BRIEF Algorithm
@@ -197,39 +214,39 @@ Extract Descriptors LUCID Algorithm
     :project: kwiver
     :members:
 
-.. _ocv_feature_detect_extract_BRISK:
+.. _ocv_detect_features_BRISK:
 
-Feature Detection and Extraction with BRISK Algorithm
+Detect Features with BRISK Algorithm
 -----------------------------------------------------
 
-..  doxygenclass:: kwiver::arrows::ocv::feature_detect_extract_BRISK
+..  doxygenclass:: kwiver::arrows::ocv::detect_features_BRISK
     :project: kwiver
     :members:
 
-.. _ocv_feature_detect_extract_ORB:
+.. _ocv_detect_features_ORB:
 
-Feature Detection and Extraction with ORB Algorithm
----------------------------------------------------
-
-..  doxygenclass:: kwiver::arrows::ocv::feature_detect_extract_ORB
-    :project: kwiver
-    :members:
-
-.. _ocv_feature_detect_extract_SIFT:
-
-Feature Detection and Extraction with SIFT Algorithm
-----------------------------------------------------
-
-..  doxygenclass:: kwiver::arrows::ocv::feature_detect_extract_SIFT
-    :project: kwiver
-    :members:
-
-.. _ocv_feature_detect_extract_SURF:
-
-Feature Detection and Extraction with SURF Algorithm
+Detect Features with ORB Algorithm
 -----------------------------------------------------
 
-..  doxygenclass:: kwiver::arrows::ocv::feature_detect_extract_SURF
+..  doxygenclass:: kwiver::arrows::ocv::detect_features_ORB
+    :project: kwiver
+    :members:
+
+.. _ocv_detect_features_SIFT:
+
+Detect Features with SIFT Algorithm
+-----------------------------------------------------
+
+..  doxygenclass:: kwiver::arrows::ocv::detect_features_SIFT
+    :project: kwiver
+    :members:
+
+.. _ocv_detect_features_SURF:
+
+Detect Features with SURF Algorithm
+-----------------------------------------------------
+
+..  doxygenclass:: kwiver::arrows::ocv::detect_features_SURF
     :project: kwiver
     :members:
 

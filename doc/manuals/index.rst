@@ -18,7 +18,7 @@ Contents:
    vital/architecture
    arrows/architecture
    tools
-   tutorials
+   .. tutorials (are not valid without sprokit working)
 
 
 Indices and tables

@@ -43,7 +43,8 @@ The provided Arrows are:
    pdal
    proj
    qt
-   serialize
+   serialize_json
+   serialize_protobuf
    .. sprokit (not active, needs to be ported to v2)
 
    super3d

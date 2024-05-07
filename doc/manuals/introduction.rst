@@ -8,7 +8,7 @@ Introduction
 KWIVER is a fully featured toolkit for developing Computer Vision *Systems*,
 a capability that goes beyond the support of simply developing Computer Vision *Software*.
 
-This distinction is an important one.  There are myriad of software frameworks
+This distinction is an important one.  There are a myriad of software frameworks
 that facilitate the development of computer vision software, most notably the
 venerable `OpenCV <https://opencv.org>`_, but also including `VXL <http://vxl.sourceforge.net>`_,
 `scikit-image <https://scikit-image.org>`_ and a wide range of
