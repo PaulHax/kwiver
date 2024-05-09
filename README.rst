@@ -260,7 +260,7 @@ VIAME_        A computer vision library designed to integrate several image and
 
 Testing
 ========
-Continuous Integration (CI) testing is perfomed on Kitware's gitlab CI servers.
+Continuous Integration (CI) testing is performed on Kitware's gitlab CI servers.
 Our `KWIVER dashboard <https://open.cdash.org/index.php?project=KWIVER>`_
 hosts nightly build and test results across multiple platforms including
 Windows, Mac, and Linux.
