@@ -78,6 +78,14 @@ wheel-linux-python38-x86_64:test:
     needs:
         - wheel-linux-python38-x86_64:build
 
+wheel-linux-python38-x86_64_burnout:build:
+    extends:
+        - .wheel_linux38_x86_64_burnout
+        - .cmake_build_wheel_linux
+        - .linux_builder_tags
+        - .cmake_wheel_artifacts
+        - .rules
+
 # Windows
 
 ## Basic builds
@@ -126,3 +134,11 @@ wheel-windows-python38-x86_64:test:
         - wheel-windows-python38-x86_64:build
     needs:
         - wheel-windows-python38-x86_64:build
+
+wheel-windows-python38-x86_64_burnout:build:
+    extends:
+        - .wheel_windows38_x86_64_burnout
+        - .cmake_build_wheel_windows
+        - .windows_builder_tags
+        - .cmake_wheel_artifacts
+        - .rules

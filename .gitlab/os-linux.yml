@@ -29,6 +29,14 @@
         CMAKE_CONFIGURATION: wheel_linux38_x86_64_ceres_dbow2_ffmpeg_gdal_kpf_opencv_pdal_proj_python_uuid_vtk_vxl
         PYTHON_PREFIX: /opt/python/cp38-cp38
 
+# wheel with minimal dependencies for burnout tool
+.wheel_linux38_x86_64_burnout:
+    extends: .manylinux2014_x86_64
+
+    variables:
+        CMAKE_CONFIGURATION: wheel_linux38_x86_64_ffmpeg_opencv_python
+        PYTHON_PREFIX: /opt/python/cp38-cp38
+
 .test_wheel_linux38_x86_64:
     extends: .wheel_linux38_x86_64
     # use a clean image when testing
