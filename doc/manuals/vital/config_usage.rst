@@ -11,7 +11,7 @@ different situations. The two major users of the configuration support
 are algorithms and processes. In addition, there are a few other
 places that they are used also.
 
-Configurations are ususally established in an external file which are
+Configurations are usually established in an external file which are
 read and converted to an internal ``config_block`` object. This is the
 typical way to control the behaviour of the software. Configuration
 blocks can also be created pragmatically such as when specifying an
@@ -118,8 +118,7 @@ is done.
 Instantiating Algorithms
 ''''''''''''''''''''''''
 
-Algorithms can be used directly in application code or they can be
-wrapped by a sprokit process. In either case the actual implementation
+Algorithms can be used directly in application code. The actual implementation
 of the abstract algorithm interface is specified through a config block.
 
 Lets first look at the code that will instantiate the configured
@@ -186,10 +185,6 @@ used to configure the algorithm.
 
 Usage by Processes
 ''''''''''''''''''
-
-The configuration for sprokit processes is presented slightly
-differently than for algorithms, but underneath, they both use the
-same structure.
 
 Configuration items for a process are defined using
 ``create_config_trait()`` macro as shown below.
@@ -280,7 +275,7 @@ Config Management Techniques
 
 The configuration file reader provides several alternatives for
 managing the complexity of a large configuration. The block / endblock
-construct can be used to shorted config lines and modularize the
+construct can be used to shorten config lines and modularize the
 configuration. The include directove can be used to share or reuse
 portions of a config.
 

@@ -7,6 +7,7 @@ the use of KWIVER and its capabilities without requiring any code to written.
 including the available Arrows processes.
 
 .. toctree::
+   :maxdepth: 1
 
   tools/bundle-adjust-tool
   tools/color-mesh
