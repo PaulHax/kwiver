@@ -92,8 +92,8 @@ if ( fletch_FOUND )
   file( APPEND "${KWIVER_SETUP_POWERSHELL_FILE}" "$ENV:PATH = \"${fletch_ROOT}/bin;$ENV:PATH\"\n" )
   file( APPEND "${KWIVER_SETUP_POWERSHELL_FILE}" "$ENV:PATH = \"${fletch_ROOT}/x64/${_vcVersion}/bin;$ENV:PATH\"\n" )
 
-  # should be unneccessary if rpath is set correctly
-  file( APPEND "${KWIVER_SETUP_SCRIPT_FILE}" "# export ${LIBRARY_PATH_VAR}=${fletch_ROOT}/lib:$${LIBRARY_PATH_VAR}\n" )
+  # Could be handled by rpaths, but still needed if Fletch is not packaged with KWIVER
+  file( APPEND "${KWIVER_SETUP_SCRIPT_FILE}" "export ${LIBRARY_PATH_VAR}=${fletch_ROOT}/lib:$${LIBRARY_PATH_VAR}\n" )
 else()
 if(WIN32)
   message(WARNING "set fletch_DIR, otherwise paths to external libraries will not be set")
