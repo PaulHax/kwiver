@@ -206,8 +206,6 @@ you will need to develop your application with KWIVER. MSVC users, note that
 this install directory is for a single build configuration; there will not be
 configuration named directories in this directory structure.
 
-.. note::
-
   If you are on Windows and enable tests (``KWIVER_ENABLE_TESTS=ON``),
   and are building shared libraries (``BUILD_SHARED_LIBS=ON``), you will
   need to add the path to ``gtest.dll`` to the ``PATH`` in your environment
