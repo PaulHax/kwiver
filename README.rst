@@ -1,24 +1,17 @@
 .. image:: doc/kwiver_Logo-300x78.png
    :alt: KWIVER
 
-|master|   |release|   |version|   |docker|
-
-.. |master| image:: https://img.shields.io/travis/Kitware/kwiver/master?label=master
-.. |release| image:: https://img.shields.io/travis/Kitware/kwiver/release?label=release
-.. |version| image:: https://img.shields.io/github/release/kitware/kwiver
-.. |docker| image:: https://img.shields.io/docker/pulls/kitware/kwiver
-
 Kitware Image and Video Exploitation and Retrieval
 ==================================================
 
 The KWIVER toolkit is a collection of software tools designed to
 tackle challenging image and video analysis problems and other related
-challenges. Recently started by Kitware’s Computer Vision and
+challenges. Started by Kitware’s Computer Vision and
 Scientific Visualization teams, KWIVER is an ongoing effort to
 transition technology developed over multiple years to the open source
 domain to further research, collaboration, and product development.
-KWIVER is a collection of C++ libraries with C and Python bindings
-and uses an permissive `BSD License <LICENSE>`_.
+KWIVER is a collection of C++ libraries with Python bindings
+and uses a permissive `BSD License <LICENSE>`_.
 
 One of the primary design goals of KWIVER is to make it easier to pull
 together algorithms from a wide variety of third-party, open source
@@ -41,7 +34,6 @@ the content they contain.
 `<doc>`_         Documentation, manuals, release notes
 `<examples>`_    Examples for running KWIVER (currently out of date)
 `<extras>`_      Extra utilities (e.g. instrumentation)
-`<sprokit>`_     Stream processing toolkit
 `<tests>`_       Testing related support code
 `<vital>`_       Core libraries source and headers
 ================ ===========================================================
@@ -66,6 +58,7 @@ or build the KWIVER image using the dockerfile::
 
  "docker build -t kwiver:tagname ."
 
+
 Building KWIVER
 ===============
 
@@ -78,9 +71,8 @@ but useful in practice, and the number of dependencies is expected to
 grow as we expand Arrows.
 
 Vital has minimal required dependencies (only Eigen_).
-Sprokit additionally relies on Boost_.
 C++ tests additionally rely on `Google Test`_.
-Arrows and Sprokit processes are structured so that
+Arrows are structured so that
 the code that depends on an external package is in a directory with
 the major dependency name (e.g. vxl, ocv). The dependencies can be
 turned ON or OFF through CMake variables.
@@ -121,7 +113,6 @@ The following are the most important CMake configuration options for KWIVER:
 ``KWIVER_ENABLE_DOCS``        Turn on building the Doxygen documentation
 ``KWIVER_ENABLE_LOG4CPLUS``   Enable log4cplus logger back end
 ``KWIVER_ENABLE_PYTHON``      Enable the Vital Python bindings
-``KWIVER_ENABLE_SPROKIT``     Enable the Stream Processing Toolkit
 ``KWIVER_ENABLE_TESTS``       Build the unit tests (requires Google Test)
 ``KWIVER_ENABLE_TOOLS``       Build the command line tools (e.g. plugin_explorer)
 ``fletch_DIR``                Install directory of a Fletch build.
@@ -136,20 +127,31 @@ The fletch_DIR is the fletch build directory root, which contains the fletchConf
 
 The following sections will walk you through the basic options for a minimal KWIVER build.
 
+Building with Python Enabled
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The required python packages are included.
+``kwiver/src/python/requirements_dev.txt``
+It is recommended to create and use a virtual python environment. Python version 3.8 is a required minimum.
+``python -m venv env`` is one method for creating a virtual environment.
+Activate the virtual environment, ``source env/bin/activate`` and install
+the python packages needed for kwiver with
+``pip install -r kwiver/src/python/requirements_dev.txt``
+
+
 Basic CMake generation via command line
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Note, This assumes your fletch was built with python support (Turn OFF if not).
 
-You will also need to replace the fletch path with your own::
+You will also need to replace the kwiver source and fletch paths with your own::
 
-    $ cmake </path/to/kwiver/source> -DCMAKE_BUILD_TYPE=Release \
-            -Dfletch_DIR:PATH=<path/to/fletch/build/dir> \
-            -DKWIVER_ENABLE_ARROWS:BOOL=ON \
-            -DKWIVER_ENABLE_EXTRAS:BOOL=ON -DKWIVER_ENABLE_LOG4CPLUS:BOOL=ON \
-            -DKWIVER_ENABLE_PROCESSES:BOOL=ON -DKWIVER_ENABLE_PYTHON:BOOL=ON \
-            -DKWIVER_ENABLE_SPROKIT:BOOL=ON -DKWIVER_ENABLE_TOOLS:BOOL=ON \
-            -DKWIVER_ENABLE_EXAMPLES:BOOL=ON -DKWIVER_USE_BUILD_TREE:BOOL=ON
+    $ cmake </path/to/kwiver/source> -GNinja \
+        -DCMAKE_BUILD_TYPE=Release \
+        -Dfletch_DIR=<path/to/fletch/build/dir>  \
+        -DKWIVER_ENABLE_ARROWS:BOOL=ON -DKWIVER_ENABLE_C_BINDINGS:BOOL=ON \
+        -DKWIVER_ENABLE_LOG4CPLUS:BOOL=ON  -DKWIVER_ENABLE_PYTHON:BOOL=ON \
+        -DKWIVER_ENABLE_TOOLS:BOOL=ON  -DKWIVER_ENABLE_EXAMPLES:BOOL=ON \
+        -DKWIVER_USE_BUILD_TREE:BOOL=ON
 
 Basic CMake generation using ccmake
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -195,17 +197,14 @@ Compiling
 
 Once your CMake generation has completed and created the build files,
 compile in the standard way for your build environment.  On Linux
-this is typically running ``make``.
+this is typically running ``make`` or ``ninja``.
 
 There is also a build target, INSTALL. This target will build all code,
 then create an install directory inside the build directory.  This install
 folder will be populated with all binaries, libraries, headers, and other files
 you will need to develop your application with KWIVER. MSVC users, note that
 this install directory is for a single build configuration; there will not be
-configuration named directories in this directory structure
-(i.e. no ``/bin/release``, only ``/bin``).
-
-.. note::
+configuration named directories in this directory structure.
 
   If you are on Windows and enable tests (``KWIVER_ENABLE_TESTS=ON``),
   and are building shared libraries (``BUILD_SHARED_LIBS=ON``), you will
@@ -235,19 +234,12 @@ From a command prompt execute the following command::
 This will set up your PATH, PYTHONPATH and other environment variables
 to allow KWIVER to work conveniently within in the shell/cmd window.
 
-You can run this simple pipeline to ensure your system is configured properly::
-
+You can now test the kwiver build by viewing the available applets with the
+terminal command ``kwiver help``. Further help and commands to configure and
+run the kwiver applets can be displayed with::
   # via a bash shell
-  $ cd bin
-  $ kwiver runner ../examples/pipelines/number_flow.pipe
-  #
-  # on windows, you will need to also be in the configuration folder
-  > cd bin\release
-  > kwiver runner ..\..\examples\pipelines\number_flow.pipe
+  $ kwiver <applet> -h
 
-This will generate a 'numbers.txt' file in the </path/to/kwiver/build>/examples/pipelines/output directory.
-
-More examples can be found in our `tutorials <http://kwiver.readthedocs.io/en/latest/tutorials.html>`_.
 
 KWIVER Users
 ============
@@ -255,18 +247,18 @@ KWIVER Users
 Here are some applications using KWIVER that serve as an example of how to
 leverage KWIVER for a specific application:
 
-========== ================================================================
-MAP-Tk_    A collection of tools for structure-from-motion and dense 3D
-           reconstruction from imagery with an emphasis on aerial video.
-           The primary component is a GUI application named TeleSculptor.
-VIAME_     A computer vision library designed to integrate several image and
-           video processing algorithms together in a common distributed
-           processing framework, majorly targeting marine species analytics.
-========== ================================================================
+============= ================================================================
+TeleSculptor_ A collection of tools for structure-from-motion and dense 3D
+              reconstruction from imagery with an emphasis on aerial video.
+              The primary component is a GUI application named TeleSculptor.
+VIAME_        A computer vision library designed to integrate several image and
+              video processing algorithms together in a common distributed
+              processing framework, majorly targeting marine species analytics.
+============= ================================================================
 
 Testing
 ========
-Continuous integration testing is provided by CDash_.
+Continuous Integration (CI) testing is performed on Kitware's gitlab CI servers.
 Our `KWIVER dashboard <https://open.cdash.org/index.php?project=KWIVER>`_
 hosts nightly build and test results across multiple platforms including
 Windows, Mac, and Linux.
@@ -309,7 +301,6 @@ DIVA program.
 The authors would like to thank NOAA for their support of this work via the
 NOAA Fisheries Strategic Initiative on Automated Image Analysis.
 
-
 .. Appendix I: References
 .. ======================
 
@@ -321,7 +312,7 @@ NOAA Fisheries Strategic Initiative on Automated Image Analysis.
 .. _Fletch: https://github.com/Kitware/fletch
 .. _Google Test: https://github.com/google/googletest
 .. _Kitware: http://www.kitware.com/
-.. _MAP-Tk: https://github.com/Kitware/maptk
+.. _TeleSculptor: https://github.com/Kitware/TeleSculptor
 .. _OpenCV: http://opencv.org/
 .. _PROJ: http://proj.org/
 .. _Travis CI: https://travis-ci.org/
