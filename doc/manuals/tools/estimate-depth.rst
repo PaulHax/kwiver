@@ -6,7 +6,7 @@ The color-mesh tool colors an input-mesh from a video (or list of images) and a
 list of camera files stored in a directory. A mesh colored with the
 average color or with a color for a particular camera is produced.
 
-estimate-depth       [options]
+kwiver estimate-depth       [options]
 ------------------------------
 
   video-source - name of input video file.

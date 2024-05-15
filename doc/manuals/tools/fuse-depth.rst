@@ -2,7 +2,7 @@
 fuse-depth
 ==========
 
-fuse-depth       [options]
+kwiver fuse-depth       [options]
 --------------------------
 
   input-cameras-dir - name of the directory containing the krtd camera

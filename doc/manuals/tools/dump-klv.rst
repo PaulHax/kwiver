@@ -4,7 +4,7 @@ dump-klv
 
 This program displays the KLV metadata packets that are embedded in a video file.
 
-dump-klv       [options]  video-file
+kwiver dump-klv       [options]  video-file
 ------------------------------------
 
   video-file  - name of video file.

@@ -4,7 +4,7 @@ compare-klv
 
 This program prints differences found between the KLV in two files (video or JSON).
 
-compare-klv [options] lhs-file rhs-file
+kwiver compare-klv [options] lhs-file rhs-file
 --------------------------------------------
 
   lhs-file: Left-hand-side video or JSON file for comparison.

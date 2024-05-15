@@ -2,7 +2,7 @@
 init-cameras-landmarks
 ======================
 
-init-cameras-landmarks       [options]
+kwiver init-cameras-landmarks       [options]
 --------------------------------------
 
 **Options are:**

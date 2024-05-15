@@ -7,7 +7,7 @@ list of camera files stored in a directory. A mesh colored with the
 average color or with a color for a particular camera is produced.
 
 
-color-mesh       [options] input-mesh video-file cameras-dir output-mesh
+kwiver color-mesh       [options] input-mesh video-file cameras-dir output-mesh
 --------------------------------------------
 
   input-mesh  - input mesh file.

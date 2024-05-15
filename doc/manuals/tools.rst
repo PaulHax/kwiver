@@ -1,13 +1,18 @@
 Tools
 =====
 
-KWIVER provides command applet tools run using the command line to leverage
-the use of KWIVER and its capabilities without requiring any code to written.
-``plugin_exploroer`` allows the exploration of KWIVER's plugin space,
-including the available Arrows processes.
+KWIVER provides command applet tools using the command line to leverage
+the use of KWIVER and its capabilities without requiring any code to be written.
+The available applets can be viewed with the terminal command ``kwiver help``.
+Further help and commands to configure and run the kwiver applets can be
+displayed with::
+  # via a bash shell
+  $ kwiver <applet> -h
 
 .. toctree::
    :maxdepth: 1
+
+   :hidden:
 
   tools/bundle-adjust-tool
   tools/color-mesh

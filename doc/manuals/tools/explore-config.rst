@@ -15,7 +15,7 @@ adetailed output of the config entries.
 If -I or --path are specified, then the config file is only searched for
 usingthe specified path. The application name based paths are not used.
 
-explore-config       [options] config-file
+kwiver explore-config       [options] config-file
 ------------------------------------------
 
   config-file  - name of configuration file.
