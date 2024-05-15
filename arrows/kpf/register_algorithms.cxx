@@ -29,11 +29,11 @@ register_factories( kwiver::vital::plugin_loader& vpm )
   }
 
   auto fact = vpm.add_factory< kwiver::vital::algo::detected_object_set_input,
-    detected_object_set_input_kpf >( "kpf" );
+    detected_object_set_input_kpf >( "kpf_input" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_kpf" );
 
   fact = vpm.add_factory< kwiver::vital::algo::detected_object_set_output,
-    detected_object_set_output_kpf >( "kpf" );
+    detected_object_set_output_kpf >( "kpf_output" );
   fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_kpf" );
 
   vpm.mark_module_as_loaded( module_name );

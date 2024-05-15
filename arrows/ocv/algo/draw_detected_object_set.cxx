@@ -83,11 +83,6 @@ public:
   bool
   m_draw_text() const { return m_parent.get_draw_text(); }
 
-  // -- temp config storage --
-  std::string m_tmp_custom;
-  std::string m_tmp_def_color;
-  std::string m_tmp_class_select;
-
   // --------------------------------------------------------------------------
   /// @brief Draw a box on an image.
   ///
@@ -289,7 +284,7 @@ public:
     {
       std::vector< std::string > cspec;
       kwiver::vital::tokenize(
-        m_tmp_custom, cspec, ";",
+        m_parent.c_custom_class_color, cspec, ";",
         kwiver::vital::TokenizeTrimEmpty );
 
       for( auto cs : cspec )
@@ -330,13 +325,13 @@ public:
       // parse defaults default color
       kwiversys::RegularExpression exp( "([0-9]+) ([0-9]+) ([0-9]+)" );
 
-      if( !exp.find( m_tmp_def_color ) )
+      if( !exp.find( m_parent.c_default_color ) )
       {
         // parse error - log something
         m_config_error = true;
         LOG_ERROR(
           m_parent.logger(), "Error parsing custom color specification \""
-            << m_tmp_def_color << "\"" );
+            << m_parent.c_default_color << "\"" );
         return;
       }
 
@@ -352,7 +347,7 @@ public:
 
     // Parse selected class_names
     kwiver::vital::tokenize(
-      m_tmp_class_select, m_select_classes, ";",
+      m_parent.c_select_classes, m_select_classes, ";",
       kwiver::vital::TokenizeTrimEmpty );
   }
 }; // end priv class

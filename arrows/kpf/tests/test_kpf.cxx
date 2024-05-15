@@ -32,7 +32,7 @@ TEST ( detected_object_set_input_kpf, create )
 
   EXPECT_NE(
     nullptr, create_algorithm<
-      algo::detected_object_set_input >( "kpf" ) );
+      algo::detected_object_set_input >( "kpf_input" ) );
 }
 
 // ----------------------------------------------------------------------------
@@ -44,5 +44,5 @@ TEST ( detected_object_set_output_kpf, create )
 
   EXPECT_NE(
     nullptr, create_algorithm<
-      algo::detected_object_set_output >( "kpf" ) );
+      algo::detected_object_set_output >( "kpf_output" ) );
 }
