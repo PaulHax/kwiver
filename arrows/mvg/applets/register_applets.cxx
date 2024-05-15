@@ -33,7 +33,7 @@ register_factories( kwiver::vital::plugin_loader& vpl )
   auto set_fact_attributes = [](::kwiver::vital::plugin_factory_handle_t fact){
                                fact->add_attribute(
                                  kvpf::PLUGIN_DESCRIPTION,
-                                 "Kviwer algorithm mvg applets" )
+                                 "Kwiver arrow mvg applets" )
                                                                                   .
                                  add_attribute(
                                    kvpf::PLUGIN_MODULE_NAME,

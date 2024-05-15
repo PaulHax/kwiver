@@ -27,7 +27,10 @@ register_factories( vital::plugin_loader& vpm )
 
   auto fact =
     vpm.add_factory< kwiver_applet, compare_klv >( "compare-klv" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_klv_applets" )
+  fact->add_attribute(
+    kvpf::PLUGIN_DESCRIPTION,
+    "Kwiver arrow klv applets" )
+    .add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_klv_applets" )
     .add_attribute( kvpf::ALGORITHM_CATEGORY, kvpf::APPLET_CATEGORY );
 }
 
