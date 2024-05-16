@@ -1,5 +1,0 @@
-Activities
-==========
-
-Coming Soon!
-

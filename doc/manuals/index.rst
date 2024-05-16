@@ -15,13 +15,10 @@ Contents:
 
    introduction
    developer/index
-
-.. vital/architecture
+   vital/architecture
    arrows/architecture
-   sprokit/sprokit
    tools
-   tutorials
-   extentions
+   .. tutorials (are not valid without sprokit working)
 
 
 Indices and tables

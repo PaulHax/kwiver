@@ -300,6 +300,7 @@ static std::string plugin_description()                 \
  * All together now: TODO detail composition
  */
 #define PLUGGABLE_IMPL( class_name, description, ... )  \
+/** @brief doxy_comment */                              \
 PLUGGABLE_VARIABLES( __VA_ARGS__ )                      \
 PLUGGABLE_CONSTRUCTOR( class_name, __VA_ARGS__ )        \
 PLUGGABLE_IMPL_BASIC( class_name, description )         \

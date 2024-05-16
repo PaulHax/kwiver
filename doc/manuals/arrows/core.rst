@@ -1,12 +1,30 @@
 Core
 ====
 
-.. _core_class_probablity_filter:
+.. _core_associate_detections_to_tracks_threshold:
+
+Associate Detections to Tracks Threshold Algorithm
+--------------------------------------------------
+
+..  doxygenclass:: kwiver::arrows::core::associate_detections_to_tracks_threshold
+    :project: kwiver
+    :members:
+
+.. _core_class_probability_filter:
 
 Class Probablity Filter Algorithm
 ---------------------------------
 
-..  doxygenclass:: kwiver::arrows::core::class_probablity_filter
+..  doxygenclass:: kwiver::arrows::core::class_probability_filter
+    :project: kwiver
+    :members:
+
+.. _core_close_loops_appearance_indexed:
+
+Close Loops Appearance Indexed Algorithm
+----------------------------------------
+
+..  doxygenclass:: kwiver::arrows::core::close_loops_appearance_indexed
     :project: kwiver
     :members:
 
@@ -46,6 +64,15 @@ Close Loops Multi Method Algorithm
     :project: kwiver
     :members:
 
+.. _core_compute_association_matrix_from_features:
+
+Compute Association Matrix from Features Algorithm
+--------------------------------------------------
+
+..  doxygenclass:: kwiver::arrows::core::compute_association_matrix_from_features
+    :project: kwiver
+    :members:
+
 .. _core_compute_ref_homography_core:
 
 Compute Ref Homography Core Algorithm
@@ -61,6 +88,33 @@ Convert Image Bypass Algorithm
 ------------------------------
 
 ..  doxygenclass:: kwiver::arrows::core::convert_image_bypass
+    :project: kwiver
+    :members:
+
+.. _core_create_detection_grid:
+
+Create Detection Grid Algorithm
+------------------------------
+
+..  doxygenclass:: kwiver::arrows::core::create_detection_grid
+    :project: kwiver
+    :members:
+
+.. _core_derive_metadata:
+
+Derive Metada Algorithm
+------------------------------
+
+..  doxygenclass:: kwiver::arrows::core::derive_metadata
+    :project: kwiver
+    :members:
+
+.. _core_detect_features_filtered:
+
+Detected Features Filtered Algorithm
+---------------------------------------
+
+..  doxygenclass:: kwiver::arrows::core::detect_features_filtered
     :project: kwiver
     :members:
 
@@ -145,9 +199,18 @@ Filter Features Magnitude Algorithm
     :project: kwiver
     :members:
 
+.. _core_filter_features_nonmax:
+
+Filter Features Nonmax Algorithm
+------------------------------
+
+..  doxygenclass:: kwiver::arrows::core::filter_features_nonmax
+    :project: kwiver
+    :members:
+
 .. _core_filter_features_scale:
 
-Filter Fatures Scale Algorithm
+Filter Features Scale Algorithm
 ------------------------------
 
 ..  doxygenclass:: kwiver::arrows::core::filter_features_scale
@@ -157,36 +220,45 @@ Filter Fatures Scale Algorithm
 .. _core_filter_tracks:
 
 Filter Tracks Algorithm
--------------------------------
+------------------------
 
 ..  doxygenclass:: kwiver::arrows::core::filter_tracks
     :project: kwiver
     :members:
 
-.. _core_formulate_query_core:
+.. _core_handle_descriptor_request_core:
 
-Formulate Query Core Algorithm
-------------------------------
+Handle Descriptor Request Core Algorithm
+----------------------------------------
 
-..  doxygenclass:: kwiver::arrows::core::formulate_query_core
+..  doxygenclass:: kwiver::arrows::core::handle_descriptor_request_core
     :project: kwiver
     :members:
 
-.. _core_hierarchical_bundle_adjust:
+.. _core_initialize_object_tracks_threshold:
 
-Hierarchical Bundle Adjust Algorithm
-------------------------------------
+Initialize Object Tracks Threshold Algorithm
+--------------------------------------------
 
-..  doxygenclass:: kwiver::arrows::core::hierarchical_bundle_adjust
+..  doxygenclass:: kwiver::arrows::core::initialize_object_tracks_threshold
     :project: kwiver
     :members:
 
-.. _core_initialize_cameras_landmarks:
+.. _core_interpolate_track_spline:
 
-Initialize Cameras Landmarks Algorithm
---------------------------------------
+Interpolate Track Spline Algorithm
+--------------------------------------------
 
-..  doxygenclass:: kwiver::arrows::core::initialize_cameras_landmarks
+..  doxygenclass:: kwiver::arrows::core::interpolate_track_spline
+    :project: kwiver
+    :members:
+
+.. _core_keyframe_selector_basic:
+
+Keyframe Selector Basic Algorithm
+--------------------------------------------
+
+..  doxygenclass:: kwiver::arrows::core::keyframe_selector_basic
     :project: kwiver
     :members:
 
@@ -208,12 +280,48 @@ Match Features Homography Algorithm
     :project: kwiver
     :members:
 
-.. _core_track_descriptor_set_output_csv:
+.. _core_merge_metadata_streams:
 
-Track Descriptor Set Output csv Algorithm
------------------------------------------
+Merge Metadata Streams Algorithm
+-----------------------------------
 
-..  doxygenclass:: kwiver::arrows::core::track_descriptor_set_output_csv
+..  doxygenclass:: kwiver::arrows::core::merge_metadata_streams
+    :project: kwiver
+    :members:
+
+.. _core_metadata_map_io_csv:
+
+Metadata Map I/O csv Algorithm
+-----------------------------------
+
+..  doxygenclass:: kwiver::arrows::core::metadata_map_io_csv
+    :project: kwiver
+    :members:
+
+.. _core_read_object_track_set_kw18:
+
+Read Object Track Set kw18 Algorithm
+-----------------------------------
+
+..  doxygenclass:: kwiver::arrows::core::read_object_track_set_kw18
+    :project: kwiver
+    :members:
+
+.. _core_read_track_descriptor_set_csv:
+
+Read Track Descriptor Set csv Algorithm
+-----------------------------------
+
+..  doxygenclass:: kwiver::arrows::core::read_track_descriptor_set_csv
+    :project: kwiver
+    :members:
+
+.. _core_track_features_augment_keyframes:
+
+Track Features Augment Keyframes Algorithm
+-------------------------------------------
+
+..  doxygenclass:: kwiver::arrows::core::track_features_augment_keyframes
     :project: kwiver
     :members:
 
@@ -226,21 +334,39 @@ Track Features Core Algorithm
     :project: kwiver
     :members:
 
-.. _core_frame_index_track_set_impl:
+.. _core_transfer_bbox_with_depth_map:
 
-Frame Index Track Set Class
-----------------------------
+Transfer Bounding Box with Depth Map Algorithm
+-------------------------------------------
 
-..  doxygenclass:: kwiver::arrows::core::frame_index_track_set_impl
+..  doxygenclass:: kwiver::arrows::core::transfer_bbox_with_depth_map
     :project: kwiver
     :members:
 
-.. _core_triangulate_landmarks:
+.. _core_transform_detected_object_set:
 
-Triangulate Landmarks Algorithm
--------------------------------
+Transform Detected Object Set Algorithm
+----------------------------------------
 
-..  doxygenclass:: kwiver::arrows::core::triangulate_landmarks
+..  doxygenclass:: kwiver::arrows::core::transform_detected_object_set
+    :project: kwiver
+    :members:
+
+.. _core_uv_unwrap_mesh:
+
+UV Unwrap Mesh Algorithm
+-------------------------
+
+..  doxygenclass:: kwiver::arrows::core::uv_unwrap_mesh
+    :project: kwiver
+    :members:
+
+.. _core_video_input_buffered_metadata_filter:
+
+Video Input Buffered Metadata Filter Algorithm
+-----------------------------------------------
+
+..  doxygenclass:: kwiver::arrows::core::video_input_buffered_metadata_filter
     :project: kwiver
     :members:
 
@@ -255,10 +381,19 @@ Video Input Filter Algorithm
 
 .. _core_video_input_image_list:
 
-Video Input Image_list Algorithm
+Video Input Image list Algorithm
 --------------------------------
 
 ..  doxygenclass:: kwiver::arrows::core::video_input_image_list
+    :project: kwiver
+    :members:
+
+.. _core_video_input_metadata_filter:
+
+Video Input Metadata Filter Algorithm
+--------------------------------------
+
+..  doxygenclass:: kwiver::arrows::core::video_input_metadata_filter
     :project: kwiver
     :members:
 
@@ -271,11 +406,39 @@ Video Input Pos Algorithm
     :project: kwiver
     :members:
 
+.. _core_video_input_splice:
+
+Video Input Splice Algorithm
+-----------------------------
+
+..  doxygenclass:: kwiver::arrows::core::video_input_splice
+    :project: kwiver
+    :members:
+
 .. _core_video_input_split:
 
 Video Input Split Algorithm
 ---------------------------
 
 ..  doxygenclass:: kwiver::arrows::core::video_input_split
+    :project: kwiver
+    :members:
+
+.. _core_write_object_track_set_kw18:
+
+Write Object Track Set kw18 Algorithm
+--------------------------------------
+
+..  doxygenclass:: kwiver::arrows::core::write_object_track_set_kw18
+    :project: kwiver
+    :members:
+
+
+.. _core_write_track_descriptor_set_csv:
+
+Write Track Descriptor Set CSV Algorithm
+-----------------------------------------
+
+..  doxygenclass:: kwiver::arrows::core::write_track_descriptor_set_csv
     :project: kwiver
     :members:

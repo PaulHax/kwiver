@@ -11,7 +11,7 @@ different situations. The two major users of the configuration support
 are algorithms and processes. In addition, there are a few other
 places that they are used also.
 
-Configurations are ususally established in an external file which are
+Configurations are usually established in an external file which are
 read and converted to an internal ``config_block`` object. This is the
 typical way to control the behaviour of the software. Configuration
 blocks can also be created pragmatically such as when specifying an
@@ -47,40 +47,74 @@ config features. what they do and why you would want to use them
 Establishing Expected Config
 ----------------------------
 
-Typically the expected config is formulated by creating a config block
-with all the expected keys, default values, and entry
-description. This is done for both algorithms and processes.
-
-Don't be shy with the entry description. This description serves as
-the design specification for the entry. The expected format is a short
-description followed by a longer detailed description separated by two
-new-lines, as shown below.
+The expected configuration is established using macros. The general form for
+the PLUGGALBE_IMPL() macro which sets configuration parameters is shown below.
 
 .. code-block:: c++
 
-  config->set_value( "config_name", <default_value>,
-                     "Short description.\n\n"
-                     "Longer description which contains all information needed "
-                     "to correctly specify this parameter including any range "
-                     "limitations etc." );
+  PLUGGABLE_IMPL(
+    <class name>,
+    <description>,
+    <list of PARAM/PARAM_DEFAULT macros>)
 
-The long description does not need any new-line characters for
-formatting unless specific formatting is desired. The text is wrapped
-into a text block by all tools that display it.
+An example configuration for the ``filter_tracks`` algorithm is shown below.
+
+.. code-block:: c++
+
+  class KWIVER_ALGO_CORE_EXPORT filter_tracks
+    : public vital::algo::filter_tracks
+  {
+  public:
+    PLUGGABLE_IMPL(
+      filter_tracks,
+      "Filter tracks by track length or matrix matrix importance.",
+      PARAM_DEFAULT(
+        min_track_length, unsigned int,
+        "Filter the tracks keeping those covering "
+        "at least this many frames. Set to 0 to disable.",
+        3 ),
+      PARAM_DEFAULT(
+        min_mm_importance, double,
+        "Filter the tracks with match matrix importance score "
+        "below this threshold. Set to 0 to disable.",
+        1.0 )
+    )
+
+Once an algorithm has been created, the configuration parameters can be modified
+or set using the ``->set_value()`` method. The following example shows how to
+modify the configuration values in the ``filter_features_scale`` algorithm.
+
+.. code-block:: c++
+
+  plugin_manager::instance().load_all_plugins();
+
+    // Generate instance of the filter_tracks algorithm
+    algo::filter_tracks_sptr filter_algo =
+      create_algorithm< algo::filter_tracks >( "core" );
+
+    // Get the configuration of the filter_tracks algorithm
+    config_block_sptr config = filter_algo->get_configuration();
+
+    // Adjust configuration parameter values to filter 3 features
+    // and set ``top_fraction`` to 0.3
+    config->set_value( "min_track_length", 5 );
+    config->set_value( "min_mm_importance", 0.8 );
+
+    // Set the updated configuration to the filter algorithm
+    filter_algo->set_configuration( config );
 
 This expected configuration serves as documentation for the algorithm
-or process configuration items when it is displayed by the
-plugin_explorer and other tools. It is also used to validate the
-configuration supplied at run time to make sure all expected items are
-present.
+or process configuration items when it is displayed by other tools.
+It is also used to validate the configuration supplied at run time to make
+sure all expected items are present.
 
 
 Usage by Algorithms
 '''''''''''''''''''
 
-Algorithms specify their expected set of configurable items in their
-``get_configuration()`` method using the config_block ``set_value()`` method,
-described above.
+Algorithms specify their expected set of configurable items using the
+``PLUGGALBE_IMPL()`` macro as described above.  This macro then defines the
+``get_configuration()`` and ``set_configuration()`` methods.
 
 The run time configuration is passed to an algorithm through the
 ``set_configuration()`` method. This method typically extracts the
@@ -90,36 +124,31 @@ guarantee that all expected configuration items are present and
 attempting to get a value that is not present generates an exception.
 
 The recommended way to avoid this problem is to use the expected
-configuration, as created by the ``get_configuration()`` method to
-supply any missing entries. The following code snippet shows how this
-is done.
+configuration, as created by the macro, then supply any missing entries using
+the ``set_configuration_internal()`` method. The following code snippet shows
+how this is done.
 
 .. code-block:: c++
 
     // Set this algorithm's properties via a config block
     void
     <algorithm>
-    ::set_configuration(vital::config_block_sptr in_config)
+    ::set_configuration_internal( vital::config_block_sptr in_config )
     {
+
       // Starting with our generated vital::config_block to ensure that assumed values are present
       // An alternative is to check for key presence before performing a get_value() call.
-      vital::config_block_sptr config = this->get_configuration();
+      vital::config_block_sptr const& config = this->get_configuration();
 
       // Merge in supplied config to cause these values to overwrite the defaults.
-      config->merge_config(in_config);
-
-      // Get individual config entry values
-      this->write_float_features = config->get_value<bool>("write_float_features",
-                                                           this->write_float_features);
+      config->merge_config( in_config );
     }
-
 
 
 Instantiating Algorithms
 ''''''''''''''''''''''''
 
-Algorithms can be used directly in application code or they can be
-wrapped by a sprokit process. In either case the actual implementation
+Algorithms can be used directly in application code. The actual implementation
 of the abstract algorithm interface is specified through a config block.
 
 Lets first look at the code that will instantiate the configured
@@ -184,47 +213,6 @@ instantiated. The block labeled "ocv" is used for algorithm type
 used to configure the algorithm.
 
 
-Usage by Processes
-''''''''''''''''''
-
-The configuration for sprokit processes is presented slightly
-differently than for algorithms, but underneath, they both use the
-same structure.
-
-Configuration items for a process are defined using
-``create_config_trait()`` macro as shown below.
-
-.. code-block:: c++
-
-  //                    name,      type,  default,        description
-  create_config_trait( threshold, float, "-1", "min threshold for output (float).\n\n"
-                       "Detections with confidence values below this threshold are not drawn." );
-
-When the process is constructed all configuration parameters must be
-declared using the ``declare_config_using_trait()`` call, as shown below.::
-
-  declare_config_using_trait( threshold );
-
-All configuration items declared in this way are available for display
-using the plugin_explorer tool.
-
-Configuration values are extracted from the process configuration in
-the ``_configure()`` method of the process as shown below.::
-
-  float local_threshold = config_value_using_trait( threshold );
-
-Processes can instantiate and configure algorithms using the approach
-described above.
-
-Configuration for a process comes from a section of the pipe file. The
-following section of a pipe file shows configuration for a process
-which supplies the threshold configuration item.::
-
-  # ================================
-  process draw_boxes :: draw_detected_object_boxes
-    threshold = 3.14
-
-
 Verifying a Configuration
 '''''''''''''''''''''''''
 
@@ -280,7 +268,7 @@ Config Management Techniques
 
 The configuration file reader provides several alternatives for
 managing the complexity of a large configuration. The block / endblock
-construct can be used to shorted config lines and modularize the
+construct can be used to shorten config lines and modularize the
 configuration. The include directove can be used to share or reuse
 portions of a config.
 
@@ -339,31 +327,17 @@ represents an enum value, and throw an error if it does not. The list
 of valid enum strings is provided to assist in documenting config
 entries.
 
-The following code snippet shows how to use the enum support to create
-a new config entry and convert config entry to an enum value.::
+The following code snippets show examples on how to use
+the ``ENUM_CONVERTER`` macro.::
 
    #include <vital/util/enum_converter.h>
 
-   using kvll = kwiver::vital::kwiver_logger::log_level_t;
+  ENUM_CONVERTER(
+    method_converter, inpainting_method, { "mask", METHOD_mask },
+    { "navier_stokes", METHOD_navier_stokes } )
 
-   // Declare the enum converter
-   //              converter-name   enum-type
-   ENUM_CONVERTER( level_converter, kvll,
-      { "trace", kvll::LEVEL_TRACE },
-      { "debug", kvll::LEVEL_DEBUG },
-      { "info",  kvll::LEVEL_INFO },
-      { "warn",  kvll::LEVEL_WARN },
-      { "error", kvll::LEVEL_ERROR }
-    );
-
-
-    // Create config entry from enum. level_converter supplies the list of
-    // valid enum strings.
-   conf->set_value( "level", level_converter().to_string( m_log_level ),
-                   "Logger level to use when generating log messages. "
-                   "Allowable values are: " + level_converter().element_name_string()
-    );
-
-
-   // Convert config entry to an enum value.
-   kvll log_level = conf->get_enum_value<level_converter>( "level" );
+  ENUM_CONVERTER(
+    morphology_converter, morphology_mode,
+    { "erode", MORPHOLOGY_erode }, { "dilate", MORPHOLOGY_dilate },
+    { "open", MORPHOLOGY_open }, { "close", MORPHOLOGY_close },
+    { "none", MORPHOLOGY_none } );

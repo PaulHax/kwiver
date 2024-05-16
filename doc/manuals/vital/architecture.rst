@@ -30,8 +30,6 @@ their functionality.
    common
    images
    detectors
-   trackers
-   activities
    configuration
 
 

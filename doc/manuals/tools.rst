@@ -1,15 +1,32 @@
 Tools
 =====
 
-KWIVER provides commands line tools that help explore and leverage the use of KWIVER
-and its capabilities without requiring any code to written.  ``plugin_exploroer``
-allows the exploration of KWIVER's plugin space, including the available Arrows
-and Sprokit processes.  ``pipeline_runner``  runs Sprokit pipelines and provides
-way to dynacially configure them.
+KWIVER provides command applet tools using the command line to leverage
+the use of KWIVER and its capabilities without requiring any code to be written.
+The available applets can be viewed with the terminal command ``kwiver help``.
+Further help and commands to configure and run the kwiver applets can be
+displayed with::
+  # via a bash shell
+  $ kwiver <applet> -h
 
 .. toctree::
+   :maxdepth: 1
 
-  tools/plugin_explorer
-  tools/pipeline_runner
-  tools/pipe-to-dot
-  tools/pipe-config
+   :hidden:
+
+  tools/bundle-adjust-tool
+  tools/color-mesh
+  tools/compare-klv
+  tools/dump-klv
+  tools/estimate-depth
+  tools/explore-config
+  tools/fuse-depth
+  tools/init-cameras-landmarks
+  tools/track-features
+
+..
+  The following tools require sprokit to be ported to v2
+  tools/pipe-config.rst
+  tools/pipe-to-dot.rst
+  tools/pipeline_runner.rst
+  tools/plugin_explorer.rst (these plugin methods are not valid)
