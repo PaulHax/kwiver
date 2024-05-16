@@ -29,20 +29,8 @@ From File to config_block
 
 Using config_block_io to directly convert config file into block. This
 can be used by a main program that manages configs and algorithms
-directly. The ``read_congfig_file()`` uses a complex set of rules to
+directly. The ``read_config_file()`` uses a complex set of rules to
 locate config files based on host system and application name.
-
-
-Configuration Features
-----------------------
-
-config features. what they do and why you would want to use them
-- relativepath
-
-- macro providers and how they can be used to make portable and reusable config files
-
-- config sub-blocks and configuration context
-
 
 Establishing Expected Config
 ----------------------------
