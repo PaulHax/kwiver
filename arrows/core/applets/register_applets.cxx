@@ -30,7 +30,7 @@ register_factories( kwiver::vital::plugin_loader& vpl )
     vpl.add_factory< kwiver_applet, dump_klv >( "dump-klv" );
   fact->add_attribute(
     kvpf::PLUGIN_DESCRIPTION,
-    "Kviwer algorithm core applets" )
+    "Kwiver arrow core applets" )
     .add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core_applets" )
     .add_attribute( kvpf::ALGORITHM_CATEGORY, kvpf::APPLET_CATEGORY );
 }

@@ -19,6 +19,9 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   auto fact =
     vpl.add_factory< kwiver_applet, config_explorer >( "explore-config" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "vital_tool_group" )
+  fact->add_attribute(
+    kvpf::PLUGIN_DESCRIPTION,
+    "Kwiver vital applets" )
+    .add_attribute( kvpf::PLUGIN_MODULE_NAME, "vital_tool_group" )
     .add_attribute( kvpf::ALGORITHM_CATEGORY, kvpf::APPLET_CATEGORY );
 }
