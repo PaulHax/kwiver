@@ -32,7 +32,7 @@ the content they contain.
 `<CMake>`_       CMake helper scripts
 `<arrows>`_      The algorithm plugin modules
 `<doc>`_         Documentation, manuals, release notes
-`<examples>`_    Examples for running KWIVER (currently out of date)
+`<examples>`_    Examples for running KWIVER
 `<extras>`_      Extra utilities (e.g. instrumentation)
 `<tests>`_       Testing related support code
 `<vital>`_       Core libraries source and headers
@@ -268,15 +268,9 @@ VIAME_        A computer vision library designed to integrate several image and
 
 Testing
 ========
+
 Continuous Integration (CI) testing is performed on Kitware's gitlab CI servers.
-Our `KWIVER dashboard <https://open.cdash.org/index.php?project=KWIVER>`_
-hosts nightly build and test results across multiple platforms including
-Windows, Mac, and Linux.
-
-Anyone can contribute a build to this dashboard using the
-`dashboard script <CMake/dashboard-scripts/KWIVER_common.cmake>`_
-provided.  Follow the instructions in the comments.
-
+The CI builds and tests kwiver on Linux and Windows platforms.
 
 Contributing
 ============
