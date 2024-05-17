@@ -141,8 +141,9 @@ Building with Python Enabled
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The required python packages are included. Python version 3.8 is a required minimum.
-Python requirements for runtime are defined in the ``<kwiver source>/python/requirements_dev.txt`` file,
-and for development additionally the ``<kwiver source>/python/requirements/dev.txt`` file.
+Python requirements for runtime are defined in the
+``<kwiver source>/python/requirements_dev.txt`` file,and for development
+additionally the ``<kwiver source>/python/requirements/dev.txt`` file.
 
 When developing on KWIVER, requirements from both of these files should be
 installed into the appropriate [virtual] environment:
