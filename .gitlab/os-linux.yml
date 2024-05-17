@@ -142,3 +142,18 @@
         - pytest
 
     interruptible: true
+
+.cmake_test_burnout_wheel_linux:
+    stage: test
+
+    script:
+        # install the wheel in a clean venv
+        - "$PYTHON_PREFIX/bin/python -m venv build/ci-test-venv"
+        - . build/ci-test-venv/bin/activate
+        - pip install -U pip
+        # test dependencies
+        - pip install "pytest<=8.1"
+        - pip install dist/*.whl
+        - pytest "./python/kwiver/vital/tests/burnout_smoke_test.py"
+
+    interruptible: true
