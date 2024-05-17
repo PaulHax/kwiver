@@ -1,24 +1,30 @@
-# TODO update for kwiver 2.0.0
 # Exporting Plugin Implementations
+Python version 3.8 is required to export plugins.
 Add to your ``setup.py`` entrypoints section a "kwiver_plugins" namespace.
 This namespace is defined in the ``kwiver.vital.plugins.constants`` module under
 the ``PLUGIN_NAMESPACE`` attribute.
 
 # Building
-Python Requirements
-`pip install -r requirements_dev.txt`
+The required python packages areincluded in the source code.
+The runtime requirements are defined in the
+``kwiver/src/python/requirements_dev.txt`` file.
+
+Using the appropriate [virtual] environment with python activated, the python
+packages can be installed with::
+
+  $ pip install -r <kwiver-source-dir>/python/requirements_dev.txt
 
 We assume CMake is available on the system.
 Otherwise, CMake is also installable via pip.
-Will be installed via above requirements file.
+It will be installed via the above requirements file.
 
 PyBind11 is used extensively here to facilitate the binding interface.
-PyBind11 version 2.8.0 is currently being utilize
+PyBind11 version 2.10.3 is currently being utilize
 
 ```bash
-python3 setup.py bdist_wheel \
-  -- -Dfletch_DIR=<PATH_TO_FLETCH_BUILD_OR_INSTALL> \
-  -- -j$(nproc)
+python setup.py bdist_wheel -- -C $GIT_CLONE_PATH/.gitlab/ci/configure_wheel.cmake
+LD_LIBRARY_PATH=/opt/fletch/lib/ auditwheel show dist/*.whl
+LD_LIBRARY_PATH=/opt/fletch/lib/ auditwheel repair dist/*.whl
 ```
 
 This should create a `dist/` directory here after successful completion.
