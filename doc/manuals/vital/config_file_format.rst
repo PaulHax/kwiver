@@ -150,26 +150,6 @@ Windows Platform
 - <install-dir>/share/config
 - <install-dir>/config
 
-OS/X Apple Platform
-'''''''''''''''''''
-- .  (the current working directory
-- ${KWIVER_CONFIG_PATH}                                    (if set)
-- ${XDG_CONFIG_HOME}/<app-name>[/<app-version>]/config     (if $XDG_CONFIG_HOME set)
-- ${HOME}/.config/<app-name>[/<app-version>]/config        (if $HOME set)
-- /etc/xdg/<app-name>[/<app-version>]/config
-- /etc/<app-name>[/<app-version>]/config
-- ${HOME}/Library/Application Support/<app-name>[/<app-version>]/config (if $HOME set)
-- /Library/Application Support/<app-name>[/<app-version>]/config
-- /usr/local/share/<app-name>[/<app-version>]/config
-- /usr/share/<app-name>[/<app-version>]/config
-
-If <install-dir> is not ``/usr`` or ``/usr/local``:
-
-- <install-dir>/share/<app-name>[/<app-version>]/config
-- <install-dir>/share/config
-- <install-dir>/config
-- <install-dir>/Resources/config
-
 Other Posix Platforms (e.g. Linux)
 ''''''''''''''''''''''''''''''''''
 - .  (the current working directory
