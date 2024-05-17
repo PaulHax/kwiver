@@ -6,6 +6,7 @@ add_subdirectory(cpp_helpers)
 
 # Define modules with tests in them
 set(__testable_modnames
+  burnout_smoke_test
   test_activity
   test_algorithms_common
   test_algorithm_factory

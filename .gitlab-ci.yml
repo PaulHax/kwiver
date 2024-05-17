@@ -78,6 +78,28 @@ wheel-linux-python38-x86_64:test:
     needs:
         - wheel-linux-python38-x86_64:build
 
+wheel-linux-python38-x86_64_burnout:build:
+    extends:
+        - .wheel_linux38_x86_64_burnout
+        - .cmake_build_wheel_linux
+        - .linux_builder_tags
+        - .cmake_wheel_artifacts
+        - .rules
+
+wheel-linux-python38-x86_64_burnout:test:
+    extends:
+        - .test_wheel_linux38_x86_64
+        - .cmake_test_burnout_wheel_linux
+        - .linux_tester_tags
+        - .cmake_wheel_artifacts
+        - .rules
+    variables:
+        RUN_DEPENDENT: "true"
+    dependencies:
+        - wheel-linux-python38-x86_64:build
+    needs:
+        - wheel-linux-python38-x86_64:build
+
 # Windows
 
 ## Basic builds
@@ -126,3 +148,25 @@ wheel-windows-python38-x86_64:test:
         - wheel-windows-python38-x86_64:build
     needs:
         - wheel-windows-python38-x86_64:build
+
+wheel-windows-python38-x86_64_burnout:build:
+    extends:
+        - .wheel_windows38_x86_64_burnout
+        - .cmake_build_wheel_windows
+        - .windows_builder_tags
+        - .cmake_wheel_artifacts
+        - .rules
+
+wheel-windows-python38-x86_64_burnout:test:
+    extends:
+        - .wheel_windows38_x86_64
+        - .cmake_test_burnout_wheel_windows
+        - .windows_builder_tags
+        - .cmake_wheel_artifacts
+        - .rules
+    variables:
+        RUN_DEPENDENT: "true"
+    dependencies:
+        - wheel-windows-python38-x86_64_burnout:build
+    needs:
+        - wheel-windows-python38-x86_64_burnout:build

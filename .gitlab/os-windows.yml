@@ -52,6 +52,14 @@
         CMAKE_CONFIGURATION: wheel_windows38_x86_64_vs2022_ninja_ceres_ffmpeg_gdal_opencv_pdal_proj_python_qt_vtk_vxl
         SCIKIT_BUILD_DIR: "${GIT_CLONE_PATH}\\_skbuild\\win-amd64-3.8\\cmake-build"
 
+# minimal wheel for burnout tool
+.wheel_windows38_x86_64_burnout:
+    extends: .wheel_windows_x86_64
+
+    variables:
+        CMAKE_CONFIGURATION: wheel_windows38_x86_64_vs2022_ninja_ffmpeg_opencv_python
+        SCIKIT_BUILD_DIR: "${GIT_CLONE_PATH}\\_skbuild\\win-amd64-3.8\\cmake-build"
+
 ## Tags
 
 .windows_builder_tags:
@@ -160,4 +168,22 @@
         - pip install "pytest<=8.1"
         - pip install (Get-ChildItem dist\*.whl | % FullName)
         - pytest
+    interruptible: true
+
+.cmake_test_burnout_wheel_windows:
+    stage: test
+
+    script:
+        - $pwdpath = $pwd.Path
+        - powershell -File ".gitlab/ci/cmake.ps1"
+        - Set-Item -Force -Path "env:PATH" -Value "$pwdpath\.gitlab\cmake\bin;$env:PATH"
+        - *before_script_windows_setup_wheel_python
+        # install the wheel in a clean venv
+        - python -m venv $pwdpath\build\ci-test-venv
+        - . .\build\ci-test-venv\Scripts\Activate.ps1
+        - python -m pip install --upgrade pip
+        # test dependencies
+        - pip install "pytest<=8.1"
+        - pip install (Get-ChildItem dist\*.whl | % FullName)
+        - pytest "./python/kwiver/vital/tests/burnout_smoke_test.py"
     interruptible: true
