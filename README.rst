@@ -32,7 +32,7 @@ the content they contain.
 `<CMake>`_       CMake helper scripts
 `<arrows>`_      The algorithm plugin modules
 `<doc>`_         Documentation, manuals, release notes
-`<examples>`_    Examples for running KWIVER (currently out of date)
+`<examples>`_    Examples for running KWIVER
 `<extras>`_      Extra utilities (e.g. instrumentation)
 `<tests>`_       Testing related support code
 `<vital>`_       Core libraries source and headers
@@ -139,14 +139,15 @@ The following sections will walk you through the basic options for a minimal KWI
 
 Building with Python Enabled
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The required python packages are included.
-``kwiver/src/python/requirements_dev.txt``
-It is recommended to create and use a virtual python environment. Python version 3.8 is a required minimum.
-``python -m venv env`` is one method for creating a virtual environment.
-Activate the virtual environment, ``source env/bin/activate`` and install
-the python packages needed for kwiver with
-``pip install -r kwiver/src/python/requirements_dev.txt``
 
+Python version 3.8 is a required minimum. The required python packages are
+included in the source code. The runtime requirements are defined in the
+``kwiver/src/python/requirements_dev.txt`` file.
+
+Using the appropriate [virtual] environment with python activated, the python
+packages can be installed with::
+
+  $ pip install -r <kwiver-source-dir>/python/requirements_dev.txt
 
 Basic CMake generation via command line
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -268,15 +269,9 @@ VIAME_        A computer vision library designed to integrate several image and
 
 Testing
 ========
+
 Continuous Integration (CI) testing is performed on Kitware's gitlab CI servers.
-Our `KWIVER dashboard <https://open.cdash.org/index.php?project=KWIVER>`_
-hosts nightly build and test results across multiple platforms including
-Windows, Mac, and Linux.
-
-Anyone can contribute a build to this dashboard using the
-`dashboard script <CMake/dashboard-scripts/KWIVER_common.cmake>`_
-provided.  Follow the instructions in the comments.
-
+The CI builds and tests kwiver on Linux and Windows platforms.
 
 Contributing
 ============
