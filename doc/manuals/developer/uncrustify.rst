@@ -11,7 +11,7 @@ version as the package is actively maintained and received frequent feature
 and bug-fix updates.
 
 The repository is located `here <https://github.com/uncrustify/uncrustify>`_.
-The build instructions may be found in it's top-level ``README.md`` file.
+The build instructions may be found in it's top-level ``README.rst`` file.
 
 Below are example commands to clone, build and locally install uncrustify for
 Unix machines with Makefiles.
