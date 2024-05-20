@@ -6,12 +6,12 @@ from kwiver.vital import plugin_management
 from kwiver.vital.algo import ImageIO, SplitImage
 from kwiver.vital.types import types
 
-import os
+from matplotlib import pyplot
 
 from pathlib import Path
 
 
-def how_to_part_01_images(data_dir, out_dir):
+def how_to_part_01_images(image_file, sleep_time=2):
 
     # All algorithms are implemented/encapsulated in an arrow, and operate on
     # vital classes
@@ -40,6 +40,26 @@ def how_to_part_01_images(data_dir, out_dir):
     vpm = plugin_management.plugin_manager_instance()
     vpm.load_all_plugins()
 
+    def display(image, title):
+        """
+        Displays a kwiver image with matplotlib.
+        """
+        fig, ax = pyplot.subplots()
+
+        # Set the window title
+        fig.canvas.manager.set_window_title(title)
+
+        # Display the image
+        # Convert image to a numpy array with asarray() API
+        ax.imshow(image.asarray())
+        ax.axis("off")
+        pyplot.show(block=False)
+
+        # Wait for sleep_time seconds
+        pyplot.pause(sleep_time)
+
+        pyplot.close(fig)
+
     ##################
     ## Image I/O ##
     ##################
@@ -54,13 +74,12 @@ def how_to_part_01_images(data_dir, out_dir):
     # conversion between
     # various representations. It provides limited access to the underlying
     # data and is not intended for direct use in image processing algorithms.
-    ocv_img = ocv_io.load(data_dir + "/cat.jpg")
-    vxl_img = vxl_io.load(data_dir + "/cat.jpg")
+    ocv_img = ocv_io.load(image_file)
+    vxl_img = vxl_io.load(image_file)
 
-    # Note: The C++ example (in examples/cpp/how_to_part_01_images.cxx),
-    # we display the images using OpenCV. We are currently lacking the function
-    # that converts an vital image to an OpenCV one (vital_to_ocv).
-    # Instead, we will save the results from the algorithms on disk.
+    # Let's display the loaded images
+    display(ocv_img, "Image loaded by OpenCV")
+    display(vxl_img, "Image loaded by VXL")
 
     ##################
     ## Image Filter ##
@@ -80,19 +99,16 @@ def how_to_part_01_images(data_dir, out_dir):
     ocv_imgs = ocv_split.split(ocv_img)
     vxl_imgs = ocv_split.split(vxl_img)
 
-    for i, img in enumerate(ocv_imgs):
-        name = out_dir + "/cat_ocv_" + str(i) + ".jpg"
-        ocv_io.save(name, img)
-        assert os.path.exists(name)
-    for i, img in enumerate(vxl_imgs):
-        name = out_dir + "/cat_vxl_" + str(i) + ".jpg"
-        ocv_io.save(name, img)
-        assert os.path.exists(name)
+    # We can display the produced images
+    for img in ocv_imgs:
+        display(img, "OpenCV Split Image")
+    for img in vxl_imgs:
+        display(img, "VXL Split Image")
 
 
 TEST_DATA_DIR = Path(__file__).parent  # / "../images/"
 
 
 def test_how_to_part_01_images():
-    path = str(TEST_DATA_DIR / ".." / "images")
-    how_to_part_01_images(path, "Testing/Temporary")
+    image = str(TEST_DATA_DIR / ".." / "images" / "cat.jpg")
+    how_to_part_01_images(image, 0.1)

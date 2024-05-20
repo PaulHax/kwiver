@@ -18,14 +18,14 @@ from kwiver.vital.types import (
     DetectedObjectType,
 )
 
-import sys
+from matplotlib import pyplot
 
-import os
+import sys
 
 from pathlib import Path
 
 
-def how_to_part_02_detections(data_dir, out_dir):
+def how_to_part_02_detections(image_file, sleep_time=2):
     # Initialize KWIVER and load up all plugins
     vpm = plugin_management.plugin_manager_instance()
     vpm.load_all_plugins()
@@ -40,7 +40,7 @@ def how_to_part_02_detections(data_dir, out_dir):
 
     # First, Load an image (see how_to_part_01_images)
     ocv_io = ImageIO.create_algorithm("ocv")
-    ocv_img = ocv_io.load(data_dir + "/soda_circles.jpg")
+    ocv_img = ocv_io.load(image_file)
 
     # Now let's run a detection algorithm that comes with kwiver
     detector = ImageObjectDetector.create_algorithm("hough_circle")
@@ -52,13 +52,28 @@ def how_to_part_02_detections(data_dir, out_dir):
 
     hough_img = drawer.draw(hough_detections, ocv_img)
 
-    # Note: The C++ example (in examples/cpp/how_to_part_02_detection.cxx),
-    # we display the images using OpenCV. We are currently lacking the function
-    # that converts an vital image to an OpenCV one (vital_to_ocv).
-    # Instead, we will save the results from the algorithms on disk.
+    def display(image, title):
+        """
+        Displays a kwiver image with matplotlib.
+        """
+        fig, ax = pyplot.subplots()
 
-    ocv_io.save(out_dir + "/soda_circles_hough_ocv.jpg", hough_img)
-    assert os.path.exists(out_dir + "/soda_circles_hough_ocv.jpg")
+        # Set the window title
+        fig.canvas.manager.set_window_title(title)
+
+        # Display the image
+        # Convert image to a numpy array with asarray() API
+        ax.imshow(image.asarray())
+        ax.axis("off")
+        pyplot.show(block=False)
+
+        # Wait for sleep_time seconds
+        pyplot.pause(sleep_time)
+
+        pyplot.close(fig)
+
+    # Let's display the resulting image
+    display(hough_img, "Hough Detections")
 
     # Next, let's look at the detection data structures and we can make them
 
@@ -141,13 +156,7 @@ def how_to_part_02_detections(data_dir, out_dir):
 
     img_detections = drawer.draw(detections, ocv_img)
 
-    # Note: The C++ example (in examples/cpp/how_to_part_02_detection.cxx),
-    # we display the images using OpenCV. We are currently lacking the function
-    # that converts an vital image to an OpenCV one (vital_to_ocv).
-    # Instead, we will save the results from the algorithms on disk.
-
-    ocv_io.save(out_dir + "/soda_circles_detections_ocv.jpg", img_detections)
-    assert os.path.exists(out_dir + "/soda_circles_detections_ocv.jpg")
+    display(img_detections, "Detections")
 
     kpf_writer = DetectedObjectSetOutput.create_algorithm("kpf_output")
     kpf_reader = DetectedObjectSetInput.create_algorithm("kpf_input")
@@ -192,6 +201,6 @@ def how_to_part_02_detections(data_dir, out_dir):
 TEST_DATA_DIR = Path(__file__).parent
 
 
-def test_how_to_part_01_images():
-    path = str(TEST_DATA_DIR / ".." / "images")
-    how_to_part_02_detections(path, "Testing/Temporary")
+def test_how_to_part_02_detections():
+    path = str(TEST_DATA_DIR / ".." / "images" / "soda_circles.jpg")
+    how_to_part_02_detections(path, 0.1)
