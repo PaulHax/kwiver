@@ -2,12 +2,19 @@ KWIVER v2.0.0 Release Notes
 ===========================
 
 This is a major release of KWIVER with a focus on improving the C++ API to reduce
-repetitive code when writing plugins and to improve the integration with Python.
-Python improvements include calling KWIVER algorithms from python and defining
-new KWIVER algorithms in Python. This release will also support distributing
-KWIVER as a Python package via wheels. This will allow KWIVER to better integrate
-with modern machince learning applications. As part of this release the primary
-site for hosting KWIVER will move from www.github.com to gitlab.kitware.com.
+repetitive code when writing plugins and to improve the integration with Python
+compared the previous 2.0.0. Python improvements include calling KWIVER algorithms
+from python and defining new KWIVER algorithms in Python. This release will also
+support distributing KWIVER as a Python package via wheels. This will allow KWIVER
+to better integrate with modern machince learning applications. As part of this
+release the primary site for hosting KWIVER will move from www.github.com to
+gitlab.kitware.com.
+
+This release does change some aspects of the KWIVER API, in particular, the way
+specific implementations of algorithms have changed. Applications based on
+KWIVER with have to be adapted to work with the new API. Also, the sprokit
+process pipelines are not included with this new release. This functionality will
+be restored in a future release.
 
 Specific updates to the algorithms and bug fixes are listed below.
 
@@ -86,6 +93,20 @@ Arrows: KLV
 * Added tag 143 (Metadata Substream ID) to ST0601.
 
 * Implement remaining obscure IMAP features.
+
+Examples:
+
+* Added python versions of existing examples.
+
+* New example demonstrating how to parse KLV data.
+
+Testing:
+
+* Test coverage has been expanded in multiple arrows.
+
+Tools:
+
+* Adding an implementation of the dump_klv tool in python
 
 Bug Fixes
 ---------
