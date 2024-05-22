@@ -54,6 +54,7 @@ if(KWIVER_ENABLE_CUDA)
     find_package(CUDA REQUIRED)
     add_compile_definitions(KWIVER_ENABLE_FFMPEG_CUDA)
     set(FFMPEG_CUDA_LIBRARIES ${CUDA_CUDA_LIBRARY})
+    include_directories(${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
   endif()
 endif()
 
