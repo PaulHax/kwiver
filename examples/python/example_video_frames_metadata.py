@@ -47,7 +47,7 @@ def add_command_options():
     return parser
 
 
-def how_to_part_03_klv():
+def example_video_frames_metadata():
 
     # In this example, we will open a video and an optional configuration file.
     # By default, the configuration file dump_klv.conf installed with kwiver
@@ -133,4 +133,4 @@ def how_to_part_03_klv():
 
 
 if __name__ == "__main__":
-    how_to_part_03_klv()
+    example_video_frames_metadata()
