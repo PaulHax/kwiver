@@ -3,16 +3,16 @@ KWIVER v2.0.0 Release Notes
 
 This is a major release of KWIVER with a focus on improving the C++ API to reduce
 repetitive code when writing plugins and to improve the integration with Python
-compared the previous 2.0.0. Python improvements include calling KWIVER algorithms
-from python and defining new KWIVER algorithms in Python. This release will also
-support distributing KWIVER as a Python package via wheels. This will allow KWIVER
-to better integrate with modern machince learning applications. As part of this
-release the primary site for hosting KWIVER will move from www.github.com to
-gitlab.kitware.com.
+compared the previous v1.8.0 release. Python improvements include calling KWIVER
+algorithms from Python and defining new KWIVER algorithms in Python. This release
+will also support distributing KWIVER as a Python package via wheels. This will
+allow KWIVER to better integrate with modern machine learning applications. As
+part of this release the primary site for hosting KWIVER will move from
+GitHub to gitlab.kitware.com.
 
 This release does change some aspects of the KWIVER API, in particular, the way
-specific implementations of algorithms have changed. Applications based on
-KWIVER with have to be adapted to work with the new API. Also, the sprokit
+specific implementations of algorithms are instantiated has changed. Applications
+based on KWIVER with have to be adapted to work with the new API. Also, the sprokit
 process pipelines are not included with this new release. This functionality will
 be restored in a future release.
 
