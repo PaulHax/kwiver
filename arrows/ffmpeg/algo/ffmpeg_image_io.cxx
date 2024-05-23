@@ -8,6 +8,7 @@
 #include <arrows/ffmpeg/algo/ffmpeg_image_io.h>
 
 #include <arrows/ffmpeg/ffmpeg_convert_image.h>
+#include <arrows/ffmpeg/ffmpeg_init.h>
 #include <arrows/ffmpeg/ffmpeg_util.h>
 
 extern "C" {
@@ -95,6 +96,8 @@ ffmpeg_image_io
 ::initialize()
 {
   attach_logger( "ffmpeg_image_io" );
+
+  ffmpeg_init();
 
   KWIVER_INITIALIZE_UNIQUE_PTR( impl, d );
 }
