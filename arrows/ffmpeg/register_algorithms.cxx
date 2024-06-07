@@ -27,24 +27,24 @@ register_factories( kwiver::vital::plugin_loader& vpm )
 
   auto fact =
     vpm.add_factory< vital::algo::video_input, ffmpeg_video_input >( "ffmpeg" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ffmpeg" );
 
   fact =
     vpm.add_factory< vital::algo::video_input,
       ffmpeg_video_input_clip >( "ffmpeg_clip" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ffmpeg" );
 
   /* XXX(ffmpeg-rewire)
    *  fact =
    *  vpm.add_factory< vital::algo::video_input,
    *   ffmpeg_video_input_rewire >( "ffmpeg_rewire" );
-   *  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+   *  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ffmpeg" );
    */
 
   fact =
     vpm.add_factory< vital::algo::video_output,
       ffmpeg_video_output >( "ffmpeg" );
-  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ocv" );
+  fact->add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_ffmpeg" );
 }
 
 } // end namespace ffmpeg
