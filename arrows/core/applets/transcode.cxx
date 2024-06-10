@@ -4,6 +4,7 @@
 
 #include "transcode.h"
 
+#include <vital/algo/algorithm.txx>
 #include <vital/algo/video_input.h>
 #include <vital/algo/video_output.h>
 
@@ -49,8 +50,7 @@ check_input(
 // ----------------------------------------------------------------------------
 void
 check_output(
-  kva::video_output_sptr const& output,
-  cxxopts::ParseResult const& cmd_args )
+  kva::video_output_sptr const& output, cxxopts::ParseResult const& )
 {
   // Check initialization
   if( !output )
@@ -61,11 +61,6 @@ check_output(
 }
 
 } // namespace <anonymous>
-
-// ----------------------------------------------------------------------------
-transcode_applet
-::transcode_applet()
-{}
 
 // ----------------------------------------------------------------------------
 void
@@ -127,10 +122,8 @@ transcode_applet
 
   // Setup video input
   kva::video_input_sptr input;
-  kva::video_input
-  ::set_nested_algo_configuration( "video_reader", config, input );
-  kva::video_input
-  ::get_nested_algo_configuration( "video_reader", config, input );
+  kv::set_nested_algo_configuration<>( "video_reader", config, input );
+  kv::get_nested_algo_configuration<>( "video_reader", config, input );
 
   // Check initialization
   if( !input )
@@ -163,10 +156,8 @@ transcode_applet
 
   // Setup video output
   kva::video_output_sptr output;
-  kva::video_output
-  ::set_nested_algo_configuration( "video_writer", config, output );
-  kva::video_output
-  ::get_nested_algo_configuration( "video_writer", config, output );
+  kv::set_nested_algo_configuration( "video_writer", config, output );
+  kv::get_nested_algo_configuration( "video_writer", config, output );
   check_output( output, cmd_args );
   output->open( output_filename, video_settings.get() );
 

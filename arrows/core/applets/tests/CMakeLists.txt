@@ -12,9 +12,8 @@ endif()
 #            "${kwiver_test_data_directory}/aphill_pipeline_data/aphill_240_1fps_crf32_sm_fused_mesh.ply"
 #            "${kwiver_test_data_directory}/aphill_pipeline_data/krtd/aphill_240_1fps_crf32-00001.krtd"
 #            output_image)
-#add_test(NAME core:applets:transcode
-#  COMMAND kwiver transcode
-#            -c "${kwiver_test_data_directory}/config_files/transcode_testing.conf"
-#            --input "${kwiver_test_data_directory}/videos/aphill_klv_10s.ts"
-#            --output transcode_out.ts)
-#
+add_test(NAME core:applets:transcode
+ COMMAND kwiver transcode
+           -c "${kwiver_test_data_directory}/config_files/transcode_testing.conf"
+           --input "${kwiver_test_data_directory}/videos/aphill_klv_10s.ts"
+           --output transcode_out.ts)
