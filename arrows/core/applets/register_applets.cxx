@@ -11,9 +11,9 @@
 #include <vital/plugin_management/plugin_loader.h>
 
 #include <arrows/core/applets/dump_klv.h>
+#include <arrows/core/applets/transcode.h>
 
 // #include <arrows/core/applets/render_mesh.h>
-// #include <arrows/core/applets/transcode.h>
 
 namespace kwiver::arrows::core {
 
@@ -28,6 +28,13 @@ register_factories( kwiver::vital::plugin_loader& vpl )
 
   auto fact =
     vpl.add_factory< kwiver_applet, dump_klv >( "dump-klv" );
+  fact->add_attribute(
+    kvpf::PLUGIN_DESCRIPTION,
+    "Kwiver arrow core applets" )
+    .add_attribute( kvpf::PLUGIN_MODULE_NAME, "arrows_core_applets" )
+    .add_attribute( kvpf::ALGORITHM_CATEGORY, kvpf::APPLET_CATEGORY );
+
+  fact = vpl.add_factory< kwiver_applet, transcode_applet >( "transcode" );
   fact->add_attribute(
     kvpf::PLUGIN_DESCRIPTION,
     "Kwiver arrow core applets" )

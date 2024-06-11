@@ -2,8 +2,8 @@
 // OSI-approved BSD 3-Clause License. See top-level LICENSE file or
 // https://github.com/Kitware/kwiver/blob/master/LICENSE for details.
 
-#ifndef KWIVER_ARROWS_CORE_APPLETS_TRANSCODE_H_
-#define KWIVER_ARROWS_CORE_APPLETS_TRANSCODE_H_
+#ifndef KWIVER_TOOLS_TRANSCODE_H
+#define KWIVER_TOOLS_TRANSCODE_H
 
 #include <vital/applets/kwiver_applet.h>
 
@@ -16,10 +16,8 @@ namespace core {
 class transcode_applet : public tools::kwiver_applet
 {
 public:
-  transcode_applet();
-
-  PLUGIN_INFO(
-    "transcode",
+  PLUGGABLE_IMPL(
+    transcode_applet,
     "Transcode video.\n\n"
     "This program reads video from one format, "
     "then writes it to another format." );
