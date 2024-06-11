@@ -91,8 +91,8 @@ klv_string_format
     LOG_WARN(
       vital::get_logger( "klv" ),
       "format `" << description() << "` "
-                 << "received wrong number of characters ( " << char_count <<
-        " ) "
+                 << "received wrong number of characters "
+                 << "(" << char_count << ") "
                  << "when reading" );
   }
 
@@ -121,8 +121,8 @@ klv_string_format
     LOG_WARN(
       vital::get_logger( "klv" ),
       "format `" << description() << "` "
-                 << "received wrong number of characters ( " << char_count <<
-        " ) "
+                 << "received wrong number of characters "
+                 << "(" << char_count << ") "
                  << "when writing" );
   }
 
