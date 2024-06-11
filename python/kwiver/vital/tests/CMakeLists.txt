@@ -6,7 +6,6 @@ add_subdirectory(cpp_helpers)
 
 # Define modules with tests in them
 set(__testable_modnames
-  burnout_smoke_test
   test_activity
   test_algorithms_common
   test_algorithm_factory
@@ -77,6 +76,13 @@ set(__testable_modnames
   test_transform_2d_io
   test_uid
   )
+
+if (KWIVER_ENABLE_FFMPEG AND
+    KWIVER_ENABLE_OPENCV AND
+    KWIVER_ENABLE_KLV AND
+    KWIVER_ENABLE_SERIALIZE_JSON)
+  list(APPEND __testable_modnames burnout_smoke_test)
+endif()
 
 # All python filenames_we in the vital.tests module
 set(__all_modnames
