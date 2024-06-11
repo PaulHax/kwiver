@@ -9,6 +9,7 @@
 #include "dump_klv.h"
 
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 
 #include <vital/algo/image_io.h>
@@ -241,7 +242,6 @@ dump_klv
     return EXIT_FAILURE;
   }
 
-  int count( 1 );
   kv::timestamp ts;
   kv::wrap_text_block wtb;
   kv::metadata_map::map_metadata_t frame_metadata;
@@ -258,8 +258,11 @@ dump_klv
   {
     if( !quiet )
     {
-      std::cout << "========== Read frame " << ts.get_frame()
-                << " (index " << count << ") ==========" << std::endl;
+      std::cout
+        << "Frame # " << std::setw( 6 ) << std::setfill( ' ' ) << ts.get_frame()
+        << " @ " << std::fixed << std::setprecision( 6 )
+        << ts.get_time_seconds() << " sec" << std::endl
+        << std::string( 64, '-' ) << std::endl;
     }
 
     kv::metadata_vector metadata = video_reader->frame_metadata();
@@ -272,34 +275,39 @@ dump_klv
 
     if( !quiet )
     {
+      size_t packet_count = 1;
       for( auto const& meta : metadata )
       {
-        std::cout << "\n\n---------------- Metadata from: "
-                  << meta->timestamp() << std::endl;
+        std::cout
+          << "Metadata packet #" << packet_count << std::endl
+          << std::string( 32, '-' ) << std::endl;
 
         if( detail )
         {
-          for( auto const& ix : *meta )
+          for( auto const& entry : *meta )
           {
-            // process metada items
-            auto const& name = ix.second->name();
-            auto const& tag = ix.second->tag();
-            auto const& descrip = kv::tag_traits_by_tag( tag ).description();
+            auto const description =
+              kv::tag_traits_by_tag( entry.first ).description();
+            auto const value_string =
+              kv::metadata::format_string( entry.second->as_string() );
 
             std::cout
-              << "Metadata item: " << name << std::endl
-              << wtb.wrap_text( descrip )
-              << "Data: <" << ix.second->type().name() << ">: "
-              << kv::metadata::format_string( ix.second->as_string() )
-              << std::endl;
+              << entry.second->name() << std::endl
+              << wtb.wrap_text( description )
+              << "Type:  " << entry.second->type_name() << std::endl
+              << "Value: " << value_string << std::endl << std::endl;
           }
         }
         else
         {
           print_metadata( std::cout, *meta );
         }
-      } // end for over metadata collection vector
-    } // The end of not quiet
+        std::cout << std::endl;
+        ++packet_count;
+      }
+
+      std::cout << std::endl;
+    }
 
     if( cmd_args.count( "frames" ) )
     {
@@ -328,9 +336,7 @@ dump_klv
         task();
       }
     }
-
-    ++count;
-  } // end while over video
+  }
 
   if( log )
   {

@@ -111,21 +111,6 @@ protected:
   TEST_ARG( data_dir );
 };
 
-namespace {
-
-// This will delete the temporary file even if an exception is thrown
-struct _tmp_file_deleter
-{
-  ~_tmp_file_deleter()
-  {
-    std::remove( tmp_path.c_str() );
-  }
-
-  std::string tmp_path;
-};
-
-} // namespace
-
 // ----------------------------------------------------------------------------
 TEST_F ( ffmpeg_video_output, create )
 {

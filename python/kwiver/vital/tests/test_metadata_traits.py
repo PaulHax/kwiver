@@ -42,7 +42,6 @@ from kwiver.vital.types.metadata_traits import *
 from kwiver.vital.types import (
     metadata_tags as mt,
 )
-from kwiver.vital.tests.cpp_helpers import type_check as tc
 
 
 class TestVitalMetaTraits(unittest.TestCase):
@@ -70,7 +69,7 @@ class TestVitalMetaTraits(unittest.TestCase):
             mt.tags.VITAL_META_UNIX_TIMESTAMP,
             "Unix Timestamp (microseconds)",
             "UNIX_TIMESTAMP",
-            tc.get_uint64_rep(),
+            "uint64",
             "Number of microseconds since the Unix epoch, not counting leap seconds.",
         )
 

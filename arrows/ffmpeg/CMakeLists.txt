@@ -20,11 +20,13 @@ endif()
 set( plugin_ffmpeg_headers )
 set( plugin_ffmpeg_sources )
 set( plugin_ffmpeg_classes
+  algo/ffmpeg_image_io
   algo/ffmpeg_video_input
   algo/ffmpeg_video_input_clip
   algo/ffmpeg_video_output
 
   ffmpeg_audio_stream_settings
+  ffmpeg_convert_image
   ffmpeg_cuda
   ffmpeg_init
   ffmpeg_util
@@ -52,6 +54,7 @@ if(KWIVER_ENABLE_CUDA)
     find_package(CUDA REQUIRED)
     add_compile_definitions(KWIVER_ENABLE_FFMPEG_CUDA)
     set(FFMPEG_CUDA_LIBRARIES ${CUDA_CUDA_LIBRARY})
+    include_directories(${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES})
   endif()
 endif()
 

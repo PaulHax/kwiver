@@ -6,6 +6,7 @@
 /// Implementation of FFmpeg video writer.
 
 #include "arrows/ffmpeg/algo/ffmpeg_video_output.h"
+#include <arrows/ffmpeg/ffmpeg_convert_image.h>
 #include <arrows/ffmpeg/ffmpeg_cuda.h>
 #include <arrows/ffmpeg/ffmpeg_init.h>
 #include <arrows/ffmpeg/ffmpeg_video_raw_image.h>
@@ -542,8 +543,17 @@ ffmpeg_video_output::impl::open_video_state
     avio_open( &format_context->pb, video_name.c_str(), AVIO_FLAG_WRITE ),
     "Could not open `", video_name, "` for writing" );
 
+  AVDictionary* format_options = nullptr;
+
+  // Disable writing the SDT table, which carries information useful for
+  // broadcast television but not computer vision applications
+  if( format_context->oformat->name == std::string{ "mpegts" } )
+  {
+    av_dict_set( &format_options, "omit_sdt", "1", 0 );
+  }
+
   throw_error_code(
-    avformat_write_header( format_context.get(), nullptr ),
+    avformat_write_header( format_context.get(), &format_options ),
     "Could not write video header" );
 }
 
@@ -574,6 +584,17 @@ ffmpeg_video_output::impl::open_video_state
   LOG_DEBUG(
     parent->logger, "Trying output codec: " << pretty_codec_name( codec ) );
 
+  // Clear previous work if we are trying a second codec
+  if(
+    codec_context && codec_context->codec
+#ifdef AV_CODEC_CAP_ENCODER_FLUSH
+    && ( codec_context->codec->capabilities & AV_CODEC_CAP_ENCODER_FLUSH )
+#endif
+  )
+  {
+    avcodec_flush_buffers( codec_context.get() );
+  }
+
   // Create and configure codec context
   codec_context.reset(
     throw_error_null(
@@ -598,12 +619,10 @@ ffmpeg_video_output::impl::open_video_state
   codec_context->framerate = video_settings.frame_rate;
 
   // Fill in backup parameters from config
-  if( codec_context->pix_fmt < 0 )
-  {
-    // TODO: Add config options so RGB24 is not hardcoded here
-    codec_context->pix_fmt = avcodec_find_best_pix_fmt_of_list(
-      codec->pix_fmts, AV_PIX_FMT_RGB24, false, nullptr );
-  }
+  codec_context->pix_fmt = avcodec_find_best_pix_fmt_of_list(
+    codec->pix_fmts,
+    ( codec_context->pix_fmt < 0 ) ? AV_PIX_FMT_RGB24 : codec_context->pix_fmt,
+    false, nullptr );
   if( codec_context->framerate.num <= 0 )
   {
     codec_context->framerate = parent->frame_rate();
@@ -637,10 +656,13 @@ ffmpeg_video_output::impl::open_video_state
     throw_error( "Output format does not support video" );
   }
 
-  video_stream =
-    throw_error_null(
-      avformat_new_stream( format_context.get(), codec ),
-      "Could not allocate video stream" );
+  if( !video_stream )
+  {
+    video_stream =
+      throw_error_null(
+        avformat_new_stream( format_context.get(), nullptr ),
+        "Could not allocate video stream" );
+  }
   video_stream->time_base = codec_context->time_base;
   video_stream->codecpar->codec_type = AVMEDIA_TYPE_VIDEO;
   video_stream->codecpar->codec_id = codec->id;
@@ -674,109 +696,9 @@ ffmpeg_video_output::impl::open_video_state
   kv::image_container_sptr const& image,
   VITAL_UNUSED kv::timestamp const& ts )
 {
-  // Create frame object to represent incoming image
-  frame_uptr frame{
-    throw_error_null( av_frame_alloc(), "Could not allocate frame" ) };
-
-  // Fill in a few mandatory fields
-  frame->width = image->width();
-  frame->height = image->height();
-  switch( image->depth() )
-  {
-    case 1: frame->format = AV_PIX_FMT_GRAY8;
-      break;
-    case 3: frame->format = AV_PIX_FMT_RGB24;
-      break;
-    default:
-      throw_error( "Image has unsupported depth: ", image->depth() );
-  }
-
-  if( image->get_image().pixel_traits() !=
-      kv::image_pixel_traits_of< uint8_t >() )
-  {
-    // TODO: Is there an existing conversion function somewhere?
-    throw_error( "Image has unsupported pixel traits (non-uint8)" );
-  }
-
-  // Allocate storage based on those fields
-  throw_error_code(
-    av_frame_get_buffer( frame.get(), 32 ), "Could not allocate frame data" );
-
-  // Give the frame the raw pixel data
-  {
-    auto ptr =
-      static_cast< uint8_t const* >( image->get_image().first_pixel() );
-    auto const i_step = image->get_image().h_step();
-    auto const j_step = image->get_image().w_step();
-    auto const k_step = image->get_image().d_step();
-    if( j_step == static_cast< ptrdiff_t >( image->depth() ) &&
-        k_step == static_cast< ptrdiff_t >( 1 ) )
-    {
-      for( size_t i = 0; i < image->height(); ++i )
-      {
-        std::memcpy(
-          frame->data[ 0 ] + i * frame->linesize[ 0 ], ptr + i * i_step,
-          image->width() * image->depth() );
-      }
-    }
-    else
-    {
-      auto const i_step_ptr = i_step - j_step * image->width();
-      auto const j_step_ptr = j_step - k_step * image->depth();
-      auto const k_step_ptr = k_step;
-      auto const i_step_index =
-        frame->linesize[ 0 ] - image->width() * image->depth();
-      size_t index = 0;
-      for( size_t i = 0; i < image->height(); ++i )
-      {
-        for( size_t j = 0; j < image->width(); ++j )
-        {
-          for( size_t k = 0; k < image->depth(); ++k )
-          {
-            frame->data[ 0 ][ index++ ] = *ptr;
-            ptr += k_step_ptr;
-          }
-          ptr += j_step_ptr;
-        }
-        ptr += i_step_ptr;
-        index += i_step_index;
-      }
-    }
-  }
-
-  // Create frame object to hold the image after conversion to the required
-  // pixel format
-  frame_uptr converted_frame{
-    throw_error_null( av_frame_alloc(), "Could not allocate frame" ) };
-
-  // Fill in a few mandatory fields
-  converted_frame->width = image->width();
-  converted_frame->height = image->height();
-  converted_frame->format = codec_context->pix_fmt;
-
-  // Allocate storage based on those fields
-  throw_error_code(
-    av_frame_get_buffer( converted_frame.get(), 32 ),
-    "Could not allocate frame data" );
-
-  // Specify which conversion to perform
-  image_conversion_context.reset(
-    throw_error_null(
-      sws_getCachedContext(
-        image_conversion_context.release(),
-        image->width(), image->height(),
-        static_cast< AVPixelFormat >( frame->format ),
-        image->width(), image->height(),
-        static_cast< AVPixelFormat >( converted_frame->format ),
-        SWS_BICUBIC, nullptr, nullptr, nullptr ),
-      "Could not create image conversion context" ) );
-
-  // Convert the pixel format
-  throw_error_code(
-    sws_scale(
-      image_conversion_context.get(), frame->data, frame->linesize,
-      0, image->height(), converted_frame->data, converted_frame->linesize ),
-    "Could not convert frame image to target pixel format" );
+  auto const converted_frame =
+    vital_image_to_frame(
+      image, codec_context.get(), &image_conversion_context );
 
   // Try to send image to video encoder
   converted_frame->pts = next_video_pts();
@@ -940,6 +862,17 @@ ffmpeg_video_output::impl::open_video_state
     packet->dts += offset;
     packet->pts += offset;
   }
+
+  // This is necessary for FFmpeg's CUVID wrapper, which doesn't do B-frame
+  // timestamps quite right
+  if( packet->pts < packet->dts )
+  {
+    packet->dts =
+      ( prev_video_dts == AV_NOPTS_VALUE )
+      ? packet->pts - 1
+      : prev_video_dts + 1;
+  }
+  prev_video_dts = packet->dts;
 
   // Succeeded; write to file
   throw_error_code(

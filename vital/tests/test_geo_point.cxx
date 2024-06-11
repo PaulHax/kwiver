@@ -174,7 +174,7 @@ TEST ( geo_point, insert_operator_empty )
   std::stringstream str;
   str << p_empty;
 
-  EXPECT_EQ( "geo_point\n[ empty ]", str.str() );
+  EXPECT_EQ( "[ empty ]", str.str() );
 }
 
 // ----------------------------------------------------------------------------
@@ -217,7 +217,6 @@ TEST_P ( geo_point_roundtrip, insert_operator )
   int crs;
   std::string dummy;
 
-  in >> dummy; // geo_point\n
   in >> dummy; // [
   in >> easting;
   in >> northing;

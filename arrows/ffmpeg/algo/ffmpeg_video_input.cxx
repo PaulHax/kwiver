@@ -6,6 +6,7 @@
 /// \brief Implementation file for video input using FFmpeg.
 
 #include <arrows/ffmpeg/algo/ffmpeg_video_input.h>
+#include <arrows/ffmpeg/ffmpeg_convert_image.h>
 #include <arrows/ffmpeg/ffmpeg_cuda.h>
 #include <arrows/ffmpeg/ffmpeg_init.h>
 #include <arrows/ffmpeg/ffmpeg_util.h>
@@ -49,6 +50,7 @@ extern "C" {
 #include <filesystem>
 #include <iomanip>
 #include <list>
+#include <map>
 #include <memory>
 #include <mutex>
 #include <optional>
@@ -381,7 +383,6 @@ public:
     frame_uptr frame;
     frame_uptr processed_frame;
 
-    kv::image_memory_sptr image_memory;
     kv::image_container_sptr image;
     kv::video_raw_image_sptr raw_image;
 
@@ -450,6 +451,7 @@ public:
     AVRational maybe_frame_rate;
     std::map< int64_t, klv::misp_timestamp > pts_to_misp_ts;
     std::map< int64_t, int64_t > packet_pos_to_dts;
+    std::multimap< int64_t, int64_t > packet_pts_to_pos;
     int64_t prev_frame_dts;
     int64_t prev_video_dts;
 
@@ -656,7 +658,6 @@ ffmpeg_video_input::priv::frame_state
     logger{ parent.logger },
     frame{},
     processed_frame{},
-    image_memory{},
     image{},
     raw_image{},
     metadata{},
@@ -744,58 +745,8 @@ ffmpeg_video_input::priv::frame_state
     av_frame_move_ref( frame.get(), processed_frame.get() );
   }
 
-  // Determine pixel formats
-  auto const src_pix_fmt = static_cast< AVPixelFormat >( frame->format );
-  // TODO: Detect and support grayscale, alpha, binary
-  auto const dst_pix_fmt = AV_PIX_FMT_RGB24;
-  size_t const depth = 3;
-
-  // Determine image dimensions
-  auto const params = parent->video_stream->codecpar;
-  auto const width = static_cast< size_t >( params->width );
-  auto const height = static_cast< size_t >( params->height );
-  auto const image_size = width * height * depth + AV_INPUT_BUFFER_PADDING_SIZE;
-
-  // Allocate enough space for the output image
-  if( !image_memory || image_memory->size() < image_size )
-  {
-    image_memory = std::make_shared< kv::image_memory >( image_size );
-  }
-
-  // Get image converter
-  parent->image_conversion_context.reset(
-    throw_error_null(
-      sws_getCachedContext(
-        parent->image_conversion_context.release(),
-        width, height, src_pix_fmt,
-        width, height, dst_pix_fmt,
-        SWS_BICUBIC, nullptr, nullptr, nullptr ),
-      "Could not create image conversion context" ) );
-
-  // Setup frame to receive converted image
-  processed_frame->width = width;
-  processed_frame->height = height;
-  processed_frame->format = dst_pix_fmt;
-  processed_frame->data[ 0 ] = static_cast< uint8_t* >( image_memory->data() );
-  processed_frame->linesize[ 0 ] = width * depth;
-
-  // Convert pixel format
-  throw_error_code(
-    sws_scale(
-      parent->image_conversion_context.get(),
-      frame->data, frame->linesize,
-      0, height,
-      processed_frame->data, processed_frame->linesize ) );
-
-  // Clear frame structure
-  av_frame_unref( processed_frame.get() );
-
-  // Package up and return result
-  return image = std::make_shared< kv::simple_image_container >(
-    kv::image(
-      image_memory, image_memory->data(),
-      width, height, depth,
-      depth, depth * width, 1 ) );
+  return image =
+    frame_to_vital_image( frame.get(), &parent->image_conversion_context );
 }
 
 // ----------------------------------------------------------------------------
@@ -943,6 +894,7 @@ ffmpeg_video_input::priv::open_video_state
     maybe_frame_rate{ 0, 0 },
     pts_to_misp_ts{},
     packet_pos_to_dts{},
+    packet_pts_to_pos{},
     prev_frame_dts{ AV_NOPTS_VALUE },
     prev_video_dts{ AV_NOPTS_VALUE },
     lookahead{},
@@ -1226,6 +1178,9 @@ ffmpeg_video_input::priv::open_video_state
         LOG_WARN(
           parent->logger, "Could not read beginning of video with codec "
             << pretty_codec_name( codec ) << ": " << error_string( send_err ) );
+
+        seek_to_start();
+
         return false;
       }
       av_packet_unref( tmp_packet.get() );
@@ -1340,7 +1295,6 @@ ffmpeg_video_input::priv::open_video_state
   frame_state new_frame{ *this };
   if( frame.has_value() )
   {
-    new_frame.image_memory = std::move( frame->image_memory );
     new_frame.is_draining = frame->is_draining;
   }
   frame.reset();
@@ -1537,6 +1491,7 @@ ffmpeg_video_input::priv::open_video_state
         av_packet_ref( raw_image_buffer.back().get(), packet.get() ),
         "Could not give packet to raw image cache" );
       packet_pos_to_dts.emplace( packet->pos, packet->dts );
+      packet_pts_to_pos.emplace( packet->pts, packet->pos );
 
       // Find MISP timestamp
       for( auto const tag_type : { klv::MISP_TIMESTAMP_TAG_STRING,
@@ -1569,12 +1524,34 @@ ffmpeg_video_input::priv::open_video_state
     switch( recv_err )
     {
       case 0:
+      {
         // Success
         frame = std::move( new_frame );
         if( frame_count )
         {
           ++( *frame_count );
         }
+
+        // Look up the position of the packet that contained this frame
+        auto const range = packet_pts_to_pos.equal_range( frame->frame->pts );
+        if( range.first != range.second )
+        {
+          using pair_t = typename decltype( packet_pts_to_pos )::value_type;
+
+          auto const cmp = []( pair_t const& lhs, pair_t const& rhs ){
+                             return lhs.second < rhs.second;
+                           };
+          auto const it = std::min_element( range.first, range.second, cmp );
+          if( frame->frame->pkt_pos < 0 )
+          {
+            frame->frame->pkt_pos = it->second;
+          }
+          packet_pts_to_pos.erase( it );
+        }
+
+        packet_pts_to_pos.erase(
+          packet_pts_to_pos.begin(),
+          packet_pts_to_pos.lower_bound( frame->frame->pts ) );
 
         // Look up the dts of the packet that contained this frame
         if( auto const it = packet_pos_to_dts.find( frame->frame->pkt_pos );
@@ -1584,6 +1561,7 @@ ffmpeg_video_input::priv::open_video_state
                jt != raw_image_buffer.end(); )
           {
             if( ( *jt )->dts <= it->second ||
+                ( *jt )->dts <= frame->frame->pts ||
                 ( *jt )->dts <= frame->frame->pkt_dts )
             {
               auto const next_jt = std::next( jt );
@@ -1630,6 +1608,7 @@ ffmpeg_video_input::priv::open_video_state
           }
         }
         break;
+      }
       case AVERROR_EOF:
         // End of file
         at_eof = true;
@@ -1757,7 +1736,11 @@ ffmpeg_video_input::priv::open_video_state
         frame->frame->best_effort_timestamp,
         video_stream->time_base,
         stream.stream->time_base );
-      max_pos = frame->frame->pkt_pos;
+
+      if( frame->frame->pkt_pos >= 0 )
+      {
+        max_pos = frame->frame->pkt_pos;
+      }
     }
 
     stream.advance( backup_timestamp, max_pts, max_pos );
