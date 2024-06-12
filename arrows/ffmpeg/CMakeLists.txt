@@ -18,7 +18,9 @@ if (NOT FFMPEG_FOUND_SEVERAL)
 endif()
 
 set( plugin_ffmpeg_headers )
-set( plugin_ffmpeg_sources )
+set( plugin_ffmpeg_sources
+  ffmpeg_convert_image.cxx
+  )
 set( plugin_ffmpeg_classes
   algo/ffmpeg_image_io
   algo/ffmpeg_video_input
@@ -26,7 +28,6 @@ set( plugin_ffmpeg_classes
   algo/ffmpeg_video_output
 
   ffmpeg_audio_stream_settings
-  ffmpeg_convert_image
   ffmpeg_cuda
   ffmpeg_init
   ffmpeg_util

@@ -254,11 +254,14 @@ ffmpeg_image_io
   codec_context->color_range = AVCOL_RANGE_JPEG;
 
   // Determine which pixel format to use
-  auto const src_pix_fmt = pix_fmt_from_depth( data->depth() );
+  auto const src_pix_fmt =
+    vital_to_frame_pix_fmt(
+      data->depth(),
+      data->get_image().pixel_traits(),
+      is_image_planar( data->get_image() ) );
   codec_context->pix_fmt =
     avcodec_find_best_pix_fmt_of_list(
-      codec->pix_fmts, src_pix_fmt, src_pix_fmt == AV_PIX_FMT_RGBA,
-      nullptr );
+      codec->pix_fmts, src_pix_fmt, true, nullptr );
 
   // Create the "video" (image) stream
   AVStream* video_stream = throw_error_null(
