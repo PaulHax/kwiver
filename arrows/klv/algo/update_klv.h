@@ -5,6 +5,9 @@
 /// \file
 /// Declaration of update_klv metadata filter.
 
+#ifndef KWIVER_ARROWS_KLV_UPDATE_KLV_H
+#define KWIVER_ARROWS_KLV_UPDATE_KLV_H
+
 #include <arrows/klv/kwiver_algo_klv_export.h>
 
 #include <vital/algo/buffered_metadata_filter.h>
@@ -79,3 +82,5 @@ private:
 } // namespace arrows
 
 } // namespace kwiver
+
+#endif
