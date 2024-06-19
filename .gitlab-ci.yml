@@ -2,6 +2,7 @@ include:
     # Metadata shared my many jobs
     - local: .gitlab/rules.yml
     - local: .gitlab/artifacts.yml
+    - local: .gitlab/upload.yml
     - local: .gitlab/warning-policy.yml
 
     # OS builds.
@@ -11,6 +12,7 @@ include:
 stages:
     - build
     - test
+    - upload
 
 ################################################################################
 # Job declarations
@@ -170,3 +172,21 @@ wheel-windows-python38-x86_64_burnout:test:
         - wheel-windows-python38-x86_64_burnout:build
     needs:
         - wheel-windows-python38-x86_64_burnout:build
+
+wheel:kwiver:upload:
+    extends:
+        - .pypi_kwiver_upload
+    dependencies:
+        - wheel-linux-python38-x86_64:build
+        - wheel-linux-python38-x86_64_burnout:build
+        - wheel-windows-python38-x86_64:build
+        - wheel-windows-python38-x86_64_burnout:build
+    needs:
+        - wheel-linux-python38-x86_64:build
+        - wheel-linux-python38-x86_64:test
+        - wheel-linux-python38-x86_64_burnout:build
+        - wheel-linux-python38-x86_64_burnout:test
+        - wheel-windows-python38-x86_64:build
+        - wheel-windows-python38-x86_64:test
+        - wheel-windows-python38-x86_64_burnout:build
+        - wheel-windows-python38-x86_64_burnout:test
