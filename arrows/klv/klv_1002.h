@@ -10,6 +10,7 @@
 
 #include <arrows/klv/klv_1303.h>
 #include <arrows/klv/klv_checksum.h>
+#include <arrows/klv/klv_imap.h>
 #include <arrows/klv/klv_packet.h>
 #include <arrows/klv/klv_set.h>
 #include <arrows/klv/klv_util.h>
@@ -132,8 +133,8 @@ struct KWIVER_ALGO_KLV_EXPORT klv_1002_section_data_pack
 {
   uint32_t section_x;
   uint32_t section_y;
-  klv_1303_mdap< double > measurements;
-  std::optional< klv_1303_mdap< double > > uncertainty;
+  klv_1303_mdap< klv_imap > measurements;
+  std::optional< klv_1303_mdap< klv_imap > > uncertainty;
   std::optional< klv_lengthy< double > > plane_x_scale;
   std::optional< klv_lengthy< double > > plane_y_scale;
   std::optional< klv_lengthy< double > > plane_constant;

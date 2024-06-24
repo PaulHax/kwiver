@@ -165,7 +165,8 @@ namespace section_data_pack_detail {
 
 auto const index_format = klv_ber_oid_format{};
 auto const mdap_format =
-  klv_1303_mdap_format< klv_lengthless_format< klv_float_format > >{ 8 };
+  klv_1303_mdap_format< klv_lengthless_imap_format >{
+  vital::interval< double >{ 0.0, 1.0 }, 1 };
 auto const plane_format = klv_float_format{};
 
 } // namespace section_data_pack_detail
