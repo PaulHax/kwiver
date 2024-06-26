@@ -53,7 +53,8 @@ auto const expected_result = klv_local_set{
     klv_1002_section_data_pack{
       2, 0,
       { { 2, 2 },
-        { 100.0, 105.0, 95.0, 100.0 } },
+        { klv_imap{ 100.0 }, klv_imap{ 105.0 },
+          klv_imap{ 95.0 }, klv_imap{ 100.0 } } },
       std::nullopt,
       kld{ 1.0 },
       kld{ 2.0 },
