@@ -351,9 +351,7 @@ set( KWIVER_INCLUDE_DIRS "")
 set( KWIVER_LIBRARY_DIRS "")
 
 # TODO: use global property to capture found, external-to-fletch eigen dep
-if ( NOT fletch_ENABLED_Eigen )
-  list(APPEND KWIVER_INCLUDE_DIRS "${EIGEN3_INCLUDE_DIR}")
-endif ()
+list(APPEND KWIVER_INCLUDE_DIRS "${EIGEN3_INCLUDE_DIR}")
 
 # TODO: use global property to capture found, external-to-fletch boost dep
 if ( NOT fletch_ENABLED_Boost)
