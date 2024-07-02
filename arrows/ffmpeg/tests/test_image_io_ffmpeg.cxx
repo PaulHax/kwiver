@@ -14,6 +14,7 @@
 
 #include <filesystem>
 #include <limits>
+#include <optional>
 
 std::filesystem::path g_data_dir;
 
@@ -22,25 +23,59 @@ namespace {
 // ----------------------------------------------------------------------------
 template < class T >
 kv::image
-create_test_image( size_t width, size_t height, size_t depth )
+create_test_image(
+  size_t width, size_t height, size_t depth, bool planar,
+  size_t line_padding )
 {
   constexpr double maximum = std::numeric_limits< T >::max();
-  auto image = kv::image{ width, height, depth };
+  auto const pixel_traits = kv::image_pixel_traits_of< T >();
+  std::optional< kv::image > image;
+
+  auto const image_memory =
+    std::make_shared< kv::image_memory >(
+      ( width + line_padding ) * height * depth * pixel_traits.num_bytes + 64 );
+  if( planar )
+  {
+    image.emplace(
+      image_memory, image_memory->data(),
+      width, height, depth,
+      1, width + line_padding, height * ( width + line_padding ),
+      pixel_traits );
+  }
+  else
+  {
+    image.emplace(
+      image_memory, image_memory->data(),
+      width, height, depth,
+      depth, width * depth + line_padding, 1,
+      pixel_traits );
+  }
+
   for( size_t y = 0; y < height; ++y )
   {
     for( size_t x = 0; x < width; ++x )
     {
       for( size_t c = 0; c < depth; ++c )
       {
-        image.at< T >( x, y, c ) =
-          static_cast< T >(
-            maximum / ( height - 1 ) * y -
-            maximum / ( width - 1 ) * x +
-            maximum / ( depth - 1 ) * c );
+        if constexpr( std::is_same_v< T, bool > )
+        {
+          image->at< T >( x, y, c ) = static_cast< T >( ( y + x + c ) % 5 );
+        }
+        else
+        {
+          image->at< T >( x, y, c ) =
+            static_cast< T >(
+              std::max< double >(
+                0, std::min< double >(
+                  maximum,
+                  maximum / ( height - 1 ) * y -
+                  maximum / ( width - 1 ) * x +
+                  maximum / ( depth - 1 ) * c ) ) );
+        }
       }
     }
   }
-  return image;
+  return *image;
 }
 
 // ----------------------------------------------------------------------------
@@ -62,11 +97,24 @@ assert_test_image(
     {
       for( size_t c = 0; c < depth; ++c )
       {
-        ASSERT_NEAR(
-          static_cast< T >(
-            maximum / ( height - 1 ) * y -
-            maximum / ( width - 1 ) * x +
-            maximum / ( depth - 1 ) * c ), image.at< T >( x, y, c ), epsilon );
+        if constexpr( std::is_same_v< T, bool > )
+        {
+          ASSERT_EQ(
+            static_cast< T >( ( y + x + c ) % 5 ),
+            image.at< T >( x, y, c ) );
+        }
+        else
+        {
+          ASSERT_NEAR(
+            static_cast< T >(
+              std::max< double >(
+                0, std::min< double >(
+                  maximum,
+                  maximum / ( height - 1 ) * y -
+                  maximum / ( width - 1 ) * x +
+                  maximum / ( depth - 1 ) * c ) ) ),
+            image.at< T >( x, y, c ), epsilon );
+        }
       }
     }
   }
@@ -166,24 +214,72 @@ TEST ( ffmpeg_image_io, load_tiff )
 
   ASSERT_NE( nullptr, loaded_image );
 
+  loaded_image->get_image().at< uint16_t >( 31, 31, 0 );
   ASSERT_EQ( 32, loaded_image->height() );
   ASSERT_EQ( 32, loaded_image->width() );
   ASSERT_EQ( 1,  loaded_image->depth() );
 
-  // This will have to change if / when 16-bit support is added
-  EXPECT_EQ( 0,   loaded_image->get_image().at< uint8_t >( 0, 0, 0 ) );
-  EXPECT_EQ( 0,   loaded_image->get_image().at< uint8_t >( 31, 0, 0 ) );
-  EXPECT_EQ( 239, loaded_image->get_image().at< uint8_t >( 31, 31, 0 ) );
-  EXPECT_EQ( 0,   loaded_image->get_image().at< uint8_t >( 0, 31, 0 ) );
+  EXPECT_EQ( 0,     loaded_image->get_image().at< uint16_t >( 0, 0, 0 ) );
+  EXPECT_EQ( 0,     loaded_image->get_image().at< uint16_t >( 31, 0, 0 ) );
+  EXPECT_EQ( 61504, loaded_image->get_image().at< uint16_t >( 31, 31, 0 ) );
+  EXPECT_EQ( 0,     loaded_image->get_image().at< uint16_t >( 0, 31, 0 ) );
 }
 
 // ----------------------------------------------------------------------------
-TEST ( ffmpeg_image_io, save_png )
+TEST ( ffmpeg_image_io, save_png_bool )
 {
   auto const path = kwiver::testing::temp_file_name( "test-", ".png" );
 
   ffmpeg::ffmpeg_image_io io;
-  auto const image = create_test_image< uint8_t >( 32, 64, 3 );
+  auto const image = create_test_image< bool >( 32, 64, 1, false, 8 );
+  io.save( path, std::make_shared< kv::simple_image_container >( image ) );
+
+  _tmp_file_deleter tmp_file_deleter{ path };
+
+  auto const loaded_image = io.load( path );
+  CALL_TEST(
+    assert_test_image< bool >, loaded_image->get_image(), 32, 64, 1, 0 );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( ffmpeg_image_io, save_png_gray )
+{
+  auto const path = kwiver::testing::temp_file_name( "test-", ".png" );
+
+  ffmpeg::ffmpeg_image_io io;
+  auto const image = create_test_image< uint8_t >( 32, 64, 1, false, 0 );
+  io.save( path, std::make_shared< kv::simple_image_container >( image ) );
+
+  _tmp_file_deleter tmp_file_deleter{ path };
+
+  auto const loaded_image = io.load( path );
+  CALL_TEST(
+    assert_test_image< uint8_t >, loaded_image->get_image(), 32, 64, 1, 0 );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( ffmpeg_image_io, save_png_gray_alpha )
+{
+  auto const path = kwiver::testing::temp_file_name( "test-", ".png" );
+
+  ffmpeg::ffmpeg_image_io io;
+  auto const image = create_test_image< uint8_t >( 32, 64, 2, true, 0 );
+  io.save( path, std::make_shared< kv::simple_image_container >( image ) );
+
+  _tmp_file_deleter tmp_file_deleter{ path };
+
+  auto const loaded_image = io.load( path );
+  CALL_TEST(
+    assert_test_image< uint8_t >, loaded_image->get_image(), 32, 64, 2, 0 );
+}
+
+// ----------------------------------------------------------------------------
+TEST ( ffmpeg_image_io, save_png_rgb )
+{
+  auto const path = kwiver::testing::temp_file_name( "test-", ".png" );
+
+  ffmpeg::ffmpeg_image_io io;
+  auto const image = create_test_image< uint8_t >( 32, 64, 3, true, 0 );
   io.save( path, std::make_shared< kv::simple_image_container >( image ) );
 
   _tmp_file_deleter tmp_file_deleter{ path };
@@ -199,14 +295,14 @@ TEST ( ffmpeg_image_io, save_png_rgba )
   auto const path = kwiver::testing::temp_file_name( "test-", ".png" );
 
   ffmpeg::ffmpeg_image_io io;
-  auto const image = create_test_image< uint8_t >( 32, 64, 4 );
+  auto const image = create_test_image< uint16_t >( 32, 64, 4, false, 1 );
   io.save( path, std::make_shared< kv::simple_image_container >( image ) );
 
   _tmp_file_deleter tmp_file_deleter{ path };
 
   auto const loaded_image = io.load( path );
   CALL_TEST(
-    assert_test_image< uint8_t >, loaded_image->get_image(), 32, 64, 4, 0 );
+    assert_test_image< uint16_t >, loaded_image->get_image(), 32, 64, 4, 0 );
 }
 
 // ----------------------------------------------------------------------------
@@ -221,7 +317,7 @@ TEST ( ffmpeg_image_io, save_jpeg )
   config->set_value( "quality", 1 );
   io.set_configuration( config );
 
-  auto const image = create_test_image< uint8_t >( 64, 32, 3 );
+  auto const image = create_test_image< uint8_t >( 64, 32, 3, true, 2 );
   io.save( path, std::make_shared< kv::simple_image_container >( image ) );
 
   _tmp_file_deleter tmp_file_deleter{ path };
@@ -237,14 +333,14 @@ TEST ( ffmpeg_image_io, save_tiff )
   auto const path = kwiver::testing::temp_file_name( "test-", ".tif" );
 
   ffmpeg::ffmpeg_image_io io;
-  auto const image = create_test_image< uint8_t >( 32, 64, 3 );
+  auto const image = create_test_image< uint16_t >( 32, 64, 3, true, 0 );
   io.save( path, std::make_shared< kv::simple_image_container >( image ) );
 
   _tmp_file_deleter tmp_file_deleter{ path };
 
   auto const loaded_image = io.load( path );
   CALL_TEST(
-    assert_test_image< uint8_t >, loaded_image->get_image(), 32, 64, 3, 0 );
+    assert_test_image< uint16_t >, loaded_image->get_image(), 32, 64, 3, 0 );
 }
 
 // ----------------------------------------------------------------------------
@@ -253,12 +349,12 @@ TEST ( ffmpeg_image_io, save_tiff_gray )
   auto const path = kwiver::testing::temp_file_name( "test-", ".tif" );
 
   ffmpeg::ffmpeg_image_io io;
-  auto const image = create_test_image< uint8_t >( 32, 64, 1 );
+  auto const image = create_test_image< uint16_t >( 32, 64, 1, false, 31 );
   io.save( path, std::make_shared< kv::simple_image_container >( image ) );
 
   _tmp_file_deleter tmp_file_deleter{ path };
 
   auto const loaded_image = io.load( path );
   CALL_TEST(
-    assert_test_image< uint8_t >, loaded_image->get_image(), 32, 64, 1, 0 );
+    assert_test_image< uint16_t >, loaded_image->get_image(), 32, 64, 1, 0 );
 }
