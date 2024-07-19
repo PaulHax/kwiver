@@ -35,6 +35,12 @@ The guiding principles for this implementation are as follows:
   features may be kept around if enough data that uses those features exists in
   the wild, or if doing so is trivial.
 
+While KWIVER may log various warnings and errors, this implementation does not
+attempt to recognize all nonconformance with MISB standards that may be present
+in input data, nor does it always prevent the encoding of nonconformant data.
+This latter policy allows the system to process slightly nonconformant data as
+may be present in the wild, but **it places the responsibility on the user** to
+ensure that the data and encoding settings they pass in are standard-conformant.
 
 How to Use
 ----------
@@ -51,6 +57,41 @@ the returned ``vital::metadata`` objects which successfully ``dynamic_cast``\ s
 to ``klv_metadata`` contains one frame of ``klv_packet``\ s from one KLV stream
 in the source media.
 
+Starting with a ``klv_packet`` at the root, parsed KLV data is stored as a hierachy.
+Along this hierachy, some data (e.g. ``klv_packet.key``) is stored directly, while
+some (e.g. ``klv_packet.value``) is stored in a ``klv_value`` container. A
+``klv_value`` can be thought of as being in three basic states:
+  1. **Empty.**
+    There is no data for this field. In a local set, this indicates a zero-length
+    element (ZLE), relevant for Report-on-Change behavior. In other contexts, it
+    may simply indicate an omitted optional field.
+  2. **Invalid.**
+    There is data in this field, but we cannot parse it. Either it is irrecoverably
+    nonconformant, or we have not yet implemented the relevant standard. In either
+    case, the byte sequence is stored in a ``klv_blob`` object within the ``klv_value``.
+    That byte sequence can then be written back out verbatim to prevent data loss.
+  3. **Valid.**
+    The ``klv_value`` contains data of the appropriate type. For example, if the
+    ``key`` of the ``klv_packet`` is the ST0601 universal key, a valid ``value``
+    would contain an object of type ``klv_local_set``.
+
+.. warning::
+    When processing parsed KLV, developers should make sure to handle cases where
+    a ``klv_value`` is not valid.
+
+The transformations between encoded KLV and KWIVER's in-memory data structures
+are organized via ``klv_data_format`` classes, such as ``klv_string_format`` and
+``klv_0601_local_set_format``. Each format implements reading and writing a
+particular type of data, and may invoke other formats internally. In addition to
+``read()`` and ``write()`` methods, each format has a ``length_of()`` method,
+which allows the writer to preallocate the exact number of bytes needed to hold
+the encoded KLV data.
+
+However, in most cases users will be reading from or writing to a video file, in
+which case the ``video_input`` or ``video_output`` will handle the KLV packet decoding
+and encoding internally. To read or write packets independently of a video stream,
+see the ``klv_read_packet()`` and ``klv_write_packet()`` functions. These will
+automatically select the correct format to handle the data given to them.
 
 Algorithms
 ----------
