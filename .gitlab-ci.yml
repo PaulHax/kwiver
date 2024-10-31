@@ -28,7 +28,7 @@ stages:
 # Additionally, jobs may also contain:
 #
 #   - artifacts
-#   - dependency/needs jobs for required jobs
+#   - needs jobs for required jobs
 ################################################################################
 
 # Linux
@@ -52,8 +52,6 @@ ubuntu2004-arrows:test:
         - .rules
     variables:
         RUN_DEPENDENT: "true"
-    dependencies:
-        - ubuntu2004-arrows:build
     needs:
         - ubuntu2004-arrows:build
 
@@ -75,8 +73,6 @@ wheel-linux-python38-x86_64:test:
         - .rules
     variables:
         RUN_DEPENDENT: "true"
-    dependencies:
-        - wheel-linux-python38-x86_64:build
     needs:
         - wheel-linux-python38-x86_64:build
 
@@ -97,8 +93,6 @@ wheel-linux-python38-x86_64_burnout:test:
         - .rules
     variables:
         RUN_DEPENDENT: "true"
-    dependencies:
-        - wheel-linux-python38-x86_64:build
     needs:
         - wheel-linux-python38-x86_64:build
 
@@ -123,8 +117,6 @@ windows-vs2022-ninja-arrows:test:
         - .rules
     variables:
         RUN_DEPENDENT: "true"
-    dependencies:
-        - windows-vs2022-ninja-arrows:build
     needs:
         - windows-vs2022-ninja-arrows:build
 
@@ -146,8 +138,6 @@ wheel-windows-python38-x86_64:test:
         - .rules
     variables:
         RUN_DEPENDENT: "true"
-    dependencies:
-        - wheel-windows-python38-x86_64:build
     needs:
         - wheel-windows-python38-x86_64:build
 
@@ -168,25 +158,22 @@ wheel-windows-python38-x86_64_burnout:test:
         - .rules
     variables:
         RUN_DEPENDENT: "true"
-    dependencies:
-        - wheel-windows-python38-x86_64_burnout:build
     needs:
         - wheel-windows-python38-x86_64_burnout:build
 
 wheel:kwiver:upload:
     extends:
         - .pypi_kwiver_upload
-    dependencies:
-        - wheel-linux-python38-x86_64:build
-        - wheel-linux-python38-x86_64_burnout:build
-        - wheel-windows-python38-x86_64:build
-        - wheel-windows-python38-x86_64_burnout:build
     needs:
         - wheel-linux-python38-x86_64:build
-        - wheel-linux-python38-x86_64:test
+        - job: wheel-linux-python38-x86_64:test
+          artifacts: false
         - wheel-linux-python38-x86_64_burnout:build
-        - wheel-linux-python38-x86_64_burnout:test
+        - job: wheel-linux-python38-x86_64_burnout:test
+          artifacts: false
         - wheel-windows-python38-x86_64:build
-        - wheel-windows-python38-x86_64:test
+        - job: wheel-windows-python38-x86_64:test
+          artifacts: false
         - wheel-windows-python38-x86_64_burnout:build
-        - wheel-windows-python38-x86_64_burnout:test
+        - job: wheel-windows-python38-x86_64_burnout:test
+          artifacts: false
