@@ -15,8 +15,6 @@
 #include <set>
 #include <vector>
 
-#include <vital/algo/estimate_homography.h>
-
 #include <Eigen/LU>
 
 using namespace kwiver::vital;
@@ -117,9 +115,6 @@ public:
       min_ref_frame( 0 )
   {}
 
-  ~priv()
-  {}
-
   compute_ref_homography_core& parent;
 
   // Configuration values
@@ -149,13 +144,16 @@ public:
     return parent.c_allow_ref_frame_regression;
   }
 
+  vital::algo::estimate_homography_sptr
+  estimator() const
+  {
+    return parent.c_estimator;
+  }
+
   // Local values
 
   /// Buffer storing track extensions
   track_info_buffer_sptr buffer;
-
-  /// Pointer to homography estimator
-  algo::estimate_homography_sptr h_estimator;
 
   /// Number of frames since last new reference frame declared
   unsigned frames_since_reset;
@@ -201,7 +199,7 @@ public:
     else
     {
       std::vector< bool > inliers;
-      tmp_h = this->h_estimator->estimate(
+      tmp_h = this->estimator()->estimate(
         pts_src, pts_dst, inliers,
         this->c_inlier_scale() );
 

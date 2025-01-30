@@ -14,6 +14,7 @@
 #include <vital/algo/algorithm.txx>
 
 #include <vital/algo/compute_ref_homography.h>
+#include <vital/algo/estimate_homography.h>
 #include <vital/types/feature_track_set.h>
 #include <vital/types/homography.h>
 #include <vital/types/image_container.h>
@@ -80,7 +81,11 @@ public:
       "Allow for the possibility of a frame, N, to have a "
       "reference frame, A, when a frame M < N has a reference frame B > A "
       "(assuming frames were sequentially iterated over with this algorithm).",
-      true )
+      true ),
+    PARAM(
+      estimator, vital::algo::estimate_homography_sptr,
+      "Homography estimator"
+    )
   )
 
   /// Default Destructor
