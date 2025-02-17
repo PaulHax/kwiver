@@ -169,7 +169,7 @@ set(PYTHON_LIBRARIES_DEBUG PYTHON_LIBRARIES_DEBUG_NOT_FOUND CACHE FILEPATH "Path
 # Get canonical directory for python site packages (relative to install
 # location). It varies from system to system.
 #
-_pycmd(python_site_packages "from distutils import sysconfig; print(sysconfig.get_python_lib(prefix=''))")
+_pycmd(python_site_packages "import sysconfig; import os; print(os.path.relpath(sysconfig.get_path('purelib'), sysconfig.get_config_vars()['base']))")
 message(STATUS "python_site_packages = ${python_site_packages}")
 
 # Current usage determines most of the path in alternate ways.
@@ -188,7 +188,7 @@ message(STATUS "kwiver_python_install_path = ${kwiver_python_install_path}")
 # Use the executable to find the major/minor version.
 # If you want to change this, then change the executable.
 #
-_pycmd(PYTHON_VERSION "import sys; print(sys.version[0:3])")
+_pycmd(PYTHON_VERSION "import sys; import re; print(re.match(r'^[0-9]+\.[0-9]+', sys.version)[0])")
 # assert that the right python version was found
 if(NOT PYTHON_VERSION MATCHES "^${KWIVER_PYTHON_MAJOR_VERSION}.*")
   message(STATUS "KWIVER_PYTHON_MAJOR_VERSION = ${KWIVER_PYTHON_MAJOR_VERSION}")
@@ -204,7 +204,7 @@ endif()
 # https://www.python.org/dev/peps/pep-3149/
 #
 # In python 3, we can determine what the ABI flags are
-_pycmd(_python_abi_flags "from distutils import sysconfig; print(sysconfig.get_config_var('ABIFLAGS'))")
+_pycmd(_python_abi_flags "import sysconfig; print(sysconfig.get_config_var('ABIFLAGS'))")
 set(PYTHON_ABIFLAGS "${_python_abi_flags}"
   CACHE STRING "The ABI flags for the version of Python being used")
 mark_as_advanced(PYTHON_ABIFLAGS)
