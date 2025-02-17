@@ -40,7 +40,7 @@ public:
     PARAM_DEFAULT(
       quality, int,
       "Integer 2-31 controlling compression quality. Higher is lossier.",
-      0
+      10
     ),
   )
 
