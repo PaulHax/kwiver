@@ -25,6 +25,7 @@ set(config_files
   mvg_hierarchical_bundle_adjuster.conf
   mvg_initialize_cameras_landmarks.conf
   mvg_initialize_cameras_landmarks_basic.conf
+  ocv_homography_estimator.conf
   ocv_klt_tracker.conf
   ocv_ORB_detector_descriptor.conf
   ocv_SURF_detector_descriptor.conf
