@@ -10,13 +10,118 @@
 #include <arrows/gdal/image_container.h>
 
 #include <vital/exceptions/algorithm.h>
+#include <vital/logger/logger.h>
+#include <vital/types/geodesy.h>
 #include <vital/vital_config.h>
+
+#include <gdal_priv.h>
+
+#include <filesystem>
+#include <iomanip>
+#include <sstream>
 
 namespace kwiver {
 
 namespace arrows {
 
 namespace gdal {
+
+namespace {
+
+// ----------------------------------------------------------------------------
+template < class T >
+std::unique_ptr< vital::image_pixel_traits >
+traits_of()
+{
+  return std::make_unique< vital::image_pixel_traits_of< T > >();
+}
+
+// ----------------------------------------------------------------------------
+std::vector< std::string >
+get_nitf_tres( vital::image_container_sptr const& data )
+{
+  std::vector< std::string > tres;
+  auto const metadata = data->get_metadata();
+  if( !metadata )
+  {
+    return tres;
+  }
+
+  std::vector< std::string > blocka_locs;
+  for( auto const tag : {
+            vital::VITAL_META_NITF_BLOCKA_FRLC_LOC_01,
+            vital::VITAL_META_NITF_BLOCKA_LRLC_LOC_01,
+            vital::VITAL_META_NITF_BLOCKA_LRFC_LOC_01,
+            vital::VITAL_META_NITF_BLOCKA_FRFC_LOC_01 } )
+  {
+    if( auto const entry = metadata->find( tag ) )
+    {
+      auto const& value = entry.get< std::string >();
+      if( value.size() != 21 )
+      {
+        blocka_locs.clear();
+        break;
+      }
+      blocka_locs.emplace_back( value );
+    }
+  }
+
+  if( auto const& corners_entry =
+        metadata->find( vital::VITAL_META_CORNER_POINTS );
+      blocka_locs.size() != 4 && corners_entry )
+  {
+    blocka_locs.clear();
+
+    auto const points =
+      corners_entry
+      .get< vital::geo_polygon >()
+      .polygon( vital::SRID::lat_lon_WGS84 )
+      .get_vertices();
+    for( size_t i : { 1, 2, 3, 0 } )
+    {
+      auto const& point = points[ i ];
+      auto const lon = point[ 0 ];
+      auto const lat = point[ 1 ];
+      std::string str;
+      if( std::isfinite( lat ) && std::isfinite( lon ) )
+      {
+        std::stringstream ss;
+        ss << std::fixed << std::setprecision( 6 ) << std::setfill( '0' );
+        ss << ( lat < 0 ? '-' : '+' ) << std::setw( 9 ) << std::abs( lat );
+        ss << ( lon < 0 ? '-' : '+' ) << std::setw( 10 ) << std::abs( lon );
+        str = ss.str();
+      }
+      else
+      {
+        str = std::string( 21, ' ' );
+      }
+
+      if( str.size() != 21 )
+      {
+        blocka_locs.clear();
+        break;
+      }
+      blocka_locs.emplace_back( std::move( str ) );
+    }
+  }
+
+  if( blocka_locs.size() == 4 )
+  {
+    std::stringstream ss;
+    ss
+      << "TRE=BLOCKA=0100000"
+      << std::setfill( '0' ) << std::setw( 5 ) << data->height()
+      << "                      "
+      << blocka_locs[ 0 ] << blocka_locs[ 1 ]
+      << blocka_locs[ 2 ] << blocka_locs[ 3 ]
+      << "010.0";
+    tres.emplace_back( ss.str() );
+  }
+
+  return tres;
+}
+
+} // namespace <anonymous>
 
 /// Load image image from the file
 ///
@@ -35,13 +140,106 @@ image_io
 /// \param data The image container refering to the image to write.
 void
 image_io
-::save_(
-  VITAL_UNUSED const std::string& filename,
-  VITAL_UNUSED vital::image_container_sptr data ) const
+::save_( const std::string& filename, vital::image_container_sptr data ) const
 {
-  VITAL_THROW(
-    vital::algorithm_exception, this->interface_name(), this->plugin_name(),
-    "Saving to file not supported." );
+  if( !data )
+  {
+    throw std::runtime_error( "GDAL image_io.save() given null image" );
+  }
+
+  auto const image = data->get_image();
+  auto const metadata = data->get_metadata();
+
+  GDALAllRegister();
+
+  GDALDriverH driver = nullptr;
+  std::filesystem::path filepath( filename );
+  auto const extension = filepath.extension().string();
+  std::string driver_name;
+  if( extension == ".nitf" ||
+      extension == ".NITF" ||
+      extension == ".ntf" ||
+      extension == ".NTF" )
+  {
+    driver_name = "NITF";
+  }
+
+  if( !driver_name.empty() )
+  {
+    driver = GDALGetDriverByName( driver_name.c_str() );
+  }
+
+  if( !driver )
+  {
+    throw std::runtime_error(
+      "Failed to load GDAL driver for extension: " + extension );
+  }
+
+  GDALDataType data_type = GDT_Unknown;
+  auto const& pixel_traits = image.pixel_traits();
+  for( auto const& [ vital_type, gdal_type ] : {
+          std::make_pair( traits_of< uint8_t >(), GDT_Byte ),
+          std::make_pair( traits_of< uint16_t >(), GDT_UInt16 ),
+          std::make_pair( traits_of< int16_t >(), GDT_Int16 ),
+          std::make_pair( traits_of< uint32_t >(), GDT_UInt32 ),
+          std::make_pair( traits_of< int32_t >(), GDT_Int32 ),
+          std::make_pair( traits_of< float >(), GDT_Float32 ),
+          std::make_pair( traits_of< double >(), GDT_Float64 ), } )
+  {
+    if( pixel_traits == *vital_type )
+    {
+      data_type = gdal_type;
+      break;
+    }
+  }
+
+  if( data_type == GDT_Unknown )
+  {
+    throw std::runtime_error( "Pixel traits not convertible to GDAL" );
+  }
+
+  std::vector< std::string > create_options;
+  if( driver_name == "NITF" )
+  {
+    create_options = get_nitf_tres( data );
+  }
+
+  std::vector< char const* > create_option_ptrs;
+  create_option_ptrs.reserve( create_options.size() );
+  for( auto const& create_option : create_options )
+  {
+    create_option_ptrs.emplace_back( create_option.c_str() );
+  }
+
+  if( create_option_ptrs.size() )
+  {
+    create_option_ptrs.emplace_back( nullptr );
+  }
+
+  auto const dataset =
+    GDALCreate(
+      driver, filename.c_str(),
+      data->width(), data->height(), data->depth(), data_type,
+      create_option_ptrs.empty() ? nullptr : create_option_ptrs.data() );
+
+  if( !dataset )
+  {
+    throw std::runtime_error( "Failed to create GDAL dataset from image" );
+  }
+
+  auto const err =
+    GDALDatasetRasterIO(
+      dataset, GF_Write, 0, 0, data->width(), data->height(),
+      const_cast< void* >( image.first_pixel() ), data->width(), data->height(),
+      data_type, data->depth(), nullptr,
+      image.w_step(), image.h_step(), image.d_step() );
+
+  GDALClose( dataset );
+
+  if( err != CE_None )
+  {
+    throw std::runtime_error( "Failed to copy image data" );
+  }
 }
 
 } // end namespace gdal

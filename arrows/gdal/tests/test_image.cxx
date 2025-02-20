@@ -6,10 +6,12 @@
 /// \brief test GDAL image class
 
 #include <test_gtest.h>
+#include <test_tmpfn.h>
 
 #include <arrows/gdal/image_io.h>
 #include <arrows/tests/test_image.h>
 #include <vital/plugin_management/plugin_manager.h>
+#include <vital/types/geodesy.h>
 #include <vital/types/metadata.h>
 #include <vital/types/metadata_traits.h>
 
@@ -17,6 +19,8 @@ kwiver::vital::path_t g_data_dir;
 
 namespace algo = kwiver::vital::algo;
 namespace gdal = kwiver::arrows::gdal;
+namespace vital = kwiver::vital;
+
 
 static int expected_size = 32;
 static std::string geotiff_file_name = "images/test.tif";
@@ -97,6 +101,45 @@ test_nitf_metadata( kwiver::vital::metadata_sptr md )
 }
 
 // ----------------------------------------------------------------------------
+// This has to return by reference because it has ASSERTs in it, which return
+// void on failure.
+void
+save_load_nitf(
+  std::string const& data_dir, vital::metadata_sptr const& metadata,
+  vital::image_container_sptr& out_img )
+{
+  gdal::image_io image_io;
+  vital::path_t png_filepath = data_dir + "/" + png_file_name;
+  auto const png_img_container = image_io.load( png_filepath );
+  ASSERT_NE( nullptr, png_img_container );
+
+  png_img_container->set_metadata( metadata );
+
+
+  auto const nitf_filepath =
+    kwiver::testing::temp_file_name( "test-", ".nitf" );
+  image_io.save( nitf_filepath, png_img_container );
+
+
+  auto const nitf_img_container = image_io.load( nitf_filepath );
+  std::remove( nitf_filepath.c_str() );
+  ASSERT_NE( nullptr, nitf_img_container );
+
+
+  auto const png_img = png_img_container->get_image();
+  auto const nitf_img = nitf_img_container->get_image();
+
+  ASSERT_EQ( png_img.width(), nitf_img.width() );
+  ASSERT_EQ( png_img.height(), nitf_img.height() );
+  ASSERT_EQ( png_img.depth(), nitf_img.depth() );
+  ASSERT_EQ( png_img.pixel_traits(), nitf_img.pixel_traits() );
+
+  EXPECT_TRUE( vital::equal_content( png_img, nitf_img ) );
+
+  out_img = std::move( nitf_img_container );
+}
+
+// ----------------------------------------------------------------------------
 class image_io : public ::testing::Test
 {
   TEST_ARG( data_dir );
@@ -123,6 +166,7 @@ TEST_F ( image_io, load_geotiff )
   EXPECT_EQ( img_ptr->height(), expected_size );
   EXPECT_EQ( img_ptr->depth(), 1 );
 
+
   // Test some pixel values
   kwiver::vital::image_of< uint16_t > img( img_ptr->get_image() );
   for( auto x_px : test_x_pixels )
@@ -137,6 +181,7 @@ TEST_F ( image_io, load_geotiff )
     }
   }
 
+
   auto md = img_ptr->get_metadata();
 
   test_rpc_metadata( md );
@@ -144,6 +189,7 @@ TEST_F ( image_io, load_geotiff )
   // Test corner points
   ASSERT_TRUE( md->has( kwiver::vital::VITAL_META_CORNER_POINTS ) )
     << "Metadata should include corner points.";
+
 
   auto corner_pts = md->find( kwiver::vital::VITAL_META_CORNER_POINTS )
     .get< kwiver::vital::geo_polygon >();
@@ -165,6 +211,7 @@ TEST_F ( image_io, load_nitf )
   EXPECT_EQ( img_ptr->height(), expected_size );
   EXPECT_EQ( img_ptr->depth(), 1 );
 
+
   // Test some pixel values
   kwiver::vital::image_of< float > img( img_ptr->get_image() );
   for( auto x_px : test_x_pixels )
@@ -176,6 +223,7 @@ TEST_F ( image_io, load_nitf )
       EXPECT_EQ( img( x_px, y_px ), expected_pixel_value );
     }
   }
+
 
   auto md = img_ptr->get_metadata();
 
@@ -192,6 +240,7 @@ TEST_F ( image_io, load_nitf_2 )
   EXPECT_EQ( img_ptr->height(), 32 );
   EXPECT_EQ( img_ptr->depth(), 1 );
 
+
   auto md = img_ptr->get_metadata();
   test_nitf_metadata( md );
 }
@@ -206,6 +255,7 @@ TEST_F ( image_io, load_jpeg )
   EXPECT_EQ( img_ptr->width(), expected_size );
   EXPECT_EQ( img_ptr->height(), expected_size );
   EXPECT_EQ( img_ptr->depth(), 3 );
+
 
   uint8_t norm_fact =
     expected_size * expected_size /
@@ -230,6 +280,100 @@ TEST_F ( image_io, load_jpeg )
       EXPECT_NEAR( pixel.g, expected_green, 1 )
         << "Incorrect green value at pixel (" << x_px << "," << y_px << ")";
     }
+  }
+}
+
+// ----------------------------------------------------------------------------
+TEST_F ( image_io, save_load_nitf_blocka )
+{
+  auto metadata = std::make_shared< vital::metadata >();
+  metadata->add< vital::VITAL_META_NITF_BLOCKA_FRFC_LOC_01 >(
+    "+45.123456-045.123456" );
+  metadata->add< vital::VITAL_META_NITF_BLOCKA_FRLC_LOC_01 >(
+    "-00.123456+145.223456" );
+  metadata->add< vital::VITAL_META_NITF_BLOCKA_LRLC_LOC_01 >(
+    "S001122.33E1795959.99" );
+  metadata->add< vital::VITAL_META_NITF_BLOCKA_LRFC_LOC_01 >(
+    "N000000.01W0051234.56" );
+
+
+  vital::image_container_sptr nitf_img_container;
+  save_load_nitf( data_dir, metadata, nitf_img_container );
+  ASSERT_NE( nullptr, nitf_img_container );
+
+
+  auto const nitf_metadata = nitf_img_container->get_metadata();
+  ASSERT_NE( nullptr, nitf_metadata );
+
+
+  auto const corner_points_entry =
+    nitf_metadata->find( vital::VITAL_META_CORNER_POINTS );
+  ASSERT_TRUE( corner_points_entry );
+
+
+  auto const corner_points =
+    corner_points_entry.get< vital::geo_polygon >().polygon().get_vertices();
+  ASSERT_EQ( 4, corner_points.size() );
+
+  for( auto const& [ i, tag, lat, lon ] : {
+    std::make_tuple(
+      0, vital::VITAL_META_NITF_BLOCKA_FRFC_LOC_01, +45.123456, -045.123456 ),
+    std::make_tuple(
+      1, vital::VITAL_META_NITF_BLOCKA_FRLC_LOC_01, -00.123456, +145.223456 ),
+    std::make_tuple(
+      2, vital::VITAL_META_NITF_BLOCKA_LRLC_LOC_01, -00.189536, +179.999997 ),
+    std::make_tuple(
+      3, vital::VITAL_META_NITF_BLOCKA_LRFC_LOC_01, +00.000003, -005.209600 ),
+  } )
+  {
+    EXPECT_EQ(
+      metadata->find( tag ).get< std::string >(),
+      nitf_metadata->find( tag ).get< std::string >() ) << i;
+
+
+    auto const& corner = corner_points[ i ];
+    EXPECT_NEAR( lon, corner[ 0 ], 5e-7 ) << i;
+    EXPECT_NEAR( lat, corner[ 1 ], 5e-7 ) << i;
+  }
+}
+
+// ----------------------------------------------------------------------------
+TEST_F ( image_io, save_load_nitf_corners_no_blocka )
+{
+  auto metadata = std::make_shared< vital::metadata >();
+  std::vector< vital::vector_2d > vertices = {
+    { -045.123456, +45.123456 },
+    { +145.223456, -00.123456 },
+    { +179.999997, -00.189536 },
+    { -005.209600, +00.000003 }, };
+  vital::geo_polygon polygon{ vertices, vital::SRID::lat_lon_WGS84 };
+  metadata->add< vital::VITAL_META_CORNER_POINTS >( polygon );
+
+
+  vital::image_container_sptr nitf_img_container;
+  save_load_nitf( data_dir, metadata, nitf_img_container );
+  ASSERT_NE( nullptr, nitf_img_container );
+
+
+  auto const nitf_metadata = nitf_img_container->get_metadata();
+  ASSERT_NE( nullptr, nitf_metadata );
+
+
+  auto const corner_points_entry =
+    nitf_metadata->find( vital::VITAL_META_CORNER_POINTS );
+  ASSERT_TRUE( corner_points_entry );
+
+
+  auto const corner_points =
+    corner_points_entry.get< vital::geo_polygon >().polygon().get_vertices();
+  ASSERT_EQ( 4, corner_points.size() );
+
+  for( size_t i = 0; i < 4; ++i )
+  {
+    auto const& vertex = vertices[ i ];
+    auto const& corner = corner_points[ i ];
+    EXPECT_NEAR( vertex[ 0 ], corner[ 0 ], 5e-7 ) << i;
+    EXPECT_NEAR( vertex[ 1 ], corner[ 1 ], 5e-7 ) << i;
   }
 }
 
