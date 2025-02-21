@@ -470,7 +470,8 @@ frame_to_vital_pix_fmt( AVPixelFormat src_fmt )
 
 // ----------------------------------------------------------------------------
 vital::image_container_sptr
-frame_to_vital_image( AVFrame* frame, sws_context_uptr* cached_sws )
+frame_to_vital_image(
+  AVFrame* frame, sws_context_uptr* cached_sws, bool approximate )
 {
   throw_error_null( frame, "frame_to_vital_image() given null frame" );
 
@@ -504,14 +505,23 @@ frame_to_vital_image( AVFrame* frame, sws_context_uptr* cached_sws )
     cached_sws = &tmp_sws;
   }
 
+  auto flags = SWS_POINT;
+  if( !approximate )
+  {
+    flags |=
+      SWS_ACCURATE_RND |
+      SWS_BITEXACT |
+      SWS_FULL_CHR_H_INT |
+      SWS_FULL_CHR_H_INP;
+  }
+
   cached_sws->reset(
     throw_error_null(
       sws_getCachedContext(
         cached_sws->release(),
         width, height, src_pix_fmt,
         width, height, dst_pix_fmt,
-        SWS_POINT | SWS_ACCURATE_RND | SWS_BITEXACT | SWS_FULL_CHR_H_INT,
-        nullptr, nullptr, nullptr ),
+        flags, nullptr, nullptr, nullptr ),
       "Could not create image conversion context" ) );
 
   if( frame->color_range == AVCOL_RANGE_UNSPECIFIED )
@@ -573,7 +583,8 @@ frame_to_vital_image( AVFrame* frame, sws_context_uptr* cached_sws )
 frame_uptr
 vital_image_to_frame(
   vital::image_container_scptr const& image,
-  AVCodecContext const* codec_context, sws_context_uptr* cached_sws )
+  AVCodecContext const* codec_context, sws_context_uptr* cached_sws,
+  bool approximate )
 {
   if( !image )
   {
@@ -683,6 +694,16 @@ vital_image_to_frame(
     cached_sws = &tmp_sws;
   }
 
+  auto flags = SWS_POINT;
+  if( !approximate )
+  {
+    flags |=
+      SWS_ACCURATE_RND |
+      SWS_BITEXACT |
+      SWS_FULL_CHR_H_INT |
+      SWS_FULL_CHR_H_INP;
+  }
+
   cached_sws->reset(
     throw_error_null(
       sws_getCachedContext(
@@ -690,8 +711,7 @@ vital_image_to_frame(
         frame->width, frame->height, src_pix_fmt,
         frame->width, frame->height,
         static_cast< AVPixelFormat >( converted_frame->format ),
-        SWS_POINT | SWS_ACCURATE_RND | SWS_BITEXACT | SWS_FULL_CHR_H_INT,
-        nullptr, nullptr, nullptr ),
+        flags, nullptr, nullptr, nullptr ),
       "Could not create image conversion context" ) );
 
   if( sws_setColorspaceDetails(

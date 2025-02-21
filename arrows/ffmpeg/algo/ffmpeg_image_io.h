@@ -42,6 +42,11 @@ public:
       "Integer 2-31 controlling compression quality. Higher is lossier.",
       10
     ),
+
+    PARAM_DEFAULT(
+      approximate, bool,
+      "When set to true, may use faster but inexact image processing.",
+      false )
   )
 
   bool check_configuration( vital::config_block_sptr config ) const override;

@@ -746,7 +746,9 @@ ffmpeg_video_input::priv::frame_state
   }
 
   return image =
-    frame_to_vital_image( frame.get(), &parent->image_conversion_context );
+    frame_to_vital_image(
+      frame.get(), &parent->image_conversion_context,
+      parent->parent->parent.c_approximate );
 }
 
 // ----------------------------------------------------------------------------

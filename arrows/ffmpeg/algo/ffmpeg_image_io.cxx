@@ -197,7 +197,8 @@ ffmpeg_image_io
     avcodec_receive_frame( codec_context.get(), frame.get() ),
     "Could not decode image" );
 
-  return frame_to_vital_image( frame.get(), &d->load_image_converter );
+  return frame_to_vital_image(
+    frame.get(), &d->load_image_converter, c_approximate );
 }
 
 // ----------------------------------------------------------------------------
@@ -290,7 +291,8 @@ ffmpeg_image_io
     vital_image_to_frame(
       data,
       codec_context.get(),
-      &d->save_image_converter );
+      &d->save_image_converter,
+      c_approximate );
   frame->pts = 0;
 
   // Encode frame
