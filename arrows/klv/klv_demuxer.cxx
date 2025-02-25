@@ -92,7 +92,7 @@ klv_demuxer
     {
       if( found_timestamp )
       {
-        m_frame_timestamp = std::min( m_frame_timestamp, *derived_timestamp );
+        m_frame_timestamp = std::max( m_frame_timestamp, *derived_timestamp );
       }
       else
       {
