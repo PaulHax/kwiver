@@ -116,7 +116,7 @@ video_input_metadata_filter
   return
     vital::check_nested_algo_configuration< vital::algo::video_input >(
     "video_input", config ) &&
-    vital::check_nested_algo_configuration< vital::algo::video_input >(
+    vital::check_nested_algo_configuration< vital::algo::metadata_filter >(
     "metadata_filter", config );
 }
 
