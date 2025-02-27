@@ -540,10 +540,10 @@ klv_0601_to_vital_metadata(
       {} ), };
 
   // Try to assemble any missing frame corner points using the legacy tags
-  if( target_location )
+  if( frame_center_location )
   {
-    auto const target_location_vector =
-      target_location->location( kv::SRID::lat_lon_WGS84 );
+    auto const frame_center_vector =
+      frame_center_location->location( kv::SRID::lat_lon_WGS84 );
     std::vector< std::optional< kv::geo_point > > const offset_corner_points = {
       parse_geo_point(
         klv_data, standard, timestamp,
@@ -574,7 +574,7 @@ klv_0601_to_vital_metadata(
           offset_corner_points.at( i )->location( kv::SRID::lat_lon_WGS84 );
         corner_points.at( i ) =
           kv::geo_point{
-          kv::vector_3d{ target_location_vector + offset_vector },
+          kv::vector_3d{ frame_center_vector + offset_vector },
           kv::SRID::lat_lon_WGS84 };
       }
     }
