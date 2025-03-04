@@ -18,6 +18,12 @@ if(NOT SKBUILD)
     COMMENT "Install python egg info in the build directory"
     COMMAND ${PYTHON_EXECUTABLE} ${KWIVER_SOURCE_DIR}/setup.py egg_info --egg-base ${KWIVER_BINARY_DIR}/${python_site_packages}
     )
+
+  kwiver_install(
+    DIRECTORY ${KWIVER_BINARY_DIR}/${python_site_packages}/kwiver.egg-info
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/${python_site_packages}/
+  )
+
 endif()
 
 add_subdirectory(kwiver)
