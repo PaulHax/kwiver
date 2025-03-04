@@ -23,7 +23,8 @@ namespace ffmpeg {
 // ----------------------------------------------------------------------------
 // Create a vital image from a libav frame.
 vital::image_container_sptr frame_to_vital_image(
-  AVFrame* frame, sws_context_uptr* cached_sws = nullptr );
+  AVFrame* frame, sws_context_uptr* cached_sws = nullptr,
+  bool approximate = false );
 
 // ----------------------------------------------------------------------------
 // Copy vital image data to a libav frame, attempting compatibility with
@@ -31,7 +32,8 @@ vital::image_container_sptr frame_to_vital_image(
 frame_uptr vital_image_to_frame(
   vital::image_container_scptr const& image,
   AVCodecContext const* codec_context = nullptr,
-  sws_context_uptr* cached_sws = nullptr );
+  sws_context_uptr* cached_sws = nullptr,
+  bool approximate = false );
 
 // ----------------------------------------------------------------------------
 // Determine which libav pixel format is closest to the vital image's layout.

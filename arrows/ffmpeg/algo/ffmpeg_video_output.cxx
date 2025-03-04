@@ -698,7 +698,8 @@ ffmpeg_video_output::impl::open_video_state
 {
   auto const converted_frame =
     vital_image_to_frame(
-      image, codec_context.get(), &image_conversion_context );
+      image, codec_context.get(), &image_conversion_context,
+      parent->parent.c_approximate );
 
   // Try to send image to video encoder
   converted_frame->pts = next_video_pts();
