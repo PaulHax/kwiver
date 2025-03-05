@@ -112,6 +112,12 @@ public:
   /// @throws std::out_of_range exception
   point_t at( size_t idx ) const;
 
+  /// Calculate area of polygon.
+  ///
+  /// Polygon is assumed to be simple (not self-intersecting). Counter-clockwise
+  /// polygons will produce positive area; clockwise polygons negative area.
+  double area() const;
+
 private:
   std::vector< point_t > m_polygon;
 }; // end class polygon
