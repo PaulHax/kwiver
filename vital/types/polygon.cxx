@@ -130,6 +130,35 @@ polygon
 }
 
 // ----------------------------------------------------------------------------
+double
+polygon
+::area() const
+{
+  // Degenerate polygons
+  if( m_polygon.size() < 3 )
+  {
+    return 0.0;
+  }
+
+  // Subtract origin to save precision
+  auto const origin_y = m_polygon[ 0 ][ 1 ];
+
+  // https://en.wikipedia.org/wiki/Shoelace_formula
+  auto value = 0.0;
+  for( size_t i = 0; i < m_polygon.size(); ++i )
+  {
+    auto const j = ( i + 1 ) % m_polygon.size();
+    auto const& p0 = m_polygon[ i ];
+    auto const& p1 = m_polygon[ j ];
+    value +=
+      ( ( p0[ 1 ] - origin_y ) + ( p1[ 1 ] - origin_y ) ) *
+      ( p0[ 0 ] - p1[ 0 ] );
+  }
+
+  return 0.5 * value;
+}
+
+// ----------------------------------------------------------------------------
 bool
 operator==( polygon const& lhs, polygon const& rhs )
 {
