@@ -67,6 +67,7 @@ set( public_headers
   uv_unwrap_mesh.h
   video_input.h
   video_output.h
+  warp_image.h
   write_object_track_set.h
   write_track_descriptor_set.h
   )
@@ -134,6 +135,7 @@ set( sources
   uv_unwrap_mesh.cxx
   video_input.cxx
   video_output.cxx
+  warp_image.cxx
   write_object_track_set.cxx
   write_track_descriptor_set.cxx
 )
