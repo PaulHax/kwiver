@@ -7,16 +7,16 @@
         GIT_CLONE_PATH: $CI_BUILDS_DIR/gitlab-kitware-sciviz-ci
         GIT_SUBMODULE_STRATEGY: none
 
-.ubuntu2004:
+.ubuntu2204:
     extends: .linux
-    image: "kitware/kwiver:ci-ubuntu20_04-20240327"
+    image: "kitware/kwiver:ci-ubuntu22_04-20250307"
 
-.ubuntu2004_arrows:
+.ubuntu2204_arrows:
     extends:
-        - .ubuntu2004
+        - .ubuntu2204
 
     variables:
-        CMAKE_CONFIGURATION: ubuntu2004_ceres_dbow2_ffmpeg_gdal_kpf_opencv_pdal_proj_python_qt_uuid_vtk_vxl
+        CMAKE_CONFIGURATION: ubuntu2204_ceres_dbow2_ffmpeg_gdal_kpf_opencv_pdal_proj_python_qt_uuid_vtk_vxl
 
 .manylinux2014_x86_64:
     extends: .linux
