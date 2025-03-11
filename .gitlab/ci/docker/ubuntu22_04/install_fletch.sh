@@ -3,8 +3,8 @@
 set -e
 
 readonly fletch_repo="https://github.com/Kitware/fletch"
-# update for GDAL rpath merge
-readonly fletch_commit="c310f3cee87448a31ffbbb8f24c4bdd828bae071"
+# update to include new default packages used by kwiver
+readonly fletch_commit="70f4e025067453cbf2f40565c05d80c6263d64c8"
 
 readonly fletch_root="$HOME/fletch"
 readonly fletch_src="$fletch_root/src"
@@ -18,11 +18,6 @@ if [ ! -d "$fletch_src" ]; then
 
   git -C "$fletch_src" config user.name "kwiver Developers"
   git -C "$fletch_src" config user.email "kwiver-developers@kitware.com"
-
-  # Fix glog path and openCV non-free components.
-  # https://github.com/Kitware/fletch/pull/747
-  git -C "$fletch_src" fetch origin refs/pull/747/head
-  git -C "$fletch_src" merge --no-ff FETCH_HEAD -m "x"
 fi
 
 cmake \

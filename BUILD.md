@@ -18,7 +18,7 @@ cd "$fletch_build"
 cmake \
   -GNinja \
   -Dfletch_DOWNLOAD_DIR="$fletch_dir/downloads" \
-  -C <kwiver-source>/.gitlab/ci/docker/ubuntu20_04/configure_fletch.cmake \
+  -C <kwiver-source>/.gitlab/ci/docker/ubuntu22_04/configure_fletch.cmake \
   ../$fletch_git/
 
 cmake --build .

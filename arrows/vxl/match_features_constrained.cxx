@@ -71,10 +71,10 @@ public:
 
     for( unsigned int i = 0; i < feat2_vec.size(); i++ )
     {
-      rsdl_point pt( 3 );
+      rsdl_point pt( 2 );
       pt.set_cartesian(
         vnl_vector_fixed< double,
-          3 >( feat2_vec[ i ]->loc().data() ) );
+          2 >( feat2_vec[ i ]->loc().data() ) );
       fixedpts.push_back( pt );
     }
 
@@ -86,11 +86,11 @@ public:
 
       std::vector< rsdl_point > points;
       std::vector< int > indices;
-      rsdl_point query_pt( 3 );
+      rsdl_point query_pt( 2 );
 
       query_pt.set_cartesian(
         vnl_vector_fixed< double,
-          3 >( f1->loc().data() ) );
+          2 >( f1->loc().data() ) );
       kdtree.points_in_radius(
         query_pt, this->c_radius_thresh(), points,
         indices );

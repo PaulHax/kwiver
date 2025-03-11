@@ -24,9 +24,12 @@ apt-get install -y --no-install-recommends \
 
 # Python dependencies
 apt-get install -y --no-install-recommends \
-    python3 libpython3-dev python3-distutils python3-setuptools python3-pip \
+    python3 libpython3-dev python3-distutils python3-pip \
     python3-venv python3-numpy python-is-python3
 # Qt 5.12.8 Qtqml requires a "python", provided by python-is-python3
+
+# setuptools pinned to 58.0.0 to fix GDAL build error
+pip install setuptools==58.0.0
 
 # Remove unnecessary files
 apt-get clean
