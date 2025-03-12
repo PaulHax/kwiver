@@ -8,7 +8,12 @@
 #include "image_container.h"
 
 #include <vital/exceptions/io.h>
+#include <vital/types/geodesy.h>
 #include <vital/types/metadata_traits.h>
+
+#include <charconv>
+#include <optional>
+#include <regex>
 
 using namespace kwiver::vital;
 
@@ -17,6 +22,8 @@ namespace kwiver {
 namespace arrows {
 
 namespace gdal {
+
+namespace {
 
 // ----------------------------------------------------------------------------
 void
@@ -115,6 +122,147 @@ apply_geo_transform( double gt[], double x, double y )
   return retVal;
 }
 
+std::optional< vital::vector_2d >
+blocka_to_point( std::string const& s )
+{
+  // Required size
+  if( s.size() != 21 )
+  {
+    return std::nullopt;
+  }
+
+  std::smatch match;
+
+  // Check for decimal coordinates
+  static std::regex decimal_pattern(
+    "^([+-])([0-9]{2}\\.[0-9]*)-*([+-])([0-9]{3}\\.[0-9]*)-*$" );
+  if( std::regex_match( s, match, decimal_pattern ) )
+  {
+    // std::from_chars doesn't parse leading '+', so we have to deal with the
+    // sign manually
+    auto const lat_sign_str = match[ 1 ].str();
+    auto const lat_str = match[ 2 ].str();
+    auto const lon_sign_str = match[ 3 ].str();
+    auto const lon_str = match[ 4 ].str();
+
+    // Parse values directly as doubles
+    double lat, lon;
+    if(
+      std::from_chars(
+        &*lat_str.begin(), &*lat_str.end(), lat ).ec != std::errc{} ||
+      std::from_chars(
+        &*lon_str.begin(), &*lon_str.end(), lon ).ec != std::errc{} )
+    {
+      return std::nullopt;
+    }
+
+    return vital::vector_2d{
+      lon_sign_str == "-" ? -lon : lon,
+      lat_sign_str == "-" ? -lat : lat };
+  }
+
+  // Check for degrees-minutes-seconds coordinates
+  static std::regex sexagesimal_pattern(
+    "^([NS])([0-9-]{6})\\.([0-9-]{2})([EW])([0-9-]{7})\\.([0-9-]{2})$" );
+  if( std::regex_match( s, match, sexagesimal_pattern ) )
+  {
+    auto const parse_sexagesimal =
+      []( bool sign, std::string const& dms_str, std::string const& csec_str )
+      -> std::optional< double > {
+        // Degrees can be 2 or 3 digits
+        constexpr auto min_digits = 2;
+        constexpr auto sec_digits = 2;
+        auto const deg_digits = dms_str.size() - min_digits - sec_digits;
+
+        // Unknown portions (lower precision) can be blanked out by '-'s
+        auto pos = dms_str.find_first_of( '-' );
+        if( pos != std::string::npos && pos < deg_digits )
+        {
+          // Blanked out degrees = useless
+          return std::nullopt;
+        }
+        auto ptr = dms_str.data();
+
+        // Parse degrees
+        size_t deg = 0, min = 0, sec = 0, csec = 0;
+        if( std::from_chars( ptr, ptr + deg_digits, deg ).ec != std::errc{} )
+        {
+          // Illegible degrees = useless
+          return std::nullopt;
+        }
+        ptr += deg_digits;
+
+        auto const calculate_result =
+          [ & ]() -> double {
+            auto const result_unsigned =
+              deg + min / 60.0 + sec / 3600.0 + csec / 360000.0;
+            return sign ? -result_unsigned : result_unsigned;
+          };
+
+        // Parse minutes
+        if( ( pos != std::string::npos && pos < deg_digits + min_digits ) ||
+            std::from_chars( ptr, ptr + min_digits, min ).ec != std::errc{} )
+        {
+          return calculate_result();
+        }
+        ptr += min_digits;
+
+        // Parse seconds
+        if( ( pos != std::string::npos && pos < dms_str.size() ) ||
+            std::from_chars( ptr, ptr + sec_digits, sec ).ec != std::errc{} )
+        {
+          return calculate_result();
+        }
+
+        // Parse centiseconds
+        pos = csec_str.find_first_of( '-' );
+        if( pos == 0 )
+        {
+          // Centiseconds blanked out
+          return calculate_result();
+        }
+        ptr = csec_str.data();
+
+        if( pos == 1 )
+        {
+          // Only second digit blanked out
+          if( std::from_chars( ptr, ptr + 1, csec ).ec == std::errc{} )
+          {
+            csec *= 10;
+          }
+          return calculate_result();
+        }
+
+        // On failure, centiseconds will be left as 0 as desired
+        std::from_chars( ptr, ptr + 2, csec );
+
+        return calculate_result();
+      };
+
+    auto const lat_ns = match[ 1 ].str();
+    auto const lat_dms = match[ 2 ].str();
+    auto const lat_csec = match[ 3 ].str();
+
+    auto const lon_ew = match[ 4 ].str();
+    auto const lon_dms = match[ 5 ].str();
+    auto const lon_csec = match[ 6 ].str();
+
+    auto const lat = parse_sexagesimal( lat_ns == "S", lat_dms, lat_csec );
+    auto const lon = parse_sexagesimal( lon_ew == "W", lon_dms, lon_csec );
+
+    if( lat && lon )
+    {
+      return vital::vector_2d{ *lon, *lat };
+    }
+
+    return std::nullopt;
+  }
+
+  return std::nullopt;
+}
+
+} // namespace <anonymous>
+
 // ----------------------------------------------------------------------------
 image_container
 ::image_container( const std::string& filename )
@@ -184,28 +332,6 @@ image_container
 
   md->add< kwiver::vital::VITAL_META_IMAGE_URI >( filename );
 
-  // Get geotransform and calculate corner points
-  double geo_transform[ 6 ];
-  gdal_dataset_->GetGeoTransform( geo_transform );
-
-  OGRSpatialReference osrs;
-  osrs.importFromWkt( gdal_dataset_->GetProjectionRef() );
-
-  // If coordinate system available - calculate corner points.
-  if( osrs.GetAuthorityCode( "GEOGCS" ) )
-  {
-    vital::polygon points;
-    const double h = static_cast< double >( this->height() );
-    const double w = static_cast< double >( this->width() );
-    points.push_back( apply_geo_transform( geo_transform, 0, 0 ) );
-    points.push_back( apply_geo_transform( geo_transform, 0, h ) );
-    points.push_back( apply_geo_transform( geo_transform, w, 0 ) );
-    points.push_back( apply_geo_transform( geo_transform, w, h ) );
-
-    md->add< vital::VITAL_META_CORNER_POINTS >(
-      vital::geo_polygon( points, atoi( osrs.GetAuthorityCode( "GEOGCS" ) ) ) );
-  }
-
   // Get RPC metadata
   char** rpc_metadata = gdal_dataset_->GetMetadata( "RPC" );
   if( CSLCount( rpc_metadata ) > 0 )
@@ -223,6 +349,62 @@ image_container
     for( int i = 0; nitf_metadata[ i ] != NULL; ++i )
     {
       add_nitf_metadata( nitf_metadata[ i ], md );
+    }
+  }
+
+  if( md->has( vital::VITAL_META_NITF_BLOCKA_FRFC_LOC_01 ) )
+  {
+    // Parse corner points directly
+    std::vector< vital::vector_2d > points;
+    for( auto const tag : {
+            vital::VITAL_META_NITF_BLOCKA_FRFC_LOC_01,
+            vital::VITAL_META_NITF_BLOCKA_FRLC_LOC_01,
+            vital::VITAL_META_NITF_BLOCKA_LRLC_LOC_01,
+            vital::VITAL_META_NITF_BLOCKA_LRFC_LOC_01, } )
+    {
+      auto const& entry = md->find( tag );
+      if( !entry )
+      {
+        break;
+      }
+
+      auto const& value = entry.get< std::string >();
+      if( auto const point = blocka_to_point( value ) )
+      {
+        points.emplace_back( *point );
+      }
+    }
+
+    if( points.size() == 4 )
+    {
+      md->add< vital::VITAL_META_CORNER_POINTS >(
+        vital::geo_polygon{ points, vital::SRID::lat_lon_WGS84 } );
+    }
+  }
+
+  if( !md->has( vital::VITAL_META_CORNER_POINTS ) )
+  {
+    // Get geotransform and calculate corner points
+    double geo_transform[ 6 ];
+    gdal_dataset_->GetGeoTransform( geo_transform );
+
+    OGRSpatialReference osrs;
+    osrs.importFromWkt( gdal_dataset_->GetProjectionRef() );
+
+    // If coordinate system available - calculate corner points.
+    if( osrs.GetAuthorityCode( "GEOGCS" ) )
+    {
+      vital::polygon points;
+      const double h = static_cast< double >( this->height() );
+      const double w = static_cast< double >( this->width() );
+      points.push_back( apply_geo_transform( geo_transform, 0, 0 ) );
+      points.push_back( apply_geo_transform( geo_transform, 0, h ) );
+      points.push_back( apply_geo_transform( geo_transform, w, 0 ) );
+      points.push_back( apply_geo_transform( geo_transform, w, h ) );
+
+      vital::geo_polygon const polygon(
+        points, atoi( osrs.GetAuthorityCode( "GEOGCS" ) ) );
+      md->add< vital::VITAL_META_CORNER_POINTS >( polygon );
     }
   }
 
