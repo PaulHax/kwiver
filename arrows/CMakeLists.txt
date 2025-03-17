@@ -9,6 +9,11 @@ set(ARROWS_BINARY_DIR           "${CMAKE_CURRENT_BINARY_DIR}")
 # Base plug-in with default implementations
 add_subdirectory( core )
 
+# Add geocalc plugin if enabled
+if( KWIVER_ENABLE_GEOCALC )
+  add_subdirectory( geocalc )
+endif()
+
 # Add MVG plugin if enabled
 if( KWIVER_ENABLE_MVG )
   add_subdirectory( mvg )

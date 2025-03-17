@@ -16,3 +16,9 @@ Arrows: FFmpeg
 * Added video_input_ffmpeg_rewire.
 
 * Added ffmpeg_image_io.
+
+Arrows: Geocalc
+
+* Added Geocalc arrow.
+
+* Added geo_conversion.
