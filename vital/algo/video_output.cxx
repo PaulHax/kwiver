@@ -73,6 +73,14 @@ video_output
 }
 
 // ----------------------------------------------------------------------------
+algorithm_capabilities const&
+video_output
+::get_implementation_capabilities() const
+{
+  return m_capabilities;
+}
+
+// ----------------------------------------------------------------------------
 void
 video_output
 ::set_capability(
