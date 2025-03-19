@@ -36,6 +36,12 @@ public:
     video_input_buffered_metadata_filter,
     "A video input that calls another video input and applies a "
     "buffered filter to the output metadata.",
+    PARAM_DEFAULT(
+      load_image, bool,
+      "When set to false, the frame image will not be loaded nor buffered and "
+      "frame_image() will return nullptr. This can save significant memory and "
+      "compute when the frame data is not needed.",
+      true ),
     PARAM(
       video_input, kwiver::vital::algo::video_input_sptr,
       "video_input" ),
@@ -76,7 +82,6 @@ public:
 
 private:
   void initialize() override;
-  void set_configuration_internal( vital::config_block_sptr config ) override;
   /// private implementation class
   class priv;
   KWIVER_UNIQUE_PTR( priv, d );

@@ -29,8 +29,7 @@ public:
   priv( video_input_buffered_metadata_filter& parent )
     : parent( parent ),
       frames{},
-      frame_metadata{},
-      use_image{ true }
+      frame_metadata{}
 
   {}
 
@@ -38,7 +37,7 @@ public:
 
   struct frame_info
   {
-    frame_info( kv::algo::video_input& input );
+    frame_info( kv::algo::video_input& input, bool use_image );
 
     kv::timestamp timestamp;
     kv::image_container_sptr image;
@@ -47,21 +46,23 @@ public:
   };
 
   // Configuration values
-  kv::algo::video_input_sptr c_video_input() { return parent.c_video_input; }
-  kv::algo::buffered_metadata_filter_sptr c_filter()
+  kv::algo::video_input_sptr
+  c_video_input() const { return parent.c_video_input; }
+  kv::algo::buffered_metadata_filter_sptr
+  c_filter() const
   { return parent.c_metadata_filter; }
+  bool
+  c_load_image() const { return parent.c_load_image; }
 
   std::list< frame_info > frames;
   kv::metadata_vector frame_metadata;
-
-  bool use_image;
 };
 
 // ----------------------------------------------------------------------------
 video_input_buffered_metadata_filter::priv::frame_info
-::frame_info( kv::algo::video_input& input )
+::frame_info( kv::algo::video_input& input, bool use_image )
   : timestamp{ input.frame_timestamp() },
-    image{ input.frame_image() },
+    image{ use_image ? input.frame_image() : nullptr },
     raw_image{ input.raw_frame_image() },
     uninterpreted_data{ input.uninterpreted_frame_data() }
 {}
@@ -79,19 +80,6 @@ video_input_buffered_metadata_filter
 video_input_buffered_metadata_filter
 ::~video_input_buffered_metadata_filter()
 {}
-
-// ----------------------------------------------------------------------------
-void
-video_input_buffered_metadata_filter
-::set_configuration_internal( [[maybe_unused]] vital::config_block_sptr config )
-{
-  if( d->c_filter() )
-  {
-    d->use_image =
-      d->c_filter()->get_implementation_capabilities()
-      .capability( kv::algo::buffered_metadata_filter::CAN_USE_FRAME_IMAGE );
-  }
-}
 
 // ----------------------------------------------------------------------------
 bool
@@ -211,7 +199,7 @@ video_input_buffered_metadata_filter
     kv::timestamp ts;
     if( d->c_video_input()->next_frame( ts, timeout ) )
     {
-      d->frames.emplace_back( *d->c_video_input() );
+      d->frames.emplace_back( *d->c_video_input(), d->c_load_image() );
       out_ts = d->frames.front().timestamp;
       return true;
     }
@@ -251,10 +239,9 @@ video_input_buffered_metadata_filter
       video_error = true;
       continue;
     }
-    d->frames.emplace_back( *d->c_video_input() );
+    d->frames.emplace_back( *d->c_video_input(), d->c_load_image() );
     d->c_filter()->send(
-      d->c_video_input()->frame_metadata(),
-      d->use_image ? d->frames.back().image : nullptr );
+      d->c_video_input()->frame_metadata(), d->frames.back().image );
   }
 
   if( d->frames.empty() )
