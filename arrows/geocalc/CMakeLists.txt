@@ -8,6 +8,7 @@ set( plugin_geocalc_headers
 set( plugin_geocalc_sources )
 set( plugin_geocalc_classes
   geo_conv
+  projection
   )
 
 kwiver_expand_class_list( "${plugin_geocalc_classes}" plugin_geocalc_headers plugin_geocalc_sources )
