@@ -143,6 +143,7 @@ OPTION(KWIVER_ENABLE_SERIALIZE_JSON       "Enable json serialization" OFF )
 OPTION(KWIVER_ENABLE_SPROKIT              "Enable building sprokit" OFF )
 
 if(KWIVER_ENABLE_ARROWS)
+  OPTION(KWIVER_ENABLE_GEOCALC            "Enable Geographic Calculation Arrow" ON )
   OPTION(KWIVER_ENABLE_MVG                "Enable Multi-View Geometry Arrow" ON )
   OPTION(KWIVER_ENABLE_KLV                "Enable Key-Length-Value Metadata Arrow" ON)
   OPTION(KWIVER_ENABLE_ZLIB               "Enable Zlib Arrow" ON)
