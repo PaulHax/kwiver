@@ -20,21 +20,21 @@ local_tangent_space
   : m_origin{ origin },
     m_axes{}
 {
-  auto const ecef = origin.location( SRID::ECEF_WGS84 );
+  auto const ecef = m_origin.location( SRID::ECEF_WGS84 );
 
   // Check for being on the polar axis and return standardized coordinates
-  constexpr double epsilon = 1e-150;
+  constexpr double epsilon = 1e-6;
   if( std::abs( ecef[ 0 ] ) < epsilon && std::abs( ecef[ 1 ] ) < epsilon )
   {
     auto const sign = ecef[ 2 ] < 0.0 ? -1.0 : 1.0;
     m_axes <<
-      sign, 0.0, 0.0,
+      1.0, 0.0, 0.0,
       0.0, sign, 0.0,
       0.0, 0.0, sign;
     return;
   }
 
-  auto const lon_lat = origin.location( SRID::lat_lon_WGS84 );
+  auto const lon_lat = m_origin.location( SRID::lat_lon_WGS84 );
 
   // Compute tangents using trigonometry
   auto const sin_lon = std::sin( lon_lat[ 0 ] * deg_to_rad );

@@ -27,11 +27,20 @@ namespace vital {
 struct VITAL_TYPES_EXPORT local_tangent_space
 {
 public:
+  /// \param origin The point at which local coordinates will be zero.
   explicit local_tangent_space( geo_point const& origin );
 
+  /// Return the origin of the coordinate system.
   geo_point const& origin() const;
 
+  /// Convert \p global_point to the local coordinate system.
+  ///
+  /// \param global_point Point in geographic coordinates to convert.
   vector_3d to_local( geo_point const& global_point ) const;
+
+  /// Convert \p local_point to geographic coordinates.
+  ///
+  /// \param local_point Point in local coordinates to convert.
   geo_point to_global( vector_3d const& local_point ) const;
 
 private:
