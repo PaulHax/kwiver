@@ -391,6 +391,14 @@ ffmpeg_video_output
 // ----------------------------------------------------------------------------
 void
 ffmpeg_video_output
+::add_metadata( VITAL_UNUSED vital::video_raw_metadata const& md )
+{
+  // TODO
+}
+
+// ----------------------------------------------------------------------------
+void
+ffmpeg_video_output
 ::add_uninterpreted_data( vital::video_uninterpreted_data const& misc_data )
 {
   d->assert_open( "add_image()" );

@@ -23,6 +23,8 @@ Arrows: FFmpeg
 * Added approximate pixel conversion option to image conversion when
   performance is critical.
 
+* Enabled basic streaming functionality.
+
 Arrows: GDAL
 
 * Enabled GeoTIFF export.

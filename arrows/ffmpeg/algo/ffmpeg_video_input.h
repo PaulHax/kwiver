@@ -37,6 +37,12 @@ public:
     ffmpeg_video_input,
     "Use FFmpeg to read video files as a sequence of images.",
     PARAM_DEFAULT(
+      real_time, bool,
+      "When set to true, next_frame() will block the current thread until the "
+      "time to display the next frame has passed, simulating real-time "
+      "playback.",
+      false ),
+    PARAM_DEFAULT(
       filter_desc, std::string,
       "A string describing the libavfilter pipeline to apply when reading "
       "the video.  Only filters that operate on each frame independently "
