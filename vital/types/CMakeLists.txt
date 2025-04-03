@@ -67,6 +67,7 @@ set( vital_types_classes
   landmark
   local_cartesian
   local_geo_cs
+  local_tangent_space
   mesh
   metadata
   metadata_stream

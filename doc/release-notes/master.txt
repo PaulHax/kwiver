@@ -22,3 +22,7 @@ Arrows: Geocalc
 * Added Geocalc arrow.
 
 * Added geo_conversion.
+
+Vital: Types
+
+* Added local_tangent_space.
