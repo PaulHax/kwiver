@@ -454,7 +454,7 @@ void
 derive_metadata
 ::initialize()
 {
-  this->set_capability( CAN_USE_FRAME_IMAGE, true );
+  this->set_capability( CAN_USE_FRAME_IMAGE, false );
 }
 
 // ----------------------------------------------------------------------------
