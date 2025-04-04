@@ -14,6 +14,7 @@
 
 #include <initializer_list>
 #include <memory>
+#include <optional>
 #include <vector>
 
 namespace kwiver {
@@ -117,6 +118,45 @@ public:
   /// Polygon is assumed to be simple (not self-intersecting). Counter-clockwise
   /// polygons will produce positive area; clockwise polygons negative area.
   double area() const;
+
+  /// Compute the intersection of two simple convex polygons.
+  ///
+  /// Both inputs are assumed to be simple (not self-intersecting), convex, and
+  /// counter-clockwise. If the inputs meet at a single point or edge, that
+  /// point or edge will be returned as the "polygon" of intersection.
+  ///
+  /// \warning
+  ///   Any returned polygon is not necessarily simple, so combining more than
+  ///   two polygons with this function should be done with care.
+  ///
+  /// \param a First polygon.
+  /// \param b Second polygon.
+  ///
+  /// \return
+  ///   Polygon representing the intersection of \p a and \p b, or
+  ///   \c std::nullopt if they do not intersect.
+  static std::optional< polygon >
+  convex_intersection( polygon const& a, polygon const& b );
+
+  /// Compute the union of two simple convex polygons.
+  ///
+  /// Both inputs are assumed to be simple (not self-intersecting), convex, and
+  /// counter-clockwise. If the inputs meet only at a single point or edge, a
+  /// single combined polygon will still be returned.
+  ///
+  /// \warning
+  ///   Any returned polygon is not necessarily convex, so combining more than
+  ///   two polygons with this function should be done with care.
+  ///
+  /// \param a First polygon.
+  /// \param b Second polygon.
+  ///
+  /// \return
+  ///   Polygon representing the union of \p a and \p b, or \c std::nullopt if
+  ///   they do not intersect, in which case the union is simply \p a and \p b
+  ///   considered separately.
+  static std::optional< polygon >
+  convex_union( polygon const& a, polygon const& b );
 
 private:
   std::vector< point_t > m_polygon;
