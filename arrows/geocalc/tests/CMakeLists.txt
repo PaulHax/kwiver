@@ -9,4 +9,5 @@ set( test_libraries kwiver_algo_geocalc vital vital_vpm )
 ##############################
 # Algorithms gepcalc plugin tests
 ##############################
-kwiver_discover_gtests(geocalc geo_conv LIBRARIES ${test_libraries})
+kwiver_discover_gtests(geocalc geo_conv   LIBRARIES ${test_libraries})
+kwiver_discover_gtests(geocalc projection LIBRARIES ${test_libraries})
