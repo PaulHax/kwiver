@@ -88,7 +88,7 @@ ffmpeg_video_input_clip::impl
   {
     if( md )
     {
-      md.reset( new vital::metadata( *md ) );
+      md.reset( md->clone() );
       md->set_timestamp( ts );
     }
   }
