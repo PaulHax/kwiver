@@ -11,6 +11,9 @@ Arrows: Core
 
 * Cleaned up dump-klv's printed output.
 
+* Allowed passthrough of raw metadata packets in video_input_metadata_filter and
+  video_input_buffered_metadata_filter.
+
 Arrows: FFmpeg
 
 * Added video_input_ffmpeg_rewire.

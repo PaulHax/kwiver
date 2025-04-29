@@ -42,6 +42,7 @@ public:
     kv::timestamp timestamp;
     kv::image_container_sptr image;
     kv::video_raw_image_sptr raw_image;
+    kv::video_raw_metadata_sptr raw_metadata;
     kv::video_uninterpreted_data_sptr uninterpreted_data;
   };
 
@@ -64,6 +65,7 @@ video_input_buffered_metadata_filter::priv::frame_info
   : timestamp{ input.frame_timestamp() },
     image{ use_image ? input.frame_image() : nullptr },
     raw_image{ input.raw_frame_image() },
+    raw_metadata{ input.raw_frame_metadata() },
     uninterpreted_data{ input.uninterpreted_frame_data() }
 {}
 
@@ -315,6 +317,19 @@ video_input_buffered_metadata_filter
   }
 
   return d->frame_metadata;
+}
+
+// ----------------------------------------------------------------------------
+kv::video_raw_metadata_sptr
+video_input_buffered_metadata_filter
+::raw_frame_metadata()
+{
+  if( end_of_video() || d->frames.empty() )
+  {
+    return nullptr;
+  }
+
+  return d->frames.front().raw_metadata;
 }
 
 // ----------------------------------------------------------------------------
