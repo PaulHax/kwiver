@@ -11,6 +11,8 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <limits>
+#include <regex>
 
 #include <vital/algo/image_io.h>
 #include <vital/algo/metadata_map_io.h>
@@ -74,6 +76,12 @@ dump_klv
     "array of metadata fields. Alternatively, the configuration file, "
     "dump_klv.conf, can be updated to use CSV instead.",
     cxxopts::value< std::string > () )
+  ( "frame-range",
+    "Frame range to process, indexed from 1. May be a single number or two "
+    "numbers separated by a hyphen, either of which may be omitted to process "
+    "from the start or to the end of the video, respectively, e.g. '5', "
+    "'10-100', or '64-'.",
+    cxxopts::value< std::string > (), "expr" )
   ( "f,frames", "Dump frames into the given image format.",
     cxxopts::value< std::string > (), "extension" )
   ( "frames-dir", "Directory in which to dump frames. "
@@ -226,6 +234,41 @@ dump_klv
     return EXIT_FAILURE;
   }
 
+  // Check if there's a frame range restriction
+  kv::frame_id_t frame_begin = 1;
+  kv::frame_id_t frame_end = std::numeric_limits< kv::frame_id_t >::max();
+  if( cmd_args.count( "frame-range" ) )
+  {
+    auto const string = cmd_args[ "frame-range" ].as< std::string >();
+    auto const pattern = std::regex{ "([0-9]+)|([0-9]+)?-([0-9]+)?" };
+    std::smatch match;
+    if( !std::regex_match( string, match, pattern ) )
+    {
+      std::cerr << "Invalid argument to --frame-range" << std::endl;
+      return EXIT_FAILURE;
+    }
+
+    if( match[ 1 ].matched )
+    {
+      // Single frame
+      frame_begin = std::stoi( match[ 1 ].str() );
+      frame_end = frame_begin + 1;
+    }
+    else
+    {
+      // Multi-frame
+      if( match[ 2 ].matched )
+      {
+        frame_begin = std::stoi( match[ 2 ].str() );
+      }
+
+      if( match[ 3 ].matched )
+      {
+        frame_end = std::stoi( match[ 3 ].str() );
+      }
+    }
+  }
+
   // instantiate a video reader
   try
   {
@@ -256,6 +299,16 @@ dump_klv
 
   while( video_reader->next_frame( ts ) )
   {
+    if( ts.get_frame() < frame_begin )
+    {
+      continue;
+    }
+
+    if( ts.get_frame() >= frame_end )
+    {
+      break;
+    }
+
     if( !quiet )
     {
       std::cout
