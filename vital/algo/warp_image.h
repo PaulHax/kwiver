@@ -21,6 +21,7 @@ namespace algo {
 class VITAL_ALGO_EXPORT warp_image
   : public algorithm
 {
+public:
   warp_image();
 
   PLUGGABLE_INTERFACE( warp_image );
