@@ -366,10 +366,17 @@ klv_demuxer
           value.get< std::vector< klv_0601_wavelength_record > >() );
         break;
       case KLV_0601_PAYLOAD_LIST:
-        demux_list(
-          standard, tag, time_interval,
-          value.get< std::vector< klv_0601_payload_record > >() );
+      {
+        auto const& pack = value.get< klv_0601_payload_list >();
+        demux_single_entry(
+          standard, tag, UINT64_MAX, time_interval, uint64_t{ pack.count } );
+        for( auto const& item : pack.payloads )
+        {
+          demux_single_entry(
+            standard, tag, uint64_t{ item.id }, time_interval, item );
+        }
         break;
+      }
       case KLV_0601_WAYPOINT_LIST:
         demux_list(
           standard, tag, time_interval,

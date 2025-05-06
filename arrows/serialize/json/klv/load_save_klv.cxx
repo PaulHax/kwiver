@@ -48,6 +48,7 @@ using klv_type_list =
     klv_0601_location,
     klv_0601_msid,
     klv_0601_operational_mode,
+    klv_0601_payload_list,
     klv_0601_payload_record,
     klv_0601_platform_status,
     klv_0601_sensor_control_mode,
@@ -694,6 +695,14 @@ public:
     {
       SAVE_MEMBER( universal_id );
     }
+  }
+
+  void
+  save( klv_0601_payload_list const& value )
+  {
+    auto const object_scope = push_object();
+    SAVE_MEMBER( count );
+    SAVE_MEMBER( payloads );
   }
 
   void
@@ -1483,6 +1492,18 @@ struct klv_json_loader : public klv_json_base< load_archive >
     LOAD_MEMBER( universal_id );
     return { std::move( local_id ),
              std::move( universal_id ) };
+  }
+
+  LOAD_TEMPLATE( klv_0601_payload_list )
+
+  T
+  load()
+  {
+    auto const object_scope = push_object();
+    LOAD_MEMBER( count );
+    LOAD_MEMBER( payloads );
+    return { std::move( count ),
+             std::move( payloads ) };
   }
 
   LOAD_TEMPLATE( klv_0601_payload_record )

@@ -2565,7 +2565,6 @@ operator<<( std::ostream& os, klv_0601_payload_type const& value )
 }
 
 // ----------------------------------------------------------------------------
-/// Type, name, and id of a payload.
 std::ostream&
 operator<<( std::ostream& os, klv_0601_payload_record const& value )
 {
@@ -2590,7 +2589,6 @@ DEFINE_STRUCT_CMP(
 )
 
 // ----------------------------------------------------------------------------
-/// Interprets data as a payload record.
 klv_0601_payload_record_format
 ::klv_0601_payload_record_format()
 {}
@@ -2676,6 +2674,22 @@ klv_0601_payload_record_format
 }
 
 // ----------------------------------------------------------------------------
+std::ostream&
+operator<<( std::ostream& os, klv_0601_payload_list const& value )
+{
+  return os
+         << "{ count: " << value.count << ", "
+         << "payloads: " << value.payloads << " }";
+}
+
+// ----------------------------------------------------------------------------
+DEFINE_STRUCT_CMP(
+  klv_0601_payload_list,
+  &klv_0601_payload_list::count,
+  &klv_0601_payload_list::payloads
+)
+
+// ----------------------------------------------------------------------------
 /// Interprets data as a payload list.
 klv_0601_payload_list_format
 ::klv_0601_payload_list_format()
@@ -2690,54 +2704,51 @@ klv_0601_payload_list_format
 }
 
 // ----------------------------------------------------------------------------
-std::vector< klv_0601_payload_record >
+klv_0601_payload_list
 klv_0601_payload_list_format
 ::read_typed( klv_read_iter_t& data, size_t length ) const
 {
-  std::vector< klv_0601_payload_record > result = {};
   auto const tracker = track_it( data, length );
 
   // Read payload count
-  auto count = klv_read_ber_oid< uint16_t >( data, tracker.remaining() );
+  auto const count = klv_read_ber_oid< uint16_t >( data, tracker.remaining() );
 
   // Read payload list
   klv_series_format< klv_0601_payload_record_format > item;
-  result = item.read_( data, length - klv_ber_oid_length( count ) );
+  auto payloads = item.read_( data, tracker.remaining() );
 
-  return result;
+  return { count, std::move( payloads ) };
 }
 
 // ----------------------------------------------------------------------------
 void
 klv_0601_payload_list_format
 ::write_typed(
-  std::vector< klv_0601_payload_record > const& value,
+  klv_0601_payload_list const& value,
   klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
 
   // Write payload count
-  klv_write_ber_oid( value.size(), data, tracker.remaining() );
+  klv_write_ber_oid( value.count, data, tracker.remaining() );
 
   // Write payload list
   klv_series_format< klv_0601_payload_record_format > item;
-  item.write_( value, data, length - klv_ber_oid_length( value.size() ) );
+  item.write_( value.payloads, data, tracker.remaining() );
 }
 
 // ----------------------------------------------------------------------------
 size_t
 klv_0601_payload_list_format
-::length_of_typed( std::vector< klv_0601_payload_record > const& value ) const
+::length_of_typed( klv_0601_payload_list const& value ) const
 {
-  size_t total_length = 0;
-
   // Length of payload count
-  total_length += klv_ber_oid_length( value.size() );
+  auto const length_of_count = klv_ber_oid_length( value.count );
 
   // Length of payload list
   klv_series_format< klv_0601_payload_record_format > item;
-  total_length += item.length_of_( value );
-  return total_length;
+  auto const length_of_payloads = item.length_of_( value.payloads );
+  return length_of_count + length_of_payloads;
 }
 
 // ----------------------------------------------------------------------------

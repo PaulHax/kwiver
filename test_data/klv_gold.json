@@ -704,16 +704,19 @@
 					"integer": 138,
 					"string": "Payload List"
 				},
-				"value": [
-					{
-						"id": 2,
-						"type": {
-							"integer": 0,
-							"string": "Electro Optical MI Sensor"
-						},
-						"name": "Camera"
-					}
-				]
+				"value": {
+					"count": 3,
+					"payloads": [
+						{
+							"id": 2,
+							"type": {
+								"integer": 0,
+								"string": "Electro Optical MI Sensor"
+							},
+							"name": "Camera"
+						}
+					]
+				}
 			},
 			{
 				"key": {

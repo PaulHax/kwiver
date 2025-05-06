@@ -247,7 +247,7 @@ klv_muxer
   // save on bandwidth. For right now we just dump all data at each frame
   klv_local_set set;
   std::vector< klv_0601_wavelength_record > wavelength_list;
-  std::vector< klv_0601_payload_record > payload_list;
+  klv_0601_payload_list payload_list{};
   std::vector< klv_0601_waypoint_record > waypoint_list;
   std::vector< uint64_t > control_command_verify_list;
   for( auto const& entry : m_timeline.find_all( standard ) )
@@ -305,8 +305,15 @@ klv_muxer
               it->value.get< klv_0601_wavelength_record >() );
             break;
           case KLV_0601_PAYLOAD_LIST:
-            payload_list.emplace_back(
-              it->value.get< klv_0601_payload_record >() );
+            if( entry.first.index.get< uint64_t >() == UINT64_MAX )
+            {
+              payload_list.count = it->value.get< uint64_t >();
+            }
+            else
+            {
+              payload_list.payloads.emplace_back(
+                it->value.get< klv_0601_payload_record >() );
+            }
             break;
           case KLV_0601_WAYPOINT_LIST:
             waypoint_list.emplace_back(
@@ -346,7 +353,7 @@ klv_muxer
   {
     set.add( KLV_0601_WAVELENGTHS_LIST, wavelength_list );
   }
-  if( !payload_list.empty() )
+  if( !payload_list.payloads.empty() || payload_list.count )
   {
     set.add( KLV_0601_PAYLOAD_LIST, payload_list );
   }

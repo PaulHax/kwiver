@@ -392,6 +392,7 @@ KLV_INSTANTIATE( klv_0601_image_horizon_pixel_pack );
 KLV_INSTANTIATE( klv_0601_location );
 KLV_INSTANTIATE( klv_0601_msid );
 KLV_INSTANTIATE( klv_0601_operational_mode );
+KLV_INSTANTIATE( klv_0601_payload_list );
 KLV_INSTANTIATE( klv_0601_payload_record );
 KLV_INSTANTIATE( klv_0601_platform_status );
 KLV_INSTANTIATE( klv_0601_sensor_control_mode );
