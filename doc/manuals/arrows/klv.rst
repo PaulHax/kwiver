@@ -93,18 +93,51 @@ and encoding internally. To read or write packets independently of a video strea
 see the ``klv_read_packet()`` and ``klv_write_packet()`` functions. These will
 automatically select the correct format to handle the data given to them.
 
-Algorithms
-----------
-
-Apply Child KLV Algorithm
+Algorithm Implementations
 -------------------------
+
 ..  doxygenclass:: kwiver::arrows::klv::apply_child_klv
     :project: kwiver
     :members:
 
-
-Update KLV Algorithm
---------------------
 ..  doxygenclass:: kwiver::arrows::klv::update_klv
     :project: kwiver
     :members:
+
+Other Classes
+-------------
+..  doxygenclass:: kwiver::arrows::klv::klv_0601_local_set_format
+    :project: kwiver
+    :members:
+
+..  doxygenclass:: kwiver::arrows::klv::klv_blob
+    :project: kwiver
+    :members:
+
+..  doxygenclass:: kwiver::arrows::klv::klv_data_format
+    :project: kwiver
+    :members:
+
+..  doxygenclass:: kwiver::arrows::klv::klv_metadata
+    :project: kwiver
+    :members:
+
+..  doxygenstruct:: kwiver::arrows::klv::klv_packet
+    :project: kwiver
+    :members:
+
+..  doxygenclass:: kwiver::arrows::klv::klv_string_format
+    :project: kwiver
+    :members:
+
+..  doxygenclass:: kwiver::arrows::klv::klv_value
+    :project: kwiver
+    :members:
+
+Utility Functions
+-----------------
+..  doxygenfunction:: kwiver::arrows::klv::klv_read_packet
+    :project: kwiver
+
+..  doxygenfunction:: kwiver::arrows::klv::klv_write_packet
+    :project: kwiver
