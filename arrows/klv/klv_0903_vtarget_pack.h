@@ -23,7 +23,8 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
-enum klv_0903_vtarget_pack_tag : klv_lds_key
+/// Tag values for the ST0903 vTarget local set.
+enum klv_0903_vtarget_tag : klv_lds_key
 {
   KLV_0903_VTARGET_UNKNOWN                            = 0,
   KLV_0903_VTARGET_CENTROID                           = 1,
@@ -63,7 +64,7 @@ enum klv_0903_vtarget_pack_tag : klv_lds_key
 // ----------------------------------------------------------------------------
 KWIVER_ALGO_KLV_EXPORT
 std::ostream&
-operator<<( std::ostream& os, klv_0903_vtarget_pack_tag tag );
+operator<<( std::ostream& os, klv_0903_vtarget_tag tag );
 
 // ----------------------------------------------------------------------------
 /// Two-dimensional index into the Focal Plane Array.
@@ -146,9 +147,10 @@ private:
 };
 
 // ----------------------------------------------------------------------------
+/// Returns a lookup object for the traits of the ST0903 vTarget local set tags.
 KWIVER_ALGO_KLV_EXPORT
 klv_tag_traits_lookup const&
-klv_0903_vtarget_pack_traits_lookup();
+klv_0903_vtarget_set_traits_lookup();
 
 // ----------------------------------------------------------------------------
 /// Interprets data as a ST0903 vTarget local set.

@@ -20,7 +20,9 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
-/// Interprets data as a string.
+/// Interprets data as a string, with awareness of text encoding.
+///
+/// Strings are always represented as \c std::string no matter the encoding.
 class KWIVER_ALGO_KLV_EXPORT klv_string_format
   : public klv_data_format_< std::string >
 {

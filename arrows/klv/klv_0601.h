@@ -29,6 +29,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// Tag values for the ST0601 local set.
 enum klv_0601_tag : klv_lds_key
 {
   KLV_0601_UNKNOWN                             = 0,
@@ -136,8 +137,7 @@ enum klv_0601_tag : klv_lds_key
   KLV_0601_SDCC_FLP                            = 102,
   KLV_0601_DENSITY_ALTITUDE_EXTENDED           = 103,
   KLV_0601_SENSOR_ELLIPSOID_HEIGHT_EXTENDED    = 104,
-  KLV_0601_ALTERNATE_PLATFORM_ELLIPSOID_HEIGHT_EXTENDED =
-    105,
+  KLV_0601_ALTERNATE_PLATFORM_ELLIPSOID_HEIGHT_EXTENDED = 105,
   KLV_0601_STREAM_DESIGNATOR                   = 106,
   KLV_0601_OPERATIONAL_BASE                    = 107,
   KLV_0601_BROADCAST_SOURCE                    = 108,
@@ -306,6 +306,9 @@ std::ostream&
 operator<<( std::ostream& os, klv_0601_operational_mode value );
 
 // ----------------------------------------------------------------------------
+/// Geodetic locations of the two points where the horizon meets image frame.
+///
+/// Used in tag 81 (Image Horizon Pixel Pack) of ST0601.
 struct KWIVER_ALGO_KLV_EXPORT klv_0601_image_horizon_locations
 {
   double latitude0;
@@ -323,6 +326,7 @@ operator<<( std::ostream& os, klv_0601_image_horizon_locations const& value );
 DECLARE_CMP( klv_0601_image_horizon_locations )
 
 // ----------------------------------------------------------------------------
+/// Interprets data as the geodetic locations for an Image Horizon Pixel Pack.
 class KWIVER_ALGO_KLV_EXPORT klv_0601_image_horizon_locations_format
   : public klv_data_format_< klv_0601_image_horizon_locations >
 {
@@ -347,6 +351,8 @@ private:
 };
 
 // ----------------------------------------------------------------------------
+/// Image-space and geodetic locations of the two points where the horizon
+/// intersects the image frame.
 struct KWIVER_ALGO_KLV_EXPORT klv_0601_image_horizon_pixel_pack
 {
   uint8_t x0;
@@ -365,6 +371,7 @@ operator<<( std::ostream& os, klv_0601_image_horizon_pixel_pack const& value );
 DECLARE_CMP( klv_0601_image_horizon_pixel_pack )
 
 // ----------------------------------------------------------------------------
+/// Interprets data as an image horizon pixel pack.
 class KWIVER_ALGO_KLV_EXPORT klv_0601_image_horizon_pixel_pack_format
   : public klv_data_format_< klv_0601_image_horizon_pixel_pack >
 {
@@ -572,7 +579,7 @@ private:
 
 // ----------------------------------------------------------------------------
 /// Geographic location.
-struct klv_0601_location_dlp
+struct klv_0601_location
 {
   klv_imap latitude;
   klv_imap longitude;
@@ -582,40 +589,40 @@ struct klv_0601_location_dlp
 // ----------------------------------------------------------------------------
 KWIVER_ALGO_KLV_EXPORT
 std::ostream&
-operator<<( std::ostream& os, klv_0601_location_dlp const& value );
+operator<<( std::ostream& os, klv_0601_location const& value );
 
 // ----------------------------------------------------------------------------
-DECLARE_CMP( klv_0601_location_dlp )
+DECLARE_CMP( klv_0601_location )
 
 // ----------------------------------------------------------------------------
-class KWIVER_ALGO_KLV_EXPORT klv_0601_location_dlp_format
-  : public klv_data_format_< klv_0601_location_dlp >
+class KWIVER_ALGO_KLV_EXPORT klv_0601_location_format
+  : public klv_data_format_< klv_0601_location >
 {
 public:
-  klv_0601_location_dlp_format();
+  klv_0601_location_format();
 
   std::string
   description_() const override;
 
 private:
-  klv_0601_location_dlp
+  klv_0601_location
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
   write_typed(
-    klv_0601_location_dlp const& value,
+    klv_0601_location const& value,
     klv_write_iter_t& data, size_t length ) const override;
 
   size_t
-  length_of_typed( klv_0601_location_dlp const& value ) const override;
+  length_of_typed( klv_0601_location const& value ) const override;
 };
 
 // ----------------------------------------------------------------------------
 /// Geographic location of the take-off site and recovery site.
 struct klv_0601_airbase_locations
 {
-  std::optional< klv_0601_location_dlp > take_off_location;
-  std::optional< klv_0601_location_dlp > recovery_location;
+  std::optional< klv_0601_location > take_off_location;
+  std::optional< klv_0601_location > recovery_location;
 };
 
 // ----------------------------------------------------------------------------
@@ -651,10 +658,13 @@ private:
 };
 
 // ----------------------------------------------------------------------------
+/// Angular interval used in tag 142 (View Domain) of ST0601.
 struct klv_0601_view_domain_interval
 {
   klv_imap start;
   klv_imap range;
+
+  // Byte length of one of (start, range), or half the length of the whole pack.
   size_t semi_length;
 };
 
@@ -757,6 +767,7 @@ std::ostream&
 operator<<( std::ostream& os, klv_0601_waypoint_info_bit value );
 
 // ----------------------------------------------------------------------------
+/// Interprets data as a waypoint information bitfield.
 using klv_0601_waypoint_info_format =
   klv_enum_bitfield_format< klv_0601_waypoint_info_bit, klv_ber_oid_format >;
 
@@ -767,7 +778,7 @@ struct klv_0601_waypoint_record
   uint16_t id;
   int16_t order;
   std::optional< std::set< klv_0601_waypoint_info_bit > > info;
-  std::optional< klv_0601_location_dlp > location;
+  std::optional< klv_0601_location > location;
 };
 
 // ----------------------------------------------------------------------------
@@ -803,11 +814,12 @@ private:
 };
 
 // ----------------------------------------------------------------------------
+/// Interprets data as a list of waypoint records.
 using klv_0601_waypoint_list_format =
   klv_series_format< klv_0601_waypoint_record_format >;
 
 // ----------------------------------------------------------------------------
-/// Weapon/Store state ( General Status ).
+/// General status of weapons stores.
 enum KWIVER_ALGO_KLV_EXPORT klv_0601_weapon_general_status
 {
   KLV_0601_WEAPON_GENERAL_STATUS_OFF,
@@ -826,7 +838,7 @@ enum KWIVER_ALGO_KLV_EXPORT klv_0601_weapon_general_status
 };
 
 // ----------------------------------------------------------------------------
-/// Interprets data as a weapons store state.
+/// Interprets data as a weapons stores general status.
 using klv_0601_weapons_general_status_format =
   klv_enum_format< klv_0601_weapon_general_status >;
 
@@ -901,11 +913,12 @@ private:
 };
 
 // ---------------------------------------------------------------------------
+/// Interprets data as a list of weapons stores.
 using klv_0601_weapons_store_list_format =
   klv_series_format< klv_0601_weapons_store_format >;
 
 // ---------------------------------------------------------------------------
-/// Optical sensors and non-optical payload package types.
+/// Types of optical and non-optical sensor payloads.
 enum KWIVER_ALGO_KLV_EXPORT klv_0601_payload_type
 {
   KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL,
@@ -967,7 +980,7 @@ private:
 };
 
 // ---------------------------------------------------------------------------
-/// Interprets data as a payload list.
+/// Interprets data as a list of payload records.
 class KWIVER_ALGO_KLV_EXPORT klv_0601_payload_list_format
   : public klv_data_format_< std::vector< klv_0601_payload_record > >
 {
@@ -1087,7 +1100,7 @@ private:
 };
 
 // ----------------------------------------------------------------------------
-/// Interprets data as a MISB ST0601 local set.
+/// Interprets data as a ST0601 local set.
 class KWIVER_ALGO_KLV_EXPORT klv_0601_local_set_format
   : public klv_local_set_format
 {
@@ -1105,13 +1118,13 @@ private:
 };
 
 // ----------------------------------------------------------------------------
-/// Returns the UDS key for a MISB ST0601 local set.
+/// Returns the UDS key for a ST0601 local set.
 KWIVER_ALGO_KLV_EXPORT
 klv_uds_key
 klv_0601_key();
 
 // ----------------------------------------------------------------------------
-/// Returns a lookup object for the traits of the ST0601 tags.
+/// Returns a lookup object for the traits of the ST0601 local set tags.
 KWIVER_ALGO_KLV_EXPORT
 klv_tag_traits_lookup const&
 klv_0601_traits_lookup();

@@ -32,19 +32,25 @@ class klv_tag_traits_lookup;
 class KWIVER_ALGO_KLV_EXPORT klv_tag_count_range
 {
 public:
+  /// Tag must appear \p exact number of times.
   klv_tag_count_range( size_t exact );
 
+  /// Tag may appear between \p lower and \p upper number of times, inclusive.
   klv_tag_count_range( size_t lower, size_t upper );
 
+  /// Return the inclusive lower bound on the allowed tag count.
   size_t
   lower() const;
 
+  /// Return the inclusive upper bound on the allowed tag count.
   size_t
   upper() const;
 
+  /// Return whether the tag may appear \p count times.
   bool
   is_count_allowed( size_t count ) const;
 
+  /// Return a string representing this range.
   std::string
   description() const;
 

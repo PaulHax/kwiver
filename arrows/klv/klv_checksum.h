@@ -87,6 +87,7 @@ klv_crc_32_mpeg(
   uint32_t initial_value = 0xFFFFFFFF );
 
 // ----------------------------------------------------------------------------
+/// Base class for checksum data formats.
 class KWIVER_ALGO_KLV_EXPORT klv_checksum_packet_format
   : public klv_data_format_< uint64_t >
 {
@@ -119,6 +120,7 @@ private:
 };
 
 // ----------------------------------------------------------------------------
+/// Interprets data as a CRC-8-CCITT checksum packet.
 class KWIVER_ALGO_KLV_EXPORT klv_crc_8_ccitt_packet_format
   : public klv_checksum_packet_format
 {
@@ -133,6 +135,7 @@ public:
 };
 
 // ----------------------------------------------------------------------------
+/// Interprets data as a 16-bit running sum checksum packet.
 class KWIVER_ALGO_KLV_EXPORT klv_running_sum_16_packet_format
   : public klv_checksum_packet_format
 {
@@ -147,6 +150,7 @@ public:
 };
 
 // ----------------------------------------------------------------------------
+/// Interprets data as a CRC-8-CCITT checksum packet.
 class KWIVER_ALGO_KLV_EXPORT klv_crc_16_ccitt_packet_format
   : public klv_checksum_packet_format
 {
@@ -161,6 +165,7 @@ public:
 };
 
 // ----------------------------------------------------------------------------
+/// Interprets data as a CRC-32-MPEG checksum packet.
 class KWIVER_ALGO_KLV_EXPORT klv_crc_32_mpeg_packet_format
   : public klv_checksum_packet_format
 {

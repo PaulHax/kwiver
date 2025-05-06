@@ -59,8 +59,8 @@ klv_1607_apply_child(
     if( parent.count( entry.first ) > 1 )
     {
       LOG_WARN(
-        kv::get_logger( "klv" ), "apply_child: "
-                                 "modifying tag which has multiple values in parent set" );
+        kv::get_logger( "klv" ),
+        "apply_child: modifying tag which has multiple values in parent set" );
     }
     parent.erase( entry.first );
   }

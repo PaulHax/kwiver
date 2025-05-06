@@ -24,6 +24,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// Tag values for the ST1601 local set.
 enum klv_1601_tag : klv_lds_key
 {
   KLV_1601_UNKNOWN             = 0,
@@ -101,11 +102,13 @@ private:
 };
 
 // ----------------------------------------------------------------------------
+/// Returns the UDS key for a ST1601 local set.
 KWIVER_ALGO_KLV_EXPORT
 klv_uds_key
 klv_1601_key();
 
 // ----------------------------------------------------------------------------
+/// Returns a lookup object for the traits of the ST1601 local set tags.
 KWIVER_ALGO_KLV_EXPORT
 klv_tag_traits_lookup const&
 klv_1601_traits_lookup();

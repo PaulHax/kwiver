@@ -24,7 +24,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
-/// Indicates method of encoding used.
+/// Indicates method of array encoding used.
 enum klv_1303_apa
 {
   KLV_1303_APA_UNKNOWN = 0,
@@ -45,7 +45,7 @@ operator<<( std::ostream& os, klv_1303_apa value );
 using klv_1303_apa_format = klv_enum_format< klv_1303_apa >;
 
 // ----------------------------------------------------------------------------
-/// KLV ST1303 multi-dimensional array.
+/// ST1303 multi-dimensional array.
 template < class T >
 struct KWIVER_ALGO_KLV_EXPORT klv_1303_mdap
 {
@@ -72,7 +72,7 @@ operator<<( std::ostream& os, klv_1303_mdap< T > const& value );
 DECLARE_TEMPLATE_CMP( klv_1303_mdap< T > )
 
 // ----------------------------------------------------------------------------
-/// Interprets data as a ST1303 MDAP/MDARRAY.
+/// Interprets data as a ST1303 MDAP / MDARRAY.
 template < class Format >
 class KWIVER_ALGO_KLV_EXPORT klv_1303_mdap_format
   : public klv_data_format_< klv_1303_mdap< typename Format::data_type > >

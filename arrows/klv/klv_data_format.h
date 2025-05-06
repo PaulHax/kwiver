@@ -36,81 +36,87 @@ namespace klv {
 class klv_checksum_packet_format;
 
 // ----------------------------------------------------------------------------
-/// Untyped base for KLV data formats.
+/// Untyped base for all KLV data formats.
 ///
-/// This class provides an interface to the KLV data formats, providing read,
-/// write, and printing capabilities.
+/// This class provides an interface for accessing reading, writing, and
+/// printing capabilities for specific formats, as well as implementations of
+/// basic methods common to all formats.
 class KWIVER_ALGO_KLV_EXPORT klv_data_format
 {
 public:
-  /// \param fixed_length The exact length in bytes of this data format. If
-  /// zero, the length is variable.
-  explicit
-  klv_data_format( klv_length_constraints const& length_constraints = {} );
+  /// \param length_constraints
+  ///   Constraints determining how many bytes the serialized KLV can be.
+  explicit klv_data_format(
+    klv_length_constraints const& length_constraints = {} );
 
-  virtual
-  ~klv_data_format() = default;
+  virtual ~klv_data_format() = default;
 
   /// Parse raw bytes into data type; return as \c klv_value.
-  virtual klv_value
-  read( klv_read_iter_t& data, size_t length ) const = 0;
+  ///
+  /// \param data
+  ///   Iterator to input bytes. Will be set to the end of bytes read on
+  ///   success, or back to its original value on failure.
+  /// \param length The length of the value as parsed from the KLV length field.
+  virtual klv_value read( klv_read_iter_t& data, size_t length ) const = 0;
 
-  /// Write \c klv_value (holding proper type) to raw bytes.
-  virtual void
-  write(
+  /// Write \c klv_value to raw bytes.
+  ///
+  /// \param value Value to write.
+  /// \param data
+  ///  Iterator to output bytes. Will be set to the end of bytes written.
+  /// \param max_length
+  ///  The maximum number of bytes to write. An exception will be thrown if
+  ///  \p value cannot be written within that number of bytes.
+  virtual void write(
     klv_value const& value, klv_write_iter_t& data,
-    size_t length ) const = 0;
+    size_t max_length ) const = 0;
 
-  /// Return number of bytes required to write \p value.
+  /// Return the number of bytes required to write \p value.
+  ///
+  /// \param value Value to check the length of.
   ///
   /// \note The return value does not account for a checksum, if present.
-  virtual size_t
-  length_of( klv_value const& value ) const = 0;
+  virtual size_t length_of( klv_value const& value ) const = 0;
 
   /// Return \c type_info for read / written type.
-  virtual std::type_info const&
-  type() const = 0;
+  virtual std::type_info const& type() const = 0;
 
   /// Return name of read / written type.
-  std::string
-  type_name() const;
+  std::string type_name() const;
 
   /// Print a string representation of \p value to \p os.
-  virtual std::ostream&
-  print( std::ostream& os, klv_value const& value ) const = 0;
+  virtual std::ostream& print(
+    std::ostream& os, klv_value const& value ) const = 0;
 
   /// Return a string representation of \p value.
-  std::string
-  to_string( klv_value const& value ) const;
+  std::string to_string( klv_value const& value ) const;
 
   /// Return a textual description of this data format.
-  std::string
-  description() const;
+  std::string description() const;
 
   /// Return the checksum format for the packet key and length only, or
-  /// `nullptr`.
-  virtual klv_checksum_packet_format const*
-  prefix_checksum_format() const;
+  /// \c nullptr if this format does not have such a checksum.
+  virtual klv_checksum_packet_format const* prefix_checksum_format() const;
 
-  /// Return the checksum format for the packet payload only, or `nullptr`.
-  virtual klv_checksum_packet_format const*
-  payload_checksum_format() const;
+  /// Return the checksum format for the packet payload only, or \c nullptr if
+  /// this format does not have such a checksum.
+  virtual klv_checksum_packet_format const* payload_checksum_format() const;
 
-  /// Return the checksum format for the entire packet, or `nullptr`.
-  virtual klv_checksum_packet_format const*
-  packet_checksum_format() const;
+  /// Return the checksum format for the entire packet, or \c nullptr if this
+  /// format does not have such a checksum.
+  virtual klv_checksum_packet_format const* packet_checksum_format() const;
 
   /// Return the constraints on the length of this format.
-  klv_length_constraints const&
-  length_constraints() const;
+  klv_length_constraints const& length_constraints() const;
 
   /// Set constraints on the length of this format.
-  void
-  set_length_constraints( klv_length_constraints const& length_constraints );
+  void set_length_constraints(
+    klv_length_constraints const& length_constraints );
 
 protected:
-  virtual std::string
-  description_() const = 0;
+  /// Return a textual description of this data format, not mentioning length
+  /// constraints.
+  virtual std::string description_() const = 0;
 
   klv_length_constraints m_length_constraints;
 };
@@ -124,7 +130,8 @@ using klv_data_format_sptr = std::shared_ptr< klv_data_format >;
 /// particular type. It takes care of checking for common edge cases like being
 /// given empty data or invalid lengths, so specific derived data formats
 /// don't need to duplicate that boilerplate in each class. Specific formats
-/// only have to worry about overriding the \c *_typed() functions.
+/// only have to worry about overriding the \c *_typed(),
+/// \c *_checksum_format(), and \c description_() functions .
 template < class T >
 class KWIVER_ALGO_KLV_EXPORT klv_data_format_ : public klv_data_format
 {
@@ -151,7 +158,7 @@ public:
 
     try
     {
-      // Try to parse using this data format
+      // Call type-specific reading logic
       return read_( data, length );
     }
     catch( std::exception const& e )
@@ -164,11 +171,14 @@ public:
     }
   }
 
+  /// A version of \c read() which returns the specific relevant type instead of
+  /// wrapping it in a \c klv_value.
   T
   read_( klv_read_iter_t& data, size_t length ) const
   {
     if( !length )
     {
+      // Zero length makes no sense outside of a klv_value
       throw vital::metadata_exception{ "zero length given to read_()" };
     }
 
@@ -183,6 +193,7 @@ public:
       LOG_WARN( vital::get_logger( "klv" ), ss.str() );
     }
 
+    // Call format-specific reading logic
     return read_typed( data, length );
   }
 
@@ -203,10 +214,13 @@ public:
     }
     else
     {
+      // Call type-specific writing logic
       write_( value.get< T >(), data, max_length );
     }
   }
 
+  /// A version of \c write() which accepts the specific relevant type instead
+  /// of a \c klv_value.
   void
   write_( T const& value, klv_write_iter_t& data, size_t max_length ) const
   {
@@ -234,7 +248,7 @@ public:
       LOG_WARN( vital::get_logger( "klv" ), ss.str() );
     }
 
-    // Write the value
+    // Write the value with format-specific logic
     auto const begin = data;
     write_typed( value, data, value_length );
 
@@ -256,18 +270,23 @@ public:
   {
     if( value.empty() )
     {
+      // Empty value means zero bytes (ZLE)
       return 0;
     }
     else if( !value.valid() )
     {
+      // Invalid value - just count the bytes
       return value.get< klv_blob >()->size();
     }
     else
     {
+      // Call type-specific logic
       return length_of_( value.get< T >() );
     }
   }
 
+  /// A version of \c length_of() which accepts the specific relevant type
+  /// instead of a \c klv_value.
   size_t
   length_of_( T const& value ) const
   {
@@ -288,6 +307,8 @@ public:
            : print_( os, value.get< T >() );
   }
 
+  /// A version of \c print() which accepts the specific relevant type instead
+  /// of a \c klv_value.
   std::ostream&
   print_( std::ostream& os, T const& value ) const
   {
@@ -296,16 +317,14 @@ public:
 
 protected:
   // These functions are overridden by the specific data format classes.
-  // length_of_typed() and print_typed() have default behavior provided to
-  // make overriding optional.
+  // print_typed() has default behavior provided to make overriding optional.
 
   virtual T
   read_typed( klv_read_iter_t& data, size_t length ) const = 0;
 
   virtual void
   write_typed(
-    T const& value, klv_write_iter_t& data,
-    size_t length ) const = 0;
+    T const& value, klv_write_iter_t& data, size_t length ) const = 0;
 
   virtual size_t
   length_of_typed( T const& value ) const = 0;
@@ -457,10 +476,10 @@ protected:
 /// Interprets data as an enum type.
 template < class T >
 class KWIVER_ALGO_KLV_EXPORT klv_enum_format
-  : public klv_data_format_< typename std::decay< T >::type >
+  : public klv_data_format_< std::decay_t< T > >
 {
 public:
-  using data_type = typename std::decay< T >::type;
+  using data_type = std::decay_t< T >;
 
   klv_enum_format( klv_length_constraints const& length_constraints = { 1 } )
     : klv_data_format_< data_type >{ length_constraints }
@@ -669,6 +688,8 @@ protected:
 };
 
 // ----------------------------------------------------------------------------
+/// Wraps another format with a \c klv_lengthy<T> data type, stripping out the
+/// length information and exposing just the underlying \c T datatype.
 template < class Format >
 class KWIVER_ALGO_KLV_EXPORT klv_lengthless_format
   : public klv_data_format_< typename Format::data_type::value_type >
@@ -761,6 +782,10 @@ enums_to_bitfield( std::set< Enum > const& enums )
 }
 
 // ----------------------------------------------------------------------------
+/// Interprets data as an enumerated bitfield, where a number of boolean values
+/// are encodeded as bits of an integer.
+///
+/// The data type here is a \c std::set of all values that are set to \c 1.
 template < class Enum, class Format = klv_uint_format >
 class KWIVER_ALGO_KLV_EXPORT klv_enum_bitfield_format
   : public klv_data_format_< std::set< Enum > >

@@ -22,6 +22,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// Tag values for the ST1107 local set.
 enum klv_1107_tag : klv_lds_key
 {
   KLV_1107_UNKNOWN                              = 0,
@@ -80,6 +81,7 @@ std::ostream&
 operator<<( std::ostream& os, klv_1107_tag tag );
 
 // ----------------------------------------------------------------------------
+/// Indicates how the slant range was determined.
 enum klv_1107_slant_range_pedigree
 {
   KLV_1107_SLANT_RANGE_PEDIGREE_OTHER      = 0,
@@ -116,12 +118,13 @@ private:
 };
 
 // ----------------------------------------------------------------------------
-/// Return the UDS key for a MISB ST1107 local set.
+/// Return the UDS key for a ST1107 local set.
 KWIVER_ALGO_KLV_EXPORT
 klv_uds_key
 klv_1107_key();
 
 // ----------------------------------------------------------------------------
+/// Returns a lookup object for the traits of the ST1107 local set tags.
 KWIVER_ALGO_KLV_EXPORT
 klv_tag_traits_lookup const&
 klv_1107_traits_lookup();

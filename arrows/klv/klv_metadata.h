@@ -23,17 +23,25 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// A superset of standard vital metadata which also holds parsed KLV packets
+/// and a MISP frame timestamp.
 class KWIVER_ALGO_KLV_EXPORT klv_metadata : public kwiver::vital::metadata
 {
 public:
   virtual ~klv_metadata() = default;
 
-  vital::metadata* clone() const;
+  vital::metadata* clone() const override;
 
+  /// Return a reference to the contained KLV packets.
   std::vector< klv_packet > const& klv() const;
+
+  /// Return a reference to the contained KLV packets.
   std::vector< klv_packet >& klv();
 
+  /// Return a reference to the contained MISP frame timestamp.
   std::optional< misp_timestamp > const& frame_timestamp() const;
+
+  /// Return a reference to the contained MISP frame timestamp.
   std::optional< misp_timestamp >& frame_timestamp();
 
 private:

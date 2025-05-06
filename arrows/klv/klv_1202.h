@@ -21,6 +21,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// Tag values for the ST1202 local set.
 enum klv_1202_tag : klv_lds_key
 {
   KLV_1202_UNKNOWN              = 0,
@@ -43,6 +44,7 @@ std::ostream&
 operator<<( std::ostream& os, klv_1202_tag tag );
 
 // ----------------------------------------------------------------------------
+/// Indicates the nature of the image transformation.
 enum klv_1202_transformation_type : uint8_t
 {
   KLV_1202_TRANSFORMATION_TYPE_UNDEFINED            = 0,
@@ -76,11 +78,13 @@ public:
 };
 
 // ----------------------------------------------------------------------------
+/// Return the UDS key for a ST1202 local set.
 KWIVER_ALGO_KLV_EXPORT
 klv_uds_key
 klv_1202_key();
 
 // ----------------------------------------------------------------------------
+/// Returns a lookup object for the traits of the ST1202 local set tags.
 KWIVER_ALGO_KLV_EXPORT
 klv_tag_traits_lookup const&
 klv_1202_traits_lookup();

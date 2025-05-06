@@ -22,6 +22,14 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// A container holding some other type plus a byte count.
+///
+/// This is used when a data format can encode some value with a user-specified
+/// number of bytes, perhaps to control encoded precision. Recording the byte
+/// count is important in that situation to avoid gaining or losing precision
+/// when re-encoding. This container should not be used when the number of bytes
+/// is fully determined by the value of the wrapped data type and/or the overall
+/// context of the data format.
 template < class T >
 struct KWIVER_ALGO_KLV_EXPORT klv_lengthy
 {

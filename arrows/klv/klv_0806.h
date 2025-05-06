@@ -23,6 +23,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// Tag values for the ST0806 local set.
 enum klv_0806_tag : klv_lds_key
 {
   KLV_0806_UNKNOWN                                     = 0,
@@ -55,7 +56,7 @@ std::ostream&
 operator<<( std::ostream& os, klv_0806_tag tag );
 
 // ----------------------------------------------------------------------------
-/// Interprets data as a MISB ST0806 local set.
+/// Interprets data as a ST0806 local set.
 class KWIVER_ALGO_KLV_EXPORT klv_0806_local_set_format
   : public klv_local_set_format
 {
@@ -73,13 +74,13 @@ private:
 };
 
 // ----------------------------------------------------------------------------
-/// Returns the UDS key for a MISB ST0806 local set.
+/// Returns the UDS key for a ST0806 local set.
 KWIVER_ALGO_KLV_EXPORT
 klv_uds_key
 klv_0806_key();
 
 // ----------------------------------------------------------------------------
-/// Returns a lookup object for the traits of the ST0806 tags.
+/// Returns a lookup object for the traits of the ST0806 local set tags.
 KWIVER_ALGO_KLV_EXPORT
 klv_tag_traits_lookup const&
 klv_0806_traits_lookup();

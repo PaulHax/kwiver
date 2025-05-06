@@ -22,6 +22,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// Tag values for the ST0903 vFeature local set.
 enum klv_0903_vfeature_set_tag : klv_lds_key
 {
   KLV_0903_VFEATURE_UNKNOWN        = 0,
@@ -37,6 +38,8 @@ std::ostream&
 operator<<( std::ostream& os, klv_0903_vfeature_set_tag tag );
 
 // ----------------------------------------------------------------------------
+/// Returns a lookup object for the traits of the ST0903 vFeature local set
+/// tags.
 KWIVER_ALGO_KLV_EXPORT
 klv_tag_traits_lookup const&
 klv_0903_vfeature_set_traits_lookup();

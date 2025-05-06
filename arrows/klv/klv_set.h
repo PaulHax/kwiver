@@ -26,13 +26,14 @@ namespace klv {
 // ----------------------------------------------------------------------------
 /// Base class for KLV universal and local sets.
 ///
-/// This class is mostly a wrapper around a std::multimap, but with a slightly
-/// modified interface. Usually, there will be only one entry for a key, so we
-/// include the at() and find() methods here - otherwise, extracting a single
-/// item from a multimap and verifying its singularity is awkward. Another
-/// issue addressed here is that multimaps only sort by key, not value.
-/// Therefore, multimaps { A : 1, A : 2 } and { A : 2, A : 1 } evaluate as not
-/// equal. This class treats those sets as equal.
+/// This class abstracts sets into a map-like structure where some keys may have
+/// multiple values, but with utility methods that recognize that most KLV keys
+/// do not. There is no guarantee as to the order of the key-value pairs when
+/// iterating. Notably, this class does not maintain the order of insertion, as,
+/// with the single exception of the SDCC-FLP item, order in KLV sets is decreed
+/// to not matter. Any constructs such as SDCC-FLP which are order-sensitive or
+/// have other constraints (e.g. tags which may not appear more than once) must
+/// maintain their invariants at a higher level than this data structure.
 template < class Key >
 class KWIVER_ALGO_KLV_EXPORT klv_set
 {

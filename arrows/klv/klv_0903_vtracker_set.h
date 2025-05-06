@@ -22,6 +22,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// Tag values for the ST0903 vTracker local set.
 enum klv_0903_vtracker_set_tag : klv_lds_key
 {
   KLV_0903_VTRACKER_UNKNOWN                 = 0,
@@ -45,6 +46,7 @@ std::ostream&
 operator<<( std::ostream& os, klv_0903_vtracker_set_tag tag );
 
 // ----------------------------------------------------------------------------
+/// Track status of a detection.
 enum klv_0903_detection_status
 {
   KLV_0903_DETECTION_STATUS_INACTIVE        = 0,
@@ -66,6 +68,8 @@ std::ostream&
 operator<<( std::ostream& os, klv_0903_detection_status value );
 
 // ----------------------------------------------------------------------------
+/// Returns a lookup object for the traits of the ST0903 vTracker local set
+/// tags.
 KWIVER_ALGO_KLV_EXPORT
 klv_tag_traits_lookup const&
 klv_0903_vtracker_set_traits_lookup();

@@ -42,47 +42,57 @@ private:
 // ----------------------------------------------------------------------------
 /// Type-erased container class for the values of KLV fields.
 ///
-/// It is necessary for this class to exist separately from kwiver::vital::any
-/// to enforce that all contained values support comparison and stringstream
-/// operations. It also contains an optional embedded byte count - for some KLV
-/// data formats, the length can vary to reflect the precision of the numerical
-/// value. Knowing this precision may be desirable when performing
-/// calculations or writing the value back to KLV.
+/// This class can hold any KLV value, or be empty. Any type to be held in this
+/// container must have comparison ( \c < ), equality ( \c == ), and
+/// \c std::ostream ( \c << ) operators defined; these are passed on through
+/// this container and allow basic generic operations such as sorting and
+/// printing values to be performed without having to know the type of each
+/// value at compile time.
+///
+/// Generally a KLV value is expected to be in one of three states: empty,
+/// invalid, or valid. An empty value has no type and no data. An invalid value
+/// has a type of \c klv_blob, and contains only raw bytes, usually the result
+/// of failure to parse. A valid value has data of some other type which is
+/// determined by the context in which the value exists.
+///
+/// \c klv_value is a relatively low-context data type in the KLV hierachy. The
+/// type of a \c klv_value does not uniquely identify how that value is to be
+/// interpreted or serialized; there are a handful of different ways of encoding
+/// integers or floating-point numbers into KLV, for example. Classes derived
+/// from \c klv_data_format deal with that next layer of specificity.
 class KWIVER_ALGO_KLV_EXPORT klv_value
 {
 public:
+  /// Construct an empty object.
   klv_value();
 
+  /// Move some external type into a new object.
   template < class T,
-    typename = typename std::enable_if<
-      !std::is_same< typename std::decay< T >::type,
-        klv_value >::value &&
-      !std::is_same< typename std::decay< T >::type,
-        kwiver::vital::any >::value >::type >
+    typename = std::enable_if_t<
+      !std::is_same_v< std::decay_t< T >, klv_value > &&
+      !std::is_same_v< std::decay_t< T >, vital::any > > >
   klv_value( T&& value );
 
   klv_value( klv_value const& other );
-
   klv_value( klv_value&& other );
-
   ~klv_value();
 
   klv_value&
   operator=( klv_value const& other );
-
   klv_value&
   operator=( klv_value&& other );
 
+  /// Move some external type into this object.
   template < class T >
   klv_value&
   operator=( T&& rhs );
 
-  /// Swap the contents of this \c klv_value with another.
+  /// Swap the contents of this object with \p rhs.
   klv_value&
   swap( klv_value& rhs ) noexcept;
 
   /// Create an \c any object with a copy of this value.
-  kwiver::vital::any
+  vital::any
   to_any() const;
 
   /// Check if the object contains no value.
@@ -109,16 +119,13 @@ public:
 
   /// Return a reference to the contained value of type \c T.
   ///
-  /// \throws klv_bad_value_cast If the object does not contain a value of type
-  /// \c T.
+  /// \throws klv_bad_value_cast
+  ///   If the object does not contain a value of type \c T.
   template < class T >
   T&
   get();
 
-  /// Return a reference to the contained value of type \c T.
-  ///
-  /// \throws klv_bad_value_cast If the object does not contain a value of type
-  /// \c T.
+  /// \copydoc template < class T > T& get()
   template < class T >
   T const&
   get() const;
@@ -129,8 +136,7 @@ public:
   T*
   get_ptr() noexcept;
 
-  /// Return a pointer to the contained value of type \c T, or \c nullptr on
-  /// failure.
+  /// \copydoc template < class T > T* get_ptr()
   template < class T >
   T const*
   get_ptr() const noexcept;

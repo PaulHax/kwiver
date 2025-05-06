@@ -20,6 +20,9 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// Tags for the EG0104 universal set.
+///
+/// Since this is a universal set, these tags have no official numerical values.
 enum klv_0104_tag : klv_lds_key
 {
   KLV_0104_UNKNOWN,
@@ -82,7 +85,7 @@ klv_uds_key
 klv_0104_key();
 
 // ----------------------------------------------------------------------------
-/// Returns a lookup object for the traits of the ST0601 tags.
+/// Returns a lookup object for the traits of the EG0104 universal set tags.
 KWIVER_ALGO_KLV_EXPORT
 klv_tag_traits_lookup const&
 klv_0104_traits_lookup();

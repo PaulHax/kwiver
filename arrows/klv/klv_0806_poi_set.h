@@ -19,6 +19,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// Tag values for the ST0806 POI local set.
 enum klv_0806_poi_set_tag : klv_lds_key
 {
   KLV_0806_POI_SET_UNKNOWN      = 0,
@@ -46,7 +47,7 @@ klv_tag_traits_lookup const&
 klv_0806_poi_set_traits_lookup();
 
 // ----------------------------------------------------------------------------
-/// Interprets data as a KLV ST0806 point-of-interest local set.
+/// Interprets data as a ST0806 POI local set.
 class KWIVER_ALGO_KLV_EXPORT klv_0806_poi_set_format
   : public klv_local_set_format
 {

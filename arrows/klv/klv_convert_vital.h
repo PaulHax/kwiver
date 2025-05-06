@@ -21,9 +21,9 @@ namespace klv {
 /// \note Not all information is preserved in the conversion, nor is it meant
 /// to be. This function exists merely to allow access to some
 /// computer-vision-relevant metadata for each frame image using the unified
-/// `vital` interface, not to transform the `klv_timeline` wholesale. If
+/// \c vital interface, not to transform the \c klv_timeline wholesale. If
 /// re-encoding into KLV or comprehensive export of all available metadata is
-/// desired, the original `klv_timeline` or `klv_packet`s should be preserved
+/// desired, the original \c klv_timeline or \c klv_packet s should be preserved
 /// for that purpose.
 ///
 /// \param klv_data Timeline of KLV data.
@@ -32,8 +32,7 @@ namespace klv {
 ///   'snapshot' of KLV metadata should be taken. Ideally this should be
 ///   derived from a MISP timestamp embedded in the video file.
 ///
-/// \return The vital-friendly metadata which can be extracted from
-///         \p klv_data.
+/// \return The vital-friendly metadata which can be extracted from \p klv_data.
 KWIVER_ALGO_KLV_EXPORT
 kwiver::vital::metadata_sptr
 klv_to_vital_metadata( klv_timeline const& klv_data, uint64_t timestamp );

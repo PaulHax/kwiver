@@ -22,6 +22,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// Tag values for the ST1602 local set.
 enum klv_1602_tag : klv_lds_key
 {
   KLV_1602_UNKNOWN                     = 0,
@@ -51,11 +52,13 @@ std::ostream&
 operator<<( std::ostream& os, klv_1602_tag tag );
 
 // ----------------------------------------------------------------------------
+/// Returns the UDS key for a ST1601 local set.
 KWIVER_ALGO_KLV_EXPORT
 klv_uds_key
 klv_1602_key();
 
 // ----------------------------------------------------------------------------
+/// Returns a lookup object for the traits of the ST1601 local set tags.
 KWIVER_ALGO_KLV_EXPORT
 klv_tag_traits_lookup const&
 klv_1602_traits_lookup();
