@@ -1770,7 +1770,7 @@ klv_0601_country_codes_format
 
 // ----------------------------------------------------------------------------
 std::ostream&
-operator<<( std::ostream& os, klv_0601_location_dlp const& value )
+operator<<( std::ostream& os, klv_0601_location const& value )
 {
   return
     os << "{ "
@@ -1787,31 +1787,31 @@ operator<<( std::ostream& os, klv_0601_location_dlp const& value )
 
 // ----------------------------------------------------------------------------
 DEFINE_STRUCT_CMP(
-  klv_0601_location_dlp,
-  &klv_0601_location_dlp::latitude,
-  &klv_0601_location_dlp::longitude,
-  &klv_0601_location_dlp::altitude
+  klv_0601_location,
+  &klv_0601_location::latitude,
+  &klv_0601_location::longitude,
+  &klv_0601_location::altitude
 )
 
 // ----------------------------------------------------------------------------
-klv_0601_location_dlp_format
-::klv_0601_location_dlp_format()
+klv_0601_location_format
+::klv_0601_location_format()
 {}
 
 // ----------------------------------------------------------------------------
 std::string
-klv_0601_location_dlp_format
+klv_0601_location_format
 ::description_() const
 {
   return "ST0601 Location Pack";
 }
 
 // ----------------------------------------------------------------------------
-klv_0601_location_dlp
-klv_0601_location_dlp_format
+klv_0601_location
+klv_0601_location_format
 ::read_typed( klv_read_iter_t& data, size_t length ) const
 {
-  klv_0601_location_dlp result = {};
+  klv_0601_location result = {};
   auto const tracker = track_it( data, length );
 
   result.latitude =
@@ -1831,9 +1831,9 @@ klv_0601_location_dlp_format
 
 // ----------------------------------------------------------------------------
 void
-klv_0601_location_dlp_format
+klv_0601_location_format
 ::write_typed(
-  klv_0601_location_dlp const& value,
+  klv_0601_location const& value,
   klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
@@ -1857,8 +1857,8 @@ klv_0601_location_dlp_format
 
 // ----------------------------------------------------------------------------
 size_t
-klv_0601_location_dlp_format
-::length_of_typed( klv_0601_location_dlp const& value ) const
+klv_0601_location_format
+::length_of_typed( klv_0601_location const& value ) const
 {
   // Latitude (4) and longitude (4) are required, altitude (3) is optional
   return 8 + ( value.altitude ? 3 : 0 );
@@ -1920,7 +1920,7 @@ klv_0601_airbase_locations_format
   {
     // Take-off location is set
     result.take_off_location =
-      klv_0601_location_dlp_format{}
+      klv_0601_location_format{}
       .read_( data, tracker.verify( length_of_take_off_location ) );
   }
 
@@ -1939,7 +1939,7 @@ klv_0601_airbase_locations_format
   {
     // Recovery location is set
     result.recovery_location =
-      klv_0601_location_dlp_format{}
+      klv_0601_location_format{}
       .read_( data, tracker.verify( length_of_recovery_location ) );
   }
 
@@ -1954,7 +1954,7 @@ klv_0601_airbase_locations_format
   klv_write_iter_t& data, size_t length ) const
 {
   auto const tracker = track_it( data, length );
-  klv_0601_location_dlp_format const location_format;
+  klv_0601_location_format const location_format;
 
   // Write take-off location
   if( value.take_off_location )
@@ -2013,7 +2013,7 @@ klv_0601_airbase_locations_format
   {
     // Latitude and longitude are required, altitude is not
     length_of_take_off_location =
-      klv_0601_location_dlp_format{}.length_of_( *value.take_off_location );
+      klv_0601_location_format{}.length_of_( *value.take_off_location );
   }
 
   auto length_of_length_of_take_off_location =
@@ -2024,7 +2024,7 @@ klv_0601_airbase_locations_format
   if( value.recovery_location )
   {
     length_of_recovery_location =
-      klv_0601_location_dlp_format{}.length_of_( *value.recovery_location );
+      klv_0601_location_format{}.length_of_( *value.recovery_location );
   }
 
   auto length_of_length_of_recovery_location =
@@ -2290,7 +2290,7 @@ klv_0601_waypoint_record_format
   {
     // Read waypoint location
     result.location =
-      klv_0601_location_dlp_format{}.read_( data, tracker.remaining() );
+      klv_0601_location_format{}.read_( data, tracker.remaining() );
   }
 
   return result;
@@ -2321,7 +2321,7 @@ klv_0601_waypoint_record_format
   if( value.location && value.info )
   {
     // Write waypoint location
-    klv_0601_location_dlp_format{}
+    klv_0601_location_format{}
       .write_( *value.location, data, tracker.remaining() );
   }
 }
@@ -2335,7 +2335,7 @@ klv_0601_waypoint_record_format
 
   size_t const length_of_waypoint_location =
     ( value.location && value.info )
-    ? klv_0601_location_dlp_format{}.length_of_( *value.location )
+    ? klv_0601_location_format{}.length_of_( *value.location )
     : 0;
 
   return ( length_of_waypoint_id + 2 + ( value.info ? 1 : 0 ) +

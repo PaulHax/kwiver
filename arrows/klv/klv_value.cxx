@@ -143,8 +143,7 @@ template < class T, typename > klv_value
 ::klv_value( T&& value )
 {
   m_item.reset(
-    new internal_< typename std::decay< T >::type >{
-          std::forward< T >( value ) } );
+    new internal_< std::decay_t< T > >{ std::forward< T >( value ) } );
 }
 
 // ----------------------------------------------------------------------------
@@ -390,7 +389,7 @@ KLV_INSTANTIATE( klv_0601_frame_rate );
 KLV_INSTANTIATE( klv_0601_icing_detected );
 KLV_INSTANTIATE( klv_0601_image_horizon_locations );
 KLV_INSTANTIATE( klv_0601_image_horizon_pixel_pack );
-KLV_INSTANTIATE( klv_0601_location_dlp );
+KLV_INSTANTIATE( klv_0601_location );
 KLV_INSTANTIATE( klv_0601_msid );
 KLV_INSTANTIATE( klv_0601_operational_mode );
 KLV_INSTANTIATE( klv_0601_payload_record );
@@ -464,16 +463,6 @@ KLV_INSTANTIATE( std::vector< klv_local_set > );
 KLV_INSTANTIATE( std::vector< uint16_t > );
 KLV_INSTANTIATE( std::vector< uint64_t > );
 KLV_INSTANTIATE( uint64_t );
-
-namespace detail {
-
-// commas confuse the macro parser so we use a temporary type
-using map_long_klv_value = kwiver::vital::interval_map_entry_t< unsigned long,
-  kwiver::arrows::klv::klv_value >;
-
-} // namespace detail
-
-KLV_INSTANTIATE( detail::map_long_klv_value );
 
 } // namespace klv
 

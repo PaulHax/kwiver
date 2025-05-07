@@ -23,6 +23,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// Tag values for the ST0903 vMask local set.
 enum klv_0903_vmask_set_tag : klv_lds_key
 {
   KLV_0903_VMASK_UNKNOWN        = 0,
@@ -93,6 +94,7 @@ public:
 };
 
 // ----------------------------------------------------------------------------
+/// Returns a lookup object for the traits of the ST0903 vMask local set tags.
 KWIVER_ALGO_KLV_EXPORT
 klv_tag_traits_lookup const&
 klv_0903_vmask_set_traits_lookup();

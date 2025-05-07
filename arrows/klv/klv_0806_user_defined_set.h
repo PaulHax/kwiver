@@ -21,6 +21,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// Tag values for the ST0806 user-defined local set.
 enum klv_0806_user_defined_set_tag : klv_lds_key
 {
   KLV_0806_USER_DEFINED_SET_UNKNOWN      = 0,
@@ -67,7 +68,7 @@ operator<<( std::ostream& os, klv_0806_user_defined_data_type_id value );
 DECLARE_CMP( klv_0806_user_defined_data_type_id )
 
 // ----------------------------------------------------------------------------
-/// Interprets data as a ST0806 user-defined data type/id.
+/// Interprets data as a ST0806 user-defined data type / id.
 class KWIVER_ALGO_KLV_EXPORT klv_0806_user_defined_data_type_id_format
   : public klv_data_format_< klv_0806_user_defined_data_type_id >
 {
@@ -143,7 +144,8 @@ public:
 };
 
 // ----------------------------------------------------------------------------
-/// Returns a lookup object for the traits of the ST0806 User Defined Set tags.
+/// Returns a lookup object for the traits of the ST0806 user-defined local set
+/// tags.
 KWIVER_ALGO_KLV_EXPORT
 klv_tag_traits_lookup const&
 klv_0806_user_defined_set_traits_lookup();

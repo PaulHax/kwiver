@@ -23,6 +23,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// Tag values for the ST0903 algorithm local set.
 enum klv_0903_algorithm_set_tag : klv_lds_key
 {
   KLV_0903_ALGORITHM_UNKNOWN    = 0,

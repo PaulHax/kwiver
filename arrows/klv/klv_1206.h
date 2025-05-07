@@ -19,6 +19,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// Tag values for the ST1206 local set.
 enum klv_1206_tag : klv_lds_key
 {
   KLV_1206_UNKNOWN                                     = 0,
@@ -58,6 +59,7 @@ std::ostream&
 operator<<( std::ostream& os, klv_1206_tag tag );
 
 // ----------------------------------------------------------------------------
+/// Indicates the direction the imagery is collected relative to velocity.
 enum klv_1206_look_direction
 {
   KLV_1206_LOOK_DIRECTION_LEFT  = 0,
@@ -76,6 +78,7 @@ using klv_1206_look_direction_format =
   klv_enum_format< klv_1206_look_direction >;
 
 // ----------------------------------------------------------------------------
+/// Indicates which image plane was used in construction of SAR imagery.
 enum klv_1206_image_plane
 {
   KLV_1206_IMAGE_PLANE_SLANT  = 0,
@@ -95,11 +98,13 @@ using klv_1206_image_plane_format =
   klv_enum_format< klv_1206_image_plane >;
 
 // ----------------------------------------------------------------------------
+/// Returns the UDS key for a ST1206 local set.
 KWIVER_ALGO_KLV_EXPORT
 klv_uds_key
 klv_1206_key();
 
 // ----------------------------------------------------------------------------
+/// Returns a lookup object for the traits of the ST1206 local set tags.
 KWIVER_ALGO_KLV_EXPORT
 klv_tag_traits_lookup const&
 klv_1206_traits_lookup();

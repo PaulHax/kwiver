@@ -45,7 +45,7 @@ using klv_type_list =
     klv_0601_icing_detected,
     klv_0601_image_horizon_locations,
     klv_0601_image_horizon_pixel_pack,
-    klv_0601_location_dlp,
+    klv_0601_location,
     klv_0601_msid,
     klv_0601_operational_mode,
     klv_0601_payload_record,
@@ -677,7 +677,7 @@ public:
   }
 
   void
-  save( klv_0601_location_dlp const& value )
+  save( klv_0601_location const& value )
   {
     auto const object_scope = push_object();
     SAVE_MEMBER( latitude );
@@ -1454,7 +1454,7 @@ struct klv_json_loader : public klv_json_base< load_archive >
              std::move( locations ) };
   }
 
-  LOAD_TEMPLATE( klv_0601_location_dlp )
+  LOAD_TEMPLATE( klv_0601_location )
 
   T
   load()

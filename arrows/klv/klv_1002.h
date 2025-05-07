@@ -25,6 +25,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// Tag values for the ST1002 local set.
 enum klv_1002_tag : klv_lds_key
 {
   KLV_1002_UNKNOWN                              = 0,
@@ -50,6 +51,7 @@ std::ostream&
 operator<<( std::ostream& os, klv_1002_tag tag );
 
 // ----------------------------------------------------------------------------
+/// Compression method used for the range image.
 enum klv_1002_compression_method
 {
   KLV_1002_COMPRESSION_METHOD_NONE       = 0,
@@ -63,6 +65,7 @@ std::ostream&
 operator<<( std::ostream& os, klv_1002_compression_method value );
 
 // ----------------------------------------------------------------------------
+/// Data type of the range image.
 enum klv_1002_data_type
 {
   KLV_1002_DATA_TYPE_PERSPECTIVE_RANGE_IMAGE = 0,
@@ -76,6 +79,7 @@ std::ostream&
 operator<<( std::ostream& os, klv_1002_data_type value );
 
 // ----------------------------------------------------------------------------
+/// Source of the range image.
 enum klv_1002_source
 {
   KLV_1002_SOURCE_COMPUTATIONALLY_EXTRACTED = 0,
@@ -89,6 +93,7 @@ std::ostream&
 operator<<( std::ostream& os, klv_1002_source value );
 
 // ----------------------------------------------------------------------------
+/// Enumerations describing the encoding of the range image.
 struct KWIVER_ALGO_KLV_EXPORT klv_1002_enumerations
 {
   klv_1002_compression_method compression_method;
@@ -105,7 +110,7 @@ operator<<( std::ostream& os, klv_1002_enumerations const& value );
 DECLARE_CMP( klv_1002_enumerations )
 
 // ----------------------------------------------------------------------------
-/// Interprets data as a MISB ST1003 enumerations field
+/// Interprets data as a ST1003 enumerations field.
 class KWIVER_ALGO_KLV_EXPORT klv_1002_enumerations_format
   : public klv_data_format_< klv_1002_enumerations >
 {
@@ -129,6 +134,7 @@ private:
 };
 
 // ----------------------------------------------------------------------------
+/// Description of a section of a range image.
 struct KWIVER_ALGO_KLV_EXPORT klv_1002_section_data_pack
 {
   uint32_t section_x;
@@ -149,6 +155,7 @@ operator<<( std::ostream& os, klv_1002_section_data_pack const& value );
 DECLARE_CMP( klv_1002_section_data_pack )
 
 // ----------------------------------------------------------------------------
+/// Interprets data as a ST1002 section data pack.
 class KWIVER_ALGO_KLV_EXPORT klv_1002_section_data_pack_format
   : public klv_data_format_< klv_1002_section_data_pack >
 {
@@ -172,7 +179,7 @@ private:
 };
 
 // ----------------------------------------------------------------------------
-/// Interprets data as a MISB ST1002 local set.
+/// Interprets data as a ST1002 local set.
 class KWIVER_ALGO_KLV_EXPORT klv_1002_local_set_format
   : public klv_local_set_format
 {
@@ -190,13 +197,13 @@ private:
 };
 
 // ----------------------------------------------------------------------------
-/// Returns the UDS key for a MISB ST1002 local set.
+/// Returns the UDS key for a ST1002 local set.
 KWIVER_ALGO_KLV_EXPORT
 klv_uds_key
 klv_1002_key();
 
 // ----------------------------------------------------------------------------
-/// Returns a lookup object for the traits of the ST1002 tags.
+/// Returns a lookup object for the traits of the ST1002 local set tags.
 KWIVER_ALGO_KLV_EXPORT
 klv_tag_traits_lookup const&
 klv_1002_traits_lookup();

@@ -40,17 +40,17 @@ constexpr std::ptrdiff_t packet_length =
   tag_length + status_length + timestamp_length;
 
 // Used for MPEG-2 and H.264
-uint8_t const tag_string[] = {
+uint8_t const tag_string[ tag_length ] = {
   'M', 'I', 'S', 'P', 'm', 'i', 'c', 'r',
   'o', 's', 'e', 'c', 't', 'i', 'm', 'e' };
 
 // Used for H.265
-uint8_t const tag_uuid[] = {
+uint8_t const tag_uuid[ tag_length ] = {
   0xA8, 0x68, 0x7D, 0xD4, 0xD7, 0x59, 0x37, 0x58,
   0xA5, 0xCE, 0xF0, 0x33, 0x8B, 0x65, 0x45, 0xF1 };
 
 // Used for H.265
-uint8_t const tag_uuid_nano[] = {
+uint8_t const tag_uuid_nano[ tag_length ] = {
   0xCF, 0x84, 0x82, 0x78, 0xEE, 0x23, 0x30, 0x6C,
   0x92, 0x65, 0xE8, 0xFE, 0xF2, 0x2F, 0xB8, 0xB8 };
 
@@ -131,8 +131,9 @@ find_misp_timestamp(
 ///
 /// \param data Iterator to beginning of MISP packet.
 ///
-/// \return \c true if the timestamp uses nanoseconds, \c false if it uses
-///         microseconds.
+/// \return
+///   \c true if the timestamp uses nanoseconds, \c false if it uses
+///   microseconds.
 KWIVER_ALGO_KLV_EXPORT
 bool
 is_misp_timestamp_nano( klv_read_iter_t data );
@@ -140,8 +141,8 @@ is_misp_timestamp_nano( klv_read_iter_t data );
 // ----------------------------------------------------------------------------
 /// Read a MISP timestamp from a sequence of bytes.
 ///
-/// \param data Iterator to beginning of MISP packet. Set to end of read bytes
-///             on success.
+/// \param data
+///   Iterator to beginning of MISP packet. Set to end of read bytes on success.
 ///
 /// \return MISP timestamp.
 KWIVER_ALGO_KLV_EXPORT
@@ -152,8 +153,9 @@ read_misp_timestamp( klv_read_iter_t& data );
 /// Write a MISP timestamp to a sequence of bytes.
 ///
 /// \param value Timestamp value to write.
-/// \param data Iterator to sequence of \c uint8_t. Set to end of written bytes
-//              on success.
+/// \param data
+///   Iterator to sequence of \c uint8_t. Set to end of written bytes on
+///   success.
 KWIVER_ALGO_KLV_EXPORT
 void
 write_misp_timestamp(

@@ -24,7 +24,8 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
-enum klv_0903_vtrackitem_pack_tag : klv_lds_key
+/// Tag values for the ST0903 vTrackItem local set.
+enum klv_0903_vtrackitem_tag : klv_lds_key
 {
   KLV_0903_VTRACKITEM_UNKNOWN               = 0,
   KLV_0903_VTRACKITEM_TIMESTAMP             = 1,
@@ -64,7 +65,7 @@ enum klv_0903_vtrackitem_pack_tag : klv_lds_key
 // ----------------------------------------------------------------------------
 KWIVER_ALGO_KLV_EXPORT
 std::ostream&
-operator<<( std::ostream& os, klv_0903_vtrackitem_pack_tag tag );
+operator<<( std::ostream& os, klv_0903_vtrackitem_tag tag );
 
 // ----------------------------------------------------------------------------
 /// An integer id paired with a ST0903 vTrackItem local set.
@@ -107,9 +108,11 @@ private:
 };
 
 // ----------------------------------------------------------------------------
+/// Returns a lookup object for the traits of the ST0903 vTrackItem local set
+/// tags.
 KWIVER_ALGO_KLV_EXPORT
 klv_tag_traits_lookup const&
-klv_0903_vtrackitem_pack_traits_lookup();
+klv_0903_vtrackitem_set_traits_lookup();
 
 // ----------------------------------------------------------------------------
 /// Interprets data as a ST0903 vTrackItem local set.

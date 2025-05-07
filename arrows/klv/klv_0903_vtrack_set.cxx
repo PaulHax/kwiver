@@ -130,7 +130,7 @@ klv_0903_vtrack_set_traits_lookup()
       "Track Item Series",
       "Series of track item metadata values.",
       { 0, 1 },
-      &klv_0903_vtrackitem_pack_traits_lookup() },
+      &klv_0903_vtrackitem_set_traits_lookup() },
     { {},
       ENUM_AND_NAME( KLV_0903_VTRACK_ONTOLOGY_SERIES ),
       std::make_shared< klv_0903_ontology_series_format >(),

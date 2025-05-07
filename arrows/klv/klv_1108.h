@@ -24,6 +24,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// Tag values for the ST1108 local set.
 enum klv_1108_tag : klv_lds_key
 {
   KLV_1108_UNKNOWN             = 0,
@@ -213,11 +214,13 @@ private:
 };
 
 // ----------------------------------------------------------------------------
+/// Return the UDS key for a metric local set.
 KWIVER_ALGO_KLV_EXPORT
 klv_uds_key
 klv_1108_key();
 
 // ----------------------------------------------------------------------------
+/// Returns a lookup object for the traits of the ST1108 local set tags.
 KWIVER_ALGO_KLV_EXPORT
 klv_tag_traits_lookup const&
 klv_1108_traits_lookup();

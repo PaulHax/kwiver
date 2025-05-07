@@ -26,9 +26,9 @@ namespace klv {
 
 // ----------------------------------------------------------------------------
 std::ostream&
-operator<<( std::ostream& os, klv_0903_vtarget_pack_tag tag )
+operator<<( std::ostream& os, klv_0903_vtarget_tag tag )
 {
-  return os << klv_0903_vtarget_pack_traits_lookup().by_tag( tag ).name();
+  return os << klv_0903_vtarget_set_traits_lookup().by_tag( tag ).name();
 }
 
 // ----------------------------------------------------------------------------
@@ -174,7 +174,7 @@ klv_0903_vtarget_pack_format
 
 // ----------------------------------------------------------------------------
 klv_tag_traits_lookup const&
-klv_0903_vtarget_pack_traits_lookup()
+klv_0903_vtarget_set_traits_lookup()
 {
   static klv_tag_traits_lookup const lookup = {
     { {},
@@ -400,7 +400,7 @@ klv_0903_vtarget_pack_traits_lookup()
 // ----------------------------------------------------------------------------
 klv_0903_vtarget_local_set_format
 ::klv_0903_vtarget_local_set_format()
-  : klv_local_set_format{ klv_0903_vtarget_pack_traits_lookup() }
+  : klv_local_set_format{ klv_0903_vtarget_set_traits_lookup() }
 {}
 
 // ----------------------------------------------------------------------------

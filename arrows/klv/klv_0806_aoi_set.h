@@ -19,6 +19,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// Tag values for the ST0806 AOI local set.
 enum klv_0806_aoi_set_tag : klv_lds_key
 {
   KLV_0806_AOI_SET_UNKNOWN                  = 0,
@@ -40,13 +41,13 @@ std::ostream&
 operator<<( std::ostream& os, klv_0806_aoi_set_tag tag );
 
 // ----------------------------------------------------------------------------
-/// Returns a lookup object for the traits of the ST0806 POI Set tags.
+/// Returns a lookup object for the traits of the ST0806 AOI local set tags.
 KWIVER_ALGO_KLV_EXPORT
 klv_tag_traits_lookup const&
 klv_0806_aoi_set_traits_lookup();
 
 // ----------------------------------------------------------------------------
-/// Interprets data as a KLV ST0806 area-of-interest local set.
+/// Interprets data as a ST0806 AOI local set.
 class KWIVER_ALGO_KLV_EXPORT klv_0806_aoi_set_format
   : public klv_local_set_format
 {

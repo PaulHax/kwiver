@@ -195,11 +195,11 @@ auto const expected_result = klv_local_set{
   { KLV_0601_TARGET_ID,                        std::string{ "A123" } },
   { KLV_0601_AIRBASE_LOCATIONS,
     klv_0601_airbase_locations{
-      klv_0601_location_dlp{
+      klv_0601_location{
         klv_imap{  38.8418589830398559 },
         klv_imap{ -77.0367841720581054 },
         klv_imap{  3.0 } },
-      klv_0601_location_dlp{
+      klv_0601_location{
         klv_imap{  38.9393529891967773 },
         klv_imap{ -77.4598112106323242 },
         klv_imap{  95.0 } } } },
@@ -240,26 +240,26 @@ auto const expected_result = klv_local_set{
       { 0, 1,
         std::set< klv_0601_waypoint_info_bit >{
           KLV_0601_WAYPOINT_INFO_BIT_MODE, KLV_0601_WAYPOINT_INFO_BIT_SOURCE },
-        klv_0601_location_dlp{
+        klv_0601_location{
           klv_imap{  38.8894219398498535 },
           klv_imap{ -77.0351622104644775 },
           klv_imap{  200.000000000000000 } } },
       { 1, 2,
         std::set< klv_0601_waypoint_info_bit >{
           KLV_0601_WAYPOINT_INFO_BIT_SOURCE },
-        klv_0601_location_dlp{
+        klv_0601_location{
           klv_imap{  38.8892679214477539 },
           klv_imap{ -77.0499181747436523 },
           klv_imap{  250.000000000000000 } } },
       { 2, 32767,
         std::set< klv_0601_waypoint_info_bit >{
           KLV_0601_WAYPOINT_INFO_BIT_MODE },
-        klv_0601_location_dlp{
+        klv_0601_location{
           klv_imap{  38.8897409439086914 },
           klv_imap{ -77.0129330158233643 },
           klv_imap{  100.000000000000000 } } },
       { 3, -2, std::set< klv_0601_waypoint_info_bit >{},
-        klv_0601_location_dlp{
+        klv_0601_location{
           klv_imap{  38.8898218870162964 },
           klv_imap{ -77.0100920200347900 },
           klv_imap{  300.000000000000000 } } } } },

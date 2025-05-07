@@ -66,7 +66,7 @@ DEFINE_STRUCT_CMP(
 // ----------------------------------------------------------------------------
 klv_1010_sdcc_flp_format
 ::klv_1010_sdcc_flp_format()
-  : m_sigma_imap{},
+  : m_sigma_imap{ nullptr },
     m_preceding_keys{}
 {}
 

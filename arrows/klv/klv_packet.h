@@ -25,8 +25,10 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
-// Does not appear anywhere in KLV standards, just a way to consistently access
-// traits of a specific standard
+/// Tags denoting the contents of a KLV packet.
+///
+/// Unlike other "tag" enumerations, neither the values nor the order here are
+/// derived from any standard.
 enum klv_top_level_tag : klv_lds_key
 {
   KLV_PACKET_UNKNOWN,

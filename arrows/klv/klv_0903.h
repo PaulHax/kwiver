@@ -23,6 +23,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// Tag values for the ST0903 local set.
 enum klv_0903_tag : klv_lds_key
 {
   KLV_0903_UNKNOWN              = 0,
@@ -52,17 +53,19 @@ std::ostream&
 operator<<( std::ostream& os, klv_0903_tag tag );
 
 // ----------------------------------------------------------------------------
+/// Returns the UDS key for a ST0903 local set.
 KWIVER_ALGO_KLV_EXPORT
 klv_uds_key
 klv_0903_key();
 
 // ----------------------------------------------------------------------------
+/// Returns a lookup object for the traits of the ST0903 local set tags.
 KWIVER_ALGO_KLV_EXPORT
 klv_tag_traits_lookup const&
 klv_0903_traits_lookup();
 
 // ----------------------------------------------------------------------------
-/// Interprets data as a ST0903 VMTI local set.
+/// Interprets data as a ST0903 local set.
 class KWIVER_ALGO_KLV_EXPORT klv_0903_local_set_format
   : public klv_local_set_format
 {

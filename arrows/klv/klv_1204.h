@@ -23,6 +23,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// Indicates the type of the identifying device.
 enum klv_1204_device_id_type : uint8_t
 {
   KLV_1204_DEVICE_ID_TYPE_NONE     = 0,
@@ -38,6 +39,7 @@ std::ostream&
 operator<<( std::ostream& os, klv_1204_device_id_type value );
 
 // ----------------------------------------------------------------------------
+/// Universal identifier for Motion Imagery,
 struct KWIVER_ALGO_KLV_EXPORT klv_1204_miis_id
 {
   uint8_t version;
@@ -82,7 +84,7 @@ private:
 };
 
 // ----------------------------------------------------------------------------
-/// Returns the UDS key for a MISB ST1204 MIIS ID.
+/// Returns the UDS key for a ST1204 MIIS ID.
 KWIVER_ALGO_KLV_EXPORT
 klv_uds_key
 klv_1204_key();

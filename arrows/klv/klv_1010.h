@@ -24,6 +24,9 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// Standard Deviation and Correlation Coefficient Floating Length Pack.
+///
+/// Contains uncertainty information for other tags.
 struct klv_1010_sdcc_flp
 {
   // Actual data
@@ -61,13 +64,19 @@ public:
 
   klv_1010_sdcc_flp_format();
 
+  /// \param sigma_imap
+  ///  Function returning the correct IMAP formatting information for a given
+  ///  tag in the parent local set.
   explicit klv_1010_sdcc_flp_format( imap_from_key_fn sigma_imap );
 
   std::string
   description_() const override;
 
-  void
-  set_preceding( std::vector< klv_lds_key > const& preceding_keys );
+  /// Set which parent local set tags preceded the appearance of the SDCC-FLP.
+  ///
+  /// \param preceding_keys
+  ///   Sequence of keys preceding this one in the parent set.
+  void set_preceding( std::vector< klv_lds_key > const& preceding_keys );
 
 private:
   klv_1010_sdcc_flp

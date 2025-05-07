@@ -22,6 +22,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// A 16-byte UUID.
 struct KWIVER_ALGO_KLV_EXPORT klv_uuid
 {
   klv_uuid();

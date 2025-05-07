@@ -212,11 +212,11 @@ klv_local_set const test_0601_set = {
     KLV_0601_SENSOR_FOV_NAME_MEDIUM },
   { KLV_0601_AIRBASE_LOCATIONS,
     klv_0601_airbase_locations{
-      klv_0601_location_dlp{
+      klv_0601_location{
         klv_imap{ 1.0 },
         klv_imap{ 2.0 },
         klv_imap{ 3.0 } },
-      klv_0601_location_dlp{
+      klv_0601_location{
         klv_imap{ 4.0 },
         klv_imap{ 5.0 } } } },
   { KLV_0601_COUNTRY_CODES,

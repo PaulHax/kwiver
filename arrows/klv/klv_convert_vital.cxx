@@ -38,10 +38,10 @@ using kli = klv_lengthy< klv_imap >;
 struct klv_to_vital_visitor
 {
   template < class T,
-    std::enable_if_t< std::is_same_v< T, uint64_t > ||
+    std::enable_if_t<
+      std::is_same_v< T, uint64_t > ||
       std::is_same_v< T, double > ||
-      std::is_same_v< T, std::string >,
-      bool > = true >
+      std::is_same_v< T, std::string >, bool > = true >
   kv::metadata_value
   operator()() const
   {

@@ -25,6 +25,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
+/// A KLV IMAP value, capable of holding any normal or special variant.
 class KWIVER_ALGO_KLV_EXPORT klv_imap
 {
 public:

@@ -137,7 +137,7 @@ klv_0903_traits_lookup()
       "VTarget Series",
       "A series of VTarget packs.",
       { 0, 1 },
-      &klv_0903_vtarget_pack_traits_lookup() },
+      &klv_0903_vtarget_set_traits_lookup() },
     { {},
       ENUM_AND_NAME( KLV_0903_ALGORITHM_SERIES ),
       std::make_shared< klv_0903_algorithm_series_format >(),

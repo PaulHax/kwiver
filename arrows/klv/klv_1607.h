@@ -19,7 +19,7 @@ namespace arrows {
 namespace klv {
 
 // ----------------------------------------------------------------------------
-///
+/// Enumeration denoting how to merge parent and child values for a given tag.
 enum klv_1607_child_policy
 {
   KLV_1607_CHILD_POLICY_KEEP_NEITHER = 0,
@@ -29,6 +29,8 @@ enum klv_1607_child_policy
                                        KLV_1607_CHILD_POLICY_KEEP_PARENT,
 };
 
+// ----------------------------------------------------------------------------
+/// Function determining merge policy for a local set tag.
 using klv_1607_child_policy_fn =
   std::function< klv_1607_child_policy ( klv_lds_key ) >;
 
@@ -53,6 +55,10 @@ private:
 ///
 /// \param parent Local set to serve as the base.
 /// \param child Local set which overrides values in \p parent.
+/// \param policy_fn
+///   Functor dictating how to merge parent and child values for a given tag.
+///   May be \c nullptr, in which case the policy is always
+///   \c KLV_1607_CHILD_POLICY_KEEP_CHILD.
 ///
 /// \return Modified \p parent.
 KWIVER_ALGO_KLV_EXPORT
