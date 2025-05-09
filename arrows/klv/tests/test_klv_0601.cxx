@@ -213,10 +213,11 @@ auto const expected_result = klv_local_set{
   { KLV_0601_LEAP_SECONDS,                     int64_t{ 30 } },
   { KLV_0601_CORRECTION_OFFSET,                int64_t{ 5025678901 } },
   { KLV_0601_PAYLOAD_LIST,
-    std::vector< klv_0601_payload_record >{
-      { 0, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "VIS Nose Camera" },
-      { 1, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "ACME VIS Model 123" },
-      { 2, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "ACME IR Model 456" } } },
+    klv_0601_payload_list{
+      3,
+      { { 0, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "VIS Nose Camera" },
+        { 1, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "ACME VIS Model 123" },
+        { 2, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "ACME IR Model 456" } } } },
   { KLV_0601_ACTIVE_PAYLOADS, std::set< uint16_t >{ 0, 1, 3 } },
   { KLV_0601_WEAPONS_STORES,
     std::vector< klv_0601_weapons_store >{

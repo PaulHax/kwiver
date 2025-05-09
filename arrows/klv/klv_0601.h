@@ -980,9 +980,29 @@ private:
 };
 
 // ---------------------------------------------------------------------------
+/// A possibly-partial list of payloads.
+///
+/// This has a separate \c count member indicating how many payloads exist in
+/// total. Not all payloads may be described in every instance of a payload
+/// list, so \c count may be greater than \c payloads.size().
+struct klv_0601_payload_list
+{
+  uint16_t count;
+  std::vector< klv_0601_payload_record > payloads;
+};
+
+// ----------------------------------------------------------------------------
+KWIVER_ALGO_KLV_EXPORT
+std::ostream&
+operator<<( std::ostream& os, klv_0601_payload_list const& value );
+
+// ----------------------------------------------------------------------------
+DECLARE_CMP( klv_0601_payload_list )
+
+// ---------------------------------------------------------------------------
 /// Interprets data as a list of payload records.
 class KWIVER_ALGO_KLV_EXPORT klv_0601_payload_list_format
-  : public klv_data_format_< std::vector< klv_0601_payload_record > >
+  : public klv_data_format_< klv_0601_payload_list >
 {
 public:
   klv_0601_payload_list_format();
@@ -991,17 +1011,17 @@ public:
   description_() const override;
 
 private:
-  std::vector< klv_0601_payload_record >
+  klv_0601_payload_list
   read_typed( klv_read_iter_t& data, size_t length ) const override;
 
   void
   write_typed(
-    std::vector< klv_0601_payload_record > const& value,
+    klv_0601_payload_list const& value,
     klv_write_iter_t& data, size_t length ) const override;
 
   size_t
   length_of_typed(
-    std::vector< klv_0601_payload_record > const& value ) const override;
+    klv_0601_payload_list const& value ) const override;
 };
 
 // ----------------------------------------------------------------------------

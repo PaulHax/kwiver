@@ -226,8 +226,9 @@ klv_local_set const test_0601_set = {
       std::nullopt,
       std::nullopt } },
   { KLV_0601_PAYLOAD_LIST,
-    std::vector< klv_0601_payload_record >{
-      { 2, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "Camera" } } },
+    klv_0601_payload_list{
+      3,
+      { { 2, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "Camera" } } } },
   { KLV_0601_WAVELENGTHS_LIST,
     std::vector< klv_0601_wavelength_record >{
       { 7, klv_imap{ 13.0 }, klv_imap{ 14.0 }, "Wavelength" } } },

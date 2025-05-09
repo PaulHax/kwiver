@@ -257,9 +257,10 @@ TEST ( klv, demuxer_0601_special )
             { 1, klv_imap{ 380.0 }, klv_imap{ 750.0 }, "VIS" },
             { 2, klv_imap{ 750.0 }, klv_imap{ 100000.0 }, "IR" } } },
         { KLV_0601_PAYLOAD_LIST,
-          std::vector< klv_0601_payload_record >{
-            { 0, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "VIS Nose Camera" },
-            { 1, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "ACME VIS" } } },
+          klv_0601_payload_list{
+            4,
+            { { 0, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "VIS Nose Camera" },
+              { 1, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "ACME VIS" } } } },
         { KLV_0601_WAYPOINT_LIST,
           std::vector< klv_0601_waypoint_record >{
             { 0, 1, std::nullopt, std::nullopt },
@@ -303,10 +304,11 @@ TEST ( klv, demuxer_0601_special )
             { 3, klv_imap{ 380.0 }, klv_imap{ 750.0 }, "VIS2" },
             { 4, klv_imap{ 750.0 }, klv_imap{ 100000.0 }, "IR2" } } },
         { KLV_0601_PAYLOAD_LIST,
-          std::vector< klv_0601_payload_record >{
-            { 0, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "VIS Nose Camera" },
-            { 2, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "VIS Nose Camera 2" },
-            { 3, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "ACME VIS 2" } } },
+          klv_0601_payload_list{
+            4,
+            { { 0, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "VIS Nose Camera" },
+              { 2, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "VIS Nose Camera 2" },
+              { 3, KLV_0601_PAYLOAD_TYPE_ELECTRO_OPTICAL, "ACME VIS 2" } } } },
         { KLV_0601_WAYPOINT_LIST,
           std::vector< klv_0601_waypoint_record >{
             { 0, 1, std::nullopt, std::nullopt },
@@ -346,11 +348,12 @@ TEST ( klv, demuxer_0601_special )
   {
     auto const tag = KLV_0601_PAYLOAD_LIST;
     auto const slice = timeline.all_at( standard, tag, 15 );
-    ASSERT_EQ( slice.size(), 2 );
+    ASSERT_EQ( slice.size(), 3 );
     EXPECT_EQ( 0, slice.at( 0 ).get< klv_0601_payload_record >().id );
     EXPECT_EQ( 1, slice.at( 1 ).get< klv_0601_payload_record >().id );
-    EXPECT_EQ( 2, timeline.all_at( standard, tag, 16 ).size() );
-    EXPECT_EQ( 4, timeline.all_at( standard, tag, 30 ).size() );
+    EXPECT_EQ( 4, slice.at( 2 ).get< uint64_t >() );
+    EXPECT_EQ( 3, timeline.all_at( standard, tag, 16 ).size() );
+    EXPECT_EQ( 5, timeline.all_at( standard, tag, 30 ).size() );
   }
 
   {

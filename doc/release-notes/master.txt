@@ -23,6 +23,10 @@ Arrows: Geocalc
 
 * Added geo_conversion.
 
+Arrows: KLV
+
+* Added missing total payload count field for ST0601 Tag 138: Payload List.
+
 Vital: Types
 
 * Added local_tangent_space.
