@@ -27,7 +27,18 @@ class KWIVER_ALGO_GDAL_EXPORT image_io
 public:
   PLUGGABLE_IMPL(
     image_io,
-    " A class for using GDAL to read and write images. "
+    " A class for using GDAL to read and write images. ",
+    PARAM_DEFAULT(
+      nodata_enabled, bool,
+      "When set to true, GDAL will attempt to mark any pixels that have a "
+      "value of nodata_value as transparent when writing an image.",
+      false ),
+    PARAM_DEFAULT(
+      nodata_value, double,
+      "Special value that marks pixels as having no data, causing them to be "
+      "displayed as transparent. This is only supported when writing certain "
+      "formats, and only effective when nodata_enabled is set to true.",
+      0.0 ),
   )
 
 // No configuration for this class yet

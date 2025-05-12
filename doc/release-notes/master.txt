@@ -20,6 +20,12 @@ Arrows: FFmpeg
 
 * Added ffmpeg_image_io.
 
+Arrows: GDAL
+
+* Enabled GeoTIFF export.
+
+* Added NODATA support.
+
 Arrows: Geocalc
 
 * Added Geocalc arrow.
