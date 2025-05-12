@@ -104,9 +104,10 @@ test_nitf_metadata( kwiver::vital::metadata_sptr md )
 // This has to return by reference because it has ASSERTs in it, which return
 // void on failure.
 void
-save_load_nitf(
-  std::string const& data_dir, vital::metadata_sptr const& metadata,
-  vital::image_container_sptr& out_img )
+save_load_format(
+  std::string const& extension, std::string const& data_dir,
+  vital::metadata_sptr const& metadata,
+  vital::image_container_sptr& out_img_container )
 {
   gdal::image_io image_io;
   vital::path_t png_filepath = data_dir + "/" + png_file_name;
@@ -116,27 +117,24 @@ save_load_nitf(
   png_img_container->set_metadata( metadata );
 
 
-  auto const nitf_filepath =
-    kwiver::testing::temp_file_name( "test-", ".nitf" );
-  image_io.save( nitf_filepath, png_img_container );
+  auto const out_filepath =
+    kwiver::testing::temp_file_name( "test-", extension );
+  image_io.save( out_filepath, png_img_container );
 
-
-  auto const nitf_img_container = image_io.load( nitf_filepath );
-  std::remove( nitf_filepath.c_str() );
-  ASSERT_NE( nullptr, nitf_img_container );
+  out_img_container = image_io.load( out_filepath );
+  std::remove( out_filepath.c_str() );
+  ASSERT_NE( nullptr, out_img_container );
 
 
   auto const png_img = png_img_container->get_image();
-  auto const nitf_img = nitf_img_container->get_image();
+  auto const out_img = out_img_container->get_image();
 
-  ASSERT_EQ( png_img.width(), nitf_img.width() );
-  ASSERT_EQ( png_img.height(), nitf_img.height() );
-  ASSERT_EQ( png_img.depth(), nitf_img.depth() );
-  ASSERT_EQ( png_img.pixel_traits(), nitf_img.pixel_traits() );
+  ASSERT_EQ( png_img.width(), out_img.width() );
+  ASSERT_EQ( png_img.height(), out_img.height() );
+  ASSERT_EQ( png_img.depth(), out_img.depth() );
+  ASSERT_EQ( png_img.pixel_traits(), out_img.pixel_traits() );
 
-  EXPECT_TRUE( vital::equal_content( png_img, nitf_img ) );
-
-  out_img = std::move( nitf_img_container );
+  EXPECT_TRUE( vital::equal_content( png_img, out_img ) );
 }
 
 // ----------------------------------------------------------------------------
@@ -298,7 +296,7 @@ TEST_F ( image_io, save_load_nitf_blocka )
 
 
   vital::image_container_sptr nitf_img_container;
-  save_load_nitf( data_dir, metadata, nitf_img_container );
+  save_load_format( ".nitf", data_dir, metadata, nitf_img_container );
   ASSERT_NE( nullptr, nitf_img_container );
 
 
@@ -351,7 +349,7 @@ TEST_F ( image_io, save_load_nitf_corners_no_blocka )
 
 
   vital::image_container_sptr nitf_img_container;
-  save_load_nitf( data_dir, metadata, nitf_img_container );
+  save_load_format( ".nitf", data_dir, metadata, nitf_img_container );
   ASSERT_NE( nullptr, nitf_img_container );
 
 
@@ -374,6 +372,46 @@ TEST_F ( image_io, save_load_nitf_corners_no_blocka )
     auto const& corner = corner_points[ i ];
     EXPECT_NEAR( vertex[ 0 ], corner[ 0 ], 5e-7 ) << i;
     EXPECT_NEAR( vertex[ 1 ], corner[ 1 ], 5e-7 ) << i;
+  }
+}
+
+// ----------------------------------------------------------------------------
+TEST_F ( image_io, save_load_geotiff )
+{
+  auto metadata = std::make_shared< vital::metadata >();
+  std::vector< vital::vector_2d > vertices = {
+    { -45.123456, +45.123456 },
+    { -45.223456, +45.123456 },
+    { -45.223456, +45.223456 },
+    { -45.123456, +45.223456 }, };
+  vital::geo_polygon polygon{ vertices, vital::SRID::lat_lon_WGS84 };
+  metadata->add< vital::VITAL_META_CORNER_POINTS >( polygon );
+
+
+  vital::image_container_sptr geotiff_img_container;
+  save_load_format( ".tif", data_dir, metadata, geotiff_img_container );
+  ASSERT_NE( nullptr, geotiff_img_container );
+
+
+  auto const geotiff_metadata = geotiff_img_container->get_metadata();
+  ASSERT_NE( nullptr, geotiff_metadata );
+
+
+  auto const corner_points_entry =
+    geotiff_metadata->find( vital::VITAL_META_CORNER_POINTS );
+  ASSERT_TRUE( corner_points_entry );
+
+
+  auto const corner_points =
+    corner_points_entry.get< vital::geo_polygon >().polygon().get_vertices();
+  ASSERT_EQ( 4, corner_points.size() );
+
+  for( size_t i = 0; i < 4; ++i )
+  {
+    auto const& vertex = vertices[ i ];
+    auto const& corner = corner_points[ i ];
+    EXPECT_NEAR( vertex[ 0 ], corner[ 0 ], 1e-15 ) << i;
+    EXPECT_NEAR( vertex[ 1 ], corner[ 1 ], 1e-15 ) << i;
   }
 }
 

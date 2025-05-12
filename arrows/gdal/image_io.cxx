@@ -154,14 +154,22 @@ image_io
 
   GDALDriverH driver = nullptr;
   std::filesystem::path filepath( filename );
-  auto const extension = filepath.extension().string();
+  auto extension = filepath.extension().string();
+  std::transform(
+    extension.begin(), extension.end(), extension.begin(),
+    []( unsigned char c ){ return std::tolower( c ); } );
+
   std::string driver_name;
-  if( extension == ".nitf" ||
-      extension == ".NITF" ||
-      extension == ".ntf" ||
-      extension == ".NTF" )
+  static std::map< std::string, std::string > const extension_map = {
+    { ".nitf", "NITF" },
+    { ".ntf", "NITF" },
+    { ".tif", "GTiff" },
+    { ".tiff", "GTiff" }, };
+
+  if( auto const it = extension_map.find( extension );
+      it != extension_map.end() )
   {
-    driver_name = "NITF";
+    driver_name = it->second;
   }
 
   if( !driver_name.empty() )
@@ -202,6 +210,7 @@ image_io
   if( driver_name == "NITF" )
   {
     create_options = get_nitf_tres( data );
+    create_options.emplace_back( "ICORDS=G" );
   }
 
   std::vector< char const* > create_option_ptrs;
@@ -233,6 +242,53 @@ image_io
       const_cast< void* >( image.first_pixel() ), data->width(), data->height(),
       data_type, data->depth(), nullptr,
       image.w_step(), image.h_step(), image.d_step() );
+
+  if( auto const& corners_entry =
+        metadata->find( vital::VITAL_META_CORNER_POINTS ) )
+  {
+    auto const points =
+      corners_entry
+      .get< vital::geo_polygon >()
+      .polygon( vital::SRID::lat_lon_WGS84 )
+      .get_vertices();
+
+    // Convert corner points into GDAL ground control points
+    auto const w = static_cast< double >( data->width() );
+    auto const h = static_cast< double >( data->height() );
+    GDAL_GCP gcps[ 4 ];
+    GDALInitGCPs( 4, gcps );
+    for( size_t i = 0; i < 4; ++i )
+    {
+      gcps[ i ].dfGCPX = points[ i ][ 0 ];
+      gcps[ i ].dfGCPY = points[ i ][ 1 ];
+      gcps[ i ].dfGCPPixel = ( i == 1 || i == 2 ) ? w : 0.0;
+      gcps[ i ].dfGCPLine = ( i == 2 || i == 3 ) ? h : 0.0;
+    }
+
+    // Use ground control points to map image into geographical space
+    double geo_transform[ 6 ];
+    if( GDALGCPsToGeoTransform( 4, gcps, geo_transform, true ) )
+    {
+      GDALSetGeoTransform( dataset, geo_transform );
+    }
+    else
+    {
+      LOG_DEBUG(
+        logger(),
+        "Failed to convert corner points into geo-transform" );
+    }
+    GDALDeinitGCPs( 4, gcps );
+
+    // Set coordinate system
+    OGRSpatialReference projection;
+    char* projection_wkt = nullptr;
+    if( projection.SetWellKnownGeogCS( "WGS84" ) == OGRERR_NONE &&
+        projection.exportToWkt( &projection_wkt ) == OGRERR_NONE )
+    {
+      GDALSetProjection( dataset, projection_wkt );
+      CPLFree( projection_wkt );
+    }
+  }
 
   GDALClose( dataset );
 

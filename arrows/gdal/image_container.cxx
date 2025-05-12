@@ -398,9 +398,9 @@ image_container
       const double h = static_cast< double >( this->height() );
       const double w = static_cast< double >( this->width() );
       points.push_back( apply_geo_transform( geo_transform, 0, 0 ) );
-      points.push_back( apply_geo_transform( geo_transform, 0, h ) );
       points.push_back( apply_geo_transform( geo_transform, w, 0 ) );
       points.push_back( apply_geo_transform( geo_transform, w, h ) );
+      points.push_back( apply_geo_transform( geo_transform, 0, h ) );
 
       vital::geo_polygon const polygon(
         points, atoi( osrs.GetAuthorityCode( "GEOGCS" ) ) );
