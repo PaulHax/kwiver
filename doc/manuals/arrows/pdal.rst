@@ -1,10 +1,13 @@
 PDAL
 ====
 
+Algorithm Implementations
+-------------------------
+
 .. _pdal_pointcloud_io:
 
-Point Cloud Input/Output Algorithm
------------------------------------
+pointcloud_io
+^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::pdal::pointcloud_io
     :project: kwiver

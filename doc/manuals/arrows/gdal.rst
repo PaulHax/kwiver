@@ -1,10 +1,13 @@
 GDAL
 ====
 
+Algorithm Implementations
+-------------------------
+
 .. _gdal_image_io:
 
-Image I/O Algorithm
-------------------
+image_io
+^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::gdal::image_io
     :project: kwiver

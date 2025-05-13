@@ -1,9 +1,12 @@
 Ceres
 =====
 
+Algorithm Implementations
+-------------------------
+
 ..  _ceres_bundle_adjust:
-Bundle Adjust Algorithm
------------------------
+bundle_adjust
+^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ceres::bundle_adjust
     :project: kwiver
@@ -12,8 +15,8 @@ Bundle Adjust Algorithm
 
 ..  _ceres_optimize_cameras:
 
-Optimize Cameras Algorithm
---------------------------
+optimize_cameras
+^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ceres::optimize_cameras
     :project: kwiver

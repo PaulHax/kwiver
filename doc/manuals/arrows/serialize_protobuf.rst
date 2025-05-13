@@ -1,10 +1,13 @@
 Serialize Protobuf
 ==================
 
+Algorithm Implementations
+-------------------------
+
 .. _protobuf_activity_type:
 
-Serialize Protobuf Activity Type Algorithm
--------------------------------------------
+activity_type
+^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::protobuf::activity_type
     :project: kwiver
@@ -13,8 +16,8 @@ Serialize Protobuf Activity Type Algorithm
 
 .. _protobuf_activity:
 
-Serialize Protobuf Activity Algorithm
----------------------------------------
+activity
+^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::protobuf::activity
     :project: kwiver
@@ -23,8 +26,8 @@ Serialize Protobuf Activity Algorithm
 
 .. _protobuf_bounding_box:
 
-Serialize Protobuf Bounding Box Algorithm
-------------------------------------------
+bounding_box
+^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::protobuf::bounding_box
     :project: kwiver
@@ -33,8 +36,8 @@ Serialize Protobuf Bounding Box Algorithm
 
 .. _protobuf_detected_object_set:
 
-Serialize Protobuf Detected Object Set Algorithm
--------------------------------------------------
+detected_object_set
+^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::protobuf::detected_object_set
     :project: kwiver
@@ -43,8 +46,8 @@ Serialize Protobuf Detected Object Set Algorithm
 
 .. _protobuf_detected_object_type:
 
-Serialize Protobuf Detected Object Type Algorithm
---------------------------------------------------
+detected_object_type
+^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::protobuf::detected_object_type
     :project: kwiver
@@ -53,8 +56,8 @@ Serialize Protobuf Detected Object Type Algorithm
 
 .. _protobuf_detected_object:
 
-Serialize Protobuf Detected Object Algorithm
----------------------------------------------
+detected_object
+^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::protobuf::detected_object
     :project: kwiver
@@ -63,8 +66,8 @@ Serialize Protobuf Detected Object Algorithm
 
 .. _protobuf_geo_polygon:
 
-Serialize Protobuf Geo Polygon Algorithm
------------------------------------------
+geo_polygon
+^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::protobuf::geo_polygon
     :project: kwiver
@@ -73,8 +76,8 @@ Serialize Protobuf Geo Polygon Algorithm
 
 .. _protobuf_image:
 
-Serialize Protobuf Image Algorithm
------------------------------------
+image
+^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::protobuf::image
     :project: kwiver
@@ -83,8 +86,8 @@ Serialize Protobuf Image Algorithm
 
 .. _protobuf_metadata_map_io:
 
-Serialize Protobuf Metadata Map Input/Output Algorithm
--------------------------------------------------------
+metadata_map_io
+^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::protobuf::metadata_map_io
     :project: kwiver
@@ -93,8 +96,8 @@ Serialize Protobuf Metadata Map Input/Output Algorithm
 
 .. _protobuf_metadata:
 
-Serialize Protobuf Metadata Algorithm
---------------------------------------
+metadata
+^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::protobuf::metadata
     :project: kwiver
@@ -103,8 +106,8 @@ Serialize Protobuf Metadata Algorithm
 
 .. _protobuf_object_track_set:
 
-Serialize Protobuf Object Track Set Algorithm
----------------------------------------------
+object_track_set
+^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::protobuf::object_track_set
     :project: kwiver
@@ -113,8 +116,8 @@ Serialize Protobuf Object Track Set Algorithm
 
 .. _protobuf_object_track_state:
 
-Serialize Protobuf Object Track State Algorithm
-------------------------------------------------
+object_track_state
+^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::protobuf::object_track_state
     :project: kwiver
@@ -123,8 +126,8 @@ Serialize Protobuf Object Track State Algorithm
 
 .. _protobuf_string:
 
-Serialize Protobuf String Algorithm
-------------------------------------
+string
+^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::protobuf::string
     :project: kwiver
@@ -133,8 +136,8 @@ Serialize Protobuf String Algorithm
 
 .. _protobuf_timestamp:
 
-Serialize Protobuf Timestamp Algorithm
----------------------------------------
+timestamp
+^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::protobuf::timestamp
     :project: kwiver
@@ -143,8 +146,8 @@ Serialize Protobuf Timestamp Algorithm
 
 .. _protobuf_track_set:
 
-Serialize Protobuf Track Set Algorithm
-----------------------------------------
+track_set
+^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::protobuf::track_set
     :project: kwiver
@@ -153,8 +156,8 @@ Serialize Protobuf Track Set Algorithm
 
 .. _protobuf_track_state:
 
-Serialize Protobuf Track State Algorithm
-------------------------------------------
+track_state
+^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::protobuf::track_state
     :project: kwiver
@@ -163,8 +166,8 @@ Serialize Protobuf Track State Algorithm
 
 .. _protobuf_track:
 
-Serialize Protobuf Track Algorithm
-------------------------------------
+track
+^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::protobuf::track
     :project: kwiver
