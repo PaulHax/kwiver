@@ -52,7 +52,7 @@ exporter give an interpreted summary of commonly useful metadata fields
 exporter will give a complete tag-by-tag report across all standards.
 
 To manipulate KLV programmatically, parsed :ref:`klv_packet`\ s may be obtained
-from an :ref:`ffmpeg_ffmpeg_video_input` through the ``frame_metadata()`` method. Each of
+from an :ref:`ffmpeg_video_input` through the ``frame_metadata()`` method. Each of
 the returned ``vital::metadata`` objects which successfully ``dynamic_cast``\ s
 to :ref:`klv_metadata` contains one frame of :ref:`klv_packet`\ s from one KLV stream
 in the source media.
