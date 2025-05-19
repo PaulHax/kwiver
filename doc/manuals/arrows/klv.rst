@@ -1,10 +1,13 @@
+.. _arrows_klv:
+
 KLV
 ===
 
 The KLV (Key-Length-Value) arrow provides decoding and encoding capabilities for
 many common `MISB standards <https://nsgreg.nga.mil/misb.jsp>`_. This arrow does
 not handle the muxing or demuxing of KLV streams in specific media formats; that
-is handled in the ffmpeg arrow.
+is handled in the :ref:`arrows_ffmpeg` arrow. This arrow can be built by
+enabling the KWIVER_ENABLE_KLV CMake flag.
 
 The guiding principles for this implementation are as follows:
 

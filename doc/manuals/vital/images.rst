@@ -144,7 +144,26 @@ Instantiate with: ::
 :ref:`Core<core_video_input_split>`                    split                     KWIVER_ENABLE_ARROWS
 ===================================================== ========================= ========================
 
-..  doxygenclass:: kwiver::vital::algo::convert_image
+..  doxygenclass:: kwiver::vital::algo::video_input
+    :project: kwiver
+    :members:
+
+.. _vital_video_output:
+
+Video Output Algorithm
+-----------------------
+
+Instantiate with: ::
+
+   kwiver::vital::algo::video_output_sptr img_bypas = kwiver::vital::algo::video_output::create("<impl_name>");
+
+===================================================== ========================= ========================
+ Arrow & Configuration                                 <impl_name> options       CMake Flag to Enable
+===================================================== ========================= ========================
+:ref:`FFMPEG<ffmpeg_video_output>`                      ffmpeg                    KWIVER_ENABLE_FFMPEG
+===================================================== ========================= ========================
+
+..  doxygenclass:: kwiver::vital::algo::video_output
     :project: kwiver
     :members:
 
