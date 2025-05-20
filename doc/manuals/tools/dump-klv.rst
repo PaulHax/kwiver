@@ -4,10 +4,14 @@ dump-klv
 
 This program displays the KLV metadata packets that are embedded in a video file.
 
-kwiver dump-klv       [options]  video-file
-------------------------------------
+.. code-block:: bash
 
-  video-file  - name of video file.
+  kwiver dump-klv       [options]  video-file
+
+**Required arguments:**
+
+
+  ``video-file``  - name of video file.
 
 **Options are:**
 
@@ -30,10 +34,16 @@ kwiver dump-klv       [options]  video-file
     array of metadata fields. Alternatively, the configuration file,
     dump_klv.conf, can be updated to use CSV instead.
 
+  ``--frame-range expr``
+    Frame range to process, indexed from 1. May be a single number or two
+    numbers separated by a hyphen, either of which may be omitted to process
+    from the start or to the end of the video, respectively, e.g.
+    '5', '10-100', or '64-'.
+
   ``-f, --frames extension``
     Dump frames into the given image format.
 
-  ``-f, --frames-dir path``
+  ``--frames-dir path``
     Directory in which to dump frames. Defaults to current directory.
 
   ``-d, --detail``
@@ -46,9 +56,9 @@ kwiver dump-klv       [options]  video-file
     Choose the format of the exported KLV data. Current options are:
     csv, json, klv-json.
 
-  ``-e, --multithread``
+  ``--multithread``
     Use multithreading to accelerate encoding of frame images. Number of worker
     threads is not configurable at this time.
 
-  ``-e, --compress``
+  ``--compress``
     Compress output file. Only available for klv-json.

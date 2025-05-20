@@ -6,18 +6,19 @@ The color-mesh tool colors an input-mesh from a video (or list of images) and a
 list of camera files stored in a directory. A mesh colored with the
 average color or with a color for a particular camera is produced.
 
+.. code-block:: bash
 
-kwiver color-mesh       [options] input-mesh video-file cameras-dir output-mesh
---------------------------------------------
+  kwiver color-mesh       [options] input-mesh video-file cameras-dir output-mesh
 
-  input-mesh  - input mesh file.
+**Required arguments:**
 
-  video-file  - input video file.
+  ``input-mesh``  - input mesh file.
 
-  cameras-dir  - input camera directory.
+  ``video-file``  - input video file.
 
-  output-mesh - output mesh file.
+  ``cameras-dir``  - input camera directory.
 
+  ``output-mesh`` - output mesh file.
 
 **Options are:**
 

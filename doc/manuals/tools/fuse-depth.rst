@@ -2,13 +2,19 @@
 fuse-depth
 ==========
 
-kwiver fuse-depth       [options]
---------------------------
+The fuse-depth tool fuses depth maps from multiple cameras into a single
+surface.
 
-  input-cameras-dir - name of the directory containing the krtd camera
+.. code-block:: bash
+
+  kwiver fuse-depth    [options] input-cameras-dir input-depths-dir
+
+**Required arguments:**
+
+  ``input-cameras-dir`` - name of the directory containing the krtd camera
   files(default: results/krtd)
 
-  input-depths-dir - name of the directory to read depth maps from
+  ``input-depths-dir`` - name of the directory to read depth maps from
   (default: results/depths)
 
 

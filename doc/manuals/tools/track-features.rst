@@ -6,12 +6,15 @@ This program tracks feature point through a video or list of images and
 produces a track file and optional homography sequence.
 
 
-track-features       [options] video-file [track-file]
-------------------------------------------------------
+.. code-block:: bash
 
-  video-file  - name of input video file.
+  track-features       [options] video-file [track-file]
 
-  track-file  - name of output track file (default: results/tracks.txt)
+**Required arguments:**
+
+  ``video-file``  - name of input video file.
+
+  ``track-file``  - name of output track file (default: results/tracks.txt)
 
 
 **Options are:**

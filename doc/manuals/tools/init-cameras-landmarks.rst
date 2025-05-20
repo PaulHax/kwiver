@@ -2,8 +2,12 @@
 init-cameras-landmarks
 ======================
 
-kwiver init-cameras-landmarks       [options]
---------------------------------------
+The init-cameras-landmarks tool estimate cameras and landmarks from a set of
+feature tracks.
+
+.. code-block:: bash
+
+  kwiver init-cameras-landmarks       [options]
 
 **Options are:**
 

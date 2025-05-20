@@ -45,4 +45,5 @@ in between.
 KWIVER is a collection of C++ libraries with C and Python bindings
 and uses an permissive `BSD License <LICENSE>`_.
 
-Visit the `repository <https://github.com/Kitware/kwiver>`_ on how to get and build the KWIVER code base
+Visit the `repository <https://gitlab.kitware.com/kwiver/kwiver>`_ on how to
+get and build the KWIVER code base

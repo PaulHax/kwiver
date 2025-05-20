@@ -2,8 +2,12 @@
 bundle-adjust-tool
 ==================
 
-kwiver bundle-adjust-tool    [options] pipe-file
---------------------------------------------
+The bundle-adjust-tool optimizes cameras and landmarks via a bundle adjustment
+algorithm.
+
+.. code-block:: bash
+
+  kwiver bundle-adjust-tool    [options]
 
 **Options are:**
 

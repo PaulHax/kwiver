@@ -2,19 +2,21 @@
 estimate-depth
 ==============
 
-The color-mesh tool colors an input-mesh from a video (or list of images) and a
-list of camera files stored in a directory. A mesh colored with the
-average color or with a color for a particular camera is produced.
+The estimate-depth tool estimates a series of depth maps for video frames based
+off of known or calculated cameras associated with those frames.
 
-kwiver estimate-depth       [options]
-------------------------------
+.. code-block:: bash
 
-  video-source - name of input video file.
+  kwiver estimate-depth       [options]
 
-  input-cameras-dir - name of the directory containing the krtd camera
+**Required arguments:**
+
+  ``video-source`` - name of input video file.
+
+  ``input-cameras-dir`` - name of the directory containing the krtd camera
   files(default: results/krtd)
 
-  output-depths-dir - name of the directory to write depth maps
+  ``output-depths-dir`` - name of the directory to write depth maps
   to (default: results/depth)
 
 **Options are:**
