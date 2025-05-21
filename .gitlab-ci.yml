@@ -164,6 +164,9 @@ wheel-windows-python38-x86_64_burnout:test:
 wheel:kwiver:upload:
     extends:
         - .pypi_kwiver_upload
+        - .rules
+    variables:
+        IS_FOR_RELEASE: "true"
     needs:
         - wheel-linux-python38-x86_64:build
         - job: wheel-linux-python38-x86_64:test
