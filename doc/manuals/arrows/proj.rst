@@ -1,3 +1,5 @@
+.. _arrows_proj4:
+
 Proj4
 =====
 

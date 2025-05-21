@@ -1,3 +1,5 @@
+.. _arrows_serialize_json:
+
 Serialize JSON
 ==============
 

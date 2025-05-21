@@ -4,6 +4,13 @@ dump-klv
 
 This program displays the KLV metadata packets that are embedded in a video file.
 
+The default configuration of this tool depends on algorithm implementations in
+the :ref:`arrows_ffmpeg` and :ref:`arrows_mvg` arrows which will only available
+if the KWIVER_ENABLE_FFMPEG and KWIVER_ENABLE_MVG CMake flags are enabled. If
+you are planning on using the tool to dump frame images, the default
+configuration depends on the :ref:`arrows_opencv` so this feature will only be
+available if the KWIVER_ENABLE_OPENCV CMake flags are enabled.
+
 .. code-block:: bash
 
   kwiver dump-klv       [options]  video-file
@@ -62,3 +69,7 @@ This program displays the KLV metadata packets that are embedded in a video file
 
   ``--compress``
     Compress output file. Only available for klv-json.
+
+**Default configuration**
+
+.. literalinclude:: ../../../config/applets/dump_klv.conf

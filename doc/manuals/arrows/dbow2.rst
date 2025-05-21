@@ -1,3 +1,5 @@
+.. _arrows_dbow2:
+
 DBOW2
 =====
 

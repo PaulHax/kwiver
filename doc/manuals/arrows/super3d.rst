@@ -1,3 +1,5 @@
+.. _arrows_super3d:
+
 Super3d
 ========
 

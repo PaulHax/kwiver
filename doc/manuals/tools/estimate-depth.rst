@@ -5,6 +5,10 @@ estimate-depth
 The estimate-depth tool estimates a series of depth maps for video frames based
 off of known or calculated cameras associated with those frames.
 
+The default configuration of this tool depends on algorithm implementations in
+the :ref:`arrows_super3d` and :ref:`arrows_vtk` arrows which will only available
+if the KWIVER_ENABLE_SUPER3D and KWIVER_ENABLE_VTK CMake flags are enabled.
+
 .. code-block:: bash
 
   kwiver estimate-depth       [options]
@@ -38,3 +42,7 @@ off of known or calculated cameras associated with those frames.
 
   ``-m, --mask-source arg``
     Masks of unusable regions
+
+**Default configuration**
+
+.. literalinclude:: ../../../config/applets/estimate_depth.conf

@@ -1,3 +1,5 @@
+.. _arrows_mvg:
+
 MVG
 ===
 

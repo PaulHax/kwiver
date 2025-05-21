@@ -4,6 +4,10 @@ compare-klv
 
 This program prints differences found between the KLV in two files (video or JSON).
 
+The default configuration of this tool depends on algorithm implementations in
+the :ref:`arrows_ffmpeg` and :ref:`arrows_mvg` arrows which will only available
+if the KWIVER_ENABLE_FFMPEG and KWIVER_ENABLE_MVG CMake flags are enabled.
+
 .. code-block:: bash
 
   kwiver compare-klv [options] lhs-file rhs-file
@@ -20,3 +24,7 @@ This program prints differences found between the KLV in two files (video or JSO
   ``-h, --help``                 Display applet usage.
 
   ``-c, --config filename``      Provide configuration file.
+
+**Default configuration**
+
+.. literalinclude:: ../../../config/applets/compare_klv.conf
