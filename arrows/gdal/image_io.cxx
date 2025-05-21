@@ -243,6 +243,15 @@ image_io
       data_type, data->depth(), nullptr,
       image.w_step(), image.h_step(), image.d_step() );
 
+  if( c_nodata_enabled )
+  {
+    for( size_t i = 0; i < data->depth(); ++i )
+    {
+      GDALSetRasterNoDataValue(
+        GDALGetRasterBand( dataset, i + 1 ), c_nodata_value );
+    }
+  }
+
   if( auto const& corners_entry =
         metadata->find( vital::VITAL_META_CORNER_POINTS ) )
   {
