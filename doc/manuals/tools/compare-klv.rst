@@ -2,7 +2,9 @@
 compare-klv
 ===========
 
-This program prints differences found between the KLV in two files (video or JSON).
+This program prints differences found between the KLV in two files. These files
+can be either video files with a KLV metadata stream or could be KLV in a json
+file like the ones produced by the :ref:`tools_dump_klv` tool.
 
 The default configuration of this tool depends on algorithm implementations in
 the :ref:`arrows_ffmpeg` and :ref:`arrows_mvg` arrows which will only available

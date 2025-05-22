@@ -9,6 +9,12 @@ displayed with::
   # via a bash shell
   $ kwiver <applet> -h
 
+Even more customization such as switching out algorithm implementations used in
+the applet can be achieved by passing a config file to the applet. The base
+configuration can produced from the applet with::
+  # via a bash shell
+  $ kwiver <applet> -o <config filename> [required args]
+
 .. toctree::
    :maxdepth: 1
 

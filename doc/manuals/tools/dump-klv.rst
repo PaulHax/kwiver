@@ -1,8 +1,16 @@
+.. _tools_dump_klv:
+
 ========
 dump-klv
 ========
 
-This program displays the KLV metadata packets that are embedded in a video file.
+This program displays the KLV metadata packets that are embedded in a video
+file. The default behavior is to print the metadata to standard output for all
+frames of the video. This can be restricted to a subset of frames. The metadata
+can be saved to a separate file in either a ``csv`` format to two different
+variations of a ``json`` formatted file.
+
+TODO: Add examples of output?
 
 The default configuration of this tool depends on algorithm implementations in
 the :ref:`arrows_ffmpeg` and :ref:`arrows_mvg` arrows which will only available
