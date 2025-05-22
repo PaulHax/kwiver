@@ -133,8 +133,8 @@ Instantiate with: ::
 ===================================================== ========================= ========================
  Arrow & Configuration                                 <impl_name> options       CMake Flag to Enable
 ===================================================== ========================= ========================
-:ref:`FFMPEG<ffmpeg_video_input>`                      ffmpeg                    KWIVER_ENABLE_FFMPEG
-:ref:`FFMPEG<ffmpeg_video_input_clip>`                 ffmpeg_clip               KWIVER_ENABLE_FFMPEG
+:ref:`FFmpeg<ffmpeg_video_input>`                      ffmpeg                    KWIVER_ENABLE_FFMPEG
+:ref:`FFmpeg<ffmpeg_video_input_clip>`                 ffmpeg_clip               KWIVER_ENABLE_FFMPEG
 :ref:`Core<core_video_input_buffered_metadata_filter>` buffered_metadata_filter  KWIVER_ENABLE_ARROWS
 :ref:`Core<core_video_input_image_list>`               image_list                KWIVER_ENABLE_ARROWS
 :ref:`Core<core_video_input_filter>`                   filter                    KWIVER_ENABLE_ARROWS
@@ -155,12 +155,12 @@ Video Output Algorithm
 
 Instantiate with: ::
 
-   kwiver::vital::algo::video_output_sptr img_bypas = kwiver::vital::algo::video_output::create("<impl_name>");
+   kwiver::vital::algo::video_output_sptr video_writer = kwiver::vital::algo::video_output::create("<impl_name>");
 
 ===================================================== ========================= ========================
  Arrow & Configuration                                 <impl_name> options       CMake Flag to Enable
 ===================================================== ========================= ========================
-:ref:`FFMPEG<ffmpeg_video_output>`                      ffmpeg                    KWIVER_ENABLE_FFMPEG
+:ref:`FFmpeg<ffmpeg_video_output>`                      ffmpeg                    KWIVER_ENABLE_FFMPEG
 ===================================================== ========================= ========================
 
 ..  doxygenclass:: kwiver::vital::algo::video_output

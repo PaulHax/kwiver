@@ -4,11 +4,11 @@
 dump-klv
 ========
 
-This program displays the KLV metadata packets that are embedded in a video
+This program displays a subset of metadata derived from the KLV packets embedded in a video
 file. The default behavior is to print the metadata to standard output for all
-frames of the video. This can be restricted to a subset of frames. The metadata
-can be saved to a separate file in either a ``csv`` format to two different
-variations of a ``json`` formatted file.
+frames of the video. This can be restricted to a subset of frames. The summarized metadata
+can be saved to a separate file in either ``csv`` or ``json`` format, or the full
+interpreted contents of the KLV packets can be saved to ``json`` (``-e klv-json``).
 
 TODO: Add examples of output?
 
