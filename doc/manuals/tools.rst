@@ -15,6 +15,11 @@ configuration can produced from the applet with::
   # via a bash shell
   $ kwiver <applet> -o <config filename> [required args]
 
+The config file can be used to run the applet
+with::
+  # via a bash shell
+  $ kwiver <applet> -c <config filename> [required args]
+
 .. toctree::
    :maxdepth: 1
 

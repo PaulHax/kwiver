@@ -4,20 +4,23 @@
 dump-klv
 ========
 
-This program displays a subset of metadata derived from the KLV packets embedded in a video
-file. The default behavior is to print the metadata to standard output for all
-frames of the video. This can be restricted to a subset of frames. The summarized metadata
-can be saved to a separate file in either ``csv`` or ``json`` format, or the full
-interpreted contents of the KLV packets can be saved to ``json`` (``-e klv-json``).
+This program displays a subset of metadata derived from the KLV packets embedded
+in a video file. The default behavior is to print the metadata to standard
+output for all frames of the video. This can be restricted to a subset of
+frames. The summarized metadata can be saved to a separate file in either
+``csv`` or ``json`` format, or the full interpreted contents of the KLV packets
+can be saved to ``json`` (``-e klv-json``).
 
-TODO: Add examples of output?
+.. TODO: Add examples of output?
 
 The default configuration of this tool depends on algorithm implementations in
-the :ref:`arrows_ffmpeg` and :ref:`arrows_mvg` arrows which will only available
-if the KWIVER_ENABLE_FFMPEG and KWIVER_ENABLE_MVG CMake flags are enabled. If
+the :ref:`arrows_ffmpeg` and :ref:`arrows_klv` arrows which will only available
+if the KWIVER_ENABLE_FFMPEG and KWIVER_ENABLE_KLV CMake flags are enabled. If
 you are planning on using the tool to dump frame images, the default
 configuration depends on the :ref:`arrows_opencv` so this feature will only be
-available if the KWIVER_ENABLE_OPENCV CMake flags are enabled.
+available if the KWIVER_ENABLE_OPENCV CMake flags are enabled. To produce
+``json`` output the :ref:`arrows_serialize_json` is needed so the
+KWIVER_ENABLE_SERIALIZE_JSON CMake flag should be enabled.
 
 .. code-block:: bash
 

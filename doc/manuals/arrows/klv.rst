@@ -71,8 +71,9 @@ some (e.g. :ref:`klv_packet.value`) is stored in a :ref:`klv_value` container. A
   2. **Invalid.**
     There is data in this field, but we cannot parse it. Either it is irrecoverably
     nonconformant, or we have not yet implemented the relevant standard. In either
-    case, the byte sequence is stored in a :ref:`klv_blob` object within the :ref:`klv_value`.
-    That byte sequence can then be written back out verbatim to prevent data loss.
+    case, the byte sequence is stored in a :ref:`klv_blob` object within
+    the :ref:`klv_value`. That byte sequence can then be written back out
+    verbatim to prevent data loss.
   3. **Valid.**
     The :ref:`klv_value` contains data of the appropriate type. For example, if the
     ``key`` of the :ref:`klv_packet` is the ST0601 universal key, a valid ``value``

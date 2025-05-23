@@ -13,16 +13,17 @@ KWIVER_ENABLE_FFMPEG CMake flag.
 How to Use
 ----------
 
-The primary way to use the FFmpeg arrow is via the :ref:`ffmpeg_video_input` and
-:ref:`ffmpeg_video_input_clip` implementations of the
-:ref:`vital_video_input <vital_video_input>` interface. Import methods for this
-interface include the ``open`` method used to open a video for reading. The
-```next_frame``` and ``seek_frame``` allow navigation of the video and the
-``frame_image`` and ``frame_metadata`` can extract data from the current frame.
+The primary way to use the FFmpeg arrow is via the :ref:`ffmpeg_video_input`
+implementation of the :ref:`vital_video_input <vital_video_input>` interface.
+Important methods for this interface include the ``open`` method used to open a
+video for reading. The ``next_frame`` and ``seek_frame`` allow navigation of
+the video and the ``frame_image`` and ``frame_metadata`` can extract data from
+the current frame.
 
-The arrow also includes an implementation of the
+The arrow also includes the :ref:`ffmpeg_video_input_clip` implementation of
+:ref:`ffmpeg_video_input`, an implementation of the
 :ref:`vital_video_output <vital_video_output>` interface which can write out
-videos and the :ref:`vital_image_io <vital_image_io>` interface which allows
+videos, and the :ref:`vital_image_io <vital_image_io>` interface which allows
 reading and writing of frame images without having to bring in
 another arrow as a dependency.
 

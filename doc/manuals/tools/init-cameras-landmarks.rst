@@ -6,7 +6,7 @@ The init-cameras-landmarks tool estimate cameras and landmarks from a set of
 feature tracks.
 
 The default configuration of this tool depends on algorithm implementations in
-the :ref:`arrows_FFMPEG`, :ref:`arrows_MVG``, and :ref:`arrows_OPENCV` arrows
+the :ref:`arrows_ffmpeg`, :ref:`arrows_mvg`, and :ref:`arrows_opencv` arrows
 which will only available if the KWIVER_ENABLE_FFMPEG, KWIVER_ENABLE_MVG, and
 KWIVER_ENABLE_OPENCV CMake flags are enabled.
 
