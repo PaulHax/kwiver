@@ -18,8 +18,8 @@ the :ref:`arrows_ffmpeg` and :ref:`arrows_klv` arrows which will only available
 if the KWIVER_ENABLE_FFMPEG and KWIVER_ENABLE_KLV CMake flags are enabled. If
 you are planning on using the tool to dump frame images, the default
 configuration depends on the :ref:`arrows_opencv` so this feature will only be
-available if the KWIVER_ENABLE_OPENCV CMake flags are enabled. To produce
-``json`` output the :ref:`arrows_serialize_json` is needed so the
+available if the KWIVER_ENABLE_OPENCV CMake flag is enabled. To produce
+``json`` output the :ref:`arrows_serialize_json` is needed, so the
 KWIVER_ENABLE_SERIALIZE_JSON CMake flag should be enabled.
 
 .. code-block:: bash

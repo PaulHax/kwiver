@@ -9,13 +9,13 @@ displayed with::
   # via a bash shell
   $ kwiver <applet> -h
 
-Even more customization such as switching out algorithm implementations used in
-the applet can be achieved by passing a config file to the applet. The base
+Even more customization, such as switching out algorithm implementations used in
+the applet, can be achieved by passing in a config file. The base
 configuration can produced from the applet with::
   # via a bash shell
   $ kwiver <applet> -o <config filename> [required args]
 
-The config file can be used to run the applet
+A custom config file can be used to run the applet
 with::
   # via a bash shell
   $ kwiver <applet> -c <config filename> [required args]

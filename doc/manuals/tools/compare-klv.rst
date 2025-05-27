@@ -7,8 +7,8 @@ can be either video files with a KLV metadata stream or could be KLV in a json
 file like the ones produced by the :ref:`tools_dump_klv` tool.
 
 The default configuration of this tool depends on algorithm implementations in
-the :ref:`arrows_ffmpeg` and :ref:`arrows_mvg` arrows which will only available
-if the KWIVER_ENABLE_FFMPEG and KWIVER_ENABLE_MVG CMake flags are enabled.
+the :ref:`arrows_ffmpeg` and :ref:`arrows_klv` arrows which will only available
+if the KWIVER_ENABLE_FFMPEG and KWIVER_ENABLE_KLV CMake flags are enabled.
 
 .. code-block:: bash
 
