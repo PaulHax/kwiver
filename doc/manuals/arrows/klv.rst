@@ -169,6 +169,12 @@ klv_value
 Utility Functions
 -----------------
 
+.. _klv_packet_length:
+klv_packet_length
+^^^^^^^^^^^^^^^
+..  doxygenfunction:: kwiver::arrows::klv::klv_packet_length
+    :project: kwiver
+
 .. _klv_read_packet:
 klv_read_packet
 ^^^^^^^^^^^^^^^
