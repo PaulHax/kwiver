@@ -1,10 +1,13 @@
+.. _arrows_klv:
+
 KLV
 ===
 
 The KLV (Key-Length-Value) arrow provides decoding and encoding capabilities for
 many common `MISB standards <https://nsgreg.nga.mil/misb.jsp>`_. This arrow does
 not handle the muxing or demuxing of KLV streams in specific media formats; that
-is handled in the ffmpeg arrow.
+is handled in the :ref:`arrows_ffmpeg` arrow. This arrow can be built by
+enabling the KWIVER_ENABLE_KLV CMake flag.
 
 The guiding principles for this implementation are as follows:
 
@@ -51,16 +54,16 @@ exporter give an interpreted summary of commonly useful metadata fields
 (latitude/longitude, etc.) extracted mostly from ST0601, while the ``klv-json``
 exporter will give a complete tag-by-tag report across all standards.
 
-To manipulate KLV programmatically, parsed ``klv_packet``\ s may be obtained
-from an ``ffmpeg_video_input`` through the ``frame_metadata()`` method. Each of
+To manipulate KLV programmatically, parsed :ref:`klv_packet`\ s may be obtained
+from an :ref:`ffmpeg_video_input` through the ``frame_metadata()`` method. Each of
 the returned ``vital::metadata`` objects which successfully ``dynamic_cast``\ s
-to ``klv_metadata`` contains one frame of ``klv_packet``\ s from one KLV stream
+to :ref:`klv_metadata` contains one frame of :ref:`klv_packet`\ s from one KLV stream
 in the source media.
 
-Starting with a ``klv_packet`` at the root, parsed KLV data is stored as a hierachy.
-Along this hierachy, some data (e.g. ``klv_packet.key``) is stored directly, while
-some (e.g. ``klv_packet.value``) is stored in a ``klv_value`` container. A
-``klv_value`` can be thought of as being in three basic states:
+Starting with a :ref:`klv_packet` at the root, parsed KLV data is stored as a hierachy.
+Along this hierachy, some data (e.g. :ref:`klv_packet.key`) is stored directly, while
+some (e.g. :ref:`klv_packet.value`) is stored in a :ref:`klv_value` container. A
+:ref:`klv_value` can be thought of as being in three basic states:
   1. **Empty.**
     There is no data for this field. In a local set, this indicates a zero-length
     element (ZLE), relevant for Report-on-Change behavior. In other contexts, it
@@ -68,20 +71,21 @@ some (e.g. ``klv_packet.value``) is stored in a ``klv_value`` container. A
   2. **Invalid.**
     There is data in this field, but we cannot parse it. Either it is irrecoverably
     nonconformant, or we have not yet implemented the relevant standard. In either
-    case, the byte sequence is stored in a ``klv_blob`` object within the ``klv_value``.
-    That byte sequence can then be written back out verbatim to prevent data loss.
+    case, the byte sequence is stored in a :ref:`klv_blob` object within
+    the :ref:`klv_value`. That byte sequence can then be written back out
+    verbatim to prevent data loss.
   3. **Valid.**
-    The ``klv_value`` contains data of the appropriate type. For example, if the
-    ``key`` of the ``klv_packet`` is the ST0601 universal key, a valid ``value``
-    would contain an object of type ``klv_local_set``.
+    The :ref:`klv_value` contains data of the appropriate type. For example, if the
+    ``key`` of the :ref:`klv_packet` is the ST0601 universal key, a valid ``value``
+    would contain an object of type :ref:`klv_local_set`.
 
 .. warning::
     When processing parsed KLV, developers should make sure to handle cases where
-    a ``klv_value`` is not valid.
+    a :ref:`klv_value` is not valid.
 
 The transformations between encoded KLV and KWIVER's in-memory data structures
-are organized via ``klv_data_format`` classes, such as ``klv_string_format`` and
-``klv_0601_local_set_format``. Each format implements reading and writing a
+are organized via :ref:`klv_data_format` classes, such as :ref:`klv_string_format` and
+:ref:`klv_0601_local_set_format`. Each format implements reading and writing a
 particular type of data, and may invoke other formats internally. In addition to
 ``read()`` and ``write()`` methods, each format has a ``length_of()`` method,
 which allows the writer to preallocate the exact number of bytes needed to hold
@@ -90,21 +94,95 @@ the encoded KLV data.
 However, in most cases users will be reading from or writing to a video file, in
 which case the ``video_input`` or ``video_output`` will handle the KLV packet decoding
 and encoding internally. To read or write packets independently of a video stream,
-see the ``klv_read_packet()`` and ``klv_write_packet()`` functions. These will
+see the :ref:`klv_read_packet` and :ref:`klv_write_packet` functions. These will
 automatically select the correct format to handle the data given to them.
 
-Algorithms
-----------
-
-Apply Child KLV Algorithm
+Algorithm Implementations
 -------------------------
+
+.. _apply_child_klv:
+apply_child_klv
+^^^^^^^^^^^^^^^
 ..  doxygenclass:: kwiver::arrows::klv::apply_child_klv
     :project: kwiver
     :members:
 
-
-Update KLV Algorithm
---------------------
+.. _update_klv:
+update_klv
+^^^^^^^^^^
 ..  doxygenclass:: kwiver::arrows::klv::update_klv
     :project: kwiver
     :members:
+
+Other Classes
+-------------
+
+.. _klv_0601_local_set_format:
+klv_0601_local_set_format
+^^^^^^^^^^^^^^^^^^^^^^^^^
+..  doxygenclass:: kwiver::arrows::klv::klv_0601_local_set_format
+    :project: kwiver
+    :members:
+
+.. _klv_blob:
+klv_blob
+^^^^^^^^
+..  doxygenclass:: kwiver::arrows::klv::klv_blob
+    :project: kwiver
+    :members:
+
+.. _klv_data_format:
+klv_data_format
+^^^^^^^^^^^^^^^
+..  doxygenclass:: kwiver::arrows::klv::klv_data_format
+    :project: kwiver
+    :members:
+
+.. _klv_metadata:
+klv_metadata
+^^^^^^^^^^^^
+..  doxygenclass:: kwiver::arrows::klv::klv_metadata
+    :project: kwiver
+    :members:
+
+.. _klv_packet:
+klv_packet
+^^^^^^^^^^
+..  doxygenstruct:: kwiver::arrows::klv::klv_packet
+    :project: kwiver
+    :members:
+
+.. _klv_string_format:
+klv_string_format
+^^^^^^^^^^^^^^^^^
+..  doxygenclass:: kwiver::arrows::klv::klv_string_format
+    :project: kwiver
+    :members:
+
+.. _klv_value:
+klv_value
+^^^^^^^^^
+..  doxygenclass:: kwiver::arrows::klv::klv_value
+    :project: kwiver
+    :members:
+
+Utility Functions
+-----------------
+
+.. _klv_packet_length:
+klv_packet_length
+^^^^^^^^^^^^^^^
+..  doxygenfunction:: kwiver::arrows::klv::klv_packet_length
+    :project: kwiver
+
+.. _klv_read_packet:
+klv_read_packet
+^^^^^^^^^^^^^^^
+..  doxygenfunction:: kwiver::arrows::klv::klv_read_packet
+    :project: kwiver
+
+.. _klv_write_packet:
+klv_write_packet
+^^^^^^^^^^^^^^^^
+..  doxygenfunction:: kwiver::arrows::klv::klv_write_packet
+    :project: kwiver

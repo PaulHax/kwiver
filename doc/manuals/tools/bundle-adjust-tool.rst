@@ -2,8 +2,17 @@
 bundle-adjust-tool
 ==================
 
-kwiver bundle-adjust-tool    [options] pipe-file
---------------------------------------------
+The bundle-adjust-tool optimizes cameras and landmarks via a bundle adjustment
+algorithm.
+
+The default configuration of this tool depends on algorithm implementations in
+the :ref:`arrows_ceres` and :ref:`arrows_mvg` arrows which will only be
+available if the KWIVER_ENABLE_CERES and KWIVER_ENABLE_MVG CMake flags are
+enabled.
+
+.. code-block:: bash
+
+  kwiver bundle-adjust-tool    [options]
 
 **Options are:**
 
@@ -38,3 +47,7 @@ kwiver bundle-adjust-tool    [options] pipe-file
   ``-o, --output-config arg``
     Output a configuration, which may be seeded with a configuration file
     from -c/--config.
+
+**Default configuration**
+
+.. literalinclude:: ../../../config/applets/bundle_adjust_tool.conf

@@ -637,7 +637,9 @@ void
 fuse_depth
 ::add_command_options()
 {
-  m_cmd_options->custom_help( wrap_text( "[options]\n" ) );
+  m_cmd_options->custom_help(
+    wrap_text(
+      "[options] input-cameras-dir input-depths-dir\n" ) );
 
   m_cmd_options->positional_help(
     "\n  input-cameras-dir - name of the directory containing the krtd camera files"

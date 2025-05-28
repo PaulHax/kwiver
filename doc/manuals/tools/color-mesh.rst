@@ -6,18 +6,23 @@ The color-mesh tool colors an input-mesh from a video (or list of images) and a
 list of camera files stored in a directory. A mesh colored with the
 average color or with a color for a particular camera is produced.
 
+The default configuration of this tool depends on algorithm implementations in
+the :ref:`arrows_vtk` arrow which will only available if the
+KWIVER_ENABLE_VTK CMake flags are enabled.
 
-kwiver color-mesh       [options] input-mesh video-file cameras-dir output-mesh
---------------------------------------------
+.. code-block:: bash
 
-  input-mesh  - input mesh file.
+  kwiver color-mesh       [options] input-mesh video-file cameras-dir output-mesh
 
-  video-file  - input video file.
+**Required arguments:**
 
-  cameras-dir  - input camera directory.
+  ``input-mesh``  - input mesh file.
 
-  output-mesh - output mesh file.
+  ``video-file``  - input video file.
 
+  ``cameras-dir``  - input camera directory.
+
+  ``output-mesh`` - output mesh file.
 
 **Options are:**
 
@@ -51,3 +56,7 @@ kwiver color-mesh       [options] input-mesh video-file cameras-dir output-mesh
 
   ``-s, --frame-sampling arg``
     Use for coloring only frames that satisfy frame mod sampling == 0 (default: 1)
+
+**Default configuration**
+
+.. literalinclude:: ../../../config/applets/color_mesh.conf

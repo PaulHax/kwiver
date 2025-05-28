@@ -48,8 +48,9 @@ The provided Arrows are:
    .. sprokit (not active, needs to be ported to v2)
 
    super3d
-   test_data
-   tests
+   .. test_data
+   .. tests
+
    uuid
    vtk
    vxl

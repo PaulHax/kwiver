@@ -183,6 +183,6 @@ Instantiate with: ::
 Code Example
 ------------
 
-.. literalinclude:: ../../../examples/cpp/how_to_part_02_detections.cpp
+.. literalinclude:: ../../../examples/cpp/how_to_part_02_detections.cxx
    :language: cpp
    :lines: 30-

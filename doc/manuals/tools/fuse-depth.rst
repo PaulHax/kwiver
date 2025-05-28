@@ -2,13 +2,23 @@
 fuse-depth
 ==========
 
-kwiver fuse-depth       [options]
---------------------------
+The fuse-depth tool fuses depth maps from multiple cameras into a single
+surface.
 
-  input-cameras-dir - name of the directory containing the krtd camera
+The default configuration of this tool depends on algorithm implementations in
+the :ref:`arrows_cuda` and :ref:`arrows_vtk` arrows which will only available
+if the KWIVER_ENABLE_FFMPEG and KWIVER_ENABLE_MVG CMake flags are enabled.
+
+.. code-block:: bash
+
+  kwiver fuse-depth    [options] input-cameras-dir input-depths-dir
+
+**Required arguments:**
+
+  ``input-cameras-dir`` - name of the directory containing the krtd camera
   files(default: results/krtd)
 
-  input-depths-dir - name of the directory to read depth maps from
+  ``input-depths-dir`` - name of the directory to read depth maps from
   (default: results/depths)
 
 
@@ -37,3 +47,7 @@ kwiver fuse-depth       [options]
 
   ``-t, --isosurface-threshold arg``
     isosurface extraction threshold (default: 0.000000).
+
+**Default configuration**
+
+.. literalinclude:: ../../../config/applets/fuse_depth.conf

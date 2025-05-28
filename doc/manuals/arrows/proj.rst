@@ -1,10 +1,15 @@
+.. _arrows_proj4:
+
 Proj4
 =====
 
+Algorithm Implementations
+-------------------------
+
 .. _proj_geo_conversion:
 
-Geo Conversion Class
---------------------
+geo_conversion
+^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::proj::geo_conversion
     :project: kwiver

@@ -1,5 +1,10 @@
+.. _arrows_vxl:
+
 VXL
 ======
+
+Algorithm Implementations
+-------------------------
 
 This arrow is a collection of vital algorithms implemented with the VXL API
 
@@ -9,8 +14,8 @@ This arrow contains the following functionality:
 
 .. _vxl_aligned_edge_detection:
 
-Aligned Edge Detection Algorithm
---------------------------------
+aligned_edge_detection
+^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::aligned_edge_detection
     :project: kwiver
@@ -18,8 +23,8 @@ Aligned Edge Detection Algorithm
 
 .. _vxl_average_frames:
 
-Average Frames Algorithm
--------------------------
+average_frames
+^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::average_frames
     :project: kwiver
@@ -27,8 +32,8 @@ Average Frames Algorithm
 
 .. _vxl_bundle_adjust:
 
-Bundle Adjust Algorithm
-------------------------
+bundle_adjust
+^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::bundle_adjust
     :project: kwiver
@@ -36,8 +41,8 @@ Bundle Adjust Algorithm
 
 .. _vxl_close_loops_homography_guided:
 
-Close Loops Homography Guided Algorithm
------------------------------------------
+close_loops_homography_guided
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::close_loops_homography_guided
     :project: kwiver
@@ -45,8 +50,8 @@ Close Loops Homography Guided Algorithm
 
 .. _vxl_color_commonality_filter:
 
-Color Commonality Filter Algorithm
-------------------------------------
+color_commonality_filter
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::color_commonality_filter
     :project: kwiver
@@ -54,8 +59,8 @@ Color Commonality Filter Algorithm
 
 .. _vxl_convert_image:
 
-Convert Image Algorithm
--------------------------
+convert_image
+^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::convert_image
     :project: kwiver
@@ -63,8 +68,8 @@ Convert Image Algorithm
 
 .. _vxl_estimate_canonical_transform:
 
-Estimate Canonical Transform Algorithm
-----------------------------------------
+estimate_canonical_transform
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::estimate_canonical_transform
     :project: kwiver
@@ -72,8 +77,8 @@ Estimate Canonical Transform Algorithm
 
 .. _vxl_estimate_essential_matrix:
 
-Estimate Essential Matrix Algorithm
--------------------------------------
+estimate_essential_matrix
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::estimate_essential_matrix
     :project: kwiver
@@ -81,8 +86,8 @@ Estimate Essential Matrix Algorithm
 
 .. _vxl_estimate_fundamental_matrix:
 
-Estimate Fundamental Matrix Algorithm
-----------------------------------------
+estimate_fundamental_matrix
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::estimate_fundamental_matrix
     :project: kwiver
@@ -90,8 +95,8 @@ Estimate Fundamental Matrix Algorithm
 
 .. _vxl_estimate_homography:
 
-Estimate Homography Algorithm
--------------------------------
+estimate_homography
+^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::estimate_homography
     :project: kwiver
@@ -99,8 +104,8 @@ Estimate Homography Algorithm
 
 .. _vxl_estimate_similarity_transform:
 
-Estimate Similarity Transform Algorithm
------------------------------------------
+estimate_similarity_transform
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::estimate_similarity_transform
     :project: kwiver
@@ -108,8 +113,8 @@ Estimate Similarity Transform Algorithm
 
 .. _vxl_hashed_image_classifier_filter:
 
-Hashed Image Classifier Filter Algorithm
--------------------------------------------
+hashed_image_classifier_filter
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::hashed_image_classifier_filter
     :project: kwiver
@@ -117,8 +122,8 @@ Hashed Image Classifier Filter Algorithm
 
 .. _vxl_high_pass_filter:
 
-High Pass Filter Algorithm
----------------------------
+high_pass_filter
+^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::high_pass_filter
     :project: kwiver
@@ -126,8 +131,8 @@ High Pass Filter Algorithm
 
 .. _vxl_image_io:
 
-Image I/O Algorithm
----------------------
+image_io
+^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::image_io
     :project: kwiver
@@ -135,8 +140,8 @@ Image I/O Algorithm
 
 .. _vxl_kd_tree:
 
-KD Tree Algorithm
-------------------
+kd_tree
+^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::kd_tree
     :project: kwiver
@@ -144,8 +149,8 @@ KD Tree Algorithm
 
 .. _vxl_match_features_constrained:
 
-Match Features Constrained Algorithm
---------------------------------------
+match_features_constrained
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::match_features_constrained
     :project: kwiver
@@ -153,8 +158,8 @@ Match Features Constrained Algorithm
 
 .. _vxl_morphology:
 
-Morphology Algorithm
-----------------------
+morphology
+^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::morphology
     :project: kwiver
@@ -162,8 +167,8 @@ Morphology Algorithm
 
 .. _vxl_optimize_cameras:
 
-Optimize Cameras Algorithm
-----------------------------
+optimize_cameras
+^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::optimize_cameras
     :project: kwiver
@@ -171,8 +176,8 @@ Optimize Cameras Algorithm
 
 .. _vxl_pixel_feature_extractor:
 
-Pixel Feature Extractor Algorithm
-------------------------------------
+pixel_feature_extractor
+^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::pixel_feature_extractor
     :project: kwiver
@@ -180,8 +185,8 @@ Pixel Feature Extractor Algorithm
 
 .. _vxl_split_image:
 
-Split Image Algorithm
------------------------
+split_image
+^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::split_image
     :project: kwiver
@@ -189,8 +194,8 @@ Split Image Algorithm
 
 .. _vxl_threshold:
 
-Threshold Algorithm
----------------------
+threshold
+^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::threshold
     :project: kwiver
@@ -198,8 +203,8 @@ Threshold Algorithm
 
 .. _vxl_triangulate_landmarks:
 
-Triangulate Landmarks Algorithm
----------------------------------
+triangulate_landmarks
+^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::vxl::triangulate_landmarks
     :project: kwiver

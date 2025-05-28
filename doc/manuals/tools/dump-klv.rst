@@ -1,13 +1,35 @@
+.. _tools_dump_klv:
+
 ========
 dump-klv
 ========
 
-This program displays the KLV metadata packets that are embedded in a video file.
+This program displays a subset of metadata derived from the KLV packets embedded
+in a video file. The default behavior is to print the metadata to standard
+output for all frames of the video. This can be restricted to a subset of
+frames. The summarized metadata can be saved to a separate file in either
+``csv`` or ``json`` format, or the full interpreted contents of the KLV packets
+can be saved to ``json`` (``-e klv-json``).
 
-kwiver dump-klv       [options]  video-file
-------------------------------------
+.. TODO: Add examples of output?
 
-  video-file  - name of video file.
+The default configuration of this tool depends on algorithm implementations in
+the :ref:`arrows_ffmpeg` and :ref:`arrows_klv` arrows which will only available
+if the KWIVER_ENABLE_FFMPEG and KWIVER_ENABLE_KLV CMake flags are enabled. If
+you are planning on using the tool to dump frame images, the default
+configuration depends on the :ref:`arrows_opencv` so this feature will only be
+available if the KWIVER_ENABLE_OPENCV CMake flag is enabled. To produce
+``json`` output the :ref:`arrows_serialize_json` is needed, so the
+KWIVER_ENABLE_SERIALIZE_JSON CMake flag should be enabled.
+
+.. code-block:: bash
+
+  kwiver dump-klv       [options]  video-file
+
+**Required arguments:**
+
+
+  ``video-file``  - name of video file.
 
 **Options are:**
 
@@ -30,10 +52,16 @@ kwiver dump-klv       [options]  video-file
     array of metadata fields. Alternatively, the configuration file,
     dump_klv.conf, can be updated to use CSV instead.
 
+  ``--frame-range expr``
+    Frame range to process, indexed from 1. May be a single number or two
+    numbers separated by a hyphen, either of which may be omitted to process
+    from the start or to the end of the video, respectively, e.g.
+    '5', '10-100', or '64-'.
+
   ``-f, --frames extension``
     Dump frames into the given image format.
 
-  ``-f, --frames-dir path``
+  ``--frames-dir path``
     Directory in which to dump frames. Defaults to current directory.
 
   ``-d, --detail``
@@ -46,9 +74,13 @@ kwiver dump-klv       [options]  video-file
     Choose the format of the exported KLV data. Current options are:
     csv, json, klv-json.
 
-  ``-e, --multithread``
+  ``--multithread``
     Use multithreading to accelerate encoding of frame images. Number of worker
     threads is not configurable at this time.
 
-  ``-e, --compress``
+  ``--compress``
     Compress output file. Only available for klv-json.
+
+**Default configuration**
+
+.. literalinclude:: ../../../config/applets/dump_klv.conf

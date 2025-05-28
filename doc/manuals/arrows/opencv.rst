@@ -1,3 +1,5 @@
+.. _arrows_opencv:
+
 OpenCV
 ======
 
@@ -7,10 +9,13 @@ This arrow can be built by enabling the KWIVER_ENABLE_OPENCV CMake flag
 
 This arrow contains the following functionality:
 
+Algorithm Implementations
+-------------------------
+
 .. _ocv_analyze_tracks:
 
-Analyze Tracks Algorithm
-------------------------
+analyze_tracks
+^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::analyze_tracks
     :project: kwiver
@@ -18,8 +23,8 @@ Analyze Tracks Algorithm
 
 .. _ocv_detect_features:
 
-Detect Features Algorithm
--------------------------------
+detect_features
+^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::detect_features
     :project: kwiver
@@ -27,8 +32,8 @@ Detect Features Algorithm
 
 .. _ocv_detect_features_AGAST:
 
-Detect Features AGAST Algorithm
--------------------------------
+detect_features_AGAST
+^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::detect_features_AGAST
     :project: kwiver
@@ -36,8 +41,8 @@ Detect Features AGAST Algorithm
 
 .. _ocv_detect_features_FAST:
 
-Detect Features FAST Algorithm
-------------------------------
+detect_features_FAST
+^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::detect_features_FAST
     :project: kwiver
@@ -45,8 +50,8 @@ Detect Features FAST Algorithm
 
 .. _ocv_detect_features_GFTT:
 
-Detect Features GFTT Algorithm
-------------------------------
+detect_features_GFTT
+^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::detect_features_GFTT
     :project: kwiver
@@ -54,8 +59,8 @@ Detect Features GFTT Algorithm
 
 .. _ocv_detect_features_MSD:
 
-Detect Features MSD Algorithm
------------------------------
+detect_features_MSD
+^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::detect_features_MSD
     :project: kwiver
@@ -63,8 +68,8 @@ Detect Features MSD Algorithm
 
 .. _ocv_detect_features_MSER:
 
-Detect Features MSER Algorithm
-------------------------------
+detect_features_MSER
+^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::detect_features_MSER
     :project: kwiver
@@ -72,8 +77,8 @@ Detect Features MSER Algorithm
 
 .. _ocv_detect_features_simple_blob:
 
-Detect Features Simple BLOB Algorithm
--------------------------------------
+detect_features_simple_blob
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::detect_features_simple_blob
     :project: kwiver
@@ -81,8 +86,8 @@ Detect Features Simple BLOB Algorithm
 
 .. _ocv_detect_features_STAR:
 
-Detect Features STAR Algorithm
-------------------------------
+detect_features_STAR
+^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::detect_features_STAR
     :project: kwiver
@@ -90,8 +95,8 @@ Detect Features STAR Algorithm
 
 .. _ocv_detect_heat_map:
 
-Detect Heat Map Algorithm
--------------------------
+detect_heat_map
+^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::detect_heat_map
     :project: kwiver
@@ -99,8 +104,8 @@ Detect Heat Map Algorithm
 
 .. _ocv_detect_motion_3frame_differencing:
 
-Detect Motion 3-Frame Differencing Algorithm
-----------------------------------------------
+detect_motion_3frame_differencing
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::detect_motion_3frame_differencing
     :project: kwiver
@@ -108,8 +113,8 @@ Detect Motion 3-Frame Differencing Algorithm
 
 .. _ocv_detect_motion_mog2:
 
-Detect Motion MOG2 Algorithm
------------------------------
+detect_motion_mog2
+^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::detect_motion_mog2
     :project: kwiver
@@ -117,8 +122,8 @@ Detect Motion MOG2 Algorithm
 
 .. _ocv_draw_detected_object_set:
 
-Draw Detected Object Set Algorithm
-----------------------------------
+draw_detected_object_set
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::draw_detected_object_set
     :project: kwiver
@@ -126,8 +131,8 @@ Draw Detected Object Set Algorithm
 
 .. _ocv_draw_tracks:
 
-Draw Tracks Algorithm
----------------------
+draw_tracks
+^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::draw_tracks
     :project: kwiver
@@ -135,8 +140,8 @@ Draw Tracks Algorithm
 
 .. _ocv_estimate_fundamental_matrix:
 
-Estimate Fundamental Matrix Algorithm
--------------------------------------
+estimate_fundamental_matrix
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::estimate_fundamental_matrix
     :project: kwiver
@@ -144,8 +149,8 @@ Estimate Fundamental Matrix Algorithm
 
 .. _ocv_estimate_homography:
 
-Estimate Homography Algorithm
------------------------------
+estimate_homography
+^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::estimate_homography
     :project: kwiver
@@ -153,26 +158,17 @@ Estimate Homography Algorithm
 
 .. _ocv_estimate_pnp:
 
-Estimate PnP Algorithm
------------------------
+estimate_pnp
+^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::estimate_pnp
     :project: kwiver
     :members:
 
-.. _ocv_extract_descriptors:
-
-Extract Descriptors Algorithm
------------------------------------
-
-..  doxygenclass:: kwiver::arrows::ocv::extract_descriptors_BRIEF
-    :project: kwiver
-    :members:
-
 .. _ocv_extract_descriptors_BRIEF:
 
-Extract Descriptors BRIEF Algorithm
------------------------------------
+extract_descriptors_BRIEF
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::extract_descriptors_BRIEF
     :project: kwiver
@@ -180,8 +176,8 @@ Extract Descriptors BRIEF Algorithm
 
 .. _ocv_extract_descriptors_DAISY:
 
-Extract Descriptors DAISY Algorithm
------------------------------------
+extract_descriptors_DAISY
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::extract_descriptors_DAISY
     :project: kwiver
@@ -189,8 +185,8 @@ Extract Descriptors DAISY Algorithm
 
 .. _ocv_extract_descriptors_FREAK:
 
-Extract Descriptors FREAK Algorithm
------------------------------------
+extract_descriptors_FREAK
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::extract_descriptors_FREAK
     :project: kwiver
@@ -198,8 +194,8 @@ Extract Descriptors FREAK Algorithm
 
 .. _ocv_extract_descriptors_LATCH:
 
-Extract Descriptors LATCH Algorithm
------------------------------------
+extract_descriptors_LATCH
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::extract_descriptors_LATCH
     :project: kwiver
@@ -207,8 +203,8 @@ Extract Descriptors LATCH Algorithm
 
 .. _ocv_extract_descriptors_LUCID:
 
-Extract Descriptors LUCID Algorithm
------------------------------------
+extract_descriptors_LUCID
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::extract_descriptors_LUCID
     :project: kwiver
@@ -216,8 +212,8 @@ Extract Descriptors LUCID Algorithm
 
 .. _ocv_detect_features_BRISK:
 
-Detect Features with BRISK Algorithm
------------------------------------------------------
+detect_features_BRISK
+^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::detect_features_BRISK
     :project: kwiver
@@ -225,8 +221,8 @@ Detect Features with BRISK Algorithm
 
 .. _ocv_detect_features_ORB:
 
-Detect Features with ORB Algorithm
------------------------------------------------------
+detect_features_ORB
+^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::detect_features_ORB
     :project: kwiver
@@ -234,8 +230,8 @@ Detect Features with ORB Algorithm
 
 .. _ocv_detect_features_SIFT:
 
-Detect Features with SIFT Algorithm
------------------------------------------------------
+detect_features_SIFT
+^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::detect_features_SIFT
     :project: kwiver
@@ -243,8 +239,8 @@ Detect Features with SIFT Algorithm
 
 .. _ocv_detect_features_SURF:
 
-Detect Features with SURF Algorithm
------------------------------------------------------
+detect_features_SURF
+^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::detect_features_SURF
     :project: kwiver
@@ -252,8 +248,8 @@ Detect Features with SURF Algorithm
 
 .. _ocv_hough_circle_detector:
 
-Hough Circle Detector Algorithm
--------------------------------
+hough_circle_detector
+^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::hough_circle_detector
     :project: kwiver
@@ -261,8 +257,8 @@ Hough Circle Detector Algorithm
 
 .. _ocv_image_io:
 
-Image I/O Algorithm
--------------------
+image_io
+^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::image_io
     :project: kwiver
@@ -271,8 +267,8 @@ Image I/O Algorithm
 
 .. _ocv_inpaint:
 
-Inpaint Algorithm
----------------------
+inpaint
+^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::inpaint
     :project: kwiver
@@ -281,8 +277,8 @@ Inpaint Algorithm
 
 .. _ocv_match_features_bruteforce:
 
-Match Features Bruteforce Algorithm
------------------------------------
+match_features_bruteforce
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::match_features_bruteforce
     :project: kwiver
@@ -290,8 +286,8 @@ Match Features Bruteforce Algorithm
 
 .. _ocv_match_features_flannbased:
 
-Match Features Flannbased Algorithm
------------------------------------
+match_features_flannbased
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::match_features_flannbased
     :project: kwiver
@@ -299,8 +295,8 @@ Match Features Flannbased Algorithm
 
 .. _ocv_merge_images:
 
-Merge Images Algorithm
------------------------
+merge_images
+^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::merge_images
     :project: kwiver
@@ -308,8 +304,8 @@ Merge Images Algorithm
 
 .. _ocv_refine_detections_write_to_disk:
 
-Refine Detections Write To Disk Algorithm
------------------------------------------
+refine_detections_write_to_disk
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::refine_detections_write_to_disk
     :project: kwiver
@@ -317,8 +313,8 @@ Refine Detections Write To Disk Algorithm
 
 .. _ocv_split_image:
 
-Split Image Algorithm
----------------------
+split_image
+^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::split_image
     :project: kwiver
@@ -326,8 +322,8 @@ Split Image Algorithm
 
 .. _ocv_track_features_klt:
 
-Track Features using KLT Algorithm
------------------------------------
+track_features_klt
+^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::ocv::track_features_klt
     :project: kwiver

@@ -1,10 +1,15 @@
+.. _arrows_mvg:
+
 MVG
 ===
 
+Algorithm Implementations
+-------------------------
+
 .. _mvg_hierarchical_bundle_adjust:
 
-Hierarchical Bundle Adjust Algorithm
--------------------------------------
+hierarchical_bundle_adjust
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::mvg::hierarchical_bundle_adjust
     :project: kwiver
@@ -12,8 +17,8 @@ Hierarchical Bundle Adjust Algorithm
 
 .. _mvg_initialize_cameras_landmarks_basic:
 
-Initialize Cameras Landmarks Basic Algorithm
---------------------------------------------
+initialize_cameras_landmarks_basic
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::mvg::initialize_cameras_landmarks_basic
     :project: kwiver
@@ -21,8 +26,8 @@ Initialize Cameras Landmarks Basic Algorithm
 
 .. _mvg_initialize_cameras_landmarks:
 
-Initialize Cameras Landmarks Algorithm
---------------------------------------
+initialize_cameras_landmarks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::mvg::initialize_cameras_landmarks
     :project: kwiver
@@ -30,8 +35,8 @@ Initialize Cameras Landmarks Algorithm
 
 .. _mvg_integrate_depth_maps:
 
-Integrate Depth Maps Algorithm
--------------------------------
+integrate_depth_maps
+^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::mvg::integrate_depth_maps
     :project: kwiver
@@ -39,8 +44,8 @@ Integrate Depth Maps Algorithm
 
 .. _mvg_triangulate_landmarks:
 
-Triangulate Landmarks Algorithm
---------------------------------
+triangulate_landmarks
+^^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::mvg::triangulate_landmarks
     :project: kwiver

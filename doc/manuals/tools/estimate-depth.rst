@@ -2,19 +2,25 @@
 estimate-depth
 ==============
 
-The color-mesh tool colors an input-mesh from a video (or list of images) and a
-list of camera files stored in a directory. A mesh colored with the
-average color or with a color for a particular camera is produced.
+The estimate-depth tool estimates a series of depth maps for video frames based
+off of known or calculated cameras associated with those frames.
 
-kwiver estimate-depth       [options]
-------------------------------
+The default configuration of this tool depends on algorithm implementations in
+the :ref:`arrows_super3d` and :ref:`arrows_vtk` arrows which will only available
+if the KWIVER_ENABLE_SUPER3D and KWIVER_ENABLE_VTK CMake flags are enabled.
 
-  video-source - name of input video file.
+.. code-block:: bash
 
-  input-cameras-dir - name of the directory containing the krtd camera
+  kwiver estimate-depth       [options]
+
+**Required arguments:**
+
+  ``video-source`` - name of input video file.
+
+  ``input-cameras-dir`` - name of the directory containing the krtd camera
   files(default: results/krtd)
 
-  output-depths-dir - name of the directory to write depth maps
+  ``output-depths-dir`` - name of the directory to write depth maps
   to (default: results/depth)
 
 **Options are:**
@@ -36,3 +42,7 @@ kwiver estimate-depth       [options]
 
   ``-m, --mask-source arg``
     Masks of unusable regions
+
+**Default configuration**
+
+.. literalinclude:: ../../../config/applets/estimate_depth.conf

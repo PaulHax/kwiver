@@ -2,8 +2,17 @@
 init-cameras-landmarks
 ======================
 
-kwiver init-cameras-landmarks       [options]
---------------------------------------
+The init-cameras-landmarks tool estimate cameras and landmarks from a set of
+feature tracks.
+
+The default configuration of this tool depends on algorithm implementations in
+the :ref:`arrows_ffmpeg`, :ref:`arrows_mvg`, and :ref:`arrows_opencv` arrows
+which will only available if the KWIVER_ENABLE_FFMPEG, KWIVER_ENABLE_MVG, and
+KWIVER_ENABLE_OPENCV CMake flags are enabled.
+
+.. code-block:: bash
+
+  kwiver init-cameras-landmarks       [options]
 
 **Options are:**
 
@@ -30,3 +39,7 @@ kwiver init-cameras-landmarks       [options]
 
   ``-g, --geo-origin arg``
     Output geographic origin file
+
+**Default configuration**
+
+.. literalinclude:: ../../../config/applets/track_features.conf

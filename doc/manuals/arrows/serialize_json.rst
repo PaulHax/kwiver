@@ -1,10 +1,15 @@
+.. _arrows_serialize_json:
+
 Serialize JSON
 ==============
 
+Algorithm Implementations
+-------------------------
+
 .. _json_activity_type:
 
-Serialize JSON Activity Type Algorithm
----------------------------------------
+activity_type
+^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::json::activity_type
     :project: kwiver
@@ -13,8 +18,8 @@ Serialize JSON Activity Type Algorithm
 
 .. _json_activity:
 
-Serialize JSON Activity Algorithm
------------------------------------
+activity
+^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::json::activity
     :project: kwiver
@@ -23,8 +28,8 @@ Serialize JSON Activity Algorithm
 
 .. _json_bounding_box:
 
-Serialize JSON Bounding Box Algorithm
---------------------------------------
+bounding_box
+^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::json::bounding_box
     :project: kwiver
@@ -33,8 +38,8 @@ Serialize JSON Bounding Box Algorithm
 
 .. _json_detected_object_set:
 
-Serialize JSON Detected Object Set Algorithm
----------------------------------------------
+detected_object_set
+^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::json::detected_object_set
     :project: kwiver
@@ -43,8 +48,8 @@ Serialize JSON Detected Object Set Algorithm
 
 .. _json_detected_object_type:
 
-Serialize JSON Detected Object Type Algorithm
-----------------------------------------------
+detected_object_type
+^^^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::json::detected_object_type
     :project: kwiver
@@ -53,8 +58,8 @@ Serialize JSON Detected Object Type Algorithm
 
 .. _json_detected_object:
 
-Serialize JSON Detected Object Algorithm
------------------------------------------
+detected_object
+^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::json::detected_object
     :project: kwiver
@@ -63,8 +68,8 @@ Serialize JSON Detected Object Algorithm
 
 .. _json_image:
 
-Serialize JSON Image Algorithm
--------------------------------
+image
+^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::json::image
     :project: kwiver
@@ -73,8 +78,8 @@ Serialize JSON Image Algorithm
 
 .. _json_metadata_map_io:
 
-Serialize JSON Metadata Map Input/Output Algorithm
---------------------------------------------------
+metadata_map_io
+^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::json::metadata_map_io
     :project: kwiver
@@ -83,8 +88,8 @@ Serialize JSON Metadata Map Input/Output Algorithm
 
 .. _json_metadata:
 
-Serialize JSON Metadata Algorithm
------------------------------------
+metadata
+^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::json::metadata
     :project: kwiver
@@ -93,8 +98,8 @@ Serialize JSON Metadata Algorithm
 
 .. _json_object_track_set:
 
-Serialize JSON Object Track Set Algorithm
-------------------------------------------
+object_track_set
+^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::json::object_track_set
     :project: kwiver
@@ -103,8 +108,8 @@ Serialize JSON Object Track Set Algorithm
 
 .. _json_object_track_state:
 
-Serialize JSON Object Track State Algorithm
---------------------------------------------
+object_track_state
+^^^^^^^^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::json::object_track_state
     :project: kwiver
@@ -113,8 +118,8 @@ Serialize JSON Object Track State Algorithm
 
 .. _json_string:
 
-Serialize JSON String Algorithm
----------------------------------
+string
+^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::json::string
     :project: kwiver
@@ -123,8 +128,8 @@ Serialize JSON String Algorithm
 
 .. _json_timestamp:
 
-Serialize JSON Timestamp Algorithm
-------------------------------------
+timestamp
+^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::json::timestamp
     :project: kwiver
@@ -133,8 +138,8 @@ Serialize JSON Timestamp Algorithm
 
 .. _json_track_set:
 
-Serialize JSON Track Set Algorithm
------------------------------------
+track_set
+^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::json::track_set
     :project: kwiver
@@ -143,8 +148,8 @@ Serialize JSON Track Set Algorithm
 
 .. _json_track_state:
 
-Serialize JSON Track State Algorithm
---------------------------------------
+track_state
+^^^^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::json::track_state
     :project: kwiver
@@ -153,8 +158,8 @@ Serialize JSON Track State Algorithm
 
 .. _json_track:
 
-Serialize JSON Track Algorithm
--------------------------------
+track
+^^^^^
 
 ..  doxygenclass:: kwiver::arrows::serialize::json::track
     :project: kwiver

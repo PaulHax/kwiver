@@ -1,10 +1,15 @@
+.. _arrows_qt:
+
 QT
 ===
 
+Algorithm Implementations
+-------------------------
+
 .. _qt_image_io:
 
-Image Input/Output Algorithm
------------------------------
+image_io
+^^^^^^^^
 
 ..  doxygenclass:: kwiver::arrows::qt::image_io
     :project: kwiver

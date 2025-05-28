@@ -692,7 +692,9 @@ void
 estimate_depth
 ::add_command_options()
 {
-  m_cmd_options->custom_help( wrap_text( "[options]\n" ) );
+  m_cmd_options->custom_help(
+    wrap_text(
+      "[options] video-source input-cameras-dir output-depths-dir\n" ) );
 
   m_cmd_options->positional_help(
     "\n  video-source - name of input video file."

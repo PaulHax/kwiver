@@ -15,10 +15,13 @@ adetailed output of the config entries.
 If -I or --path are specified, then the config file is only searched for
 usingthe specified path. The application name based paths are not used.
 
-kwiver explore-config       [options] config-file
-------------------------------------------
+.. code-block:: bash
 
-  config-file  - name of configuration file.
+  kwiver explore-config       [options] config-file
+
+**Required arguments:**
+
+  ``config-file``  - name of configuration file.
 
 **Options are:**
 
