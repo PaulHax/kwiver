@@ -14,11 +14,14 @@ Arrows: Core
 * Allowed passthrough of raw metadata packets in video_input_metadata_filter and
   video_input_buffered_metadata_filter.
 
+* Added --frame-range option to dump-klv.
+
 Arrows: FFmpeg
 
-* Added video_input_ffmpeg_rewire.
-
 * Added ffmpeg_image_io.
+
+* Added approximate pixel conversion option to image conversion when
+  performance is critical.
 
 Arrows: GDAL
 
@@ -26,16 +29,43 @@ Arrows: GDAL
 
 * Added NODATA support.
 
+* Enabled writing corner point infomation to NITF format via BLOCKA metadata.
+
 Arrows: Geocalc
 
 * Added Geocalc arrow.
 
-* Added geo_conversion.
+* Added geo_conversion utility to convert between geographic coordinate systems.
+
+* Added raycast utility to calculate ray intersection with ellipsoid.
 
 Arrows: KLV
 
 * Added missing total payload count field for ST0601 Tag 138: Payload List.
 
+Vital: Algo
+
+* Added warp_image interface that warps an image with a given homography.
+
 Vital: Types
 
 * Added local_tangent_space.
+
+* Added method to calculate area for polygons.
+
+* Added method to compute union and intersection of convex polygons.
+
+Bug Fixes
+---------
+
+Python:
+
+* Removed dependency on deprecated distutils package.
+
+Arrows: KLV
+
+* Corner points now offset from frame center, not target location
+
+Arrows: MVG
+
+* Fixed crash in track-features applet when homography generation is enabled.
