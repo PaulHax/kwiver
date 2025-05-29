@@ -88,6 +88,7 @@ public:
   void add_image( vital::video_raw_image const& image ) override;
 
   void add_metadata( vital::metadata const& md ) override;
+  void add_metadata( vital::video_raw_metadata const& md ) override;
 
   void add_uninterpreted_data(
     vital::video_uninterpreted_data const& misc_data ) override;

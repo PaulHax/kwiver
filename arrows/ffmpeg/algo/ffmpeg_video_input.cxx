@@ -47,14 +47,16 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 
-#include <filesystem>
+#include <chrono>
 #include <iomanip>
 #include <list>
 #include <map>
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <regex>
 #include <sstream>
+#include <thread>
 #include <vector>
 
 namespace kv = kwiver::vital;
@@ -410,6 +412,8 @@ public:
       AVRational sample_aspect_ratio;
     };
 
+    using clock_t = std::chrono::high_resolution_clock;
+
     open_video_state( priv& parent, std::string const& path );
     ~open_video_state();
 
@@ -471,6 +475,8 @@ public:
 
     bool lookahead_at_eof;
     bool at_eof;
+
+    std::optional< clock_t::time_point > frame_real_time;
   };
 
   ffmpeg_video_input& parent;
@@ -571,14 +577,6 @@ ffmpeg_video_input::priv
 ::open( std::string const& path )
 {
   hardware_init();
-  if( !std::filesystem::exists( path ) )
-  {
-    LOG_ERROR(
-      kv::get_logger( "ffmpeg_video_input" ),
-      "File " << path << " does not exist" );
-    return;
-  }
-
   video.emplace( *this, path );
 }
 
@@ -911,19 +909,65 @@ ffmpeg_video_input::priv::open_video_state
     lookahead_at_eof{ false },
     at_eof{ false }
 {
-// Try to probe the file for stream information
+  // Parse any URL protocol at beginning of path
+  std::string protocol;
+  static std::regex protocol_pattern( "^([a-z]+)://" );
+  std::smatch protocol_match;
+  if( std::regex_search( path, protocol_match, protocol_pattern ) )
+  {
+    protocol = protocol_match[ 1 ].str();
+  }
+
+  // Try to probe the file for stream information
   constexpr size_t max_probe_tries = 4;
   int64_t probesize = 5'000'000; // 5 MB
   int64_t max_analyze_duration = 10 * AV_TIME_BASE; // 10 seconds
   uint64_t increase_factor = 100;
   for( auto const i : kvr::iota( max_probe_tries ) )
   {
+    AVDictionary* format_options = nullptr;
+
+    // Increase UDP buffer size to 8 MB to mitigate packet loss
+    // Default is ~400 KB
+    if( protocol == "udp" )
+    {
+      av_dict_set( &format_options, "buffer_size", "8388608", 0 );
+      av_dict_set( &format_options, "fifo_size", "65536", 0 );
+      av_dict_set( &format_options, "overrun_nonfatal", "1", 0 );
+    }
+
+    // Make us, the receivers, the "listener" in applicable protocols. We must
+    // start receiving before the sender starts sending, or the sender's
+    // connection attempts will be refused.
+    for( auto const& listen_protocol :
+         { "http", "rmtp", "rstp", "sctp", "tcp", "tls", "unix" } )
+    {
+      if( protocol == listen_protocol )
+      {
+        av_dict_set( &format_options, "listen", "1", 0 );
+        break;
+      }
+    }
+
     // Open the file
     {
       AVFormatContext* ptr = nullptr;
-      throw_error_code(
-        avformat_open_input( &ptr, path.c_str(), NULL, NULL ),
-        "Could not open input stream" );
+      auto const err =
+        avformat_open_input( &ptr, path.c_str(), NULL, &format_options );
+
+      if( format_options )
+      {
+        av_dict_free( &format_options );
+        format_options = nullptr;
+      }
+
+      if( err == AVERROR( ENOENT ) )
+      {
+        VITAL_THROW(
+          kv::file_not_found_exception, path, "No such file or directory" );
+      }
+
+      throw_error_code( err, "Could not open input stream" );
       format_context.reset( ptr );
     }
     format_context->probesize = probesize;
@@ -1772,6 +1816,7 @@ ffmpeg_video_input::priv::open_video_state
   {
     stream.reset();
   }
+  frame_real_time.reset();
 }
 
 // ----------------------------------------------------------------------------
@@ -2343,16 +2388,14 @@ ffmpeg_video_input
   // Close any currently opened file
   close();
 
-  // Ensure input file exists
-  if( !kwiversys::SystemTools::FileExists( video_name ) )
-  {
-    VITAL_THROW( kv::file_not_found_exception, video_name, "File not found" );
-  }
-
   // Attempt to open input file
   try
   {
     d->open( video_name );
+  }
+  catch( kv::file_not_found_exception const& e )
+  {
+    throw e;
   }
   catch( std::exception const& e )
   {
@@ -2382,9 +2425,28 @@ ffmpeg_video_input
 {
   d->assert_open( "next_frame()" );
 
+  auto const prev_microseconds = frame_timestamp().get_time_usec();
+
   if( d->video->advance() )
   {
     ts = frame_timestamp();
+    if( get_real_time() )
+    {
+      auto const now = priv::open_video_state::clock_t::now();
+      if( d->video->frame_real_time )
+      {
+        *d->video->frame_real_time +=
+          std::chrono::microseconds{ ts.get_time_usec() - prev_microseconds };
+        if( now < *d->video->frame_real_time )
+        {
+          std::this_thread::sleep_for( *d->video->frame_real_time - now );
+        }
+      }
+      else
+      {
+        d->video->frame_real_time = now;
+      }
+    }
     return true;
   }
   return false;
