@@ -62,6 +62,8 @@ set( vital_types_classes
   homography_f2f
   homography_f2w
   image_container_set_simple
+  tiled_image_container
+  tiled_image_container_simple
   image
   iqr_feedback
   landmark
