@@ -252,8 +252,9 @@ image_io
     }
   }
 
-  if( auto const& corners_entry =
-        metadata->find( vital::VITAL_META_CORNER_POINTS ) )
+  vital::metadata_item corners_entry{ vital::VITAL_META_UNKNOWN, 0 };
+  if( metadata &&
+      ( corners_entry = metadata->find( vital::VITAL_META_CORNER_POINTS ) ) )
   {
     auto const points =
       corners_entry
