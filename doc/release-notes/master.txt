@@ -6,3 +6,7 @@ Updates
 
 Bug Fixes
 ---------
+
+Arrows: GDAL
+
+* Prevented segfault when saving image with null metadata.
