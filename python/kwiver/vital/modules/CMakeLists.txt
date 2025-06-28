@@ -18,6 +18,7 @@ if (KWIVER_ENABLE_TOOLS)
                      vital_logger
                      vital_vpm
                      ${${pybind11_library}}
+                     Python::Module
                      ${PYTHON_LIBRARIES}
                    )
 endif()
@@ -36,7 +37,7 @@ kwiver_add_python_module(${CMAKE_CURRENT_SOURCE_DIR}/__init__.py
 
 kwiver_add_python_library(modules
                           vital/modules
-                          modules.cxx)
+                          SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/modules.cxx)
 
 target_link_libraries(python-vital.modules-modules
     PRIVATE   vital_python_util
